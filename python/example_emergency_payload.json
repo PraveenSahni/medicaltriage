@@ -1,0 +1,15 @@
+{
+  "encounter_id": "demo-emergency-001",
+  "nurse_id": "nurse-42",
+  "symptoms": {
+    "chief_complaint": "Chest tightness",
+    "narrative": "Cabin crew reports sudden chest tightness and sweating for more than one hour.",
+    "duration_minutes": 75,
+    "red_flags": ["sweating", "chest pain"]
+  },
+  "llm_recommendation": {
+    "severity": "Routine",
+    "rationale": "The caller sounded calm and requested clinic advice."
+  }
+}
+

@@ -1,0 +1,16 @@
+node_modules/
+dist/
+dist-web/
+.agents/
+.codex/
+.pnpm-store/
+.env
+.DS_Store
+*.log
+*.pid
+remix_-ist-technologies.zip
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+__pycache__/
+.pytest_cache/
