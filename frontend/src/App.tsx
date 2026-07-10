@@ -1,6 +1,7 @@
 import {
   HelpCircle,
   LogOut,
+  MessageSquare,
   Moon,
   Settings,
   ShieldCheck,
@@ -8,11 +9,12 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import AdminPortal from "./AdminPortal";
+import CcpWorkspace from "./CcpWorkspace";
 import HelpCenter from "./HelpCenter";
 import LoginPage from "./LoginPage";
 import TriageWorkspace from "./TriageWorkspace";
 
-type ViewKey = "workspace" | "help" | "admin";
+type ViewKey = "workspace" | "ccp" | "help" | "admin";
 type ThemeMode = "light" | "dark";
 
 type AuthenticatedSession = {
@@ -122,8 +124,19 @@ export default function App() {
         eyebrow: "INTERCONNECTED HELP",
         title: "Help & Library",
         subtitle: "Connected operating guide for clinical workflow, content library, integrations, safety controls, and localized routing.",
-        metric: "7",
+        metric: "9",
         metricLabel: "CONNECTED AREAS"
+      };
+    }
+
+    if (activeView === "ccp") {
+      return {
+        eyebrow: "CCP",
+        title: "Continuous Communication Pipeline",
+        subtitle:
+          "One employee communication thread for tele-triage calls, callbacks, reminders, route handoffs, follow-up goals, and audit.",
+        metric: "1",
+        metricLabel: "EMPLOYEE THREAD"
       };
     }
 
@@ -143,6 +156,10 @@ export default function App() {
 
     if (activeView === "help") {
       return <HelpCenter />;
+    }
+
+    if (activeView === "ccp") {
+      return <CcpWorkspace />;
     }
 
     return <TriageWorkspace />;
@@ -227,6 +244,15 @@ export default function App() {
                   <Settings className="h-4 w-4" />
                 </button>
               )}
+              <button
+                type="button"
+                className={`header-icon-button ${activeView === "ccp" ? "header-icon-button-active" : ""}`}
+                onClick={() => setActiveView("ccp")}
+                aria-label="Open CCP"
+                title="CCP"
+              >
+                <MessageSquare className="h-4 w-4" />
+              </button>
               <button
                 type="button"
                 className={`header-icon-button ${activeView === "help" ? "header-icon-button-active" : ""}`}

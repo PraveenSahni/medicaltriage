@@ -13,6 +13,7 @@ import {
   Languages,
   LockKeyhole,
   MapPin,
+  MessageSquare,
   PhoneCall,
   PlugZap,
   Route,
@@ -43,6 +44,15 @@ type LibraryArea = {
   summary: string;
   usedBy: string[];
   details: string[];
+  helps?: Array<{
+    title: string;
+    body: string;
+  }>;
+  usefulFor?: Array<{
+    title: string;
+    body: string;
+  }>;
+  exampleFlow?: string[];
 };
 
 type ApiCatalogRow = {
@@ -109,7 +119,7 @@ const tabs: HelpTab[] = [
 ];
 
 const operatingStats = [
-  { label: "Core paths", value: "2", detail: "Nurse triage and administrative screening" },
+  { label: "Core paths", value: "3", detail: "Nurse triage, CCP follow-up, and administration" },
   { label: "Severity levels", value: "4", detail: "Emergency, Urgent, Routine, Self-care" },
   { label: "Local routes", value: "8", detail: "HMC, Sidra, PHCC, IST teleconsult, self-care" },
   { label: "Audit flags", value: "4", detail: "AI differed, override up, downgrade blocked, final rules" }
@@ -144,7 +154,7 @@ const teleTriageStages = [
   {
     title: "Clinician handoff",
     body:
-      "The clinician validates the output, documents the decision, copies the SBAR/SOAP note, and follows local SOP for transfer, appointment, callback, or escalation."
+      "The clinician validates the output, documents the decision, copies the SBAR/SOAP note, and opens CCP follow-up for transfer, appointment, callback, or escalation."
   }
 ];
 
@@ -184,6 +194,12 @@ const systemCards = [
     icon: PhoneCall,
     body:
       "The system supports a remote consultation from caller identity through symptom capture, protocol matching, acuity rule-out, local routing, clinician validation, and SBAR handoff."
+  },
+  {
+    title: "CCP employee communication",
+    icon: MessageSquare,
+    body:
+      "CCP means Continuous Communication Pipeline in this solution: one employee index with separate visit/call threads, linked previous communication, consent, callbacks, and audit."
   },
   {
     title: "SymptomScreen-style access support",
@@ -255,6 +271,121 @@ const libraryAreas: LibraryArea[] = [
       "The encounter starts with staff or dependent context, then applies clinical content and deterministic rules without allowing AI to approve the final disposition.",
       "The current MVP keeps PHI ephemeral and returns the decision package to the frontend for clinician validation and clipboard handoff.",
       "Production tele-triage requires persistence, role-based access, call transcription, scheduling, EMR integration, and approved clinical SOPs."
+    ]
+  },
+  {
+    id: "ccp",
+    title: "CCP - Employee Communication Pipeline",
+    eyebrow: "One employee, separate visit threads",
+    icon: MessageSquare,
+    summary:
+      "CCP is the Continuous Communication Pipeline for one employee. It keeps an employee-level communication index while opening a separate thread for each visit, call, teleconsult, or clinic encounter.",
+    usedBy: [
+      "GET /api/v1/ccp/employee/:istStaffId",
+      "GET /api/v1/ccp/communication/status",
+      "POST /api/v1/ccp/messages/draft",
+      "POST /api/v1/ccp/messages/:draftId/approve-send",
+      "POST /api/v1/ccp/webhooks/twilio",
+      "CcpWorkspace",
+      "getEmployeeCcpSummary"
+    ],
+    details: [
+      "The CCP subject is the employee, but the operating unit is the visit/call thread. Each new clinic visit, remote call, teleconsult, or follow-up opens a separate active thread.",
+      "Previous threads stay closed and are not merged into the new encounter, but the nurse sees linked prior threads and the last communication as context before continuing.",
+      "Every CCP goal has an owner, due time, next action, thread ID, and settle point so callbacks, precautions, route handoffs, fit-to-duty follow-up, and dependent context do not disappear after the live call.",
+      "The controller pattern keeps outbound actions policy-driven: AI may detect or draft, but employee-facing messages stay queued until the Remote Triage Nurse reviews and approves the send.",
+      "WhatsApp, SMS, and email now sit behind transport adapters. CCP callers create an outbound draft and the adapter is invoked only after Remote Triage Nurse approval, consent/channel validation, and any configured test redirect.",
+      "Inbound Twilio webhooks follow the verify, parse, persist, acknowledge pattern. The local build keeps this as an in-memory record; production should persist to a durable queue before returning the provider acknowledgement.",
+      "The current build exposes demo endpoints and workspace status. Production should persist the CCP as a single-writer ledger with delivery receipts, immutable audit events, retention state, and approved integrations."
+    ],
+    helps: [
+      {
+        title: "One place to look",
+        body:
+          "A nurse, physician, administrator, or support user does not need to search separate call notes, SMS messages, WhatsApp updates, email, and task lists. The employee index becomes the quick-access record."
+      },
+      {
+        title: "Clean episode separation",
+        body:
+          "The next visit or call starts a new thread, so today’s clinical context is not mixed with the previous encounter. Prior communication remains linked for nurse awareness."
+      },
+      {
+        title: "Faster callbacks",
+        body:
+          "Open goals show the owner, due time, next action, and closure condition. This makes safety callbacks and route handoffs easier to act on without bypassing nurse approval."
+      },
+      {
+        title: "Better employee experience",
+        body:
+          "The employee does not have to repeat the same story each time the case moves between intake, nurse triage, physician review, occupational health, or helpdesk support."
+      },
+      {
+        title: "Clinical continuity",
+        body:
+          "Red-flag precautions, human approval gates, fit-to-duty tasks, dependent context, and clinical route decisions stay linked after the live call ends."
+      },
+      {
+        title: "Governance and audit",
+        body:
+          "Every communication can carry actor, channel, purpose, timestamp, linked goal, and audit tags. This supports privacy review, quality sampling, and incident reconstruction."
+      },
+      {
+        title: "Controlled automation",
+        body:
+          "AI can summarize and draft, but CCP keeps actions policy-led: consent, channel choice, emergency floors, disclosure rules, and nurse approval before send remain code-controlled."
+      },
+      {
+        title: "Two-way transport model",
+        body:
+          "Outbound WhatsApp, SMS, and email share the same CCP gate. Inbound WhatsApp/SMS replies enter through the Twilio webhook, are signature-checked when live, parsed with text and media attachments, then persisted for the CCP processor."
+      },
+      {
+        title: "Safe integration mode",
+        body:
+          "The default transport mode is dry-run, so a local demo can prove nurse approval, ledger capture, and adapter selection without sending a real message. Live mode requires explicit Twilio or Microsoft Graph configuration."
+      }
+    ],
+    usefulFor: [
+      {
+        title: "Remote Triage Nurse",
+        body:
+          "Sees identity, consent, active channels, open callbacks, safety precautions, draft messages, current thread status, and linked previous-thread last communication before approving any employee-facing send."
+      },
+      {
+        title: "Senior Nurse or Physician",
+        body:
+          "Reviews the route handoff, acuity decision, SBAR context, and prior employee communications before approving or escalating the case."
+      },
+      {
+        title: "Occupational Health",
+        body:
+          "Tracks fit-to-duty, sickness validation, medical commission, vaccination reaction, and duty-sensitive follow-up from the same thread."
+      },
+      {
+        title: "Outstation Support",
+        body:
+          "Keeps remote staff cases visible when the employee is away from the main clinic and needs teleconsult coordination or station-specific support."
+      },
+      {
+        title: "Dependent Cases",
+        body:
+          "Links child or family-member triage to the employee context while preserving guardian, age, route, and callback information."
+      },
+      {
+        title: "Governance, Privacy, and Audit",
+        body:
+          "Shows what was communicated, who acted, which channel was used, why it was permitted, and what still needs human closure."
+      }
+    ],
+    exampleFlow: [
+      "Employee calls the tele-triage line and identity, duty status, location, and preferred callback channel are confirmed.",
+      "The nurse opens CCP for that employee and starts a new active thread for this visit or call.",
+      "The nurse sees the previous thread links and can open the last communication from each closed thread for context.",
+      "The triage engine proposes severity and route; CCP creates the route handoff goal and attaches the SBAR draft for clinician validation.",
+      "CCP drafts or queues the callback or safety text; the Remote Triage Nurse reviews it, approves it, and only then the permitted WhatsApp, SMS, or email adapter can send it.",
+      "If the employee replies by WhatsApp or SMS, the inbound webhook verifies the provider signature, parses the message and any media, persists the record, and returns a fast acknowledgement.",
+      "Senior nurse, physician, or occupational health closes the goal when the route, fit-to-duty, sickness validation, or callback outcome is documented.",
+      "Governance can later review one timeline instead of stitching together call notes, messages, tasks, and manual emails."
     ]
   },
   {
@@ -659,6 +790,8 @@ const integrationRows = [
   ["Oracle Fusion HCM", "Validate staff identity, active worker status, assignments, contacts, dependents, absences, and documents.", "Mock adapter exists; target connector documented below."],
   ["Insurance", "Return provider, eligibility, last check, and booking notes.", "Mock eligibility cache exists; connect payer or benefits verification after insurer specs."],
   ["EMR / Oracle Health", "Move SBAR/SOAP into patient record.", "Clipboard handoff now; SMART on FHIR or approved Oracle Health API later."],
+  ["Twilio WhatsApp / SMS", "Send nurse-approved CCP messages and receive employee replies with text or media attachments.", "Adapter and webhook are built; dry-run is default until live secrets and signed webhook URL are approved."],
+  ["Microsoft 365 Graph", "Send nurse-approved non-urgent CCP email through an approved mailbox.", "Adapter is built; live use needs Mail.Send app consent and mailbox-scoped access policy."],
   ["Scheduling", "Book clinic, teleconsult, commission, or urgent review slots.", "Future connector tied to disposition code."],
   ["Transcription", "Convert call audio into nurse-reviewed text.", "Workspace already accepts transcript fields."],
   ["Analytics", "Track call volume, categories, escalations, nurse response, recontact, and QA sampling.", "Dashboard scaffold exists for safety officer review."]
@@ -720,6 +853,36 @@ const plannedApiRows: ApiCatalogRow[] = [
     area: "IST triage API",
     api: "POST /api/v1/staff/validate\nPOST /api/v1/triage/start\nPOST /api/v1/triage/encounters/evaluate",
     use: "Stable internal contract used by the frontend and future enterprise adapters.",
+    status: "Built"
+  },
+  {
+    area: "CCP employee communication",
+    api: "GET /api/v1/ccp/employee/{istStaffId}",
+    use: "Return the one-employee Continuous Communication Pipeline summary: consent, channels, goals, nurse approval gate, communication timeline, controller rules, and audit posture.",
+    status: "Built demo endpoint"
+  },
+  {
+    area: "CCP outbound approval",
+    api: "POST /api/v1/ccp/messages/draft\nPOST /api/v1/ccp/messages/{draftId}/approve-send\nGET /api/v1/ccp/messages/drafts",
+    use: "Create an employee-facing WhatsApp, SMS, or email draft; hold it pending Remote Triage Nurse approval; then dispatch through the guarded adapter in dry-run or live mode.",
+    status: "Built with dry-run safety"
+  },
+  {
+    area: "CCP WhatsApp / SMS",
+    api: "POST /api/v1/ccp/webhooks/twilio\nGET /api/v1/ccp/webhooks/inbound-records\nTWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM, TWILIO_SMS_FROM",
+    use: "Use Twilio REST for outbound WhatsApp/SMS and Twilio webhook verification for inbound replies with text and media attachments.",
+    status: "Adapter built"
+  },
+  {
+    area: "CCP email",
+    api: "Microsoft Graph sendMail\nMS_GRAPH_TENANT_ID, MS_GRAPH_CLIENT_ID, MS_GRAPH_CLIENT_SECRET, EMAIL_FROM",
+    use: "Send nurse-approved non-urgent employee follow-up by Microsoft 365 Graph when Mail.Send, admin consent, mailbox scoping, and live mode are approved.",
+    status: "Adapter built"
+  },
+  {
+    area: "CCP transport posture",
+    api: "GET /api/v1/ccp/communication/status\nCCP_TRANSPORT_MODE=dry-run|live\nCCP_TEST_REDIRECT_TO",
+    use: "Expose whether WhatsApp/SMS and email are dry-run or live, which provider is configured, and which safety gates protect outbound and inbound communication.",
     status: "Built"
   },
   {
@@ -1475,6 +1638,42 @@ function LibraryPanel({
             </ul>
           </div>
         </div>
+
+        {selectedArea.helps && (
+          <div className="help-detail-expanded">
+            <h4>How it helps</h4>
+            <div className="help-compare-grid">
+              {selectedArea.helps.map((item) => (
+                <MiniDefinition key={item.title} label={item.title} body={item.body} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {selectedArea.usefulFor && (
+          <div className="help-detail-expanded">
+            <h4>Where it is useful</h4>
+            <div className="help-compare-grid">
+              {selectedArea.usefulFor.map((item) => (
+                <MiniDefinition key={item.title} label={item.title} body={item.body} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {selectedArea.exampleFlow && (
+          <div className="help-detail-expanded">
+            <h4>Example employee flow</h4>
+            <div className="help-route-order help-route-order-six" aria-label={`${selectedArea.title} example flow`}>
+              {selectedArea.exampleFlow.map((item, index) => (
+                <div key={item} className="help-route-order-step">
+                  <strong>{index + 1}</strong>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </article>
     </section>
   );

@@ -5,6 +5,7 @@ import morgan from "morgan";
 import { getCurrentClinicalContentPackage } from "./services/clinicalContent.js";
 import { createAdminRouter } from "./routes/admin.js";
 import { createAuthRouter } from "./routes/auth.js";
+import { createCcpRouter } from "./routes/ccp.js";
 import { createProtocolsRouter } from "./routes/protocols.js";
 import { createStaffRouter } from "./routes/staff.js";
 import { createTriageRouter } from "./routes/triage.js";
@@ -15,6 +16,7 @@ const port = Number(process.env.PORT ?? 8080);
 app.use(helmet());
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: false, limit: "1mb" }));
 app.use(morgan("combined"));
 
 app.get("/healthz", (_req, res) => {
@@ -30,6 +32,7 @@ app.get("/healthz", (_req, res) => {
 
 app.use("/api/v1/auth", createAuthRouter());
 app.use("/api/v1/admin", createAdminRouter());
+app.use("/api/v1/ccp", createCcpRouter());
 app.use("/api/v1/staff", createStaffRouter());
 app.use("/api/v1/protocols", createProtocolsRouter());
 app.use("/api/v1/triage", createTriageRouter());
