@@ -324,10 +324,10 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
         for (const externalCareAdviceId of question.careAdviceIds) {
           const careAdviceId = globalCareAdviceByExternalId.get(externalCareAdviceId);
           if (careAdviceId) {
-            await (prisma as any).triageQuestionCareAdvice.create({
+            await (prisma as any).questionAdviceBridge.create({
               data: {
                 questionId: savedQuestion.id,
-                careAdviceId,
+                adviceId: careAdviceId,
                 triggerAnswer: "YES"
               }
             });

@@ -9,6 +9,7 @@ import {
   ExternalLink,
   FileCheck2,
   GitBranch,
+  HelpCircle,
   Hospital,
   Languages,
   LockKeyhole,
@@ -26,9 +27,9 @@ import {
   Workflow
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-type TabKey = "overview" | "workflow" | "library" | "qatar" | "integration" | "governance" | "security";
+type TabKey = "help" | "library" | "overview" | "workflow" | "qatar" | "integration" | "governance" | "security";
 
 type HelpTab = {
   key: TabKey;
@@ -53,6 +54,49 @@ type LibraryArea = {
     body: string;
   }>;
   exampleFlow?: string[];
+};
+
+type DataStrategyCard = {
+  title: string;
+  eyebrow: string;
+  icon: LucideIcon;
+  status: string;
+  body: string;
+  bullets: string[];
+  formula?: string;
+  link: {
+    href: string;
+    label: string;
+  };
+};
+
+type MatrixCard = {
+  title: string;
+  eyebrow: string;
+  icon: LucideIcon;
+  body: string;
+  bullets: string[];
+  link: {
+    href: string;
+    label: string;
+  };
+};
+
+type HelpGuide = {
+  title: string;
+  eyebrow: string;
+  icon: LucideIcon;
+  audience: string;
+  goal: string;
+  steps: string[];
+  safety: string;
+};
+
+type ValidationReviewItem = {
+  area: string;
+  verdict: "Correct" | "Partially built" | "Pending production";
+  evidence: string;
+  nextStep: string;
 };
 
 type ApiCatalogRow = {
@@ -109,9 +153,10 @@ type DispositionRouteDetail = {
 };
 
 const tabs: HelpTab[] = [
+  { key: "help", label: "Help", icon: HelpCircle },
+  { key: "library", label: "Library", icon: BookOpen },
   { key: "overview", label: "System Map", icon: ShieldCheck },
   { key: "workflow", label: "Call Flow", icon: Workflow },
-  { key: "library", label: "Library", icon: BookOpen },
   { key: "qatar", label: "Qatar Model", icon: MapPin },
   { key: "integration", label: "Integration", icon: PlugZap },
   { key: "governance", label: "Governance", icon: ShieldCheck },
@@ -212,6 +257,200 @@ const systemCards = [
     icon: MapPin,
     body:
       "The MVP localizes routing around staff identity, dependents, insurance status, IST medical workflows, HMC/Sidra emergency routes, fit-to-fly gates, outstation review, and sickness validation."
+  }
+];
+
+const helpGuides: HelpGuide[] = [
+  {
+    title: "Remote Triage Nurse operating guide",
+    eyebrow: "Primary clinical user",
+    icon: Stethoscope,
+    audience: "Remote Triage Nurse, Senior Triage Nurse, Pediatric Triage Nurse",
+    goal:
+      "Run a safe remote encounter from staff validation to disposition, SBAR note, and CCP follow-up without allowing AI to downgrade the rules engine.",
+    steps: [
+      "Validate the staff ID and select the staff member or dependent context before discussing clinical detail.",
+      "Capture chief complaint, narrative, age, duty context, aviation flags, and vital signs where available.",
+      "Use the rules-first output as the minimum safe floor: non-alert consciousness, low SpO2, extreme respiratory rate, extreme heart rate, and pediatric tachypnea cannot be downgraded.",
+      "Review the proposed route, safety rationale, and trace before copying the SOAP/SBAR handoff.",
+      "Open CCP when a callback, transfer handoff, safety precaution, fit-to-duty follow-up, or employee message needs tracking."
+    ],
+    safety:
+      "The nurse owns the final clinical advice. AI may draft or explain, but the clinician validates and approves the final disposition and any employee-facing message."
+  },
+  {
+    title: "Clinical governance review guide",
+    eyebrow: "Safety and quality",
+    icon: ShieldCheck,
+    audience: "Clinical Governance Lead, Protocol Content Manager, Quality Reviewer",
+    goal:
+      "Review whether content, routing, overrides, bilingual text, and audit traces are clinically safe enough for UAT and production release.",
+    steps: [
+      "Check that every algorithm has acuity-ordered questions, severity, disposition, rationale, and care-advice mapping.",
+      "Review the Phase I open-source baseline separately from any future licensed STCC/SymptomScreen import.",
+      "Sample adult emergency, pediatric emergency, stable NEWS2, aviation restriction, and self-care cases using the automated test pack.",
+      "Approve local Qatar routing rules before activating production destinations.",
+      "Track gaps for licensed protocols, Arabic clinical translation governance, persistence, EMR writeback, and medical director sign-off."
+    ],
+    safety:
+      "Governance must treat the current MVP content as implementation scaffolding until licensed content and local SOP approval are complete."
+  },
+  {
+    title: "Security and privacy help guide",
+    eyebrow: "Access and data law",
+    icon: LockKeyhole,
+    audience: "Security Administrator, Privacy Officer / DPO, Compliance Auditor",
+    goal:
+      "Understand how login, roles, permissions, masking, reveal, audit, and Qatar/GDPR-aligned controls protect clinical and staff data.",
+    steps: [
+      "Use the grouped role simulator to confirm each role has a distinct access profile rather than duplicate all-access behavior.",
+      "Review Security Admin for users, roles, SSO, encryption, reveal controls, and audit events.",
+      "Confirm PHI remains ephemeral in the current triage API scaffold unless a production persistence design is approved.",
+      "Check that employee-facing CCP messages require Remote Triage Nurse approval before WhatsApp, SMS, or email send.",
+      "Confirm any production database, log, report, or export has residency, retention, masking, and legal-basis controls."
+    ],
+    safety:
+      "Privacy help is a control map, not a legal certification. Final PDPPL/GDPR decisions need privacy counsel and DPO approval."
+  },
+  {
+    title: "Integration and data ingestion guide",
+    eyebrow: "Engineering and DBA",
+    icon: Database,
+    audience: "Integration Administrator, System Administrator, Reporting Analyst",
+    goal:
+      "Seed, test, and later migrate clinical content without changing the nurse-facing workflow or bypassing deterministic safety floors.",
+    steps: [
+      "Run Prisma migrations against the approved PostgreSQL database, then run the Phase I seed.",
+      "Use the seed to populate Algorithm, TriageQuestion, CareAdvice, QuestionAdviceBridge, localized dispositions, and IST demo staff records.",
+      "Run Jest/Supertest API tests and Python safety tests after every protocol or scoring change.",
+      "Keep Oracle HCM, insurance, EMR, scheduling, Twilio, Graph, and analytics behind backend adapters.",
+      "For licensed content, use SchemaCrawler/DBML mapping and import scripts, then rerun the same safety regression tests."
+    ],
+    safety:
+      "Data ingestion changes are not clinical approval. They only make data available for governed rules, tests, and clinician review."
+  }
+];
+
+const validationReviewItems: ValidationReviewItem[] = [
+  {
+    area: "Staff validation",
+    verdict: "Correct",
+    evidence:
+      "The API exposes POST /api/v1/staff/validate, accepts istStaffId and ist_staff_id, and the tests validate IST-1001 plus invalid-ID rejection.",
+    nextStep: "Replace mock HRMS records with Oracle Fusion HCM publicWorkers/workers adapter after HR and privacy approval."
+  },
+  {
+    area: "Vital-sign safety floor",
+    verdict: "Correct",
+    evidence:
+      "POST /api/v1/triage/calculate-score applies mandatory RED floors for consciousness, SpO2, respiratory rate, heart rate, and pediatric tachypnea before NEWS2 scoring.",
+    nextStep: "Expand pediatric age bands and validate thresholds with clinical governance before production use."
+  },
+  {
+    area: "SOAP/SBAR completion",
+    verdict: "Correct",
+    evidence:
+      "POST /api/v1/triage/complete returns clipboard text by default and JSON with notePayload/fitToFlyStatus when the caller asks for application/json.",
+    nextStep: "Connect signed clinical note persistence and EMR/FHIR writeback only after retention and writeback policy approval."
+  },
+  {
+    area: "Data ingestion",
+    verdict: "Partially built",
+    evidence:
+      "prisma/seed.ts is typed and ready, but seed execution requires a live PostgreSQL database at DATABASE_URL.",
+    nextStep: "Start/provision PostgreSQL, run migrations, run npm run db:seed, then capture seed evidence in the audit dashboard."
+  },
+  {
+    area: "Python AI safety wrapper",
+    verdict: "Correct",
+    evidence:
+      "python/test_safety_wrapper.py verifies normal HOMECARE pass-through, RED vital downgrade blocking, EMERGENCY severity upgrade, and SQLite audit row creation.",
+    nextStep: "Promote audit storage from local SQLite to the approved production audit datastore."
+  },
+  {
+    area: "Live enterprise integrations",
+    verdict: "Pending production",
+    evidence:
+      "Oracle HCM, EMR, scheduling, Twilio/Graph live transport, insurer verification, transcription, and analytics are documented as adapters, not live production connectors.",
+    nextStep: "Approve secrets, scopes, data residency, service accounts, signed webhooks, and least-privilege policies before enabling live mode."
+  }
+];
+
+const dataConsumptionStrategyCards: DataStrategyCard[] = [
+  {
+    title: "Phase I Inception Baseline",
+    eyebrow: "Open-source standards",
+    icon: Database,
+    status: "Built for MVP validation",
+    body:
+      "The current backend consumes an open-source clinical safety baseline so engineering can test the complete Rules-First, AI-Second workflow before licensed content is introduced.",
+    bullets: [
+      "Adult triage uses WHO Interagency Integrated Triage Tool style red-floor rules: SpO2 below 92%, respiratory rate below 10 or above 30, and heart rate below 60 or above 130 bpm immediately trigger emergency handling.",
+      "Pediatric triage includes WHO ETAT / IMCI style age-specific tachypnea handling. In the current implementation, a child under 5 with respiratory rate 40 or above is routed through the pediatric emergency safety floor.",
+      "NEWS2 is used as the stable-vitals physiological calculator after mandatory red floors are checked."
+    ],
+    formula: "NEWS2 Score = sum(Points(Parameter_i))",
+    link: {
+      href: "#/workspace",
+      label: "Go to Triage Workspace"
+    }
+  },
+  {
+    title: "Phase II Production Migration",
+    eyebrow: "Optional licensed upgrade",
+    icon: GitBranch,
+    status: "Prepared for UAT / Go-Live",
+    body:
+      "The schema keeps clinical content abstract so licensed Schmitt-Thompson After Hours and SymptomScreen data can replace sample content without rewriting the triage workspace.",
+    bullets: [
+      "SchemaCrawler can reverse-engineer licensed MS SQL or Access structures into DBML, which can then be mapped into the Postgres clinical protocol tables.",
+      "The seed/import layer populates Algorithm, TriageQuestion, CareAdvice, QuestionAdviceBridge, localized dispositions, and protocol indexes while the frontend continues calling the same IST APIs.",
+      "Clinical governance can compare schema integrity, safety-floor mappings, and local clinic overrides from the operations and audit dashboard before production activation."
+    ],
+    link: {
+      href: "#/dashboard",
+      label: "View Operations & Audit Dashboard"
+    }
+  }
+];
+
+const aviationDataTableCards: MatrixCard[] = [
+  {
+    title: "Custom Aviation Medical Rules",
+    eyebrow: "Aviation data tables",
+    icon: Route,
+    body:
+      "The platform parses occupational parameters for airport and flight staff, then converts those fields into aviation tags, fit-to-duty controls, and clinician-visible routing evidence.",
+    bullets: [
+      "Fit-to-Fly: active flight deck and cabin crew are marked RESTRICTED when high-acuity symptoms or duty-sensitive symptoms are selected.",
+      "Outstation Validation: station and outstation flags create a teleconsult escalation path and preserve local-care coordination context.",
+      "Sickness Validation: the system compiles standardized medical leave telemetry for nurse review instead of automatically approving leave.",
+      "Vaccine Reactions: post-vaccination fever, rash, swelling, or related symptoms create structured follow-up and duty-rest review, such as ground-duty only until clinical clearance."
+    ],
+    link: {
+      href: "#/workspace",
+      label: "Open Crew Triage Panel"
+    }
+  }
+];
+
+const qatariRoutingMatrixCards: MatrixCard[] = [
+  {
+    title: "Localized Care-Routing Matrix",
+    eyebrow: "Qatari healthcare routing",
+    icon: Hospital,
+    body:
+      "Disposition codes map the clinical safety floor to Qatar-specific healthcare destinations while preserving nurse review and local governance ownership.",
+    bullets: [
+      "Emergency pediatric cases route to Sidra Medicine Emergency Department.",
+      "Emergency adult/general cases route to Hamad Medical Corporation (HMC) Emergency Department.",
+      "Urgent and clinic care can route to PHCC urgent care or IST Medical Centre at the HIA Midfield area depending on severity, staff context, and availability.",
+      "Routine and self-care cases coordinate through registered primary care, callback precautions, and approved care-advice content."
+    ],
+    link: {
+      href: "#/workspace",
+      label: "Review Disposition Rules"
+    }
   }
 ];
 
@@ -400,6 +639,179 @@ const libraryAreas: LibraryArea[] = [
       "Production should replace the mock rules with licensed clinical content or an approved rules service.",
       "Questions are ordered by acuity so emergency rule-out logic appears before lower-acuity advice.",
       "The model supports localized care advice and disposition codes connected to each algorithm."
+    ]
+  },
+  {
+    id: "data-ingestion",
+    title: "Data Ingestion and QA",
+    eyebrow: "Phase I seed and Phase II migration",
+    icon: Database,
+    summary:
+      "Documents how clinical content, aviation tables, local dispositions, mock staff records, and automated QA tests enter and validate the Phase I system.",
+    usedBy: [
+      "prisma/seed.ts",
+      "prisma/schema.prisma",
+      "src/scripts/importClinicalContent.ts",
+      "tests/triage.test.ts",
+      "python/test_safety_wrapper.py"
+    ],
+    details: [
+      "Phase I seeding populates an open-source Acute Chest Pain - Adult protocol, acuity-ordered questions, localized care advice, QuestionAdviceBridge mappings, localized Qatar dispositions, and IST staff/dependent demo records.",
+      "The backend keeps the clinical content shape compatible with a later licensed Schmitt-Thompson After Hours / SymptomScreen import. The clinical workspace continues to call the same API contract after the dataset swap.",
+      "The current test layer validates staff lookup, adult emergency safety floors, pediatric tachypnea routing, stable-vitals NEWS2 calculation, bilingual SBAR generation, fit-to-fly restriction, and Python AI downgrade blocking.",
+      "Seed execution requires a reachable PostgreSQL database and DATABASE_URL. Code-level validation can still run without the database through TypeScript build, Prisma validate, Jest API tests, and Python wrapper tests."
+    ],
+    helps: [
+      {
+        title: "Clinical lineage",
+        body:
+          "Each protocol question can be traced to severity, disposition, rationale, and care advice so clinical governance can review what drove the route."
+      },
+      {
+        title: "Safe dataset swap",
+        body:
+          "Licensed data can be imported into the same relational footprint instead of changing the frontend workflow or nurse-facing screen logic."
+      },
+      {
+        title: "Aviation context",
+        body:
+          "Crew role, duty state, outstation status, sickness request, vaccination timing, and fit-to-fly flags are kept as explicit data rather than hidden prompt text."
+      },
+      {
+        title: "Automated evidence",
+        body:
+          "Jest/Supertest and Python tests make the safety floor, routing, SBAR output, and AI downgrade controls repeatable for release review."
+      }
+    ],
+    exampleFlow: [
+      "Run Prisma migration against the approved PostgreSQL database.",
+      "Run the Phase I seed to load open-source clinical baseline, Qatar dispositions, and IST staff/dependent demo records.",
+      "Run API tests to prove staff validation, adult emergency routing, pediatric emergency routing, stable NEWS2 handling, and SBAR output.",
+      "Run Python safety tests to prove an AI routine or homecare downgrade is blocked when RED vitals are present.",
+      "At UAT or Go-Live, import licensed clinical content into the same schema and rerun the same test suite before activation."
+    ]
+  },
+  {
+    id: "prisma-model",
+    title: "Prisma Data Model",
+    eyebrow: "Relational clinical backbone",
+    icon: Database,
+    summary:
+      "Explains the PostgreSQL model used for clinical algorithms, questions, care advice, staff, dependents, aviation encounters, safety logs, and security administration.",
+    usedBy: ["prisma/schema.prisma", "@prisma/client", "prisma/seed.ts", "src/scripts/importClinicalContent.ts"],
+    details: [
+      "Algorithm, TriageQuestion, CareAdvice, and QuestionAdviceBridge form the clinical protocol footprint prepared for open-source content now and licensed content later.",
+      "StaffMember and Dependent store the enterprise identity context that will eventually come from Oracle Fusion HCM or another approved HRMS adapter.",
+      "AviationTriageEncounter and SafetyAuditDeviationLog preserve the route, score, final disposition, AI recommendation, override rationale, and explainability trace once persistence is approved.",
+      "Security administration models define application users, roles, responsibilities, permissions, access profiles, reveal events, encryption policy metadata, and audit events."
+    ],
+    helps: [
+      {
+        title: "Why it matters",
+        body:
+          "A stable relational footprint lets clinical content change without rebuilding the triage workspace or retraining users."
+      },
+      {
+        title: "Current limitation",
+        body:
+          "The schema is ready, but local seed execution needs PostgreSQL running and the production retention policy must be approved before PHI persistence."
+      }
+    ]
+  },
+  {
+    id: "api-contracts",
+    title: "API Contract Library",
+    eyebrow: "Backend endpoint reference",
+    icon: PlugZap,
+    summary:
+      "Lists the operating API contracts exposed by the backend for staff validation, triage scoring, encounter completion, CCP, auth, and administration.",
+    usedBy: [
+      "src/app.ts",
+      "src/routes/staff.ts",
+      "src/routes/triage.ts",
+      "src/routes/ccp.ts",
+      "src/routes/auth.ts",
+      "src/routes/admin.ts"
+    ],
+    details: [
+      "POST /api/v1/staff/validate validates IST staff IDs and returns the profile, dependents, and a compatibility validated flag.",
+      "POST /api/v1/triage/calculate-score accepts snake_case vital signs and returns score, severity, riskBand, dispositionCode, targetFacilityCode, route rationale, NEWS2 components, and trace.",
+      "POST /api/v1/triage/complete returns text/plain SOAP/SBAR for clipboard or JSON notePayload with fitToFlyStatus when Accept: application/json is used.",
+      "POST /api/v1/triage/encounters/evaluate remains the richer clinical-plus-aviation route-evaluation endpoint used by the workspace.",
+      "CCP endpoints support employee thread lookup, transport status, outbound draft creation, nurse approval, and Twilio webhook ingestion."
+    ],
+    usefulFor: [
+      {
+        title: "Frontend engineers",
+        body: "Know which contracts are stable and which fields are compatibility aliases for tests and downstream integrations."
+      },
+      {
+        title: "Integration teams",
+        body: "Can place Oracle HCM, insurer, EMR, scheduling, Twilio, Graph, and analytics behind adapters without changing the UI contract."
+      }
+    ]
+  },
+  {
+    id: "test-pack",
+    title: "Test and Validation Pack",
+    eyebrow: "Regression evidence",
+    icon: CheckCircle2,
+    summary:
+      "Groups the automated checks that validate Phase I safety behavior after backend, schema, seed, or help-content changes.",
+    usedBy: ["tests/triage.test.ts", "python/test_safety_wrapper.py", "npm test", "npm run typecheck:web", "npm run build:web"],
+    details: [
+      "Jest/Supertest verifies staff validation, invalid staff rejection, adult RED floor, pediatric tachypnea route, stable NEWS2 pass-through, and bilingual SBAR output.",
+      "The Python safety wrapper tests verify that AI HOMECARE passes when vitals are normal and that ROUTINE/HOMECARE downgrades are blocked when RED vitals are present.",
+      "Frontend typecheck and build validate that the Help/Library content compiles and renders with the current React/Tailwind application.",
+      "Prisma validate and generate confirm the schema is syntactically valid and the client reflects the latest model names."
+    ],
+    helps: [
+      {
+        title: "Release gate",
+        body: "A release should not proceed if the RED floor, pediatric routing, SBAR, or AI downgrade tests fail."
+      },
+      {
+        title: "Evidence gap",
+        body: "Database seed execution still requires a live PostgreSQL database, so seed proof should be collected once the database is running."
+      }
+    ]
+  },
+  {
+    id: "content-release",
+    title: "Clinical Content Release Lifecycle",
+    eyebrow: "Open-source to licensed content",
+    icon: GitBranch,
+    summary:
+      "Describes how protocol data moves from Phase I sample content to governed licensed production content without rewriting the nurse workflow.",
+    usedBy: ["ProtocolRelease", "ClinicalContentImportJob", "ClinicalContentImportError", "ClinicalContentSourceType"],
+    details: [
+      "A content release carries source type, version, region, mode, active status, import metadata, and linked algorithms.",
+      "Phase I can load synthetic/open-source sample content for engineering validation while retaining a clear source label.",
+      "Licensed STCC or SymptomScreen imports should use a controlled importer, checksum, row counts, skipped rows, and validation errors.",
+      "Only one approved active clinical content package should drive production triage for a defined mode and region."
+    ],
+    exampleFlow: [
+      "Receive licensed dataset and vendor documentation.",
+      "Reverse-engineer source schema with approved tooling and map into the IST Postgres model.",
+      "Run dry-run import and validate row counts, code mappings, severity floors, and care advice links.",
+      "Run regression tests and clinical governance review.",
+      "Activate the approved release and archive the previous release with audit evidence."
+    ]
+  },
+  {
+    id: "frontend-surfaces",
+    title: "Frontend Workspace Surfaces",
+    eyebrow: "User-facing modules",
+    icon: ClipboardList,
+    summary:
+      "Documents the screens that users see: login, triage workspace, CCP workspace, administration, Help, and Library.",
+    usedBy: ["LoginPage", "TriageWorkspace", "CcpWorkspace", "AdminPortal", "HelpCenter", "App"],
+    details: [
+      "Login uses IST Tech organization context and grouped simulate-role dropdowns for administration, security, governance, business, integration, reporting, and support roles.",
+      "TriageWorkspace is the nurse-facing clinical page for staff/dependent context, symptom capture, rules-first evaluation, SBAR, and CCP launch.",
+      "CcpWorkspace shows one employee communication index with separate visit/call threads, nurse-approved outbound drafts, and transport status.",
+      "AdminPortal exposes role-aware security, privacy, access, SSO, encryption, reveal, and audit panels.",
+      "Help now explains operational guidance, while Library acts as the technical/reference catalogue."
     ]
   },
   {
@@ -690,7 +1102,7 @@ const dispositionRoutes: DispositionRouteDetail[] = [
     facility: careFacilities.hmcUrgent
   },
   {
-    code: "QA_HIA_GROUP_MEDICAL_CENTRE",
+    code: "IST_HIA_MIDFIELD_MEDICAL_CENTRE",
     destination: "IST Tech Medical Centre - HIA",
     severityBand: "IST Tech staff pathway",
     trigger: "Fit-to-fly, sickness, or staff pathway",
@@ -709,7 +1121,7 @@ const dispositionRoutes: DispositionRouteDetail[] = [
     facility: careFacilities.qaHiaMedical
   },
   {
-    code: "QA_OLD_AIRPORT_MEDICAL_COMMISSION",
+    code: "IST_OLD_AIRPORT_MEDICAL_COMMISSION",
     destination: "IST Tech Medical - Old Airport medical commission",
     severityBand: "Occupational / commission",
     trigger: "Occupational or commission visit",
@@ -728,7 +1140,7 @@ const dispositionRoutes: DispositionRouteDetail[] = [
     facility: careFacilities.qaOldAirportMedical
   },
   {
-    code: "PHCC_URGENT_CARE_OR_QA_TELECONSULT",
+    code: "PHCC_URGENT_CARE_OR_TELECONSULT",
     destination: "PHCC Urgent Care or IST Tech teleconsult",
     severityBand: "Routine",
     trigger: "Routine staff pathway",
@@ -747,7 +1159,7 @@ const dispositionRoutes: DispositionRouteDetail[] = [
     facility: careFacilities.phccUrgentCare
   },
   {
-    code: "QA_OUTSTATION_TELECONSULT_ESCALATION",
+    code: "OUTSTATION_TELECONSULT_ESCALATION",
     destination: "IST Tech medical teleconsult escalation",
     severityBand: "Outstation urgent coordination",
     trigger: "Outstation clinical coordination",
@@ -1378,7 +1790,7 @@ const securityAdminApiRows: ApiCatalogRow[] = [
 ];
 
 export default function HelpCenter() {
-  const [activeTab, setActiveTab] = useState<TabKey>("overview");
+  const [activeTab, setActiveTab] = useState<TabKey>("help");
   const [selectedAreaId, setSelectedAreaId] = useState(libraryAreas[0].id);
 
   const selectedArea = useMemo(
@@ -1386,16 +1798,34 @@ export default function HelpCenter() {
     [selectedAreaId]
   );
 
+  useEffect(() => {
+    function syncTabFromHash() {
+      const target = window.location.hash.replace(/^#\/?/, "").split("?")[0].toLowerCase();
+      if (tabs.some((tab) => tab.key === target)) {
+        setActiveTab(target as TabKey);
+      }
+    }
+
+    syncTabFromHash();
+    window.addEventListener("hashchange", syncTabFromHash);
+    return () => window.removeEventListener("hashchange", syncTabFromHash);
+  }, []);
+
+  function openLibraryTopic(areaId: string) {
+    setSelectedAreaId(areaId);
+    setActiveTab("library");
+  }
+
   return (
     <div className="help-library-shell">
       <section className="help-library-hero">
         <div>
-          <span className="tag-label">CONNECTED HELP LIBRARY</span>
-          <h2>IST Tele-Triage Knowledge Base</h2>
+          <span className="tag-label">CONNECTED HELP CENTER</span>
+          <h2>IST Help Center and Clinical Library</h2>
           <p>
-            A comprehensive operating guide for the clinical decision support system: what data it
-            uses, how it applies rules, where AI is constrained, how Qatar-specific routing works,
-            and what must be governed before production deployment.
+            Help is the operating guide for people using the system. Library is the technical and
+            clinical reference catalogue for the data model, APIs, routes, tests, integrations, and
+            governance evidence behind the system.
           </p>
         </div>
         <div className="help-stat-grid">
@@ -1429,6 +1859,12 @@ export default function HelpCenter() {
         })}
       </div>
 
+      {activeTab === "help" && (
+        <HelpManualPanel
+          onOpenLibraryTopic={openLibraryTopic}
+          onOpenTab={setActiveTab}
+        />
+      )}
       {activeTab === "overview" && <OverviewPanel />}
       {activeTab === "workflow" && <WorkflowPanel />}
       {activeTab === "library" && (
@@ -1446,12 +1882,185 @@ export default function HelpCenter() {
   );
 }
 
+function HelpManualPanel({
+  onOpenLibraryTopic,
+  onOpenTab
+}: {
+  onOpenLibraryTopic: (areaId: string) => void;
+  onOpenTab: (tab: TabKey) => void;
+}) {
+  return (
+    <section className="help-stack">
+      <article className="help-card help-card-wide">
+        <div className="help-card-heading">
+          <span className="help-icon">
+            <HelpCircle className="h-5 w-5" />
+          </span>
+          <div>
+            <span className="tag-label">HELP SECTION</span>
+            <h3 className="help-title">How to use and validate the system</h3>
+            <p>
+              This is the human operating guide. It explains what each role should do, what has
+              been validated in code, what remains a production dependency, and where to go next
+              inside the system.
+            </p>
+          </div>
+        </div>
+
+        <div className="help-chip-row">
+          <button type="button" className="secondary-button" onClick={() => onOpenTab("workflow")}>
+            <Workflow className="h-4 w-4" />
+            Call flow
+          </button>
+          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("data-ingestion")}>
+            <Database className="h-4 w-4" />
+            Data ingestion library
+          </button>
+          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("api-contracts")}>
+            <PlugZap className="h-4 w-4" />
+            API contracts
+          </button>
+          <button type="button" className="secondary-button" onClick={() => onOpenTab("qatar")}>
+            <MapPin className="h-4 w-4" />
+            Qatar routing
+          </button>
+          <button type="button" className="secondary-button" onClick={() => onOpenTab("security")}>
+            <LockKeyhole className="h-4 w-4" />
+            Security admin
+          </button>
+        </div>
+      </article>
+
+      <div className="help-grid">
+        {helpGuides.map((guide) => {
+          const GuideIcon = guide.icon;
+          return (
+            <article key={guide.title} className="help-card">
+              <div className="help-card-heading">
+                <span className="help-icon">
+                  <GuideIcon className="h-5 w-5" />
+                </span>
+                <div>
+                  <span className="tag-label">{guide.eyebrow}</span>
+                  <h3 className="help-title">{guide.title}</h3>
+                  <p>{guide.goal}</p>
+                </div>
+              </div>
+              <div className="help-detail-expanded">
+                <h4>Audience</h4>
+                <p>{guide.audience}</p>
+              </div>
+              <RouteDetailList title="What to do" items={guide.steps} />
+              <div className="help-route-governance">
+                <h4>Safety note</h4>
+                <p>{guide.safety}</p>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <article className="help-card help-card-wide">
+        <div className="help-card-heading">
+          <span className="help-icon">
+            <CheckCircle2 className="h-5 w-5" />
+          </span>
+          <div>
+            <span className="tag-label">CODE AND HELP VALIDATION</span>
+            <h3 className="help-title">What is correct, partial, and pending</h3>
+            <p>
+              This review is based on the current code paths, tests, schema, seed script, and Help
+              text. It separates validated MVP behavior from production dependencies.
+            </p>
+          </div>
+        </div>
+
+        <div className="help-integration-table">
+          {validationReviewItems.map((item) => (
+            <div key={item.area} className="help-integration-row">
+              <strong>{item.area}</strong>
+              <span>{item.evidence}</span>
+              <small>{item.nextStep}</small>
+              <em
+                className={
+                  item.verdict === "Correct"
+                    ? "status-pill border border-emerald-200 bg-emerald-50 text-emerald-700"
+                    : item.verdict === "Partially built"
+                      ? "status-pill border border-amber-200 bg-amber-50 text-amber-700"
+                      : "status-pill border border-rose-200 bg-rose-50 text-rose-600"
+                }
+              >
+                {item.verdict}
+              </em>
+            </div>
+          ))}
+        </div>
+      </article>
+
+      <article className="help-card help-card-wide">
+        <div className="help-card-heading">
+          <span className="help-icon">
+            <BookOpen className="h-5 w-5" />
+          </span>
+          <div>
+            <span className="tag-label">HELP VS LIBRARY</span>
+            <h3 className="help-title">Separated structure</h3>
+            <p>
+              Use Help when the question is, “What should I do?” Use Library when the question is,
+              “What system object, API, table, rule, adapter, or evidence supports this?”
+            </p>
+          </div>
+        </div>
+        <div className="help-compare-grid">
+          <MiniDefinition
+            label="Help"
+            body="Role-based instructions, operating flow, validation status, safe-use warnings, and next actions for nurses, governance, security, and integration teams."
+          />
+          <MiniDefinition
+            label="Library"
+            body="Reference catalogue for clinical content, APIs, data ingestion, Prisma schema, tests, Qatar routing, CCP, security administration, and integrations."
+          />
+          <MiniDefinition
+            label="Governance"
+            body="Cross-cutting production controls for clinical approval, privacy law alignment, audit evidence, and release readiness."
+          />
+          <MiniDefinition
+            label="Qatar Model"
+            body="Localized route matrix and aviation-specific operational rules for Sidra, HMC, PHCC, IST medical routes, outstation review, and self-care."
+          />
+        </div>
+      </article>
+    </section>
+  );
+}
+
 function OverviewPanel() {
   return (
     <section className="help-grid">
       {systemCards.map((card) => (
         <HelpCard key={card.title} title={card.title} body={card.body} icon={card.icon} />
       ))}
+      <article className="help-card help-card-wide">
+        <div className="help-card-heading">
+          <span className="help-icon">
+            <Database className="h-5 w-5" />
+          </span>
+          <div>
+            <span className="tag-label">DATA CONSUMPTION STRATEGY</span>
+            <h3 className="help-title">Clinical data ingestion and migration model</h3>
+            <p>
+              The help library now shows the two ingestion strategies behind the recent Phase I
+              backend work: open-source clinical standards for MVP validation, and a controlled
+              licensed-content migration path for UAT or Go-Live.
+            </p>
+          </div>
+        </div>
+        <div className="help-compare-grid">
+          {dataConsumptionStrategyCards.map((card) => (
+            <DataStrategyHelpCard key={card.title} card={card} />
+          ))}
+        </div>
+      </article>
       <article className="help-card help-card-wide">
         <div className="help-card-heading">
           <span className="help-icon">
@@ -1693,6 +2302,15 @@ function QatarPanel() {
           body="For the IST Tech organization context, the RFI requires outstation validation, fit-to-fly review, sickness validation, vaccination reactions, occupational health, mental health triage, travel-related presentations, and staff/dependent workflows."
           icon={Route}
         />
+      </div>
+
+      <div className="help-grid">
+        {aviationDataTableCards.map((card) => (
+          <MatrixHelpCard key={card.title} card={card} />
+        ))}
+        {qatariRoutingMatrixCards.map((card) => (
+          <MatrixHelpCard key={card.title} card={card} />
+        ))}
       </div>
 
       <article className="help-card">
@@ -2046,6 +2664,66 @@ function SecurityDetailList({ title, items }: { title: string; items: string[] }
         ))}
       </ul>
     </div>
+  );
+}
+
+function DataStrategyHelpCard({ card }: { card: DataStrategyCard }) {
+  const Icon = card.icon;
+
+  return (
+    <div className="help-mini-definition">
+      <span className="status-pill border border-emerald-200 bg-emerald-50 text-emerald-700">
+        {card.eyebrow}
+      </span>
+      <div className="help-card-heading">
+        <span className="help-icon">
+          <Icon className="h-4 w-4" />
+        </span>
+        <div>
+          <strong>{card.title}</strong>
+          <span>{card.body}</span>
+        </div>
+      </div>
+      <ul className="help-bullet-list">
+        {card.bullets.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+      {card.formula && <code className="help-inline-code">{card.formula}</code>}
+      <a href={card.link.href} className="text-emerald-600 font-semibold hover:underline">
+        <ExternalLink className="inline h-3.5 w-3.5" />
+        <span> {card.link.label}</span>
+      </a>
+      <small className="text-emerald-700">{card.status}</small>
+    </div>
+  );
+}
+
+function MatrixHelpCard({ card }: { card: MatrixCard }) {
+  const Icon = card.icon;
+
+  return (
+    <article className="help-card">
+      <div className="help-card-heading">
+        <span className="help-icon">
+          <Icon className="h-5 w-5" />
+        </span>
+        <div>
+          <span className="tag-label">{card.eyebrow}</span>
+          <h3 className="help-title">{card.title}</h3>
+          <p>{card.body}</p>
+        </div>
+      </div>
+      <ul className="help-bullet-list">
+        {card.bullets.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+      <a href={card.link.href} className="text-emerald-600 font-semibold hover:underline">
+        <ExternalLink className="inline h-3.5 w-3.5" />
+        <span> {card.link.label}</span>
+      </a>
+    </article>
   );
 }
 

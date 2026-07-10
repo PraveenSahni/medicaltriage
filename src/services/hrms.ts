@@ -3,6 +3,24 @@ import type { StaffProfile, StaffValidationResult } from "../types/triage.js";
 // Mock directory adapter. The production target is an Oracle Fusion HCM adapter;
 // keep this response shape stable for the triage API.
 const staffDirectory: Record<string, StaffProfile> = {
+  "IST-1001": {
+    id: "staff_ist_1001",
+    istStaffId: "IST-1001",
+    department: "Flight Operations",
+    jobTitle: "Pilot",
+    dutyStatus: "active",
+    insuranceProvider: "IST Staff Health Plan",
+    insuranceEligibilityStatus: "eligible",
+    insuranceLastChecked: "2026-07-01T08:00:00.000Z",
+    dependents: [
+      {
+        id: "dep_ist_1001_child_01",
+        relationshipType: "child",
+        age: 6,
+        biologicalSex: "female"
+      }
+    ]
+  },
   "IST-10001": {
     id: "staff_demo_10001",
     istStaffId: "IST-10001",
@@ -21,6 +39,17 @@ const staffDirectory: Record<string, StaffProfile> = {
       }
     ]
   },
+  "IST-2002": {
+    id: "staff_ist_2002",
+    istStaffId: "IST-2002",
+    department: "Cabin Services",
+    jobTitle: "Cabin Crew",
+    dutyStatus: "active",
+    insuranceProvider: "IST Staff Health Plan",
+    insuranceEligibilityStatus: "eligible",
+    insuranceLastChecked: "2026-07-01T08:00:00.000Z",
+    dependents: []
+  },
   "IST-20002": {
     id: "staff_demo_20002",
     istStaffId: "IST-20002",
@@ -30,6 +59,17 @@ const staffDirectory: Record<string, StaffProfile> = {
     insuranceProvider: "IST Staff Health Plan",
     insuranceEligibilityStatus: "pending-verification",
     insuranceLastChecked: "2026-06-20T08:00:00.000Z",
+    dependents: []
+  },
+  "IST-3003": {
+    id: "staff_ist_3003",
+    istStaffId: "IST-3003",
+    department: "Airport Operations",
+    jobTitle: "Operations Specialist",
+    dutyStatus: "active",
+    insuranceProvider: "IST Staff Health Plan",
+    insuranceEligibilityStatus: "eligible",
+    insuranceLastChecked: "2026-07-01T08:00:00.000Z",
     dependents: []
   }
 };

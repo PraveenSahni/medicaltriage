@@ -22,9 +22,18 @@ export const DispositionCodeSchema = z.enum([
 ]);
 export type DispositionCode = z.infer<typeof DispositionCodeSchema>;
 
-export const StaffValidateRequestSchema = z.object({
-  istStaffId: z.string().min(3).max(64)
-});
+export const StaffValidateRequestSchema = z
+  .object({
+    istStaffId: z.string().min(3).max(64).optional(),
+    ist_staff_id: z.string().min(3).max(64).optional()
+  })
+  .transform((value) => ({
+    istStaffId: value.istStaffId ?? value.ist_staff_id ?? ""
+  }))
+  .refine((value) => value.istStaffId.length >= 3, {
+    message: "ist_staff_id is required",
+    path: ["ist_staff_id"]
+  });
 export type StaffValidateRequest = z.infer<typeof StaffValidateRequestSchema>;
 
 export const TriageStartRequestSchema = z.object({
@@ -68,6 +77,88 @@ export const TriageEvaluationRequestSchema = z.object({
   }).default({})
 });
 export type TriageEvaluationRequest = z.infer<typeof TriageEvaluationRequestSchema>;
+
+const ConsciousLevelSchema = z
+  .preprocess((value) => String(value ?? "").trim().toLowerCase(), z.enum([
+    "a",
+    "alert",
+    "v",
+    "voice",
+    "p",
+    "pain",
+    "u",
+    "unresponsive"
+  ]))
+  .transform((value) => {
+    if (value === "a" || value === "alert") {
+      return "alert" as const;
+    }
+    if (value === "v" || value === "voice") {
+      return "voice" as const;
+    }
+    if (value === "p" || value === "pain") {
+      return "pain" as const;
+    }
+    return "unresponsive" as const;
+  });
+
+export const TriageCalculateScoreRequestSchema = z
+  .object({
+    heart_rate: z.coerce.number().int().min(20).max(260),
+    respiratory_rate: z.coerce.number().int().min(1).max(80),
+    spo2: z.coerce.number().min(40).max(100),
+    temperature: z.coerce.number().min(30).max(45),
+    conscious_level: ConsciousLevelSchema,
+    age_years: z.coerce.number().int().min(0).max(120).optional(),
+    patient_age_years: z.coerce.number().int().min(0).max(120).optional()
+  })
+  .transform((value) => ({
+    heartRate: value.heart_rate,
+    respiratoryRate: value.respiratory_rate,
+    spo2: value.spo2,
+    temperatureC: value.temperature,
+    consciousLevel: value.conscious_level,
+    ageYears: value.age_years ?? value.patient_age_years
+  }));
+export type TriageCalculateScoreRequest = z.infer<typeof TriageCalculateScoreRequestSchema>;
+
+export const TriageCompleteRequestSchema = z
+  .object({
+    encounter_id: z.string().max(120).optional(),
+    ist_staff_id: z.string().min(3).max(64).optional(),
+    istStaffId: z.string().min(3).max(64).optional(),
+    patient_name: z.string().max(160).optional(),
+    patient_age_years: z.coerce.number().int().min(0).max(120).optional(),
+    nurse_id: z.string().max(64).optional(),
+    chief_complaint: z.string().min(1).max(240),
+    subjective: z.string().max(2000).optional(),
+    objective: z.string().max(2000).optional(),
+    assessment: z.string().max(2000).optional(),
+    recommendation: z.string().max(2000).optional(),
+    final_disposition_code: z.string().min(1).max(120),
+    routing_destination: z.string().min(1).max(240),
+    safety_rationale: z.string().max(2000).optional(),
+    vitals: TriageCalculateScoreRequestSchema.optional(),
+    custom_aviation_tags: z.array(z.string().min(1).max(80)).default([])
+  })
+  .transform((value) => ({
+    encounterId: value.encounter_id,
+    istStaffId: value.istStaffId ?? value.ist_staff_id,
+    patientName: value.patient_name,
+    patientAgeYears: value.patient_age_years,
+    nurseId: value.nurse_id,
+    chiefComplaint: value.chief_complaint,
+    subjective: value.subjective,
+    objective: value.objective,
+    assessment: value.assessment,
+    recommendation: value.recommendation,
+    finalDispositionCode: value.final_disposition_code,
+    routingDestination: value.routing_destination,
+    safetyRationale: value.safety_rationale,
+    vitals: value.vitals,
+    customAviationTags: value.custom_aviation_tags
+  }));
+export type TriageCompleteRequest = z.infer<typeof TriageCompleteRequestSchema>;
 
 export type DependentProfile = {
   id: string;

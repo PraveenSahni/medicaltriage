@@ -146,7 +146,7 @@ model TriageQuestion {
   rationaleEn           String?               @map("rationale_en")
   redFlag               Boolean               @default(false) @map("red_flag")
   branching             Json?                 @map("branching")
-  careAdviceLinks        TriageQuestionCareAdvice[]
+  careAdviceLinks        QuestionAdviceBridge[]
   createdAt             DateTime              @default(now()) @map("created_at")
   updatedAt             DateTime              @updatedAt @map("updated_at")
 
@@ -165,7 +165,7 @@ model CareAdvice {
   dispositionCode   AcuityDispositionCode? @map("disposition_code")
   warningSigns      Json?                 @map("warning_signs")
   algorithmLinks    AlgorithmCareAdvice[]
-  questionLinks     TriageQuestionCareAdvice[]
+  questionLinks     QuestionAdviceBridge[]
   createdAt         DateTime              @default(now()) @map("created_at")
   updatedAt         DateTime              @updatedAt @map("updated_at")
 
@@ -182,15 +182,19 @@ model AlgorithmCareAdvice {
   @@map("algorithm_care_advice")
 }
 
-model TriageQuestionCareAdvice {
+/// Bridge between a positive triage question and targeted care advice.
+/// This is intentionally named close to the Phase I manual's
+/// Question_Advice_Bridge contract so licensed STCC/Schmitt-Thompson imports can
+/// map the same relationship without touching backend triage logic.
+model QuestionAdviceBridge {
   questionId   String         @map("question_id")
-  careAdviceId String         @map("care_advice_id")
+  adviceId     String         @map("advice_id")
   triggerAnswer String        @default("YES") @map("trigger_answer")
   question     TriageQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  careAdvice   CareAdvice     @relation(fields: [careAdviceId], references: [id], onDelete: Cascade)
+  advice       CareAdvice     @relation(fields: [adviceId], references: [id], onDelete: Cascade)
 
-  @@id([questionId, careAdviceId, triggerAnswer])
-  @@map("triage_question_care_advice")
+  @@id([questionId, adviceId, triggerAnswer])
+  @@map("question_advice_bridge")
 }
 
 model ProtocolKeywordIndex {
@@ -318,7 +322,7 @@ model Dependent {
   staffMemberId   String                  @map("staff_member_id")
   staffMember     StaffMember             @relation(fields: [staffMemberId], references: [id], onDelete: Cascade)
   fullName        String                  @map("full_name")
-  relationshipType DependentRelationship  @map("relationship_type")
+  relationshipType DependentRelationship  @map("relationship")
   age             Int
   biologicalSex   BiologicalSex           @map("biological_sex")
   encounters      AviationTriageEncounter[]
@@ -337,7 +341,7 @@ model AviationTriageEncounter {
   dependent               Dependent?              @relation(fields: [dependentId], references: [id], onDelete: SetNull)
   protocolUsedId          String?                 @map("protocol_used_id")
   protocolUsed            Algorithm?              @relation(fields: [protocolUsedId], references: [id], onDelete: SetNull)
-  initialAcuityScore      TriageSeverity          @map("initial_acuity_score")
+  initialAcuityScore      Int                     @map("initial_acuity_score")
   finalDispositionCode    AcuityDispositionCode   @map("final_disposition_code")
   audioRecordingUrl       String?                 @map("audio_recording_url")
   transcriptText          String?                 @map("transcript_text")
@@ -348,7 +352,7 @@ model AviationTriageEncounter {
   completedAt             DateTime?               @map("completed_at")
   createdAt               DateTime                @default(now()) @map("created_at")
   updatedAt               DateTime                @updatedAt @map("updated_at")
-  safetyAuditLogs         SafetyAuditDeviationLog[]
+  safetyLog               SafetyAuditDeviationLog?
 
   @@index([staffMemberId, createdAt])
   @@index([finalDispositionCode])
@@ -357,7 +361,7 @@ model AviationTriageEncounter {
 
 model SafetyAuditDeviationLog {
   id                       String             @id @default(cuid())
-  encounterId               String             @map("encounter_id")
+  encounterId               String             @unique @map("encounter_id")
   encounter                 AviationTriageEncounter @relation(fields: [encounterId], references: [id], onDelete: Cascade)
   originalAiRecommendation  String             @map("original_ai_recommendation")
   nurseOverrideRationale    String?            @map("nurse_override_rationale")
@@ -366,7 +370,6 @@ model SafetyAuditDeviationLog {
   explainabilityTrace       Json               @map("explainability_trace")
   createdAt                 DateTime           @default(now()) @map("created_at")
 
-  @@index([encounterId])
   @@index([overrideStatusFlag, createdAt])
   @@map("safety_audit_deviation_logs")
 }

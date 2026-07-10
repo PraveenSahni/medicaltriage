@@ -121,11 +121,11 @@ export default function App() {
 
     if (activeView === "help") {
       return {
-        eyebrow: "INTERCONNECTED HELP",
-        title: "Help & Library",
-        subtitle: "Connected operating guide for clinical workflow, content library, integrations, safety controls, and localized routing.",
-        metric: "9",
-        metricLabel: "CONNECTED AREAS"
+        eyebrow: "HELP CENTER",
+        title: "Help Center",
+        subtitle: "Separated operating help and technical library for clinical workflow, data ingestion, integrations, safety controls, and localized routing.",
+        metric: "10",
+        metricLabel: "HELP AREAS"
       };
     }
 
@@ -167,6 +167,39 @@ export default function App() {
 
   const hasAdminAccess = session ? canOpenAdminView(session.permissions) : false;
   const activeRoleLabel = session ? formatRole(session.activeRole) : "";
+
+  useEffect(() => {
+    if (!session) {
+      return;
+    }
+
+    function syncViewFromHash() {
+      const target = window.location.hash.replace(/^#\/?/, "").split("?")[0].toLowerCase();
+
+      if (target === "workspace" || target === "triage") {
+        setActiveView("workspace");
+        return;
+      }
+
+      if (target === "ccp") {
+        setActiveView("ccp");
+        return;
+      }
+
+      if (["help", "library", "qatar", "integration", "governance", "security"].includes(target)) {
+        setActiveView("help");
+        return;
+      }
+
+      if ((target === "admin" || target === "dashboard") && hasAdminAccess) {
+        setActiveView("admin");
+      }
+    }
+
+    syncViewFromHash();
+    window.addEventListener("hashchange", syncViewFromHash);
+    return () => window.removeEventListener("hashchange", syncViewFromHash);
+  }, [hasAdminAccess, session]);
 
   async function logout() {
     await fetch(`${apiBase}/api/v1/auth/logout`, { method: "POST", credentials: "include" });

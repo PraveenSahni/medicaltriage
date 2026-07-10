@@ -12,9 +12,11 @@ export function createStaffRouter(): Router {
     }
 
     const result = await validateStaffMember(parsed.data.istStaffId);
-    return res.status(result.valid ? 200 : 404).json(result);
+    return res.status(result.valid ? 200 : 404).json({
+      ...result,
+      validated: result.valid
+    });
   });
 
   return router;
 }
-

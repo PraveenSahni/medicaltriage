@@ -25,6 +25,159 @@ SEVERITY_RANK = {
     "Emergency": 4,
 }
 
+DOWNGRADE_DISPOSITIONS = {"URGENT", "ROUTINE", "HOMECARE"}
+
+
+def _number_from(vitals: dict[str, Any], *keys: str) -> float | None:
+    """Safely read a numeric vital from snake_case or camelCase payloads."""
+    for key in keys:
+        if key in vitals and vitals[key] is not None:
+            try:
+                return float(vitals[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"patient_vitals.{key} must be numeric") from exc
+    return None
+
+
+def _conscious_level(vitals: dict[str, Any]) -> str:
+    return str(vitals.get("conscious_level") or vitals.get("consciousLevel") or "alert").strip().lower()
+
+
+def _red_vital_reasons(patient_vitals: dict[str, Any]) -> list[str]:
+    """Return deterministic RED floor reasons from the Phase I vital-sign policy."""
+    spo2 = _number_from(patient_vitals, "spo2", "oxygen_saturation", "oxygenSaturation")
+    heart_rate = _number_from(patient_vitals, "heart_rate", "heartRate")
+    respiratory_rate = _number_from(patient_vitals, "respiratory_rate", "respiratoryRate")
+    conscious_level = _conscious_level(patient_vitals)
+    reasons: list[str] = []
+
+    if conscious_level not in {"a", "alert"}:
+        reasons.append("Conscious level is not Alert.")
+    if spo2 is not None and spo2 < 92:
+        reasons.append("SpO2 is below 92%.")
+    if heart_rate is not None and (heart_rate < 60 or heart_rate > 130):
+        reasons.append("Heart rate is outside 60-130 bpm.")
+    if respiratory_rate is not None and (respiratory_rate < 10 or respiratory_rate > 30):
+        reasons.append("Respiratory rate is outside 10-30 breaths/minute.")
+
+    return reasons
+
+
+def _final_severity_for_disposition(disposition: str) -> str:
+    if disposition in {"RED_ALERT", "EMERGENCY"}:
+        return "EMERGENCY"
+    if disposition == "URGENT":
+        return "URGENT"
+    if disposition == "ROUTINE":
+        return "ROUTINE"
+    if disposition == "HOMECARE":
+        return "HOMECARE"
+    return "UNKNOWN"
+
+
+def save_recommendation_audit(
+    db_path: Path,
+    patient_vitals: dict[str, Any],
+    ai_suggested_disposition: str,
+    result: dict[str, Any],
+) -> None:
+    """Persist AI recommendation safety-gate evidence for audit review."""
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(db_path)
+    try:
+        ensure_schema(conn)
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS ai_recommendation_safety_audit (
+                id TEXT PRIMARY KEY,
+                override_triggered INTEGER NOT NULL,
+                ai_suggested_disposition TEXT NOT NULL,
+                final_disposition TEXT NOT NULL,
+                final_severity TEXT NOT NULL,
+                rationale TEXT NOT NULL,
+                patient_vitals_json TEXT NOT NULL,
+                red_floor_reasons_json TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
+        conn.execute(
+            """
+            INSERT INTO ai_recommendation_safety_audit (
+                id,
+                override_triggered,
+                ai_suggested_disposition,
+                final_disposition,
+                final_severity,
+                rationale,
+                patient_vitals_json,
+                red_floor_reasons_json,
+                created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                str(uuid.uuid4()),
+                1 if result["override_triggered"] else 0,
+                str(ai_suggested_disposition or "").strip().upper(),
+                result["final_disposition"],
+                result["final_severity"],
+                result["rationale"],
+                json.dumps(patient_vitals, ensure_ascii=False, sort_keys=True),
+                json.dumps(result["red_floor_reasons"], ensure_ascii=False, sort_keys=True),
+                datetime.now(timezone.utc).isoformat(),
+            ),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def evaluate_ai_recommendation(
+    patient_vitals: dict[str, Any],
+    ai_suggested_disposition: str,
+    audit_db_path: str | Path | None = None,
+) -> dict[str, Any]:
+    """Validate an AI copilot disposition against deterministic vital-sign floors.
+
+    AI is allowed to explain or summarize, but it is never allowed to downgrade a
+    RED clinical floor. When any RED vital is present and the AI recommends a
+    lower-severity disposition, the wrapper forces RED_ALERT and returns a
+    machine-readable audit payload.
+    """
+    if not isinstance(patient_vitals, dict):
+        raise ValueError("patient_vitals must be a JSON object")
+
+    suggested = str(ai_suggested_disposition or "").strip().upper()
+    red_reasons = _red_vital_reasons(patient_vitals)
+    downgrade_attempted = suggested in DOWNGRADE_DISPOSITIONS
+
+    if red_reasons and downgrade_attempted:
+        result = {
+            "override_triggered": True,
+            "final_disposition": "RED_ALERT",
+            "final_severity": "EMERGENCY",
+            "rationale": "Clinical safety floor rule violated. Mandatory escalation triggered.",
+            "red_floor_reasons": red_reasons,
+            "ai_suggested_disposition": suggested,
+        }
+        if audit_db_path is not None:
+            save_recommendation_audit(Path(audit_db_path), patient_vitals, ai_suggested_disposition, result)
+        return result
+
+    final_disposition = suggested or "UNKNOWN"
+    result = {
+        "override_triggered": False,
+        "final_disposition": final_disposition,
+        "final_severity": _final_severity_for_disposition(final_disposition),
+        "rationale": "No clinical safety floor override was required.",
+        "red_floor_reasons": red_reasons,
+        "ai_suggested_disposition": suggested,
+    }
+    if audit_db_path is not None:
+        save_recommendation_audit(Path(audit_db_path), patient_vitals, ai_suggested_disposition, result)
+    return result
+
 
 @dataclass(frozen=True)
 class RuleHit:
@@ -196,7 +349,8 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
 
 def save_audit(db_path: Path, payload: dict[str, Any], result: dict[str, Any]) -> None:
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(db_path) as conn:
+    conn = sqlite3.connect(db_path)
+    try:
         ensure_schema(conn)
         conn.execute(
             """
@@ -228,6 +382,8 @@ def save_audit(db_path: Path, payload: dict[str, Any], result: dict[str, Any]) -
             ),
         )
         conn.commit()
+    finally:
+        conn.close()
 
 
 def load_payload(args: argparse.Namespace) -> dict[str, Any]:
@@ -238,14 +394,61 @@ def load_payload(args: argparse.Namespace) -> dict[str, Any]:
     return json.loads(sys.stdin.read())
 
 
+def run_self_tests() -> None:
+    """Run the two Phase I safety assertions required by the backend manual."""
+    normal_result = evaluate_ai_recommendation(
+        {
+            "heart_rate": 82,
+            "respiratory_rate": 16,
+            "spo2": 98,
+            "temperature": 36.8,
+            "conscious_level": "alert",
+        },
+        "HOMECARE",
+    )
+    assert normal_result["override_triggered"] is False
+    assert normal_result["final_disposition"] == "HOMECARE"
+
+    red_result = evaluate_ai_recommendation(
+        {
+            "heart_rate": 145,
+            "respiratory_rate": 18,
+            "spo2": 97,
+            "temperature": 37.0,
+            "conscious_level": "alert",
+        },
+        "ROUTINE",
+    )
+    assert red_result["override_triggered"] is True
+    assert red_result["final_disposition"] == "RED_ALERT"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="IST Qatar AI copilot safety wrapper")
     parser.add_argument("--payload-file", help="Path to a JSON payload file")
     parser.add_argument("--payload", help="Inline JSON payload")
     parser.add_argument("--db", default="python/audit.sqlite3", help="SQLite audit log path")
+    parser.add_argument("--self-test", action="store_true", help="Run Phase I safety assertions and exit")
     args = parser.parse_args()
 
+    if args.self_test:
+        run_self_tests()
+        print(json.dumps({"self_test": "passed"}, indent=2, sort_keys=True))
+        return 0
+
     payload = load_payload(args)
+
+    if "patient_vitals" in payload and "ai_suggested_disposition" in payload:
+        print(
+            json.dumps(
+                evaluate_ai_recommendation(payload["patient_vitals"], payload["ai_suggested_disposition"]),
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 0
+
     result = evaluate_payload(payload)
     save_audit(Path(args.db), payload, result)
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
@@ -254,4 +457,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
