@@ -54,8 +54,12 @@ export function createCcpRouter(): Router {
     return res.json(getCcpCommunicationStatus());
   });
 
-  router.get("/messages/drafts", (_req, res) => {
-    return res.json({ drafts: listCcpOutboundDrafts() });
+  router.get("/messages/drafts", async (_req, res, next) => {
+    try {
+      return res.json({ drafts: await listCcpOutboundDrafts() });
+    } catch (error) {
+      return next(error);
+    }
   });
 
   router.post("/messages/draft", async (req, res) => {
@@ -105,8 +109,12 @@ export function createCcpRouter(): Router {
     }
   });
 
-  router.get("/webhooks/inbound-records", (_req, res) => {
-    return res.json({ records: listInboundWebhookRecords() });
+  router.get("/webhooks/inbound-records", async (_req, res, next) => {
+    try {
+      return res.json({ records: await listInboundWebhookRecords() });
+    } catch (error) {
+      return next(error);
+    }
   });
 
   router.get("/employee/:istStaffId", async (req, res) => {

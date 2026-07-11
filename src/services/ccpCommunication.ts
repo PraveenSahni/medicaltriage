@@ -14,6 +14,13 @@ import type {
   CcpSendResult,
   InboundWebhookRecord
 } from "../types/communication.js";
+import {
+  getPersistedCcpOutboundDraft,
+  listPersistedCcpOutboundDrafts,
+  listPersistedInboundWebhookRecords,
+  persistCcpOutboundDraft,
+  persistInboundWebhookRecord
+} from "./persistence.js";
 
 export class CcpCommunicationError extends Error {
   constructor(
@@ -126,8 +133,17 @@ async function sendApprovedDraft(draft: CcpOutboundDraft): Promise<CcpOutboundDr
     sendResult
   };
 
-  outboundDrafts.set(updated.id, updated);
+  await storeDraft(updated);
   return updated;
+}
+
+async function storeDraft(draft: CcpOutboundDraft): Promise<void> {
+  outboundDrafts.set(draft.id, draft);
+  await persistCcpOutboundDraft(draft);
+}
+
+async function findDraft(draftId: string): Promise<CcpOutboundDraft | undefined> {
+  return (await getPersistedCcpOutboundDraft(draftId)) ?? outboundDrafts.get(draftId);
 }
 
 export async function createCcpOutboundDraft(request: CcpMessageDraftRequest): Promise<CcpOutboundDraft> {
@@ -168,7 +184,7 @@ export async function createCcpOutboundDraft(request: CcpMessageDraftRequest): P
     }
   };
 
-  outboundDrafts.set(draft.id, draft);
+  await storeDraft(draft);
   return draft;
 }
 
@@ -176,17 +192,21 @@ export async function approveAndSendCcpDraft(
   draftId: string,
   approval: CcpMessageApproveRequest
 ): Promise<CcpOutboundDraft> {
-  const draft = outboundDrafts.get(draftId);
+  const draft = await findDraft(draftId);
   if (!draft) {
     throw new CcpCommunicationError("CCP outbound draft was not found.", 404);
   }
 
   const approvedDraft = requireRemoteTriageNurseApproval(draft, approval);
-  outboundDrafts.set(approvedDraft.id, approvedDraft);
+  await storeDraft(approvedDraft);
   return sendApprovedDraft(approvedDraft);
 }
 
-export function listCcpOutboundDrafts(): CcpOutboundDraft[] {
+export async function listCcpOutboundDrafts(): Promise<CcpOutboundDraft[]> {
+  const persistedDrafts = await listPersistedCcpOutboundDrafts();
+  if (persistedDrafts.length > 0) {
+    return persistedDrafts;
+  }
   return Array.from(outboundDrafts.values()).sort((left, right) =>
     right.createdAtIso.localeCompare(left.createdAtIso)
   );
@@ -245,9 +265,14 @@ export async function recordTwilioInboundWebhook(
   };
 
   inboundRecords.unshift(record);
+  await persistInboundWebhookRecord(record);
   return record;
 }
 
-export function listInboundWebhookRecords(): InboundWebhookRecord[] {
+export async function listInboundWebhookRecords(): Promise<InboundWebhookRecord[]> {
+  const persistedRecords = await listPersistedInboundWebhookRecords();
+  if (persistedRecords.length > 0) {
+    return persistedRecords;
+  }
   return inboundRecords;
 }

@@ -18,6 +18,11 @@ import type {
 } from "../types/triage.js";
 import { DispositionCodeSchema } from "../types/triage.js";
 import type { AuditEvent, AuthenticatedSession } from "../types/security.js";
+import type {
+  CcpOutboundDraft,
+  CcpSendResult,
+  InboundWebhookRecord
+} from "../types/communication.js";
 
 export type PersistenceResult =
   | { persisted: true; recordId: string }
@@ -49,6 +54,75 @@ function initialScoreForSeverity(severity: Severity): number {
 
 function jsonValue(value: unknown): Prisma.InputJsonValue {
   return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string");
+}
+
+function isAuthenticatedSession(value: unknown): value is AuthenticatedSession {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const candidate = value as Partial<AuthenticatedSession>;
+  return (
+    typeof candidate.sessionId === "string" &&
+    typeof candidate.activeRole === "string" &&
+    typeof candidate.expiresAtIso === "string" &&
+    typeof candidate.user === "object" &&
+    Boolean(candidate.user) &&
+    isStringArray(candidate.permissions) &&
+    isStringArray(candidate.responsibilities)
+  );
+}
+
+function draftFromRow(row: Awaited<ReturnType<typeof prisma.ccpDraft.findUnique>>): CcpOutboundDraft | undefined {
+  if (!row) {
+    return undefined;
+  }
+  return {
+    id: row.id,
+    istStaffId: row.istStaffId,
+    threadId: row.threadId,
+    linkedGoalId: row.linkedGoalId ?? undefined,
+    channel: row.channel as CcpOutboundDraft["channel"],
+    to: row.recipientTo,
+    originalTo: row.originalTo,
+    subject: row.subject,
+    body: row.body,
+    status: row.status as CcpOutboundDraft["status"],
+    createdAtIso: row.createdAt.toISOString(),
+    updatedAtIso: row.updatedAt.toISOString(),
+    draftedByRole: row.draftedByRole,
+    approval: row.approval as CcpOutboundDraft["approval"],
+    sendResult: row.sendResult ? (row.sendResult as CcpSendResult) : undefined
+  };
+}
+
+function inboundRecordFromRow(
+  row: Awaited<ReturnType<typeof prisma.ccpWebhookRecord.findUnique>>
+): InboundWebhookRecord | undefined {
+  if (!row) {
+    return undefined;
+  }
+  return {
+    id: row.id,
+    status: "persisted",
+    persistedAtIso: row.persistedAt.toISOString(),
+    inbound: {
+      id: row.inboundId,
+      provider: row.provider,
+      providerMessageId: row.providerMessageId ?? undefined,
+      channel: row.channel as InboundWebhookRecord["inbound"]["channel"],
+      from: row.sender,
+      to: row.recipient,
+      body: row.body,
+      receivedAtIso: row.persistedAt.toISOString(),
+      attachments: row.attachments as InboundWebhookRecord["inbound"]["attachments"],
+      raw: row.rawPayload as Record<string, string>
+    },
+    queueNote: row.queueNote
+  };
 }
 
 export async function persistSecurityAuditEvent(event: AuditEvent): Promise<PersistenceResult> {
@@ -91,6 +165,7 @@ export async function persistUserSession(args: {
     data: {
       userId: args.session.user.id,
       sessionHash: sessionHash(args.session.sessionId),
+      sessionPayload: jsonValue(args.session),
       authMethod: args.session.authMethod,
       mfaVerified: args.session.mfaVerified,
       ipAddress: args.ipAddress,
@@ -101,6 +176,28 @@ export async function persistUserSession(args: {
   });
 
   return { persisted: true, recordId: created.id };
+}
+
+export async function getPersistedUserSession(sessionId?: string): Promise<AuthenticatedSession | undefined> {
+  if (!sessionId || !shouldUseDatabasePersistence()) {
+    return undefined;
+  }
+
+  const row = await prisma.userSession.findUnique({
+    where: {
+      sessionHash: sessionHash(sessionId)
+    }
+  });
+  if (!row || row.revokedAt || row.expiresAt.getTime() <= Date.now()) {
+    return undefined;
+  }
+
+  const sessionPayload = row.sessionPayload as unknown;
+  if (!isAuthenticatedSession(sessionPayload) || sessionPayload.sessionId !== sessionId) {
+    return undefined;
+  }
+
+  return sessionPayload;
 }
 
 export async function revokePersistedSession(sessionId?: string): Promise<void> {
@@ -117,6 +214,129 @@ export async function revokePersistedSession(sessionId?: string): Promise<void> 
       revokedAt: new Date()
     }
   });
+}
+
+export async function persistCcpOutboundDraft(draft: CcpOutboundDraft): Promise<PersistenceResult> {
+  if (!shouldUseDatabasePersistence()) {
+    return { persisted: false, reason: "mock-mode" };
+  }
+
+  const saved = await prisma.ccpDraft.upsert({
+    where: {
+      id: draft.id
+    },
+    create: {
+      id: draft.id,
+      istStaffId: draft.istStaffId,
+      threadId: draft.threadId,
+      linkedGoalId: draft.linkedGoalId,
+      channel: draft.channel,
+      recipientTo: draft.to,
+      originalTo: draft.originalTo,
+      subject: draft.subject,
+      body: draft.body,
+      status: draft.status,
+      draftedByRole: draft.draftedByRole,
+      approval: jsonValue(draft.approval),
+      sendResult: draft.sendResult ? jsonValue(draft.sendResult) : undefined,
+      createdAt: new Date(draft.createdAtIso)
+    },
+    update: {
+      linkedGoalId: draft.linkedGoalId,
+      recipientTo: draft.to,
+      originalTo: draft.originalTo,
+      subject: draft.subject,
+      body: draft.body,
+      status: draft.status,
+      draftedByRole: draft.draftedByRole,
+      approval: jsonValue(draft.approval),
+      sendResult: draft.sendResult ? jsonValue(draft.sendResult) : undefined
+    }
+  });
+
+  return { persisted: true, recordId: saved.id };
+}
+
+export async function getPersistedCcpOutboundDraft(draftId: string): Promise<CcpOutboundDraft | undefined> {
+  if (!shouldUseDatabasePersistence()) {
+    return undefined;
+  }
+
+  const row = await prisma.ccpDraft.findUnique({
+    where: {
+      id: draftId
+    }
+  });
+  return draftFromRow(row);
+}
+
+export async function listPersistedCcpOutboundDrafts(): Promise<CcpOutboundDraft[]> {
+  if (!shouldUseDatabasePersistence()) {
+    return [];
+  }
+
+  const rows = await prisma.ccpDraft.findMany({
+    orderBy: {
+      createdAt: "desc"
+    },
+    take: 100
+  });
+  return rows
+    .map((row) => draftFromRow(row))
+    .filter((draft): draft is CcpOutboundDraft => Boolean(draft));
+}
+
+export async function persistInboundWebhookRecord(record: InboundWebhookRecord): Promise<PersistenceResult> {
+  if (!shouldUseDatabasePersistence()) {
+    return { persisted: false, reason: "mock-mode" };
+  }
+
+  const saved = await prisma.ccpWebhookRecord.upsert({
+    where: {
+      id: record.id
+    },
+    create: {
+      id: record.id,
+      inboundId: record.inbound.id,
+      provider: record.inbound.provider,
+      providerMessageId: record.inbound.providerMessageId,
+      channel: record.inbound.channel,
+      sender: record.inbound.from,
+      recipient: record.inbound.to,
+      body: record.inbound.body,
+      status: record.status,
+      attachments: jsonValue(record.inbound.attachments),
+      rawPayload: jsonValue(record.inbound.raw),
+      queueNote: record.queueNote,
+      persistedAt: new Date(record.persistedAtIso)
+    },
+    update: {
+      providerMessageId: record.inbound.providerMessageId,
+      body: record.inbound.body,
+      status: record.status,
+      attachments: jsonValue(record.inbound.attachments),
+      rawPayload: jsonValue(record.inbound.raw),
+      queueNote: record.queueNote
+    }
+  });
+
+  return { persisted: true, recordId: saved.id };
+}
+
+export async function listPersistedInboundWebhookRecords(): Promise<InboundWebhookRecord[]> {
+  if (!shouldUseDatabasePersistence()) {
+    return [];
+  }
+
+  const rows = await prisma.ccpWebhookRecord.findMany({
+    orderBy: {
+      persistedAt: "desc"
+    },
+    take: 100
+  });
+  return rows
+    .map((row) => inboundRecordFromRow(row))
+    .filter((record): record is InboundWebhookRecord => Boolean(record));
 }
 
 export async function persistEvaluatedEncounter(args: {

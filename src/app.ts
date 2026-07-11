@@ -9,6 +9,7 @@ import {
   runtimeModeSummary
 } from "./config/runtime.js";
 import { requireAuthenticatedSession } from "./middleware/auth.js";
+import { corsRejectionHandler, globalErrorHandler } from "./middleware/error.js";
 import { rateLimit } from "./middleware/rateLimit.js";
 import { createAdminRouter } from "./routes/admin.js";
 import { createAuthRouter } from "./routes/auth.js";
@@ -29,7 +30,13 @@ export function createApp() {
       if (!origin || allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-      return callback(new Error("CORS origin is not approved for this environment."));
+      const error = new Error("Origin not allowed by security policies") as Error & {
+        status?: number;
+        code?: string;
+      };
+      error.status = 403;
+      error.code = "CORS_ORIGIN_FORBIDDEN";
+      return callback(error);
     }
   };
   const staffValidateRateLimit = rateLimit({
@@ -40,6 +47,7 @@ export function createApp() {
 
   app.use(helmet());
   app.use(cors(corsOptions));
+  app.use(corsRejectionHandler);
   app.use(express.json({ limit: "1mb" }));
   app.use(express.urlencoded({ extended: false, limit: "1mb" }));
   app.use((_req, res, next) => {
@@ -86,6 +94,7 @@ export function createApp() {
   app.use((_req, res) => {
     res.status(404).json({ error: "Route not found" });
   });
+  app.use(globalErrorHandler);
 
   return app;
 }

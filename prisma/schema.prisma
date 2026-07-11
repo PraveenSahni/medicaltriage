@@ -708,6 +708,7 @@ model UserSession {
   id             String   @id @default(cuid())
   userId         String   @map("user_id")
   sessionHash    String   @unique @map("session_hash")
+  sessionPayload Json     @map("session_payload")
   authMethod     String   @map("auth_method")
   mfaVerified    Boolean  @default(false) @map("mfa_verified")
   ipAddress      String?  @map("ip_address")
@@ -719,6 +720,48 @@ model UserSession {
 
   @@index([userId, expiresAt])
   @@map("user_sessions")
+}
+
+model CcpDraft {
+  id             String   @id
+  istStaffId     String   @map("ist_staff_id")
+  threadId       String   @map("thread_id")
+  linkedGoalId   String?  @map("linked_goal_id")
+  channel        String
+  recipientTo    String   @map("recipient_to")
+  originalTo     String   @map("original_to")
+  subject        String
+  body           String   @db.Text
+  status         String
+  draftedByRole  String   @map("drafted_by_role")
+  approval       Json
+  sendResult     Json?    @map("send_result")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@index([istStaffId, threadId])
+  @@index([status, createdAt])
+  @@map("ccp_drafts")
+}
+
+model CcpWebhookRecord {
+  id                String   @id
+  inboundId         String   @map("inbound_id")
+  provider          String
+  providerMessageId String?  @map("provider_message_id")
+  channel           String
+  sender            String   @map("sender")
+  recipient         String   @map("recipient")
+  body              String   @db.Text
+  status            String
+  attachments       Json
+  rawPayload        Json     @map("raw_payload")
+  queueNote         String   @db.Text @map("queue_note")
+  persistedAt       DateTime @default(now()) @map("persisted_at")
+
+  @@index([provider, persistedAt])
+  @@index([sender, channel])
+  @@map("ccp_webhook_records")
 }
 
 model DataClassification {

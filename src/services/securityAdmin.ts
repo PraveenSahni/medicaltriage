@@ -15,6 +15,7 @@ import type {
   Responsibility
 } from "../types/security.js";
 import {
+  getPersistedUserSession,
   persistSecurityAuditEvent,
   persistUserSession,
   revokePersistedSession
@@ -1591,10 +1592,25 @@ export function getSession(sessionId?: string): AuthenticatedSession | undefined
   return session;
 }
 
-export function revokeSession(sessionId?: string): void {
+export async function getSessionFromStore(sessionId?: string): Promise<AuthenticatedSession | undefined> {
+  const localSession = getSession(sessionId);
+  if (localSession) {
+    return localSession;
+  }
+
+  const persistedSession = await getPersistedUserSession(sessionId);
+  if (!persistedSession) {
+    return undefined;
+  }
+
+  sessions.set(persistedSession.sessionId, persistedSession);
+  return getSession(persistedSession.sessionId);
+}
+
+export async function revokeSession(sessionId?: string): Promise<void> {
   if (sessionId) {
     sessions.delete(sessionId);
-    void revokePersistedSession(sessionId);
+    await revokePersistedSession(sessionId);
   }
 }
 

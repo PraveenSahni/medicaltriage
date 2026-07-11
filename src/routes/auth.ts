@@ -4,7 +4,6 @@ import { rateLimit } from "../middleware/rateLimit.js";
 import {
   authenticateLocal,
   expiredSessionCookie,
-  getSession,
   parseSessionCookie,
   revokeSession,
   sessionCookie,
@@ -20,55 +19,67 @@ export function createAuthRouter(): Router {
     maxRequests: 10
   });
 
-  router.get("/session", (req, res) => {
-    const session = readAuthenticatedSession(req);
-    if (!session) {
-      return res.status(401).json({ authenticated: false });
+  router.get("/session", async (req, res, next) => {
+    try {
+      const session = await readAuthenticatedSession(req);
+      if (!session) {
+        return res.status(401).json({ authenticated: false });
+      }
+      return res.json({ authenticated: true, session });
+    } catch (error) {
+      return next(error);
     }
-    return res.json({ authenticated: true, session });
   });
 
-  router.post("/login", loginRateLimit, async (req, res) => {
-    const parsed = LoginRequestSchema.safeParse(req.body);
-    if (!parsed.success) {
-      return res.status(400).json({ error: "Invalid login payload", details: parsed.error.flatten() });
-    }
+  router.post("/login", loginRateLimit, async (req, res, next) => {
+    try {
+      const parsed = LoginRequestSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid login payload", details: parsed.error.flatten() });
+      }
 
-    const userAgent = req.headers["user-agent"];
-    const result = await authenticateLocal({
-      username: parsed.data.username,
-      password: parsed.data.password,
-      rememberMe: parsed.data.rememberMe,
-      simulateRole: parsed.data.simulateRole,
-      ipAddress: req.ip ?? "unknown",
-      device: Array.isArray(userAgent) ? userAgent.join(" ") : userAgent ?? "unknown"
-    });
-
-    if (!result.ok) {
-      return res.status(result.locked ? 423 : 401).json({
-        error: "Authentication failed",
-        message: result.message
+      const userAgent = req.headers["user-agent"];
+      const result = await authenticateLocal({
+        username: parsed.data.username,
+        password: parsed.data.password,
+        rememberMe: parsed.data.rememberMe,
+        simulateRole: parsed.data.simulateRole,
+        ipAddress: req.ip ?? "unknown",
+        device: Array.isArray(userAgent) ? userAgent.join(" ") : userAgent ?? "unknown"
       });
-    }
 
-    const secureCookie = req.secure || req.headers["x-forwarded-proto"] === "https";
-    res.setHeader("Set-Cookie", sessionCookie(result.session.sessionId, parsed.data.rememberMe, secureCookie));
-    return res.json({
-      authenticated: true,
-      session: result.session,
-      accessToken: signSessionJwt(result.session),
-      redirectTo: result.session.permissions.some((permission) =>
-        ["admin.users.manage", "security.sso.manage", "audit.events.view"].includes(permission)
-      )
-        ? "admin"
-        : "workspace"
-    });
+      if (!result.ok) {
+        return res.status(result.locked ? 423 : 401).json({
+          error: "Authentication failed",
+          message: result.message
+        });
+      }
+
+      const secureCookie = req.secure || req.headers["x-forwarded-proto"] === "https";
+      res.setHeader("Set-Cookie", sessionCookie(result.session.sessionId, parsed.data.rememberMe, secureCookie));
+      return res.json({
+        authenticated: true,
+        session: result.session,
+        accessToken: signSessionJwt(result.session),
+        redirectTo: result.session.permissions.some((permission) =>
+          ["admin.users.manage", "security.sso.manage", "audit.events.view"].includes(permission)
+        )
+          ? "admin"
+          : "workspace"
+      });
+    } catch (error) {
+      return next(error);
+    }
   });
 
-  router.post("/logout", (req, res) => {
-    revokeSession(parseSessionCookie(req.headers));
-    res.setHeader("Set-Cookie", expiredSessionCookie());
-    return res.json({ authenticated: false });
+  router.post("/logout", async (req, res, next) => {
+    try {
+      await revokeSession(parseSessionCookie(req.headers));
+      res.setHeader("Set-Cookie", expiredSessionCookie());
+      return res.json({ authenticated: false });
+    } catch (error) {
+      return next(error);
+    }
   });
 
   router.post("/sso/test", (req, res) => {

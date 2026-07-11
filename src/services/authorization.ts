@@ -6,7 +6,7 @@ export type AuthorizedRequest = Request & {
   securitySession?: AuthenticatedSession;
 };
 
-export function getRequestSession(req: Request): AuthenticatedSession | undefined {
+export async function getRequestSession(req: Request): Promise<AuthenticatedSession | undefined> {
   return readAuthenticatedSession(req);
 }
 
@@ -33,20 +33,28 @@ export function canRevealPersonalData(session: AuthenticatedSession | undefined)
 }
 
 export function requirePermission(permission: string) {
-  return (req: AuthorizedRequest, res: Response, next: NextFunction) => {
-    const session = getRequestSession(req);
-    if (!session) {
-      return res.status(401).json({ error: "Authentication required" });
+  return async (req: AuthorizedRequest, res: Response, next: NextFunction) => {
+    try {
+      const session = await getRequestSession(req);
+      if (!session) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+      if (!canPerformAction(session, permission)) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+      req.securitySession = session;
+      return next();
+    } catch (error) {
+      return next(error);
     }
-    if (!canPerformAction(session, permission)) {
-      return res.status(403).json({ error: "Access denied" });
-    }
-    req.securitySession = session;
-    return next();
   };
 }
 
-export function optionalSession(req: AuthorizedRequest, _res: Response, next: NextFunction) {
-  req.securitySession = getRequestSession(req);
-  return next();
+export async function optionalSession(req: AuthorizedRequest, _res: Response, next: NextFunction) {
+  try {
+    req.securitySession = await getRequestSession(req);
+    return next();
+  } catch (error) {
+    return next(error);
+  }
 }

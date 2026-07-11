@@ -20,6 +20,20 @@ async function authenticatedAgent() {
 }
 
 describe("IST Qatar Phase I API", () => {
+  describe("CORS origin policy", () => {
+    it("returns a clean 403 payload for rejected browser origins", async () => {
+      const response = await request(app)
+        .get("/healthz")
+        .set("Origin", "https://rejected.example")
+        .expect(403);
+
+      expect(response.body).toEqual({
+        error: "Forbidden",
+        message: "Origin not allowed by security policies"
+      });
+    });
+  });
+
   describe("POST /api/v1/staff/validate", () => {
     it("requires authentication before staff validation", async () => {
       const response = await request(app)

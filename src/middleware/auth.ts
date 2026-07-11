@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
 import type { AuthenticatedSession } from "../types/security.js";
-import { getSession, parseSessionCookie } from "../services/securityAdmin.js";
+import { getSessionFromStore, parseSessionCookie } from "../services/securityAdmin.js";
 
 const JWT_TTL_SECONDS = 30 * 60;
 
@@ -52,7 +52,7 @@ export function signSessionJwt(session: AuthenticatedSession): string {
   return `${unsignedToken}.${sign(unsignedToken)}`;
 }
 
-function sessionFromBearerToken(req: Request): AuthenticatedSession | undefined {
+async function sessionFromBearerToken(req: Request): Promise<AuthenticatedSession | undefined> {
   const authorization = req.headers.authorization;
   if (!authorization?.startsWith("Bearer ")) {
     return undefined;
@@ -74,18 +74,22 @@ function sessionFromBearerToken(req: Request): AuthenticatedSession | undefined 
     return undefined;
   }
 
-  return getSession(decoded.sid);
+  return getSessionFromStore(decoded.sid);
 }
 
-export function readAuthenticatedSession(req: Request): AuthenticatedSession | undefined {
-  return getSession(parseSessionCookie(req.headers)) ?? sessionFromBearerToken(req);
+export async function readAuthenticatedSession(req: Request): Promise<AuthenticatedSession | undefined> {
+  return (await getSessionFromStore(parseSessionCookie(req.headers))) ?? (await sessionFromBearerToken(req));
 }
 
-export function requireAuthenticatedSession(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-  const session = readAuthenticatedSession(req);
-  if (!session) {
-    return res.status(401).json({ error: "Authentication required" });
+export async function requireAuthenticatedSession(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  try {
+    const session = await readAuthenticatedSession(req);
+    if (!session) {
+      return res.status(401).json({ error: "Authentication required" });
+    }
+    req.securitySession = session;
+    return next();
+  } catch (error) {
+    return next(error);
   }
-  req.securitySession = session;
-  return next();
 }
