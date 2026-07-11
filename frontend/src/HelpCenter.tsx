@@ -1224,10 +1224,25 @@ const libraryAreas: LibraryArea[] = [
     icon: CheckCircle2,
     summary:
       "Groups the automated checks that validate Phase I safety behavior after backend, schema, seed, or help-content changes.",
-    usedBy: ["tests/triage.test.ts", "tests/simulation.test.ts", "python/test_safety_wrapper.py", "python/test_synthetic_pdp_generator.py", "python/test_clinical_simulation_engine.py", "npm test", "npm run typecheck:web", "npm run build:web"],
+    usedBy: [
+      "tests/triage.test.ts",
+      "tests/simulation.test.ts",
+      "tests/safety-alignment.test.ts",
+      "tests/fixtures/triage_scenarios.json",
+      "python/test_safety_wrapper.py",
+      "python/test_synthetic_pdp_generator.py",
+      "python/test_clinical_simulation_engine.py",
+      "scripts/runPython.mjs",
+      "npm test",
+      "npm run test:python",
+      "npm run typecheck:web",
+      "npm run build:web"
+    ],
     details: [
-      "Jest/Supertest verifies staff validation, invalid staff rejection, adult RED floor, pediatric tachypnea route, stable NEWS2 pass-through, and bilingual SBAR output.",
+      "Jest/Supertest verifies authentication, staff validation, invalid staff rejection, HRMS-calculated age enforcement, adult RED floor, pediatric tachypnea route, pediatric 5-12 warning, stable NEWS2 pass-through, bilingual SBAR output, AI downgrade blocking, and fit-to-fly restriction.",
       "The Python safety wrapper tests verify that AI HOMECARE passes when vitals are normal and that ROUTINE/HOMECARE downgrades are blocked when RED vitals are present.",
+      "The shared fixture tests run the same adult vital-sign scenarios through TypeScript scoring and the Python safety wrapper so RED-floor behavior cannot drift silently between engines.",
+      "Simulation endpoint tests now authenticate through the real login route before reading scenarios, running scenarios, or exporting LLM-ready JSONL rows.",
       "The synthetic PDP generator tests verify workforce scale math, dependent generation, encounter mix, safety audit volume, and Prisma-shaped record fields.",
       "The complete clinical simulation tests verify cosine fallback, prompt case routing, AI downgrade blocking, fit-to-fly restriction, FHIR transaction shape, and audit log creation.",
       "Frontend typecheck and build validate that the Help/Library content compiles and renders with the current React/Tailwind application.",
@@ -1242,6 +1257,55 @@ const libraryAreas: LibraryArea[] = [
         title: "Evidence gap",
         body: "Database seed execution still requires a live PostgreSQL database, so seed proof should be collected once the database is running."
       }
+    ]
+  },
+  {
+    id: "remediation-evidence",
+    title: "Sequential Remediation Evidence",
+    eyebrow: "Review, test, commit, rollback",
+    icon: FileCheck2,
+    summary:
+      "Records the current remediation sequence so reviewers can confirm what changed, which tests were run, and how to roll back each bounded commit.",
+    usedBy: [
+      "git log --oneline",
+      "npm run build",
+      "npm test",
+      "npm run test:python",
+      "npm run typecheck:web",
+      "npm run build:web",
+      "prisma validate"
+    ],
+    details: [
+      "4064ef5 - Expanded Help/Library into the What, Why, and How framework. Rollback: git revert 4064ef5.",
+      "ad28efb - Added Prisma singleton, live-mode configuration guardrails, mock/live response marking, and persistence hooks for sessions, audit events, and triage encounter records. Rollback: git revert ad28efb.",
+      "3d927a1 - Protected API routes with session or bearer-token auth, added login/staff rate limits, strict CORS defaults, and auth-aware API tests. Rollback: git revert 3d927a1.",
+      "1f51af2 - Enforced HRMS-calculated patient age, pediatric thresholds, AI downgrade trace blocking, and final emergency/urgent fit-to-fly restriction. Rollback: git revert 1f51af2.",
+      "3ba83b7 - Added shared TypeScript/Python safety fixtures, simulation auth test alignment, and a portable Python launcher. Rollback: git revert 3ba83b7.",
+      "Unrelated untracked .claude/ content is intentionally left out of this sequence."
+    ],
+    helps: [
+      {
+        title: "What was confirmed",
+        body:
+          "Each completed fix was reviewed in code, tested with targeted commands, and committed separately so rollback is precise."
+      },
+      {
+        title: "Why sequence matters",
+        body:
+          "Database/runtime, auth, clinical safety, and simulator alignment touch different risk surfaces. Keeping one commit per fix avoids a broad revert when only one layer needs correction."
+      },
+      {
+        title: "How to roll back",
+        body:
+          "Use the listed git revert command for the specific commit. Re-run npm test, npm run build, and the affected frontend or Python validation command after the revert."
+      }
+    ],
+    exampleFlow: [
+      "Review the commit entry and scope.",
+      "Run the listed validation command for that layer.",
+      "If the fix must be backed out, run the exact git revert command.",
+      "Re-run the same validation command.",
+      "Record any remaining gap as a separate remediation item."
     ]
   },
   {
@@ -1488,6 +1552,17 @@ const libraryWhatWhyHow: Record<string, WhatWhyHow> = {
       "Run Jest/Supertest for API behavior and frontend type/build checks.",
       "Run Python safety, synthetic data, clinical simulation, and bulk simulation tests.",
       "Treat failed red-floor, routing, SBAR, or downgrade-blocking tests as release blockers."
+    ]
+  },
+  "remediation-evidence": {
+    what:
+      "The review evidence and rollback ledger for the current sequential remediation run.",
+    why:
+      "Clinical, security, and integration fixes must be reversible by layer so one defect does not force a broad rollback of unrelated work.",
+    how: [
+      "Review the commit scope and tests listed for each fix.",
+      "Use the exact git revert command for the affected commit only.",
+      "Re-run the same validation commands after rollback and record any remaining gap separately."
     ]
   },
   "content-release": {
