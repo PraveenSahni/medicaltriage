@@ -1,3 +1,4 @@
+import type { OverrideStatusFlag } from "@prisma/client";
 import type {
   DispositionDecision,
   TriageEvaluationRequest
@@ -9,7 +10,7 @@ export type SafetyAuditDraft = {
   originalAiRecommendation?: string;
   nurseOverrideRationale?: string;
   rulesEngineSeverity: string;
-  overrideStatusFlag: "AI_RECOMMENDATION_DIFFERED" | "NURSE_OVERRIDE_UP" | "NURSE_OVERRIDE_DOWN_BLOCKED" | "RULES_ENGINE_FINAL";
+  overrideStatusFlag: OverrideStatusFlag;
   isCriticalFloorBreach: boolean;
   explainabilityTrace: unknown[];
 };

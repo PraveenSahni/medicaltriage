@@ -1,7 +1,6 @@
 import { createHash } from "node:crypto";
 import type {
   AcuityDispositionCode,
-  OverrideStatusFlag,
   Prisma,
   TriageSeverity
 } from "@prisma/client";
@@ -369,16 +368,19 @@ export async function persistEvaluatedEncounter(args: {
   });
 
   if (args.safetyAudit.required) {
+    const safetyLogData: Prisma.SafetyAuditDeviationLogCreateInput = {
+      encounter: {
+        connect: { id: created.id }
+      },
+      originalAiRecommendation: args.safetyAudit.originalAiRecommendation ?? "NONE",
+      nurseOverrideRationale: args.safetyAudit.nurseOverrideRationale,
+      rulesEngineSeverity: severityToPrisma(args.decision.severity),
+      overrideStatusFlag: args.safetyAudit.overrideStatusFlag,
+      isCriticalFloorBreach: args.safetyAudit.isCriticalFloorBreach,
+      explainabilityTrace: jsonValue(args.safetyAudit.explainabilityTrace)
+    };
     await prisma.safetyAuditDeviationLog.create({
-      data: {
-        encounterId: created.id,
-        originalAiRecommendation: args.safetyAudit.originalAiRecommendation ?? "NONE",
-        nurseOverrideRationale: args.safetyAudit.nurseOverrideRationale,
-        rulesEngineSeverity: severityToPrisma(args.decision.severity),
-        overrideStatusFlag: args.safetyAudit.overrideStatusFlag as OverrideStatusFlag,
-        isCriticalFloorBreach: args.safetyAudit.isCriticalFloorBreach,
-        explainabilityTrace: jsonValue(args.safetyAudit.explainabilityTrace)
-      } as Prisma.SafetyAuditDeviationLogUncheckedCreateInput
+      data: safetyLogData
     });
   }
 

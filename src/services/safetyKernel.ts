@@ -1,3 +1,4 @@
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { shouldUseDatabasePersistence } from "../config/runtime.js";
 import { prisma } from "../db.js";
 
@@ -22,8 +23,23 @@ export class SafetyKernelError extends Error {
   }
 }
 
-export function isSafetyKernelError(error: unknown): error is SafetyKernelError {
-  return error instanceof SafetyKernelError;
+export class SafetyKernelTraceVerificationError extends Error {
+  readonly status = 403;
+  readonly statusCode = 403;
+  readonly payload = HITL_FORBIDDEN_PAYLOAD;
+
+  constructor(
+    message: string,
+    readonly encounterId?: string
+  ) {
+    super(message);
+  }
+}
+
+type SafetyKernelAccessError = SafetyKernelError | SafetyKernelTraceVerificationError;
+
+export function isSafetyKernelError(error: unknown): error is SafetyKernelAccessError {
+  return error instanceof SafetyKernelError || error instanceof SafetyKernelTraceVerificationError;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -55,19 +71,99 @@ export function traceObjects(value: unknown): Array<Record<string, unknown>> {
   return output;
 }
 
+function auditHmacSecret(): string {
+  return (
+    process.env.AUDIT_HMAC_SECRET ??
+    process.env.AUDIT_SIGNING_SECRET ??
+    process.env.AUTH_JWT_SECRET ??
+    "mock-local-audit-signing-secret"
+  );
+}
+
+function canonicalValue(value: unknown): string {
+  if (value === undefined) {
+    return "__undefined__";
+  }
+
+  if (value === null) {
+    return "null";
+  }
+
+  if (Array.isArray(value)) {
+    return `[${value.map((item) => canonicalValue(item)).join(",")}]`;
+  }
+
+  if (isRecord(value)) {
+    return `{${Object.entries(value)
+      .filter(([key]) => key !== "auditSignature")
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([key, item]) => `${JSON.stringify(key)}:${canonicalValue(item)}`)
+      .join(",")}}`;
+  }
+
+  return JSON.stringify(value) ?? "__unsupported__";
+}
+
+export function canonicalAuditPayload(payload: Record<string, unknown>): string {
+  return canonicalValue(payload);
+}
+
+export function auditSignatureFor(payload: Record<string, unknown>): string {
+  return createHmac("sha256", auditHmacSecret()).update(canonicalAuditPayload(payload)).digest("hex");
+}
+
+function safeEqualHex(left: string, right: string): boolean {
+  if (!/^[a-f0-9]{64}$/i.test(left) || !/^[a-f0-9]{64}$/i.test(right)) {
+    return false;
+  }
+
+  const leftBuffer = Buffer.from(left, "hex");
+  const rightBuffer = Buffer.from(right, "hex");
+  return leftBuffer.length === rightBuffer.length && timingSafeEqual(leftBuffer, rightBuffer);
+}
+
+function hasSignedApprovalShape(event: Record<string, unknown>): boolean {
+  const reviewedReasoning = event.reviewedReasoningFeatureIds;
+  return (
+    event.eventType === "HITL_CLINICAL_APPROVAL" &&
+    event.activeReviewConfirmed === true &&
+    event.featureLevelReasoningReviewed === true &&
+    Array.isArray(reviewedReasoning) &&
+    reviewedReasoning.length >= 2 &&
+    typeof event.auditSignature === "string"
+  );
+}
+
+function verifyAuditSignature(event: Record<string, unknown>): boolean {
+  const auditSignature = event.auditSignature;
+  if (typeof auditSignature !== "string") {
+    return false;
+  }
+
+  const expectedSignature = auditSignatureFor(event);
+  if (!safeEqualHex(expectedSignature, auditSignature)) {
+    console.error("HITL audit signature verification failed", {
+      eventType: event.eventType,
+      encounterId: typeof event.encounterId === "string" ? event.encounterId : undefined
+    });
+    throw new SafetyKernelTraceVerificationError(
+      "HITL clinical approval signature verification failed.",
+      typeof event.encounterId === "string" ? event.encounterId : undefined
+    );
+  }
+
+  return true;
+}
+
 export function isSignedHumanApprovalTrace(trace: unknown): boolean {
   return traceObjects(trace).some((event) => {
-    const reviewedReasoning = event.reviewedReasoningFeatureIds;
-    const auditSignature = event.auditSignature;
-    return (
-      event.eventType === "HITL_CLINICAL_APPROVAL" &&
-      event.activeReviewConfirmed === true &&
-      event.featureLevelReasoningReviewed === true &&
-      Array.isArray(reviewedReasoning) &&
-      reviewedReasoning.length >= 2 &&
-      typeof auditSignature === "string" &&
-      /^[a-f0-9]{64}$/i.test(auditSignature)
-    );
+    if (event.eventType !== "HITL_CLINICAL_APPROVAL") {
+      return false;
+    }
+    if (!hasSignedApprovalShape(event)) {
+      return false;
+    }
+    return verifyAuditSignature(event);
   });
 }
 

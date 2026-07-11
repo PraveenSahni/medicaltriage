@@ -1,11 +1,10 @@
-import { createHmac } from "node:crypto";
 import { Router } from "express";
 import type { OverrideStatusFlag, Prisma, TriageSeverity } from "@prisma/client";
 import { z } from "zod";
 import { shouldUseDatabasePersistence } from "../config/runtime.js";
 import { prisma } from "../db.js";
 import { requirePermission, type AuthorizedRequest } from "../services/authorization.js";
-import { isSignedHumanApprovalTrace, traceObjects } from "../services/safetyKernel.js";
+import { auditSignatureFor, isSignedHumanApprovalTrace, traceObjects } from "../services/safetyKernel.js";
 import { isSeverityDowngrade } from "../types/triage.js";
 
 const ApprovalDecisionSchema = z.enum(["approve", "modify", "override"]);
@@ -96,11 +95,6 @@ function overrideFlagFor(request: ApprovalRequest): OverrideStatusFlag {
     return "AI_RECOMMENDATION_DIFFERED";
   }
   return "RULES_ENGINE_FINAL";
-}
-
-function signatureFor(payload: Record<string, unknown>): string {
-  const secret = process.env.AUDIT_SIGNING_SECRET ?? process.env.AUTH_JWT_SECRET ?? "mock-local-audit-signing-secret";
-  return createHmac("sha256", secret).update(JSON.stringify(payload)).digest("hex");
 }
 
 function displaySeverity(value?: TriageSeverity | null): z.infer<typeof SeveritySchema> {
@@ -293,7 +287,7 @@ async function recordApprovalReview(
     actor,
     timestampIso
   };
-  const auditSignature = signatureFor(traceEvent);
+  const auditSignature = auditSignatureFor(traceEvent);
   const signedTraceEvent = { ...traceEvent, auditSignature };
 
   if (!shouldUseDatabasePersistence()) {
@@ -319,30 +313,34 @@ async function recordApprovalReview(
     : [signedTraceEvent];
 
   if (existing) {
+    const updateData: Prisma.SafetyAuditDeviationLogUpdateInput = {
+      originalAiRecommendation: request.originalAiRecommendation ?? existing.originalAiRecommendation,
+      nurseOverrideRationale:
+        request.nurseOverrideRationale ?? existing.nurseOverrideRationale ?? "Rules-engine final disposition reviewed.",
+      rulesEngineSeverity: severityToPrisma(request.rulesEngineSeverity),
+      overrideStatusFlag: overrideFlagFor(request),
+      isCriticalFloorBreach: criticalFloorBreachValue(existing) || isCriticalFloorBreach,
+      explainabilityTrace: jsonValue(nextTrace)
+    };
     await prisma.safetyAuditDeviationLog.update({
       where: { encounterId },
-      data: {
-        originalAiRecommendation: request.originalAiRecommendation ?? existing.originalAiRecommendation,
-        nurseOverrideRationale:
-          request.nurseOverrideRationale ?? existing.nurseOverrideRationale ?? "Rules-engine final disposition reviewed.",
-        rulesEngineSeverity: severityToPrisma(request.rulesEngineSeverity),
-        overrideStatusFlag: overrideFlagFor(request),
-        isCriticalFloorBreach: criticalFloorBreachValue(existing) || isCriticalFloorBreach,
-        explainabilityTrace: jsonValue(nextTrace)
-      } as Prisma.SafetyAuditDeviationLogUncheckedUpdateInput
+      data: updateData
     });
   } else {
+    const createData: Prisma.SafetyAuditDeviationLogCreateInput = {
+      encounter: {
+        connect: { id: encounterId }
+      },
+      originalAiRecommendation: request.originalAiRecommendation ?? "NONE",
+      nurseOverrideRationale:
+        request.nurseOverrideRationale ?? "Rules-engine final disposition reviewed and approved.",
+      rulesEngineSeverity: severityToPrisma(request.rulesEngineSeverity),
+      overrideStatusFlag: overrideFlagFor(request),
+      isCriticalFloorBreach,
+      explainabilityTrace: jsonValue(nextTrace)
+    };
     await prisma.safetyAuditDeviationLog.create({
-      data: {
-        encounterId,
-        originalAiRecommendation: request.originalAiRecommendation ?? "NONE",
-        nurseOverrideRationale:
-          request.nurseOverrideRationale ?? "Rules-engine final disposition reviewed and approved.",
-        rulesEngineSeverity: severityToPrisma(request.rulesEngineSeverity),
-        overrideStatusFlag: overrideFlagFor(request),
-        isCriticalFloorBreach,
-        explainabilityTrace: jsonValue(nextTrace)
-      } as Prisma.SafetyAuditDeviationLogUncheckedCreateInput
+      data: createData
     });
   }
 
