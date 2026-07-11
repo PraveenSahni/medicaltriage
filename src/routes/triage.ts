@@ -1,11 +1,13 @@
 import { randomUUID } from "node:crypto";
 import { Router } from "express";
+import { withMockFlag } from "../config/runtime.js";
 import { buildSafetyAuditDraft } from "../services/auditLog.js";
 import { evaluateAviationRules } from "../services/aviationRules.js";
 import { resolveDisposition } from "../services/dispositionRouter.js";
 import { findDependent, validateStaffMember } from "../services/hrms.js";
 import { verifyInsuranceEligibility } from "../services/insurance.js";
 import { calculateTriageScore } from "../services/news2Scoring.js";
+import { persistCompletedTriageNote, persistEvaluatedEncounter } from "../services/persistence.js";
 import { compileSbarClipboardPayload } from "../services/sbarCompiler.js";
 import { compileBilingualSoapSbarMarkdown } from "../services/triageNoteCompiler.js";
 import {
@@ -95,13 +97,15 @@ export function createTriageRouter(): Router {
       customAviationTags: parsed.data.customAviationTags
     });
     const note = compileBilingualSoapSbarMarkdown(parsed.data);
+    const persistence = await persistCompletedTriageNote(parsed.data, note, fitToFlyStatus);
     if (req.accepts(["json", "text"]) === "json") {
-      return res.json({
+      return res.json(withMockFlag({
         notePayload: note,
         fitToFlyStatus,
         staff: staff?.profile,
-        clipboardOptimized: true
-      });
+        clipboardOptimized: true,
+        persistence
+      }));
     }
 
     return res.type("text/plain").send(note);
@@ -136,20 +140,28 @@ export function createTriageRouter(): Router {
       aviation
     });
     const safetyAudit = buildSafetyAuditDraft(request, decision);
+    const persistence = await persistEvaluatedEncounter({
+      request,
+      decision,
+      aviation,
+      clipboardPayload,
+      safetyAudit
+    });
 
-    return res.json({
+    return res.json(withMockFlag({
       encounterId: randomUUID(),
       decision,
       insurance,
       aviation,
       clipboardPayload,
       safetyAudit,
+      persistence,
       humanInLoopRequired: true,
       warnings: [
         "Mock rules are for MVP wiring only and must be replaced with licensed clinical content and local governance approvals.",
-        "The API does not persist PHI in this scaffold; connect the Prisma models only after retention and EMR-write policy is approved."
+        "When MOCK_MODE=false, the API requires PostgreSQL/Cloud SQL and writes completed triage/audit records through Prisma."
       ]
-    });
+    }));
   });
 
   return router;

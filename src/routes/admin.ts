@@ -48,7 +48,7 @@ export function createAdminRouter(): Router {
     return res.json({ events: listAuditEvents() });
   });
 
-  router.post("/reveal", requirePermission("privacy.reveal.request"), (req: AuthorizedRequest, res) => {
+  router.post("/reveal", requirePermission("privacy.reveal.request"), async (req: AuthorizedRequest, res) => {
     const parsed = RevealRequestSchema.safeParse(req.body);
     if (!parsed.success) {
       return res.status(400).json({ error: "Invalid reveal payload", details: parsed.error.flatten() });
@@ -56,7 +56,7 @@ export function createAdminRouter(): Router {
     if (!req.securitySession) {
       return res.status(401).json({ error: "Authentication required" });
     }
-    const result = recordReveal(parsed.data, req.securitySession);
+    const result = await recordReveal(parsed.data, req.securitySession);
     if (result.decision === "denied") {
       return res.status(403).json({ decision: result.decision, audit: result.audit });
     }

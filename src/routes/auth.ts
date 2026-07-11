@@ -21,14 +21,14 @@ export function createAuthRouter(): Router {
     return res.json({ authenticated: true, session });
   });
 
-  router.post("/login", (req, res) => {
+  router.post("/login", async (req, res) => {
     const parsed = LoginRequestSchema.safeParse(req.body);
     if (!parsed.success) {
       return res.status(400).json({ error: "Invalid login payload", details: parsed.error.flatten() });
     }
 
     const userAgent = req.headers["user-agent"];
-    const result = authenticateLocal({
+    const result = await authenticateLocal({
       username: parsed.data.username,
       password: parsed.data.password,
       rememberMe: parsed.data.rememberMe,

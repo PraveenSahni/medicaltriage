@@ -14,6 +14,11 @@ import type {
   SsoProvider,
   Responsibility
 } from "../types/security.js";
+import {
+  persistSecurityAuditEvent,
+  persistUserSession,
+  revokePersistedSession
+} from "./persistence.js";
 
 const SESSION_COOKIE = "ist_triage_session";
 const SESSION_TTL_MS = 30 * 60 * 1000;
@@ -1380,6 +1385,11 @@ const auditEvents: AuditEvent[] = [
 const sessions = new Map<string, AuthenticatedSession>();
 const failedLoginAttempts = new Map<string, number>();
 
+async function recordAuditEvent(event: AuditEvent): Promise<void> {
+  auditEvents.push(event);
+  await persistSecurityAuditEvent(event);
+}
+
 function maskLast(value: string, visible = 4, mask = "*"): string {
   if (!value) {
     return "";
@@ -1494,14 +1504,14 @@ function toSession(user: AdminUser, authMethod: AuthMethod, rememberMe: boolean,
   };
 }
 
-export function authenticateLocal(args: {
+export async function authenticateLocal(args: {
   username: string;
   password: string;
   rememberMe: boolean;
   simulateRole?: string;
   ipAddress: string;
   device: string;
-}): { ok: true; session: AuthenticatedSession } | { ok: false; message: string; locked?: boolean } {
+}): Promise<{ ok: true; session: AuthenticatedSession } | { ok: false; message: string; locked?: boolean }> {
   const username = args.username.trim().toLowerCase();
   const user = users.find((candidate) => candidate.email.toLowerCase() === username || candidate.employeeId.toLowerCase() === username);
   const genericMessage = "Invalid username or password.";
@@ -1516,7 +1526,7 @@ export function authenticateLocal(args: {
   const passwordOk = safeCompare(args.password, "DemoPass!2026");
   if (!user || user.accountStatus !== "active" || !passwordOk) {
     failedLoginAttempts.set(username, currentFailures + 1);
-    auditEvents.push({
+    await recordAuditEvent({
       id: randomUUID(),
       timestampIso: new Date().toISOString(),
       userId: user?.id ?? "unknown",
@@ -1542,7 +1552,12 @@ export function authenticateLocal(args: {
   failedLoginAttempts.delete(username);
   const session = toSession(user, "local", args.rememberMe, args.simulateRole);
   sessions.set(session.sessionId, session);
-  auditEvents.push({
+  await persistUserSession({
+    session,
+    ipAddress: args.ipAddress,
+    device: args.device
+  });
+  await recordAuditEvent({
     id: randomUUID(),
     timestampIso: new Date().toISOString(),
     userId: user.id,
@@ -1579,6 +1594,7 @@ export function getSession(sessionId?: string): AuthenticatedSession | undefined
 export function revokeSession(sessionId?: string): void {
   if (sessionId) {
     sessions.delete(sessionId);
+    void revokePersistedSession(sessionId);
   }
 }
 
@@ -1602,11 +1618,11 @@ export function expiredSessionCookie(): string {
   return `${SESSION_COOKIE}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0`;
 }
 
-export function recordReveal(request: RevealRequest, session: AuthenticatedSession): {
+export async function recordReveal(request: RevealRequest, session: AuthenticatedSession): Promise<{
   decision: "approved" | "denied";
   value?: string;
   audit: AuditEvent;
-} {
+}> {
   const canReveal = session.permissions.includes("privacy.reveal.request") || session.permissions.includes("admin.users.manage");
   const audit: AuditEvent = {
     id: randomUUID(),
@@ -1625,7 +1641,7 @@ export function recordReveal(request: RevealRequest, session: AuthenticatedSessi
     success: canReveal,
     risk: "critical"
   };
-  auditEvents.push(audit);
+  await recordAuditEvent(audit);
 
   if (!canReveal) {
     return { decision: "denied", audit };
