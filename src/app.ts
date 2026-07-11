@@ -14,6 +14,7 @@ import { rateLimit } from "./middleware/rateLimit.js";
 import { createAdminRouter } from "./routes/admin.js";
 import { createAuthRouter } from "./routes/auth.js";
 import { createCcpRouter } from "./routes/ccp.js";
+import { createEmrRouter } from "./routes/emr.js";
 import { createProtocolsRouter } from "./routes/protocols.js";
 import { createSimulationRouter } from "./routes/simulation.js";
 import { createStaffRouter } from "./routes/staff.js";
@@ -90,6 +91,7 @@ export function createApp() {
   app.use("/api/v1/protocols", requireAuthenticatedSession, createProtocolsRouter());
   app.use("/api/v1/simulation", requireAuthenticatedSession, createSimulationRouter());
   app.use("/api/v1/triage", requireAuthenticatedSession, createTriageRouter());
+  app.use("/api/v1/emr", requireAuthenticatedSession, createEmrRouter());
 
   app.use((_req, res) => {
     res.status(404).json({ error: "Route not found" });
