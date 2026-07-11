@@ -15,3 +15,7 @@ remix_-ist-technologies.zip
 data/generated/
 __pycache__/
 .pytest_cache/
+*.docx
+interactive dashboard style click on enable .html
+remix_-ist-technologies/
+.claude/
