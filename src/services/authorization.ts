@@ -1,13 +1,13 @@
 import type { Request, Response, NextFunction } from "express";
+import { readAuthenticatedSession } from "../middleware/auth.js";
 import type { AuthenticatedSession } from "../types/security.js";
-import { getSession, parseSessionCookie } from "./securityAdmin.js";
 
 export type AuthorizedRequest = Request & {
   securitySession?: AuthenticatedSession;
 };
 
 export function getRequestSession(req: Request): AuthenticatedSession | undefined {
-  return getSession(parseSessionCookie(req.headers));
+  return readAuthenticatedSession(req);
 }
 
 export function canPerformAction(session: AuthenticatedSession | undefined, permission: string): boolean {

@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { readAuthenticatedSession, signSessionJwt } from "../middleware/auth.js";
+import { rateLimit } from "../middleware/rateLimit.js";
 import {
   authenticateLocal,
   expiredSessionCookie,
@@ -12,16 +14,21 @@ import { LoginRequestSchema, SsoTestRequestSchema } from "../types/security.js";
 
 export function createAuthRouter(): Router {
   const router = Router();
+  const loginRateLimit = rateLimit({
+    name: "auth-login",
+    windowMs: 60_000,
+    maxRequests: 10
+  });
 
   router.get("/session", (req, res) => {
-    const session = getSession(parseSessionCookie(req.headers));
+    const session = readAuthenticatedSession(req);
     if (!session) {
       return res.status(401).json({ authenticated: false });
     }
     return res.json({ authenticated: true, session });
   });
 
-  router.post("/login", async (req, res) => {
+  router.post("/login", loginRateLimit, async (req, res) => {
     const parsed = LoginRequestSchema.safeParse(req.body);
     if (!parsed.success) {
       return res.status(400).json({ error: "Invalid login payload", details: parsed.error.flatten() });
@@ -49,6 +56,7 @@ export function createAuthRouter(): Router {
     return res.json({
       authenticated: true,
       session: result.session,
+      accessToken: signSessionJwt(result.session),
       redirectTo: result.session.permissions.some((permission) =>
         ["admin.users.manage", "security.sso.manage", "audit.events.view"].includes(permission)
       )

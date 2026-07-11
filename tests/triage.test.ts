@@ -3,10 +3,36 @@ import { createApp } from "../src/app.js";
 
 const app = createApp();
 
+async function authenticatedAgent() {
+  const agent = request.agent(app);
+  const login = await agent
+    .post("/api/v1/auth/login")
+    .send({
+      username: "nurse@ist.local",
+      password: "DemoPass!2026",
+      simulateRole: "remote_triage_nurse"
+    })
+    .expect(200);
+
+  expect(login.body.accessToken).toEqual(expect.any(String));
+  expect(login.body.is_mock).toBe(true);
+  return agent;
+}
+
 describe("IST Qatar Phase I API", () => {
   describe("POST /api/v1/staff/validate", () => {
-    it("validates a seeded active pilot profile and dependent list", async () => {
+    it("requires authentication before staff validation", async () => {
       const response = await request(app)
+        .post("/api/v1/staff/validate")
+        .send({ istStaffId: "IST-1001" })
+        .expect(401);
+
+      expect(response.body.error).toBe("Authentication required");
+    });
+
+    it("validates a seeded active pilot profile and dependent list", async () => {
+      const agent = await authenticatedAgent();
+      const response = await agent
         .post("/api/v1/staff/validate")
         .send({ istStaffId: "IST-1001" })
         .expect(200);
@@ -23,7 +49,8 @@ describe("IST Qatar Phase I API", () => {
     });
 
     it("rejects an unknown staff identifier", async () => {
-      const response = await request(app)
+      const agent = await authenticatedAgent();
+      const response = await agent
         .post("/api/v1/staff/validate")
         .send({ istStaffId: "IST-9999" })
         .expect(404);
@@ -35,7 +62,8 @@ describe("IST Qatar Phase I API", () => {
 
   describe("POST /api/v1/triage/calculate-score", () => {
     it("triggers the adult emergency safety floor before NEWS2 routing", async () => {
-      const response = await request(app)
+      const agent = await authenticatedAgent();
+      const response = await agent
         .post("/api/v1/triage/calculate-score")
         .send({
           heart_rate: 135,
@@ -58,7 +86,8 @@ describe("IST Qatar Phase I API", () => {
     });
 
     it("routes pediatric tachypnea to Sidra Medicine pediatric emergency care", async () => {
-      const response = await request(app)
+      const agent = await authenticatedAgent();
+      const response = await agent
         .post("/api/v1/triage/calculate-score")
         .send({
           heart_rate: 100,
@@ -88,7 +117,8 @@ describe("IST Qatar Phase I API", () => {
     });
 
     it("processes stable adult vitals through standard local NEWS2 scoring", async () => {
-      const response = await request(app)
+      const agent = await authenticatedAgent();
+      const response = await agent
         .post("/api/v1/triage/calculate-score")
         .send({
           heart_rate: 72,
@@ -112,7 +142,8 @@ describe("IST Qatar Phase I API", () => {
 
   describe("POST /api/v1/triage/complete", () => {
     it("compiles a bilingual SBAR note and restricts active pilot fit-to-fly status", async () => {
-      const response = await request(app)
+      const agent = await authenticatedAgent();
+      const response = await agent
         .post("/api/v1/triage/complete")
         .set("Accept", "application/json")
         .send({

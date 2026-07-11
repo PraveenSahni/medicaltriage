@@ -14,6 +14,7 @@ const REQUIRED_LIVE_DEPENDENCIES: RequiredLiveDependency[] = [
   { name: "PostgreSQL / Cloud SQL", anyOf: ["DATABASE_URL"] },
   { name: "Oracle Fusion HCM", anyOf: ["ORACLE_HCM_BASE_URL"] },
   { name: "EMR / FHIR endpoint", anyOf: ["EMR_BASE_URL", "FHIR_BASE_URL", "ORACLE_HEALTH_BASE_URL"] },
+  { name: "JWT signing secret", anyOf: ["AUTH_JWT_SECRET"] },
   { name: "Twilio account SID", anyOf: ["TWILIO_ACCOUNT_SID"] },
   { name: "Twilio auth token", anyOf: ["TWILIO_AUTH_TOKEN"] }
 ];
