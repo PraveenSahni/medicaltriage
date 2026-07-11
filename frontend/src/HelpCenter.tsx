@@ -37,12 +37,19 @@ type HelpTab = {
   icon: LucideIcon;
 };
 
+type WhatWhyHow = {
+  what: string;
+  why: string;
+  how: string[];
+};
+
 type LibraryArea = {
   id: string;
   title: string;
   eyebrow: string;
   icon: LucideIcon;
   summary: string;
+  framework?: WhatWhyHow;
   usedBy: string[];
   details: string[];
   helps?: Array<{
@@ -88,6 +95,7 @@ type HelpGuide = {
   icon: LucideIcon;
   audience: string;
   goal: string;
+  framework: WhatWhyHow;
   steps: string[];
   safety: string;
 };
@@ -274,6 +282,17 @@ const helpGuides: HelpGuide[] = [
     audience: "Remote Triage Nurse, Senior Triage Nurse, Pediatric Triage Nurse",
     goal:
       "Run a safe remote encounter from staff validation to disposition, SBAR note, and CCP follow-up without allowing AI to downgrade the rules engine.",
+    framework: {
+      what:
+        "A nurse-led operating guide for one remote triage encounter, from caller identity through route decision, SBAR handoff, and CCP follow-up.",
+      why:
+        "The core problem is safe triage at call-center speed: nurses need a clear sequence that catches high-acuity findings early, keeps AI advisory, and preserves accountability.",
+      how: [
+        "Validate staff or dependent context before collecting clinical detail.",
+        "Capture symptoms, vitals, age, duty state, language, and aviation flags.",
+        "Apply deterministic red floors first, then review route, rationale, SBAR, and CCP actions before final advice."
+      ]
+    },
     steps: [
       "Validate the staff ID and select the staff member or dependent context before discussing clinical detail.",
       "Capture chief complaint, narrative, age, duty context, aviation flags, and vital signs where available.",
@@ -291,6 +310,17 @@ const helpGuides: HelpGuide[] = [
     audience: "Clinical Governance Lead, Protocol Content Manager, Quality Reviewer",
     goal:
       "Review whether content, routing, overrides, bilingual text, and audit traces are clinically safe enough for UAT and production release.",
+    framework: {
+      what:
+        "A governance review path for clinical content, safety floors, route mapping, override behavior, and release evidence.",
+      why:
+        "The root risk is unapproved clinical variation: protocol content, local destinations, AI wording, and nurse-facing guidance must be clinically validated before production.",
+      how: [
+        "Review acuity order, severity mapping, disposition, rationale, and care-advice links.",
+        "Sample adult, pediatric, aviation, urgent, self-care, and AI-downgrade scenarios.",
+        "Approve local Qatar routes and release gates before activating production content."
+      ]
+    },
     steps: [
       "Check that every algorithm has acuity-ordered questions, severity, disposition, rationale, and care-advice mapping.",
       "Review the Phase I open-source baseline separately from any future licensed STCC/SymptomScreen import.",
@@ -308,6 +338,17 @@ const helpGuides: HelpGuide[] = [
     audience: "Security Administrator, Privacy Officer / DPO, Compliance Auditor",
     goal:
       "Understand how login, roles, permissions, masking, reveal, audit, and Qatar/GDPR-aligned controls protect clinical and staff data.",
+    framework: {
+      what:
+        "A security and privacy guide for identity, role access, masking, reveal approvals, audit trails, retention, and data-law control mapping.",
+      why:
+        "The platform handles sensitive staff and health context; access must be explainable, least-privilege, auditable, and aligned with Qatar data law and GDPR-style privacy-by-design principles.",
+      how: [
+        "Validate distinct roles and permissions through the grouped simulator and Admin panels.",
+        "Keep PHI ephemeral until persistence, retention, and legal basis are approved.",
+        "Require audit events for reveal, export, role changes, failed access, and employee-facing communication."
+      ]
+    },
     steps: [
       "Use the grouped role simulator to confirm each role has a distinct access profile rather than duplicate all-access behavior.",
       "Review Security Admin for users, roles, SSO, encryption, reveal controls, and audit events.",
@@ -325,6 +366,17 @@ const helpGuides: HelpGuide[] = [
     audience: "Integration Administrator, System Administrator, Reporting Analyst",
     goal:
       "Seed, test, and later migrate clinical content without changing the nurse-facing workflow or bypassing deterministic safety floors.",
+    framework: {
+      what:
+        "An engineering guide for database schema, clinical seed content, Oracle HCM-style data ingestion, API adapters, tests, and migration readiness.",
+      why:
+        "The integration problem is avoiding brittle rewrites: clinical content, HRMS, EMR, communication, and analytics must connect behind stable IST APIs.",
+      how: [
+        "Run Prisma migration/seed and verify schema, row counts, and API contracts.",
+        "Keep Oracle HCM, EMR, insurer, scheduling, Twilio, Graph, and analytics behind backend adapters.",
+        "Run safety, API, simulation, and frontend build tests after every content or integration change."
+      ]
+    },
     steps: [
       "Run Prisma migrations against the approved PostgreSQL database, then run the Phase I seed.",
       "Use the seed to populate Algorithm, TriageQuestion, CareAdvice, QuestionAdviceBridge, localized dispositions, and IST demo staff records.",
@@ -342,6 +394,17 @@ const helpGuides: HelpGuide[] = [
     audience: "Clinical Governance Lead, AI Engineer, Security Administrator, Cloud Platform Engineer",
     goal:
       "Use MedGemma or another approved clinical LLM as a governed copilot while preserving the rules-first triage engine, nurse approval, and Qatar-hosted production controls.",
+    framework: {
+      what:
+        "A cloud and LLM strategy for using MedGemma or another approved model as an advisory copilot for explanation, summaries, missing-question prompts, and SBAR drafts.",
+      why:
+        "The model must not become an invisible clinical decision-maker; the safety floor, nurse approval, privacy posture, model lineage, and Qatar-hosted controls must remain explicit.",
+      how: [
+        "Evaluate synthetic rows first, then use retrieval/prompting before any fine-tuning.",
+        "Expose model output only through a backend adapter with masking, logging, and downgrade blocking.",
+        "Move to private GCP Doha serving only after clinical, privacy, security, cost, and quota approvals."
+      ]
+    },
     steps: [
       "Start with evaluation, not training: use the synthetic JSONL rows to test whether the model explains the deterministic disposition, asks useful missing-context questions, and refuses to downgrade red floors.",
       "Use prompt engineering and retrieval before fine-tuning; clinical protocol text, local routing policy, and SBAR templates should be retrieved or injected as governed context.",
@@ -1304,6 +1367,238 @@ const libraryAreas: LibraryArea[] = [
     ]
   }
 ];
+
+const libraryWhatWhyHow: Record<string, WhatWhyHow> = {
+  teletriage: {
+    what:
+      "The remote encounter engine that moves one caller from staff/dependent validation through symptom capture, acuity rule-out, local routing, documentation, and nurse approval.",
+    why:
+      "The core problem is that remote clinical calls can miss context or bury red flags. The engine makes the sequence explicit so emergency findings, aviation duty impact, and human accountability stay visible.",
+    how: [
+      "Validate identity, dependent status, duty context, language, and location.",
+      "Capture complaint, narrative, vitals, red flags, age, sex, and aviation flags.",
+      "Apply deterministic safety floors, then route, document, and hand off through SBAR and CCP."
+    ]
+  },
+  ccp: {
+    what:
+      "The Continuous Communication Pipeline: one employee communication index with separate visit, call, teleconsult, and follow-up threads.",
+    why:
+      "Clinical continuity breaks when call notes, WhatsApp, SMS, email, callbacks, and route handoffs are scattered. CCP keeps every episode separate but linked for nurse review.",
+    how: [
+      "Open a new thread for each visit or call while keeping previous thread links visible.",
+      "Create goals for callbacks, route handoffs, fit-to-duty, safety precautions, and dependent follow-up.",
+      "Queue outbound messages until Remote Triage Nurse approval, then send through guarded WhatsApp/SMS/email adapters."
+    ]
+  },
+  protocols: {
+    what:
+      "The structured clinical content layer: algorithms, acuity-ordered questions, severity, rationale, disposition codes, and care advice.",
+    why:
+      "Triage safety depends on asking high-acuity questions first and tracing the final route back to approved clinical content rather than prompt wording.",
+    how: [
+      "Load protocol content into Algorithm, TriageQuestion, CareAdvice, and bridge tables.",
+      "Keep emergency questions ordered before urgent, routine, or self-care content.",
+      "Replace sample content with licensed/approved content before production activation."
+    ]
+  },
+  "llm-copilot-cloud": {
+    what:
+      "The governed MedGemma/LLM copilot strategy for explanation, summarization, missing-question prompts, bilingual wording, and SBAR drafting.",
+    why:
+      "The LLM must assist without becoming an invisible clinical authority. Safety floors, route decisions, nurse approval, privacy controls, and model lineage must remain outside the model.",
+    how: [
+      "Evaluate synthetic JSONL before any live endpoint or tuning.",
+      "Expose the model only through a backend adapter with masking, logging, and downgrade blocking.",
+      "Move to private GCP Doha serving only after clinical, privacy, security, quota, and cost approval."
+    ]
+  },
+  "data-ingestion": {
+    what:
+      "The ingestion and QA model for clinical content, local dispositions, aviation tables, synthetic Oracle HCM-style feeds, and normalized projections.",
+    why:
+      "The system must accept better data over time without changing the nurse workflow or weakening deterministic clinical safety.",
+    how: [
+      "Run migrations and seed approved baseline content into the relational schema.",
+      "Map Oracle-style worker/contact payloads into IST staff/dependent validation responses.",
+      "Use tests and row-count evidence before activating any imported content release."
+    ]
+  },
+  "prisma-model": {
+    what:
+      "The PostgreSQL relational backbone for protocols, staff/dependents, aviation encounters, audit logs, and security administration.",
+    why:
+      "A stable schema keeps clinical content, HR context, audit evidence, and security controls traceable as the MVP moves toward production.",
+    how: [
+      "Maintain protocol, staff projection, encounter, audit, and security models in Prisma.",
+      "Run Prisma validation, migrations, and seed against an approved PostgreSQL database.",
+      "Persist PHI only after retention, residency, and EMR-write policies are approved."
+    ]
+  },
+  "simulation-engine": {
+    what:
+      "A synthetic-only state-machine simulation that emits triage outcomes, transition logs, SBAR, audit traces, and LLM-ready rows.",
+    why:
+      "The team needs realistic data to validate safety, queue behavior, and copilot prompts without using real employee or patient records.",
+    how: [
+      "Generate scenarios with demographics, symptoms, vitals, route context, and aviation flags.",
+      "Run semantic matching, red floors, NEWS2-style scoring, aviation gates, and route selection.",
+      "Export JSONL rows for evaluation, regression tests, and governed training workflows."
+    ]
+  },
+  "synthetic-employee-data": {
+    what:
+      "A synthetic aviation workforce and dependent factory shaped like Oracle Fusion HCM source payloads plus IST normalized projections.",
+    why:
+      "The system needs large-scale employee, dependent, and encounter data to stress-test workflows before live HRMS access is approved.",
+    how: [
+      "Generate synthetic publicWorkers, workers, assignments, contacts, dependents, absences, and encounter history.",
+      "Preserve contextual cohorts for children, female health, pregnancy red flags, male health, and aviation duties.",
+      "Use output for adapter tests, queue tests, analytics, and LLM evaluation only."
+    ]
+  },
+  "clinical-simulation-engine": {
+    what:
+      "The end-to-end rehearsal engine for employee verification, vector retrieval, nurse triage, safety floors, aviation restrictions, SBAR, FHIR-shaped output, and audit logging.",
+    why:
+      "Before live Oracle HCM or EMR integration, teams need a complete test harness that proves the clinical journey and safety controls together.",
+    how: [
+      "Consume the synthetic Oracle HCM-style feed and verify staff/dependents.",
+      "Match complaints to protocol anchors and run deterministic safety and aviation rules.",
+      "Emit bilingual SBAR, simulated FHIR bundles, audit logs, and LLM-ready training rows."
+    ]
+  },
+  "api-contracts": {
+    what:
+      "The backend contract catalogue for staff validation, triage scoring, encounter completion, simulation, CCP, auth, and administration.",
+    why:
+      "Stable APIs let the frontend, Oracle HCM, EMR, communication providers, analytics, and future LLM adapter evolve without rewriting the nurse workspace.",
+    how: [
+      "Keep frontend calls routed through IST API endpoints.",
+      "Place Oracle, insurer, EMR, scheduling, Twilio, Graph, analytics, and LLM providers behind adapters.",
+      "Version new endpoints and preserve compatibility aliases used by tests and integrations."
+    ]
+  },
+  "test-pack": {
+    what:
+      "The regression evidence pack for triage safety, simulation, synthetic data generation, and frontend build integrity.",
+    why:
+      "Every clinical or integration change needs repeatable proof that red floors, pediatric routing, SBAR, AI downgrade blocking, and UI rendering still work.",
+    how: [
+      "Run Jest/Supertest for API behavior and frontend type/build checks.",
+      "Run Python safety, synthetic data, clinical simulation, and bulk simulation tests.",
+      "Treat failed red-floor, routing, SBAR, or downgrade-blocking tests as release blockers."
+    ]
+  },
+  "content-release": {
+    what:
+      "The lifecycle for moving from sample Phase I content to licensed or locally approved clinical protocol releases.",
+    why:
+      "Clinical content is not just data; it is governed medical logic that needs versioning, review, activation, rollback, and audit evidence.",
+    how: [
+      "Import a release with source, version, checksums, row counts, and validation errors.",
+      "Run clinical and technical regression tests against the imported package.",
+      "Activate only one approved content package per mode and region."
+    ]
+  },
+  "frontend-surfaces": {
+    what:
+      "The visible application surfaces: login, triage workspace, CCP workspace, admin portal, Help, Library, Governance, and Security Admin.",
+    why:
+      "Different users need different levels of clarity; nurses need fast action, administrators need controls, and governance teams need evidence.",
+    how: [
+      "Keep the login minimal and role-aware.",
+      "Keep the triage workspace focused on one call and one next action.",
+      "Use Help/Library to explain workflows, evidence, integrations, and open production gaps."
+    ]
+  },
+  identity: {
+    what:
+      "The staff, dependent, eligibility, and duty-context layer used before clinical triage begins.",
+    why:
+      "Wrong identity or missing dependent context can lead to incorrect age, route, eligibility, callback, or duty decisions.",
+    how: [
+      "Validate staff ID and select staff or dependent patient context.",
+      "Map Oracle HCM workers, assignments, contacts, and dependents into the internal response.",
+      "Use eligibility and duty status for routing support, not to block emergency advice."
+    ]
+  },
+  safety: {
+    what:
+      "The deterministic safety floor that defines the minimum permitted severity before AI or lower-acuity logic is considered.",
+    why:
+      "The system must never allow prompt wording, model output, or routine workflow pressure to downgrade emergency findings.",
+    how: [
+      "Evaluate consciousness, SpO2, respiratory rate, heart rate, pediatric tachypnea, and red-flag symptoms first.",
+      "Lock the minimum severity and route when emergency or urgent floors are triggered.",
+      "Audit any AI mismatch, nurse override, or downgrade-blocking event."
+    ]
+  },
+  aviation: {
+    what:
+      "The aviation medicine layer for crew role, duty status, fit-to-fly, outstation, sickness, vaccination reaction, and occupational context.",
+    why:
+      "Aviation staff may be clinically stable but operationally unsafe for duty; the route must account for safety-sensitive work.",
+    how: [
+      "Capture crew role, on-duty state, outstation status, sickness request, and vaccination timing.",
+      "Apply duty restriction or medical review tags when safety-sensitive symptoms are present.",
+      "Document aviation tags in SBAR and CCP follow-up for governed closure."
+    ]
+  },
+  routing: {
+    what:
+      "The localized disposition routing model for Sidra, HMC, PHCC, IST medical routes, teleconsult escalation, and self-care.",
+    why:
+      "Clinical severity must convert into a real local destination and handoff path, not just a generic recommendation.",
+    how: [
+      "Route pediatric emergency to Sidra and adult/general emergency to HMC pathways.",
+      "Apply urgent, routine, outstation, occupational, and self-care routes after red floors.",
+      "Keep destination rules configurable under local medical governance."
+    ]
+  },
+  documentation: {
+    what:
+      "The SBAR/SOAP handover payload and structured documentation model for clipboard and future EMR/FHIR integration.",
+    why:
+      "A safe triage call must leave a clean, reviewable handoff that explains context, route, rationale, and nurse accountability.",
+    how: [
+      "Compile situation, background, assessment, recommendation, route, rationale, and aviation tags.",
+      "Return clipboard text in the MVP and structured payloads for future EMR writeback.",
+      "Keep final documentation nurse-reviewed before handoff."
+    ]
+  },
+  audit: {
+    what:
+      "The safety audit and explainability layer for rules, AI mismatches, overrides, downgrade blocks, and quality review.",
+    why:
+      "Clinical safety and compliance depend on being able to reconstruct what happened, who approved it, and why the route was selected.",
+    how: [
+      "Log deterministic rule hits, AI suggestions, final disposition, and nurse rationale.",
+      "Mark emergency cases and AI mismatches for safety review.",
+      "Use audit dashboards and exports for QA sampling, incident follow-up, and training feedback."
+    ]
+  }
+};
+
+function getLibraryWhatWhyHow(area: LibraryArea): WhatWhyHow {
+  if (area.framework) {
+    return area.framework;
+  }
+
+  const configured = libraryWhatWhyHow[area.id];
+  if (configured) {
+    return configured;
+  }
+
+  return {
+    what: area.summary,
+    why:
+      area.helps?.[0]?.body ??
+      area.usefulFor?.[0]?.body ??
+      "This topic exists so users can move from assumptions to traceable facts, purpose, and action inside the triage platform.",
+    how: area.exampleFlow ?? area.details.slice(0, 5)
+  };
+}
 
 const routeDecisionOrder = [
   "Emergency safety floor first: pediatric emergency to Sidra, adult/general or unknown-age emergency to HMC.",
@@ -2378,7 +2673,8 @@ function HelpManualPanel({
                 <h4>Audience</h4>
                 <p>{guide.audience}</p>
               </div>
-              <RouteDetailList title="What to do" items={guide.steps} />
+              <WhatWhyHowPanel framework={guide.framework} />
+              <RouteDetailList title="Detailed checklist" items={guide.steps} />
               <div className="help-route-governance">
                 <h4>Safety note</h4>
                 <p>{guide.safety}</p>
@@ -2457,6 +2753,19 @@ function HelpManualPanel({
             body="Localized route matrix and aviation-specific operational rules for Sidra, HMC, PHCC, IST medical routes, outstation review, and self-care."
           />
         </div>
+        <WhatWhyHowPanel
+          framework={{
+            what:
+              "Every Help and Library topic should first define the fact, object, workflow, risk, or problem being discussed.",
+            why:
+              "The framework prevents assumptions: users can see the purpose and root cause before jumping into controls, APIs, or process steps.",
+            how: [
+              "Use What to confirm the topic and current state.",
+              "Use Why to understand the motivation, safety reason, or business problem.",
+              "Use How to follow the concrete actions, implementation path, or validation steps."
+            ]
+          }}
+        />
       </article>
     </section>
   );
@@ -2619,6 +2928,7 @@ function LibraryPanel({
   onSelectArea: (areaId: string) => void;
 }) {
   const Icon = selectedArea.icon;
+  const framework = getLibraryWhatWhyHow(selectedArea);
 
   return (
     <section className="help-library-grid">
@@ -2654,6 +2964,8 @@ function LibraryPanel({
             <p>{selectedArea.summary}</p>
           </div>
         </div>
+
+        <WhatWhyHowPanel framework={framework} />
 
         <div className="help-detail-columns">
           <div>
@@ -3199,6 +3511,29 @@ function HelpCard({
         </div>
       </div>
     </article>
+  );
+}
+
+function WhatWhyHowPanel({ framework }: { framework: WhatWhyHow }) {
+  return (
+    <div className="help-wwh-grid" aria-label="What why how framework">
+      <div className="help-wwh-item">
+        <strong>What</strong>
+        <p>{framework.what}</p>
+      </div>
+      <div className="help-wwh-item">
+        <strong>Why</strong>
+        <p>{framework.why}</p>
+      </div>
+      <div className="help-wwh-item">
+        <strong>How</strong>
+        <ul>
+          {framework.how.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
 

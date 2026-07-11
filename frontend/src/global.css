@@ -2460,6 +2460,54 @@ button {
   line-height: 1.5;
 }
 
+.help-wwh-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.help-wwh-item {
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  background: var(--bg2);
+  padding: 13px;
+}
+
+.help-wwh-item strong {
+  display: inline-flex;
+  min-width: 54px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--t1bg);
+  color: var(--t1);
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.help-wwh-item p,
+.help-wwh-item ul {
+  margin: 9px 0 0;
+  color: var(--tx2);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.help-wwh-item ul {
+  display: grid;
+  gap: 6px;
+  padding-left: 16px;
+}
+
+.help-wwh-item li {
+  padding-left: 2px;
+}
+
 .help-flow-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3781,6 +3829,7 @@ button:disabled {
   .help-library-hero,
   .help-flow-grid,
   .help-compare-grid,
+  .help-wwh-grid,
   .help-detail-columns,
   .help-security-layout,
   .help-security-columns,
