@@ -12,8 +12,9 @@ import {
   Users
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import SafetyDashboard from "./components/SafetyDashboard";
 
-type AdminTab = "dashboard" | "users" | "access" | "sso" | "privacy" | "audit";
+type AdminTab = "dashboard" | "safety" | "users" | "access" | "sso" | "privacy" | "audit";
 
 type Session = {
   user: {
@@ -183,6 +184,7 @@ export default function AdminPortal({ session }: { session: Session }) {
     () =>
       [
         { key: "dashboard" as const, label: "Dashboard", icon: Activity, enabled: hasPermission("audit.events.view") },
+        { key: "safety" as const, label: "AI Safety", icon: AlertTriangle, enabled: hasPermission("audit.events.view") },
         { key: "users" as const, label: "Users", icon: Users, enabled: hasPermission("admin.users.manage") },
         { key: "access" as const, label: "Access", icon: ShieldCheck, enabled: hasPermission("admin.roles.manage") },
         { key: "sso" as const, label: "SSO", icon: Fingerprint, enabled: hasPermission("security.sso.manage") },
@@ -317,6 +319,7 @@ export default function AdminPortal({ session }: { session: Session }) {
       </div>
 
       {activeTab === "dashboard" && <DashboardPanel dashboard={data.dashboard} />}
+      {activeTab === "safety" && <SafetyDashboard />}
       {activeTab === "users" && (
         <UsersPanel users={data.users} revealResult={revealResult} onReveal={requestReveal} />
       )}

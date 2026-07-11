@@ -12,6 +12,7 @@ import { requireAuthenticatedSession } from "./middleware/auth.js";
 import { corsRejectionHandler, globalErrorHandler } from "./middleware/error.js";
 import { rateLimit } from "./middleware/rateLimit.js";
 import { createAdminRouter } from "./routes/admin.js";
+import { createApprovalRouter } from "./routes/approvalRouter.js";
 import { createAuthRouter } from "./routes/auth.js";
 import { createCcpRouter } from "./routes/ccp.js";
 import { createEmrRouter } from "./routes/emr.js";
@@ -85,6 +86,7 @@ export function createApp() {
 
   app.use("/api/v1/auth", createAuthRouter());
   app.use("/api/v1/admin", requireAuthenticatedSession, createAdminRouter());
+  app.use("/api/v1/approval", requireAuthenticatedSession, createApprovalRouter());
   app.use("/api/v1/ccp", requireAuthenticatedSession, createCcpRouter());
   app.use("/api/v1/staff/validate", staffValidateRateLimit);
   app.use("/api/v1/staff", requireAuthenticatedSession, createStaffRouter());

@@ -34,7 +34,8 @@
     "test:python": "node scripts/runPython.mjs python/test_safety_wrapper.py",
     "test:synthetic-data": "node scripts/runPython.mjs python/test_synthetic_pdp_generator.py",
     "test:clinical-sim": "node scripts/runPython.mjs python/test_clinical_simulation_engine.py",
-    "test:bulk-sim": "node scripts/runPython.mjs python/test_bulk_clinical_simulation.py"
+    "test:bulk-sim": "node scripts/runPython.mjs python/test_bulk_clinical_simulation.py",
+    "test:ai-scorecard": "node scripts/runPython.mjs python/test_triage_safety_scorecard.py"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

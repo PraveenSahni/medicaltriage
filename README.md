@@ -163,6 +163,8 @@ The same trace is written to `python/audit.sqlite3` in the `safety_audit_deviati
 - Replace `src/services/hrms.ts` with the Oracle Fusion HCM adapter while preserving the return contract. The target Oracle APIs are documented in `docs/oracle-fusion-hcm-integration.md` and surfaced in the Help > Integration tab.
 - Replace synthetic Phase 1 protocol content and mock triage rules with licensed STCC content or an approved clinical rules service.
 - EMR/FHIR writeback starts through `POST /api/v1/emr/writeback/:encounterId`. It builds a nurse-approved FHIR R4 `DocumentReference` in dry-run mode by default, checks QHIE consent, routes adult cases to Cerner-style HMC/PHCC targets and pediatric cases to Epic-style Sidra targets, and stores only non-PHI status metadata in audit events.
+- Clinical AI approval starts through `/api/v1/approval`. The queue and review endpoints force feature-level reasoning review before EMR writeback or patient communication can proceed; the Safety Officer dashboard is available in Admin > AI Safety for audit-enabled roles.
+- Python AI safety scoring is implemented in `python/TriageSafetyScorecard.py` and can be regression-tested with `npm run test:ai-scorecard`.
 - Connect Prisma persistence only after the PHI retention policy is approved. The API scaffold currently treats clinical payloads as ephemeral and returns the SBAR clipboard payload without writing PHI.
 - Use the `SafetyAuditDeviationLog` model and Python SQLite trace as the starting point for the Safety Officer dashboard.
 - Target GCP Qatar region `me-central1` for Cloud Run, Cloud SQL PostgreSQL, and Cloud Run Jobs. See `docs/phase-1-gcp-qatar.md`.
