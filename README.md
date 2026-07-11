@@ -42,6 +42,42 @@ pnpm prisma:generate
 pnpm dev
 ```
 
+## Local PostgreSQL Live-Mode Test
+
+Use the local Docker Compose database when you want to validate live-mode Prisma writes and reads without provisioning GCP Cloud SQL.
+
+1. Copy `.env.example` to `.env` and keep the local database values aligned. The API loads `.env` at startup without requiring an extra dotenv package:
+
+```env
+DATABASE_URL="postgresql://triage_user:triage_password@localhost:5432/ist_triage?schema=public"
+POSTGRES_USER=triage_user
+POSTGRES_PASSWORD=triage_password
+POSTGRES_DB=ist_triage
+POSTGRES_PORT=5432
+```
+
+2. Start PostgreSQL and apply the Prisma schema:
+
+```bash
+pnpm db:local:up
+pnpm prisma:migrate
+pnpm db:seed
+```
+
+3. For a live-mode persistence run, set the required integration variables before starting the API:
+
+```env
+MOCK_MODE=false
+ADMIN_PASSWORD="replace-with-a-secure-local-uat-password"
+AUTH_JWT_SECRET="replace-with-a-long-random-secret"
+ORACLE_HCM_BASE_URL="https://example.fa.oraclecloud.com"
+EMR_BASE_URL="https://example-emr.local"
+TWILIO_ACCOUNT_SID="local-placeholder"
+TWILIO_AUTH_TOKEN="local-placeholder"
+```
+
+The server rejects `MOCK_MODE=false` if `ADMIN_PASSWORD` is missing or still set to the mock local fallback. The frontend role simulator uses `VITE_DEMO_ADMIN_PASSWORD` only for local demos; do not expose a production administrator secret through Vite/browser configuration.
+
 Run the frontend SPA:
 
 ```bash

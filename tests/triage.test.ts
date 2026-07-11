@@ -1,6 +1,9 @@
 import request from "supertest";
 import { createApp } from "../src/app.js";
 
+const TEST_ADMIN_PASSWORD = "TestAdminPassword!2026";
+process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
+
 const app = createApp();
 
 async function authenticatedAgent() {
@@ -9,7 +12,7 @@ async function authenticatedAgent() {
     .post("/api/v1/auth/login")
     .send({
       username: "nurse@ist.local",
-      password: "DemoPass!2026",
+      password: TEST_ADMIN_PASSWORD,
       simulateRole: "remote_triage_nurse"
     })
     .expect(200);

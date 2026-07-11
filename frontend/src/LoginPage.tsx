@@ -27,6 +27,7 @@ type LoginPageProps = {
 };
 
 const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+const simulationLoginPassword = import.meta.env.VITE_DEMO_ADMIN_PASSWORD || "LocalMockAdmin!2026";
 
 type SimulationRole = {
   value: string;
@@ -260,7 +261,7 @@ export default function LoginPage({ onAuthenticated }: LoginPageProps) {
     setPassword("");
     setRememberMe(false);
     setStatus(`Opening simulated ${selectedRole.landing}.`);
-    await loginWithCredentials(selectedRole.username, "DemoPass!2026", false, selectedRole.value);
+    await loginWithCredentials(selectedRole.username, simulationLoginPassword, false, selectedRole.value);
   }
 
   return (

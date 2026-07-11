@@ -446,8 +446,8 @@ const validationReviewItems: ValidationReviewItem[] = [
     area: "Data ingestion",
     verdict: "Partially built",
     evidence:
-      "prisma/seed.ts is typed and ready, but seed execution requires a live PostgreSQL database at DATABASE_URL.",
-    nextStep: "Start/provision PostgreSQL, run migrations, run npm run db:seed, then capture seed evidence in the audit dashboard."
+      "prisma/seed.ts is typed and ready, and docker-compose.yml now provides a local PostgreSQL 15 target for live-mode write/read validation.",
+    nextStep: "Run npm run db:local:up, npm run prisma:migrate, npm run db:seed, then capture seed evidence in the audit dashboard."
   },
   {
     area: "Python AI safety wrapper",
@@ -1258,7 +1258,7 @@ const libraryAreas: LibraryArea[] = [
       },
       {
         title: "Evidence gap",
-        body: "Database seed execution still requires a live PostgreSQL database, so seed proof should be collected once the database is running."
+        body: "Database seed execution can now be tested locally through Docker Compose PostgreSQL before moving the same schema to Cloud SQL in GCP Doha."
       }
     ]
   },
@@ -2220,7 +2220,8 @@ const securityAdminHelpTopics: SecurityAdminHelpTopic[] = [
       "Session restore uses the same permission logic as login, so refresh keeps the correct landing area."
     ],
     production: [
-      "Replace the demo password gate with Argon2id hashes and an enterprise identity store.",
+      "ADMIN_PASSWORD is now environment-driven; MOCK_MODE=false rejects startup when the password is missing or still uses the mock local fallback.",
+      "Replace the local password gate with Argon2id hashes and an enterprise identity store.",
       "Add password reset, MFA/OTP screens, CAPTCHA after repeated failures, refresh-token rotation, and forced logout controls.",
       "Connect planned-maintenance, password-expiry, and session-timeout notices to policy configuration."
     ]

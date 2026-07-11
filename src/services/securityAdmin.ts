@@ -1,5 +1,6 @@
 import { randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import type { IncomingHttpHeaders } from "node:http";
+import { getAdminPassword } from "../config/runtime.js";
 import type {
   AdminUser,
   AuditEvent,
@@ -1522,9 +1523,10 @@ export async function authenticateLocal(args: {
     return { ok: false, message: "Account is temporarily locked. Contact the helpdesk.", locked: true };
   }
 
-  // Demo credential gate for local development. Production local login must use
-  // Argon2id password hashes through the enterprise identity store.
-  const passwordOk = safeCompare(args.password, "DemoPass!2026");
+  // Local credential gate for development and UAT scaffolding. Live mode must
+  // provide ADMIN_PASSWORD through the deployment environment or Secret Manager.
+  const configuredPassword = getAdminPassword();
+  const passwordOk = configuredPassword.length > 0 && safeCompare(args.password, configuredPassword);
   if (!user || user.accountStatus !== "active" || !passwordOk) {
     failedLoginAttempts.set(username, currentFailures + 1);
     await recordAuditEvent({
