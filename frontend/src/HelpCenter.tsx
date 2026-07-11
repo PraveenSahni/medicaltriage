@@ -28,6 +28,9 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { InteroperabilityTab } from "./components/HelpCenter/InteroperabilityTab";
+import { SystemPurposeTab } from "./components/HelpCenter/SystemPurposeTab";
+import { ApiCatalogTable, HelpCard, MatrixHelpCard, MiniDefinition } from "./components/HelpCenter/shared";
 
 type TabKey = "help" | "library" | "overview" | "workflow" | "qatar" | "integration" | "governance" | "security";
 
@@ -2659,7 +2662,13 @@ export default function HelpCenter() {
           onOpenTab={setActiveTab}
         />
       )}
-      {activeTab === "overview" && <OverviewPanel />}
+      {activeTab === "overview" && (
+        <SystemPurposeTab
+          systemCards={systemCards}
+          dataConsumptionStrategyCards={dataConsumptionStrategyCards}
+          teleTriageStages={teleTriageStages}
+        />
+      )}
       {activeTab === "workflow" && <WorkflowPanel />}
       {activeTab === "library" && (
         <LibraryPanel
@@ -2669,7 +2678,14 @@ export default function HelpCenter() {
         />
       )}
       {activeTab === "qatar" && <QatarPanel />}
-      {activeTab === "integration" && <IntegrationPanel />}
+      {activeTab === "integration" && (
+        <InteroperabilityTab
+          integrationRows={integrationRows}
+          oracleHcmApiRows={oracleHcmApiRows}
+          plannedApiRows={plannedApiRows}
+          llmCloudMigrationTasks={llmCloudMigrationTasks}
+        />
+      )}
       {activeTab === "governance" && <GovernancePanel />}
       {activeTab === "security" && <SecurityAdministrationPanel />}
     </div>
@@ -2841,94 +2857,6 @@ function HelpManualPanel({
             ]
           }}
         />
-      </article>
-    </section>
-  );
-}
-
-function OverviewPanel() {
-  return (
-    <section className="help-grid">
-      {systemCards.map((card) => (
-        <HelpCard key={card.title} title={card.title} body={card.body} icon={card.icon} />
-      ))}
-      <article className="help-card help-card-wide">
-        <div className="help-card-heading">
-          <span className="help-icon">
-            <Database className="h-5 w-5" />
-          </span>
-          <div>
-            <span className="tag-label">DATA CONSUMPTION STRATEGY</span>
-            <h3 className="help-title">Clinical data ingestion and migration model</h3>
-            <p>
-              The help library now shows the two ingestion strategies behind the recent Phase I
-              backend work: open-source clinical standards for MVP validation, and a controlled
-              licensed-content migration path for UAT or Go-Live.
-            </p>
-          </div>
-        </div>
-        <div className="help-compare-grid">
-          {dataConsumptionStrategyCards.map((card) => (
-            <DataStrategyHelpCard key={card.title} card={card} />
-          ))}
-        </div>
-      </article>
-      <article className="help-card help-card-wide">
-        <div className="help-card-heading">
-          <span className="help-icon">
-            <PhoneCall className="h-5 w-5" />
-          </span>
-          <div>
-            <h3 className="help-title">How tele-triage works in this system</h3>
-            <p>
-              The application is built around a remote nurse-led encounter. It gathers caller
-              context, matches a clinical protocol, rules out emergency findings first, applies
-              aviation-specific constraints, proposes a route, and prepares documentation for a
-              clinician-approved decision.
-            </p>
-          </div>
-        </div>
-        <div className="help-route-order" aria-label="Tele-triage operating model">
-          {teleTriageStages.map((stage, index) => (
-            <div key={stage.title} className="help-route-order-step">
-              <strong>{index + 1}</strong>
-              <span>
-                <b>{stage.title}</b>
-                <br />
-                {stage.body}
-              </span>
-            </div>
-          ))}
-        </div>
-      </article>
-      <article className="help-card help-card-wide">
-        <div className="help-card-heading">
-          <span className="help-icon">
-            <BrainCircuit className="h-5 w-5" />
-          </span>
-          <div>
-            <h3 className="help-title">Clinical content strategy</h3>
-            <p>
-              The benchmark is mature ClearTriage/SymptomScreen practice: licensed, annually
-              reviewed clinical protocols, structured checklists, targeted care advice, role-based
-              workflows, training materials, and continuous quality feedback.
-            </p>
-          </div>
-        </div>
-        <div className="help-compare-grid">
-          <MiniDefinition
-            label="ClearTriage-style"
-            body="Licensed nurse triage pathway for comprehensive assessment, clinical documentation, disposition rationale, and care advice."
-          />
-          <MiniDefinition
-            label="SymptomScreen-style"
-            body="Simplified access-staff screening for urgent red-flag detection and safe routing without requiring non-clinical staff to make clinical judgments."
-          />
-          <MiniDefinition
-            label="IST Tech layer"
-            body="Localized staff/dependent identity, insurance status, aviation medicine rules, Arabic/English operation, and Qatar destination routing."
-          />
-        </div>
       </article>
     </section>
   );
@@ -3194,104 +3122,6 @@ function QatarPanel() {
   );
 }
 
-function IntegrationPanel() {
-  return (
-    <section className="help-stack">
-      <article className="help-card">
-        <div className="help-card-heading">
-          <span className="help-icon">
-            <PlugZap className="h-5 w-5" />
-          </span>
-          <div>
-            <h3 className="help-title">Integration Map</h3>
-            <p>
-              The scaffold keeps a stable API contract while individual enterprise connectors are
-              swapped in after security, privacy, and clinical governance approval.
-            </p>
-          </div>
-        </div>
-
-        <div className="help-integration-table">
-          {integrationRows.map(([system, purpose, status]) => (
-            <div key={system} className="help-integration-row">
-              <strong>{system}</strong>
-              <span>{purpose}</span>
-              <small>{status}</small>
-            </div>
-          ))}
-        </div>
-      </article>
-
-      <article className="help-card help-card-wide">
-        <div className="help-card-heading">
-          <span className="help-icon">
-            <Database className="h-5 w-5" />
-          </span>
-          <div>
-            <h3 className="help-title">Oracle Fusion HCM compatibility approach</h3>
-            <p>
-              The platform keeps one internal staff-validation contract and places Oracle Fusion Cloud HCM
-              behind an adapter. The adapter calls the tenant base URL plus
-              <code className="help-inline-code">/hcmRestApi/resources/11.13.18.05</code>, uses
-              service-account authentication from GCP Secret Manager, starts read-only, caches only
-              the minimum eligibility snapshot, and escalates to writeback only after HR, privacy,
-              and medical governance approve it.
-            </p>
-          </div>
-        </div>
-      </article>
-
-      <ApiCatalogTable
-        title="Oracle Fusion HCM API plan"
-        body="These are the Oracle HRMS / Oracle Fusion HCM APIs the production connector should use for staff, dependent, duty, absence, and document context."
-        rows={oracleHcmApiRows}
-      />
-
-      <ApiCatalogTable
-        title="All integration APIs"
-        body="This is the full system integration catalogue shown in Help so every connector has a named purpose, API surface, and implementation status."
-        rows={plannedApiRows}
-      />
-
-      <article className="help-card help-card-wide">
-        <div className="help-card-heading">
-          <span className="help-icon">
-            <BrainCircuit className="h-5 w-5" />
-          </span>
-          <div>
-            <span className="tag-label">CLOUD LLM IMPLEMENTATION TASKS</span>
-            <h3 className="help-title">MedGemma strategy for the GCP move</h3>
-            <p>
-              These are the practical implementation tasks for moving from local synthetic
-              evaluation to a governed, private clinical copilot in GCP Doha. The model remains
-              advisory and cannot change deterministic triage rules.
-            </p>
-          </div>
-        </div>
-      </article>
-
-      <div className="help-grid">
-        {llmCloudMigrationTasks.map((card) => (
-          <MatrixHelpCard key={card.title} card={card} />
-        ))}
-      </div>
-
-      <div className="help-grid">
-        <HelpCard
-          title="Adapter rule"
-          body="The frontend and triage engine should keep calling IST triage APIs. Oracle, insurance, EMR, scheduling, and analytics remain replaceable backend adapters with audit logging and fail-safe fallback."
-          icon={Database}
-        />
-        <HelpCard
-          title="Change sync rule"
-          body="Use Oracle Atom feeds for key employee changes and HCM Extracts for bulk baseline or periodic refresh. Avoid high-frequency REST polling against worker data."
-          icon={GitBranch}
-        />
-      </div>
-    </section>
-  );
-}
-
 function GovernancePanel() {
   return (
     <section className="help-grid">
@@ -3505,90 +3335,6 @@ function SecurityDetailList({ title, items }: { title: string; items: string[] }
   );
 }
 
-function DataStrategyHelpCard({ card }: { card: DataStrategyCard }) {
-  const Icon = card.icon;
-
-  return (
-    <div className="help-mini-definition">
-      <span className="status-pill border border-emerald-200 bg-emerald-50 text-emerald-700">
-        {card.eyebrow}
-      </span>
-      <div className="help-card-heading">
-        <span className="help-icon">
-          <Icon className="h-4 w-4" />
-        </span>
-        <div>
-          <strong>{card.title}</strong>
-          <span>{card.body}</span>
-        </div>
-      </div>
-      <ul className="help-bullet-list">
-        {card.bullets.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-      {card.formula && <code className="help-inline-code">{card.formula}</code>}
-      <a href={card.link.href} className="text-emerald-600 font-semibold hover:underline">
-        <ExternalLink className="inline h-3.5 w-3.5" />
-        <span> {card.link.label}</span>
-      </a>
-      <small className="text-emerald-700">{card.status}</small>
-    </div>
-  );
-}
-
-function MatrixHelpCard({ card }: { card: MatrixCard }) {
-  const Icon = card.icon;
-
-  return (
-    <article className="help-card">
-      <div className="help-card-heading">
-        <span className="help-icon">
-          <Icon className="h-5 w-5" />
-        </span>
-        <div>
-          <span className="tag-label">{card.eyebrow}</span>
-          <h3 className="help-title">{card.title}</h3>
-          <p>{card.body}</p>
-        </div>
-      </div>
-      <ul className="help-bullet-list">
-        {card.bullets.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-      <a href={card.link.href} className="text-emerald-600 font-semibold hover:underline">
-        <ExternalLink className="inline h-3.5 w-3.5" />
-        <span> {card.link.label}</span>
-      </a>
-    </article>
-  );
-}
-
-function HelpCard({
-  title,
-  body,
-  icon: Icon
-}: {
-  title: string;
-  body: string;
-  icon: LucideIcon;
-}) {
-  return (
-    <article className="help-card">
-      <div className="help-card-heading">
-        <span className="help-icon">
-          <Icon className="h-5 w-5" />
-        </span>
-        <div>
-          <h3 className="help-title">{title}</h3>
-          <p>{body}</p>
-        </div>
-      </div>
-    </article>
-  );
-}
-
 function WhatWhyHowPanel({ framework }: { framework: WhatWhyHow }) {
   return (
     <div className="help-wwh-grid" aria-label="What why how framework">
@@ -3612,15 +3358,6 @@ function WhatWhyHowPanel({ framework }: { framework: WhatWhyHow }) {
   );
 }
 
-function MiniDefinition({ label, body }: { label: string; body: string }) {
-  return (
-    <div className="help-mini-definition">
-      <strong>{label}</strong>
-      <span>{body}</span>
-    </div>
-  );
-}
-
 function RouteDetailList({
   title,
   items,
@@ -3639,39 +3376,5 @@ function RouteDetailList({
         ))}
       </ul>
     </div>
-  );
-}
-
-function ApiCatalogTable({
-  title,
-  body,
-  rows
-}: {
-  title: string;
-  body: string;
-  rows: ApiCatalogRow[];
-}) {
-  return (
-    <article className="help-card help-card-wide">
-      <div className="help-card-heading">
-        <span className="help-icon">
-          <PlugZap className="h-5 w-5" />
-        </span>
-        <div>
-          <h3 className="help-title">{title}</h3>
-          <p>{body}</p>
-        </div>
-      </div>
-      <div className="help-api-table">
-        {rows.map((row) => (
-          <div key={`${row.area}-${row.status}`} className="help-api-row">
-            <strong>{row.area}</strong>
-            <code>{row.api}</code>
-            <span>{row.use}</span>
-            <small>{row.status}</small>
-          </div>
-        ))}
-      </div>
-    </article>
   );
 }
