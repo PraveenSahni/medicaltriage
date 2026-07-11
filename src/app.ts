@@ -6,6 +6,7 @@ import { createAdminRouter } from "./routes/admin.js";
 import { createAuthRouter } from "./routes/auth.js";
 import { createCcpRouter } from "./routes/ccp.js";
 import { createProtocolsRouter } from "./routes/protocols.js";
+import { createSimulationRouter } from "./routes/simulation.js";
 import { createStaffRouter } from "./routes/staff.js";
 import { createTriageRouter } from "./routes/triage.js";
 import { getCurrentClinicalContentPackage } from "./services/clinicalContent.js";
@@ -37,6 +38,7 @@ export function createApp() {
   app.use("/api/v1/ccp", createCcpRouter());
   app.use("/api/v1/staff", createStaffRouter());
   app.use("/api/v1/protocols", createProtocolsRouter());
+  app.use("/api/v1/simulation", createSimulationRouter());
   app.use("/api/v1/triage", createTriageRouter());
 
   app.use((_req, res) => {

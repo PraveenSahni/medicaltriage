@@ -229,6 +229,12 @@ const systemCards = [
       "The system treats deterministic triage logic as the safety floor. AI can summarize, highlight risks, and suggest next steps, but it cannot lower a protected high-acuity disposition."
   },
   {
+    title: "Governed MedGemma copilot strategy",
+    icon: BrainCircuit,
+    body:
+      "MedGemma is planned as a clinical language copilot for explanation, summarization, translation support, and SBAR drafting. It is not the triage authority; deterministic rules and nurse approval remain the clinical control."
+  },
+  {
     title: "ClearTriage-aligned nurse workflow",
     icon: Stethoscope,
     body:
@@ -328,6 +334,23 @@ const helpGuides: HelpGuide[] = [
     ],
     safety:
       "Data ingestion changes are not clinical approval. They only make data available for governed rules, tests, and clinician review."
+  },
+  {
+    title: "LLM and cloud implementation guide",
+    eyebrow: "MedGemma strategy",
+    icon: BrainCircuit,
+    audience: "Clinical Governance Lead, AI Engineer, Security Administrator, Cloud Platform Engineer",
+    goal:
+      "Use MedGemma or another approved clinical LLM as a governed copilot while preserving the rules-first triage engine, nurse approval, and Qatar-hosted production controls.",
+    steps: [
+      "Start with evaluation, not training: use the synthetic JSONL rows to test whether the model explains the deterministic disposition, asks useful missing-context questions, and refuses to downgrade red floors.",
+      "Use prompt engineering and retrieval before fine-tuning; clinical protocol text, local routing policy, and SBAR templates should be retrieved or injected as governed context.",
+      "For MVP, run a low-cost quantized model only for non-authoritative explanation, summarization, and draft generation. Do not send real PHI to a public endpoint.",
+      "For production, deploy inside GCP Doha (me-central1) using a private GKE or approved Vertex AI custom endpoint pattern, with private networking, IAM, KMS, audit logging, and VPC Service Controls.",
+      "Gate any fine-tuning or reinforcement workflow behind DPO/privacy approval, clinical governance sign-off, synthetic or de-identified training data, evaluation thresholds, rollback, and model registry control."
+    ],
+    safety:
+      "The LLM can assist the nurse, but it cannot diagnose, approve disposition, lower an emergency/urgent floor, approve fitness for duty, or send employee-facing CCP messages without nurse approval."
   }
 ];
 
@@ -373,6 +396,14 @@ const validationReviewItems: ValidationReviewItem[] = [
     evidence:
       "Oracle HCM, EMR, scheduling, Twilio/Graph live transport, insurer verification, transcription, and analytics are documented as adapters, not live production connectors.",
     nextStep: "Approve secrets, scopes, data residency, service accounts, signed webhooks, and least-privilege policies before enabling live mode."
+  },
+  {
+    area: "LLM / MedGemma strategy",
+    verdict: "Pending production",
+    evidence:
+      "The repository has rules-first simulation data and LLM-ready JSONL rows, but no live MedGemma endpoint, provider key, model registry, or cloud inference adapter is enabled yet.",
+    nextStep:
+      "Build the evaluation and provider-adapter layer first, then deploy a private GCP Doha inference endpoint only after security, privacy, clinical governance, and cost approval."
   }
 ];
 
@@ -410,6 +441,90 @@ const dataConsumptionStrategyCards: DataStrategyCard[] = [
     link: {
       href: "#/dashboard",
       label: "View Operations & Audit Dashboard"
+    }
+  },
+  {
+    title: "Governed LLM Copilot Strategy",
+    eyebrow: "MedGemma / clinical AI",
+    icon: BrainCircuit,
+    status: "Strategy defined; endpoint not yet live",
+    body:
+      "The platform will use MedGemma as an assistive clinical language layer only after evaluation, governance, and private deployment controls are in place.",
+    bullets: [
+      "MVP: use synthetic data, prompt evaluation, and optional quantized local/CPU inference for explanation and SBAR drafting. Real clinical disposition remains deterministic and nurse-approved.",
+      "Cloud UAT: expose the LLM through an internal adapter contract so the frontend never calls the model directly and every prompt/output can be logged, masked, evaluated, and blocked.",
+      "Production: host the model inside GCP Doha with private networking, IAM, KMS, audit logging, VPC Service Controls, model registry, rollback, and approved clinical evaluation thresholds."
+    ],
+    link: {
+      href: "#/library",
+      label: "Open LLM Library"
+    }
+  }
+];
+
+const llmCloudMigrationTasks: MatrixCard[] = [
+  {
+    title: "1. Evaluation-first MVP",
+    eyebrow: "Before training",
+    icon: CheckCircle2,
+    body:
+      "Use the existing synthetic training JSONL to measure model behavior before any production model is selected or tuned.",
+    bullets: [
+      "Create train, validation, and test splits from synthetic-only rows.",
+      "Score red-floor refusal, pediatric routing explanation, female-health context, male-health context, Qatar seasonal context, and nurse-approval language.",
+      "Fail the build if the model recommends a lower severity than the deterministic rules or writes employee-facing content as already approved."
+    ],
+    link: {
+      href: "#/library",
+      label: "Review Simulation Library"
+    }
+  },
+  {
+    title: "2. MVP inference adapter",
+    eyebrow: "Low-cost controlled pilot",
+    icon: PlugZap,
+    body:
+      "Add one backend model adapter so the UI and triage engine stay independent from the provider or serving engine.",
+    bullets: [
+      "Support dry-run mode first, then an internal llama.cpp or similar CPU inference endpoint for quantized MedGemma where clinically and legally approved.",
+      "Send only minimum necessary context; prefer synthetic or de-identified payloads during MVP testing.",
+      "Return structured fields: missing questions, rationale summary, SBAR draft, confidence warnings, and safety-floor acknowledgement."
+    ],
+    link: {
+      href: "#/integration",
+      label: "Open Integration Map"
+    }
+  },
+  {
+    title: "3. GCP Doha production serving",
+    eyebrow: "Cloud move",
+    icon: ShieldCheck,
+    body:
+      "Move model serving into the Qatar region with private networking and formal model governance before clinical production.",
+    bullets: [
+      "Deploy on private GKE or an approved Vertex AI custom endpoint in me-central1 after confirming model, accelerator, and service availability.",
+      "Use private ingress, workload identity, Secret Manager, Cloud KMS, Cloud Audit Logs, logging redaction, and VPC Service Controls.",
+      "Use vLLM or another approved high-concurrency serving engine only after performance, cost, and quota testing."
+    ],
+    link: {
+      href: "#/governance",
+      label: "Open Governance"
+    }
+  },
+  {
+    title: "4. Governed tuning and release",
+    eyebrow: "After validation",
+    icon: GitBranch,
+    body:
+      "Treat fine-tuning as a regulated software release, not a shortcut to clinical approval.",
+    bullets: [
+      "Use synthetic or formally de-identified data only unless DPO, clinical governance, and legal approve a stricter path.",
+      "Register every model version with dataset lineage, eval scorecards, known limitations, rollback plan, and approved use cases.",
+      "Keep deterministic safety wrappers outside the model so prompt drift or model upgrades cannot change the clinical floor."
+    ],
+    link: {
+      href: "#/security",
+      label: "Open Security Admin"
     }
   }
 ];
@@ -642,21 +757,107 @@ const libraryAreas: LibraryArea[] = [
     ]
   },
   {
+    id: "llm-copilot-cloud",
+    title: "LLM Copilot and MedGemma Cloud Strategy",
+    eyebrow: "Rules-first AI-second",
+    icon: BrainCircuit,
+    summary:
+      "Defines how the system should use MedGemma or another approved clinical LLM for explanation, summarization, bilingual drafting, and SBAR assistance without handing over clinical decision authority.",
+    usedBy: [
+      "LLM-ready JSONL simulation exports",
+      "python/run_bulk_clinical_simulation.py",
+      "src/services/simulationEngine.ts",
+      "future /api/v1/ai/copilot/evaluate",
+      "future /api/v1/ai/copilot/draft",
+      "future GCP Doha model endpoint"
+    ],
+    details: [
+      "Current state: the platform has synthetic LLM-ready data, safety wrappers, and help governance. It does not yet have a live MedGemma endpoint, training job, provider credentials, model registry, or production inference adapter.",
+      "MedGemma should be treated as a developer model that needs validation, adaptation, and independent clinical verification for the IST Tech tele-triage use case.",
+      "The LLM is allowed to explain why the deterministic engine routed a case, draft SBAR/SOAP text, suggest missing nurse questions, summarize prior CCP threads, and support bilingual wording.",
+      "The LLM is not allowed to diagnose, approve or downgrade a disposition, approve fit-to-duty, approve sickness leave, bypass pediatric/adult red floors, or send WhatsApp/SMS/email without Remote Triage Nurse approval.",
+      "MVP approach: evaluation-first using synthetic data, prompt engineering, retrieval of governed protocol context, and optional low-cost quantized inference for non-authoritative drafting.",
+      "Cloud approach: private GCP Doha deployment in me-central1 after confirming service/accelerator availability, with private GKE or approved Vertex AI custom endpoint, IAM, KMS, audit logging, logging redaction, VPC Service Controls, and model-version governance.",
+      "Training approach: do not fine-tune on live PHI by default. Use synthetic or formally de-identified data, split train/validation/test sets, maintain dataset lineage, and require clinical/DPO/security approval before any tuning job.",
+      "Operational guardrail: deterministic safety wrappers remain outside the model so a prompt change, fine-tune, or model upgrade cannot change the emergency floor."
+    ],
+    helps: [
+      {
+        title: "Why MedGemma helps",
+        body:
+          "It gives the nurse a medically oriented language assistant for summarizing noisy calls, turning structured findings into readable SBAR, and explaining rules in human language."
+      },
+      {
+        title: "Why rules stay separate",
+        body:
+          "Clinical thresholds, age-based pediatric routing, SpO2/heart-rate/respiratory-rate floors, aviation safety gates, and nurse approval are code-controlled so the model cannot drift into autonomous triage."
+      },
+      {
+        title: "How synthetic data is used",
+        body:
+          "The 100-record and future 1M-record synthetic runs provide evaluation and tuning material covering children, dependents, female health, pregnancy red flags, male health, aviation duty, heat, dust, and Qatar seasonal context without using real PHI."
+      },
+      {
+        title: "How cloud migration works",
+        body:
+          "The LLM should move behind a private backend adapter in GCP Doha. The UI calls IST APIs, the adapter calls the private model endpoint, and security controls log, mask, evaluate, and block unsafe output."
+      },
+      {
+        title: "How go-live is controlled",
+        body:
+          "Every model version needs a scorecard, safety-floor pass rate, clinical review, known-limitations note, rollback plan, and approved-use statement before it can assist live triage."
+      }
+    ],
+    usefulFor: [
+      {
+        title: "Remote Triage Nurse",
+        body:
+          "Receives cleaner summaries, SBAR drafts, suggested missing questions, and bilingual wording while still owning the final advice."
+      },
+      {
+        title: "Clinical Governance",
+        body:
+          "Can review model behavior against deterministic expected outputs, local protocol policy, pediatric/female/male health cohorts, and Qatar regional context."
+      },
+      {
+        title: "Security and Privacy",
+        body:
+          "Can verify data minimization, masking, audit logs, model endpoint residency, prompt/output retention, and DPO-approved training data controls."
+      },
+      {
+        title: "Cloud Platform Team",
+        body:
+          "Gets an implementation backlog for GCP Doha: private networking, endpoint deployment, model registry, cost tests, quota tests, monitoring, and rollback."
+      }
+    ],
+    exampleFlow: [
+      "Generate or import synthetic LLM-ready rows and split them into train, validation, and test sets.",
+      "Run offline evaluation to check that the model explains the deterministic route without downgrading severity.",
+      "Add a backend LLM adapter in dry-run mode and display outputs as advisory draft content only.",
+      "Pilot quantized inference for non-PHI or synthetic payloads if the MVP needs local model behavior before cloud hosting.",
+      "For cloud UAT, deploy a private model endpoint in GCP Doha and connect it through the backend adapter.",
+      "Run clinical, privacy, security, and performance scorecards before enabling live nurse-facing assistance.",
+      "Keep nurse approval, safety-floor wrappers, CCP outbound gates, and audit logging outside the model."
+    ]
+  },
+  {
     id: "data-ingestion",
     title: "Data Ingestion and QA",
     eyebrow: "Phase I seed and Phase II migration",
     icon: Database,
     summary:
-      "Documents how clinical content, aviation tables, local dispositions, mock staff records, and automated QA tests enter and validate the Phase I system.",
+      "Documents how clinical content, aviation tables, local dispositions, Oracle-style employee API feeds, normalized projections, and automated QA tests enter and validate the Phase I system.",
     usedBy: [
       "prisma/seed.ts",
       "prisma/schema.prisma",
       "src/scripts/importClinicalContent.ts",
+      "python/generate_synthetic_pdp_data.py",
       "tests/triage.test.ts",
       "python/test_safety_wrapper.py"
     ],
     details: [
-      "Phase I seeding populates an open-source Acute Chest Pain - Adult protocol, acuity-ordered questions, localized care advice, QuestionAdviceBridge mappings, localized Qatar dispositions, and IST staff/dependent demo records.",
+      "Phase I seeding populates an open-source Acute Chest Pain - Adult protocol, acuity-ordered questions, localized care advice, QuestionAdviceBridge mappings, and localized Qatar dispositions.",
+      "The synthetic employee data factory can generate an Oracle Fusion HCM-style API feed for a 260-aircraft aviation workforce, plus normalized IST staff/dependent projections, 5,000 historical encounters, semantic vectors, and safety audit logs.",
       "The backend keeps the clinical content shape compatible with a later licensed Schmitt-Thompson After Hours / SymptomScreen import. The clinical workspace continues to call the same API contract after the dataset swap.",
       "The current test layer validates staff lookup, adult emergency safety floors, pediatric tachypnea routing, stable-vitals NEWS2 calculation, bilingual SBAR generation, fit-to-fly restriction, and Python AI downgrade blocking.",
       "Seed execution requires a reachable PostgreSQL database and DATABASE_URL. Code-level validation can still run without the database through TypeScript build, Prisma validate, Jest API tests, and Python wrapper tests."
@@ -678,6 +879,11 @@ const libraryAreas: LibraryArea[] = [
           "Crew role, duty state, outstation status, sickness request, vaccination timing, and fit-to-fly flags are kept as explicit data rather than hidden prompt text."
       },
       {
+        title: "Synthetic workforce",
+        body:
+          "The generator models pilots, cabin crew, support staff, dependents, historical calls, and safety deviations as Oracle-style API payloads and normalized IST projections without introducing real employee or patient records."
+      },
+      {
         title: "Automated evidence",
         body:
           "Jest/Supertest and Python tests make the safety floor, routing, SBAR output, and AI downgrade controls repeatable for release review."
@@ -685,7 +891,8 @@ const libraryAreas: LibraryArea[] = [
     ],
     exampleFlow: [
       "Run Prisma migration against the approved PostgreSQL database.",
-      "Run the Phase I seed to load open-source clinical baseline, Qatar dispositions, and IST staff/dependent demo records.",
+      "Generate or consume Oracle Fusion HCM worker/contact payloads, then map them into the IST staff-validation response and approved normalized projection.",
+      "Run the Phase I seed to load open-source clinical baseline and Qatar dispositions.",
       "Run API tests to prove staff validation, adult emergency routing, pediatric emergency routing, stable NEWS2 handling, and SBAR output.",
       "Run Python safety tests to prove an AI routine or homecare downgrade is blocked when RED vitals are present.",
       "At UAT or Go-Live, import licensed clinical content into the same schema and rerun the same test suite before activation."
@@ -701,7 +908,7 @@ const libraryAreas: LibraryArea[] = [
     usedBy: ["prisma/schema.prisma", "@prisma/client", "prisma/seed.ts", "src/scripts/importClinicalContent.ts"],
     details: [
       "Algorithm, TriageQuestion, CareAdvice, and QuestionAdviceBridge form the clinical protocol footprint prepared for open-source content now and licensed content later.",
-      "StaffMember and Dependent store the enterprise identity context that will eventually come from Oracle Fusion HCM or another approved HRMS adapter.",
+      "StaffMember and Dependent are normalized triage projections of Oracle Fusion HCM worker/contact data, not the long-term HR source of truth.",
       "AviationTriageEncounter and SafetyAuditDeviationLog preserve the route, score, final disposition, AI recommendation, override rationale, and explainability trace once persistence is approved.",
       "Security administration models define application users, roles, responsibilities, permissions, access profiles, reveal events, encryption policy metadata, and audit events."
     ],
@@ -719,6 +926,198 @@ const libraryAreas: LibraryArea[] = [
     ]
   },
   {
+    id: "simulation-engine",
+    title: "Synthetic Simulation Engine",
+    eyebrow: "AI evaluation and safety testing",
+    icon: BrainCircuit,
+    summary:
+      "Generates synthetic tele-triage encounters through the full discrete state pipeline: intake, vector protocol match, safety floor, NEWS2-style scoring, aviation gate, Qatar routing, SBAR, and LLM-ready JSONL rows.",
+    usedBy: [
+      "GET /api/v1/simulation/scenarios",
+      "POST /api/v1/simulation/run/:scenarioId",
+      "GET /api/v1/simulation/training-set",
+      "npm run simulation:jsonl",
+      "python/simulation_engine.py"
+    ],
+    details: [
+      "The simulation engine is synthetic only. It is safe for demos, regression tests, prompt evaluation, and governed training workflows because every row is tagged synthetic and contains no PHI.",
+      "The engine follows the same rules-first architecture as the live triage workflow: deterministic safety floors and nurse approval remain authoritative, while AI rows teach explanation and drafting behavior.",
+      "Each result includes a state transition log, cosine-similarity protocol match, vital-sign score, aviation gate, final disposition, SBAR note, and an expected-output record for LLM evaluation.",
+      "The learning rows now carry contextual patient metadata so AI evaluation can check child/dependent, pediatric, female-health, pregnancy red-flag, male-health, and aviation-duty reasoning.",
+      "Regional context adds Qatar day-wise season, heat risk, dust risk, respiratory season, vulnerable groups, and demographic priors for safer AI/ML evaluation.",
+      "The attached design works for this platform after correction, but the pasted Python had syntax gaps. The repo implementation is executable, typed, tested, and exposed by API plus CLI."
+    ],
+    helps: [
+      {
+        title: "Train without PHI",
+        body:
+          "The JSONL export gives AI teams realistic call patterns without using real employee or patient records."
+      },
+      {
+        title: "Prove safety behavior",
+        body:
+          "Emergency vitals, pediatric tachypnea, low-similarity complaints, aviation restrictions, and AI downgrade attempts can be regression-tested repeatedly."
+      },
+      {
+        title: "Exercise the call queue",
+        body:
+          "Large synthetic batches can feed incoming-call, nurse-capacity, prioritization, and escalation tests before live call-center integration."
+      },
+      {
+        title: "Evaluate AI copilots",
+        body:
+          "Expected outputs teach the AI to summarize, explain, and draft while deferring final disposition to deterministic rules and nurse approval."
+      },
+      {
+        title: "Teach contextual awareness",
+        body:
+          "The bulk dataset includes pediatric/dependent, female-health, pregnancy red-flag, and male-health cases with explicit age band, biological sex, dependent status, and safety-floor labels."
+      },
+      {
+        title: "Model Qatar seasonal health",
+        body:
+          "Each bulk row includes season, heat-risk, dust-risk, respiratory-season, and vulnerable-group labels so AI evaluation can learn when heat, humidity, dust, and population context should influence explanation and nurse prompts."
+      }
+    ],
+    exampleFlow: [
+      "Generate or select a synthetic scenario.",
+      "Run semantic vector matching and reject low-confidence matches below threshold.",
+      "Apply WHO/IITT RED floors before NEWS2 or AI suggestions.",
+      "Apply aviation context for fit-to-fly, outstation, sickness, and vaccination flags.",
+      "Route to local Qatar disposition and render SBAR.",
+      "Export the expected outcome as JSONL for AI evaluation or governed training."
+    ]
+  },
+  {
+    id: "synthetic-employee-data",
+    title: "Synthetic Employee Data Factory",
+    eyebrow: "Aviation workforce seed data",
+    icon: Database,
+    summary:
+      "Builds the statistically realistic Oracle-style employee API feed plus synthetic dependent, encounter, vector, and safety-audit data used to stress-test the platform and evaluate AI copilots.",
+    usedBy: [
+      "python/generate_synthetic_pdp_data.py",
+      "python/test_synthetic_pdp_generator.py",
+      "oracle_fusion_hcm_api.publicWorkers",
+      "oracle_fusion_hcm_api.workers",
+      "oracle_fusion_hcm_api.assignments",
+      "oracle_fusion_hcm_api.hcmContacts",
+      "data/generated/ist_qatar_seed_data.json",
+      "docs/synthetic-employee-data.md"
+    ],
+    details: [
+      "Default generation models 260 active wide-body aircraft, 26,000 employees, 4,300 pilots, 5,200 cabin crew, and 16,500 support staff.",
+      "The source feed includes Oracle Fusion HCM-style publicWorkers, workers, workRelationships, assignments, hcmContacts, contactRelationships, and absences collections.",
+      "Dependents are assigned to 45 percent of staff, with spouse, son, and daughter relationships generated logically from synthetic employee age and represented through contact relationship payloads.",
+      "The 5,000 encounter history follows core operational profiles: cardiac emergency, pediatric respiratory distress, cabin crew back pain, pilot ear barotrauma, and mandated immunization fever.",
+      "The bulk clinical simulation expands the learning set with pediatric fever/dehydration, female urinary symptoms, pregnancy red flags, and male genitourinary urgent presentations.",
+      "Every encounter includes vitals, transcript text, semantic symptom vector, cosine-similarity protocol match, deterministic disposition, fit-to-fly impact, and SBAR-style payload.",
+      "Contextual fields include patient_context, biological_sex, age band, dependent status, pregnancy/red-flag status where applicable, and aviation role.",
+      "Regional fields include regional_context with Qatar season, temperature, apparent temperature, humidity, wind, heat risk, dust risk, respiratory season, vulnerable groups, health-impact tags, and demographic priors.",
+      "Exactly 5 percent of generated encounters receive a safety audit deviation log with original AI recommendation, nurse rationale, rules severity, and explainability trace."
+    ],
+    helps: [
+      {
+        title: "Why it helps",
+        body:
+          "A realistic workforce lets the triage queue, nurse workspace, dashboards, analytics, and AI test harness behave like a large aviation operation."
+      },
+      {
+        title: "How it protects privacy",
+        body:
+          "All records are synthetic, generated from distributions and deterministic templates, with no copied HR or patient data."
+      },
+      {
+        title: "How AI teams use it",
+        body:
+          "The data can train or evaluate non-autonomous copilot behavior: summarize, explain, draft SBAR, and defer to rules and nurse approval."
+      },
+      {
+        title: "Why context matters",
+        body:
+          "A child with fever/dehydration, a pregnant employee with bleeding, and a male patient with acute genitourinary pain need different red-flag reasoning even when the final AI task is only explanation or drafting."
+      },
+      {
+        title: "Why regional data matters",
+        body:
+          "In Qatar, summer heat, humidity, dust exposure, and a working-age aviation population change the questions a nurse should remember to ask, especially for children, pregnant patients, respiratory symptoms, dehydration, and duty exposure."
+      },
+      {
+        title: "Database readiness",
+        body:
+          "The JSON includes Oracle-style source collections plus Prisma table-shaped projections so a seed loader can insert protocol anchors, approved staff snapshots, dependents, encounters, and safety logs in dependency order."
+      }
+    ],
+    exampleFlow: [
+      "Generate the full dataset or a smaller validation sample.",
+      "Use the Oracle Fusion HCM-style collections as the employee source feed for adapter testing.",
+      "Review the statistics block for workforce and encounter distribution.",
+      "Map Oracle workers, assignments, contacts, and absences into the IST staff-validation response.",
+      "Load protocol anchors first, then approved normalized staff/dependent projections, encounters, and safety logs.",
+      "Run triage and AI evaluation tests against the synthetic records.",
+      "Use failures to tune prompts, queue design, safety explanations, and data quality checks."
+    ]
+  },
+  {
+    id: "clinical-simulation-engine",
+    title: "Complete Clinical Simulation Engine",
+    eyebrow: "End-to-end safety rehearsal",
+    icon: Workflow,
+    summary:
+      "Runs the full synthetic clinical journey from Oracle-style employee verification through nurse triage, vector retrieval, safety floors, aviation gates, SBAR, FHIR write-back, and audit logging.",
+    usedBy: [
+      "python/clinical_simulation_engine.py",
+      "python/run_bulk_clinical_simulation.py",
+      "python/test_clinical_simulation_engine.py",
+      "python/test_bulk_clinical_simulation.py",
+      "EmployeeSimulator",
+      "VectorKnowledgeEngine",
+      "TriageNurseSimulator",
+      "EMRWritebackEngine"
+    ],
+    details: [
+      "EmployeeSimulator consumes the synthetic Oracle Fusion HCM-style feed and verifies staff, dependents, department, job title, and duty status.",
+      "VectorKnowledgeEngine applies five-dimensional cosine similarity for adult emergency, pediatric respiratory, pediatric fever/dehydration, back pain, vaccination reaction, female-health, male-health, ear barotrauma, and UNKNOWN fallback anchors.",
+      "TriageNurseSimulator runs patient verification, chief complaint mapping, WHO/IITT RED floors, pediatric tachypnea checks, NEWS2 scoring, aviation restrictions, and AI downgrade blocking.",
+      "EMRWritebackEngine generates bilingual SBAR Markdown, a simulated FHIR transaction Bundle, Encounter, Observation, ClinicalImpression resources, and append-only safety audit logs.",
+      "The bulk runner can stream 100-record rehearsals or 1M-record historical simulations into encounter, audit, and LLM-ready training JSONL partitions.",
+      "Bulk rows include child/dependent, female-health, pregnancy red-flag, and male-health cohorts so AI/ML evaluation covers contextual clinical reasoning rather than generic adult symptoms only.",
+      "Bulk rows also include Qatar regional context for day-wise heat, humidity, dust, respiratory season, and population-health priors; these are explanation features, not autonomous disposition rules.",
+      "The built-in suite executes the three master-prompt cases: active pilot cardiac emergency, pediatric cough with tachypnea, and stable cabin crew lower back injury."
+    ],
+    helps: [
+      {
+        title: "Why it helps",
+        body:
+          "It lets clinical, operations, integration, and AI teams rehearse the complete flow before connecting live Oracle HCM or EMR systems."
+      },
+      {
+        title: "How it protects safety",
+        body:
+          "The AI recommendation is compared against deterministic rules, and downgrades below RED or aviation safety floors are blocked and logged."
+      },
+      {
+        title: "How it supports integrations",
+        body:
+          "The final payload is a simulated FHIR transaction, so EMR teams can review object shape without sending data to a live clinical database."
+      },
+      {
+        title: "How to run it",
+        body:
+          "Use clinical-sim:sample for fast validation, clinical-sim:bulk-sample for 100 records, or clinical-sim:bulk-1m for the million-record historical run."
+      }
+    ],
+    exampleFlow: [
+      "Generate the synthetic Oracle employee feed.",
+      "Verify staff or dependent identity through EmployeeSimulator.",
+      "Match symptoms against the vector codebook.",
+      "Run the nurse triage state machine and deterministic safety floor.",
+      "Apply aviation medicine duty restrictions.",
+      "Generate bilingual SBAR and FHIR transaction payload.",
+      "Create audit evidence for AI downgrade blocking or nurse override."
+    ]
+  },
+  {
     id: "api-contracts",
     title: "API Contract Library",
     eyebrow: "Backend endpoint reference",
@@ -729,6 +1128,7 @@ const libraryAreas: LibraryArea[] = [
       "src/app.ts",
       "src/routes/staff.ts",
       "src/routes/triage.ts",
+      "src/routes/simulation.ts",
       "src/routes/ccp.ts",
       "src/routes/auth.ts",
       "src/routes/admin.ts"
@@ -738,6 +1138,9 @@ const libraryAreas: LibraryArea[] = [
       "POST /api/v1/triage/calculate-score accepts snake_case vital signs and returns score, severity, riskBand, dispositionCode, targetFacilityCode, route rationale, NEWS2 components, and trace.",
       "POST /api/v1/triage/complete returns text/plain SOAP/SBAR for clipboard or JSON notePayload with fitToFlyStatus when Accept: application/json is used.",
       "POST /api/v1/triage/encounters/evaluate remains the richer clinical-plus-aviation route-evaluation endpoint used by the workspace.",
+      "Simulation endpoints generate synthetic-only scenarios, full transition logs, suite runs, and LLM-ready JSONL exports for evaluation and governed training.",
+      "Synthetic employee generation is file-based and includes Oracle Fusion HCM-style API payloads; production staff validation should consume live Oracle APIs through the backend adapter.",
+      "The complete clinical simulation engine is also file-based and produces simulated FHIR write-back bundles rather than calling a live EMR.",
       "CCP endpoints support employee thread lookup, transport status, outbound draft creation, nurse approval, and Twilio webhook ingestion."
     ],
     usefulFor: [
@@ -758,10 +1161,12 @@ const libraryAreas: LibraryArea[] = [
     icon: CheckCircle2,
     summary:
       "Groups the automated checks that validate Phase I safety behavior after backend, schema, seed, or help-content changes.",
-    usedBy: ["tests/triage.test.ts", "python/test_safety_wrapper.py", "npm test", "npm run typecheck:web", "npm run build:web"],
+    usedBy: ["tests/triage.test.ts", "tests/simulation.test.ts", "python/test_safety_wrapper.py", "python/test_synthetic_pdp_generator.py", "python/test_clinical_simulation_engine.py", "npm test", "npm run typecheck:web", "npm run build:web"],
     details: [
       "Jest/Supertest verifies staff validation, invalid staff rejection, adult RED floor, pediatric tachypnea route, stable NEWS2 pass-through, and bilingual SBAR output.",
       "The Python safety wrapper tests verify that AI HOMECARE passes when vitals are normal and that ROUTINE/HOMECARE downgrades are blocked when RED vitals are present.",
+      "The synthetic PDP generator tests verify workforce scale math, dependent generation, encounter mix, safety audit volume, and Prisma-shaped record fields.",
+      "The complete clinical simulation tests verify cosine fallback, prompt case routing, AI downgrade blocking, fit-to-fly restriction, FHIR transaction shape, and audit log creation.",
       "Frontend typecheck and build validate that the Help/Library content compiles and renders with the current React/Tailwind application.",
       "Prisma validate and generate confirm the schema is syntactically valid and the client reflects the latest model names."
     ],
@@ -1202,6 +1607,7 @@ const integrationRows = [
   ["Oracle Fusion HCM", "Validate staff identity, active worker status, assignments, contacts, dependents, absences, and documents.", "Mock adapter exists; target connector documented below."],
   ["Insurance", "Return provider, eligibility, last check, and booking notes.", "Mock eligibility cache exists; connect payer or benefits verification after insurer specs."],
   ["EMR / Oracle Health", "Move SBAR/SOAP into patient record.", "Clipboard handoff now; SMART on FHIR or approved Oracle Health API later."],
+  ["MedGemma / LLM Copilot", "Explain deterministic routing, draft SBAR, suggest missing nurse questions, summarize CCP context, and support bilingual wording.", "Strategy documented; model endpoint and adapter pending cloud implementation."],
   ["Twilio WhatsApp / SMS", "Send nurse-approved CCP messages and receive employee replies with text or media attachments.", "Adapter and webhook are built; dry-run is default until live secrets and signed webhook URL are approved."],
   ["Microsoft 365 Graph", "Send nurse-approved non-urgent CCP email through an approved mailbox.", "Adapter is built; live use needs Mail.Send app consent and mailbox-scoped access policy."],
   ["Scheduling", "Book clinic, teleconsult, commission, or urgent review slots.", "Future connector tied to disposition code."],
@@ -1310,6 +1716,18 @@ const plannedApiRows: ApiCatalogRow[] = [
     status: "Importer scaffold"
   },
   {
+    area: "LLM copilot evaluation",
+    api: "Future: POST /api/v1/ai/copilot/evaluate\nFuture: POST /api/v1/ai/copilot/draft\nLLM_PROVIDER=medgemma|dry-run\nLLM_ENDPOINT_URL",
+    use: "Run prompt/eval checks and return advisory summaries, missing-question prompts, and SBAR drafts without changing the deterministic disposition.",
+    status: "Planned cloud adapter"
+  },
+  {
+    area: "GCP Doha model serving",
+    api: "Private GKE service or approved Vertex AI custom endpoint in me-central1\nvLLM/llama.cpp serving\nVPC Service Controls, IAM, KMS, Audit Logs",
+    use: "Host MedGemma or another approved clinical LLM privately for governed copilot assistance after security, privacy, clinical, and cost approvals.",
+    status: "Cloud implementation task"
+  },
+  {
     area: "Oracle Fusion HCM",
     api: "publicWorkers, workers, workRelationships, assignments, hcmContacts, absences, documentRecords, Atom feeds",
     use: "Replace the mock HRMS adapter with live staff, dependent, duty, absence, and document context.",
@@ -1353,6 +1771,12 @@ const governanceItems = [
     icon: AlertTriangle,
     body:
       "If deterministic rules classify an encounter as Emergency, an AI suggestion below that floor is blocked and logged as a safety event."
+  },
+  {
+    title: "LLM model governance",
+    icon: BrainCircuit,
+    body:
+      "MedGemma or any future LLM must pass synthetic and clinically reviewed evaluations before UAT. Model outputs remain preliminary, nurse-verified, auditable, and blocked from changing red-floor rules."
   },
   {
     title: "Protocol governance",
@@ -1916,6 +2340,10 @@ function HelpManualPanel({
             <Database className="h-4 w-4" />
             Data ingestion library
           </button>
+          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("llm-copilot-cloud")}>
+            <BrainCircuit className="h-4 w-4" />
+            LLM strategy
+          </button>
           <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("api-contracts")}>
             <PlugZap className="h-4 w-4" />
             API contracts
@@ -2437,6 +2865,29 @@ function IntegrationPanel() {
         body="This is the full system integration catalogue shown in Help so every connector has a named purpose, API surface, and implementation status."
         rows={plannedApiRows}
       />
+
+      <article className="help-card help-card-wide">
+        <div className="help-card-heading">
+          <span className="help-icon">
+            <BrainCircuit className="h-5 w-5" />
+          </span>
+          <div>
+            <span className="tag-label">CLOUD LLM IMPLEMENTATION TASKS</span>
+            <h3 className="help-title">MedGemma strategy for the GCP move</h3>
+            <p>
+              These are the practical implementation tasks for moving from local synthetic
+              evaluation to a governed, private clinical copilot in GCP Doha. The model remains
+              advisory and cannot change deterministic triage rules.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <div className="help-grid">
+        {llmCloudMigrationTasks.map((card) => (
+          <MatrixHelpCard key={card.title} card={card} />
+        ))}
+      </div>
 
       <div className="help-grid">
         <HelpCard

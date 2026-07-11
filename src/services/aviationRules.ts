@@ -66,6 +66,15 @@ export function evaluateAviationRules(
 
   if (context.sicknessLeaveRequested) {
     tags.push("sickness-validation");
+    if (isSafetySensitiveCrew) {
+      fitToFlyStatus = context.onDuty ? "restricted" : "medical-review-required";
+      trace.push({
+        ruleId: "AVIATION_SICKNESS_VALIDATION_GATE",
+        matched: true,
+        rationale:
+          "Safety-sensitive crew requested sickness validation; fit-to-fly status must remain under clinical review before duty clearance."
+      });
+    }
   }
 
   if (
@@ -106,4 +115,3 @@ export function evaluateAviationRules(
     trace
   };
 }
-

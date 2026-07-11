@@ -37,12 +37,15 @@ enum BiologicalSex {
 enum DutyStatus {
   ACTIVE
   ON_LEAVE
+  REST_PERIOD
   SUSPENDED
   INACTIVE
 }
 
 enum DependentRelationship {
   SPOUSE
+  SON
+  DAUGHTER
   CHILD
   PARENT
   OTHER
@@ -50,6 +53,7 @@ enum DependentRelationship {
 
 enum InsuranceEligibilityStatus {
   ELIGIBLE
+  SUSPENDED
   INELIGIBLE
   PENDING_VERIFICATION
   UNKNOWN

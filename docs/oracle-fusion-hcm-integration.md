@@ -87,6 +87,26 @@ Oracle supports Basic authentication over SSL and bearer-token authentication pa
 7. API returns the normalized `StaffValidationResult` already used by the current frontend.
 8. Triage proceeds through protocol search, acuity checklist, final disposition, clipboard note, and audit.
 
+## Synthetic API Feed For Development
+
+The repository includes a synthetic data factory that generates Oracle Fusion HCM-style API payloads alongside the normalized IST triage projection:
+
+```powershell
+python python/generate_synthetic_pdp_data.py --print-summary
+```
+
+The generated `oracle_fusion_hcm_api` section should be treated as the synthetic employee source feed for adapter development. The generated `staff_members` and `dependents` arrays are the normalized downstream projection that the IST triage APIs consume.
+
+Use the synthetic Oracle feed to test:
+
+- `publicWorkers` staff lookup by `PersonNumber`.
+- `workers` profile resolution by `workersUniqID`.
+- `workRelationships` and `assignments` mapping into department, job title, location, and duty status.
+- `hcmContacts` and `contactRelationships` mapping into dependents.
+- `absences` mapping into leave/rest-period context.
+
+This avoids hard-coding database-first employee assumptions while Oracle credentials, tenant URL, roles, and privacy approvals are still pending.
+
 ## Governance Gates
 
 - Confirm Qatar Airways Oracle tenant URL and Fusion HCM version path.

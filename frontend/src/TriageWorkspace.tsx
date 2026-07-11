@@ -1,12 +1,14 @@
 import {
-  AlertTriangle,
   BadgeCheck,
   Bot,
   Check,
+  Clock,
   ClipboardCheck,
   Copy,
+  Database,
   FileText,
   Languages,
+  PhoneCall,
   MapPin,
   Plane,
   Search,
@@ -86,7 +88,120 @@ type EvaluationDecision = {
   trace: Array<{ ruleId: string; matched: boolean; rationale: string }>;
 };
 
+type TriageStepId = "patient" | "presentation" | "acuity" | "copilot" | "disposition";
+
+type WorkflowStep = {
+  id: TriageStepId;
+  title: string;
+  subtitle: string;
+};
+
+type IncomingCall = {
+  id: string;
+  queueNumber: string;
+  priority: Severity;
+  staffId: string;
+  patientLabel: string;
+  ageYears: number;
+  waitMinutes: number;
+  channel: "Phone" | "WhatsApp" | "Callback";
+  complaint: string;
+  transcriptEn: string;
+  transcriptAr: string;
+  profile: StaffProfile;
+  dependentId?: string;
+  fitToFly: boolean;
+  outstation: boolean;
+  sicknessLeave: boolean;
+  vaccinationScreen: boolean;
+};
+
+type GeneratedDataSnapshot = {
+  available: boolean;
+  message?: string;
+  activeRun?: {
+    name: string;
+    lastModifiedIso: string;
+    recordCount?: number;
+  };
+  files?: {
+    manifest?: string;
+    encounters?: string | null;
+    training?: string | null;
+    audit?: string | null;
+  };
+  manifest?: {
+    recordCount?: number;
+    auditRecordCount?: number;
+    startDate?: string;
+    endDate?: string;
+    counts?: {
+      by_profile?: Record<string, number>;
+      by_severity?: Record<string, number>;
+      by_route?: Record<string, number>;
+      by_fit_to_fly?: Record<string, number>;
+    };
+    regionalContext?: {
+      enabled?: boolean;
+      mode?: string;
+      open_data_sources?: string[];
+    };
+  };
+  samples?: {
+    encounters?: Array<{
+      encounter_id: string;
+      profile: string;
+      severity: string;
+      route: string;
+      patient_context?: Record<string, unknown>;
+      biological_sex?: string;
+      regional_context?: {
+        climate?: {
+          season?: string;
+          heat_risk?: string;
+          dust_risk?: string;
+          respiratory_season?: string;
+          temperature_max_c?: number;
+          apparent_temperature_max_c?: number;
+        };
+        health?: {
+          health_impact_tags?: string[];
+          vulnerable_groups?: string[];
+        };
+      };
+    }>;
+  };
+};
+
 const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+
+const workflowSteps: WorkflowStep[] = [
+  {
+    id: "patient",
+    title: "Caller & patient",
+    subtitle: "Validate staff, dependent, eligibility, and duty context."
+  },
+  {
+    id: "presentation",
+    title: "Presentation",
+    subtitle: "Capture complaint, transcript, and aviation flags."
+  },
+  {
+    id: "acuity",
+    title: "Acuity checklist",
+    subtitle: "Rule out high-acuity findings before routine care."
+  },
+  {
+    id: "copilot",
+    title: "Nurse review",
+    subtitle: "Accept or reject AI assistance before handoff."
+  },
+  {
+    id: "disposition",
+    title: "Disposition & SBAR",
+    subtitle: "Finalize deterministic routing and copy the note."
+  }
+];
 
 const demoProfile: StaffProfile = {
   id: "staff_demo_10001",
@@ -105,6 +220,117 @@ const demoProfile: StaffProfile = {
     }
   ]
 };
+
+const initialIncomingCalls: IncomingCall[] = [
+  {
+    id: "call-2407-001",
+    queueNumber: "Q-001",
+    priority: "Emergency",
+    staffId: "IST-10001",
+    patientLabel: "Staff member",
+    ageYears: 32,
+    waitMinutes: 2,
+    channel: "Phone",
+    complaint: "Chest tightness and sweating for more than one hour",
+    transcriptEn: "Cabin crew reports sudden chest tightness with sweating for more than one hour.",
+    transcriptAr:
+      "طاقم المقصورة يبلغ عن ضيق مفاجئ في الصدر مع تعرق لمدة تزيد عن ساعة.",
+    profile: demoProfile,
+    fitToFly: true,
+    outstation: false,
+    sicknessLeave: true,
+    vaccinationScreen: false
+  },
+  {
+    id: "call-2407-002",
+    queueNumber: "Q-002",
+    priority: "Urgent",
+    staffId: "IST-10024",
+    patientLabel: "Staff member",
+    ageYears: 41,
+    waitMinutes: 7,
+    channel: "WhatsApp",
+    complaint: "Persistent vomiting with dizziness after night duty",
+    transcriptEn: "Ground services staff reports dizziness and repeated vomiting after night duty.",
+    transcriptAr: "الموظف يبلغ عن دوخة وقيء متكرر بعد المناوبة الليلية.",
+    profile: {
+      id: "staff_demo_10024",
+      istStaffId: "IST-10024",
+      department: "Ground Services",
+      jobTitle: "Ramp Supervisor",
+      dutyStatus: "active",
+      insuranceProvider: "IST Staff Health Plan",
+      insuranceEligibilityStatus: "eligible",
+      dependents: []
+    },
+    fitToFly: false,
+    outstation: false,
+    sicknessLeave: true,
+    vaccinationScreen: false
+  },
+  {
+    id: "call-2407-003",
+    queueNumber: "Q-003",
+    priority: "Routine",
+    staffId: "IST-10037",
+    patientLabel: "Child dependent",
+    ageYears: 8,
+    waitMinutes: 11,
+    channel: "Callback",
+    complaint: "Mild sore throat and low fever in child dependent",
+    transcriptEn: "Employee requests advice for child dependent with mild sore throat and low fever.",
+    transcriptAr: "الموظف يطلب نصيحة لطفل لديه التهاب حلق خفيف وحرارة بسيطة.",
+    profile: {
+      id: "staff_demo_10037",
+      istStaffId: "IST-10037",
+      department: "Cabin Services",
+      jobTitle: "Cabin Crew",
+      dutyStatus: "off duty",
+      insuranceProvider: "IST Staff Health Plan",
+      insuranceEligibilityStatus: "eligible",
+      dependents: [
+        {
+          id: "dep_demo_10037_child",
+          relationshipType: "child",
+          age: 8,
+          biologicalSex: "male"
+        }
+      ]
+    },
+    dependentId: "dep_demo_10037_child",
+    fitToFly: false,
+    outstation: false,
+    sicknessLeave: false,
+    vaccinationScreen: false
+  },
+  {
+    id: "call-2407-004",
+    queueNumber: "Q-004",
+    priority: "Urgent",
+    staffId: "IST-10051",
+    patientLabel: "Staff member",
+    ageYears: 29,
+    waitMinutes: 14,
+    channel: "Phone",
+    complaint: "Outstation sickness call with fever and weakness",
+    transcriptEn: "Outstation crew member reports fever, weakness, and needs coordinated teleconsult support.",
+    transcriptAr: "أحد أفراد الطاقم خارج المحطة يبلغ عن حرارة وضعف ويحتاج إلى تنسيق استشارة عن بعد.",
+    profile: {
+      id: "staff_demo_10051",
+      istStaffId: "IST-10051",
+      department: "Flight Operations",
+      jobTitle: "Cabin Crew",
+      dutyStatus: "outstation",
+      insuranceProvider: "IST Staff Health Plan",
+      insuranceEligibilityStatus: "eligible",
+      dependents: []
+    },
+    fitToFly: true,
+    outstation: true,
+    sicknessLeave: true,
+    vaccinationScreen: false
+  }
+];
 
 const fallbackProtocol: ProtocolDetail = {
   id: "sample-chest-pain-adult",
@@ -170,6 +396,11 @@ const severityStyle: Record<Severity, string> = {
   Routine: "border-emerald-200 bg-emerald-50 text-emerald-700",
   "Self-care": "border-gray-200 bg-gray-50 text-gray-700"
 };
+
+function defaultQuestionsForPriority(priority: Severity): string[] {
+  const match = fallbackProtocol.questions.find((question) => question.severity === priority);
+  return match ? [match.id] : [];
+}
 
 const initialSuggestions: CopilotSuggestion[] = [
   {
@@ -286,6 +517,9 @@ function localDecision(severity: Severity, ageYears: number, outstation: boolean
 }
 
 export default function TriageWorkspace() {
+  const [incomingCalls] = useState<IncomingCall[]>(initialIncomingCalls);
+  const [activeCallId, setActiveCallId] = useState(initialIncomingCalls[0].id);
+  const [completedCallIds, setCompletedCallIds] = useState<string[]>([]);
   const [staffId, setStaffId] = useState("IST-10001");
   const [profile, setProfile] = useState<StaffProfile | null>(demoProfile);
   const [selectedDependentId, setSelectedDependentId] = useState("");
@@ -311,8 +545,25 @@ export default function TriageWorkspace() {
   );
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
   const [status, setStatus] = useState("Demo profile loaded. Backend validation will be used when available.");
+  const [activeStep, setActiveStep] = useState<TriageStepId>("patient");
+  const [highestUnlockedStep, setHighestUnlockedStep] = useState(1);
+  const [generatedData, setGeneratedData] = useState<GeneratedDataSnapshot | null>(null);
+  const [generatedDataStatus, setGeneratedDataStatus] = useState("Checking generated synthetic records.");
 
   const selectedDependent = profile?.dependents.find((dependent) => dependent.id === selectedDependentId);
+  const activeStepIndex = workflowSteps.findIndex((step) => step.id === activeStep);
+  const activeStepNumber = activeStepIndex + 1;
+  const activeWorkflowStep = workflowSteps[activeStepIndex] ?? workflowSteps[0];
+  const workflowProgress = Math.round(((highestUnlockedStep - 1) / (workflowSteps.length - 1)) * 100);
+  const activeIncomingCall = incomingCalls.find((call) => call.id === activeCallId) ?? incomingCalls[0];
+  const waitingCalls = incomingCalls.filter(
+    (call) => call.id !== activeCallId && !completedCallIds.includes(call.id)
+  );
+  const activeCallCompleted = completedCallIds.includes(activeCallId);
+  const queueLocked = highestUnlockedStep > 1 && !activeCallCompleted;
+  const completedCallCount = completedCallIds.length;
+  const waitingEmergencyCount = waitingCalls.filter((call) => call.priority === "Emergency").length;
+  const longestWaitMinutes = waitingCalls.reduce((current, call) => Math.max(current, call.waitMinutes), 0);
   const activeQuestions = useMemo(() => {
     return [...selectedProtocol.questions].sort(
       (left, right) => (left.acuityOrder ?? 999) - (right.acuityOrder ?? 999)
@@ -369,9 +620,7 @@ export default function TriageWorkspace() {
         setSelectedProtocol(nextProtocol);
         setSelectedQuestions((current) => {
           const validIds = new Set(nextProtocol.questions.map((question) => question.id));
-          const retained = current.filter((questionId) => validIds.has(questionId));
-          const firstQuestionId = nextProtocol.questions[0]?.id;
-          return retained.length > 0 ? retained : firstQuestionId ? [firstQuestionId] : [];
+          return current.filter((questionId) => validIds.has(questionId));
         });
         setProtocolStatus(`Protocol loaded from API release ${detailPayload.release.version}.`);
       } catch {
@@ -392,6 +641,37 @@ export default function TriageWorkspace() {
     };
   }, [ageYears, selectedDependent?.age, symptomSearch]);
 
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadGeneratedData() {
+      try {
+        const response = await fetch(`${apiBase}/api/v1/simulation/generated`, {
+          signal: controller.signal
+        });
+        if (!response.ok) {
+          throw new Error("Generated-data endpoint returned an error.");
+        }
+
+        const payload = (await response.json()) as GeneratedDataSnapshot;
+        setGeneratedData(payload);
+        setGeneratedDataStatus(
+          payload.available
+            ? `Loaded ${payload.activeRun?.name ?? "generated synthetic run"}.`
+            : payload.message ?? "No generated synthetic records found."
+        );
+      } catch {
+        if (!controller.signal.aborted) {
+          setGeneratedData(null);
+          setGeneratedDataStatus("Generated records are on disk, but this running API does not expose them yet.");
+        }
+      }
+    }
+
+    loadGeneratedData();
+    return () => controller.abort();
+  }, []);
+
   const filteredQuestions = useMemo(() => {
     return activeQuestions;
   }, [activeQuestions]);
@@ -407,6 +687,18 @@ export default function TriageWorkspace() {
       .flatMap((question) => question.keywords)
       .filter((keyword) => text.includes(keyword));
   }, [activeQuestions, englishTranscript, symptomSearch]);
+
+  const patientSummary = selectedDependent
+    ? `${selectedDependent.relationshipType} dependent`
+    : profile?.jobTitle ?? "Staff member";
+  const patientAge = selectedDependent?.age ?? ageYears;
+  const acceptedSuggestionCount = suggestions.filter((item) => item.status === "accepted").length;
+  const aviationFlags = [
+    fitToFly ? "Fit-to-fly" : null,
+    outstation ? "Outstation" : null,
+    sicknessLeave ? "Sickness validation" : null,
+    vaccinationScreen ? "Vaccination reaction" : null
+  ].filter(Boolean) as string[];
 
   const sbarText = useMemo(() => {
     const patient = selectedDependent
@@ -516,105 +808,416 @@ export default function TriageWorkspace() {
     window.setTimeout(() => setCopyState("idle"), 2200);
   }
 
+  function takeIncomingCall(call: IncomingCall) {
+    setActiveCallId(call.id);
+    setCompletedCallIds((current) => current.filter((callId) => callId !== call.id));
+    setStaffId(call.staffId);
+    setProfile(call.profile);
+    setSelectedDependentId(call.dependentId ?? "");
+    setAgeYears(call.ageYears);
+    setSymptomSearch(call.complaint);
+    setEnglishTranscript(call.transcriptEn);
+    setArabicTranscript(call.transcriptAr);
+    setSelectedProtocol(fallbackProtocol);
+    setProtocolResults([]);
+    setProtocolStatus("Call claimed. Searching protocol content for this complaint.");
+    setSelectedQuestions(defaultQuestionsForPriority(call.priority));
+    setFitToFly(call.fitToFly);
+    setOutstation(call.outstation);
+    setSicknessLeave(call.sicknessLeave);
+    setVaccinationScreen(call.vaccinationScreen);
+    setSuggestions(initialSuggestions);
+    setDecision(localDecision(call.priority, call.ageYears, call.outstation));
+    setCopyState("idle");
+    setStatus(`${call.queueNumber} claimed from ${call.channel} queue. Validate staff to continue.`);
+    setActiveStep("patient");
+    setHighestUnlockedStep(1);
+  }
+
+  function openWorkflowStep(stepId: TriageStepId) {
+    const stepIndex = workflowSteps.findIndex((step) => step.id === stepId);
+    if (stepIndex + 1 <= highestUnlockedStep) {
+      setActiveStep(stepId);
+    }
+  }
+
+  function enableNextStep(currentStepId: TriageStepId) {
+    const currentIndex = workflowSteps.findIndex((step) => step.id === currentStepId);
+    const nextStep = workflowSteps[currentIndex + 1];
+    setHighestUnlockedStep((current) => Math.max(current, currentIndex + 2));
+    if (nextStep) {
+      setActiveStep(nextStep.id);
+    }
+  }
+
+  async function validateAndEnablePresentation() {
+    await validateStaff();
+    enableNextStep("patient");
+  }
+
+  async function finalizeAndComplete() {
+    await finalizePlan();
+    setCompletedCallIds((current) =>
+      current.includes(activeCallId) ? current : [...current, activeCallId]
+    );
+    setHighestUnlockedStep(workflowSteps.length);
+    setActiveStep("disposition");
+  }
+
   return (
-    <div className="grid gap-5 2xl:grid-cols-[minmax(0,1fr)_360px]">
-      <section className="space-y-5">
-        <div className="grid gap-5 xl:grid-cols-[380px_minmax(0,1fr)]">
-          <div className="clinical-card p-5">
-            <div className="section-heading">
-              <UserCheck className="h-5 w-5 text-ist-gold" />
-              Caller & patient ingestion
+    <div className="triage-flow-shell">
+      <section className="triage-call-pipeline clinical-card" aria-label="Incoming call pipeline">
+        <div className="triage-call-header">
+          <div>
+            <span className="tag-label">INCOMING CALL PIPELINE</span>
+            <h2>Call queue for triage nurses</h2>
+            <p>Claim one waiting call, complete the triage workflow, then return to the queue.</p>
+          </div>
+          <div className="triage-call-metrics" aria-label="Queue metrics">
+            <span>
+              <strong>{waitingCalls.length}</strong>
+              waiting
+            </span>
+            <span>
+              <strong>{waitingEmergencyCount}</strong>
+              emergency
+            </span>
+            <span>
+              <strong>{longestWaitMinutes}m</strong>
+              longest wait
+            </span>
+            <span>
+              <strong>{completedCallCount}</strong>
+              completed
+            </span>
+          </div>
+        </div>
+
+        <div className="triage-call-grid">
+          <div className={`triage-active-call border ${severityStyle[activeIncomingCall.priority]}`}>
+            <div className="triage-call-title-row">
+              <PhoneCall className="h-4 w-4" />
+              <span>{activeCallCompleted ? "Completed call" : "Active call"}</span>
+              <strong>{activeIncomingCall.queueNumber}</strong>
+            </div>
+            <h3>{activeIncomingCall.patientLabel}</h3>
+            <p>{activeIncomingCall.complaint}</p>
+            <div className="triage-call-tags">
+              <span className="status-pill bg-white text-ist-blue">{activeIncomingCall.staffId}</span>
+              <span className="status-pill bg-white text-gray-700">{activeIncomingCall.channel}</span>
+              <span className="status-pill bg-white text-gray-700">{activeIncomingCall.waitMinutes}m wait</span>
+              <span className={`status-pill border ${severityStyle[activeIncomingCall.priority]}`}>
+                {activeIncomingCall.priority}
+              </span>
+            </div>
+          </div>
+
+          <div className="triage-waiting-calls" aria-label="Waiting calls">
+            {waitingCalls.map((call) => (
+              <button
+                key={call.id}
+                type="button"
+                className="triage-waiting-call"
+                disabled={queueLocked}
+                onClick={() => takeIncomingCall(call)}
+                title={queueLocked ? "Finish the active call before claiming another call." : "Claim this call"}
+              >
+                <span className={`triage-call-priority-dot triage-call-priority-${call.priority.toLowerCase().replace("-", "")}`} />
+                <span>
+                  <strong>{call.queueNumber}</strong>
+                  <small>
+                    {call.staffId} | {call.patientLabel}
+                  </small>
+                </span>
+                <span className="triage-call-wait">
+                  <Clock className="h-3.5 w-3.5" />
+                  {call.waitMinutes}m
+                </span>
+              </button>
+            ))}
+            {waitingCalls.length === 0 && (
+              <div className="triage-empty-queue">No waiting calls. Active call can be finalized and copied.</div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="synthetic-data-panel clinical-card" aria-label="Synthetic data records">
+        <div className="synthetic-data-header">
+          <div className="synthetic-data-heading">
+            <span className="synthetic-data-icon">
+              <Database className="h-5 w-5" />
+            </span>
+            <div>
+              <span className="tag-label">SYNTHETIC DATA RECORDS</span>
+              <h2>Generated simulation dataset</h2>
+              <p>{generatedDataStatus}</p>
+            </div>
+          </div>
+          <div className="synthetic-data-run">
+            <span>Active run</span>
+            <strong>{generatedData?.activeRun?.name ?? "Not loaded"}</strong>
+            <small>{generatedData?.activeRun?.lastModifiedIso ?? "Start API to expose generated files."}</small>
+          </div>
+        </div>
+
+        <div className="synthetic-data-metrics">
+          <span>
+            <strong>{generatedData?.manifest?.recordCount ?? 0}</strong>
+            encounters
+          </span>
+          <span>
+            <strong>{generatedData?.manifest?.auditRecordCount ?? 0}</strong>
+            audit rows
+          </span>
+          <span>
+            <strong>{Object.keys(generatedData?.manifest?.counts?.by_profile ?? {}).length}</strong>
+            profiles
+          </span>
+          <span>
+            <strong>{generatedData?.manifest?.regionalContext?.enabled ? "On" : "Off"}</strong>
+            regional context
+          </span>
+        </div>
+
+        {generatedData?.available && (
+          <div className="synthetic-data-grid">
+            <div className="synthetic-data-card">
+              <span className="field-label">Profile distribution</span>
+              <div className="synthetic-data-list">
+                {Object.entries(generatedData.manifest?.counts?.by_profile ?? {})
+                  .slice(0, 6)
+                  .map(([label, count]) => (
+                    <span key={label}>
+                      <strong>{label.replace(/_/g, " ")}</strong>
+                      <small>{count}</small>
+                    </span>
+                  ))}
+              </div>
             </div>
 
-            <div className="mt-5 space-y-4">
-              <label className="field-label" htmlFor="staffId">
-                IST staff ID
-              </label>
-              <div className="flex gap-2">
-                <input
-                  id="staffId"
-                  value={staffId}
-                  onChange={(event) => setStaffId(event.target.value)}
-                  className="input-control"
-                />
-                <button type="button" onClick={validateStaff} className="primary-button">
+            <div className="synthetic-data-card">
+              <span className="field-label">Severity and routing</span>
+              <div className="synthetic-data-list">
+                {Object.entries(generatedData.manifest?.counts?.by_severity ?? {}).map(([label, count]) => (
+                  <span key={label}>
+                    <strong>{label}</strong>
+                    <small>{count}</small>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="synthetic-data-card synthetic-data-card-wide">
+              <span className="field-label">Sample records</span>
+              <div className="synthetic-sample-list">
+                {(generatedData.samples?.encounters ?? []).map((sample) => (
+                  <article key={sample.encounter_id} className="synthetic-sample-row">
+                    <div>
+                      <strong>{sample.profile.replace(/_/g, " ")}</strong>
+                      <span>
+                        {sample.severity} | {sample.route}
+                      </span>
+                    </div>
+                    <div className="synthetic-sample-tags">
+                      <span>{sample.biological_sex ?? "UNKNOWN"}</span>
+                      <span>{String(sample.patient_context?.context_group ?? "general")}</span>
+                      <span>{sample.regional_context?.climate?.season ?? "season pending"}</span>
+                      <span>Heat {sample.regional_context?.climate?.heat_risk ?? "n/a"}</span>
+                      <span>Dust {sample.regional_context?.climate?.dust_risk ?? "n/a"}</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="synthetic-data-files">
+          <span>Manifest: {generatedData?.files?.manifest ?? "not exposed"}</span>
+          <span>Encounters: {generatedData?.files?.encounters ?? "not exposed"}</span>
+          <span>Training: {generatedData?.files?.training ?? "not exposed"}</span>
+        </div>
+      </section>
+
+      <section className="triage-compact-stagebar clinical-card" aria-label="Triage workflow status">
+        <div className="triage-stage-meter">
+          <div className="triage-stage-row">
+            <span>
+              Stage {activeStepNumber} of {workflowSteps.length}: {activeWorkflowStep.title}
+            </span>
+            <strong>{workflowProgress}%</strong>
+          </div>
+          <div className="triage-progress-track">
+            <span style={{ width: `${workflowProgress}%` }} />
+          </div>
+        </div>
+        <p>Rules-first triage. Nurse review required before disposition or employee communication.</p>
+      </section>
+
+      <nav className="triage-step-nav" aria-label="Triage workflow stages">
+        {workflowSteps.map((step, index) => {
+          const stepNumber = index + 1;
+          const locked = stepNumber > highestUnlockedStep;
+          const active = step.id === activeStep;
+          const complete = stepNumber < highestUnlockedStep;
+          const statusLabel = locked ? "Locked" : active ? "In progress" : complete ? "Complete" : "Enabled";
+
+          return (
+            <button
+              key={step.id}
+              type="button"
+              className={`triage-step-button ${active ? "triage-step-button-active" : ""} ${
+                complete ? "triage-step-button-complete" : ""
+              } ${locked ? "triage-step-button-locked" : ""}`}
+              disabled={locked}
+              onClick={() => openWorkflowStep(step.id)}
+              aria-current={active ? "step" : undefined}
+            >
+              <span className="triage-step-number">
+                {complete ? <Check className="h-4 w-4" /> : stepNumber}
+              </span>
+              <span className="triage-step-copy">
+                <strong>{step.title}</strong>
+                <small>{statusLabel}</small>
+              </span>
+            </button>
+          );
+        })}
+      </nav>
+
+      <div className="triage-flow-grid">
+        <section className="triage-step-panel clinical-card">
+          <div className="triage-step-panel-header">
+            <div>
+              <span className="tag-label">
+                STAGE {activeStepNumber} OF {workflowSteps.length}
+              </span>
+              <h2>{activeWorkflowStep.title}</h2>
+              <p>{activeWorkflowStep.subtitle}</p>
+            </div>
+            <span className={`status-pill border ${severityStyle[currentSeverity]}`}>{currentSeverity}</span>
+          </div>
+
+          {activeStep === "patient" && (
+            <div className="triage-stage-content">
+              <div className="triage-control-row">
+                <label className="triage-field-block" htmlFor="staffId">
+                  <span className="field-label">IST staff ID</span>
+                  <input
+                    id="staffId"
+                    value={staffId}
+                    onChange={(event) => setStaffId(event.target.value)}
+                    className="input-control"
+                  />
+                </label>
+                <button type="button" onClick={validateAndEnablePresentation} className="primary-button">
                   <BadgeCheck className="h-4 w-4" />
-                  Validate
+                  Validate & enable
                 </button>
               </div>
 
-              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                <p className="text-sm font-extrabold text-ist-blue">
-                  {profile?.jobTitle ?? "Pending validation"}
-                </p>
-                <p className="mt-1 text-sm text-gray-500">
-                  {profile?.department ?? "Department will appear after validation"}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2 text-xs font-medium">
-                  <span className="status-pill bg-ist-cream text-ist-blue">
-                    {profile?.dutyStatus ?? "unknown"}
-                  </span>
-                  <span className="status-pill bg-gray-100 text-gray-700">
-                    {profile?.insuranceEligibilityStatus ?? "insurance pending"}
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <label className="field-label" htmlFor="dependent">
-                  Patient
-                </label>
-                <select
-                  id="dependent"
-                  value={selectedDependentId}
-                  onChange={(event) => setSelectedDependentId(event.target.value)}
-                  className="input-control mt-2"
-                >
-                  <option value="">Staff member</option>
-                  {profile?.dependents.map((dependent) => (
-                    <option key={dependent.id} value={dependent.id}>
-                      {dependent.relationshipType} dependent, age {dependent.age}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {!selectedDependent && (
+              <div className="triage-person-strip">
+                <UserCheck className="h-5 w-5" />
                 <div>
-                  <label className="field-label" htmlFor="ageYears">
-                    Staff age
-                  </label>
-                  <input
-                    id="ageYears"
-                    type="number"
-                    min={0}
-                    max={120}
-                    value={ageYears}
-                    onChange={(event) => setAgeYears(Number(event.target.value))}
-                    className="input-control mt-2"
-                  />
+                  <strong>{profile?.jobTitle ?? "Pending validation"}</strong>
+                  <span>{profile?.department ?? "Department will appear after validation"}</span>
                 </div>
-              )}
+                <span className="status-pill bg-ist-cream text-ist-blue">
+                  {profile?.dutyStatus ?? "unknown"}
+                </span>
+                <span className="status-pill bg-gray-100 text-gray-700">
+                  {profile?.insuranceEligibilityStatus ?? "insurance pending"}
+                </span>
+              </div>
 
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-                <ToggleCard
-                  checked={fitToFly}
-                  onChange={setFitToFly}
-                  icon={Plane}
-                  label="Fit-to-Fly validation"
+              <div className="triage-two-column">
+                <label className="triage-field-block" htmlFor="dependent">
+                  <span className="field-label">Patient</span>
+                  <select
+                    id="dependent"
+                    value={selectedDependentId}
+                    onChange={(event) => setSelectedDependentId(event.target.value)}
+                    className="input-control"
+                  >
+                    <option value="">Staff member</option>
+                    {profile?.dependents.map((dependent) => (
+                      <option key={dependent.id} value={dependent.id}>
+                        {dependent.relationshipType} dependent, age {dependent.age}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                {!selectedDependent && (
+                  <label className="triage-field-block" htmlFor="ageYears">
+                    <span className="field-label">Staff age</span>
+                    <input
+                      id="ageYears"
+                      type="number"
+                      min={0}
+                      max={120}
+                      value={ageYears}
+                      onChange={(event) => setAgeYears(Number(event.target.value))}
+                      className="input-control"
+                    />
+                  </label>
+                )}
+              </div>
+
+              <div className="triage-evidence-box">
+                <strong>Validation status</strong>
+                <span>{status}</span>
+              </div>
+            </div>
+          )}
+
+          {activeStep === "presentation" && (
+            <div className="triage-stage-content">
+              <label className="triage-search-field" htmlFor="protocolSearch">
+                <Search className="pointer-events-none h-5 w-5" />
+                <input
+                  id="protocolSearch"
+                  value={symptomSearch}
+                  onChange={(event) => setSymptomSearch(event.target.value)}
+                  className="input-control"
+                  placeholder="Search symptoms or protocols"
                 />
-                <ToggleCard
-                  checked={outstation}
-                  onChange={setOutstation}
-                  icon={MapPin}
-                  label="Outstation sick leave"
-                />
-                <ToggleCard
-                  checked={sicknessLeave}
-                  onChange={setSicknessLeave}
-                  icon={FileText}
-                  label="Sickness validation"
-                />
+              </label>
+
+              <div className="triage-protocol-summary">
+                <div>
+                  <span className="field-label">Matched protocol</span>
+                  <strong>{selectedProtocol.titleEn}</strong>
+                  <p>{selectedProtocol.clinicalDefinitionEn}</p>
+                </div>
+                <span className="status-pill bg-ist-cream text-ist-blue">{selectedProtocol.releaseVersion}</span>
+              </div>
+
+              <div className="triage-two-column">
+                <label className="triage-field-block">
+                  <span className="field-label">English transcript</span>
+                  <textarea
+                    value={englishTranscript}
+                    onChange={(event) => setEnglishTranscript(event.target.value)}
+                    className="textarea-control"
+                  />
+                </label>
+                <label className="triage-field-block">
+                  <span className="field-label">Arabic transcript</span>
+                  <textarea
+                    value={arabicTranscript}
+                    onChange={(event) => setArabicTranscript(event.target.value)}
+                    className="textarea-control text-right"
+                    dir="rtl"
+                  />
+                </label>
+              </div>
+
+              <div className="triage-choice-grid">
+                <ToggleCard checked={fitToFly} onChange={setFitToFly} icon={Plane} label="Fit-to-Fly validation" />
+                <ToggleCard checked={outstation} onChange={setOutstation} icon={MapPin} label="Outstation sick leave" />
+                <ToggleCard checked={sicknessLeave} onChange={setSicknessLeave} icon={FileText} label="Sickness validation" />
                 <ToggleCard
                   checked={vaccinationScreen}
                   onChange={setVaccinationScreen}
@@ -623,149 +1226,97 @@ export default function TriageWorkspace() {
                 />
               </div>
 
-              <p className="rounded-xl border border-ist-gold/20 bg-ist-cream px-3 py-2 text-sm font-medium text-ist-blue">{status}</p>
-            </div>
-          </div>
-
-          <div className="clinical-card p-5">
-            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-              <div>
-                <div className="section-heading">
-                  <Stethoscope className="h-5 w-5 text-ist-gold" />
-                  Interactive triage protocol
-                </div>
-                <p className="mt-2 text-sm leading-relaxed text-gray-500">
-                  Checklist order stays high-acuity first so red flags are never buried below routine care.
-                </p>
-              </div>
-              <span className={`status-pill border ${severityStyle[currentSeverity]}`}>
-                {currentSeverity}
-              </span>
-            </div>
-
-            <label className="relative mt-5 block" htmlFor="protocolSearch">
-              <Search className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-slate-400" />
-              <input
-                id="protocolSearch"
-                value={symptomSearch}
-                onChange={(event) => setSymptomSearch(event.target.value)}
-                className="input-control pl-10"
-                placeholder="Search symptoms or protocols"
-              />
-            </label>
-
-            <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
-              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                    Matched protocol
-                  </p>
-                  <p className="mt-1 text-sm font-extrabold text-ist-blue">{selectedProtocol.titleEn}</p>
-                  <p className="mt-1 text-sm leading-6 text-slate-500">
-                    {selectedProtocol.clinicalDefinitionEn}
-                  </p>
-                </div>
-                <span className="status-pill bg-white text-ist-blue">
-                  {selectedProtocol.releaseVersion}
-                </span>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <span className="status-pill bg-ist-cream text-ist-blue">{protocolStatus}</span>
-                {protocolResults[0]?.matchedTerms.slice(0, 3).map((term) => (
-                  <span key={term} className="status-pill bg-white text-slate-600">
-                    {term}
-                  </span>
-                ))}
+              <div className="triage-button-row">
+                <button type="button" className="primary-button" onClick={() => enableNextStep("presentation")}>
+                  Enable acuity checklist
+                </button>
+                <span>{protocolStatus}</span>
               </div>
             </div>
+          )}
 
-            <div className="mt-4 grid gap-3">
-              {filteredQuestions.map((question) => {
-                const checked = selectedQuestions.includes(question.id);
-                return (
-                  <button
-                    key={question.id}
-                    type="button"
-                    className={`question-row ${checked ? "question-row-active" : ""}`}
-                    onClick={() => toggleQuestion(question.id)}
-                  >
-                    <span className={`status-pill border ${severityStyle[question.severity]}`}>
-                      {question.severity}
-                    </span>
-                    <span className="min-w-0 flex-1 text-left">
-                      <span className="block text-sm font-bold text-ist-blue">{questionText(question)}</span>
-                      <span className="mt-1 block text-sm text-slate-500">{questionRationale(question)}</span>
-                    </span>
-                    <span className={`check-target ${checked ? "check-target-active" : ""}`}>
-                      {checked && <Check className="h-4 w-4" />}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="mt-4 rounded-2xl border border-rose-100 bg-rose-50 p-4">
-              <div className="flex items-center gap-2 text-sm font-semibold text-rose-700">
+          {activeStep === "acuity" && (
+            <div className="triage-stage-content">
+              <div className="triage-evidence-box triage-evidence-alert">
                 <ShieldAlert className="h-4 w-4" />
-                Red flag highlights
+                <div>
+                  <strong>Current safety floor: {currentSeverity}</strong>
+                  <span>Checklist order stays high-acuity first so red flags are never buried below routine care.</span>
+                </div>
               </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {redFlagHits.length > 0 ? (
-                  [...new Set(redFlagHits)].map((hit) => (
-                    <span key={hit} className="status-pill bg-white text-rose-700">
-                      {hit}
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-sm text-slate-500">No emergency keywords detected.</span>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px]">
-          <div className="clinical-card p-5">
-            <div className="section-heading">
-              <Languages className="h-5 w-5 text-ist-gold" />
-              Bilingual copilot helper
-            </div>
-            <div className="mt-5 grid gap-4 lg:grid-cols-2">
-              <label className="block">
-                <span className="field-label">English transcript</span>
-                <textarea
-                  value={englishTranscript}
-                  onChange={(event) => setEnglishTranscript(event.target.value)}
-                  className="textarea-control mt-2 min-h-32"
-                />
-              </label>
-              <label className="block">
-                <span className="field-label">Arabic transcript</span>
-                <textarea
-                  value={arabicTranscript}
-                  onChange={(event) => setArabicTranscript(event.target.value)}
-                  className="textarea-control mt-2 min-h-32 text-right"
-                  dir="rtl"
-                />
-              </label>
-            </div>
-
-            <div className="mt-5 grid gap-3">
-              {suggestions.map((suggestion) => (
-                <div key={suggestion.id} className="rounded-2xl border border-gray-200 bg-white p-4">
-                  <div className="flex flex-col gap-3 md:flex-row md:items-center">
-                    <div className="flex min-w-0 flex-1 items-start gap-3">
-                      <span className="mt-1 rounded-xl bg-ist-cream p-2 text-ist-gold">
-                        <Bot className="h-4 w-4" />
+              <div className="triage-question-list">
+                {filteredQuestions.map((question) => {
+                  const checked = selectedQuestions.includes(question.id);
+                  return (
+                    <button
+                      key={question.id}
+                      type="button"
+                      className={`question-row ${checked ? "question-row-active" : ""}`}
+                      onClick={() => toggleQuestion(question.id)}
+                    >
+                      <span className={`status-pill border ${severityStyle[question.severity]}`}>
+                        {question.severity}
                       </span>
-                      <div>
-                        <p className="text-sm font-bold text-ist-blue">{suggestion.question}</p>
-                        <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                          {suggestion.confidence}% confidence, proposed {suggestion.proposed}
-                        </p>
-                      </div>
+                      <span className="min-w-0 flex-1 text-left">
+                        <span className="block text-sm font-bold text-ist-blue">{questionText(question)}</span>
+                        <span className="mt-1 block text-sm text-slate-500">{questionRationale(question)}</span>
+                      </span>
+                      <span className={`check-target ${checked ? "check-target-active" : ""}`}>
+                        {checked && <Check className="h-4 w-4" />}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="triage-red-flags">
+                <span className="field-label">Red flag highlights</span>
+                <div>
+                  {redFlagHits.length > 0 ? (
+                    [...new Set(redFlagHits)].map((hit) => (
+                      <span key={hit} className="status-pill bg-white text-rose-700">
+                        {hit}
+                      </span>
+                    ))
+                  ) : (
+                    <span>No emergency keywords detected.</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="triage-button-row">
+                <button type="button" className="primary-button" onClick={() => enableNextStep("acuity")}>
+                  Enable nurse review
+                </button>
+                <span>{selectedQuestions.length} checklist item(s) selected</span>
+              </div>
+            </div>
+          )}
+
+          {activeStep === "copilot" && (
+            <div className="triage-stage-content">
+              <div className="triage-evidence-box">
+                <Languages className="h-4 w-4" />
+                <div>
+                  <strong>AI assistance remains advisory</strong>
+                  <span>The message and disposition move forward only after nurse review and approval.</span>
+                </div>
+              </div>
+
+              <div className="triage-suggestion-list">
+                {suggestions.map((suggestion) => (
+                  <div key={suggestion.id} className="triage-suggestion-row">
+                    <span className="triage-suggestion-icon">
+                      <Bot className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <strong>{suggestion.question}</strong>
+                      <span>
+                        {suggestion.confidence}% confidence, proposed {suggestion.proposed}
+                      </span>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="triage-suggestion-actions">
                       <button
                         type="button"
                         className={`secondary-button ${
@@ -788,77 +1339,107 @@ export default function TriageWorkspace() {
                       </button>
                     </div>
                   </div>
+                ))}
+              </div>
+
+              <div className="triage-button-row">
+                <button type="button" className="primary-button" onClick={() => enableNextStep("copilot")}>
+                  Enable disposition & SBAR
+                </button>
+                <span>{acceptedSuggestionCount} copilot suggestion(s) accepted</span>
+              </div>
+            </div>
+          )}
+
+          {activeStep === "disposition" && (
+            <div className="triage-stage-content">
+              <div className={`triage-final-card border ${severityStyle[decision.severity]}`}>
+                <span>Final disposition</span>
+                <strong>{decision.severity}</strong>
+                <p>{decision.destinationName}</p>
+                <small>{decision.destinationRationale}</small>
+              </div>
+
+              <div className="triage-sbar-preview">
+                <div>
+                  <ClipboardCheck className="h-4 w-4" />
+                  <strong>SBAR/SOAP preview</strong>
                 </div>
-              ))}
+                <pre>{sbarText}</pre>
+              </div>
+
+              <div className="triage-button-row">
+                <button type="button" className="primary-button" onClick={finalizeAndComplete}>
+                  <Sparkles className="h-4 w-4" />
+                  Finalize Plan
+                </button>
+                <button type="button" className="secondary-button" onClick={copySbar}>
+                  <Copy className="h-4 w-4" />
+                  {copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy blocked" : "Copy SBAR Note"}
+                </button>
+              </div>
+            </div>
+          )}
+        </section>
+
+        <aside className="triage-decision-panel clinical-card">
+          <div>
+            <span className="tag-label">CURRENT PROCESS STAGE</span>
+            <h3>{activeWorkflowStep.title}</h3>
+            <p>
+              Stage {activeStepNumber} of {workflowSteps.length}. Next actions stay gated until this stage is enabled
+              or completed.
+            </p>
+          </div>
+
+          <div className="triage-active-case">
+            <span className="field-label">Active case</span>
+            <strong>{profile?.istStaffId ?? staffId}</strong>
+            <p>
+              {patientSummary} | Age {patientAge} | {profile?.department ?? "Pending department"}
+            </p>
+            <div>
+              <span className="status-pill bg-ist-cream text-ist-blue">
+                {profile?.dutyStatus ?? "unknown"}
+              </span>
+              <span className="status-pill bg-gray-100 text-gray-700">
+                {profile?.insuranceEligibilityStatus ?? "insurance pending"}
+              </span>
             </div>
           </div>
 
-          <div className="clinical-card p-5">
-            <div className="section-heading">
-              <ClipboardCheck className="h-5 w-5 text-ist-gold" />
-              Finalized plan & action
-            </div>
-            <div className={`mt-5 rounded-2xl border p-4 ${severityStyle[decision.severity]}`}>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em]">Final disposition</p>
-              <h3 className="mt-2 font-display text-2xl font-extrabold">{decision.severity}</h3>
-              <p className="mt-2 text-sm font-bold">{decision.destinationName}</p>
-              <p className="mt-1 text-sm opacity-90">{decision.destinationRationale}</p>
-            </div>
+          <div className={`triage-side-disposition border ${severityStyle[currentSeverity]}`}>
+            <span>Safety floor</span>
+            <strong>{currentSeverity}</strong>
+            <p>{decision.destinationName}</p>
+          </div>
 
-            <div className="mt-4 rounded-2xl border border-gray-200 bg-gray-50 p-4">
-              <p className="text-sm font-bold text-ist-blue">SBAR/SOAP preview</p>
-              <pre className="mt-3 max-h-56 overflow-auto whitespace-pre-wrap rounded-xl bg-white p-3 font-mono text-xs leading-6 text-gray-700">
-                {sbarText}
-              </pre>
+          <div className="triage-side-list">
+            <div>
+              <span>Protocol</span>
+              <strong>{selectedProtocol.titleEn}</strong>
             </div>
-
-            <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
-              <button type="button" className="primary-button justify-center" onClick={finalizePlan}>
-                <Sparkles className="h-4 w-4" />
-                Finalize Plan
-              </button>
-              <button type="button" className="secondary-button justify-center" onClick={copySbar}>
-                <Copy className="h-4 w-4" />
-                {copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy blocked" : "Copy SBAR Note"}
-              </button>
+            <div>
+              <span>Aviation context</span>
+              <strong>{aviationFlags.length > 0 ? aviationFlags.join(", ") : "None selected"}</strong>
+            </div>
+            <div>
+              <span>Why this route</span>
+              <strong>{decision.trace[0]?.rationale ?? "Awaiting final route evaluation."}</strong>
             </div>
           </div>
-        </div>
-      </section>
 
-      <aside className="clinical-card h-fit p-5 2xl:sticky 2xl:top-28">
-        <div className="section-heading">
-          <AlertTriangle className="h-5 w-5 text-amber-500" />
-          Clinical rationale drawer
-        </div>
-        <div className="mt-5 space-y-4">
-          <ReferenceBlock
-            title="Current safety floor"
-            body={`${currentSeverity} based on selected checklist items and detected keywords.`}
-          />
-          <ReferenceBlock
-            title="Medical references"
-            body={`${selectedProtocol.titleEn} from Phase 1 content release ${selectedProtocol.releaseVersion}, plus aviation fit-to-fly review, outstation validation, sickness telemetry, and vaccination reaction screening.`}
-          />
-          <ReferenceBlock
-            title="Note drafting"
-            body={`${suggestions.filter((item) => item.status === "accepted").length} copilot suggestions accepted. SBAR preview is ready for clipboard handoff.`}
-          />
-          <div className="rounded-2xl border border-gray-200 bg-white p-4">
-            <p className="text-sm font-bold text-ist-blue">Explainability trace</p>
-            <div className="mt-3 space-y-2">
-              {decision.trace.map((trace) => (
-                <div key={trace.ruleId} className="rounded-xl bg-gray-50 p-3">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                    {trace.ruleId}
-                  </p>
-                  <p className="mt-1 text-sm text-slate-700">{trace.rationale}</p>
-                </div>
-              ))}
-            </div>
+          <div className="triage-side-actions">
+            <button type="button" className="primary-button" onClick={finalizeAndComplete}>
+              <Sparkles className="h-4 w-4" />
+              Finalize route
+            </button>
+            <button type="button" className="secondary-button" onClick={() => openWorkflowStep("disposition")}>
+              View SBAR
+            </button>
           </div>
-        </div>
-      </aside>
+        </aside>
+      </div>
     </div>
   );
 }
@@ -887,14 +1468,5 @@ function ToggleCard({
         className="h-4 w-4 rounded border-gray-300 text-ist-blue focus:ring-ist-gold"
       />
     </label>
-  );
-}
-
-function ReferenceBlock({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
-      <p className="text-sm font-bold text-ist-blue">{title}</p>
-      <p className="mt-2 text-sm leading-6 text-slate-600">{body}</p>
-    </div>
   );
 }

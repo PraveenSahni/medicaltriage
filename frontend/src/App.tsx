@@ -316,28 +316,32 @@ export default function App() {
             </div>
           </header>
 
-          <section className="page-summary">
-            <div className="min-w-0">
-              <span className="tag-label">{heading.eyebrow}</span>
-              <h1>{heading.title}</h1>
-              <p>{heading.subtitle}</p>
-            </div>
-            <div className="summary-metric" aria-label={heading.metricLabel}>
-              <strong>{heading.metric}</strong>
-              <span>{heading.metricLabel}</span>
-            </div>
-          </section>
+          {activeView !== "workspace" && (
+            <>
+              <section className="page-summary">
+                <div className="min-w-0">
+                  <span className="tag-label">{heading.eyebrow}</span>
+                  <h1>{heading.title}</h1>
+                  <p>{heading.subtitle}</p>
+                </div>
+                <div className="summary-metric" aria-label={heading.metricLabel}>
+                  <strong>{heading.metric}</strong>
+                  <span>{heading.metricLabel}</span>
+                </div>
+              </section>
 
-          <section className="rule-callout">
-            <div>
-              <strong>Core operating rule</strong>
-              <p>
-                IST Tech does not autonomously approve a clinical disposition. It drafts, challenges,
-                evidence-packs, and tracks the worksheet so clinicians can validate faster with traceability.
-              </p>
-            </div>
-            <span>NEEDS REVIEW</span>
-          </section>
+              <section className="rule-callout">
+                <div>
+                  <strong>Core operating rule</strong>
+                  <p>
+                    IST Tech does not autonomously approve a clinical disposition. It drafts, challenges,
+                    evidence-packs, and tracks the worksheet so clinicians can validate faster with traceability.
+                  </p>
+                </div>
+                <span>NEEDS REVIEW</span>
+              </section>
+            </>
+          )}
 
           <main className="workspace-body">{renderView()}</main>
 
