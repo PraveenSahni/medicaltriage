@@ -99,5 +99,54 @@ describe("clinical AI HITL approval gateway", () => {
     });
     expect(response.body.audit.auditSignature).toMatch(/^[a-f0-9]{64}$/);
     expect(response.body.audit.persisted).toBe(false);
+    expect(response.body.audit.traceEvent).toMatchObject({
+      activeReviewConfirmed: true,
+      featureLevelReasoningReviewed: true,
+      isCriticalFloorBreach: false
+    });
+  });
+
+  it("rejects clinician downgrades below the rules floor without the special justification code", async () => {
+    const agent = await authenticatedAgent();
+    const response = await agent
+      .post("/api/v1/approval/reviews/enc-ai-review-10001")
+      .send({
+        decision: "override",
+        reviewedReasoningFeatureIds: ["vital-spo2-floor", "symptom-chest-sweating"],
+        activeReviewConfirmed: true,
+        originalAiRecommendation: "Routine",
+        rulesEngineSeverity: "Emergency",
+        finalApprovedSeverity: "Routine",
+        finalDispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
+        nurseOverrideReasonCode: "OTHER",
+        nurseOverrideRationale: "Clinician attempted to downgrade below the rules floor without the required code."
+      })
+      .expect(400);
+
+    expect(response.body.details.fieldErrors.nurseOverrideReasonCode).toBeDefined();
+  });
+
+  it("flags justified clinician downgrades as critical floor breaches", async () => {
+    const agent = await authenticatedAgent();
+    const response = await agent
+      .post("/api/v1/approval/reviews/enc-ai-review-10001")
+      .send({
+        decision: "override",
+        reviewedReasoningFeatureIds: ["vital-spo2-floor", "symptom-chest-sweating"],
+        activeReviewConfirmed: true,
+        originalAiRecommendation: "Routine",
+        rulesEngineSeverity: "Emergency",
+        finalApprovedSeverity: "Routine",
+        finalDispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
+        nurseOverrideReasonCode: "CLINICIAN_OVERRIDE_DOWN_BLOCKED",
+        nurseOverrideRationale:
+          "Senior clinician documented exceptional context and accepted director-level retrospective review."
+      })
+      .expect(200);
+
+    expect(response.body.audit.traceEvent).toMatchObject({
+      isCriticalFloorBreach: true,
+      nurseOverrideReasonCode: "CLINICIAN_OVERRIDE_DOWN_BLOCKED"
+    });
   });
 });

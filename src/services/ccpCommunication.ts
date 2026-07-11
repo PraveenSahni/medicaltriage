@@ -21,6 +21,7 @@ import {
   persistCcpOutboundDraft,
   persistInboundWebhookRecord
 } from "./persistence.js";
+import { assertHumanApprovalForExport } from "./safetyKernel.js";
 
 export class CcpCommunicationError extends Error {
   constructor(
@@ -106,8 +107,9 @@ async function guardDraftPolicy(draft: CcpOutboundDraft) {
   }
 }
 
-async function sendApprovedDraft(draft: CcpOutboundDraft): Promise<CcpOutboundDraft> {
+async function sendApprovedDraft(draft: CcpOutboundDraft, clinicalEncounterId?: string): Promise<CcpOutboundDraft> {
   await guardDraftPolicy(draft);
+  await assertHumanApprovalForExport(clinicalEncounterId, "CCP_SEND");
 
   const dispatchDraft = applyTestRedirect(draft);
   let sendResult: CcpSendResult;
@@ -199,7 +201,7 @@ export async function approveAndSendCcpDraft(
 
   const approvedDraft = requireRemoteTriageNurseApproval(draft, approval);
   await storeDraft(approvedDraft);
-  return sendApprovedDraft(approvedDraft);
+  return sendApprovedDraft(approvedDraft, approval.encounterId);
 }
 
 export async function listCcpOutboundDrafts(): Promise<CcpOutboundDraft[]> {

@@ -19,6 +19,7 @@ export type CcpMessageDraftRequest = z.infer<typeof CcpMessageDraftRequestSchema
 export const CcpMessageApproveRequestSchema = z.object({
   reviewerId: z.string().min(2).max(120),
   reviewerRole: z.string().min(2).max(120),
+  encounterId: z.string().min(1).max(140).optional(),
   note: z.string().max(500).optional()
 });
 export type CcpMessageApproveRequest = z.infer<typeof CcpMessageApproveRequestSchema>;

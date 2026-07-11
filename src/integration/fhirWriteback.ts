@@ -6,6 +6,7 @@ import type {
 } from "@prisma/client";
 import { isMockMode, shouldUseDatabasePersistence } from "../config/runtime.js";
 import { prisma } from "../db.js";
+import { assertHumanApprovalForExport } from "../services/safetyKernel.js";
 
 export const MOPH_ADDRESS_BUILDING_NUMBER_EXTENSION =
   "https://fhir.moph.gov.qa/StructureDefinition/AddressBuildingNumber";
@@ -601,6 +602,7 @@ export async function executeWriteback(
   if (!persistedEncounter && shouldUseDatabasePersistence()) {
     throw new Error(`Encounter ${encounterId} was not found for EMR/FHIR writeback.`);
   }
+  await assertHumanApprovalForExport(encounterId, "EMR_WRITEBACK");
 
   const encounter = persistedEncounter ?? mockEncounter(encounterId);
   const ageYears = persistedEncounter ? patientAgeYears(persistedEncounter) : 36;

@@ -4,6 +4,7 @@ type HttpError = Error & {
   status?: number;
   statusCode?: number;
   code?: string;
+  payload?: unknown;
 };
 
 function statusCodeFor(error: HttpError): number {
@@ -39,6 +40,9 @@ export const globalErrorHandler: ErrorRequestHandler = (error: HttpError, _req, 
 
   const status = statusCodeFor(error);
   if (status >= 400 && status < 500) {
+    if (error.payload && typeof error.payload === "object") {
+      return res.status(status).json(error.payload);
+    }
     return res.status(status).json({
       error: error.message || "Request rejected"
     });

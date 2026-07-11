@@ -49,6 +49,9 @@ export const TriageEvaluationRequestSchema = z.object({
   protocolId: z.string().min(1).max(120).optional(),
   selectedQuestionIds: z.array(z.string().min(1).max(120)).default([]),
   aiRecommendationSeverity: SeveritySchema.optional(),
+  clinicianFinalSeverity: SeveritySchema.optional(),
+  clinicianOverrideReasonCode: z.enum(["CLINICIAN_OVERRIDE_DOWN_BLOCKED", "CLINICIAN_OVERRIDE_UP", "OTHER"]).optional(),
+  clinicianOverrideRationale: z.string().max(1200).optional(),
   nurseOverrideRationale: z.string().max(1000).optional(),
   symptoms: z.object({
     chiefComplaint: z.string().min(1).max(240),

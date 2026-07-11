@@ -373,10 +373,12 @@ model SafetyAuditDeviationLog {
   nurseOverrideRationale    String?            @map("nurse_override_rationale")
   rulesEngineSeverity       TriageSeverity     @map("rules_engine_severity")
   overrideStatusFlag        OverrideStatusFlag @map("override_status_flag")
+  isCriticalFloorBreach     Boolean            @default(false) @map("is_critical_floor_breach")
   explainabilityTrace       Json               @map("explainability_trace")
   createdAt                 DateTime           @default(now()) @map("created_at")
 
   @@index([overrideStatusFlag, createdAt])
+  @@index([isCriticalFloorBreach, createdAt])
   @@map("safety_audit_deviation_logs")
 }
 

@@ -6,7 +6,13 @@ process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
 
 const app = createApp();
 
+let sharedAgent: ReturnType<typeof request.agent> | undefined;
+
 async function authenticatedAgent() {
+  if (sharedAgent) {
+    return sharedAgent;
+  }
+
   const agent = request.agent(app);
   const login = await agent
     .post("/api/v1/auth/login")
@@ -19,6 +25,7 @@ async function authenticatedAgent() {
 
   expect(login.body.accessToken).toEqual(expect.any(String));
   expect(login.body.is_mock).toBe(true);
+  sharedAgent = agent;
   return agent;
 }
 
@@ -287,6 +294,74 @@ describe("IST Qatar Phase I API", () => {
         expect.arrayContaining([
           expect.objectContaining({
             ruleId: "AI_DOWNGRADE_BLOCKED_BY_RULES_ENGINE",
+            matched: true
+          })
+        ])
+      );
+    });
+
+    it("rejects clinician downgrade below the rules floor without a documented blocked-downgrade code", async () => {
+      const agent = await authenticatedAgent();
+      const response = await agent
+        .post("/api/v1/triage/encounters/evaluate")
+        .send({
+          istStaffId: "IST-1001",
+          nurseId: "nurse-phase1",
+          clinicianFinalSeverity: "Routine",
+          symptoms: {
+            chiefComplaint: "Chest tightness with sweating",
+            narrative: "Caller reports chest tightness and sweating for more than one hour.",
+            language: "en",
+            durationMinutes: 75,
+            redFlags: []
+          },
+          aviationContext: {
+            crewRole: "flight_deck",
+            onDuty: true
+          }
+        })
+        .expect(400);
+
+      expect(response.body.error).toContain("Clinician downgrade below the deterministic safety floor");
+    });
+
+    it("flags justified clinician downgrade attempts while retaining the rules-engine safety floor", async () => {
+      const agent = await authenticatedAgent();
+      const response = await agent
+        .post("/api/v1/triage/encounters/evaluate")
+        .send({
+          istStaffId: "IST-1001",
+          nurseId: "nurse-phase1",
+          clinicianFinalSeverity: "Routine",
+          clinicianOverrideReasonCode: "CLINICIAN_OVERRIDE_DOWN_BLOCKED",
+          clinicianOverrideRationale:
+            "Senior clinician documented exceptional context and accepts safety-officer retrospective review.",
+          symptoms: {
+            chiefComplaint: "Chest tightness with sweating",
+            narrative: "Caller reports chest tightness and sweating for more than one hour.",
+            language: "en",
+            durationMinutes: 75,
+            redFlags: []
+          },
+          aviationContext: {
+            crewRole: "flight_deck",
+            onDuty: true
+          }
+        })
+        .expect(200);
+
+      expect(response.body.decision).toMatchObject({
+        severity: "Emergency",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT"
+      });
+      expect(response.body.safetyAudit).toMatchObject({
+        overrideStatusFlag: "NURSE_OVERRIDE_DOWN_BLOCKED",
+        isCriticalFloorBreach: true
+      });
+      expect(response.body.decision.trace).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            ruleId: "CLINICIAN_OVERRIDE_DOWN_BELOW_RULES_FLOOR_FLAGGED",
             matched: true
           })
         ])

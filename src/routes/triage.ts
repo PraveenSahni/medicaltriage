@@ -185,7 +185,15 @@ export function createTriageRouter(): Router {
 
     const insurance = await verifyInsuranceEligibility(staff.profile);
     const aviation = evaluateAviationRules(request, staff.profile);
-    const decision = resolveDisposition(request, staff.profile, aviation);
+    let decision: ReturnType<typeof resolveDisposition>;
+    try {
+      decision = resolveDisposition(request, staff.profile, aviation);
+    } catch (error) {
+      const status = error instanceof Error && "status" in error ? Number(error.status) : 500;
+      return res.status(status >= 400 && status < 500 ? status : 500).json({
+        error: error instanceof Error ? error.message : "Unable to resolve clinical disposition."
+      });
+    }
     const finalAviation =
       decision.severity === "Emergency" || decision.severity === "Urgent"
         ? {

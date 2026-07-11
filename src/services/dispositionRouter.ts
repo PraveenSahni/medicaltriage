@@ -207,6 +207,9 @@ export function resolveDisposition(
   const aiDowngradeBlocked =
     request.aiRecommendationSeverity !== undefined &&
     isSeverityDowngrade(request.aiRecommendationSeverity, severity);
+  const clinicianDowngradeBelowFloor =
+    request.clinicianFinalSeverity !== undefined &&
+    isSeverityDowngrade(request.clinicianFinalSeverity, severity);
   const trace = [...floor.trace, ...aviation.trace];
 
   if (aiDowngradeBlocked) {
@@ -217,6 +220,31 @@ export function resolveDisposition(
       dispositionCode: route.dispositionCode,
       rationale:
         "AI/copilot recommendation was lower acuity than the deterministic rules floor and was blocked server-side."
+    });
+  }
+
+  if (clinicianDowngradeBelowFloor) {
+    const clinicalRationale = request.clinicianOverrideRationale ?? request.nurseOverrideRationale;
+    if (
+      request.clinicianOverrideReasonCode !== "CLINICIAN_OVERRIDE_DOWN_BLOCKED" ||
+      !clinicalRationale ||
+      clinicalRationale.trim().length < 12
+    ) {
+      throw Object.assign(
+        new Error(
+          "Clinician downgrade below the deterministic safety floor requires CLINICIAN_OVERRIDE_DOWN_BLOCKED and a documented clinical rationale."
+        ),
+        { status: 400 }
+      );
+    }
+
+    trace.push({
+      ruleId: "CLINICIAN_OVERRIDE_DOWN_BELOW_RULES_FLOOR_FLAGGED",
+      matched: true,
+      severity,
+      dispositionCode: route.dispositionCode,
+      rationale:
+        "Clinician-submitted final severity was below the deterministic rules floor; writeback remains gated and the deviation is flagged for safety-officer review."
     });
   }
 

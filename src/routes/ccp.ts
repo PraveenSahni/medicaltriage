@@ -12,6 +12,7 @@ import {
 } from "../services/ccpCommunication.js";
 import { EmployeeCcpLookupSchema } from "../types/ccp.js";
 import { CcpMessageApproveRequestSchema, CcpMessageDraftRequestSchema } from "../types/communication.js";
+import { isSafetyKernelError } from "../services/safetyKernel.js";
 
 function normalizeFormBody(body: unknown): Record<string, string> {
   if (!body || typeof body !== "object") {
@@ -39,6 +40,10 @@ function publicWebhookUrl(req: Request): string {
 }
 
 function handleCcpError(error: unknown, res: { status: (code: number) => { json: (body: unknown) => void } }) {
+  if (isSafetyKernelError(error)) {
+    return res.status(error.status).json(error.payload);
+  }
+
   if (error instanceof CcpCommunicationError) {
     return res.status(error.statusCode).json({ error: error.message });
   }

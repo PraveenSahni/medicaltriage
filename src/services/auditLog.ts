@@ -10,6 +10,7 @@ export type SafetyAuditDraft = {
   nurseOverrideRationale?: string;
   rulesEngineSeverity: string;
   overrideStatusFlag: "AI_RECOMMENDATION_DIFFERED" | "NURSE_OVERRIDE_UP" | "NURSE_OVERRIDE_DOWN_BLOCKED" | "RULES_ENGINE_FINAL";
+  isCriticalFloorBreach: boolean;
   explainabilityTrace: unknown[];
 };
 
@@ -20,9 +21,12 @@ export function buildSafetyAuditDraft(
   const aiSeverity = request.aiRecommendationSeverity;
   const aiDiffers = Boolean(aiSeverity && aiSeverity !== decision.severity);
   const downgradeBlocked = Boolean(aiSeverity && isSeverityDowngrade(aiSeverity, decision.severity));
+  const clinicianFloorBreach = Boolean(
+    request.clinicianFinalSeverity && isSeverityDowngrade(request.clinicianFinalSeverity, decision.severity)
+  );
 
   let overrideStatusFlag: SafetyAuditDraft["overrideStatusFlag"] = "RULES_ENGINE_FINAL";
-  if (downgradeBlocked) {
+  if (downgradeBlocked || clinicianFloorBreach) {
     overrideStatusFlag = "NURSE_OVERRIDE_DOWN_BLOCKED";
   } else if (request.nurseOverrideRationale) {
     overrideStatusFlag = "NURSE_OVERRIDE_UP";
@@ -31,12 +35,17 @@ export function buildSafetyAuditDraft(
   }
 
   return {
-    required: aiDiffers || Boolean(request.nurseOverrideRationale) || decision.severity === "Emergency",
+    required:
+      aiDiffers ||
+      Boolean(request.nurseOverrideRationale) ||
+      Boolean(request.clinicianOverrideRationale) ||
+      clinicianFloorBreach ||
+      decision.severity === "Emergency",
     originalAiRecommendation: aiSeverity,
-    nurseOverrideRationale: request.nurseOverrideRationale,
+    nurseOverrideRationale: request.nurseOverrideRationale ?? request.clinicianOverrideRationale,
     rulesEngineSeverity: decision.severity,
     overrideStatusFlag,
+    isCriticalFloorBreach: clinicianFloorBreach,
     explainabilityTrace: decision.trace
   };
 }
-

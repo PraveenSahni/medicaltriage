@@ -10,6 +10,11 @@ type SafetyKpis = {
   pendingApprovals: number;
   safetyFloorOverrides: number;
   clinicianOverrides: number;
+  totalCallVolume?: number;
+  hmcEscalations?: number;
+  sidraEscalations?: number;
+  clinicalDeviationRate?: number;
+  criticalFloorBreaches?: number;
 };
 
 type SafetyTrend = {
@@ -36,6 +41,7 @@ type ExplainabilityRow = {
   aiReasoning: string;
   safetyFloorOverride: boolean;
   clinicianOverride: boolean;
+  criticalFloorBreach?: boolean;
   auditTrace: ExplainabilityFeature[];
 };
 
@@ -56,7 +62,8 @@ const emptyDashboard: SafetyDashboardPayload = {
     medsafeDxPassRate: 0,
     pendingApprovals: 0,
     safetyFloorOverrides: 0,
-    clinicianOverrides: 0
+    clinicianOverrides: 0,
+    criticalFloorBreaches: 0
   },
   trends: [],
   explainabilityLog: []
@@ -136,7 +143,7 @@ export default function SafetyDashboard() {
         </p>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
         <KpiCard
           label="AHT AI-assisted"
           value={seconds(payload.kpis.averageHandlingTimeAiSeconds)}
@@ -160,6 +167,12 @@ export default function SafetyDashboard() {
           value={`${payload.kpis.medsafeDxPassRate}%`}
           hint={`${payload.kpis.pendingApprovals} approvals pending`}
           tone="green"
+        />
+        <KpiCard
+          label="Critical breaches"
+          value={`${payload.kpis.criticalFloorBreaches ?? 0}`}
+          hint="Downgrades below the rules floor requiring director QA."
+          tone={(payload.kpis.criticalFloorBreaches ?? 0) > 0 ? "rose" : "green"}
         />
       </div>
 
@@ -190,7 +203,7 @@ export default function SafetyDashboard() {
         </div>
         <div className="divide-y divide-slate-200">
           {payload.explainabilityLog.map((row) => {
-            const risky = row.safetyFloorOverride || row.clinicianOverride;
+            const risky = row.safetyFloorOverride || row.clinicianOverride || row.criticalFloorBreach;
             const open = expanded === row.encounterId;
             return (
               <article

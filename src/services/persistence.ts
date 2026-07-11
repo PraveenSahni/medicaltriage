@@ -376,8 +376,9 @@ export async function persistEvaluatedEncounter(args: {
         nurseOverrideRationale: args.safetyAudit.nurseOverrideRationale,
         rulesEngineSeverity: severityToPrisma(args.decision.severity),
         overrideStatusFlag: args.safetyAudit.overrideStatusFlag as OverrideStatusFlag,
+        isCriticalFloorBreach: args.safetyAudit.isCriticalFloorBreach,
         explainabilityTrace: jsonValue(args.safetyAudit.explainabilityTrace)
-      }
+      } as Prisma.SafetyAuditDeviationLogUncheckedCreateInput
     });
   }
 
