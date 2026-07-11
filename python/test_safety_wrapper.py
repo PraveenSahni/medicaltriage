@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import json
 import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
 
 from safety_wrapper import evaluate_ai_recommendation
+
+
+FIXTURE_PATH = Path(__file__).resolve().parents[1] / "tests" / "fixtures" / "triage_scenarios.json"
 
 
 class SafetyWrapperTests(unittest.TestCase):
@@ -94,6 +98,19 @@ class SafetyWrapperTests(unittest.TestCase):
 
             self.assertTrue(result["override_triggered"])
             self.assertEqual(result["final_severity"], "EMERGENCY")
+
+    def test_shared_fixture_matches_python_safety_expectations(self) -> None:
+        scenarios = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
+
+        for scenario in scenarios:
+            with self.subTest(scenario=scenario["id"]):
+                result = evaluate_ai_recommendation(
+                    scenario["patient_vitals"],
+                    scenario["ai_suggested_disposition"],
+                )
+
+                self.assertEqual(result["override_triggered"], scenario["expected_python_override"])
+                self.assertEqual(bool(result["red_floor_reasons"]), scenario["expected_red_floor"])
 
 
 if __name__ == "__main__":
