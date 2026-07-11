@@ -4,7 +4,7 @@ import { withMockFlag } from "../config/runtime.js";
 import { buildSafetyAuditDraft } from "../services/auditLog.js";
 import { evaluateAviationRules } from "../services/aviationRules.js";
 import { resolveDisposition } from "../services/dispositionRouter.js";
-import { findDependent, validateStaffMember } from "../services/hrms.js";
+import { findDependent, resolvePatientAgeFromHrms, validateStaffMember } from "../services/hrms.js";
 import { verifyInsuranceEligibility } from "../services/insurance.js";
 import { calculateTriageScore } from "../services/news2Scoring.js";
 import { persistCompletedTriageNote, persistEvaluatedEncounter } from "../services/persistence.js";
@@ -70,17 +70,45 @@ export function createTriageRouter(): Router {
     });
   });
 
-  router.post("/calculate-score", (req, res) => {
+  router.post("/calculate-score", async (req, res) => {
     const parsed = TriageCalculateScoreRequestSchema.safeParse(req.body);
     if (!parsed.success) {
       return res.status(400).json({ error: "Invalid triage vital-sign payload", details: parsed.error.flatten() });
     }
 
-    const result = calculateTriageScore(parsed.data);
+    if (!parsed.data.istStaffId) {
+      return res.status(400).json({
+        error: "ist_staff_id is required",
+        message: "Age is calculated from HRMS/dependent records for this internal employee system."
+      });
+    }
+
+    const ageResolution = await resolvePatientAgeFromHrms({
+      istStaffId: parsed.data.istStaffId,
+      dependentId: parsed.data.dependentId
+    });
+    if (!ageResolution.ok) {
+      return res.status(ageResolution.status).json({
+        error: "Unable to calculate HRMS patient age",
+        message: ageResolution.reason
+      });
+    }
+
+    const result = calculateTriageScore({
+      ...parsed.data,
+      ageYears: ageResolution.ageYears,
+      ageMonths: ageResolution.ageMonths
+    });
     return res.json({
       ...result,
+      patientAge: {
+        source: ageResolution.source,
+        ageYears: ageResolution.ageYears,
+        ageMonths: ageResolution.ageMonths,
+        calculatedFrom: ageResolution.calculatedFrom
+      },
       clinicalSafetyNotice:
-        "Rules-first result. AI is not permitted to downgrade RED_ALERT, emergency, or high-risk routing."
+        "Rules-first result. Patient age is calculated from HRMS/dependent records; caller-provided age is ignored for clinical routing."
     });
   });
 
@@ -96,8 +124,18 @@ export function createTriageRouter(): Router {
       finalDispositionCode: parsed.data.finalDispositionCode,
       customAviationTags: parsed.data.customAviationTags
     });
-    const note = compileBilingualSoapSbarMarkdown(parsed.data);
-    const persistence = await persistCompletedTriageNote(parsed.data, note, fitToFlyStatus);
+    const ageResolution = parsed.data.istStaffId
+      ? await resolvePatientAgeFromHrms({
+          istStaffId: parsed.data.istStaffId,
+          dependentId: undefined
+        })
+      : undefined;
+    const completionData =
+      ageResolution?.ok === true
+        ? { ...parsed.data, patientAgeYears: ageResolution.ageYears }
+        : parsed.data;
+    const note = compileBilingualSoapSbarMarkdown(completionData);
+    const persistence = await persistCompletedTriageNote(completionData, note, fitToFlyStatus);
     if (req.accepts(["json", "text"]) === "json") {
       return res.json(withMockFlag({
         notePayload: note,
@@ -117,7 +155,24 @@ export function createTriageRouter(): Router {
       return res.status(400).json({ error: "Invalid triage evaluation payload", details: parsed.error.flatten() });
     }
 
-    const request = parsed.data;
+    const ageResolution = await resolvePatientAgeFromHrms({
+      istStaffId: parsed.data.istStaffId,
+      dependentId: parsed.data.dependentId
+    });
+    if (!ageResolution.ok) {
+      return res.status(ageResolution.status).json({
+        error: "Unable to calculate HRMS patient age",
+        message: ageResolution.reason
+      });
+    }
+
+    const request = {
+      ...parsed.data,
+      symptoms: {
+        ...parsed.data.symptoms,
+        ageYears: ageResolution.ageYears
+      }
+    };
     const staff = await validateStaffMember(request.istStaffId);
     if (!staff.valid || !staff.profile) {
       return res.status(404).json(staff);
@@ -131,19 +186,37 @@ export function createTriageRouter(): Router {
     const insurance = await verifyInsuranceEligibility(staff.profile);
     const aviation = evaluateAviationRules(request, staff.profile);
     const decision = resolveDisposition(request, staff.profile, aviation);
+    const finalAviation =
+      decision.severity === "Emergency" || decision.severity === "Urgent"
+        ? {
+            ...aviation,
+            fitToFlyStatus: "restricted" as const,
+            tags: [...new Set([...aviation.tags, "rules-floor-duty-restriction"])],
+            trace: [
+              ...aviation.trace,
+              {
+                ruleId: "AVIATION_FINAL_DISPOSITION_RESTRICTS_FIT_TO_FLY",
+                matched: true,
+                severity: decision.severity,
+                rationale:
+                  "Final Emergency or Urgent disposition forces fit-to-fly status to restricted until clinician clearance."
+              }
+            ]
+          }
+        : aviation;
     const clipboardPayload = compileSbarClipboardPayload({
       request,
       profile: staff.profile,
       dependent,
       insurance,
       decision,
-      aviation
+      aviation: finalAviation
     });
     const safetyAudit = buildSafetyAuditDraft(request, decision);
     const persistence = await persistEvaluatedEncounter({
       request,
       decision,
-      aviation,
+      aviation: finalAviation,
       clipboardPayload,
       safetyAudit
     });
@@ -152,10 +225,16 @@ export function createTriageRouter(): Router {
       encounterId: randomUUID(),
       decision,
       insurance,
-      aviation,
+      aviation: finalAviation,
       clipboardPayload,
       safetyAudit,
       persistence,
+      patientAge: {
+        source: ageResolution.source,
+        ageYears: ageResolution.ageYears,
+        ageMonths: ageResolution.ageMonths,
+        calculatedFrom: ageResolution.calculatedFrom
+      },
       humanInLoopRequired: true,
       warnings: [
         "Mock rules are for MVP wiring only and must be replaced with licensed clinical content and local governance approvals.",

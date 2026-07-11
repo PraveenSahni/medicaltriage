@@ -7,7 +7,7 @@ import type {
   StaffProfile,
   TriageEvaluationRequest
 } from "../types/triage.js";
-import { severityMax } from "../types/triage.js";
+import { isSeverityDowngrade, severityMax } from "../types/triage.js";
 import { deriveProtocolSafetyFloor, getLocalizedDisposition } from "./clinicalContent.js";
 
 function textFor(request: TriageEvaluationRequest): string {
@@ -204,11 +204,26 @@ export function resolveDisposition(
   );
   const severity = severityMax(floor.severity, aviationFloor);
   const route = routeBySeverity(request, severity, aviation, floor.dispositionCode);
+  const aiDowngradeBlocked =
+    request.aiRecommendationSeverity !== undefined &&
+    isSeverityDowngrade(request.aiRecommendationSeverity, severity);
+  const trace = [...floor.trace, ...aviation.trace];
+
+  if (aiDowngradeBlocked) {
+    trace.push({
+      ruleId: "AI_DOWNGRADE_BLOCKED_BY_RULES_ENGINE",
+      matched: true,
+      severity,
+      dispositionCode: route.dispositionCode,
+      rationale:
+        "AI/copilot recommendation was lower acuity than the deterministic rules floor and was blocked server-side."
+    });
+  }
 
   return {
     severity,
     ...route,
     safetyFloorApplied: severity !== "Self-care",
-    trace: [...floor.trace, ...aviation.trace]
+    trace
   };
 }

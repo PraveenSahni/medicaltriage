@@ -29,12 +29,14 @@ type StaffProfile = {
   department: string;
   jobTitle: string;
   dutyStatus: string;
+  dateOfBirthIso?: string;
   insuranceEligibilityStatus: string;
   insuranceProvider?: string;
   dependents: Array<{
     id: string;
     relationshipType: string;
     age: number;
+    dateOfBirthIso?: string;
     biologicalSex: string;
   }>;
 };
@@ -209,6 +211,7 @@ const demoProfile: StaffProfile = {
   department: "Flight Operations",
   jobTitle: "Cabin Crew",
   dutyStatus: "active",
+  dateOfBirthIso: "1994-05-20",
   insuranceProvider: "IST Staff Health Plan",
   insuranceEligibilityStatus: "eligible",
   dependents: [
@@ -216,6 +219,7 @@ const demoProfile: StaffProfile = {
       id: "dep_demo_10001_child",
       relationshipType: "child",
       age: 8,
+      dateOfBirthIso: "2018-01-10",
       biologicalSex: "female"
     }
   ]
@@ -259,6 +263,7 @@ const initialIncomingCalls: IncomingCall[] = [
       department: "Ground Services",
       jobTitle: "Ramp Supervisor",
       dutyStatus: "active",
+      dateOfBirthIso: "1985-07-18",
       insuranceProvider: "IST Staff Health Plan",
       insuranceEligibilityStatus: "eligible",
       dependents: []
@@ -286,6 +291,7 @@ const initialIncomingCalls: IncomingCall[] = [
       department: "Cabin Services",
       jobTitle: "Cabin Crew",
       dutyStatus: "off duty",
+      dateOfBirthIso: "1988-12-02",
       insuranceProvider: "IST Staff Health Plan",
       insuranceEligibilityStatus: "eligible",
       dependents: [
@@ -293,6 +299,7 @@ const initialIncomingCalls: IncomingCall[] = [
           id: "dep_demo_10037_child",
           relationshipType: "child",
           age: 8,
+          dateOfBirthIso: "2018-04-04",
           biologicalSex: "male"
         }
       ]
@@ -321,6 +328,7 @@ const initialIncomingCalls: IncomingCall[] = [
       department: "Flight Operations",
       jobTitle: "Cabin Crew",
       dutyStatus: "outstation",
+      dateOfBirthIso: "1997-03-09",
       insuranceProvider: "IST Staff Health Plan",
       insuranceEligibilityStatus: "eligible",
       dependents: []
@@ -456,6 +464,25 @@ function highestSeverity(selected: string[], transcript: string, questions: Ques
   return severity;
 }
 
+function ageYearsFromDateOfBirth(dateOfBirthIso?: string): number | undefined {
+  if (!dateOfBirthIso) {
+    return undefined;
+  }
+
+  const dateOfBirth = new Date(dateOfBirthIso);
+  if (Number.isNaN(dateOfBirth.getTime())) {
+    return undefined;
+  }
+
+  const today = new Date();
+  let age = today.getFullYear() - dateOfBirth.getFullYear();
+  const monthDelta = today.getMonth() - dateOfBirth.getMonth();
+  if (monthDelta < 0 || (monthDelta === 0 && today.getDate() < dateOfBirth.getDate())) {
+    age -= 1;
+  }
+  return Math.max(age, 0);
+}
+
 function localDecision(severity: Severity, ageYears: number, outstation: boolean): EvaluationDecision {
   if (severity === "Emergency" && ageYears < 18) {
     return {
@@ -551,6 +578,16 @@ export default function TriageWorkspace() {
   const [generatedDataStatus, setGeneratedDataStatus] = useState("Checking generated synthetic records.");
 
   const selectedDependent = profile?.dependents.find((dependent) => dependent.id === selectedDependentId);
+  const staffAgeFromHrms = ageYearsFromDateOfBirth(profile?.dateOfBirthIso);
+  const dependentAgeFromHrms = selectedDependent
+    ? ageYearsFromDateOfBirth(selectedDependent.dateOfBirthIso) ?? selectedDependent.age
+    : undefined;
+  const patientAge = dependentAgeFromHrms ?? staffAgeFromHrms ?? ageYears;
+  const patientAgeSource = dependentAgeFromHrms !== undefined
+    ? "HRMS dependent record"
+    : staffAgeFromHrms !== undefined
+      ? "HRMS staff date of birth"
+      : "queue display fallback";
   const activeStepIndex = workflowSteps.findIndex((step) => step.id === activeStep);
   const activeStepNumber = activeStepIndex + 1;
   const activeWorkflowStep = workflowSteps[activeStepIndex] ?? workflowSteps[0];
@@ -572,10 +609,9 @@ export default function TriageWorkspace() {
 
   useEffect(() => {
     const controller = new AbortController();
-    const age = selectedDependent?.age ?? ageYears;
     const params = new URLSearchParams({
       q: symptomSearch,
-      ageYears: String(age),
+      ageYears: String(patientAge),
       mode: "both",
       limit: "5"
     });
@@ -639,7 +675,7 @@ export default function TriageWorkspace() {
       window.clearTimeout(timeout);
       controller.abort();
     };
-  }, [ageYears, selectedDependent?.age, symptomSearch]);
+  }, [patientAge, symptomSearch]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -691,7 +727,6 @@ export default function TriageWorkspace() {
   const patientSummary = selectedDependent
     ? `${selectedDependent.relationshipType} dependent`
     : profile?.jobTitle ?? "Staff member";
-  const patientAge = selectedDependent?.age ?? ageYears;
   const acceptedSuggestionCount = suggestions.filter((item) => item.status === "accepted").length;
   const aviationFlags = [
     fitToFly ? "Fit-to-fly" : null,
@@ -753,7 +788,7 @@ export default function TriageWorkspace() {
   }
 
   async function finalizePlan() {
-    const local = localDecision(currentSeverity, selectedDependent?.age ?? ageYears, outstation);
+    const local = localDecision(currentSeverity, patientAge, outstation);
 
     try {
       const response = await fetch(`${apiBase}/api/v1/triage/encounters/evaluate`, {
@@ -770,7 +805,6 @@ export default function TriageWorkspace() {
             chiefComplaint: symptomSearch,
             narrative: englishTranscript,
             language: "en",
-            ageYears: selectedDependent?.age ?? ageYears,
             durationMinutes: symptomSearch.toLowerCase().includes("hour") ? 75 : 20,
             redFlags: redFlagHits
           },
@@ -809,6 +843,14 @@ export default function TriageWorkspace() {
   }
 
   function takeIncomingCall(call: IncomingCall) {
+    const claimedDependent = call.dependentId
+      ? call.profile.dependents.find((dependent) => dependent.id === call.dependentId)
+      : undefined;
+    const claimedAge =
+      (claimedDependent
+        ? ageYearsFromDateOfBirth(claimedDependent.dateOfBirthIso) ?? claimedDependent.age
+        : ageYearsFromDateOfBirth(call.profile.dateOfBirthIso)) ?? call.ageYears;
+
     setActiveCallId(call.id);
     setCompletedCallIds((current) => current.filter((callId) => callId !== call.id));
     setStaffId(call.staffId);
@@ -827,7 +869,7 @@ export default function TriageWorkspace() {
     setSicknessLeave(call.sicknessLeave);
     setVaccinationScreen(call.vaccinationScreen);
     setSuggestions(initialSuggestions);
-    setDecision(localDecision(call.priority, call.ageYears, call.outstation));
+    setDecision(localDecision(call.priority, claimedAge, call.outstation));
     setCopyState("idle");
     setStatus(`${call.queueNumber} claimed from ${call.channel} queue. Validate staff to continue.`);
     setActiveStep("patient");
@@ -1149,20 +1191,13 @@ export default function TriageWorkspace() {
                   </select>
                 </label>
 
-                {!selectedDependent && (
-                  <label className="triage-field-block" htmlFor="ageYears">
-                    <span className="field-label">Staff age</span>
-                    <input
-                      id="ageYears"
-                      type="number"
-                      min={0}
-                      max={120}
-                      value={ageYears}
-                      onChange={(event) => setAgeYears(Number(event.target.value))}
-                      className="input-control"
-                    />
-                  </label>
-                )}
+                <div className="triage-field-block" aria-live="polite">
+                  <span className="field-label">HRMS calculated age</span>
+                  <div className="input-control triage-readonly-value">
+                    {patientAge} years
+                    <span>{patientAgeSource}</span>
+                  </div>
+                </div>
               </div>
 
               <div className="triage-evidence-box">

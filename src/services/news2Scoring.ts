@@ -134,7 +134,56 @@ function dispositionForNews2Score(score: number): Pick<TriageScoreResult, "riskB
   };
 }
 
+function normalizedAgeMonths(vitals: TriageCalculateScoreRequest): number | undefined {
+  if (typeof vitals.ageMonths === "number") {
+    return vitals.ageMonths;
+  }
+  if (typeof vitals.ageYears === "number") {
+    return vitals.ageYears * 12;
+  }
+  return undefined;
+}
+
 export function calculateTriageScore(vitals: TriageCalculateScoreRequest): TriageScoreResult {
+  const ageMonths = normalizedAgeMonths(vitals);
+  const pediatricRespiratoryTrace = [
+    {
+      ruleId: "WHO_IMCI_RED_PEDIATRIC_TACHYPNEA_LT_2_MONTHS",
+      matched: typeof ageMonths === "number" && ageMonths < 2 && vitals.respiratoryRate >= 60,
+      rationale: "Age under 2 months with respiratory rate at or above 60/minute is a pediatric emergency safety floor."
+    },
+    {
+      ruleId: "WHO_IMCI_RED_PEDIATRIC_TACHYPNEA_2_TO_11_MONTHS",
+      matched:
+        typeof ageMonths === "number" &&
+        ageMonths >= 2 &&
+        ageMonths < 12 &&
+        vitals.respiratoryRate >= 50,
+      rationale: "Age 2-11 months with respiratory rate at or above 50/minute is a pediatric emergency safety floor."
+    },
+    {
+      ruleId: "WHO_IMCI_RED_PEDIATRIC_TACHYPNEA_12_TO_59_MONTHS",
+      matched:
+        typeof ageMonths === "number" &&
+        ageMonths >= 12 &&
+        ageMonths < 60 &&
+        vitals.respiratoryRate >= 40,
+      rationale: "Age 12-59 months with respiratory rate at or above 40/minute is a pediatric emergency safety floor."
+    }
+  ];
+  const pediatricFiveToTwelveWarning = {
+    ruleId: "PEDIATRIC_WARNING_5_TO_12_HR_RR",
+    matched:
+      typeof vitals.ageYears === "number" &&
+      vitals.ageYears >= 5 &&
+      vitals.ageYears <= 12 &&
+      (vitals.respiratoryRate < 12 ||
+        vitals.respiratoryRate >= 26 ||
+        vitals.heartRate < 70 ||
+        vitals.heartRate >= 120),
+    rationale:
+      "Age 5-12 with pediatric heart-rate or respiratory warning limits requires urgent review instead of adult-only NEWS2 reassurance."
+  };
   const redFloorTrace = [
     {
       ruleId: "IITT_RED_MENTAL_STATUS",
@@ -153,12 +202,10 @@ export function calculateTriageScore(vitals: TriageCalculateScoreRequest): Triag
     },
     {
       ruleId: "WHO_IMCI_RED_PEDIATRIC_TACHYPNEA_UNDER5",
-      matched:
-        typeof vitals.ageYears === "number" &&
-        vitals.ageYears < 5 &&
-        vitals.respiratoryRate >= 40,
-      rationale: "Child under 5 with tachypnea requires pediatric emergency safety-floor handling."
+      matched: pediatricRespiratoryTrace.some((item) => item.matched),
+      rationale: "Child under 5 with age-banded tachypnea requires pediatric emergency safety-floor handling."
     },
+    ...pediatricRespiratoryTrace,
     {
       ruleId: "IITT_RED_HEART_RATE",
       matched: vitals.heartRate < 60 || vitals.heartRate > 130,
@@ -185,7 +232,23 @@ export function calculateTriageScore(vitals: TriageCalculateScoreRequest): Triag
         "Mandatory clinical safety floor triggered before NEWS2 routing. The encounter must be escalated to emergency care.",
       redAlertTriggered: true,
       news2: { respiratoryRate, spo2, temperature, heartRate, consciousness, total },
-      trace: redFloorTrace
+      trace: [...redFloorTrace, pediatricFiveToTwelveWarning]
+    };
+  }
+
+  if (pediatricFiveToTwelveWarning.matched) {
+    return {
+      score: Math.max(total, 5),
+      riskBand: "URGENT",
+      severity: "URGENT",
+      dispositionCode: "HMC_URGENT_REVIEW",
+      targetFacilityCode: targetFacilityCode("HMC_URGENT_REVIEW"),
+      destinationName: "HMC urgent review pathway",
+      routingRationale:
+        "Pediatric warning limits were detected in a child aged 5-12. Adult NEWS2 reassurance is not allowed without urgent clinical review.",
+      redAlertTriggered: false,
+      news2: { respiratoryRate, spo2, temperature, heartRate, consciousness, total },
+      trace: [...redFloorTrace, pediatricFiveToTwelveWarning]
     };
   }
 

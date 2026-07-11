@@ -1112,6 +1112,18 @@ button {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--t1) 16%, transparent);
 }
 
+.triage-readonly-value {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.triage-readonly-value span {
+  color: var(--tx2);
+  font-size: 11px;
+  font-weight: 700;
+}
+
 .primary-button,
 .secondary-button {
   display: inline-flex;

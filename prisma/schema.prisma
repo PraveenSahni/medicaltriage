@@ -312,6 +312,7 @@ model StaffMember {
   insuranceProvider          String?                    @map("insurance_provider")
   insuranceEligibilityStatus InsuranceEligibilityStatus @default(UNKNOWN) @map("insurance_eligibility_status")
   insuranceLastChecked       DateTime?                  @map("insurance_last_checked")
+  dateOfBirth                DateTime?                  @map("date_of_birth")
   dependents                 Dependent[]
   encounters                 AviationTriageEncounter[]
   createdAt                  DateTime                   @default(now()) @map("created_at")
@@ -328,6 +329,7 @@ model Dependent {
   fullName        String                  @map("full_name")
   relationshipType DependentRelationship  @map("relationship")
   age             Int
+  dateOfBirth      DateTime?               @map("date_of_birth")
   biologicalSex   BiologicalSex           @map("biological_sex")
   encounters      AviationTriageEncounter[]
   createdAt       DateTime                @default(now()) @map("created_at")

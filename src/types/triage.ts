@@ -109,17 +109,31 @@ export const TriageCalculateScoreRequestSchema = z
     spo2: z.coerce.number().min(40).max(100),
     temperature: z.coerce.number().min(30).max(45),
     conscious_level: ConsciousLevelSchema,
+    ist_staff_id: z.string().min(3).max(64).optional(),
+    istStaffId: z.string().min(3).max(64).optional(),
+    dependent_id: z.string().min(1).max(120).optional(),
+    dependentId: z.string().min(1).max(120).optional(),
     age_years: z.coerce.number().int().min(0).max(120).optional(),
-    patient_age_years: z.coerce.number().int().min(0).max(120).optional()
+    patient_age_years: z.coerce.number().int().min(0).max(120).optional(),
+    age_months: z.coerce.number().int().min(0).max(1440).optional(),
+    patient_age_months: z.coerce.number().int().min(0).max(1440).optional()
   })
-  .transform((value) => ({
-    heartRate: value.heart_rate,
-    respiratoryRate: value.respiratory_rate,
-    spo2: value.spo2,
-    temperatureC: value.temperature,
-    consciousLevel: value.conscious_level,
-    ageYears: value.age_years ?? value.patient_age_years
-  }));
+  .transform((value) => {
+    const ageMonths = value.age_months ?? value.patient_age_months;
+    const istStaffId = value.istStaffId ?? value.ist_staff_id;
+    const dependentId = value.dependentId ?? value.dependent_id;
+    return {
+      heartRate: value.heart_rate,
+      respiratoryRate: value.respiratory_rate,
+      spo2: value.spo2,
+      temperatureC: value.temperature,
+      consciousLevel: value.conscious_level,
+      ...(istStaffId ? { istStaffId } : {}),
+      ...(dependentId ? { dependentId } : {}),
+      ageYears: value.age_years ?? value.patient_age_years ?? (ageMonths !== undefined ? ageMonths / 12 : undefined),
+      ...(ageMonths !== undefined ? { ageMonths } : {})
+    };
+  });
 export type TriageCalculateScoreRequest = z.infer<typeof TriageCalculateScoreRequestSchema>;
 
 export const TriageCompleteRequestSchema = z
@@ -164,6 +178,7 @@ export type DependentProfile = {
   id: string;
   relationshipType: "spouse" | "child" | "parent" | "other";
   age: number;
+  dateOfBirthIso?: string;
   biologicalSex: "female" | "male" | "other" | "unknown";
 };
 
@@ -173,6 +188,7 @@ export type StaffProfile = {
   department: string;
   jobTitle: string;
   dutyStatus: "active" | "on-leave" | "suspended" | "inactive";
+  dateOfBirthIso?: string;
   insuranceProvider?: string;
   insuranceEligibilityStatus: "eligible" | "ineligible" | "pending-verification" | "unknown";
   insuranceLastChecked?: string;

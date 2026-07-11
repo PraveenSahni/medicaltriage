@@ -45,7 +45,8 @@ describe("IST Qatar Phase I API", () => {
         jobTitle: "Pilot",
         dutyStatus: "active"
       });
-      expect(response.body.profile.dependents).toHaveLength(1);
+      expect(response.body.profile.dependents.length).toBeGreaterThanOrEqual(1);
+      expect(response.body.profile.dateOfBirthIso).toEqual(expect.any(String));
     });
 
     it("rejects an unknown staff identifier", async () => {
@@ -71,6 +72,7 @@ describe("IST Qatar Phase I API", () => {
           spo2: 91,
           temperature: 37.0,
           conscious_level: "A",
+          ist_staff_id: "IST-1001",
           age_years: 35
         })
         .expect(200);
@@ -95,7 +97,9 @@ describe("IST Qatar Phase I API", () => {
           spo2: 98,
           temperature: 37.0,
           conscious_level: "A",
-          age_years: 3
+          ist_staff_id: "IST-1001",
+          dependent_id: "dep_ist_1001_child_02",
+          age_years: 35
         })
         .expect(200);
 
@@ -114,6 +118,11 @@ describe("IST Qatar Phase I API", () => {
           })
         ])
       );
+      expect(response.body.patientAge).toMatchObject({
+        source: "dependent",
+        ageYears: 3,
+        calculatedFrom: "HRMS_DATE_OF_BIRTH"
+      });
     });
 
     it("processes stable adult vitals through standard local NEWS2 scoring", async () => {
@@ -126,6 +135,7 @@ describe("IST Qatar Phase I API", () => {
           spo2: 98,
           temperature: 37.0,
           conscious_level: "A",
+          ist_staff_id: "IST-1001",
           age_years: 35
         })
         .expect(200);
@@ -137,6 +147,54 @@ describe("IST Qatar Phase I API", () => {
         dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
         redAlertTriggered: false
       });
+    });
+
+    it("routes abnormal age 5-12 pediatric vitals to urgent review instead of adult homecare", async () => {
+      const agent = await authenticatedAgent();
+      const response = await agent
+        .post("/api/v1/triage/calculate-score")
+        .send({
+          heart_rate: 125,
+          respiratory_rate: 18,
+          spo2: 98,
+          temperature: 37.0,
+          conscious_level: "A",
+          ist_staff_id: "IST-1001",
+          dependent_id: "dep_ist_1001_child_01"
+        })
+        .expect(200);
+
+      expect(response.body).toMatchObject({
+        riskBand: "URGENT",
+        severity: "URGENT",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        redAlertTriggered: false
+      });
+      expect(response.body.trace).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            ruleId: "PEDIATRIC_WARNING_5_TO_12_HR_RR",
+            matched: true
+          })
+        ])
+      );
+    });
+
+    it("rejects manual age-only scoring because age must come from HRMS", async () => {
+      const agent = await authenticatedAgent();
+      const response = await agent
+        .post("/api/v1/triage/calculate-score")
+        .send({
+          heart_rate: 72,
+          respiratory_rate: 16,
+          spo2: 98,
+          temperature: 37.0,
+          conscious_level: "A",
+          age_years: 35
+        })
+        .expect(400);
+
+      expect(response.body.message).toContain("Age is calculated from HRMS");
     });
   });
 
@@ -167,6 +225,55 @@ describe("IST Qatar Phase I API", () => {
       expect(response.body.notePayload).toContain("SBAR");
       expect(response.body.notePayload).toContain("ملخص الحالة السريرية");
       expect(response.body.notePayload).toContain("Rules-first, AI-second");
+    });
+  });
+
+  describe("POST /api/v1/triage/encounters/evaluate", () => {
+    it("blocks AI downgrade, derives age from HRMS, and restricts fit-to-fly", async () => {
+      const agent = await authenticatedAgent();
+      const response = await agent
+        .post("/api/v1/triage/encounters/evaluate")
+        .send({
+          istStaffId: "IST-1001",
+          nurseId: "nurse-phase1",
+          selectedQuestionIds: [],
+          aiRecommendationSeverity: "Routine",
+          symptoms: {
+            chiefComplaint: "Chest tightness with sweating",
+            narrative: "Caller reports chest tightness and sweating for more than one hour.",
+            language: "en",
+            ageYears: 9,
+            durationMinutes: 75,
+            redFlags: []
+          },
+          aviationContext: {
+            crewRole: "flight_deck",
+            onDuty: true,
+            outstation: false,
+            sicknessLeaveRequested: true
+          }
+        })
+        .expect(200);
+
+      expect(response.body.decision).toMatchObject({
+        severity: "Emergency",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT"
+      });
+      expect(response.body.patientAge).toMatchObject({
+        source: "staff",
+        ageYears: 35,
+        calculatedFrom: "HRMS_DATE_OF_BIRTH"
+      });
+      expect(response.body.aviation.fitToFlyStatus).toBe("restricted");
+      expect(response.body.safetyAudit.overrideStatusFlag).toBe("NURSE_OVERRIDE_DOWN_BLOCKED");
+      expect(response.body.decision.trace).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            ruleId: "AI_DOWNGRADE_BLOCKED_BY_RULES_ENGINE",
+            matched: true
+          })
+        ])
+      );
     });
   });
 });

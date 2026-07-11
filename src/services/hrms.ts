@@ -1,5 +1,16 @@
 import type { StaffProfile, StaffValidationResult } from "../types/triage.js";
 
+export type PatientAgeResolution =
+  | {
+      ok: true;
+      source: "staff" | "dependent";
+      ageYears: number;
+      ageMonths: number;
+      dateOfBirthIso?: string;
+      calculatedFrom: "HRMS_DATE_OF_BIRTH" | "HRMS_AGE_FIELD";
+    }
+  | { ok: false; status: 400 | 404; reason: string };
+
 // Mock directory adapter. The production target is an Oracle Fusion HCM adapter;
 // keep this response shape stable for the triage API.
 const staffDirectory: Record<string, StaffProfile> = {
@@ -9,6 +20,7 @@ const staffDirectory: Record<string, StaffProfile> = {
     department: "Flight Operations",
     jobTitle: "Pilot",
     dutyStatus: "active",
+    dateOfBirthIso: "1991-03-15",
     insuranceProvider: "IST Staff Health Plan",
     insuranceEligibilityStatus: "eligible",
     insuranceLastChecked: "2026-07-01T08:00:00.000Z",
@@ -17,7 +29,15 @@ const staffDirectory: Record<string, StaffProfile> = {
         id: "dep_ist_1001_child_01",
         relationshipType: "child",
         age: 6,
+        dateOfBirthIso: "2020-04-02",
         biologicalSex: "female"
+      },
+      {
+        id: "dep_ist_1001_child_02",
+        relationshipType: "child",
+        age: 3,
+        dateOfBirthIso: "2023-02-12",
+        biologicalSex: "male"
       }
     ]
   },
@@ -27,6 +47,7 @@ const staffDirectory: Record<string, StaffProfile> = {
     department: "Flight Operations",
     jobTitle: "Cabin Crew",
     dutyStatus: "active",
+    dateOfBirthIso: "1994-05-20",
     insuranceProvider: "IST Staff Health Plan",
     insuranceEligibilityStatus: "eligible",
     insuranceLastChecked: "2026-07-01T08:00:00.000Z",
@@ -35,6 +56,7 @@ const staffDirectory: Record<string, StaffProfile> = {
         id: "dep_demo_10001_child",
         relationshipType: "child",
         age: 8,
+        dateOfBirthIso: "2018-01-10",
         biologicalSex: "female"
       }
     ]
@@ -45,6 +67,7 @@ const staffDirectory: Record<string, StaffProfile> = {
     department: "Cabin Services",
     jobTitle: "Cabin Crew",
     dutyStatus: "active",
+    dateOfBirthIso: "1985-09-08",
     insuranceProvider: "IST Staff Health Plan",
     insuranceEligibilityStatus: "eligible",
     insuranceLastChecked: "2026-07-01T08:00:00.000Z",
@@ -56,6 +79,7 @@ const staffDirectory: Record<string, StaffProfile> = {
     department: "Ground Services",
     jobTitle: "Ramp Supervisor",
     dutyStatus: "on-leave",
+    dateOfBirthIso: "1979-11-18",
     insuranceProvider: "IST Staff Health Plan",
     insuranceEligibilityStatus: "pending-verification",
     insuranceLastChecked: "2026-06-20T08:00:00.000Z",
@@ -67,6 +91,7 @@ const staffDirectory: Record<string, StaffProfile> = {
     department: "Airport Operations",
     jobTitle: "Operations Specialist",
     dutyStatus: "active",
+    dateOfBirthIso: "1997-06-21",
     insuranceProvider: "IST Staff Health Plan",
     insuranceEligibilityStatus: "eligible",
     insuranceLastChecked: "2026-07-01T08:00:00.000Z",
@@ -101,4 +126,79 @@ export function findDependent(profile: StaffProfile, dependentId?: string) {
   }
 
   return profile.dependents.find((dependent) => dependent.id === dependentId);
+}
+
+export function calculateAgeFromDateOfBirth(dateOfBirthIso: string, referenceDate = new Date()): {
+  ageYears: number;
+  ageMonths: number;
+} {
+  const dateOfBirth = new Date(dateOfBirthIso);
+  if (Number.isNaN(dateOfBirth.getTime()) || dateOfBirth > referenceDate) {
+    throw new Error("Invalid HRMS date of birth.");
+  }
+
+  let ageMonths =
+    (referenceDate.getUTCFullYear() - dateOfBirth.getUTCFullYear()) * 12 +
+    (referenceDate.getUTCMonth() - dateOfBirth.getUTCMonth());
+
+  if (referenceDate.getUTCDate() < dateOfBirth.getUTCDate()) {
+    ageMonths -= 1;
+  }
+
+  return {
+    ageYears: Math.floor(Math.max(ageMonths, 0) / 12),
+    ageMonths: Math.max(ageMonths, 0)
+  };
+}
+
+export async function resolvePatientAgeFromHrms(args: {
+  istStaffId: string;
+  dependentId?: string;
+  referenceDate?: Date;
+}): Promise<PatientAgeResolution> {
+  const staff = await validateStaffMember(args.istStaffId);
+  if (!staff.valid || !staff.profile) {
+    return {
+      ok: false,
+      status: 404,
+      reason: staff.reason ?? "Staff member was not found in HRMS."
+    };
+  }
+
+  const dependent = findDependent(staff.profile, args.dependentId);
+  if (args.dependentId && !dependent) {
+    return {
+      ok: false,
+      status: 400,
+      reason: "Dependent is not mapped to the validated staff member."
+    };
+  }
+
+  const source = dependent ? "dependent" : "staff";
+  const dateOfBirthIso = dependent?.dateOfBirthIso ?? staff.profile.dateOfBirthIso;
+  if (dateOfBirthIso) {
+    return {
+      ok: true,
+      source,
+      dateOfBirthIso,
+      calculatedFrom: "HRMS_DATE_OF_BIRTH",
+      ...calculateAgeFromDateOfBirth(dateOfBirthIso, args.referenceDate)
+    };
+  }
+
+  if (dependent) {
+    return {
+      ok: true,
+      source,
+      ageYears: dependent.age,
+      ageMonths: dependent.age * 12,
+      calculatedFrom: "HRMS_AGE_FIELD"
+    };
+  }
+
+  return {
+    ok: false,
+    status: 400,
+    reason: "HRMS did not return date of birth for the selected staff member."
+  };
 }
