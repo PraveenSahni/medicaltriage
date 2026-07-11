@@ -1,16 +1,83 @@
-# Day Handover - IST Tech Clinical Triage Platform
+# First Formal Handover - IST Tech Clinical Triage Platform
 
 Date: 2026-07-11 04:04 +04:00
+
+## Purpose Of This Handover
+
+This is the first formal project handover for the IST Tech Clinical Triage Platform. It is intended to give a start-to-end view of the work completed so far, the current repository and application state, the major design decisions already made, and the open items that should guide the next work session.
+
+Use this file as the project pickup point for anyone joining the workstream cold. It captures both the completed build work and the remaining delivery gaps.
 
 ## Repository State
 
 - Repository: `https://github.com/PraveenSahni/medicaltriage`
 - Branch: `main`
-- Last pushed commit: `f05c99f - Build triage simulation and LLM strategy help`
-- Working tree before this handover file: clean and synced with `origin/main`
+- Last pushed implementation commit before the first handover: `f05c99f - Build triage simulation and LLM strategy help`
+- First handover commit: `a478283 - Add day handover for triage platform`
+- Working tree before this update: clean and synced with `origin/main`
 - Local app in browser: `http://127.0.0.1:5174/#help`
 
-## What Was Completed
+## Start-To-End Completed Work
+
+This section summarizes the completed work from the beginning of the build conversation through the close of this first handover.
+
+1. Product identity and UI direction were established.
+   - The system name was aligned to IST Tech / IST Tele-Triage.
+   - The login experience was redesigned toward a simple Apple-like minimal interface.
+   - IST Tech branding, light-by-default theme, dark-mode option, and role simulation were added.
+   - Internal screens were aligned toward a cleaner, card-light, nurse-focused workflow.
+
+2. Phase I triage engine scope was implemented as a working scaffold.
+   - Staff validation exists through a mock/adapter-ready HRMS layer.
+   - Vital-sign safety floors exist for RED alert routing.
+   - SBAR/SOAP clipboard output exists.
+   - Rules-first, AI-second behavior is documented and reflected in the code and tests.
+
+3. Help and Library were expanded and separated.
+   - Help now gives role-based operating guidance.
+   - Library now gives technical/reference detail for data ingestion, simulation, APIs, CCP, routes, Oracle HCM, governance, security, and LLM strategy.
+   - Governance and Security Administration remain separate sections.
+
+4. Security administration and role structure were expanded.
+   - Roles were grouped by business prefix: Administration, Security and Privacy, Governance and Quality, Business and Clinical Operations, Integration, Reporting, and User Support.
+   - Role access differences were documented in Help/Library.
+   - Security Administration help explains login, SSO, masking, reveal, audit, and production hardening concepts.
+
+5. CCP was added as a platform pattern.
+   - CCP means Continuous Communication Pipeline.
+   - The employee is the index, while each visit/call/teleconsult is a separate thread.
+   - Previous threads remain visible to the nurse as linked context.
+   - Outbound messages require Remote Triage Nurse review and approval.
+   - WhatsApp/SMS and email adapters are documented, with dry-run posture for safety.
+
+6. Oracle Fusion HCM integration strategy was documented.
+   - Oracle HCM is the planned staff/dependent source of truth.
+   - The frontend keeps calling IST APIs while Oracle sits behind a backend adapter.
+   - Public workers, workers, assignments, contacts, dependents, absences, documents, Atom feeds, and HCM Extracts are mapped in Help/Library and docs.
+
+7. Data ingestion and clinical content strategy were documented.
+   - Phase I uses sample/open-source-compatible content for engineering validation.
+   - The schema is prepared for licensed clinical content later.
+   - Seed/import concepts, protocol lifecycle, and validation gates are documented.
+
+8. Synthetic data and simulation engines were added.
+   - Synthetic Oracle Fusion HCM-style employee feed.
+   - Synthetic dependents, encounters, audit traces, semantic vectors, and LLM-ready rows.
+   - Complete clinical simulation engine for employee verification, protocol matching, safety floors, aviation gates, SBAR, simulated FHIR writeback, and audit logging.
+   - Regional Qatar context added for heat, humidity, dust, respiratory season, vulnerable groups, and demographic priors.
+   - Cohorts cover pediatric/dependent cases, female health, pregnancy red flags, male health, and aviation-duty contexts.
+
+9. LLM / MedGemma strategy was documented in the product.
+   - MedGemma is positioned as a governed clinical copilot, not the triage authority.
+   - The LLM may summarize, explain, suggest missing questions, draft SBAR, and support bilingual wording.
+   - The LLM may not diagnose, approve or downgrade disposition, approve fit-to-duty, approve sickness leave, bypass red floors, or send CCP messages without nurse approval.
+   - Cloud strategy targets private GCP Doha `me-central1` deployment after service, quota, privacy, security, clinical, and cost approvals.
+
+10. Word reference documents were included in Git.
+    - `IST Qatar Clinical Triage & Symptom Screening System_ Enterprise Reference Architecture & Implementation Blueprint.docx`
+    - `IST Qatar Triage Platform_ Phase I Manual.docx`
+
+## Completed In The Final Build Pass
 
 1. Help and Library were expanded and separated.
    - Help now gives role-based operating guidance.
@@ -107,6 +174,67 @@ Not production-live yet:
 - Real LLM training or provider fine-tuning.
 - Production PostgreSQL/Cloud SQL seed proof.
 - Legal/DPO/clinical governance sign-off for PHI persistence, training, and model serving.
+
+## Open Items By Workstream
+
+### Product And UI
+
+- Continue simplifying the triage workspace for a nurse handling one incoming call at a time.
+- Add stronger filtering and detail views for synthetic data records inside the application.
+- Review all Help/Library language with clinical, governance, and client-facing eyes.
+
+### Phase I Backend And Database
+
+- Provision a PostgreSQL or Cloud SQL database.
+- Run Prisma migration and seed.
+- Capture protocol, staff, dependent, encounter, and audit row counts.
+- Decide how much PHI, if any, is persisted in Phase I versus kept in-memory and handed off to EMR.
+
+### Clinical Content
+
+- Replace sample Phase I content with licensed STCC/SymptomScreen or another approved clinical source before production.
+- Validate pediatric thresholds, adult red floors, care advice, local route mapping, and Arabic clinical wording with governance.
+- Establish release, versioning, rollback, and review cadence for protocol content.
+
+### Oracle Fusion HCM
+
+- Confirm tenant URL, authentication pattern, least-privilege roles, and approved fields.
+- Build the live Oracle HCM adapter behind `POST /api/v1/staff/validate`.
+- Confirm whether dependents live in Oracle HCM Contacts/Contact Relationships for the operating organization.
+- Confirm whether absence/document writeback is in scope for Phase I or later.
+
+### CCP Communication
+
+- Keep dry-run by default until Twilio and Microsoft Graph secrets, signed webhook URL, mailbox scoping, and governance approval are complete.
+- Persist CCP messages and inbound records in a durable store rather than in-memory demo state.
+- Add delivery receipts, retry/backoff, dead-letter handling, and retention controls.
+
+### Simulation And AI Evaluation
+
+- Build a formal AI evaluation pipeline from the synthetic JSONL.
+- Add train/validation/test splits.
+- Add scorecards for downgrade refusal, nurse-approval wording, pediatric routing, female-health context, male-health context, Qatar seasonal context, and CCP send-approval language.
+- Surface evaluation results in Help/Library, Admin, or a dedicated governance dashboard.
+
+### LLM / MedGemma
+
+- Implement the LLM adapter contract in dry-run mode first.
+- Confirm whether MedGemma is the approved model for UAT or whether another model is required.
+- Verify GCP Doha `me-central1` service availability, accelerator availability, and quota for the chosen serving path.
+- Do not fine-tune on real PHI without legal, DPO, clinical, and security sign-off.
+
+### GCP Cloud Deployment
+
+- Define the Phase I GCP Qatar architecture for Cloud Run/GKE, Cloud SQL, Secret Manager, VPC, KMS, logging, and monitoring.
+- Decide whether model serving uses private GKE, Vertex AI custom endpoint, or a staged CPU/quantized inference path.
+- Add deployment IaC or runbook once the cloud target is approved.
+
+### Compliance And Governance
+
+- Complete DPIA/privacy assessment.
+- Confirm Qatar data-law and GDPR control mapping with legal/privacy teams.
+- Establish audit retention, masking, reveal, export, and deletion policies.
+- Obtain clinical governance sign-off before production clinical use.
 
 ## Important Design Decisions
 
