@@ -31,6 +31,12 @@ from generate_synthetic_pdp_data import generate_dataset
 Severity = Literal["EMERGENCY", "URGENT", "ROUTINE", "HOMECARE"]
 FitToFlyStatus = Literal["RESTRICTED", "CLEARED", "NOT_APPLICABLE", "MEDICAL_REVIEW_REQUIRED"]
 BiologicalSex = Literal["FEMALE", "MALE", "OTHER", "UNKNOWN"]
+DEFAULT_SIMULATION_SEED = 20260711
+
+
+def deterministic_uuid(rng: random.Random) -> str:
+    """Generates a reproducible UUID v4 using the seeded Random instance."""
+    return str(uuid.UUID(int=rng.getrandbits(128), version=4))
 
 
 @dataclass(frozen=True)
@@ -74,7 +80,9 @@ class SimulatedPatientCase:
 class EmployeeSimulator:
     """Scale-modeled synthetic Oracle HCM employee/dependent simulator."""
 
-    def __init__(self, aircraft_count: int = 260, encounter_count: int = 5000, seed: int = 20260711) -> None:
+    def __init__(
+        self, aircraft_count: int = 260, encounter_count: int = 5000, seed: int = DEFAULT_SIMULATION_SEED
+    ) -> None:
         self.aircraft_count = aircraft_count
         self.encounter_count = encounter_count
         self.seed = seed
@@ -221,9 +229,15 @@ class VectorKnowledgeEngine:
 class TriageNurseSimulator:
     """Automated state machine that simulates nurse triage actions."""
 
-    def __init__(self, employee_simulator: EmployeeSimulator, knowledge_engine: VectorKnowledgeEngine) -> None:
+    def __init__(
+        self,
+        employee_simulator: EmployeeSimulator,
+        knowledge_engine: VectorKnowledgeEngine,
+        rng: Optional[random.Random] = None,
+    ) -> None:
         self.employee_simulator = employee_simulator
         self.knowledge_engine = knowledge_engine
+        self.rng = rng or random.Random(DEFAULT_SIMULATION_SEED)
 
     @staticmethod
     def news2_score(vitals: PatientVitals) -> int:
@@ -366,7 +380,7 @@ class TriageNurseSimulator:
 
     def run_case(self, case: SimulatedPatientCase) -> Dict[str, Any]:
         transition_log: List[Dict[str, Any]] = []
-        encounter_id = f"sim-enc-{uuid.uuid4()}"
+        encounter_id = f"sim-enc-{deterministic_uuid(self.rng)}"
 
         validation = self.employee_simulator.validate_staff(case.ist_staff_id)
         if not validation["valid"]:
@@ -441,7 +455,8 @@ class TriageNurseSimulator:
 class EMRWritebackEngine:
     """Simulated FHIR transaction and immutable audit logger."""
 
-    def __init__(self) -> None:
+    def __init__(self, rng: Optional[random.Random] = None) -> None:
+        self.rng = rng or random.Random(DEFAULT_SIMULATION_SEED)
         self.transactions: List[Dict[str, Any]] = []
         self.safety_audit_deviation_logs: List[Dict[str, Any]] = []
 
@@ -540,7 +555,7 @@ class EMRWritebackEngine:
 
         if result["ai_downgrade_blocked"] or result.get("nurse_override_rationale"):
             audit = {
-                "id": str(uuid.uuid4()),
+                "id": deterministic_uuid(self.rng),
                 "encounter_id": result["encounter_id"],
                 "original_ai_recommendation": result["ai_suggested_severity"],
                 "rules_engine_severity": result["severity"],
@@ -609,12 +624,13 @@ def build_demo_cases(employee_simulator: EmployeeSimulator) -> List[SimulatedPat
 def run_end_to_end_suite(
     aircraft_count: int = 260,
     encounter_count: int = 5000,
-    seed: int = 20260711,
+    seed: int = DEFAULT_SIMULATION_SEED,
 ) -> Dict[str, Any]:
     employees = EmployeeSimulator(aircraft_count=aircraft_count, encounter_count=encounter_count, seed=seed)
     knowledge = VectorKnowledgeEngine()
-    triage = TriageNurseSimulator(employees, knowledge)
-    emr = EMRWritebackEngine()
+    rng = random.Random(seed)
+    triage = TriageNurseSimulator(employees, knowledge, rng=rng)
+    emr = EMRWritebackEngine(rng=rng)
 
     cases = build_demo_cases(employees)
     results = []
@@ -636,7 +652,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run the complete IST Tech clinical triage simulation framework.")
     parser.add_argument("--aircraft", type=int, default=260)
     parser.add_argument("--encounters", type=int, default=5000)
-    parser.add_argument("--seed", type=int, default=20260711)
+    parser.add_argument("--seed", type=int, default=DEFAULT_SIMULATION_SEED)
     parser.add_argument("--summary", action="store_true")
     args = parser.parse_args()
 

@@ -16,7 +16,6 @@ import argparse
 import json
 import os
 import random
-import time
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -45,6 +44,28 @@ PROFILE_WEIGHTS = [
     ("FEMALE_PREGNANCY_RED_FLAG", 0.04),
     ("MALE_GENITOURINARY_URGENT", 0.04),
 ]
+DEFAULT_SIMULATION_SEED = 20260711
+DEFAULT_END_DATE = "2026-07-11"
+
+
+def deterministic_uuid(rng: random.Random) -> str:
+    """Generates a reproducible UUID v4 using the seeded Random instance."""
+    return str(uuid.UUID(int=rng.getrandbits(128), version=4))
+
+
+def deterministic_generated_at(seed: int) -> str:
+    """Returns deterministic lineage metadata derived from the run seed."""
+    seed_text = f"{seed:08d}"
+    try:
+        value = datetime(
+            int(seed_text[0:4]),
+            int(seed_text[4:6]),
+            int(seed_text[6:8]),
+            tzinfo=timezone.utc,
+        )
+    except ValueError:
+        value = datetime(2026, 7, 11, tzinfo=timezone.utc) + timedelta(seconds=seed % 86_400)
+    return iso(value)
 
 
 @dataclass(frozen=True)
@@ -135,7 +156,7 @@ class BulkClinicalSimulationRunner:
             seed=config.seed,
         )
         self.knowledge = VectorKnowledgeEngine()
-        self.triage = TriageNurseSimulator(self.employees, self.knowledge)
+        self.triage = TriageNurseSimulator(self.employees, self.knowledge, rng=self.rng)
         self.regional_context = RegionalContextEngine()
         self.active_pilots = [
             staff
@@ -401,10 +422,14 @@ class BulkClinicalSimulationRunner:
 
     @staticmethod
     def compact_audit(
-        result: Dict[str, Any], occurred_at: datetime, profile: str, regional_context: Dict[str, Any]
+        result: Dict[str, Any],
+        occurred_at: datetime,
+        profile: str,
+        regional_context: Dict[str, Any],
+        rng: random.Random,
     ) -> Dict[str, Any]:
         return {
-            "id": str(uuid.uuid4()),
+            "id": deterministic_uuid(rng),
             "encounter_id": result["encounter_id"],
             "occurred_at": iso(occurred_at),
             "synthetic": True,
@@ -491,7 +516,6 @@ class BulkClinicalSimulationRunner:
         }
 
     def run(self) -> Dict[str, Any]:
-        start = time.time()
         encounter_writer = PartitionWriter(os.path.join(self.config.output_dir, "encounters"))
         audit_writer = PartitionWriter(os.path.join(self.config.output_dir, "audit"))
         training_writer = (
@@ -534,7 +558,10 @@ class BulkClinicalSimulationRunner:
             counter_add(counts["by_fit_to_fly"], result["fit_to_fly_status"])
 
             if result["ai_downgrade_blocked"] or result.get("nurse_override_rationale"):
-                audit_writer.write(occurred_at, self.compact_audit(result, occurred_at, profile, regional_context))
+                audit_writer.write(
+                    occurred_at,
+                    self.compact_audit(result, occurred_at, profile, regional_context, self.rng),
+                )
                 audit_count += 1
 
             if len(samples) < 3:
@@ -543,10 +570,9 @@ class BulkClinicalSimulationRunner:
         encounter_partitions = encounter_writer.close()
         audit_partitions = audit_writer.close()
         training_partitions = training_writer.close() if training_writer is not None else []
-        elapsed = round(time.time() - start, 3)
         manifest = {
             "synthetic": True,
-            "generated_at": iso(datetime.now(timezone.utc)),
+            "generated_at": deterministic_generated_at(self.config.seed),
             "record_count": self.config.record_count,
             "audit_record_count": audit_count,
             "start_date": iso(self.config.start_date),
@@ -569,7 +595,7 @@ class BulkClinicalSimulationRunner:
                     "World Bank Qatar indicators",
                 ],
             },
-            "elapsed_seconds": elapsed,
+            "elapsed_seconds": 0.0,
             "counts": counts,
             "encounter_partitions": encounter_partitions,
             "audit_partitions": audit_partitions,
@@ -588,10 +614,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run a partitioned bulk IST Tech clinical simulation.")
     parser.add_argument("--records", type=int, default=1_000_000)
     parser.add_argument("--start-date", default="2024-01-01")
-    parser.add_argument("--end-date", default=datetime.now(timezone.utc).date().isoformat())
+    parser.add_argument("--end-date", default=DEFAULT_END_DATE)
     parser.add_argument("--output-dir", default=os.path.join("data", "generated", "bulk_clinical_sim_1m"))
     parser.add_argument("--aircraft", type=int, default=260)
-    parser.add_argument("--seed", type=int, default=20240711)
+    parser.add_argument("--seed", type=int, default=DEFAULT_SIMULATION_SEED)
     parser.add_argument("--audit-rate", type=float, default=0.05)
     parser.add_argument("--skip-training-output", action="store_true")
     return parser
