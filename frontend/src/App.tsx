@@ -1,5 +1,7 @@
 import {
+  ClipboardCheck,
   HelpCircle,
+  Kanban,
   LogOut,
   MessageSquare,
   Moon,
@@ -11,10 +13,11 @@ import { useEffect, useMemo, useState } from "react";
 import AdminPortal from "./AdminPortal";
 import CcpWorkspace from "./CcpWorkspace";
 import HelpCenter from "./HelpCenter";
+import KanbanWorkspace from "./KanbanWorkspace";
 import LoginPage from "./LoginPage";
 import TriageWorkspace from "./TriageWorkspace";
 
-type ViewKey = "workspace" | "ccp" | "help" | "admin";
+type ViewKey = "workspace" | "kanban" | "ccp" | "help" | "admin";
 type ThemeMode = "light" | "dark";
 
 type AuthenticatedSession = {
@@ -140,6 +143,16 @@ export default function App() {
       };
     }
 
+    if (activeView === "kanban") {
+      return {
+        eyebrow: "KANBAN COCKPIT",
+        title: "Nurse Queue Board",
+        subtitle: "Board-level queue supervision with clinical safety floors visible across every stage.",
+        metric: "5",
+        metricLabel: "QUEUE STAGES"
+      };
+    }
+
     return {
       eyebrow: "TRIAGE PAGE",
       title: "IST Tech Clinical Decision Support",
@@ -162,11 +175,29 @@ export default function App() {
       return <CcpWorkspace />;
     }
 
+    if (activeView === "kanban") {
+      return <KanbanWorkspace />;
+    }
+
     return <TriageWorkspace />;
   };
 
   const hasAdminAccess = session ? canOpenAdminView(session.permissions) : false;
   const activeRoleLabel = session ? formatRole(session.activeRole) : "";
+
+  function openView(view: ViewKey) {
+    const nextHashByView: Record<ViewKey, string> = {
+      workspace: "#/workspace",
+      kanban: "#/kanban",
+      ccp: "#/ccp",
+      help: "#/help",
+      admin: "#/admin"
+    };
+    setActiveView(view);
+    if (window.location.hash !== nextHashByView[view]) {
+      window.location.hash = nextHashByView[view];
+    }
+  }
 
   useEffect(() => {
     if (!session) {
@@ -178,6 +209,11 @@ export default function App() {
 
       if (target === "workspace" || target === "triage") {
         setActiveView("workspace");
+        return;
+      }
+
+      if (target === "kanban" || target === "board") {
+        setActiveView("kanban");
         return;
       }
 
@@ -228,6 +264,7 @@ export default function App() {
               onAuthenticated={(nextSession, redirectTo) => {
                 setSession(nextSession);
                 setActiveView(redirectTo);
+                window.location.hash = redirectTo === "admin" ? "#/admin" : "#/workspace";
                 setSessionStatus("Signed in.");
               }}
             />
@@ -249,7 +286,7 @@ export default function App() {
             <button
               type="button"
               className="brand-lockup"
-              onClick={() => setActiveView("workspace")}
+              onClick={() => openView("workspace")}
               aria-label="Open triage page"
             >
               <IstLogoMark />
@@ -266,11 +303,33 @@ export default function App() {
                   {activeRoleLabel}
                 </span>
               </div>
+              <div className="topbar-view-switch" aria-label="Triage view preference">
+                <button
+                  type="button"
+                  className={`nav-pill ${activeView === "workspace" ? "nav-pill-active" : ""}`}
+                  onClick={() => openView("workspace")}
+                  aria-label="Open step cockpit"
+                  title="Step cockpit"
+                >
+                  <ClipboardCheck className="h-4 w-4" />
+                  Step
+                </button>
+                <button
+                  type="button"
+                  className={`nav-pill ${activeView === "kanban" ? "nav-pill-active" : ""}`}
+                  onClick={() => openView("kanban")}
+                  aria-label="Open Kanban board"
+                  title="Kanban board"
+                >
+                  <Kanban className="h-4 w-4" />
+                  Board
+                </button>
+              </div>
               {hasAdminAccess && (
                 <button
                   type="button"
                   className={`header-icon-button ${activeView === "admin" ? "header-icon-button-active" : ""}`}
-                  onClick={() => setActiveView("admin")}
+                  onClick={() => openView("admin")}
                   aria-label="Open administration"
                   title="Administration"
                 >
@@ -280,7 +339,7 @@ export default function App() {
               <button
                 type="button"
                 className={`header-icon-button ${activeView === "ccp" ? "header-icon-button-active" : ""}`}
-                onClick={() => setActiveView("ccp")}
+                onClick={() => openView("ccp")}
                 aria-label="Open CCP"
                 title="CCP"
               >
@@ -289,7 +348,7 @@ export default function App() {
               <button
                 type="button"
                 className={`header-icon-button ${activeView === "help" ? "header-icon-button-active" : ""}`}
-                onClick={() => setActiveView("help")}
+                onClick={() => openView("help")}
                 aria-label="Open help and library"
                 title="Help"
               >
@@ -316,7 +375,7 @@ export default function App() {
             </div>
           </header>
 
-          {activeView !== "workspace" && (
+          {activeView !== "workspace" && activeView !== "kanban" && (
             <>
               <section className="page-summary">
                 <div className="min-w-0">

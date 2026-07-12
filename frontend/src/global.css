@@ -192,6 +192,13 @@ button {
   min-width: 0;
 }
 
+.topbar-view-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
 .topbar-context {
   display: inline-flex;
   align-items: center;
@@ -3808,6 +3815,10 @@ button:disabled {
     justify-content: flex-start;
     overflow-x: auto;
     padding-bottom: 3px;
+  }
+
+  .topbar-view-switch {
+    flex: 0 0 auto;
   }
 
   .topbar-context {
