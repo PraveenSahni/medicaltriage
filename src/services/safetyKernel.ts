@@ -105,7 +105,11 @@ function canonicalValue(value: unknown): string {
 }
 
 export function canonicalAuditPayload(payload: Record<string, unknown>): string {
-  return canonicalValue(payload);
+  return Object.entries(payload)
+    .filter(([key]) => key !== "auditSignature")
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([key, value]) => `${key}=${canonicalValue(value)}`)
+    .join("|");
 }
 
 export function auditSignatureFor(payload: Record<string, unknown>): string {

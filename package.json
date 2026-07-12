@@ -11,7 +11,7 @@
     "build": "npx prisma generate && tsc -p tsconfig.json",
     "build:web": "vite build --config frontend/vite.config.ts",
     "preview:web": "vite preview --host 127.0.0.1 --config frontend/vite.config.ts",
-    "typecheck:web": "tsc -p frontend/tsconfig.json --noEmit",
+    "typecheck:web": "npx prisma generate && tsc -p frontend/tsconfig.json --noEmit",
     "content:dry-run": "tsx src/scripts/importClinicalContent.ts --dry-run",
     "content:import": "tsx src/scripts/importClinicalContent.ts",
     "simulation:run": "tsx src/scripts/generateSimulationDataset.ts",

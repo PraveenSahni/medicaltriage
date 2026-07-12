@@ -1,8 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { calculateTriageScore } from "../src/services/news2Scoring.js";
-import { TriageCalculateScoreRequestSchema } from "../src/types/triage.js";
+import { evaluateSharedSafetyScenario } from "../src/services/simulationEngine.js";
 
 type SharedScenario = {
   id: string;
@@ -16,6 +15,7 @@ type SharedScenario = {
 
 const fixturePath = join(process.cwd(), "tests", "fixtures", "triage_scenarios.json");
 const scenarios = JSON.parse(readFileSync(fixturePath, "utf8")) as SharedScenario[];
+const SHARED_SEED = 20260711;
 
 function evaluatePythonSafetyWrapper(scenario: SharedScenario) {
   const payload = JSON.stringify({
@@ -40,10 +40,10 @@ function evaluatePythonSafetyWrapper(scenario: SharedScenario) {
 
 describe("shared TypeScript/Python safety fixture alignment", () => {
   it.each(scenarios)("$id - $description", (scenario) => {
-    const parsedVitals = TriageCalculateScoreRequestSchema.parse(scenario.patient_vitals);
-    const tsResult = calculateTriageScore(parsedVitals);
+    const tsResult = evaluateSharedSafetyScenario(scenario.patient_vitals, SHARED_SEED);
     const pyResult = evaluatePythonSafetyWrapper(scenario);
 
+    expect(tsResult.seed).toBe(SHARED_SEED);
     expect(tsResult.redAlertTriggered).toBe(scenario.expected_red_floor);
     expect(tsResult.riskBand).toBe(scenario.expected_ts_risk_band);
     expect(pyResult.override_triggered).toBe(scenario.expected_python_override);

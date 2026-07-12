@@ -11,6 +11,7 @@ import {
   type Severity,
   type StaffProfile,
   type TriageCalculateScoreRequest,
+  TriageCalculateScoreRequestSchema,
   type TriageEvaluationRequest,
   severityMax,
   severityRank
@@ -758,4 +759,15 @@ export function simulationTrainingJsonl(): string {
   return runSimulationSuite()
     .map((result) => JSON.stringify(result.trainingRow))
     .join("\n");
+}
+
+export function evaluateSharedSafetyScenario(
+  patientVitals: Record<string, unknown>,
+  seed = 20260711
+): ReturnType<typeof calculateTriageScore> & { seed: number } {
+  const parsedVitals = TriageCalculateScoreRequestSchema.parse(patientVitals);
+  return {
+    ...calculateTriageScore(parsedVitals),
+    seed
+  };
 }
