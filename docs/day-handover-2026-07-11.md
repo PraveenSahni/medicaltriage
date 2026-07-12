@@ -2,6 +2,105 @@
 
 Date: 2026-07-11 04:04 +04:00
 
+## Day Closure Addendum - 2026-07-12 04:15 +04:00
+
+This addendum closes the latest build session after the nurse-workspace redesign and customer-choice workspace work.
+
+### Latest Pushed/Prepared Work
+
+- Previous pushed cockpit/security commit: `73ea0ae - Build nurse cockpit workflow`.
+- Current implementation commit prepared for push: `10d6722 - Add alternate nurse kanban cockpit`.
+- The application now offers two nurse workspace styles:
+  - `#/workspace`: guided Step cockpit for one-active-call clinical work.
+  - `#/kanban`: Kanban-style Nurse Queue Board for board-level queue supervision.
+- Header now includes a customer-facing `Step` / `Board` switch so demo and UAT users can compare the preferred operational model without replacing the safer guided workflow.
+
+### What Changed In The Latest Session
+
+1. Added an alternate Kanban nurse cockpit.
+   - New file: `frontend/src/KanbanWorkspace.tsx`.
+   - Shows incoming, identity, clinical triage, disposition, and SBAR/follow-up columns.
+   - Uses masked identifiers, severity badges, wait time, channel, patient type, owner, route, and safety-floor indicators.
+   - Provides a selected-call detail panel with route, owner, station, safety warning, and move-forward/move-back actions.
+
+2. Preserved the guided Step cockpit as the default clinical operating view.
+   - `frontend/src/components/Triage/NurseWorkspace.tsx` remains the primary one-active-call workflow.
+   - The Kanban board is intentionally separate so customers can choose their preferred operating style during demos and UAT.
+
+3. Added hash-aware navigation.
+   - `#/workspace` opens the Step cockpit.
+   - `#/kanban` opens the Kanban board.
+   - Header buttons now update both React view state and the browser hash.
+   - Post-login redirect now normalizes the hash to `#/workspace` or `#/admin`.
+
+4. Kept the UI aligned with the existing Apple-minimal IST Tech styling.
+   - Added compact `Step` and `Board` navigation buttons.
+   - Added a small responsive `.topbar-view-switch` style in `frontend/src/global.css`.
+
+### Validation Completed In This Closure Pass
+
+Passed:
+
+- `npm.cmd run typecheck:web`
+- `npm.cmd run build:web`
+
+Browser verified:
+
+- Simulated role login works.
+- `#/workspace` shows `NURSE COCKPIT` and does not show `KANBAN COCKPIT`.
+- `#/kanban` shows `KANBAN COCKPIT`.
+- Kanban board shows all five columns: Incoming, Identity, Clinical triage, Disposition, SBAR / follow-up.
+- Header `Step` button returns to `#/workspace`.
+- Header `Board` button opens `#/kanban`.
+
+Local health:
+
+- API health: `http://127.0.0.1:8080/healthz` returned `200`.
+- Web health: `http://127.0.0.1:5174/` returned `200`.
+
+Operational note:
+
+- On Windows, `npm.cmd run typecheck:web` runs `npx prisma generate`. If the local API process is holding the Prisma query engine DLL, briefly stop the API process, run the check, then restart the API.
+
+### Current Product Position
+
+The nurse workspace now supports two customer-reviewable modes:
+
+1. Step cockpit
+   - Best for clinical safety, one-call-at-a-time handling, deterministic stage progression, and SBAR completion.
+
+2. Kanban cockpit
+   - Best for service managers, shift leads, or customers who want a visual board of queue load and case stage distribution.
+
+Recommended product stance:
+
+- Keep Step cockpit as the default for Remote Triage Nurse clinical execution.
+- Offer Kanban cockpit as a queue-supervision and customer-preference option.
+- During UAT, collect customer feedback on which roles should see Board by default versus Step by default.
+
+### Next-Day Pickup Items
+
+1. Decide role defaults.
+   - Remote Triage Nurse: likely Step cockpit.
+   - Senior Triage Nurse / Triage Service Manager: likely Board or configurable default.
+   - Admin/System roles: access to both.
+
+2. Connect Kanban board to the same live queue data as the Step cockpit.
+   - Current Kanban board uses local demo cases.
+   - Next step is to source both views from one shared queue API/store.
+
+3. Add Help/Library documentation for workspace-choice design.
+   - Explain Step cockpit versus Kanban cockpit.
+   - Explain which users should use each view and why.
+
+4. Add persistence/audit for board movement.
+   - Moving a card should become a queue event in the audit ledger.
+   - Board movement must not bypass clinical stage completion or nurse approval.
+
+5. Continue customer UI review.
+   - Validate whether the board should be more compact for large call volumes.
+   - Validate whether board columns should be clinical stages, operational queues, or both through filters.
+
 ## Purpose Of This Handover
 
 This is the first formal project handover for the IST Tech Clinical Triage Platform. It is intended to give a start-to-end view of the work completed so far, the current repository and application state, the major design decisions already made, and the open items that should guide the next work session.
