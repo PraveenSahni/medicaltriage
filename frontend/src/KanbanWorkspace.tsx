@@ -9,7 +9,9 @@ import {
   UserRoundCheck
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { QueueClinicalStage, QueueItem } from "./QueueContext";
+import { useQueue } from "./QueueContext";
 
 type Severity = "Emergency" | "Urgent" | "Routine" | "Self-care";
 type BoardStatus = "incoming" | "identity" | "triage" | "disposition" | "followup";
@@ -21,6 +23,8 @@ type BoardCase = {
   patientType: "Staff" | "Dependent";
   severity: Severity;
   status: BoardStatus;
+  queueStatus: QueueItem["status"];
+  queueStage: QueueClinicalStage;
   channel: "Phone" | "WhatsApp" | "Callback";
   waitMinutes: number;
   role: string;
@@ -39,89 +43,6 @@ const boardColumns: Array<{ id: BoardStatus; title: string; limit: string; icon:
   { id: "followup", title: "SBAR / follow-up", limit: "Copy and close", icon: CheckCircle2 }
 ];
 
-const initialBoardCases: BoardCase[] = [
-  {
-    id: "case-10002",
-    maskedPatientId: "DEP-42***",
-    staffId: "IST-1001",
-    patientType: "Dependent",
-    severity: "Emergency",
-    status: "incoming",
-    channel: "WhatsApp",
-    waitMinutes: 7,
-    role: "Dependent child",
-    station: "DOH",
-    summary: "Fever with fast breathing reported by parent.",
-    safetyFloor: true,
-    route: "Sidra Medicine Emergency Department",
-    owner: "Unassigned"
-  },
-  {
-    id: "case-10001",
-    maskedPatientId: "IST-10***",
-    staffId: "IST-10001",
-    patientType: "Staff",
-    severity: "Emergency",
-    status: "identity",
-    channel: "Phone",
-    waitMinutes: 4,
-    role: "Cabin Crew",
-    station: "DOH",
-    summary: "Chest tightness and sweating before duty report.",
-    safetyFloor: true,
-    route: "Hamad Medical Corporation Emergency Department",
-    owner: "Senior Triage Nurse"
-  },
-  {
-    id: "case-10003",
-    maskedPatientId: "IST-10***",
-    staffId: "IST-1001",
-    patientType: "Staff",
-    severity: "Urgent",
-    status: "triage",
-    channel: "Callback",
-    waitMinutes: 11,
-    role: "Pilot",
-    station: "LHR",
-    summary: "Dizziness after long sector; fit-to-fly review requested.",
-    safetyFloor: false,
-    route: "HMC urgent review pathway",
-    owner: "Remote Triage Nurse"
-  },
-  {
-    id: "case-10005",
-    maskedPatientId: "IST-22***",
-    staffId: "IST-2205",
-    patientType: "Staff",
-    severity: "Urgent",
-    status: "disposition",
-    channel: "Phone",
-    waitMinutes: 13,
-    role: "Ground Operations",
-    station: "DOH",
-    summary: "Back pain after ramp duty, reduced mobility, no trauma red flags.",
-    safetyFloor: false,
-    route: "Occupational health clinician review",
-    owner: "Occupational Health Clinician"
-  },
-  {
-    id: "case-10004",
-    maskedPatientId: "IST-30***",
-    staffId: "IST-3003",
-    patientType: "Staff",
-    severity: "Routine",
-    status: "followup",
-    channel: "Phone",
-    waitMinutes: 16,
-    role: "Operations Specialist",
-    station: "DOH",
-    summary: "Mild sore throat, no red flags, requesting routine advice.",
-    safetyFloor: false,
-    route: "PHCC urgent care or IST teleconsult",
-    owner: "Remote Triage Nurse"
-  }
-];
-
 const severityStyles: Record<Severity, string> = {
   Emergency: "border-red-200 bg-red-50 text-red-700",
   Urgent: "border-amber-200 bg-amber-50 text-amber-700",
@@ -137,6 +58,7 @@ const severityOrder: Record<Severity, number> = {
 };
 
 const statusOrder: BoardStatus[] = ["incoming", "identity", "triage", "disposition", "followup"];
+const stageOrder: QueueClinicalStage[] = ["INTAKE", "IDENTITY", "VITALS", "PROTOCOL", "DISPOSITION", "SBAR"];
 
 function nextStatus(status: BoardStatus) {
   return statusOrder[Math.min(statusOrder.indexOf(status) + 1, statusOrder.length - 1)];
@@ -146,14 +68,84 @@ function previousStatus(status: BoardStatus) {
   return statusOrder[Math.max(statusOrder.indexOf(status) - 1, 0)];
 }
 
+function nextQueueStage(stage: QueueClinicalStage) {
+  return stageOrder[Math.min(stageOrder.indexOf(stage) + 1, stageOrder.length - 1)];
+}
+
+function previousQueueStage(stage: QueueClinicalStage) {
+  return stageOrder[Math.max(stageOrder.indexOf(stage) - 1, 0)];
+}
+
 function maskCount(cases: BoardCase[]) {
   return cases.filter((boardCase) => boardCase.safetyFloor).length;
 }
 
+function severityFrom(item: QueueItem): Severity {
+  if (item.safetyFloorActive || item.calculatedSeverity === "EMERGENCY") return "Emergency";
+  if (item.calculatedSeverity === "URGENT") return "Urgent";
+  if (item.calculatedSeverity === "SELF_CARE") return "Self-care";
+  return "Routine";
+}
+
+function statusFrom(item: QueueItem): BoardStatus {
+  if (item.status === "INCOMING") return "incoming";
+  if (item.currentStage === "IDENTITY") return "identity";
+  if (item.currentStage === "VITALS" || item.currentStage === "PROTOCOL") return "triage";
+  if (item.currentStage === "DISPOSITION") return "disposition";
+  return "followup";
+}
+
+function minutesUntil(iso: string) {
+  return Math.max(0, Math.round((new Date(iso).getTime() - Date.now()) / 60_000));
+}
+
+function maskedId(item: QueueItem) {
+  if (item.patientType === "Dependent") return `DEP-${item.id.slice(-4)}***`;
+  return `${item.istStaffId.slice(0, 6)}***`;
+}
+
+function normalizeChannel(channel: string): BoardCase["channel"] {
+  if (channel === "WhatsApp" || channel === "Callback") return channel;
+  return "Phone";
+}
+
+function toBoardCase(item: QueueItem): BoardCase {
+  return {
+    id: item.id,
+    maskedPatientId: maskedId(item),
+    staffId: item.istStaffId,
+    patientType: item.patientType,
+    severity: severityFrom(item),
+    status: statusFrom(item),
+    queueStatus: item.status,
+    queueStage: item.currentStage,
+    channel: normalizeChannel(item.channel),
+    waitMinutes: minutesUntil(item.slaDeadlineIso),
+    role: item.jobTitle ?? item.patientType,
+    station: item.stationCode ?? "DOH",
+    summary: item.summary,
+    safetyFloor: item.safetyFloorActive,
+    route: item.destinationName ?? item.dispositionCode ?? "Pending route review",
+    owner: item.assignedNurseId ?? "Unassigned"
+  };
+}
+
 export default function KanbanWorkspace() {
-  const [cases, setCases] = useState(initialBoardCases);
-  const [selectedId, setSelectedId] = useState(initialBoardCases[0]?.id ?? "");
+  const { queue, activeItem, loading, error, moveItem, openItemInStep, setActiveItemById } = useQueue();
+  const cases = useMemo(() => queue.map(toBoardCase), [queue]);
+  const [selectedId, setSelectedId] = useState("");
   const [severityFilter, setSeverityFilter] = useState<Severity | "All">("All");
+  const [actionError, setActionError] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (activeItem) {
+      setSelectedId(activeItem.id);
+      return;
+    }
+    if (!selectedId && cases[0]) {
+      setSelectedId(cases[0].id);
+    }
+  }, [activeItem, cases, selectedId]);
 
   const filteredCases = useMemo(() => {
     return cases
@@ -168,23 +160,35 @@ export default function KanbanWorkspace() {
 
   const selectedCase = cases.find((boardCase) => boardCase.id === selectedId) ?? cases[0];
 
-  function moveCase(id: string, direction: "forward" | "back") {
-    setCases((current) =>
-      current.map((boardCase) =>
-        boardCase.id === id
-          ? {
-              ...boardCase,
-              status: direction === "forward" ? nextStatus(boardCase.status) : previousStatus(boardCase.status),
-              owner: boardCase.owner === "Unassigned" ? "Remote Triage Nurse" : boardCase.owner
-            }
-          : boardCase
-      )
-    );
-    setSelectedId(id);
+  async function moveCase(id: string, direction: "forward" | "back") {
+    const boardCase = cases.find((candidate) => candidate.id === id);
+    if (!boardCase) return;
+    setActionError(undefined);
+    try {
+      const toStage = direction === "forward" ? nextQueueStage(boardCase.queueStage) : previousQueueStage(boardCase.queueStage);
+      await moveItem(
+        id,
+        toStage,
+        direction === "back" && toStage === "INTAKE" ? "INCOMING" : boardCase.queueStatus === "COMPLETED" ? "COMPLETED" : "IN_PROCESS",
+        direction === "forward" ? "Board move forward with sequence validation." : "Board move back for queue correction."
+      );
+      setSelectedId(id);
+    } catch (caught) {
+      setActionError(caught instanceof Error ? caught.message : "Queue movement failed");
+    }
   }
 
-  function openStepCockpit() {
-    window.location.hash = "#/workspace";
+  async function openStepCockpit() {
+    if (!selectedCase) {
+      window.location.hash = "#/workspace";
+      return;
+    }
+    setActionError(undefined);
+    try {
+      await openItemInStep(selectedCase.id);
+    } catch (caught) {
+      setActionError(caught instanceof Error ? caught.message : "Unable to open Step cockpit");
+    }
   }
 
   return (
@@ -221,6 +225,11 @@ export default function KanbanWorkspace() {
             </label>
           </div>
         </div>
+        {(error || actionError) && (
+          <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-800">
+            {actionError ?? error}
+          </div>
+        )}
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Metric label="Waiting calls" value={String(cases.filter((boardCase) => boardCase.status === "incoming").length)} />
@@ -260,7 +269,10 @@ export default function KanbanWorkspace() {
                           ? "border-[var(--t1)] bg-[var(--t1bg)]"
                           : "border-[var(--bd)] bg-[var(--bg)] hover:border-[var(--t1bd)]"
                       }`}
-                      onClick={() => setSelectedId(boardCase.id)}
+                      onClick={() => {
+                        setSelectedId(boardCase.id);
+                        setActiveItemById(boardCase.id);
+                      }}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
@@ -283,7 +295,7 @@ export default function KanbanWorkspace() {
 
                   {columnCases.length === 0 && (
                     <div className="rounded-lg border border-dashed border-[var(--bd)] p-3 text-center text-xs font-semibold text-[var(--tx3)]">
-                      Clear
+                      {loading ? "Loading" : "Clear"}
                     </div>
                   )}
                 </div>
@@ -325,6 +337,14 @@ export default function KanbanWorkspace() {
                 <button
                   type="button"
                   className="primary-button"
+                  onClick={openStepCockpit}
+                >
+                  Open in Step cockpit
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  className="secondary-button"
                   onClick={() => moveCase(selectedCase.id, "forward")}
                   disabled={selectedCase.status === "followup"}
                 >

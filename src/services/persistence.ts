@@ -215,6 +215,22 @@ export async function revokePersistedSession(sessionId?: string): Promise<void> 
   });
 }
 
+export async function revokePersistedSessionsForUser(userId: string): Promise<void> {
+  if (!shouldUseDatabasePersistence()) {
+    return;
+  }
+
+  await prisma.userSession.updateMany({
+    where: {
+      userId,
+      revokedAt: null
+    },
+    data: {
+      revokedAt: new Date()
+    }
+  });
+}
+
 export async function persistCcpOutboundDraft(draft: CcpOutboundDraft): Promise<PersistenceResult> {
   if (!shouldUseDatabasePersistence()) {
     return { persisted: false, reason: "mock-mode" };

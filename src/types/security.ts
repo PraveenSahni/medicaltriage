@@ -9,6 +9,9 @@ export type AuthMethod = z.infer<typeof AuthMethodSchema>;
 export const AccountStatusSchema = z.enum(["active", "suspended", "locked", "deactivated"]);
 export type AccountStatus = z.infer<typeof AccountStatusSchema>;
 
+export const DirectoryStatusSchema = z.enum(["active", "disabled", "on_leave", "rest_period", "inactive"]);
+export type DirectoryStatus = z.infer<typeof DirectoryStatusSchema>;
+
 export const RiskClassificationSchema = z.enum(["low", "medium", "high", "critical"]);
 export type RiskClassification = z.infer<typeof RiskClassificationSchema>;
 
@@ -92,6 +95,8 @@ export type AdminUser = {
   email: string;
   mobile: string;
   organization: string;
+  organizationId?: string;
+  organizationCode?: string;
   facility: string;
   department: string;
   clinicalSpecialty: string;
@@ -107,6 +112,7 @@ export type AdminUser = {
   authenticationMethod: AuthMethod;
   mfaStatus: "enabled" | "pending" | "disabled";
   accountStatus: AccountStatus;
+  directoryStatus?: DirectoryStatus;
   roles: string[];
   responsibilities: string[];
   queues: string[];

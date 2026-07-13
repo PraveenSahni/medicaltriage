@@ -19,6 +19,8 @@ import {
   X
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import type { QueueClinicalStage, QueueItem } from "../../QueueContext";
+import { useQueue } from "../../QueueContext";
 
 type ConsciousLevel = "alert" | "voice" | "pain" | "unresponsive";
 type Severity = "Emergency" | "Urgent" | "Routine" | "Self-care";
@@ -120,6 +122,15 @@ const stages: Array<{ id: StageId; label: string; shortLabel: string }> = [
   { id: "disposition", label: "Disposition", shortLabel: "6" },
   { id: "complete", label: "SBAR / Complete", shortLabel: "7" }
 ];
+
+const queueStageToStepIndex: Record<QueueClinicalStage, number> = {
+  INTAKE: 0,
+  IDENTITY: 1,
+  VITALS: 3,
+  PROTOCOL: 4,
+  DISPOSITION: 5,
+  SBAR: 6
+};
 
 const initialCards: Card[] = [
   {
@@ -326,6 +337,69 @@ function routeFor(card: Card, score?: ApiScoreResult): { code: string; destinati
   };
 }
 
+function crewCategoryFrom(item: QueueItem): Card["crewCategory"] {
+  const text = `${item.jobTitle ?? ""} ${item.customAviationTags.join(" ")}`.toLowerCase();
+  if (text.includes("pilot") || text.includes("flight_deck")) return "flight_deck";
+  if (text.includes("cabin")) return "cabin_crew";
+  if (item.patientType === "Dependent") return "dependent";
+  if (text.includes("ground")) return "ground_staff";
+  return "other";
+}
+
+function channelFrom(item: QueueItem): Channel {
+  if (item.channel === "WhatsApp" || item.channel === "Callback") return item.channel;
+  return "Phone";
+}
+
+function ageFrom(item: QueueItem): number {
+  if (item.patientType === "Dependent") return 8;
+  return item.jobTitle?.toLowerCase().includes("pilot") ? 35 : 32;
+}
+
+function stageIndexFromQueue(item: QueueItem): number {
+  return queueStageToStepIndex[item.currentStage] ?? 0;
+}
+
+function queueStageFromStep(index: number): QueueClinicalStage {
+  const stageId = stages[index]?.id ?? "intake";
+  if (stageId === "intake") return "INTAKE";
+  if (stageId === "identity" || stageId === "symptoms") return "IDENTITY";
+  if (stageId === "vitals") return "VITALS";
+  if (stageId === "protocol") return "PROTOCOL";
+  if (stageId === "disposition") return "DISPOSITION";
+  return "SBAR";
+}
+
+function queueItemToCard(item: QueueItem): Card {
+  const age = ageFrom(item);
+  return {
+    id: item.id,
+    istStaffId: item.istStaffId,
+    dependentId: item.dependentId,
+    patientName: item.patientType === "Dependent" ? "Dependent" : "Staff member",
+    patientType: item.patientType,
+    jobTitle: item.jobTitle ?? item.patientType,
+    department: item.department ?? "Employee health",
+    symptomTextRaw: item.summary,
+    age,
+    biologicalSex: "unknown",
+    maskedPatientId: item.patientType === "Dependent" ? `DEP-${item.id.slice(-4)}***` : `${item.istStaffId.slice(0, 6)}***`,
+    queueWaitMinutes: Math.max(0, Math.round((new Date(item.slaDeadlineIso).getTime() - Date.now()) / 60_000)),
+    channel: channelFrom(item),
+    stationCode: item.stationCode,
+    onDuty: item.customAviationTags.some((tag) => tag.toLowerCase().includes("fit-to-fly")),
+    outstation: item.customAviationTags.some((tag) => tag.toLowerCase().includes("outstation")) || item.stationCode !== "DOH",
+    crewCategory: crewCategoryFrom(item),
+    vitals: item.vitals ?? {
+      heartRate: item.safetyFloorActive ? 135 : 82,
+      respiratoryRate: item.patientType === "Dependent" && item.safetyFloorActive ? 42 : 16,
+      spo2: item.safetyFloorActive ? 91 : 98,
+      temperature: item.patientType === "Dependent" ? 38.2 : 36.9,
+      consciousLevel: "alert"
+    }
+  };
+}
+
 function fitToFlyStatus(card: Card, severity: Severity): "CLEARED" | "RESTRICTED" {
   return isActiveFlightCrew(card) && (severity === "Emergency" || severity === "Urgent") ? "RESTRICTED" : "CLEARED";
 }
@@ -459,6 +533,7 @@ function recordsFromCards(cards: Card[]): SyntheticReviewRecord[] {
 }
 
 export default function NurseWorkspace() {
+  const { queue, activeItem, claimItem, updateItemContext, moveItem } = useQueue();
   const [cardsById, setCardsById] = useState<Record<string, Card>>(() =>
     Object.fromEntries(initialCards.map((card) => [card.id, card]))
   );
@@ -490,6 +565,49 @@ export default function NurseWorkspace() {
   const activeScore = activeCardId ? scoreByCardId[activeCardId] : undefined;
   const activeScoreResult = activeScore && "result" in activeScore ? activeScore.result : undefined;
   const currentStage = stages[stageIndex];
+
+  useEffect(() => {
+    if (queue.length === 0) {
+      return;
+    }
+    const queueCards = queue.map(queueItemToCard);
+    setCardsById((current) => ({
+      ...current,
+      ...Object.fromEntries(queueCards.map((card) => [card.id, card]))
+    }));
+    setQueueIds(
+      queue
+        .filter((item) => item.status !== "COMPLETED")
+        .filter((item) => item.id !== activeItem?.id)
+        .map((item) => item.id)
+    );
+  }, [activeItem?.id, queue]);
+
+  useEffect(() => {
+    if (!activeItem) {
+      return;
+    }
+    const card = queueItemToCard(activeItem);
+    setCardsById((current) => ({ ...current, [card.id]: card }));
+    setQueueIds((current) => current.filter((id) => id !== card.id));
+    setHoldIds((current) => current.filter((id) => id !== card.id));
+    setActiveCardId(card.id);
+    setStageIndex(stageIndexFromQueue(activeItem));
+
+    if (activeItem.identityValidated) {
+      setIdentityByCardId((current) => ({
+        ...current,
+        [card.id]: {
+          status: "ready",
+          valid: true,
+          display: "Validated through queue orchestration",
+          department: card.department,
+          jobTitle: card.jobTitle,
+          dependents: card.patientType === "Dependent" ? 1 : 0
+        }
+      }));
+    }
+  }, [activeItem]);
 
   const filteredQueue = useMemo(() => {
     const cards = queueIds.map((id) => cardsById[id]).filter((card): card is Card => Boolean(card));
@@ -573,6 +691,15 @@ export default function NurseWorkspace() {
             ...current,
             [activeCard.id]: { status: "ready", result, updatedAtIso: new Date().toISOString() }
           }));
+          if (activeItem?.id === activeCard.id) {
+            void updateItemContext(activeCard.id, {
+              vitals: activeCard.vitals,
+              matchedProtocolId: result.dispositionCode ? "phase1-rules-first-protocol" : undefined,
+              calculatedSeverity: result.severity === "HOMECARE" ? "SELF_CARE" : result.severity,
+              dispositionCode: result.dispositionCode,
+              destinationName: result.destinationName
+            });
+          }
         }
       } catch (error) {
         if (!ignore) {
@@ -592,7 +719,7 @@ export default function NurseWorkspace() {
       ignore = true;
       window.clearTimeout(timer);
     };
-  }, [activeCard, activeVitalsKey]);
+  }, [activeCard, activeItem?.id, activeVitalsKey, updateItemContext]);
 
   function showToast(message: string, tone: ToastTone = "info") {
     const id = Date.now();
@@ -625,17 +752,26 @@ export default function NurseWorkspace() {
     }));
   }
 
-  function openCall(cardId: string) {
+  async function openCall(cardId: string) {
     if (activeCardId && activeCardId !== cardId) {
       showToast("A call is already active. Complete it or place it on hold before opening another call.", "warning");
       return;
     }
 
-    setQueueIds((current) => current.filter((id) => id !== cardId));
-    setHoldIds((current) => current.filter((id) => id !== cardId));
-    setActiveCardId(cardId);
-    setStageIndex(0);
-    showToast("Call opened in the nurse cockpit.", "success");
+    try {
+      if (queue.some((item) => item.id === cardId)) {
+        const claimed = await claimItem(cardId);
+        setStageIndex(stageIndexFromQueue(claimed));
+      } else {
+        setStageIndex(0);
+      }
+      setQueueIds((current) => current.filter((id) => id !== cardId));
+      setHoldIds((current) => current.filter((id) => id !== cardId));
+      setActiveCardId(cardId);
+      showToast("Call opened and locked in the nurse cockpit.", "success");
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Unable to open queue item.", "warning");
+    }
   }
 
   function holdActiveCall() {
@@ -644,6 +780,22 @@ export default function NurseWorkspace() {
     setActiveCardId(null);
     setStageIndex(0);
     showToast("Call placed in Information Required / callback hold.", "info");
+  }
+
+  function handleStageChange(nextIndex: number) {
+    const boundedIndex = Math.max(0, Math.min(nextIndex, stages.length - 1));
+    if (!activeItem || activeItem.id !== activeCardId) {
+      setStageIndex(boundedIndex);
+      return;
+    }
+
+    const toStage = queueStageFromStep(boundedIndex);
+    const toStatus = toStage === "INTAKE" ? "INCOMING" : "IN_PROCESS";
+    void moveItem(activeItem.id, toStage, toStatus, "Step cockpit stage change with sequence validation.")
+      .then(() => setStageIndex(boundedIndex))
+      .catch((error) => {
+        showToast(error instanceof Error ? error.message : "Stage movement blocked by queue rules.", "warning");
+      });
   }
 
   async function validateIdentity(card: Card) {
@@ -679,6 +831,9 @@ export default function NurseWorkspace() {
           dependents: Array.isArray(body.profile?.dependents) ? body.profile.dependents.length : 0
         }
       }));
+      if (activeItem?.id === card.id) {
+        void updateItemContext(card.id, { identityValidated: true });
+      }
       showToast("Identity validated. Age remains sourced from HRMS/dependent record.", "success");
     } catch (error) {
       setIdentityByCardId((current) => ({
@@ -751,6 +906,22 @@ export default function NurseWorkspace() {
       await copyText(sbarMarkdown(card, activeScoreResult));
       setCopiedCardIds((current) => new Set([...current, card.id]));
       await postCompletion(card, activeScoreResult);
+      if (activeItem?.id === card.id) {
+        const route = routeFor(card, activeScoreResult);
+        await updateItemContext(card.id, {
+          clinicalApproval: {
+            approvedBy: "Remote Triage Nurse",
+            approvedAtIso: new Date().toISOString(),
+            approvalType: "sbar-copy-and-close"
+          },
+          sbarCopied: true,
+          matchedProtocolId: activeScoreResult?.dispositionCode ? "phase1-rules-first-protocol" : "manual-route-review",
+          calculatedSeverity: activeSeverity(card, activeScoreResult) === "Self-care" ? "SELF_CARE" : activeSeverity(card, activeScoreResult).toUpperCase(),
+          dispositionCode: route.code,
+          destinationName: route.destination
+        });
+        await moveItem(card.id, "SBAR", "COMPLETED", "SBAR copied and nurse-approved for queue closure.");
+      }
       await postEmrWriteback(card);
       setCompletedIds((current) => [...new Set([...current, card.id])]);
       setActiveCardId(null);
@@ -837,7 +1008,7 @@ export default function NurseWorkspace() {
               stageIndex={stageIndex}
               scoreState={activeScore ?? { status: "idle" }}
               identityState={identityByCardId[activeCard.id] ?? { status: "idle" }}
-              onStageChange={setStageIndex}
+              onStageChange={handleStageChange}
               onValidateIdentity={() => validateIdentity(activeCard)}
               onUpdateCard={(patch) => updateCard(activeCard.id, patch)}
               onVitalsChange={(nextVitals) => updateCardVitals(activeCard.id, nextVitals)}

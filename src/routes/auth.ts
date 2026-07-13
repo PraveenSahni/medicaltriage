@@ -49,7 +49,7 @@ export function createAuthRouter(): Router {
       });
 
       if (!result.ok) {
-        return res.status(result.locked ? 423 : 401).json({
+        return res.status(result.forbidden ? 403 : result.locked ? 423 : 401).json({
           error: "Authentication failed",
           message: result.message
         });

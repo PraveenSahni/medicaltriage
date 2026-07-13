@@ -15,10 +15,12 @@ import CcpWorkspace from "./CcpWorkspace";
 import HelpCenter from "./HelpCenter";
 import KanbanWorkspace from "./KanbanWorkspace";
 import LoginPage from "./LoginPage";
+import { QueueProvider } from "./QueueContext";
 import TriageWorkspace from "./TriageWorkspace";
 
 type ViewKey = "workspace" | "kanban" | "ccp" | "help" | "admin";
 type ThemeMode = "light" | "dark";
+type EnvironmentTone = "simulation" | "demo" | "uat" | "production";
 
 type AuthenticatedSession = {
   sessionId: string;
@@ -37,7 +39,29 @@ type AuthenticatedSession = {
   mfaVerified: boolean;
 };
 
+type RuntimeEnvironment = {
+  environment: EnvironmentTone;
+  dataProfile: string;
+  banner: {
+    visible: boolean;
+    label: string;
+    description: string;
+    tone: EnvironmentTone;
+  };
+};
+
 const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+
+const defaultRuntimeEnvironment: RuntimeEnvironment = {
+  environment: "simulation",
+  dataProfile: "synthetic",
+  banner: {
+    visible: true,
+    label: "SIMULATION",
+    description: "Synthetic records only. No PHI. Use for workflow rehearsal and governed AI evaluation.",
+    tone: "simulation"
+  }
+};
 
 const roleLabels: Record<string, string> = {
   platform_super_administrator: "Platform Super Administrator",
@@ -81,6 +105,33 @@ export default function App() {
   const [themeMode, setThemeMode] = useState<ThemeMode>("light");
   const [session, setSession] = useState<AuthenticatedSession | null>(null);
   const [sessionStatus, setSessionStatus] = useState("Checking secure session.");
+  const [runtimeEnvironment, setRuntimeEnvironment] = useState<RuntimeEnvironment>(defaultRuntimeEnvironment);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadRuntimeEnvironment() {
+      try {
+        const response = await fetch(`${apiBase}/api/v1/runtime/environment`);
+        if (!response.ok) {
+          return;
+        }
+        const payload = (await response.json()) as RuntimeEnvironment;
+        if (!cancelled) {
+          setRuntimeEnvironment(payload);
+        }
+      } catch {
+        if (!cancelled) {
+          setRuntimeEnvironment(defaultRuntimeEnvironment);
+        }
+      }
+    }
+
+    loadRuntimeEnvironment();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -260,6 +311,7 @@ export default function App() {
                 {themeMode === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
               </button>
             </div>
+            <EnvironmentBanner runtimeEnvironment={runtimeEnvironment} />
             <LoginPage
               onAuthenticated={(nextSession, redirectTo) => {
                 setSession(nextSession);
@@ -282,6 +334,7 @@ export default function App() {
     <div className={themeMode === "dark" ? "dark" : ""}>
       <div className="app-shell">
         <div className="app-frame">
+          <EnvironmentBanner runtimeEnvironment={runtimeEnvironment} />
           <header className="topbar" aria-label="Application navigation">
             <button
               type="button"
@@ -402,7 +455,9 @@ export default function App() {
             </>
           )}
 
-          <main className="workspace-body">{renderView()}</main>
+          <QueueProvider>
+            <main className="workspace-body">{renderView()}</main>
+          </QueueProvider>
 
           <footer className="app-footer">
             <ShieldCheck className="h-4 w-4" />
@@ -411,6 +466,22 @@ export default function App() {
         </div>
       </div>
     </div>
+  );
+}
+
+function EnvironmentBanner({ runtimeEnvironment }: { runtimeEnvironment: RuntimeEnvironment }) {
+  if (!runtimeEnvironment.banner.visible) {
+    return null;
+  }
+
+  return (
+    <aside
+      className={`environment-banner environment-banner-${runtimeEnvironment.banner.tone}`}
+      aria-label={`${runtimeEnvironment.banner.label} environment`}
+    >
+      <strong>{runtimeEnvironment.banner.label}</strong>
+      <span>{runtimeEnvironment.banner.description}</span>
+    </aside>
   );
 }
 

@@ -6,6 +6,8 @@ import type {
   AuditEvent,
   AuthenticatedSession,
   AuthMethod,
+  AccountStatus,
+  DirectoryStatus,
   EncryptionPolicy,
   Permission,
   RevealRequest,
@@ -19,12 +21,66 @@ import {
   getPersistedUserSession,
   persistSecurityAuditEvent,
   persistUserSession,
-  revokePersistedSession
+  revokePersistedSession,
+  revokePersistedSessionsForUser
 } from "./persistence.js";
 
 const SESSION_COOKIE = "ist_triage_session";
 const SESSION_TTL_MS = 30 * 60 * 1000;
 const EXTENDED_SESSION_TTL_MS = 8 * 60 * 60 * 1000;
+
+export type OrganizationDirectoryRecord = {
+  id: string;
+  code: string;
+  name: string;
+  mophLicenseNumber: string;
+};
+
+const organizationDirectory: OrganizationDirectoryRecord[] = [
+  {
+    id: "org_ist_tech",
+    code: "IST_TECH",
+    name: "IST Tech",
+    mophLicenseNumber: "IST-TECH-PLATFORM"
+  },
+  {
+    id: "org_hmc",
+    code: "HMC",
+    name: "Hamad Medical Corporation (HMC)",
+    mophLicenseNumber: "urn:oid:2.16.634.1.1.1.hmc"
+  },
+  {
+    id: "org_phcc",
+    code: "PHCC",
+    name: "Primary Health Care Corporation (PHCC)",
+    mophLicenseNumber: "urn:oid:2.16.634.1.1.1.phcc"
+  },
+  {
+    id: "org_sidra",
+    code: "SIDRA",
+    name: "Sidra Medicine",
+    mophLicenseNumber: "urn:oid:2.16.634.1.1.1.sidra"
+  }
+];
+
+const organizationOverrideByUserId: Record<string, string> = {
+  usr_admin_10001: "IST_TECH",
+  usr_org_admin_10001: "IST_TECH",
+  usr_manager_10001: "HMC",
+  usr_intake_10001: "PHCC",
+  usr_nurse_10001: "PHCC",
+  usr_senior_nurse_10001: "HMC",
+  usr_pediatric_nurse_10001: "SIDRA",
+  usr_physician_10001: "HMC",
+  usr_occ_health_10001: "HMC"
+};
+
+function organizationByCode(code?: string): OrganizationDirectoryRecord {
+  return (
+    organizationDirectory.find((organization) => organization.code === code) ??
+    organizationDirectory[0]
+  );
+}
 
 const permissions: Permission[] = [
   {
@@ -716,7 +772,7 @@ const roles: Role[] = [
 
 const demoAssignableRoleCodes = roles.map((role) => role.code);
 
-const users: AdminUser[] = [
+const initialUsers: AdminUser[] = [
   {
     id: "usr_admin_10001",
     employeeId: "IST-90001",
@@ -1247,6 +1303,23 @@ const users: AdminUser[] = [
   }
 ];
 
+function normalizedDirectoryUser(user: AdminUser): AdminUser {
+  const organization = organizationByCode(user.organizationCode ?? organizationOverrideByUserId[user.id]);
+  return {
+    ...user,
+    organization: organization.name,
+    organizationId: organization.id,
+    organizationCode: organization.code,
+    directoryStatus: user.directoryStatus ?? "active"
+  };
+}
+
+function cloneInitialUsers(): AdminUser[] {
+  return initialUsers.map((user) => normalizedDirectoryUser({ ...user }));
+}
+
+let users: AdminUser[] = cloneInitialUsers();
+
 const ssoProviders: SsoProvider[] = [
   {
     id: "entra-qa",
@@ -1438,6 +1511,154 @@ export function listUsers(): SafeAdminUser[] {
   return users.map(maskUser);
 }
 
+export function listOrganizations(): OrganizationDirectoryRecord[] {
+  return organizationDirectory.map((organization) => ({ ...organization }));
+}
+
+export function getOrganizationByCode(code: string): OrganizationDirectoryRecord | undefined {
+  return organizationDirectory.find((organization) => organization.code === code);
+}
+
+export function getOrganizationById(id: string): OrganizationDirectoryRecord | undefined {
+  return organizationDirectory.find((organization) => organization.id === id);
+}
+
+export function getDirectoryUserByEmployeeId(employeeId: string): AdminUser | undefined {
+  return users.find((user) => user.employeeId.toLowerCase() === employeeId.toLowerCase());
+}
+
+export type DirectoryUserUpsert = {
+  employeeId: string;
+  hrmsId?: string;
+  email?: string;
+  fullName?: string;
+  mobile?: string;
+  organizationCode?: string;
+  facility?: string;
+  department?: string;
+  clinicalSpecialty?: string;
+  jobTitle?: string;
+  professionalCategory?: string;
+  manager?: string;
+  roles?: string[];
+  responsibilities?: string[];
+  queues?: string[];
+  accessProfiles?: string[];
+  directoryStatus?: DirectoryStatus;
+  accountStatus?: AccountStatus;
+};
+
+function directoryStatusToAccountStatus(status: DirectoryStatus): AccountStatus {
+  return status === "active" ? "active" : "deactivated";
+}
+
+export function upsertDirectoryUserFromHrms(input: DirectoryUserUpsert): { user: SafeAdminUser; created: boolean } {
+  const existingIndex = users.findIndex((user) => user.employeeId.toLowerCase() === input.employeeId.toLowerCase());
+  const organization = organizationByCode(input.organizationCode);
+  const timestampIso = new Date().toISOString();
+  const directoryStatus = input.directoryStatus ?? "active";
+  const accountStatus = input.accountStatus ?? directoryStatusToAccountStatus(directoryStatus);
+
+  if (existingIndex >= 0) {
+    const existing = users[existingIndex];
+    const updated: AdminUser = {
+      ...existing,
+      hrmsId: input.hrmsId ?? existing.hrmsId,
+      fullName: input.fullName ?? existing.fullName,
+      email: input.email ?? existing.email,
+      mobile: input.mobile ?? existing.mobile,
+      organization: organization.name,
+      organizationId: organization.id,
+      organizationCode: organization.code,
+      facility: input.facility ?? existing.facility,
+      department: input.department ?? existing.department,
+      clinicalSpecialty: input.clinicalSpecialty ?? existing.clinicalSpecialty,
+      jobTitle: input.jobTitle ?? existing.jobTitle,
+      professionalCategory: input.professionalCategory ?? existing.professionalCategory,
+      manager: input.manager ?? existing.manager,
+      accountStatus,
+      directoryStatus,
+      roles: input.roles ?? existing.roles,
+      responsibilities: input.responsibilities ?? existing.responsibilities,
+      queues: input.queues ?? existing.queues,
+      accessProfiles: input.accessProfiles ?? existing.accessProfiles,
+      updatedBy: "oracle-hrms-sync",
+      updatedAtIso: timestampIso
+    };
+    users[existingIndex] = updated;
+    return { user: maskUser(updated), created: false };
+  }
+
+  const created: AdminUser = {
+    id: `usr_hrms_${input.employeeId.toLowerCase().replace(/[^a-z0-9]+/g, "_")}`,
+    employeeId: input.employeeId,
+    hrmsId: input.hrmsId ?? input.employeeId,
+    fullName: input.fullName ?? input.email ?? input.employeeId,
+    email: input.email ?? `${input.employeeId.toLowerCase()}@ist.local`,
+    mobile: input.mobile ?? "+97400000000",
+    organization: organization.name,
+    organizationId: organization.id,
+    organizationCode: organization.code,
+    facility: input.facility ?? "Oracle HRMS directory",
+    department: input.department ?? "Clinical Operations",
+    clinicalSpecialty: input.clinicalSpecialty ?? "Tele-triage",
+    jobTitle: input.jobTitle ?? "Remote Triage Nurse",
+    professionalCategory: input.professionalCategory ?? "Nurse",
+    manager: input.manager ?? "Triage Service Manager",
+    country: "QA",
+    preferredLanguage: "en",
+    timeZone: "Asia/Qatar",
+    authenticationMethod: "local",
+    mfaStatus: "pending",
+    accountStatus,
+    directoryStatus,
+    roles: input.roles ?? ["remote_triage_nurse"],
+    responsibilities: input.responsibilities ?? ["conduct_nurse_triage", "view_ai_recommendation"],
+    queues: input.queues ?? ["HIA Staff Tele-triage"],
+    accessProfiles: input.accessProfiles ?? ["remote-triage-nurse-profile"],
+    createdBy: "oracle-hrms-sync",
+    createdAtIso: timestampIso,
+    updatedBy: "oracle-hrms-sync",
+    updatedAtIso: timestampIso
+  };
+  users.push(created);
+  return { user: maskUser(created), created: true };
+}
+
+export async function revokeSessionsForUser(userId: string): Promise<number> {
+  let revoked = 0;
+  for (const [sessionId, session] of sessions.entries()) {
+    if (session.user.id === userId) {
+      sessions.delete(sessionId);
+      revoked += 1;
+    }
+  }
+  await revokePersistedSessionsForUser(userId);
+  return revoked;
+}
+
+export async function setDirectoryStatusForEmployee(
+  employeeId: string,
+  directoryStatus: DirectoryStatus
+): Promise<{ user?: SafeAdminUser; sessionsRevoked: number }> {
+  const user = getDirectoryUserByEmployeeId(employeeId);
+  if (!user) {
+    return { sessionsRevoked: 0 };
+  }
+  user.directoryStatus = directoryStatus;
+  user.accountStatus = directoryStatusToAccountStatus(directoryStatus);
+  user.updatedBy = "oracle-hrms-sync";
+  user.updatedAtIso = new Date().toISOString();
+  const sessionsRevoked = directoryStatus === "active" ? 0 : await revokeSessionsForUser(user.id);
+  return { user: maskUser(user), sessionsRevoked };
+}
+
+export function resetSecurityStoreForTests(): void {
+  users = cloneInitialUsers();
+  sessions.clear();
+  failedLoginAttempts.clear();
+}
+
 export function listSsoProviders(): SsoProvider[] {
   return ssoProviders.map((provider) => ({
     ...provider,
@@ -1513,7 +1734,7 @@ export async function authenticateLocal(args: {
   simulateRole?: string;
   ipAddress: string;
   device: string;
-}): Promise<{ ok: true; session: AuthenticatedSession } | { ok: false; message: string; locked?: boolean }> {
+}): Promise<{ ok: true; session: AuthenticatedSession } | { ok: false; message: string; locked?: boolean; forbidden?: boolean }> {
   const username = args.username.trim().toLowerCase();
   const user = users.find((candidate) => candidate.email.toLowerCase() === username || candidate.employeeId.toLowerCase() === username);
   const genericMessage = "Invalid username or password.";
@@ -1527,7 +1748,7 @@ export async function authenticateLocal(args: {
   // provide ADMIN_PASSWORD through the deployment environment or Secret Manager.
   const configuredPassword = getAdminPassword();
   const passwordOk = configuredPassword.length > 0 && safeCompare(args.password, configuredPassword);
-  if (!user || user.accountStatus !== "active" || !passwordOk) {
+  if (!user || !passwordOk) {
     failedLoginAttempts.set(username, currentFailures + 1);
     await recordAuditEvent({
       id: randomUUID(),
@@ -1546,6 +1767,30 @@ export async function authenticateLocal(args: {
       risk: "high"
     });
     return { ok: false, message: genericMessage };
+  }
+
+  if (user.accountStatus !== "active" || (user.directoryStatus && user.directoryStatus !== "active")) {
+    await recordAuditEvent({
+      id: randomUUID(),
+      timestampIso: new Date().toISOString(),
+      userId: user.id,
+      activeRole: user.roles[0] ?? "unknown",
+      organization: user.organization,
+      facility: user.facility,
+      department: user.department,
+      action: "DIRECTORY_LOGIN_BLOCKED",
+      module: "Authentication",
+      resource: "local",
+      ipAddress: args.ipAddress,
+      device: args.device,
+      success: false,
+      risk: "critical"
+    });
+    return {
+      ok: false,
+      message: "Account is disabled by HRMS directory status. Contact the triage service manager.",
+      forbidden: true
+    };
   }
 
   if (args.simulateRole && !user.roles.includes(args.simulateRole)) {

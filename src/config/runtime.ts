@@ -31,6 +31,19 @@ const REQUIRED_LIVE_DEPENDENCIES: RequiredLiveDependency[] = [
 
 const MOCK_LOCAL_ADMIN_PASSWORD = "LocalMockAdmin!2026";
 
+type RuntimeEnvironmentTone = "simulation" | "demo" | "uat" | "production";
+
+export type PublicRuntimeEnvironment = {
+  environment: RuntimeEnvironmentTone;
+  dataProfile: string;
+  banner: {
+    visible: boolean;
+    label: string;
+    description: string;
+    tone: RuntimeEnvironmentTone;
+  };
+};
+
 function envFlag(name: string, defaultValue: boolean): boolean {
   const value = process.env[name];
   if (value === undefined) {
@@ -80,6 +93,56 @@ export function getAdminPassword(): string {
   return process.env.ADMIN_PASSWORD ?? (isMockMode() ? MOCK_LOCAL_ADMIN_PASSWORD : "");
 }
 
+function runtimeEnvironment(): RuntimeEnvironmentTone {
+  const configured = process.env.APP_ENVIRONMENT?.trim().toLowerCase();
+  if (configured === "demo" || configured === "uat" || configured === "production" || configured === "simulation") {
+    return configured;
+  }
+  return isMockMode() ? "simulation" : "demo";
+}
+
+export function publicRuntimeEnvironment(): PublicRuntimeEnvironment {
+  const environment = runtimeEnvironment();
+  const defaults: Record<RuntimeEnvironmentTone, Omit<PublicRuntimeEnvironment["banner"], "tone"> & { dataProfile: string }> = {
+    simulation: {
+      visible: true,
+      label: "SIMULATION",
+      description: "Synthetic records only. No PHI. Use for workflow rehearsal, AI evaluation, and governed model testing.",
+      dataProfile: "synthetic"
+    },
+    demo: {
+      visible: true,
+      label: "DEMO",
+      description: "Curated demonstration environment. Use for customer walkthroughs, not live clinical service.",
+      dataProfile: "curated-demo"
+    },
+    uat: {
+      visible: true,
+      label: "UAT",
+      description: "User acceptance testing environment. Validate workflows before production approval.",
+      dataProfile: "uat"
+    },
+    production: {
+      visible: false,
+      label: "PRODUCTION",
+      description: "Production clinical environment.",
+      dataProfile: "live"
+    }
+  };
+  const selected = defaults[environment];
+
+  return {
+    environment,
+    dataProfile: process.env.APP_DATA_PROFILE?.trim() || selected.dataProfile,
+    banner: {
+      visible: envFlag("APP_ENVIRONMENT_BANNER_VISIBLE", selected.visible),
+      label: process.env.APP_ENVIRONMENT_LABEL?.trim() || selected.label,
+      description: process.env.APP_ENVIRONMENT_DESCRIPTION?.trim() || selected.description,
+      tone: environment
+    }
+  };
+}
+
 export function assertRuntimeConfiguration(): void {
   if (isMockMode()) {
     return;
@@ -108,7 +171,10 @@ export function assertRuntimeConfiguration(): void {
 }
 
 export function runtimeModeSummary() {
+  const environment = publicRuntimeEnvironment();
   return {
+    environment: environment.environment,
+    dataProfile: environment.dataProfile,
     mockMode: isMockMode(),
     persistenceMode: shouldUseDatabasePersistence() ? "postgresql" : "mock-in-memory",
     allowedCorsOrigins: getAllowedCorsOrigins(),

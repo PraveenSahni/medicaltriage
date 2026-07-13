@@ -11,6 +11,7 @@ import {
   GitBranch,
   HelpCircle,
   Hospital,
+  Kanban,
   Languages,
   LockKeyhole,
   MapPin,
@@ -307,6 +308,62 @@ const helpGuides: HelpGuide[] = [
       "The nurse owns the final clinical advice. AI may draft or explain, but the clinician validates and approves the final disposition and any employee-facing message."
   },
   {
+    title: "Nurse cockpit mode guide",
+    eyebrow: "Step or Board workspace",
+    icon: Kanban,
+    audience: "Remote Triage Nurse, Senior Triage Nurse, Triage Service Manager, UAT customer reviewers",
+    goal:
+      "Choose the correct nurse workspace style: Step cockpit for one active clinical encounter, or Board cockpit for queue supervision and shift-level visibility.",
+    framework: {
+      what:
+        "The platform now offers two nurse workspace modes: the guided Step cockpit at #/workspace and the Kanban-style Board cockpit at #/kanban.",
+      why:
+        "Different users need different operational views. The nurse conducting clinical triage needs a controlled one-call sequence, while shift leads and customers often need a board view of queue load, stage distribution, and safety-floor cases.",
+      how: [
+        "Use Step when actively triaging one caller, validating HRMS identity, moving through clinical stages, reviewing route rationale, and completing SBAR.",
+        "Use Board when supervising multiple incoming calls, checking which stage each case is in, reviewing severity mix, and deciding which case should be picked next.",
+        "Do not use Board movement to bypass deterministic safety floors, clinical stage completion, route review, or Remote Triage Nurse approval."
+      ]
+    },
+    steps: [
+      "Open Step from the header when a nurse is ready to work one case from intake through SBAR completion.",
+      "Open Board from the header when a shift lead or reviewer needs to see Incoming, Identity, Clinical triage, Disposition, and SBAR / follow-up columns.",
+      "Keep emergency and safety-floor cards visible and prioritized in either mode.",
+      "When a Board card is selected for clinical work, continue the actual clinical decision in the guided Step cockpit.",
+      "During UAT, capture which roles prefer Step by default and which roles prefer Board by default."
+    ],
+    safety:
+      "Step remains the safer default for Remote Triage Nurse clinical execution. Board is a queue-supervision option and must not replace clinical stage completion, safety-floor enforcement, or nurse approval."
+  },
+  {
+    title: "Named user and tenant queue guide",
+    eyebrow: "Oracle HRMS directory",
+    icon: Users,
+    audience: "Triage Service Manager, Remote Triage Nurse, Security Administrator, Integration Administrator",
+    goal:
+      "Operate the system in named-user mode so every queue action is tied to a clinician, organization, role, session, and signed transition trace.",
+    framework: {
+      what:
+        "The backend now supports organization-bound named users, HRMS directory sync, tenant-scoped queue visibility, lock release, and cross-tenant escalation handover.",
+      why:
+        "For internal employee tele-triage, anonymous or shared access is not sufficient. Nurses must see only the calls routed to their organization unless an approved escalation moves the case to another organization.",
+      how: [
+        "Oracle-style HRMS sync upserts active users and maps job context into role and organization membership.",
+        "Inactive, on-leave, or rest-period status revokes active sessions, releases queue locks, and blocks future login.",
+        "Queue list, claim, update, move, and handover operations use the authenticated user's organizationId and write signed transition evidence."
+      ]
+    },
+    steps: [
+      "Confirm the clinician signs in as a named user rather than a shared role.",
+      "Validate that the user's active role and organization are correct before queue work starts.",
+      "Use the queue cockpit to claim only cases routed to the user's organization.",
+      "When a PHCC case needs HMC escalation, use the handover action so the target organization changes with audit evidence.",
+      "Run HRMS sync after workforce-status changes so leave, rest-period, or inactive users lose access and active locks are returned to Incoming."
+    ],
+    safety:
+      "Only platform-level administration is globally exempt. Tenant isolation and the HRMS kill switch are operating controls; live Oracle connectivity still needs approved credentials, scopes, and residency governance."
+  },
+  {
     title: "Clinical governance review guide",
     eyebrow: "Safety and quality",
     icon: ShieldCheck,
@@ -441,6 +498,22 @@ const validationReviewItems: ValidationReviewItem[] = [
     evidence:
       "POST /api/v1/triage/complete returns clipboard text by default and JSON with notePayload/fitToFlyStatus when the caller asks for application/json.",
     nextStep: "Connect signed clinical note persistence and EMR/FHIR writeback only after retention and writeback policy approval."
+  },
+  {
+    area: "Nurse workspace modes",
+    verdict: "Correct",
+    evidence:
+      "Step and Board now share /api/v1/queue through QueueContext. Queue items can be claimed, locked, moved with sequence validation, prioritized by safety/SLA, and handed from Board into Step.",
+    nextStep:
+      "Run live PostgreSQL migration/UAT, connect Oracle HCM call intake, and capture production queue-transition audit evidence."
+  },
+  {
+    area: "Named user HRMS and tenant queue",
+    verdict: "Correct",
+    evidence:
+      "The backend has organization-bound sessions, POST /api/v1/hrms/sync-users, tenant-scoped /api/v1/queue visibility, HRMS session revocation, lock release, and cross-tenant escalation handover tests.",
+    nextStep:
+      "Replace the mock Oracle-style feed with approved Oracle Fusion HCM credentials, scheduler identity, database migrations, and production audit evidence."
   },
   {
     area: "Data ingestion",
@@ -691,6 +764,169 @@ const libraryAreas: LibraryArea[] = [
       "The encounter starts with staff or dependent context, then applies clinical content and deterministic rules without allowing AI to approve the final disposition.",
       "The current MVP keeps PHI ephemeral and returns the decision package to the frontend for clinician validation and clipboard handoff.",
       "Production tele-triage requires persistence, role-based access, call transcription, scheduling, EMR integration, and approved clinical SOPs."
+    ]
+  },
+  {
+    id: "nurse-workspace-modes",
+    title: "Nurse Cockpit Modes",
+    eyebrow: "Step cockpit and Kanban board",
+    icon: Kanban,
+    summary:
+      "Documents the two customer-selectable nurse workspace modes: the guided one-active-call Step cockpit and the Kanban-style Board cockpit for queue supervision.",
+    framework: {
+      what:
+        "Two frontend surfaces support the triage operation. #/workspace opens the guided Step cockpit; #/kanban opens the Kanban Board cockpit. Both are backed by the unified queue orchestration API.",
+      why:
+        "A single layout cannot serve every user equally. Remote Triage Nurses need a strict clinical sequence, while senior nurses, service managers, and customer reviewers may need queue visibility across many calls.",
+      how: [
+        "Route active clinical execution through Step so identity, symptoms, vitals, protocol, disposition, and SBAR stay ordered.",
+        "Use Board for operational awareness: incoming calls, HRMS identity state, clinical triage state, disposition review, and SBAR/follow-up load.",
+        "Keep Board actions constrained by the same deterministic safety floor, role permissions, lock ownership, route review, and nurse-approval rules as Step."
+      ]
+    },
+    usedBy: [
+      "#/workspace",
+      "#/kanban",
+      "frontend/src/components/Triage/NurseWorkspace.tsx",
+      "frontend/src/KanbanWorkspace.tsx",
+      "frontend/src/QueueContext.tsx",
+      "src/routes/queueRouter.ts",
+      "src/services/queueOrchestration.ts",
+      "frontend/src/App.tsx"
+    ],
+    details: [
+      "Step cockpit is the default clinical execution mode for one active call. It presents the nurse with staged progression from intake through SBAR completion.",
+      "Board cockpit is an alternate Kanban view with Incoming, Identity, Clinical triage, Disposition, and SBAR / follow-up columns.",
+      "Header buttons let the customer switch between Step and Board; the app also supports direct hash navigation through #/workspace and #/kanban.",
+      "QueueContext fetches /api/v1/queue and provides claim, release, move, context update, and heartbeat functions to both Step and Board.",
+      "Opening a Board case into Step claims the queue item, sets a five-minute lock, and loads the same encounter context into the progressive Step cockpit.",
+      "Moving a Board or Step item calls the queue sequence validator and writes a signed transition trace in the backend service path."
+    ],
+    helps: [
+      {
+        title: "Customer choice",
+        body:
+          "Customers can compare a guided clinical workflow against a board-style queue workflow without losing either option during UAT."
+      },
+      {
+        title: "Nurse focus",
+        body:
+          "Step keeps the active nurse focused on one caller and one next clinical action, reducing clutter and preventing parallel-case mistakes."
+      },
+      {
+        title: "Shift visibility",
+        body:
+          "Board helps senior nurses and service managers see case volume, stage distribution, severity mix, wait time, and safety-floor cases at a glance."
+      },
+      {
+        title: "Governed movement",
+        body:
+          "Board status movement supports operations, not clinical shortcutting. The queue service blocks bypass attempts, foreign locks, and clinical edits by intake-only roles."
+      }
+    ],
+    usefulFor: [
+      {
+        title: "Remote Triage Nurse",
+        body: "Use Step as the primary workspace when conducting a live clinical call."
+      },
+      {
+        title: "Senior Triage Nurse",
+        body:
+          "Use Board to supervise load, spot emergency cases, assign work, and then move selected cases into the Step cockpit for clinical execution."
+      },
+      {
+        title: "Triage Service Manager",
+        body:
+          "Use Board to understand staffing pressure, queue stage distribution, and where calls are waiting."
+      },
+      {
+        title: "Governance and UAT reviewers",
+        body:
+          "Use both views to verify that customer-preferred UI does not weaken safety floors, route review, or auditability."
+      }
+    ],
+    exampleFlow: [
+      "A nurse or reviewer signs in and sees the Step / Board switch in the header.",
+      "The Remote Triage Nurse opens Step to handle one selected caller through intake, identity, symptoms, vitals, protocol, disposition, and SBAR.",
+      "A Senior Triage Nurse opens Board to review all waiting and in-progress calls across the five operational columns.",
+      "Emergency and safety-floor cases remain visible and prioritized in both modes.",
+      "When a case needs clinical decisioning, the user opens it from Board into Step; the case is claimed and locked before editing.",
+      "Every successful movement receives a signed transition trace; live PostgreSQL deployment stores those records in QueueTransitionLog."
+    ]
+  },
+  {
+    id: "named-user-hrms-tenant-queue",
+    title: "Named User HRMS and Tenant Queue",
+    eyebrow: "Organization-bound access",
+    icon: Users,
+    summary:
+      "Defines how Oracle-style HRMS directory records become named clinical users, how queue cards are scoped to PHCC/HMC/Sidra-style organizations, and how cross-tenant handover is audited.",
+    framework: {
+      what:
+        "A multi-tenant identity and queue control layer built on the existing ApplicationUser, UserSession, queue, and audit models rather than a duplicate user table.",
+      why:
+        "The system is for internal employee tele-triage across healthcare organizations. A nurse should not see or claim another organization's queue unless an approved escalation changes the target organization.",
+      how: [
+        "POST /api/v1/hrms/sync-users accepts an Oracle-style worker feed and maps employee status, job title, and organization code into local named users.",
+        "The HRMS kill switch disables inactive/on-leave/rest-period users, revokes their sessions, and releases their active queue locks.",
+        "Queue orchestration checks tenant access before list, get, claim, heartbeat, context update, move, and escalation handover operations."
+      ]
+    },
+    usedBy: [
+      "POST /api/v1/hrms/sync-users",
+      "GET /api/v1/queue",
+      "POST /api/v1/queue/:id/claim",
+      "POST /api/v1/queue/:id/escalate",
+      "src/services/hrmsSync.ts",
+      "src/services/securityAdmin.ts",
+      "src/services/queueOrchestration.ts",
+      "tests/multiTenantRBAC.test.ts"
+    ],
+    details: [
+      "Organization records are represented for IST Tech, HMC, PHCC, and Sidra-style routing, with ApplicationUser sessions carrying organizationId and organizationCode.",
+      "Queue cards carry source and target organization IDs. The target organization controls who can see and claim the active card.",
+      "Platform super administrators and system administrators are the only global queue exemptions in the current implementation.",
+      "The escalation handover endpoint re-scopes a queue card to the target organization, clears the active lock, returns it to Incoming, and writes a signed transition event.",
+      "The current HRMS endpoint can be called by Triage Service Manager, platform/system administrator, or a configured scheduler secret. Production should replace the mock feed with Oracle Fusion HCM and mTLS/client-credential controls."
+    ],
+    helps: [
+      {
+        title: "Least privilege",
+        body:
+          "Clinicians see the organization queue they are assigned to. This prevents a PHCC user from casually browsing HMC or Sidra queue cards."
+      },
+      {
+        title: "Immediate workforce control",
+        body:
+          "When Oracle HRMS marks a user inactive, on leave, or in rest period, their sessions are revoked and active queue locks are released."
+      },
+      {
+        title: "Audited escalation",
+        body:
+          "A cross-tenant escalation does not silently move data. It changes targetOrganizationId and records actor, actor organization, target organization, event type, and HMAC signature."
+      }
+    ],
+    usefulFor: [
+      {
+        title: "Triage Service Manager",
+        body: "Run HRMS sync and confirm staffing status changes are reflected in access and queue locks."
+      },
+      {
+        title: "Remote Triage Nurse",
+        body: "Work one organization-scoped queue and escalate a case only through the governed handover path."
+      },
+      {
+        title: "Security Administrator",
+        body: "Review organization membership, session revocation, and signed transition evidence before production."
+      }
+    ],
+    exampleFlow: [
+      "Oracle Fusion HCM reports a PHCC nurse as active.",
+      "POST /api/v1/hrms/sync-users upserts the named user with PHCC organization membership and remote triage role.",
+      "The nurse signs in and sees only PHCC-target queue cards.",
+      "The nurse claims a PHCC card; the queue item is locked to that user.",
+      "If HRMS later reports On-Leave, the session is revoked, the lock is released, and login returns Forbidden.",
+      "If a PHCC card needs HMC escalation, the nurse executes handover and the card becomes visible in the HMC queue with signed audit."
     ]
   },
   {
@@ -2047,6 +2283,18 @@ const plannedApiRows: ApiCatalogRow[] = [
     status: "Built"
   },
   {
+    area: "HRMS named-user sync",
+    api: "POST /api/v1/hrms/sync-users\nOracle Fusion HCM worker feed\nHRMS_SYNC_CRON_SECRET for scheduler mode",
+    use: "Upsert named users, bind organization membership, map job roles, revoke sessions, and release active queue locks when HRMS marks a user inactive, on leave, or in rest period.",
+    status: "Built with mock Oracle-style feed"
+  },
+  {
+    area: "Tenant queue orchestration",
+    api: "GET /api/v1/queue\nPOST /api/v1/queue/:id/claim\nPOST /api/v1/queue/:id/escalate",
+    use: "Restrict queue visibility and claiming to the authenticated user's organization, while allowing audited escalation handover to another target organization.",
+    status: "Built"
+  },
+  {
     area: "CCP employee communication",
     api: "GET /api/v1/ccp/employee/{istStaffId}",
     use: "Return the one-employee Continuous Communication Pipeline summary: consent, channels, goals, nurse approval gate, communication timeline, controller rules, and audit posture.",
@@ -2726,6 +2974,14 @@ function HelpManualPanel({
           <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("data-ingestion")}>
             <Database className="h-4 w-4" />
             Data ingestion library
+          </button>
+          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("nurse-workspace-modes")}>
+            <Kanban className="h-4 w-4" />
+            Workspace modes
+          </button>
+          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("named-user-hrms-tenant-queue")}>
+            <Users className="h-4 w-4" />
+            HRMS tenant controls
           </button>
           <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("llm-copilot-cloud")}>
             <BrainCircuit className="h-4 w-4" />

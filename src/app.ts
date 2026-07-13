@@ -2,10 +2,13 @@ import cors, { type CorsOptions } from "cors";
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
+import { existsSync } from "node:fs";
+import path from "node:path";
 import {
   assertRuntimeConfiguration,
   getAllowedCorsOrigins,
   isMockMode,
+  publicRuntimeEnvironment,
   runtimeModeSummary
 } from "./config/runtime.js";
 import { requireAuthenticatedSession } from "./middleware/auth.js";
@@ -16,11 +19,16 @@ import { createApprovalRouter } from "./routes/approvalRouter.js";
 import { createAuthRouter } from "./routes/auth.js";
 import { createCcpRouter } from "./routes/ccp.js";
 import { createEmrRouter } from "./routes/emr.js";
+import { createHrmsRouter } from "./routes/hrms.js";
 import { createProtocolsRouter } from "./routes/protocols.js";
+import { createQueueRouter } from "./routes/queueRouter.js";
 import { createSimulationRouter } from "./routes/simulation.js";
 import { createStaffRouter } from "./routes/staff.js";
 import { createTriageRouter } from "./routes/triage.js";
 import { getCurrentClinicalContentPackage } from "./services/clinicalContent.js";
+
+const staticRoot = path.resolve(process.cwd(), "dist-web");
+const staticIndex = path.join(staticRoot, "index.html");
 
 export function createApp() {
   assertRuntimeConfiguration();
@@ -84,16 +92,29 @@ export function createApp() {
     });
   });
 
+  app.get("/api/v1/runtime/environment", (_req, res) => {
+    res.json(publicRuntimeEnvironment());
+  });
+
   app.use("/api/v1/auth", createAuthRouter());
+  app.use("/api/v1/hrms", createHrmsRouter());
   app.use("/api/v1/admin", requireAuthenticatedSession, createAdminRouter());
   app.use("/api/v1/approval", requireAuthenticatedSession, createApprovalRouter());
   app.use("/api/v1/ccp", requireAuthenticatedSession, createCcpRouter());
   app.use("/api/v1/staff/validate", staffValidateRateLimit);
   app.use("/api/v1/staff", requireAuthenticatedSession, createStaffRouter());
   app.use("/api/v1/protocols", requireAuthenticatedSession, createProtocolsRouter());
+  app.use("/api/v1/queue", requireAuthenticatedSession, createQueueRouter());
   app.use("/api/v1/simulation", requireAuthenticatedSession, createSimulationRouter());
   app.use("/api/v1/triage", requireAuthenticatedSession, createTriageRouter());
   app.use("/api/v1/emr", requireAuthenticatedSession, createEmrRouter());
+
+  if (existsSync(staticIndex)) {
+    app.use(express.static(staticRoot));
+    app.get(/^\/(?!api\/).*/, (_req, res) => {
+      res.sendFile(staticIndex);
+    });
+  }
 
   app.use((_req, res) => {
     res.status(404).json({ error: "Route not found" });

@@ -1,4 +1,4 @@
-import { assertRuntimeConfiguration, getAdminPassword } from "../src/config/runtime.js";
+import { assertRuntimeConfiguration, getAdminPassword, publicRuntimeEnvironment } from "../src/config/runtime.js";
 
 const REQUIRED_LIVE_ENV = {
   DATABASE_URL: "postgresql://triage_user:triage_password@localhost:5432/ist_triage?schema=public",
@@ -49,5 +49,41 @@ describe("runtime credential guardrails", () => {
     };
 
     expect(() => assertRuntimeConfiguration()).toThrow(/mock local fallback/);
+  });
+
+  it("marks mock-mode environments as synthetic simulation by default", () => {
+    process.env = {
+      ...originalEnv,
+      MOCK_MODE: "true"
+    };
+    delete process.env.APP_ENVIRONMENT;
+
+    expect(publicRuntimeEnvironment()).toMatchObject({
+      environment: "simulation",
+      dataProfile: "synthetic",
+      banner: {
+        visible: true,
+        label: "SIMULATION",
+        tone: "simulation"
+      }
+    });
+  });
+
+  it("allows a separate demo runtime label for customer walkthroughs", () => {
+    process.env = {
+      ...originalEnv,
+      APP_ENVIRONMENT: "demo",
+      APP_DATA_PROFILE: "curated-demo"
+    };
+
+    expect(publicRuntimeEnvironment()).toMatchObject({
+      environment: "demo",
+      dataProfile: "curated-demo",
+      banner: {
+        visible: true,
+        label: "DEMO",
+        tone: "demo"
+      }
+    });
   });
 });

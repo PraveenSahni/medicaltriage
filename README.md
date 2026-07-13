@@ -91,6 +91,63 @@ pnpm typecheck:web
 pnpm build:web
 ```
 
+## Cloud Demo and Simulation Environments
+
+The same application build can run as two clearly labelled Cloud Run services:
+
+- `ist-triage-simulation`: synthetic employee, dependent, encounter, and AI-evaluation data only. The UI displays a `SIMULATION` banner at the top of the login page and authenticated shell.
+- `ist-triage-demo`: curated customer walkthrough data and dry-run integrations. The UI displays a `DEMO` banner so users do not confuse it with live clinical operations.
+
+Set the banner from runtime environment variables rather than hardcoding it in the frontend:
+
+```env
+APP_ENVIRONMENT=simulation
+APP_DATA_PROFILE=synthetic
+APP_ENVIRONMENT_BANNER_VISIBLE=true
+APP_ENVIRONMENT_LABEL="SIMULATION"
+APP_ENVIRONMENT_DESCRIPTION="Synthetic records only. No PHI. Use for workflow rehearsal, AI evaluation, and governed model testing."
+```
+
+For the customer demo service, change `APP_ENVIRONMENT=demo`, `APP_DATA_PROFILE=curated-demo`, and use a `DEMO` label. The public endpoint `/api/v1/runtime/environment` exposes only this non-secret display metadata.
+
+Build the container in GCP Artifact Registry:
+
+```bash
+PROJECT_ID=aimltriage
+REGION=me-central1
+IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/ist-triage-repo/ist-triage:latest"
+
+gcloud builds submit --tag "$IMAGE" --project="$PROJECT_ID"
+```
+
+Deploy the synthetic simulation service:
+
+```bash
+gcloud run deploy ist-triage-simulation \
+  --image "$IMAGE" \
+  --region "$REGION" \
+  --project "$PROJECT_ID" \
+  --service-account "ist-triage-cloudrun-sa@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --add-cloudsql-instances "${PROJECT_ID}:${REGION}:ist-triage-postgres-uat" \
+  --set-secrets "DATABASE_URL=DATABASE_URL:latest,AUTH_JWT_SECRET=AUTH_JWT_SECRET:latest,AUDIT_HMAC_SECRET=AUDIT_HMAC_SECRET:latest" \
+  --set-env-vars "MOCK_MODE=true,APP_ENVIRONMENT=simulation,APP_DATA_PROFILE=synthetic,APP_ENVIRONMENT_LABEL=SIMULATION,APP_ENVIRONMENT_BANNER_VISIBLE=true,CCP_TRANSPORT_MODE=dry-run,FHIR_WRITEBACK_MODE=dry-run" \
+  --allow-unauthenticated
+```
+
+Deploy the curated customer demo service:
+
+```bash
+gcloud run deploy ist-triage-demo \
+  --image "$IMAGE" \
+  --region "$REGION" \
+  --project "$PROJECT_ID" \
+  --service-account "ist-triage-cloudrun-sa@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --add-cloudsql-instances "${PROJECT_ID}:${REGION}:ist-triage-postgres-uat" \
+  --set-secrets "DATABASE_URL=DATABASE_URL:latest,AUTH_JWT_SECRET=AUTH_JWT_SECRET:latest,AUDIT_HMAC_SECRET=AUDIT_HMAC_SECRET:latest" \
+  --set-env-vars "MOCK_MODE=true,APP_ENVIRONMENT=demo,APP_DATA_PROFILE=curated-demo,APP_ENVIRONMENT_LABEL=DEMO,APP_ENVIRONMENT_BANNER_VISIBLE=true,CCP_TRANSPORT_MODE=dry-run,FHIR_WRITEBACK_MODE=dry-run" \
+  --allow-unauthenticated
+```
+
 Dry-run the Phase 1 clinical content package:
 
 ```bash

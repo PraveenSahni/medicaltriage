@@ -98,6 +98,85 @@ button {
   padding: 18px 22px 28px;
 }
 
+.environment-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 34px;
+  margin: 0 0 10px;
+  padding: 7px 12px;
+  border: 1px solid var(--bd);
+  border-radius: 999px;
+  background: var(--bg2);
+  color: var(--tx2);
+  text-align: center;
+  box-shadow: none;
+}
+
+.environment-banner strong {
+  color: var(--tx);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.environment-banner span {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.environment-banner-simulation {
+  border-color: #f6c453;
+  background: #fff8e1;
+  color: #6f4d00;
+}
+
+.environment-banner-simulation strong {
+  color: #8a5a00;
+}
+
+.environment-banner-demo {
+  border-color: var(--t1bd);
+  background: var(--t1bg);
+  color: var(--v0);
+}
+
+.environment-banner-demo strong {
+  color: var(--v0);
+}
+
+.environment-banner-uat {
+  border-color: #b9a7ff;
+  background: #f2efff;
+  color: #4b3a91;
+}
+
+.environment-banner-uat strong {
+  color: #3f2f84;
+}
+
+.dark .environment-banner-simulation {
+  border-color: #c6922d;
+  background: #2a210f;
+  color: #ffd983;
+}
+
+.dark .environment-banner-simulation strong {
+  color: #ffd983;
+}
+
+.dark .environment-banner-uat {
+  border-color: #7f6bd8;
+  background: #201a3a;
+  color: #cfc5ff;
+}
+
+.dark .environment-banner-uat strong {
+  color: #d8d0ff;
+}
+
 .topbar {
   display: flex;
   align-items: center;
@@ -3798,6 +3877,14 @@ button:disabled {
 @media (max-width: 720px) {
   .app-frame {
     padding: 14px 12px 24px;
+  }
+
+  .environment-banner {
+    align-items: flex-start;
+    border-radius: 14px;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
   }
 
   .topbar {

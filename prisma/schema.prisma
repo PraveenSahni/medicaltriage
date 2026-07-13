@@ -73,6 +73,30 @@ enum ProtocolMode {
   BOTH
 }
 
+enum QueueStatus {
+  INCOMING
+  IN_PROCESS
+  INFO_REQUIRED
+  COMPLETED
+}
+
+enum QueueClinicalStage {
+  INTAKE
+  IDENTITY
+  VITALS
+  PROTOCOL
+  DISPOSITION
+  SBAR
+}
+
+enum DirectoryStatus {
+  ACTIVE
+  DISABLED
+  ON_LEAVE
+  REST_PERIOD
+  INACTIVE
+}
+
 enum ClinicalContentSourceType {
   SYNTHETIC_SAMPLE
   LICENSED_STCC
@@ -128,6 +152,7 @@ model Algorithm {
   synonyms             ProtocolSynonym[]
   dispositionMaps      ProtocolDispositionMap[]
   encounters           AviationTriageEncounter[]
+  matchedQueueItems    TriageQueueItem[]
   createdAt            DateTime           @default(now()) @map("created_at")
   updatedAt            DateTime           @updatedAt @map("updated_at")
 
@@ -315,6 +340,7 @@ model StaffMember {
   dateOfBirth                DateTime?                  @map("date_of_birth")
   dependents                 Dependent[]
   encounters                 AviationTriageEncounter[]
+  queueItems                 TriageQueueItem[]
   createdAt                  DateTime                   @default(now()) @map("created_at")
   updatedAt                  DateTime                   @updatedAt @map("updated_at")
 
@@ -332,6 +358,7 @@ model Dependent {
   dateOfBirth      DateTime?               @map("date_of_birth")
   biologicalSex   BiologicalSex           @map("biological_sex")
   encounters      AviationTriageEncounter[]
+  queueItems       TriageQueueItem[]
   createdAt       DateTime                @default(now()) @map("created_at")
   updatedAt       DateTime                @updatedAt @map("updated_at")
 
@@ -382,6 +409,102 @@ model SafetyAuditDeviationLog {
   @@map("safety_audit_deviation_logs")
 }
 
+model Organization {
+  id                  String               @id @default(cuid())
+  name                String
+  code                String               @unique
+  mophLicenseNumber   String?              @map("moph_license_number")
+  country             String               @default("QA")
+  dataResidencyRegion String               @default("gcp-me-central1") @map("data_residency_region")
+  users               ApplicationUser[]
+  sourceQueueItems    TriageQueueItem[]    @relation("QueueSourceOrganization")
+  targetQueueItems    TriageQueueItem[]    @relation("QueueTargetOrganization")
+  actorTransitions    QueueTransitionLog[] @relation("QueueTransitionActorOrganization")
+  targetTransitions   QueueTransitionLog[] @relation("QueueTransitionTargetOrganization")
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+
+  @@map("organizations")
+}
+
+model TriageQueueItem {
+  id                  String               @id @default(cuid())
+  istStaffId          String               @map("ist_staff_id")
+  staffMemberId       String?              @map("staff_member_id")
+  staffMember         StaffMember?         @relation(fields: [staffMemberId], references: [id], onDelete: SetNull)
+  dependentId         String?              @map("dependent_id")
+  dependent           Dependent?           @relation(fields: [dependentId], references: [id], onDelete: SetNull)
+  organizationId      String?              @map("organization_id")
+  organization        Organization?        @relation("QueueSourceOrganization", fields: [organizationId], references: [id], onDelete: SetNull)
+  targetOrganizationId String?             @map("target_organization_id")
+  targetOrganization  Organization?        @relation("QueueTargetOrganization", fields: [targetOrganizationId], references: [id], onDelete: SetNull)
+  status              QueueStatus          @default(INCOMING)
+  currentStage        QueueClinicalStage   @default(INTAKE) @map("current_stage")
+  priorityScore       Int                  @default(0) @map("priority_score")
+  patientType         String               @default("Staff") @map("patient_type")
+  channel             String               @default("Phone")
+  stationCode         String?              @map("station_code")
+  outstationCode      String?              @map("outstation_code")
+  department          String?
+  jobTitle            String?              @map("job_title")
+  summary             String?              @db.Text
+  vitals              Json?
+  matchedProtocolId   String?              @map("matched_protocol_id")
+  matchedProtocol     Algorithm?           @relation(fields: [matchedProtocolId], references: [id], onDelete: SetNull)
+  calculatedSeverity  TriageSeverity?      @map("calculated_severity")
+  dispositionCode     AcuityDispositionCode? @map("disposition_code")
+  destinationName     String?              @map("destination_name")
+  identityValidated   Boolean              @default(false) @map("identity_validated")
+  safetyFloorActive   Boolean              @default(false) @map("safety_floor_active")
+  clinicalApproval    Json?                @map("clinical_approval")
+  sbarCopied          Boolean              @default(false) @map("sbar_copied")
+  assignedNurseId     String?              @map("assigned_nurse_id")
+  claimedAt           DateTime?            @map("claimed_at")
+  slaDeadline         DateTime             @map("sla_deadline")
+  lockedBy            String?              @map("locked_by")
+  lockExpiresAt       DateTime?            @map("lock_expires_at")
+  customAviationTags  Json?                @map("custom_aviation_tags")
+  queuePayload        Json?                @map("queue_payload")
+  transitionLogs      QueueTransitionLog[]
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+
+  @@index([status, currentStage])
+  @@index([priorityScore, slaDeadline])
+  @@index([assignedNurseId, status])
+  @@index([lockedBy, lockExpiresAt])
+  @@index([organizationId, status])
+  @@index([targetOrganizationId, status])
+  @@index([istStaffId, createdAt])
+  @@map("triage_queue_items")
+}
+
+model QueueTransitionLog {
+  id             String             @id @default(cuid())
+  queueItemId    String             @map("queue_item_id")
+  queueItem      TriageQueueItem    @relation(fields: [queueItemId], references: [id], onDelete: Cascade)
+  actorId        String             @map("actor_id")
+  actorOrganizationId String?       @map("actor_organization_id")
+  actorOrganization Organization?   @relation("QueueTransitionActorOrganization", fields: [actorOrganizationId], references: [id], onDelete: SetNull)
+  actorRole      String             @map("actor_role")
+  targetOrganizationId String?      @map("target_organization_id")
+  targetOrganization Organization?  @relation("QueueTransitionTargetOrganization", fields: [targetOrganizationId], references: [id], onDelete: SetNull)
+  eventType      String             @default("QUEUE_TRANSITION") @map("event_type")
+  fromStatus     QueueStatus        @map("from_status")
+  toStatus       QueueStatus        @map("to_status")
+  fromStage      QueueClinicalStage @map("from_stage")
+  toStage        QueueClinicalStage @map("to_stage")
+  reason         String?            @db.Text
+  auditSignature String             @map("audit_signature")
+  tracePayload   Json               @map("trace_payload")
+  timestamp      DateTime           @default(now())
+
+  @@index([queueItemId, timestamp])
+  @@index([actorId, timestamp])
+  @@index([actorOrganizationId, timestamp])
+  @@map("queue_transition_logs")
+}
+
 model ApplicationUser {
   id                    String   @id @default(cuid())
   employeeId            String?  @unique @map("employee_id")
@@ -392,6 +515,8 @@ model ApplicationUser {
   mobileCiphertext      String?  @map("mobile_ciphertext")
   mobileBlindIndex      String?  @map("mobile_blind_index")
   organization          String   @default("IST Tech")
+  organizationId        String?  @map("organization_id")
+  organizationRef       Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
   facility              String?
   department            String?
   clinicalSpecialty     String?  @map("clinical_specialty")
@@ -407,12 +532,16 @@ model ApplicationUser {
   authenticationMethod  String   @default("local") @map("authentication_method")
   mfaStatus             String   @default("pending") @map("mfa_status")
   accountStatus         String   @default("active") @map("account_status")
+  directoryStatus       DirectoryStatus @default(ACTIVE) @map("directory_status")
+  passwordHash          String?  @map("password_hash")
   createdBy             String?  @map("created_by")
   updatedBy             String?  @map("updated_by")
   createdAt             DateTime @default(now()) @map("created_at")
   updatedAt             DateTime @updatedAt @map("updated_at")
 
   @@index([organization, facility, department])
+  @@index([organizationId, accountStatus])
+  @@index([directoryStatus])
   @@index([accountStatus])
   @@map("application_users")
 }
