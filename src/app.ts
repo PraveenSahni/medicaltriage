@@ -2,7 +2,7 @@ import cors, { type CorsOptions } from "cors";
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import {
   assertRuntimeConfiguration,
@@ -30,9 +30,24 @@ import { getCurrentClinicalContentPackage } from "./services/clinicalContent.js"
 const staticRoot = path.resolve(process.cwd(), "dist-web");
 const staticIndex = path.join(staticRoot, "index.html");
 
+function loadSpaIndexHtml() {
+  if (!existsSync(staticIndex)) {
+    return null;
+  }
+
+  return readFileSync(staticIndex, "utf8")
+    .replace(/<script\b[^>]*\bsrc="([^"]+)"[^>]*><\/script>/g, (tag, src: string) =>
+      tag.includes('type="module"') ? `<script defer src="${src}"></script>` : tag
+    )
+    .replace(/<link\b[^>]*\bhref="([^"]+)"[^>]*>/g, (tag, href: string) =>
+      tag.includes('rel="stylesheet"') ? `<link rel="stylesheet" href="${href}">` : tag
+    );
+}
+
 export function createApp() {
   assertRuntimeConfiguration();
   const app = express();
+  const spaIndexHtml = loadSpaIndexHtml();
   const allowedOrigins = getAllowedCorsOrigins();
   const corsOptions: CorsOptions = {
     credentials: true,
@@ -123,10 +138,10 @@ export function createApp() {
   app.use("/api/v1/triage", requireAuthenticatedSession, createTriageRouter());
   app.use("/api/v1/emr", requireAuthenticatedSession, createEmrRouter());
 
-  if (existsSync(staticIndex)) {
-    app.use(express.static(staticRoot));
+  if (spaIndexHtml) {
+    app.use(express.static(staticRoot, { index: false }));
     app.get(/^\/(?!api\/).*/, (_req, res) => {
-      res.sendFile(staticIndex);
+      res.type("html").send(spaIndexHtml);
     });
   }
 
