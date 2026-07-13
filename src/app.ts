@@ -55,7 +55,21 @@ export function createApp() {
     maxRequests: 30
   });
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          "connect-src": ["'self'"],
+          "img-src": ["'self'", "data:"],
+          "script-src": ["'self'"],
+          "script-src-elem": ["'self'"],
+          "style-src": ["'self'", "'unsafe-inline'"],
+          "upgrade-insecure-requests": null
+        }
+      }
+    })
+  );
   app.use(cors(corsOptions));
   app.use(corsRejectionHandler);
   app.use(express.json({ limit: "1mb" }));
