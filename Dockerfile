@@ -1,6 +1,9 @@
 FROM node:20-bookworm-slim AS dependencies
 
 WORKDIR /app
+RUN apt-get update -y \
+  && apt-get install -y --no-install-recommends openssl ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
 RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -22,6 +25,9 @@ ENV NODE_ENV=production
 ENV PORT=8080
 
 WORKDIR /app
+RUN apt-get update -y \
+  && apt-get install -y --no-install-recommends openssl ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/node_modules ./node_modules
