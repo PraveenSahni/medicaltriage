@@ -1,5 +1,5 @@
-import cors, { type CorsOptions } from "cors";
-import express from "express";
+import cors, { type CorsOptions, type CorsOptionsDelegate } from "cors";
+import express, { type Request } from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import { existsSync, readFileSync } from "node:fs";
@@ -44,25 +44,55 @@ function loadSpaIndexHtml() {
     );
 }
 
+function requestOrigin(req: Request): string | undefined {
+  const host = req.get("x-forwarded-host") ?? req.get("host");
+  if (!host) {
+    return undefined;
+  }
+
+  const forwardedProtocol = req.get("x-forwarded-proto")?.split(",")[0]?.trim();
+  const protocol = forwardedProtocol || (req.secure ? "https" : req.protocol);
+  return `${protocol}://${host}`;
+}
+
+function isAllowedOriginForRequest(origin: string | undefined, req: Request, allowedOrigins: string[]) {
+  if (!origin) {
+    return true;
+  }
+
+  if (allowedOrigins.includes(origin)) {
+    return true;
+  }
+
+  return origin === requestOrigin(req);
+}
+
+function corsForbiddenError() {
+  const error = new Error("Origin not allowed by security policies") as Error & {
+    status?: number;
+    code?: string;
+  };
+  error.status = 403;
+  error.code = "CORS_ORIGIN_FORBIDDEN";
+  return error;
+}
+
 export function createApp() {
   assertRuntimeConfiguration();
   const app = express();
   const spaIndexHtml = loadSpaIndexHtml();
   const allowedOrigins = getAllowedCorsOrigins();
-  const corsOptions: CorsOptions = {
-    credentials: true,
-    origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      const error = new Error("Origin not allowed by security policies") as Error & {
-        status?: number;
-        code?: string;
-      };
-      error.status = 403;
-      error.code = "CORS_ORIGIN_FORBIDDEN";
-      return callback(error);
+  const corsOptions: CorsOptionsDelegate<Request> = (req, callback) => {
+    const origin = req.get("origin");
+    if (!isAllowedOriginForRequest(origin, req, allowedOrigins)) {
+      return callback(corsForbiddenError());
     }
+
+    const options: CorsOptions = {
+      credentials: true,
+      origin: origin || false
+    };
+    return callback(null, options);
   };
   const staffValidateRateLimit = rateLimit({
     name: "staff-validate",

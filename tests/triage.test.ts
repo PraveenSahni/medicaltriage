@@ -31,6 +31,19 @@ async function authenticatedAgent() {
 
 describe("IST Qatar Phase I API", () => {
   describe("CORS origin policy", () => {
+    it("allows same-origin Cloud Run browser requests that are not in the localhost allow-list", async () => {
+      const origin = "https://ist-triage-simulation-747398852986.me-central1.run.app";
+
+      const response = await request(app)
+        .get("/healthz")
+        .set("Origin", origin)
+        .set("Host", "ist-triage-simulation-747398852986.me-central1.run.app")
+        .set("X-Forwarded-Proto", "https")
+        .expect(200);
+
+      expect(response.headers["access-control-allow-origin"]).toBe(origin);
+    });
+
     it("returns a clean 403 payload for rejected browser origins", async () => {
       const response = await request(app)
         .get("/healthz")
