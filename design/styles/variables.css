@@ -1,0 +1,387 @@
+/**
+ * IST Health — Design Tokens (Swiss + IST Brand)
+ * IRIS STAR Technologies L.L.C · Doha, Qatar
+ * Brand ref: irisstar.tech · Typography ref: Swiss / International Style
+ * Bilingual: English (LTR) / Arabic (RTL)
+ */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* ── Brand ─────────────────────────────────────────────── */
+  --brand-name: "IRIS STAR Technologies L.L.C";
+  --brand-product: "IST Health";
+  --brand-location: "Doha, Qatar";
+  --brand-tagline-en: "Hospital Information System";
+  --brand-tagline-ar: "نظام المعلومات الصحية";
+
+  /* ── Core palette — light (irisstar.tech + Swiss clarity) */
+  --color-navy: #0a1f44;
+  --color-navy-dark: #071428;
+  --color-navy-light: #1a3056;
+  --color-navy-muted: #3d4f6a;
+
+  --color-gold: #c9a66b;
+  --color-gold-light: #d4b87a;
+  --color-gold-muted: #f0e6d4;
+
+  --color-white: #ffffff;
+  --color-off-white: #fafbfc;
+  --color-gray-50: #f7f8fa;
+  --color-gray-100: #eef0f3;
+  --color-gray-200: #d8dce2;
+  --color-gray-300: #b8bec8;
+  --color-gray-400: #7a8494;
+  --color-gray-500: #4a5568;
+
+  /* Semantic aliases */
+  --color-primary: var(--color-navy);
+  --color-primary-hover: var(--color-navy-dark);
+  --color-primary-bg: var(--color-gray-50);
+  --color-primary-border: var(--color-gray-200);
+  --color-primary-text: var(--color-navy);
+
+  --color-accent: var(--color-gold);
+  --color-accent-bg: var(--color-gold-muted);
+  --color-accent-text: var(--color-gold);
+
+  --color-info: var(--color-navy-light);
+  --color-info-bg: var(--color-gray-50);
+  --color-info-border: var(--color-gray-200);
+
+  --color-success: #1f6b4a;
+  --color-success-bg: #edf7f1;
+  --color-success-border: #8fd4a8;
+
+  --color-warning: #8a5a00;
+  --color-warning-bg: #fef8e6;
+  --color-warning-border: #e8c96a;
+
+  --color-danger: #8b1e2f;
+  --color-danger-bg: #fdf2f4;
+  --color-danger-border: #f0b8c0;
+
+  /* ── Surfaces ──────────────────────────────────────────── */
+  --color-bg: var(--color-white);
+  --color-bg-subtle: var(--color-gray-50);
+  --color-bg-muted: var(--color-gray-100);
+  --color-bg-canvas: var(--color-white);
+  --color-bg-toolbar: var(--color-white);
+  --color-bg-sidebar: var(--color-white);
+  --color-bg-watermark: rgba(10, 31, 68, 0.02);
+  --color-bg-logo: var(--color-navy-dark);
+
+  /* ── Text ──────────────────────────────────────────────── */
+  --color-text: var(--color-navy);
+  --color-text-secondary: var(--color-gray-500);
+  --color-text-muted: var(--color-gray-400);
+  --color-text-inverse: var(--color-white);
+  --color-text-on-primary: var(--color-white);
+  --color-text-accent: var(--color-gold);
+  --color-heading: var(--color-navy);
+
+  /* ── Borders & dividers (hairline-first) ───────────────── */
+  --color-border: var(--color-gray-200);
+  --color-border-strong: var(--color-gray-300);
+  --color-border-focus: var(--color-navy);
+  --color-divider: var(--color-gray-200);
+  --hairline-width: 1px;
+
+  /* ── Buttons (theme-aware) ───────────────────────────── */
+  --btn-primary-bg: var(--color-navy);
+  --btn-primary-bg-hover: var(--color-navy-dark);
+  --btn-primary-text: var(--color-white);
+  --btn-inverse-bg: var(--color-white);
+  --btn-inverse-text: var(--color-navy-dark);
+
+  /* ── Theme toggle ──────────────────────────────────────── */
+  --theme-toggle-track: var(--color-gray-100);
+  --theme-toggle-track-border: var(--color-gray-200);
+  --theme-toggle-thumb: var(--color-white);
+  --theme-toggle-icon: var(--color-navy-muted);
+  --theme-toggle-icon-active: var(--color-gold);
+
+  /* ── Shadows (none by default — Swiss clarity) ─────────── */
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-focus: 0 0 0 2px var(--color-white), 0 0 0 3px var(--color-navy);
+
+  /* ── Login card (Google-inspired exception) ────────────── */
+  --login-card-radius: 16px;
+  --login-card-shadow: 0 4px 24px rgba(10, 31, 68, 0.08), 0 1px 3px rgba(10, 31, 68, 0.06);
+  --login-page-bg: linear-gradient(160deg, #eef2f8 0%, #f7f9fc 45%, #ffffff 100%);
+  --login-card-bg: var(--color-white);
+  --login-input-bg: var(--color-white);
+  --login-link-color: var(--color-navy-light);
+
+  --logo-filter: none;
+}
+
+/* ── Dark theme (irisstar.tech) ──────────────────────────── */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-navy: #ffffff;
+  --color-navy-dark: #131d2e;
+  --color-navy-light: #e8ecf2;
+  --color-navy-muted: #a8b0bc;
+
+  --color-gold: #c9a66b;
+  --color-gold-light: #d4b87a;
+  --color-gold-muted: rgba(201, 166, 107, 0.12);
+
+  --color-gray-50: #0a0f18;
+  --color-gray-100: #111827;
+  --color-gray-200: #1e2836;
+  --color-gray-300: #2a3544;
+  --color-gray-400: #6e7888;
+  --color-gray-500: #a8b0bc;
+
+  --color-primary: var(--color-white);
+  --color-primary-hover: #e8ecf2;
+  --color-primary-bg: #111827;
+  --color-primary-border: #1e2836;
+  --color-primary-text: var(--color-white);
+
+  --color-accent: var(--color-gold);
+  --color-accent-bg: var(--color-gold-muted);
+  --color-accent-text: var(--color-gold);
+
+  --color-info-bg: #111827;
+  --color-info-border: #1e2836;
+
+  --color-success-bg: rgba(31, 107, 74, 0.15);
+  --color-success-border: rgba(143, 212, 168, 0.3);
+  --color-warning-bg: rgba(138, 90, 0, 0.15);
+  --color-warning-border: rgba(232, 201, 106, 0.3);
+  --color-danger-bg: rgba(139, 30, 47, 0.15);
+  --color-danger-border: rgba(240, 184, 192, 0.3);
+
+  --color-bg: #050a14;
+  --color-bg-subtle: #0a0f18;
+  --color-bg-muted: #111827;
+  --color-bg-canvas: #050a14;
+  --color-bg-toolbar: #050a14;
+  --color-bg-sidebar: #050a14;
+  --color-bg-watermark: rgba(255, 255, 255, 0.02);
+  --color-bg-logo: #131d2e;
+
+  --color-text: #ffffff;
+  --color-text-secondary: #a8b0bc;
+  --color-text-muted: #6e7888;
+  --color-text-inverse: #050a14;
+  --color-text-on-primary: #050a14;
+  --color-text-accent: var(--color-gold);
+  --color-heading: #ffffff;
+
+  --color-border: #1e2836;
+  --color-border-strong: #2a3544;
+  --color-border-focus: var(--color-gold);
+  --color-divider: #1e2836;
+
+  --btn-primary-bg: var(--color-white);
+  --btn-primary-bg-hover: #e8ecf2;
+  --btn-primary-text: #050a14;
+  --btn-inverse-bg: var(--color-navy-dark);
+  --btn-inverse-text: var(--color-white);
+
+  --theme-toggle-track: #111827;
+  --theme-toggle-track-border: #1e2836;
+  --theme-toggle-thumb: #1e2836;
+  --theme-toggle-icon: #6e7888;
+  --theme-toggle-icon-active: var(--color-gold);
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-focus: 0 0 0 2px #050a14, 0 0 0 3px var(--color-gold);
+
+  --login-card-shadow: 0 4px 32px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.2);
+  --login-page-bg: linear-gradient(160deg, #0a0f18 0%, #050a14 55%, #071428 100%);
+  --login-card-bg: #0d1520;
+  --login-input-bg: #111827;
+  --login-link-color: var(--color-gold);
+
+  --logo-filter: invert(1) brightness(1.1);
+}
+
+/* System preference fallback (no explicit theme set) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --color-navy: #ffffff;
+    --color-navy-dark: #131d2e;
+    --color-navy-light: #e8ecf2;
+    --color-navy-muted: #a8b0bc;
+
+    --color-gold: #c9a66b;
+    --color-gold-muted: rgba(201, 166, 107, 0.12);
+
+    --color-gray-50: #0a0f18;
+    --color-gray-100: #111827;
+    --color-gray-200: #1e2836;
+    --color-gray-300: #2a3544;
+    --color-gray-400: #6e7888;
+    --color-gray-500: #a8b0bc;
+
+    --color-primary: var(--color-white);
+    --color-primary-hover: #e8ecf2;
+    --color-primary-bg: #111827;
+    --color-primary-border: #1e2836;
+    --color-primary-text: var(--color-white);
+
+    --color-bg: #050a14;
+    --color-bg-subtle: #0a0f18;
+    --color-bg-muted: #111827;
+    --color-bg-canvas: #050a14;
+    --color-bg-toolbar: #050a14;
+    --color-bg-sidebar: #050a14;
+    --color-bg-watermark: rgba(255, 255, 255, 0.02);
+    --color-bg-logo: #131d2e;
+
+    --color-text: #ffffff;
+    --color-text-secondary: #a8b0bc;
+    --color-text-muted: #6e7888;
+    --color-text-inverse: #050a14;
+    --color-text-on-primary: #050a14;
+    --color-text-accent: var(--color-gold);
+    --color-heading: #ffffff;
+
+    --color-border: #1e2836;
+    --color-border-strong: #2a3544;
+    --color-border-focus: var(--color-gold);
+    --color-divider: #1e2836;
+
+    --btn-primary-bg: var(--color-white);
+    --btn-primary-bg-hover: #e8ecf2;
+    --btn-primary-text: #050a14;
+
+    --theme-toggle-track: #111827;
+    --theme-toggle-track-border: #1e2836;
+    --theme-toggle-thumb: #1e2836;
+    --theme-toggle-icon: #6e7888;
+    --theme-toggle-icon-active: var(--color-gold);
+
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-focus: 0 0 0 2px #050a14, 0 0 0 3px var(--color-gold);
+
+    --login-card-shadow: 0 4px 32px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.2);
+    --login-page-bg: linear-gradient(160deg, #0a0f18 0%, #050a14 55%, #071428 100%);
+    --login-card-bg: #0d1520;
+    --login-input-bg: #111827;
+    --login-link-color: var(--color-gold);
+
+    --logo-filter: invert(1) brightness(1.1);
+  }
+}
+
+:root {
+  /* ── Typography (Swiss scale) ──────────────────────────── */
+  --font-sans: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: "Inter", "Segoe UI", sans-serif;
+  --font-accent: Georgia, "Times New Roman", "Noto Serif", serif;
+  --font-ar: "Noto Sans Arabic", "Segoe UI", "Traditional Arabic", Tahoma, sans-serif;
+  --font-mono: "SF Mono", "Roboto Mono", Consolas, monospace;
+
+  /* Type scale — dramatic display contrast */
+  --font-size-caption: 0.6875rem;  /* 11px — labels, nav */
+  --font-size-xs: 0.75rem;         /* 12px */
+  --font-size-sm: 0.8125rem;       /* 13px */
+  --font-size-base: 1rem;          /* 16px — body */
+  --font-size-md: 1.125rem;        /* 18px */
+  --font-size-lg: 1.375rem;        /* 22px */
+  --font-size-xl: 1.75rem;         /* 28px — section headings */
+  --font-size-2xl: 2.5rem;         /* 40px — page headings */
+  --font-size-display: 3.5rem;     /* 56px — hero / column headings (Sat/Sun) */
+  --font-size-nav: var(--font-size-caption);
+
+  /* Dashboard headings — match login inspire title (700 bold) */
+  --font-dashboard-heading-family: var(--font-sans);
+  --font-dashboard-heading-size: var(--font-size-lg);       /* 22px — same as .ist-login-card__inspire-title */
+  --font-dashboard-heading-weight: var(--font-weight-bold); /* 700 — same as .ist-login-card__inspire-title */
+  --font-dashboard-heading-line-height: var(--line-height-snug);
+  --font-dashboard-heading-color: var(--color-heading);
+  --font-dashboard-heading-letter-spacing: normal;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  --line-height-tight: 1.1;
+  --line-height-snug: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.65;
+
+  --letter-spacing-tight: -0.03em;
+  --letter-spacing-nav: 0.12em;
+  --letter-spacing-tagline: 0.18em;
+  --letter-spacing-label: 0.06em;
+
+  /* ── Spacing (8px base — generous whitespace) ──────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+  --space-11: 80px;
+  --space-12: 96px;
+
+  /* ── Layout ────────────────────────────────────────────── */
+  --layout-max-width: 1200px;
+  --layout-narrow: 480px;
+  --layout-doc-width: 816px;
+  --layout-sidebar-width: 220px;
+  --layout-header-height: 72px;
+  --layout-time-col: 72px;
+
+  /* ── Radius (minimal — Swiss clarity) ──────────────────── */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-pill: 9999px;
+
+  /* ── Transitions ───────────────────────────────────────── */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+
+  /* ── Z-index ───────────────────────────────────────────── */
+  --z-watermark: 0;
+  --z-content: 1;
+  --z-sticky: 100;
+  --z-modal: 200;
+  --z-toast: 300;
+
+  /* ── Components ────────────────────────────────────────── */
+  --btn-height: 44px;
+  --btn-padding-x: 24px;
+  --input-height: 44px;
+  --input-padding-x: 16px;
+  --card-padding: var(--space-7);
+  --section-gap: var(--space-10);
+
+  /* Logo (IRIS STAR Technologies L.L.C — official SVG) */
+  --logo-height-compact: 48px;
+  --logo-height-compact-symbol: 60px;
+  --logo-height-full: 48px;
+  --logo-height-lg: 80px;
+  --logo-width-full: 225px;
+  --logo-width-lg: 275px;
+
+  --theme-toggle-width: 56px;
+  --theme-toggle-height: 28px;
+  --theme-toggle-thumb-size: 22px;
+}

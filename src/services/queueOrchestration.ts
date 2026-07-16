@@ -3,7 +3,19 @@ import { shouldUseDatabasePersistence } from "../config/runtime.js";
 import { prisma } from "../db.js";
 import { auditSignatureFor } from "./safetyKernel.js";
 import { getOrganizationById } from "./securityAdmin.js";
+import { findDependent, resolvePatientAgeFromDirectory, validateStaffMember } from "./hrms.js";
+import {
+  getClinicalProtocolById,
+  getCurrentClinicalContentPackage,
+  searchClinicalProtocols
+} from "./clinicalContent.js";
+import { buildRagShadowSuggestion, buildStccProcessSnapshot } from "./ragShadow.js";
 import type { AuthenticatedSession } from "../types/security.js";
+import type {
+  ClinicalContentProtocol,
+  ClinicalContentQuestion,
+  ProtocolSearchResult
+} from "../types/clinicalContent.js";
 import type {
   QueueClinicalStage,
   QueueContextUpdate,
@@ -12,6 +24,10 @@ import type {
   QueueItemDto,
   QueueListQuery,
   QueueMoveRequest,
+  QueuePatientAgeSnapshotDto,
+  QueuePreparedProtocolDto,
+  QueueProtocolQuestionPreviewDto,
+  QueueProtocolSuggestionDto,
   QueueSeverity,
   QueueStatus,
   QueueTransitionLogDto,
@@ -28,7 +44,8 @@ export class QueueOrchestrationError extends Error {
   }
 }
 
-type QueueRecord = Omit<QueueItemDto, "transitionLogs"> & {
+type QueueRecord = Omit<QueueItemDto, "transitionLogs" | "stccProcess"> & {
+  stccProcess?: QueueItemDto["stccProcess"];
   transitionLogs: QueueTransitionLogDto[];
 };
 
@@ -185,7 +202,370 @@ function tagsFromUnknown(value: unknown): string[] {
   return value.filter((item): item is string => typeof item === "string");
 }
 
+function stringFromPayload(value: unknown): string | undefined {
+  return typeof value === "string" && value.length > 0 ? value : undefined;
+}
+
+function patientAgeFromUnknown(value: unknown): QueuePatientAgeSnapshotDto | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+  const source = value.source;
+  const ageYears = value.ageYears;
+  const ageMonths = value.ageMonths;
+  const calculatedFrom = value.calculatedFrom;
+  if (
+    (source !== "staff" && source !== "dependent") ||
+    typeof ageYears !== "number" ||
+    typeof ageMonths !== "number" ||
+    (calculatedFrom !== "HRMS_DATE_OF_BIRTH" && calculatedFrom !== "HRMS_AGE_FIELD")
+  ) {
+    return undefined;
+  }
+  return {
+    source,
+    ageYears,
+    ageMonths,
+    dateOfBirthIso: stringFromPayload(value.dateOfBirthIso),
+    calculatedFrom
+  };
+}
+
+function stringArrayFromUnknown(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+}
+
+function severityFromUnknown(value: unknown): "Emergency" | "Urgent" | "Routine" | "Self-care" | undefined {
+  return value === "Emergency" || value === "Urgent" || value === "Routine" || value === "Self-care"
+    ? value
+    : undefined;
+}
+
+function protocolSuggestionFromUnknown(value: unknown): QueueProtocolSuggestionDto | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+  const protocolId = stringFromPayload(value.protocolId);
+  const titleEn = stringFromPayload(value.titleEn);
+  const highestSeverity = severityFromUnknown(value.highestSeverity);
+  if (!protocolId || !titleEn || typeof value.score !== "number" || typeof value.questionCount !== "number" || !highestSeverity) {
+    return undefined;
+  }
+  return {
+    protocolId,
+    titleEn,
+    score: value.score,
+    matchedTerms: stringArrayFromUnknown(value.matchedTerms),
+    questionCount: value.questionCount,
+    highestSeverity,
+    releaseVersion: stringFromPayload(value.releaseVersion) ?? "unknown"
+  };
+}
+
+function protocolQuestionPreviewFromUnknown(value: unknown): QueueProtocolQuestionPreviewDto | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+  const id = stringFromPayload(value.id);
+  const severity = severityFromUnknown(value.severity);
+  const questionTextEn = stringFromPayload(value.questionTextEn);
+  const dispositionCode = stringFromPayload(value.dispositionCode);
+  if (!id || !severity || !questionTextEn || !dispositionCode || typeof value.acuityOrder !== "number") {
+    return undefined;
+  }
+  return {
+    id,
+    acuityOrder: value.acuityOrder,
+    severity,
+    questionTextEn,
+    dispositionCode,
+    redFlag: value.redFlag === true,
+    careAdviceIds: stringArrayFromUnknown(value.careAdviceIds)
+  };
+}
+
+function preparedProtocolFromUnknown(value: unknown): QueuePreparedProtocolDto | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+  const status = value.status;
+  const sourceType = value.sourceType;
+  const reasonNarrative = stringFromPayload(value.reasonNarrative);
+  const releaseVersion = stringFromPayload(value.releaseVersion);
+  const preparedAtIso = stringFromPayload(value.preparedAtIso);
+  if (
+    (status !== "PENDING_REASON" && status !== "PREPARED" && status !== "NO_MATCH") ||
+    (sourceType !== "synthetic-sample" && sourceType !== "licensed-stcc" && sourceType !== "local-qatar-override") ||
+    !reasonNarrative ||
+    !releaseVersion ||
+    !preparedAtIso
+  ) {
+    return undefined;
+  }
+  const resourceSections = isRecord(value.resourceSectionsAvailable) ? value.resourceSectionsAvailable : {};
+  return {
+    status,
+    sourceType,
+    releaseVersion,
+    reasonNarrative,
+    extractedKeywords: stringArrayFromUnknown(value.extractedKeywords),
+    primaryProtocolId: stringFromPayload(value.primaryProtocolId),
+    primaryProtocolTitle: stringFromPayload(value.primaryProtocolTitle),
+    suggestions: Array.isArray(value.suggestions)
+      ? value.suggestions.map(protocolSuggestionFromUnknown).filter((item): item is QueueProtocolSuggestionDto => Boolean(item))
+      : [],
+    acuityQuestionPreview: Array.isArray(value.acuityQuestionPreview)
+      ? value.acuityQuestionPreview.map(protocolQuestionPreviewFromUnknown).filter((item): item is QueueProtocolQuestionPreviewDto => Boolean(item))
+      : [],
+    resourceSectionsAvailable: {
+      background: resourceSections.background === true,
+      firstAid: resourceSections.firstAid === true,
+      careAdvice: resourceSections.careAdvice === true,
+      seeMoreAppropriateGuideline: resourceSections.seeMoreAppropriateGuideline === true
+    },
+    preparedAtIso
+  };
+}
+
+function queuePayloadFromUnknown(value: unknown): {
+  identityValidationSource?: QueueRecord["identityValidationSource"];
+  identityValidationMessage?: string;
+  identityValidatedAtIso?: string;
+  patientAge?: QueuePatientAgeSnapshotDto;
+  reasonNarrative?: string;
+  preparedProtocol?: QueuePreparedProtocolDto;
+} {
+  if (!isRecord(value)) {
+    return {};
+  }
+  const source = value.identityValidationSource;
+  return {
+    identityValidationSource: source === "HRMS_AUTO" || source === "HRMS_LOOKUP_FAILED" ? source : undefined,
+    identityValidationMessage: stringFromPayload(value.identityValidationMessage),
+    identityValidatedAtIso: stringFromPayload(value.identityValidatedAtIso),
+    patientAge: patientAgeFromUnknown(value.patientAge),
+    reasonNarrative: stringFromPayload(value.reasonNarrative),
+    preparedProtocol: preparedProtocolFromUnknown(value.preparedProtocol)
+  };
+}
+
+function queuePayloadFor(record: QueueRecord): Record<string, unknown> {
+  const payload: Record<string, unknown> = {};
+  if (record.identityValidationSource) payload.identityValidationSource = record.identityValidationSource;
+  if (record.identityValidationMessage) payload.identityValidationMessage = record.identityValidationMessage;
+  if (record.identityValidatedAtIso) payload.identityValidatedAtIso = record.identityValidatedAtIso;
+  if (record.patientAge) payload.patientAge = record.patientAge;
+  if (record.reasonNarrative) payload.reasonNarrative = record.reasonNarrative;
+  if (record.preparedProtocol) payload.preparedProtocol = record.preparedProtocol;
+  return payload;
+}
+
+function ageSnapshotFromResolution(result: ReturnType<typeof resolvePatientAgeFromDirectory>): QueuePatientAgeSnapshotDto | undefined {
+  if (!result.ok) {
+    return undefined;
+  }
+  const snapshot: QueuePatientAgeSnapshotDto = {
+    source: result.source,
+    ageYears: result.ageYears,
+    ageMonths: result.ageMonths,
+    calculatedFrom: result.calculatedFrom
+  };
+  if (result.dateOfBirthIso) {
+    snapshot.dateOfBirthIso = result.dateOfBirthIso;
+  }
+  return snapshot;
+}
+
+function hydrateRecordIdentity(record: QueueRecord): QueueRecord {
+  const resolution = resolvePatientAgeFromDirectory({
+    istStaffId: record.istStaffId,
+    dependentId: record.dependentId,
+    referenceDate: new Date(record.createdAtIso)
+  });
+
+  if (!resolution.ok) {
+    return {
+      ...record,
+      identityValidated: false,
+      identityValidationSource: "HRMS_LOOKUP_FAILED",
+      identityValidationMessage: resolution.reason
+    };
+  }
+
+  return {
+    ...record,
+    identityValidated: true,
+    identityValidationSource: "HRMS_AUTO",
+    identityValidationMessage: "Validated from HRMS before the call entered the clinical queue.",
+    identityValidatedAtIso: record.createdAtIso,
+    patientAge: ageSnapshotFromResolution(resolution)
+  };
+}
+
+const REASON_KEYWORD_STOP_WORDS = new Set([
+  "about",
+  "after",
+  "again",
+  "before",
+  "being",
+  "call",
+  "caller",
+  "could",
+  "from",
+  "have",
+  "into",
+  "more",
+  "over",
+  "parent",
+  "reported",
+  "request",
+  "requested",
+  "staff",
+  "that",
+  "their",
+  "there",
+  "this",
+  "with",
+  "while",
+  "year",
+  "years"
+]);
+
+function normalizeReason(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractReasonKeywords(reasonNarrative: string): string[] {
+  return [
+    ...new Set(
+      normalizeReason(reasonNarrative)
+        .split(" ")
+        .map((part) => part.trim())
+        .filter((part) => part.length >= 3)
+        .filter((part) => !REASON_KEYWORD_STOP_WORDS.has(part))
+    )
+  ].slice(0, 12);
+}
+
+function suggestionFromSearchResult(result: ProtocolSearchResult): QueueProtocolSuggestionDto {
+  return {
+    protocolId: result.id,
+    titleEn: result.titleEn,
+    score: result.score,
+    matchedTerms: result.matchedTerms,
+    questionCount: result.questionCount,
+    highestSeverity: result.highestSeverity,
+    releaseVersion: result.releaseVersion
+  };
+}
+
+function questionPreviewFromClinicalQuestion(question: ClinicalContentQuestion): QueueProtocolQuestionPreviewDto {
+  return {
+    id: question.id,
+    acuityOrder: question.acuityOrder,
+    severity: question.severity,
+    questionTextEn: question.questionTextEn,
+    dispositionCode: question.dispositionCode,
+    redFlag: question.redFlag,
+    careAdviceIds: question.careAdviceIds
+  };
+}
+
+function resourceAvailabilityFor(protocol: ClinicalContentProtocol | undefined, suggestionCount: number) {
+  return {
+    background: Boolean(protocol?.backgroundInfoEn),
+    firstAid: false,
+    careAdvice: Boolean(protocol?.careAdvice.length),
+    seeMoreAppropriateGuideline: suggestionCount > 1
+  };
+}
+
+function buildPreparedProtocol(record: QueueRecord, preparedAtIso: string): QueuePreparedProtocolDto {
+  const contentPackage = getCurrentClinicalContentPackage();
+  const reasonNarrative = (record.reasonNarrative ?? record.summary).trim();
+  const base = {
+    sourceType: contentPackage.release.sourceType,
+    releaseVersion: contentPackage.release.version,
+    reasonNarrative,
+    extractedKeywords: extractReasonKeywords(reasonNarrative),
+    preparedAtIso
+  };
+
+  if (!reasonNarrative) {
+    const suggestions: QueueProtocolSuggestionDto[] = [];
+    return {
+      ...base,
+      status: "PENDING_REASON",
+      suggestions,
+      acuityQuestionPreview: [],
+      resourceSectionsAvailable: resourceAvailabilityFor(undefined, 0),
+      ragShadow: buildRagShadowSuggestion({
+        reasonNarrative,
+        sourceType: contentPackage.release.sourceType,
+        releaseVersion: contentPackage.release.version,
+        deterministicSuggestions: suggestions,
+        preparedAtIso
+      })
+    };
+  }
+
+  const suggestions = searchClinicalProtocols({
+    q: reasonNarrative,
+    ageYears: record.patientAge?.ageYears,
+    mode: contentPackage.release.mode,
+    limit: 5
+  }).map(suggestionFromSearchResult);
+  const primarySuggestion = suggestions[0];
+  const primaryProtocol = primarySuggestion ? getClinicalProtocolById(primarySuggestion.protocolId) : undefined;
+
+  return {
+    ...base,
+    status: primarySuggestion ? "PREPARED" : "NO_MATCH",
+    primaryProtocolId: primarySuggestion?.protocolId,
+    primaryProtocolTitle: primarySuggestion?.titleEn,
+    suggestions,
+    acuityQuestionPreview: primaryProtocol
+      ? primaryProtocol.questions.map(questionPreviewFromClinicalQuestion).slice(0, 8)
+      : [],
+    resourceSectionsAvailable: resourceAvailabilityFor(primaryProtocol, suggestions.length),
+    ragShadow: buildRagShadowSuggestion({
+      reasonNarrative,
+      sourceType: contentPackage.release.sourceType,
+      releaseVersion: contentPackage.release.version,
+      deterministicSuggestions: suggestions,
+      deterministicPrimaryProtocolId: primarySuggestion?.protocolId,
+      preparedAtIso
+    })
+  };
+}
+
+function ensurePreparedProtocol(record: QueueRecord): QueueRecord {
+  const contentPackage = getCurrentClinicalContentPackage();
+  const reasonNarrative = (record.reasonNarrative ?? record.summary).trim();
+  if (
+    record.preparedProtocol &&
+    record.reasonNarrative === reasonNarrative &&
+    record.preparedProtocol.reasonNarrative === reasonNarrative &&
+    record.preparedProtocol.releaseVersion === contentPackage.release.version &&
+    record.preparedProtocol.ragShadow
+  ) {
+    return record;
+  }
+
+  const preparedAtIso = record.preparedProtocol?.preparedAtIso ?? record.createdAtIso;
+  return {
+    ...record,
+    reasonNarrative,
+    preparedProtocol: buildPreparedProtocol({ ...record, reasonNarrative }, preparedAtIso)
+  };
+}
+
 function dbRowToRecord(row: QueueDbRow): QueueRecord {
+  const queuePayload = queuePayloadFromUnknown(row.queuePayload);
   return {
     id: row.id,
     istStaffId: row.istStaffId,
@@ -203,12 +583,18 @@ function dbRowToRecord(row: QueueDbRow): QueueRecord {
     department: row.department ?? undefined,
     jobTitle: row.jobTitle ?? undefined,
     summary: row.summary ?? "Tele-triage queue item",
+    reasonNarrative: queuePayload.reasonNarrative ?? row.summary ?? "Tele-triage queue item",
+    preparedProtocol: queuePayload.preparedProtocol,
     vitals: isVitals(row.vitals) ? row.vitals : undefined,
     matchedProtocolId: row.matchedProtocolId ?? undefined,
     calculatedSeverity: row.calculatedSeverity ?? undefined,
     dispositionCode: row.dispositionCode ?? undefined,
     destinationName: row.destinationName ?? undefined,
     identityValidated: row.identityValidated,
+    identityValidationSource: queuePayload.identityValidationSource,
+    identityValidationMessage: queuePayload.identityValidationMessage,
+    identityValidatedAtIso: queuePayload.identityValidatedAtIso,
+    patientAge: queuePayload.patientAge,
     safetyFloorActive: row.safetyFloorActive,
     clinicalApproval: approvalFromUnknown(row.clinicalApproval),
     sbarCopied: row.sbarCopied,
@@ -240,7 +626,11 @@ function dbRowToRecord(row: QueueDbRow): QueueRecord {
 }
 
 function toDto(record: QueueRecord): QueueItemDto {
-  return jsonClone(record);
+  const prepared = ensurePreparedProtocol(record);
+  return jsonClone({
+    ...prepared,
+    stccProcess: buildStccProcessSnapshot(prepared)
+  });
 }
 
 function computePriority(record: Pick<QueueRecord, "safetyFloorActive" | "calculatedSeverity" | "slaDeadlineIso" | "patientType" | "jobTitle" | "customAviationTags">): number {
@@ -446,10 +836,14 @@ function initialQueueRecords(): QueueRecord[] {
     }
   ];
 
-  return rows.map((record) => ({
-    ...record,
-    priorityScore: computePriority(record)
-  }));
+  return rows.map((record) => {
+    const hydrated = hydrateRecordIdentity(record);
+    const prepared = ensurePreparedProtocol(hydrated);
+    return {
+      ...prepared,
+      priorityScore: computePriority(prepared)
+    };
+  });
 }
 
 function store(): Map<string, QueueRecord> {
@@ -674,7 +1068,8 @@ async function saveDbRecord(record: QueueRecord): Promise<QueueRecord> {
       lockedBy: record.lockedBy,
       lockExpiresAt: record.lockExpiresAtIso ? new Date(record.lockExpiresAtIso) : null,
       summary: record.summary,
-      customAviationTags: record.customAviationTags
+      customAviationTags: record.customAviationTags,
+      queuePayload: queuePayloadFor(record)
     },
     include: { transitionLogs: { orderBy: { timestamp: "desc" }, take: 20 } }
   });
@@ -804,6 +1199,31 @@ export async function createQueueItem(session: AuthenticatedSession, request: Qu
   const createdAtIso = nowIso();
   const organizationId = request.organizationId ?? session.user.organizationId ?? "org_ist_tech";
   const targetOrganizationId = request.targetOrganizationId ?? organizationId;
+  const staffValidation = await validateStaffMember(request.istStaffId);
+  if (!staffValidation.valid || !staffValidation.profile) {
+    throw new QueueOrchestrationError(
+      404,
+      staffValidation.reason ?? "Staff identity could not be validated from HRMS.",
+      "QUEUE_HRMS_IDENTITY_FAILED"
+    );
+  }
+  const dependent = findDependent(staffValidation.profile, request.dependentId);
+  if (request.dependentId && !dependent) {
+    throw new QueueOrchestrationError(
+      400,
+      "Dependent is not mapped to the validated staff member.",
+      "QUEUE_HRMS_DEPENDENT_FAILED"
+    );
+  }
+  const ageResolution = resolvePatientAgeFromDirectory({
+    istStaffId: request.istStaffId,
+    dependentId: request.dependentId,
+    referenceDate: new Date(createdAtIso)
+  });
+  if (!ageResolution.ok) {
+    throw new QueueOrchestrationError(ageResolution.status, ageResolution.reason, "QUEUE_HRMS_AGE_FAILED");
+  }
+  const patientType = request.dependentId ? "Dependent" : request.patientType;
   const record: QueueRecord = {
     id: `case-${randomUUID()}`,
     istStaffId: request.istStaffId,
@@ -815,13 +1235,18 @@ export async function createQueueItem(session: AuthenticatedSession, request: Qu
     status: "INCOMING",
     currentStage: "INTAKE",
     priorityScore: 0,
-    patientType: request.patientType,
+    patientType,
     channel: request.channel,
     stationCode: request.stationCode,
-    department: request.department,
-    jobTitle: request.jobTitle,
+    department: request.department ?? staffValidation.profile.department,
+    jobTitle: request.jobTitle ?? (dependent ? `${dependent.relationshipType} dependent` : staffValidation.profile.jobTitle),
     summary: request.summary,
-    identityValidated: false,
+    reasonNarrative: request.reasonNarrative ?? request.summary,
+    identityValidated: true,
+    identityValidationSource: "HRMS_AUTO",
+    identityValidationMessage: "Validated from HRMS before the call entered the clinical queue.",
+    identityValidatedAtIso: createdAtIso,
+    patientAge: ageSnapshotFromResolution(ageResolution),
     safetyFloorActive: request.safetyFloorActive,
     sbarCopied: false,
     slaDeadlineIso: deadline(request.slaMinutes),
@@ -830,6 +1255,9 @@ export async function createQueueItem(session: AuthenticatedSession, request: Qu
     updatedAtIso: createdAtIso,
     transitionLogs: []
   };
+  const preparedRecord = ensurePreparedProtocol(record);
+  record.reasonNarrative = preparedRecord.reasonNarrative;
+  record.preparedProtocol = preparedRecord.preparedProtocol;
   record.priorityScore = computePriority(record);
 
   if (shouldUseDatabasePersistence()) {
@@ -853,7 +1281,8 @@ export async function createQueueItem(session: AuthenticatedSession, request: Qu
         safetyFloorActive: record.safetyFloorActive,
         sbarCopied: record.sbarCopied,
         slaDeadline: new Date(record.slaDeadlineIso),
-        customAviationTags: record.customAviationTags
+        customAviationTags: record.customAviationTags,
+        queuePayload: queuePayloadFor(record)
       },
       include: { transitionLogs: true }
     });
@@ -972,6 +1401,12 @@ export async function updateQueueContext(
   if (update.clinicalApproval) record.clinicalApproval = update.clinicalApproval;
   if (typeof update.sbarCopied === "boolean") record.sbarCopied = update.sbarCopied;
   if (update.summary) record.summary = update.summary;
+  if (update.reasonNarrative) record.reasonNarrative = update.reasonNarrative;
+  if (update.summary || update.reasonNarrative) {
+    const preparedRecord = ensurePreparedProtocol(record);
+    record.reasonNarrative = preparedRecord.reasonNarrative;
+    record.preparedProtocol = preparedRecord.preparedProtocol;
+  }
   if (update.assignedNurseId && (hasManagerControl(session) || session.permissions.includes("triage.queue.manage"))) {
     record.assignedNurseId = update.assignedNurseId;
   }

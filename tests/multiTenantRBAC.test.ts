@@ -33,8 +33,8 @@ describe("Multi-tenant named-user queue and HRMS directory controls", () => {
   });
 
   it("segregates queue cards by authenticated organization", async () => {
-    const phccNurse = await agentFor("nurse@ist.local", "remote_triage_nurse");
-    const hmcNurse = await agentFor("senior.nurse@ist.local", "senior_triage_nurse");
+    const phccNurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const hmcNurse = await agentFor("senior.nurse@irisstar.tech", "senior_triage_nurse");
 
     const phccQueue = await phccNurse.get("/api/v1/queue").expect(200);
     const hmcQueue = await hmcNurse.get("/api/v1/queue").expect(200);
@@ -47,7 +47,7 @@ describe("Multi-tenant named-user queue and HRMS directory controls", () => {
   });
 
   it("uses HRMS status to revoke sessions, release locks, and block login", async () => {
-    const manager = await agentFor("triage.manager@ist.local", "triage_service_manager");
+    const manager = await agentFor("manager@irisstar.tech", "triage_service_manager");
     await manager
       .post("/api/v1/hrms/sync-users")
       .send({
@@ -55,7 +55,7 @@ describe("Multi-tenant named-user queue and HRMS directory controls", () => {
         employees: [
           {
             employeeId: "IST-18001",
-            email: "hrms.phcc.nurse@ist.local",
+            email: "hrms.phcc.nurse@irisstar.tech",
             fullName: "HRMS PHCC Nurse",
             organizationCode: "PHCC",
             jobTitle: "Remote Triage Nurse",
@@ -65,7 +65,7 @@ describe("Multi-tenant named-user queue and HRMS directory controls", () => {
       })
       .expect(200);
 
-    const nurse = await agentFor("hrms.phcc.nurse@ist.local", "remote_triage_nurse");
+    const nurse = await agentFor("hrms.phcc.nurse@irisstar.tech", "remote_triage_nurse");
     const claim = await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
     expect(claim.body.item.lockedBy).toBe("usr_hrms_ist_18001");
 
@@ -76,7 +76,7 @@ describe("Multi-tenant named-user queue and HRMS directory controls", () => {
         employees: [
           {
             employeeId: "IST-18001",
-            email: "hrms.phcc.nurse@ist.local",
+            email: "hrms.phcc.nurse@irisstar.tech",
             fullName: "HRMS PHCC Nurse",
             organizationCode: "PHCC",
             jobTitle: "Remote Triage Nurse",
@@ -97,21 +97,21 @@ describe("Multi-tenant named-user queue and HRMS directory controls", () => {
     await request(app)
       .post("/api/v1/auth/login")
       .send({
-        username: "hrms.phcc.nurse@ist.local",
+        username: "hrms.phcc.nurse@irisstar.tech",
         password: TEST_ADMIN_PASSWORD,
         simulateRole: "remote_triage_nurse"
       })
       .expect(403);
 
-    const admin = await agentFor("admin@ist.local", "platform_super_administrator");
+    const admin = await agentFor("pa@irisstar.tech", "platform_super_administrator");
     const released = await admin.get("/api/v1/queue/case-10002").expect(200);
     expect(released.body.item.lockedBy).toBeUndefined();
     expect(released.body.item.status).toBe("INCOMING");
   });
 
   it("allows a PHCC nurse to hand over an escalated card to HMC with a signed audit log", async () => {
-    const phccNurse = await agentFor("nurse@ist.local", "remote_triage_nurse");
-    const hmcNurse = await agentFor("senior.nurse@ist.local", "senior_triage_nurse");
+    const phccNurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const hmcNurse = await agentFor("senior.nurse@irisstar.tech", "senior_triage_nurse");
 
     await phccNurse.post("/api/v1/queue/case-10002/claim").expect(200);
     const handover = await phccNurse

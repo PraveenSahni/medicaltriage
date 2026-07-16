@@ -110,19 +110,62 @@ enum ClinicalContentImportStatus {
   FAILED
 }
 
+enum RagShadowStatus {
+  RECORDED
+  BLOCKED
+  REVIEWED
+  PROMOTED_TO_RULE_REVIEW
+}
+
+enum ProtocolComparisonAgreement {
+  FULL_MATCH
+  PARTIAL_MATCH
+  NO_MATCH
+  NO_DETERMINISTIC_CANDIDATE
+  NO_SHADOW_CANDIDATE
+}
+
+enum LearningFeedbackAction {
+  NO_CHANGE
+  ADD_SYNONYM
+  ADJUST_KEYWORD_WEIGHT
+  PROMPT_REVIEW
+  CONTENT_REVIEW
+  SAFETY_REVIEW
+}
+
+enum ModelEvaluationStatus {
+  PLANNED
+  RUNNING
+  PASSED
+  FAILED
+  BLOCKED
+}
+
+enum SafetyBlockedOutputReason {
+  UNSAFE_DOWNGRADE
+  INVENTED_QUESTION
+  INVENTED_CARE_ADVICE
+  OUT_OF_BOUND_SOURCE
+  PRIVACY_BOUNDARY
+  OTHER
+}
+
 model ProtocolRelease {
-  id              String                      @id @default(cuid())
-  name            String
-  version         String
-  sourceType      ClinicalContentSourceType   @map("source_type")
-  region          String                      @default("QA")
-  mode            ProtocolMode                @default(BOTH)
-  active          Boolean                     @default(false)
-  importedAt      DateTime?                   @map("imported_at")
-  algorithms      Algorithm[]
-  importJobs      ClinicalContentImportJob[]
-  createdAt       DateTime                    @default(now()) @map("created_at")
-  updatedAt       DateTime                    @updatedAt @map("updated_at")
+  id                    String                     @id @default(cuid())
+  name                  String
+  version               String
+  sourceType            ClinicalContentSourceType  @map("source_type")
+  region                String                     @default("QA")
+  mode                  ProtocolMode               @default(BOTH)
+  active                Boolean                    @default(false)
+  importedAt            DateTime?                  @map("imported_at")
+  algorithms            Algorithm[]
+  clinicalReferences    ClinicalReference[]
+  clinicalSupplementals ClinicalSupplemental[]
+  importJobs            ClinicalContentImportJob[]
+  createdAt             DateTime                   @default(now()) @map("created_at")
+  updatedAt             DateTime                   @updatedAt @map("updated_at")
 
   @@unique([sourceType, version])
   @@index([region, active])
@@ -130,31 +173,41 @@ model ProtocolRelease {
 }
 
 model Algorithm {
-  id                   String             @id @default(cuid())
-  releaseId            String?            @map("release_id")
-  release              ProtocolRelease?   @relation(fields: [releaseId], references: [id], onDelete: SetNull)
-  externalProtocolId   String?            @unique @map("external_protocol_id")
-  mode                 ProtocolMode       @default(BOTH)
-  titleEn              String             @map("title_en")
-  titleAr              String?            @map("title_ar")
-  clinicalDefinitionEn String?            @map("clinical_definition_en")
-  clinicalDefinitionAr String?            @map("clinical_definition_ar")
-  backgroundInfoEn     String?            @map("background_info_en")
-  backgroundInfoAr     String?            @map("background_info_ar")
-  genderRestriction    BiologicalSex?     @map("gender_restriction")
-  ageMin               Int?               @map("age_min")
-  ageMax               Int?               @map("age_max")
-  stccVersion          String?            @map("stcc_version")
-  active               Boolean            @default(true)
-  questions            TriageQuestion[]
-  careAdviceLinks      AlgorithmCareAdvice[]
-  keywordIndexes       ProtocolKeywordIndex[]
-  synonyms             ProtocolSynonym[]
-  dispositionMaps      ProtocolDispositionMap[]
-  encounters           AviationTriageEncounter[]
-  matchedQueueItems    TriageQueueItem[]
-  createdAt            DateTime           @default(now()) @map("created_at")
-  updatedAt            DateTime           @updatedAt @map("updated_at")
+  id                         String                    @id @default(cuid())
+  releaseId                  String?                   @map("release_id")
+  release                    ProtocolRelease?          @relation(fields: [releaseId], references: [id], onDelete: SetNull)
+  externalProtocolId         String?                   @unique @map("external_protocol_id")
+  mode                       ProtocolMode              @default(BOTH)
+  titleEn                    String                    @map("title_en")
+  titleAr                    String?                   @map("title_ar")
+  clinicalDefinitionEn       String?                   @map("clinical_definition_en")
+  clinicalDefinitionAr       String?                   @map("clinical_definition_ar")
+  backgroundInfoEn           String?                   @map("background_info_en")
+  backgroundInfoAr           String?                   @map("background_info_ar")
+  genderRestriction          BiologicalSex?            @map("gender_restriction")
+  ageMin                     Int?                      @map("age_min")
+  ageMax                     Int?                      @map("age_max")
+  /// @deprecated Use ProtocolRelease.version through releaseId for canonical release lineage.
+  stccVersion                String?                   @map("stcc_version")
+  sourceRecordHash           String?                   @map("source_record_hash")
+  sourceRecordChecksum       String?                   @map("source_record_checksum")
+  sourceEffectiveFrom        DateTime?                 @map("source_effective_from")
+  sourceEffectiveTo          DateTime?                 @map("source_effective_to")
+  annualReconciliationStatus String?                   @map("annual_reconciliation_status")
+  active                     Boolean                   @default(true)
+  questions                  TriageQuestion[]
+  careAdviceLinks            AlgorithmCareAdvice[]
+  keywordIndexes             ProtocolKeywordIndex[]
+  synonyms                   ProtocolSynonym[]
+  dispositionMaps            ProtocolDispositionMap[]
+  clinicalReferenceLinks     AlgorithmReference[]
+  clinicalSupplementalLinks  AlgorithmSupplemental[]
+  taxonomy                   ProtocolTaxonomy[]
+  firstAidItems              ProtocolFirstAid[]
+  encounters                 AviationTriageEncounter[]
+  matchedQueueItems          TriageQueueItem[]
+  createdAt                  DateTime                  @default(now()) @map("created_at")
+  updatedAt                  DateTime                  @updatedAt @map("updated_at")
 
   @@index([titleEn])
   @@index([releaseId, active])
@@ -163,21 +216,25 @@ model Algorithm {
 }
 
 model TriageQuestion {
-  id                    String                @id @default(cuid())
-  algorithmId           String                @map("algorithm_id")
-  algorithm             Algorithm             @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  externalQuestionId     String?               @map("external_question_id")
-  acuityOrder           Int                   @map("acuity_order")
-  severityGrade         TriageSeverity        @map("severity_grade")
-  questionTextEn        String                @map("question_text_en")
-  questionTextAr        String?               @map("question_text_ar")
-  acuityDispositionCode AcuityDispositionCode @map("acuity_disposition_code")
-  rationaleEn           String?               @map("rationale_en")
-  redFlag               Boolean               @default(false) @map("red_flag")
-  branching             Json?                 @map("branching")
-  careAdviceLinks        QuestionAdviceBridge[]
-  createdAt             DateTime              @default(now()) @map("created_at")
-  updatedAt             DateTime              @updatedAt @map("updated_at")
+  id                    String                 @id @default(cuid())
+  algorithmId           String                 @map("algorithm_id")
+  algorithm             Algorithm              @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
+  externalQuestionId    String?                @map("external_question_id")
+  acuityOrder           Int                    @map("acuity_order")
+  severityGrade         TriageSeverity         @map("severity_grade")
+  questionTextEn        String                 @map("question_text_en")
+  questionTextAr        String?                @map("question_text_ar")
+  acuityDispositionCode AcuityDispositionCode  @map("acuity_disposition_code")
+  rationaleEn           String?                @map("rationale_en")
+  redFlag               Boolean                @default(false) @map("red_flag")
+  branching             Json?                  @map("branching")
+  telemedicineEligible  Boolean?               @map("telemedicine_eligible")
+  telemedicineNotesEn   String?                @map("telemedicine_notes_en") @db.Text
+  sourceRecordHash      String?                @map("source_record_hash")
+  sourceRecordChecksum  String?                @map("source_record_checksum")
+  careAdviceLinks       QuestionAdviceBridge[]
+  createdAt             DateTime               @default(now()) @map("created_at")
+  updatedAt             DateTime               @updatedAt @map("updated_at")
 
   @@index([algorithmId, acuityOrder])
   @@index([externalQuestionId])
@@ -185,27 +242,32 @@ model TriageQuestion {
 }
 
 model CareAdvice {
-  id                String                @id @default(cuid())
-  externalCareAdviceId String?            @unique @map("external_care_advice_id")
-  adviceTitleEn     String                @map("advice_title_en")
-  adviceTitleAr     String?               @map("advice_title_ar")
-  instructionTextEn String                @map("instruction_text_en")
-  instructionTextAr String?               @map("instruction_text_ar")
-  dispositionCode   AcuityDispositionCode? @map("disposition_code")
-  warningSigns      Json?                 @map("warning_signs")
-  algorithmLinks    AlgorithmCareAdvice[]
-  questionLinks     QuestionAdviceBridge[]
-  createdAt         DateTime              @default(now()) @map("created_at")
-  updatedAt         DateTime              @updatedAt @map("updated_at")
+  id                   String                 @id @default(cuid())
+  externalCareAdviceId String?                @unique @map("external_care_advice_id")
+  adviceTitleEn        String                 @map("advice_title_en")
+  adviceTitleAr        String?                @map("advice_title_ar")
+  instructionTextEn    String                 @map("instruction_text_en")
+  instructionTextAr    String?                @map("instruction_text_ar")
+  contentFormat        String                 @default("plain_text") @map("content_format")
+  sanitizedHtmlEn      String?                @map("sanitized_html_en") @db.Text
+  sanitizedHtmlAr      String?                @map("sanitized_html_ar") @db.Text
+  sourceRecordHash     String?                @map("source_record_hash")
+  sourceRecordChecksum String?                @map("source_record_checksum")
+  dispositionCode      AcuityDispositionCode? @map("disposition_code")
+  warningSigns         Json?                  @map("warning_signs")
+  algorithmLinks       AlgorithmCareAdvice[]
+  questionLinks        QuestionAdviceBridge[]
+  createdAt            DateTime               @default(now()) @map("created_at")
+  updatedAt            DateTime               @updatedAt @map("updated_at")
 
   @@map("care_advice")
 }
 
 model AlgorithmCareAdvice {
-  algorithmId String    @map("algorithm_id")
-  careAdviceId String   @map("care_advice_id")
-  algorithm   Algorithm @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  careAdvice  CareAdvice @relation(fields: [careAdviceId], references: [id], onDelete: Cascade)
+  algorithmId  String     @map("algorithm_id")
+  careAdviceId String     @map("care_advice_id")
+  algorithm    Algorithm  @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
+  careAdvice   CareAdvice @relation(fields: [careAdviceId], references: [id], onDelete: Cascade)
 
   @@id([algorithmId, careAdviceId])
   @@map("algorithm_care_advice")
@@ -216,11 +278,11 @@ model AlgorithmCareAdvice {
 /// Question_Advice_Bridge contract so licensed STCC/Schmitt-Thompson imports can
 /// map the same relationship without touching backend triage logic.
 model QuestionAdviceBridge {
-  questionId   String         @map("question_id")
-  adviceId     String         @map("advice_id")
-  triggerAnswer String        @default("YES") @map("trigger_answer")
-  question     TriageQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  advice       CareAdvice     @relation(fields: [adviceId], references: [id], onDelete: Cascade)
+  questionId    String         @map("question_id")
+  adviceId      String         @map("advice_id")
+  triggerAnswer String         @default("YES") @map("trigger_answer")
+  question      TriageQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  advice        CareAdvice     @relation(fields: [adviceId], references: [id], onDelete: Cascade)
 
   @@id([questionId, adviceId, triggerAnswer])
   @@map("question_advice_bridge")
@@ -243,35 +305,39 @@ model ProtocolKeywordIndex {
 }
 
 model ProtocolSynonym {
-  id             String     @id @default(cuid())
-  algorithmId    String?    @map("algorithm_id")
-  algorithm      Algorithm? @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  canonicalTerm  String     @map("canonical_term")
-  synonym        String
-  language       String     @default("en")
-  region         String     @default("QA")
-  createdAt      DateTime   @default(now()) @map("created_at")
+  id            String     @id @default(cuid())
+  algorithmId   String?    @map("algorithm_id")
+  algorithm     Algorithm? @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
+  canonicalTerm String     @map("canonical_term")
+  synonym       String
+  language      String     @default("en")
+  region        String     @default("QA")
+  createdAt     DateTime   @default(now()) @map("created_at")
 
   @@index([canonicalTerm, synonym])
   @@map("protocol_synonyms")
 }
 
 model ProtocolDispositionMap {
-  id                 String                @id @default(cuid())
-  algorithmId         String?               @map("algorithm_id")
-  algorithm           Algorithm?            @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  severity            TriageSeverity
-  dispositionCode     AcuityDispositionCode @map("disposition_code")
-  ageMin              Int?                  @map("age_min")
-  ageMax              Int?                  @map("age_max")
-  aviationContext     Json?                 @map("aviation_context")
-  routeLabelEn        String                @map("route_label_en")
-  routeLabelAr        String?               @map("route_label_ar")
-  routeRationaleEn    String                @map("route_rationale_en")
-  routeRationaleAr    String?               @map("route_rationale_ar")
-  active              Boolean               @default(true)
-  createdAt           DateTime              @default(now()) @map("created_at")
-  updatedAt           DateTime              @updatedAt @map("updated_at")
+  id                    String                @id @default(cuid())
+  algorithmId           String?               @map("algorithm_id")
+  algorithm             Algorithm?            @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
+  severity              TriageSeverity
+  dispositionCode       AcuityDispositionCode @map("disposition_code")
+  ageMin                Int?                  @map("age_min")
+  ageMax                Int?                  @map("age_max")
+  aviationContext       Json?                 @map("aviation_context")
+  routeLabelEn          String                @map("route_label_en")
+  routeLabelAr          String?               @map("route_label_ar")
+  routeRationaleEn      String                @map("route_rationale_en")
+  routeRationaleAr      String?               @map("route_rationale_ar")
+  telemedicineHeadingEn String?               @map("telemedicine_heading_en")
+  telemedicineHeadingAr String?               @map("telemedicine_heading_ar")
+  sourceOfCareEn        String?               @map("source_of_care_en")
+  sourceOfCareAr        String?               @map("source_of_care_ar")
+  active                Boolean               @default(true)
+  createdAt             DateTime              @default(now()) @map("created_at")
+  updatedAt             DateTime              @updatedAt @map("updated_at")
 
   @@index([severity, dispositionCode])
   @@index([algorithmId, active])
@@ -279,16 +345,16 @@ model ProtocolDispositionMap {
 }
 
 model LocalizedDisposition {
-  id                  String                @id @default(cuid())
-  code                AcuityDispositionCode @unique
-  destinationNameEn   String                @map("destination_name_en")
-  destinationNameAr   String?               @map("destination_name_ar")
-  routingNotesEn      String                @map("routing_notes_en")
-  routingNotesAr      String?               @map("routing_notes_ar")
-  region              String                @default("QA")
-  active              Boolean               @default(true)
-  createdAt           DateTime              @default(now()) @map("created_at")
-  updatedAt           DateTime              @updatedAt @map("updated_at")
+  id                String                @id @default(cuid())
+  code              AcuityDispositionCode @unique
+  destinationNameEn String                @map("destination_name_en")
+  destinationNameAr String?               @map("destination_name_ar")
+  routingNotesEn    String                @map("routing_notes_en")
+  routingNotesAr    String?               @map("routing_notes_ar")
+  region            String                @default("QA")
+  active            Boolean               @default(true)
+  createdAt         DateTime              @default(now()) @map("created_at")
+  updatedAt         DateTime              @updatedAt @map("updated_at")
 
   @@index([region, active])
   @@map("localized_dispositions")
@@ -328,6 +394,106 @@ model ClinicalContentImportError {
   @@map("clinical_content_import_errors")
 }
 
+model ClinicalReference {
+  id                  String               @id @default(cuid())
+  releaseId           String?              @map("release_id")
+  release             ProtocolRelease?     @relation(fields: [releaseId], references: [id], onDelete: SetNull)
+  externalReferenceId String?              @map("external_reference_id")
+  title               String
+  sourceName          String?              @map("source_name")
+  citationText        String?              @map("citation_text") @db.Text
+  url                 String?
+  referenceType       String?              @map("reference_type")
+  sourceRecordHash    String?              @map("source_record_hash")
+  algorithmLinks      AlgorithmReference[]
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+
+  @@unique([releaseId, externalReferenceId])
+  @@index([releaseId])
+  @@map("clinical_references")
+}
+
+model AlgorithmReference {
+  algorithmId  String            @map("algorithm_id")
+  referenceId  String            @map("reference_id")
+  algorithm    Algorithm         @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
+  reference    ClinicalReference @relation(fields: [referenceId], references: [id], onDelete: Cascade)
+  displayOrder Int               @default(0) @map("display_order")
+  sectionLabel String?           @map("section_label")
+
+  @@id([algorithmId, referenceId])
+  @@map("algorithm_references")
+}
+
+model ClinicalSupplemental {
+  id                     String                  @id @default(cuid())
+  releaseId              String?                 @map("release_id")
+  release                ProtocolRelease?        @relation(fields: [releaseId], references: [id], onDelete: SetNull)
+  externalSupplementalId String?                 @map("external_supplemental_id")
+  titleEn                String                  @map("title_en")
+  titleAr                String?                 @map("title_ar")
+  supplementalType       String                  @map("supplemental_type")
+  plainTextEn            String?                 @map("plain_text_en") @db.Text
+  plainTextAr            String?                 @map("plain_text_ar") @db.Text
+  sanitizedHtmlEn        String?                 @map("sanitized_html_en") @db.Text
+  sanitizedHtmlAr        String?                 @map("sanitized_html_ar") @db.Text
+  sourceRecordHash       String?                 @map("source_record_hash")
+  algorithmLinks         AlgorithmSupplemental[]
+  createdAt              DateTime                @default(now()) @map("created_at")
+  updatedAt              DateTime                @updatedAt @map("updated_at")
+
+  @@unique([releaseId, externalSupplementalId])
+  @@index([releaseId, supplementalType])
+  @@map("clinical_supplementals")
+}
+
+model AlgorithmSupplemental {
+  algorithmId    String               @map("algorithm_id")
+  supplementalId String               @map("supplemental_id")
+  algorithm      Algorithm            @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
+  supplemental   ClinicalSupplemental @relation(fields: [supplementalId], references: [id], onDelete: Cascade)
+  displayOrder   Int                  @default(0) @map("display_order")
+  sectionLabel   String?              @map("section_label")
+
+  @@id([algorithmId, supplementalId])
+  @@map("algorithm_supplementals")
+}
+
+model ProtocolTaxonomy {
+  id           String    @id @default(cuid())
+  algorithmId  String    @map("algorithm_id")
+  algorithm    Algorithm @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
+  category     String
+  value        String
+  source       String    @default("STCC")
+  displayOrder Int       @default(0) @map("display_order")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  @@unique([algorithmId, category, value])
+  @@index([category, value])
+  @@map("protocol_taxonomy")
+}
+
+model ProtocolFirstAid {
+  id                String    @id @default(cuid())
+  algorithmId       String    @map("algorithm_id")
+  algorithm         Algorithm @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
+  titleEn           String?   @map("title_en")
+  titleAr           String?   @map("title_ar")
+  instructionTextEn String    @map("instruction_text_en") @db.Text
+  instructionTextAr String?   @map("instruction_text_ar") @db.Text
+  sanitizedHtmlEn   String?   @map("sanitized_html_en") @db.Text
+  sanitizedHtmlAr   String?   @map("sanitized_html_ar") @db.Text
+  displayOrder      Int       @default(0) @map("display_order")
+  sourceRecordHash  String?   @map("source_record_hash")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  @@index([algorithmId])
+  @@map("protocol_first_aid")
+}
+
 model StaffMember {
   id                         String                     @id @default(cuid())
   istStaffId                 String                     @unique @map("ist_staff_id")
@@ -349,43 +515,45 @@ model StaffMember {
 }
 
 model Dependent {
-  id              String                  @id @default(cuid())
-  staffMemberId   String                  @map("staff_member_id")
-  staffMember     StaffMember             @relation(fields: [staffMemberId], references: [id], onDelete: Cascade)
-  fullName        String                  @map("full_name")
-  relationshipType DependentRelationship  @map("relationship")
-  age             Int
-  dateOfBirth      DateTime?               @map("date_of_birth")
-  biologicalSex   BiologicalSex           @map("biological_sex")
-  encounters      AviationTriageEncounter[]
+  id               String                    @id @default(cuid())
+  staffMemberId    String                    @map("staff_member_id")
+  staffMember      StaffMember               @relation(fields: [staffMemberId], references: [id], onDelete: Cascade)
+  fullName         String                    @map("full_name")
+  relationshipType DependentRelationship     @map("relationship")
+  /// @deprecated Age must be calculated from HRMS dateOfBirth at runtime; retained for legacy imports and old FHIR fallback.
+  age              Int
+  dateOfBirth      DateTime?                 @map("date_of_birth")
+  biologicalSex    BiologicalSex             @map("biological_sex")
+  encounters       AviationTriageEncounter[]
   queueItems       TriageQueueItem[]
-  createdAt       DateTime                @default(now()) @map("created_at")
-  updatedAt       DateTime                @updatedAt @map("updated_at")
+  createdAt        DateTime                  @default(now()) @map("created_at")
+  updatedAt        DateTime                  @updatedAt @map("updated_at")
 
   @@index([staffMemberId])
   @@map("dependents")
 }
 
 model AviationTriageEncounter {
-  id                     String                  @id @default(cuid())
-  staffMemberId           String                  @map("staff_member_id")
-  staffMember             StaffMember             @relation(fields: [staffMemberId], references: [id], onDelete: Restrict)
-  dependentId             String?                 @map("dependent_id")
-  dependent               Dependent?              @relation(fields: [dependentId], references: [id], onDelete: SetNull)
-  protocolUsedId          String?                 @map("protocol_used_id")
-  protocolUsed            Algorithm?              @relation(fields: [protocolUsedId], references: [id], onDelete: SetNull)
-  initialAcuityScore      Int                     @map("initial_acuity_score")
-  finalDispositionCode    AcuityDispositionCode   @map("final_disposition_code")
-  audioRecordingUrl       String?                 @map("audio_recording_url")
-  transcriptText          String?                 @map("transcript_text")
-  transcriptLanguage      String?                 @map("transcript_language")
-  customAviationTags      Json?                   @map("custom_aviation_tags")
-  clipboardPayload        Json?                   @map("clipboard_payload")
-  nurseId                 String                  @map("nurse_id")
-  completedAt             DateTime?               @map("completed_at")
-  createdAt               DateTime                @default(now()) @map("created_at")
-  updatedAt               DateTime                @updatedAt @map("updated_at")
-  safetyLog               SafetyAuditDeviationLog?
+  id                   String                   @id @default(cuid())
+  staffMemberId        String                   @map("staff_member_id")
+  staffMember          StaffMember              @relation(fields: [staffMemberId], references: [id], onDelete: Restrict)
+  dependentId          String?                  @map("dependent_id")
+  dependent            Dependent?               @relation(fields: [dependentId], references: [id], onDelete: SetNull)
+  protocolUsedId       String?                  @map("protocol_used_id")
+  protocolUsed         Algorithm?               @relation(fields: [protocolUsedId], references: [id], onDelete: SetNull)
+  /// @deprecated Use finalDispositionCode plus safetyLog.explainabilityTrace for deterministic acuity lineage.
+  initialAcuityScore   Int                      @map("initial_acuity_score")
+  finalDispositionCode AcuityDispositionCode    @map("final_disposition_code")
+  audioRecordingUrl    String?                  @map("audio_recording_url")
+  transcriptText       String?                  @map("transcript_text")
+  transcriptLanguage   String?                  @map("transcript_language")
+  customAviationTags   Json?                    @map("custom_aviation_tags")
+  clipboardPayload     Json?                    @map("clipboard_payload")
+  nurseId              String                   @map("nurse_id")
+  completedAt          DateTime?                @map("completed_at")
+  createdAt            DateTime                 @default(now()) @map("created_at")
+  updatedAt            DateTime                 @updatedAt @map("updated_at")
+  safetyLog            SafetyAuditDeviationLog?
 
   @@index([staffMemberId, createdAt])
   @@index([finalDispositionCode])
@@ -393,16 +561,16 @@ model AviationTriageEncounter {
 }
 
 model SafetyAuditDeviationLog {
-  id                       String             @id @default(cuid())
-  encounterId               String             @unique @map("encounter_id")
-  encounter                 AviationTriageEncounter @relation(fields: [encounterId], references: [id], onDelete: Cascade)
-  originalAiRecommendation  String             @map("original_ai_recommendation")
-  nurseOverrideRationale    String?            @map("nurse_override_rationale")
-  rulesEngineSeverity       TriageSeverity     @map("rules_engine_severity")
-  overrideStatusFlag        OverrideStatusFlag @map("override_status_flag")
-  isCriticalFloorBreach     Boolean            @default(false) @map("is_critical_floor_breach")
-  explainabilityTrace       Json               @map("explainability_trace")
-  createdAt                 DateTime           @default(now()) @map("created_at")
+  id                       String                  @id @default(cuid())
+  encounterId              String                  @unique @map("encounter_id")
+  encounter                AviationTriageEncounter @relation(fields: [encounterId], references: [id], onDelete: Cascade)
+  originalAiRecommendation String                  @map("original_ai_recommendation")
+  nurseOverrideRationale   String?                 @map("nurse_override_rationale")
+  rulesEngineSeverity      TriageSeverity          @map("rules_engine_severity")
+  overrideStatusFlag       OverrideStatusFlag      @map("override_status_flag")
+  isCriticalFloorBreach    Boolean                 @default(false) @map("is_critical_floor_breach")
+  explainabilityTrace      Json                    @map("explainability_trace")
+  createdAt                DateTime                @default(now()) @map("created_at")
 
   @@index([overrideStatusFlag, createdAt])
   @@index([isCriticalFloorBreach, createdAt])
@@ -428,46 +596,51 @@ model Organization {
 }
 
 model TriageQueueItem {
-  id                  String               @id @default(cuid())
-  istStaffId          String               @map("ist_staff_id")
-  staffMemberId       String?              @map("staff_member_id")
-  staffMember         StaffMember?         @relation(fields: [staffMemberId], references: [id], onDelete: SetNull)
-  dependentId         String?              @map("dependent_id")
-  dependent           Dependent?           @relation(fields: [dependentId], references: [id], onDelete: SetNull)
-  organizationId      String?              @map("organization_id")
-  organization        Organization?        @relation("QueueSourceOrganization", fields: [organizationId], references: [id], onDelete: SetNull)
-  targetOrganizationId String?             @map("target_organization_id")
-  targetOrganization  Organization?        @relation("QueueTargetOrganization", fields: [targetOrganizationId], references: [id], onDelete: SetNull)
-  status              QueueStatus          @default(INCOMING)
-  currentStage        QueueClinicalStage   @default(INTAKE) @map("current_stage")
-  priorityScore       Int                  @default(0) @map("priority_score")
-  patientType         String               @default("Staff") @map("patient_type")
-  channel             String               @default("Phone")
-  stationCode         String?              @map("station_code")
-  outstationCode      String?              @map("outstation_code")
-  department          String?
-  jobTitle            String?              @map("job_title")
-  summary             String?              @db.Text
-  vitals              Json?
-  matchedProtocolId   String?              @map("matched_protocol_id")
-  matchedProtocol     Algorithm?           @relation(fields: [matchedProtocolId], references: [id], onDelete: SetNull)
-  calculatedSeverity  TriageSeverity?      @map("calculated_severity")
-  dispositionCode     AcuityDispositionCode? @map("disposition_code")
-  destinationName     String?              @map("destination_name")
-  identityValidated   Boolean              @default(false) @map("identity_validated")
-  safetyFloorActive   Boolean              @default(false) @map("safety_floor_active")
-  clinicalApproval    Json?                @map("clinical_approval")
-  sbarCopied          Boolean              @default(false) @map("sbar_copied")
-  assignedNurseId     String?              @map("assigned_nurse_id")
-  claimedAt           DateTime?            @map("claimed_at")
-  slaDeadline         DateTime             @map("sla_deadline")
-  lockedBy            String?              @map("locked_by")
-  lockExpiresAt       DateTime?            @map("lock_expires_at")
-  customAviationTags  Json?                @map("custom_aviation_tags")
-  queuePayload        Json?                @map("queue_payload")
-  transitionLogs      QueueTransitionLog[]
-  createdAt           DateTime             @default(now()) @map("created_at")
-  updatedAt           DateTime             @updatedAt @map("updated_at")
+  id                       String                    @id @default(cuid())
+  istStaffId               String                    @map("ist_staff_id")
+  staffMemberId            String?                   @map("staff_member_id")
+  staffMember              StaffMember?              @relation(fields: [staffMemberId], references: [id], onDelete: SetNull)
+  dependentId              String?                   @map("dependent_id")
+  dependent                Dependent?                @relation(fields: [dependentId], references: [id], onDelete: SetNull)
+  organizationId           String?                   @map("organization_id")
+  organization             Organization?             @relation("QueueSourceOrganization", fields: [organizationId], references: [id], onDelete: SetNull)
+  targetOrganizationId     String?                   @map("target_organization_id")
+  targetOrganization       Organization?             @relation("QueueTargetOrganization", fields: [targetOrganizationId], references: [id], onDelete: SetNull)
+  status                   QueueStatus               @default(INCOMING)
+  currentStage             QueueClinicalStage        @default(INTAKE) @map("current_stage")
+  priorityScore            Int                       @default(0) @map("priority_score")
+  patientType              String                    @default("Staff") @map("patient_type")
+  channel                  String                    @default("Phone")
+  stationCode              String?                   @map("station_code")
+  outstationCode           String?                   @map("outstation_code")
+  department               String?
+  jobTitle                 String?                   @map("job_title")
+  summary                  String?                   @db.Text
+  vitals                   Json?
+  matchedProtocolId        String?                   @map("matched_protocol_id")
+  matchedProtocol          Algorithm?                @relation(fields: [matchedProtocolId], references: [id], onDelete: SetNull)
+  calculatedSeverity       TriageSeverity?           @map("calculated_severity")
+  dispositionCode          AcuityDispositionCode?    @map("disposition_code")
+  destinationName          String?                   @map("destination_name")
+  identityValidated        Boolean                   @default(false) @map("identity_validated")
+  safetyFloorActive        Boolean                   @default(false) @map("safety_floor_active")
+  clinicalApproval         Json?                     @map("clinical_approval")
+  sbarCopied               Boolean                   @default(false) @map("sbar_copied")
+  assignedNurseId          String?                   @map("assigned_nurse_id")
+  claimedAt                DateTime?                 @map("claimed_at")
+  slaDeadline              DateTime                  @map("sla_deadline")
+  lockedBy                 String?                   @map("locked_by")
+  lockExpiresAt            DateTime?                 @map("lock_expires_at")
+  customAviationTags       Json?                     @map("custom_aviation_tags")
+  queuePayload             Json?                     @map("queue_payload")
+  transitionLogs           QueueTransitionLog[]
+  ragRetrievalEvents       RagRetrievalEvent[]
+  llmShadowSuggestions     LlmShadowSuggestion[]
+  nurseSelectionEvents     NurseSelectionEvent[]
+  protocolComparisonEvents ProtocolComparisonEvent[]
+  safetyBlockedOutputs     SafetyBlockedOutput[]
+  createdAt                DateTime                  @default(now()) @map("created_at")
+  updatedAt                DateTime                  @updatedAt @map("updated_at")
 
   @@index([status, currentStage])
   @@index([priorityScore, slaDeadline])
@@ -480,24 +653,24 @@ model TriageQueueItem {
 }
 
 model QueueTransitionLog {
-  id             String             @id @default(cuid())
-  queueItemId    String             @map("queue_item_id")
-  queueItem      TriageQueueItem    @relation(fields: [queueItemId], references: [id], onDelete: Cascade)
-  actorId        String             @map("actor_id")
-  actorOrganizationId String?       @map("actor_organization_id")
-  actorOrganization Organization?   @relation("QueueTransitionActorOrganization", fields: [actorOrganizationId], references: [id], onDelete: SetNull)
-  actorRole      String             @map("actor_role")
-  targetOrganizationId String?      @map("target_organization_id")
-  targetOrganization Organization?  @relation("QueueTransitionTargetOrganization", fields: [targetOrganizationId], references: [id], onDelete: SetNull)
-  eventType      String             @default("QUEUE_TRANSITION") @map("event_type")
-  fromStatus     QueueStatus        @map("from_status")
-  toStatus       QueueStatus        @map("to_status")
-  fromStage      QueueClinicalStage @map("from_stage")
-  toStage        QueueClinicalStage @map("to_stage")
-  reason         String?            @db.Text
-  auditSignature String             @map("audit_signature")
-  tracePayload   Json               @map("trace_payload")
-  timestamp      DateTime           @default(now())
+  id                   String             @id @default(cuid())
+  queueItemId          String             @map("queue_item_id")
+  queueItem            TriageQueueItem    @relation(fields: [queueItemId], references: [id], onDelete: Cascade)
+  actorId              String             @map("actor_id")
+  actorOrganizationId  String?            @map("actor_organization_id")
+  actorOrganization    Organization?      @relation("QueueTransitionActorOrganization", fields: [actorOrganizationId], references: [id], onDelete: SetNull)
+  actorRole            String             @map("actor_role")
+  targetOrganizationId String?            @map("target_organization_id")
+  targetOrganization   Organization?      @relation("QueueTransitionTargetOrganization", fields: [targetOrganizationId], references: [id], onDelete: SetNull)
+  eventType            String             @default("QUEUE_TRANSITION") @map("event_type")
+  fromStatus           QueueStatus        @map("from_status")
+  toStatus             QueueStatus        @map("to_status")
+  fromStage            QueueClinicalStage @map("from_stage")
+  toStage              QueueClinicalStage @map("to_stage")
+  reason               String?            @db.Text
+  auditSignature       String             @map("audit_signature")
+  tracePayload         Json               @map("trace_payload")
+  timestamp            DateTime           @default(now())
 
   @@index([queueItemId, timestamp])
   @@index([actorId, timestamp])
@@ -505,39 +678,184 @@ model QueueTransitionLog {
   @@map("queue_transition_logs")
 }
 
+model RagRetrievalEvent {
+  id                     String                    @id @default(cuid())
+  queueItemId            String?                   @map("queue_item_id")
+  queueItem              TriageQueueItem?          @relation(fields: [queueItemId], references: [id], onDelete: SetNull)
+  sourceType             ClinicalContentSourceType @map("source_type")
+  sourceReleaseVersion   String                    @map("source_release_version")
+  queryText              String                    @map("query_text") @db.Text
+  normalizedReason       String?                   @map("normalized_reason") @db.Text
+  extractedKeywords      Json?                     @map("extracted_keywords")
+  retrievedSourceIds     Json                      @map("retrieved_source_ids")
+  retrievedSnippetHashes Json                      @map("retrieved_snippet_hashes")
+  confidence             Float                     @default(0)
+  boundaryLabel          String                    @default("APPROVED_CONTENT_ONLY") @map("boundary_label")
+  shadowSuggestions      LlmShadowSuggestion[]
+  createdAt              DateTime                  @default(now()) @map("created_at")
+
+  @@index([queueItemId, createdAt])
+  @@index([sourceType, sourceReleaseVersion])
+  @@map("rag_retrieval_events")
+}
+
+model LlmShadowSuggestion {
+  id                          String                    @id @default(cuid())
+  queueItemId                 String?                   @map("queue_item_id")
+  queueItem                   TriageQueueItem?          @relation(fields: [queueItemId], references: [id], onDelete: SetNull)
+  retrievalEventId            String?                   @map("retrieval_event_id")
+  retrievalEvent              RagRetrievalEvent?        @relation(fields: [retrievalEventId], references: [id], onDelete: SetNull)
+  modelName                   String                    @map("model_name")
+  promptVersion               String                    @map("prompt_version")
+  corpusVersion               String                    @map("corpus_version")
+  extractedReason             Json?                     @map("extracted_reason")
+  suggestedKeywords           Json?                     @map("suggested_keywords")
+  suggestedProtocolCandidates Json                      @map("suggested_protocol_candidates")
+  rationaleSummary            String?                   @map("rationale_summary") @db.Text
+  cannotDecideDisposition     Boolean                   @default(true) @map("cannot_decide_disposition")
+  requiresNurseReview         Boolean                   @default(true) @map("requires_nurse_review")
+  status                      RagShadowStatus           @default(RECORDED)
+  comparisonEvents            ProtocolComparisonEvent[]
+  blockedOutputs              SafetyBlockedOutput[]
+  createdAt                   DateTime                  @default(now()) @map("created_at")
+
+  @@index([queueItemId, createdAt])
+  @@index([retrievalEventId])
+  @@index([modelName, promptVersion])
+  @@map("llm_shadow_suggestions")
+}
+
+model NurseSelectionEvent {
+  id                      String                 @id @default(cuid())
+  queueItemId             String?                @map("queue_item_id")
+  queueItem               TriageQueueItem?       @relation(fields: [queueItemId], references: [id], onDelete: SetNull)
+  selectedProtocolId      String?                @map("selected_protocol_id")
+  selectedDispositionCode AcuityDispositionCode? @map("selected_disposition_code")
+  selectedCareAdviceIds   Json?                  @map("selected_care_advice_ids")
+  selectedByUserId        String                 @map("selected_by_user_id")
+  selectedByRole          String                 @map("selected_by_role")
+  selectionReason         String?                @map("selection_reason") @db.Text
+  sourceStep              String                 @default("QUESTIONS") @map("source_step")
+  createdAt               DateTime               @default(now()) @map("created_at")
+
+  @@index([queueItemId, createdAt])
+  @@index([selectedByUserId, createdAt])
+  @@map("nurse_selection_events")
+}
+
+model ProtocolComparisonEvent {
+  id                             String                      @id @default(cuid())
+  queueItemId                    String?                     @map("queue_item_id")
+  queueItem                      TriageQueueItem?            @relation(fields: [queueItemId], references: [id], onDelete: SetNull)
+  shadowSuggestionId             String?                     @map("shadow_suggestion_id")
+  shadowSuggestion               LlmShadowSuggestion?        @relation(fields: [shadowSuggestionId], references: [id], onDelete: SetNull)
+  deterministicPrimaryProtocolId String?                     @map("deterministic_primary_protocol_id")
+  shadowPrimaryProtocolId        String?                     @map("shadow_primary_protocol_id")
+  nurseSelectedProtocolId        String?                     @map("nurse_selected_protocol_id")
+  agreement                      ProtocolComparisonAgreement @default(NO_SHADOW_CANDIDATE)
+  reasonCode                     String?                     @map("reason_code")
+  comparisonPayload              Json?                       @map("comparison_payload")
+  learningFeedbackEvents         LearningFeedbackEvent[]
+  createdAt                      DateTime                    @default(now()) @map("created_at")
+
+  @@index([queueItemId, createdAt])
+  @@index([shadowSuggestionId])
+  @@index([agreement, createdAt])
+  @@map("protocol_comparison_events")
+}
+
+model LearningFeedbackEvent {
+  id                     String                   @id @default(cuid())
+  comparisonEventId      String?                  @map("comparison_event_id")
+  comparisonEvent        ProtocolComparisonEvent? @relation(fields: [comparisonEventId], references: [id], onDelete: SetNull)
+  modelEvaluationRunId   String?                  @map("model_evaluation_run_id")
+  modelEvaluationRun     ModelEvaluationRun?      @relation(fields: [modelEvaluationRunId], references: [id], onDelete: SetNull)
+  action                 LearningFeedbackAction
+  targetEntityType       String?                  @map("target_entity_type")
+  targetEntityId         String?                  @map("target_entity_id")
+  rationale              String?                  @db.Text
+  requiresClinicalReview Boolean                  @default(true) @map("requires_clinical_review")
+  createdByUserId        String?                  @map("created_by_user_id")
+  createdAt              DateTime                 @default(now()) @map("created_at")
+
+  @@index([comparisonEventId])
+  @@index([modelEvaluationRunId])
+  @@index([action, createdAt])
+  @@map("learning_feedback_events")
+}
+
+model ModelEvaluationRun {
+  id                     String                  @id @default(cuid())
+  runName                String                  @map("run_name")
+  modelName              String                  @map("model_name")
+  promptVersion          String                  @map("prompt_version")
+  corpusVersion          String                  @map("corpus_version")
+  datasetVersion         String                  @map("dataset_version")
+  status                 ModelEvaluationStatus   @default(PLANNED)
+  metrics                Json?
+  failureSummary         String?                 @map("failure_summary") @db.Text
+  learningFeedbackEvents LearningFeedbackEvent[]
+  startedAt              DateTime?               @map("started_at")
+  finishedAt             DateTime?               @map("finished_at")
+  createdAt              DateTime                @default(now()) @map("created_at")
+
+  @@index([modelName, promptVersion])
+  @@index([status, createdAt])
+  @@map("model_evaluation_runs")
+}
+
+model SafetyBlockedOutput {
+  id                 String                    @id @default(cuid())
+  queueItemId        String?                   @map("queue_item_id")
+  queueItem          TriageQueueItem?          @relation(fields: [queueItemId], references: [id], onDelete: SetNull)
+  shadowSuggestionId String?                   @map("shadow_suggestion_id")
+  shadowSuggestion   LlmShadowSuggestion?      @relation(fields: [shadowSuggestionId], references: [id], onDelete: SetNull)
+  reason             SafetyBlockedOutputReason
+  blockedPayload     Json                      @map("blocked_payload")
+  deterministicFloor TriageSeverity?           @map("deterministic_floor")
+  policyVersion      String                    @map("policy_version")
+  createdAt          DateTime                  @default(now()) @map("created_at")
+
+  @@index([queueItemId, createdAt])
+  @@index([shadowSuggestionId])
+  @@index([reason, createdAt])
+  @@map("safety_blocked_outputs")
+}
+
 model ApplicationUser {
-  id                    String   @id @default(cuid())
-  employeeId            String?  @unique @map("employee_id")
-  hrmsId                String?  @unique @map("hrms_id")
-  fullName              String   @map("full_name")
-  emailCiphertext       String?  @map("email_ciphertext")
-  emailBlindIndex       String?  @unique @map("email_blind_index")
-  mobileCiphertext      String?  @map("mobile_ciphertext")
-  mobileBlindIndex      String?  @map("mobile_blind_index")
-  organization          String   @default("IST Tech")
-  organizationId        String?  @map("organization_id")
-  organizationRef       Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-  facility              String?
-  department            String?
-  clinicalSpecialty     String?  @map("clinical_specialty")
-  jobTitle              String?  @map("job_title")
-  professionalCategory  String?  @map("professional_category")
-  managerUserId         String?  @map("manager_user_id")
-  licenceNumberCiphertext String? @map("licence_number_ciphertext")
-  licenceAuthority      String?  @map("licence_authority")
-  licenceExpiry         DateTime? @map("licence_expiry")
-  country               String   @default("QA")
-  preferredLanguage     String   @default("en") @map("preferred_language")
-  timeZone              String   @default("Asia/Qatar") @map("time_zone")
-  authenticationMethod  String   @default("local") @map("authentication_method")
-  mfaStatus             String   @default("pending") @map("mfa_status")
-  accountStatus         String   @default("active") @map("account_status")
-  directoryStatus       DirectoryStatus @default(ACTIVE) @map("directory_status")
-  passwordHash          String?  @map("password_hash")
-  createdBy             String?  @map("created_by")
-  updatedBy             String?  @map("updated_by")
-  createdAt             DateTime @default(now()) @map("created_at")
-  updatedAt             DateTime @updatedAt @map("updated_at")
+  id                      String          @id @default(cuid())
+  employeeId              String?         @unique @map("employee_id")
+  hrmsId                  String?         @unique @map("hrms_id")
+  fullName                String          @map("full_name")
+  emailCiphertext         String?         @map("email_ciphertext")
+  emailBlindIndex         String?         @unique @map("email_blind_index")
+  mobileCiphertext        String?         @map("mobile_ciphertext")
+  mobileBlindIndex        String?         @map("mobile_blind_index")
+  /// @deprecated Use organizationId/organizationRef for canonical tenant joins; retained for legacy display and import compatibility.
+  organization            String          @default("IST Tech")
+  organizationId          String?         @map("organization_id")
+  organizationRef         Organization?   @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  facility                String?
+  department              String?
+  clinicalSpecialty       String?         @map("clinical_specialty")
+  jobTitle                String?         @map("job_title")
+  professionalCategory    String?         @map("professional_category")
+  managerUserId           String?         @map("manager_user_id")
+  licenceNumberCiphertext String?         @map("licence_number_ciphertext")
+  licenceAuthority        String?         @map("licence_authority")
+  licenceExpiry           DateTime?       @map("licence_expiry")
+  country                 String          @default("QA")
+  preferredLanguage       String          @default("en") @map("preferred_language")
+  timeZone                String          @default("Asia/Qatar") @map("time_zone")
+  authenticationMethod    String          @default("local") @map("authentication_method")
+  mfaStatus               String          @default("pending") @map("mfa_status")
+  accountStatus           String          @default("active") @map("account_status")
+  directoryStatus         DirectoryStatus @default(ACTIVE) @map("directory_status")
+  passwordHash            String?         @map("password_hash")
+  createdBy               String?         @map("created_by")
+  updatedBy               String?         @map("updated_by")
+  createdAt               DateTime        @default(now()) @map("created_at")
+  updatedAt               DateTime        @updatedAt @map("updated_at")
 
   @@index([organization, facility, department])
   @@index([organizationId, accountStatus])
@@ -563,27 +881,27 @@ model Role {
 }
 
 model Responsibility {
-  id                          String   @id @default(cuid())
-  code                        String   @unique
-  name                        String
-  description                 String?
-  module                      String
-  businessFunction            String   @map("business_function")
-  riskClassification          String   @map("risk_classification")
-  clinicalOrAdministrative    String   @map("clinical_or_administrative")
-  allowedActions              Json     @map("allowed_actions")
-  dataScope                   Json?    @map("data_scope")
-  clinicalScope               Json?    @map("clinical_scope")
-  integrationScope            Json?    @map("integration_scope")
-  prerequisiteResponsibilities Json?   @map("prerequisite_responsibilities")
-  conflictingResponsibilities Json?    @map("conflicting_responsibilities")
-  approvalRequirement         String   @default("approval_required") @map("approval_requirement")
-  effectiveDate               DateTime? @map("effective_date")
-  expiryDate                  DateTime? @map("expiry_date")
-  status                      String   @default("active")
-  version                     String   @default("1.0")
-  createdAt                   DateTime @default(now()) @map("created_at")
-  updatedAt                   DateTime @updatedAt @map("updated_at")
+  id                           String    @id @default(cuid())
+  code                         String    @unique
+  name                         String
+  description                  String?
+  module                       String
+  businessFunction             String    @map("business_function")
+  riskClassification           String    @map("risk_classification")
+  clinicalOrAdministrative     String    @map("clinical_or_administrative")
+  allowedActions               Json      @map("allowed_actions")
+  dataScope                    Json?     @map("data_scope")
+  clinicalScope                Json?     @map("clinical_scope")
+  integrationScope             Json?     @map("integration_scope")
+  prerequisiteResponsibilities Json?     @map("prerequisite_responsibilities")
+  conflictingResponsibilities  Json?     @map("conflicting_responsibilities")
+  approvalRequirement          String    @default("approval_required") @map("approval_requirement")
+  effectiveDate                DateTime? @map("effective_date")
+  expiryDate                   DateTime? @map("expiry_date")
+  status                       String    @default("active")
+  version                      String    @default("1.0")
+  createdAt                    DateTime  @default(now()) @map("created_at")
+  updatedAt                    DateTime  @updatedAt @map("updated_at")
 
   @@index([module, status])
   @@map("responsibilities")
@@ -605,32 +923,32 @@ model Permission {
 }
 
 model AccessProfile {
-  id                 String   @id @default(cuid())
-  code               String   @unique
-  name               String
-  description        String?
-  organizationScope  Json?    @map("organization_scope")
-  facilityScope      Json?    @map("facility_scope")
-  departmentScope    Json?    @map("department_scope")
-  specialtyScope     Json?    @map("specialty_scope")
-  queueScope         Json?    @map("queue_scope")
-  shiftRestrictions  Json?    @map("shift_restrictions")
-  status             String   @default("active")
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @updatedAt @map("updated_at")
+  id                String   @id @default(cuid())
+  code              String   @unique
+  name              String
+  description       String?
+  organizationScope Json?    @map("organization_scope")
+  facilityScope     Json?    @map("facility_scope")
+  departmentScope   Json?    @map("department_scope")
+  specialtyScope    Json?    @map("specialty_scope")
+  queueScope        Json?    @map("queue_scope")
+  shiftRestrictions Json?    @map("shift_restrictions")
+  status            String   @default("active")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
 
   @@map("access_profiles")
 }
 
 model UserRole {
-  id            String   @id @default(cuid())
-  userId        String   @map("user_id")
-  roleCode      String   @map("role_code")
-  effectiveFrom DateTime @default(now()) @map("effective_from")
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  roleCode      String    @map("role_code")
+  effectiveFrom DateTime  @default(now()) @map("effective_from")
   effectiveTo   DateTime? @map("effective_to")
-  approvedBy    String?  @map("approved_by")
-  status        String   @default("active")
-  createdAt     DateTime @default(now()) @map("created_at")
+  approvedBy    String?   @map("approved_by")
+  status        String    @default("active")
+  createdAt     DateTime  @default(now()) @map("created_at")
 
   @@unique([userId, roleCode, effectiveFrom])
   @@index([userId, status])
@@ -638,14 +956,14 @@ model UserRole {
 }
 
 model UserResponsibility {
-  id                 String   @id @default(cuid())
-  userId             String   @map("user_id")
-  responsibilityCode String   @map("responsibility_code")
-  effectiveFrom      DateTime @default(now()) @map("effective_from")
+  id                 String    @id @default(cuid())
+  userId             String    @map("user_id")
+  responsibilityCode String    @map("responsibility_code")
+  effectiveFrom      DateTime  @default(now()) @map("effective_from")
   effectiveTo        DateTime? @map("effective_to")
-  approvedBy         String?  @map("approved_by")
-  status             String   @default("active")
-  createdAt          DateTime @default(now()) @map("created_at")
+  approvedBy         String?   @map("approved_by")
+  status             String    @default("active")
+  createdAt          DateTime  @default(now()) @map("created_at")
 
   @@unique([userId, responsibilityCode, effectiveFrom])
   @@index([userId, status])
@@ -653,13 +971,13 @@ model UserResponsibility {
 }
 
 model UserAccessProfile {
-  id                String   @id @default(cuid())
-  userId            String   @map("user_id")
-  accessProfileCode String   @map("access_profile_code")
-  effectiveFrom     DateTime @default(now()) @map("effective_from")
+  id                String    @id @default(cuid())
+  userId            String    @map("user_id")
+  accessProfileCode String    @map("access_profile_code")
+  effectiveFrom     DateTime  @default(now()) @map("effective_from")
   effectiveTo       DateTime? @map("effective_to")
-  status            String   @default("active")
-  createdAt         DateTime @default(now()) @map("created_at")
+  status            String    @default("active")
+  createdAt         DateTime  @default(now()) @map("created_at")
 
   @@unique([userId, accessProfileCode, effectiveFrom])
   @@index([userId, status])
@@ -667,14 +985,14 @@ model UserAccessProfile {
 }
 
 model AccessScope {
-  id          String   @id @default(cuid())
-  code        String   @unique
-  name        String
-  scopeType   String   @map("scope_type")
-  rules       Json
-  status      String   @default("active")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  scopeType String   @map("scope_type")
+  rules     Json
+  status    String   @default("active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("access_scopes")
 }
@@ -693,42 +1011,42 @@ model ClinicalScope {
 }
 
 model IntegrationScope {
-  id          String   @id @default(cuid())
-  code        String   @unique
-  name        String
-  integrations Json
-  allowedActions Json @map("allowed_actions")
-  status      String   @default("active")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id             String   @id @default(cuid())
+  code           String   @unique
+  name           String
+  integrations   Json
+  allowedActions Json     @map("allowed_actions")
+  status         String   @default("active")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   @@map("integration_scopes")
 }
 
 model UserQueueAssignment {
-  id            String   @id @default(cuid())
-  userId        String   @map("user_id")
-  queueCode     String   @map("queue_code")
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  queueCode     String    @map("queue_code")
   role          String
-  effectiveFrom DateTime @default(now()) @map("effective_from")
+  effectiveFrom DateTime  @default(now()) @map("effective_from")
   effectiveTo   DateTime? @map("effective_to")
-  status        String   @default("active")
-  createdAt     DateTime @default(now()) @map("created_at")
+  status        String    @default("active")
+  createdAt     DateTime  @default(now()) @map("created_at")
 
   @@index([userId, queueCode, status])
   @@map("user_queue_assignments")
 }
 
 model AccessRequest {
-  id             String   @id @default(cuid())
-  requesterUserId String @map("requester_user_id")
-  targetUserId   String  @map("target_user_id")
-  requestedAccess Json   @map("requested_access")
-  justification  String
-  status         String  @default("pending")
-  risk           String  @default("medium")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
+  id              String   @id @default(cuid())
+  requesterUserId String   @map("requester_user_id")
+  targetUserId    String   @map("target_user_id")
+  requestedAccess Json     @map("requested_access")
+  justification   String
+  status          String   @default("pending")
+  risk            String   @default("medium")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 
   @@index([status, createdAt])
   @@map("access_requests")
@@ -747,128 +1065,128 @@ model AccessApproval {
 }
 
 model SegregationOfDutyRule {
-  id            String   @id @default(cuid())
-  code          String   @unique
-  name          String
-  description   String
-  conflictType  String   @map("conflict_type")
-  leftScope     Json     @map("left_scope")
-  rightScope    Json     @map("right_scope")
-  severity      String   @default("high")
-  status        String   @default("active")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id           String   @id @default(cuid())
+  code         String   @unique
+  name         String
+  description  String
+  conflictType String   @map("conflict_type")
+  leftScope    Json     @map("left_scope")
+  rightScope   Json     @map("right_scope")
+  severity     String   @default("high")
+  status       String   @default("active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   @@map("segregation_of_duty_rules")
 }
 
 model AccessConflict {
-  id          String   @id @default(cuid())
-  userId      String   @map("user_id")
-  ruleCode    String   @map("rule_code")
-  details     Json
-  status      String   @default("open")
-  detectedAt  DateTime @default(now()) @map("detected_at")
-  resolvedAt  DateTime? @map("resolved_at")
+  id         String    @id @default(cuid())
+  userId     String    @map("user_id")
+  ruleCode   String    @map("rule_code")
+  details    Json
+  status     String    @default("open")
+  detectedAt DateTime  @default(now()) @map("detected_at")
+  resolvedAt DateTime? @map("resolved_at")
 
   @@index([userId, status])
   @@map("access_conflicts")
 }
 
 model TemporaryAccess {
-  id             String   @id @default(cuid())
-  userId         String   @map("user_id")
-  accessProfile  String   @map("access_profile")
-  purpose        String
-  effectiveFrom  DateTime @map("effective_from")
-  effectiveTo    DateTime @map("effective_to")
-  approvedBy     String?  @map("approved_by")
-  status         String   @default("active")
-  createdAt      DateTime @default(now()) @map("created_at")
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  accessProfile String   @map("access_profile")
+  purpose       String
+  effectiveFrom DateTime @map("effective_from")
+  effectiveTo   DateTime @map("effective_to")
+  approvedBy    String?  @map("approved_by")
+  status        String   @default("active")
+  createdAt     DateTime @default(now()) @map("created_at")
 
   @@index([userId, status])
   @@map("temporary_access")
 }
 
 model BreakGlassAccess {
-  id             String   @id @default(cuid())
-  userId         String   @map("user_id")
-  encounterId    String?  @map("encounter_id")
-  purpose        String
-  justification  String
-  expiresAt      DateTime @map("expires_at")
-  reviewedBy     String?  @map("reviewed_by")
-  reviewedAt     DateTime? @map("reviewed_at")
-  status         String   @default("active")
-  createdAt      DateTime @default(now()) @map("created_at")
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  encounterId   String?   @map("encounter_id")
+  purpose       String
+  justification String
+  expiresAt     DateTime  @map("expires_at")
+  reviewedBy    String?   @map("reviewed_by")
+  reviewedAt    DateTime? @map("reviewed_at")
+  status        String    @default("active")
+  createdAt     DateTime  @default(now()) @map("created_at")
 
   @@index([userId, status])
   @@map("break_glass_access")
 }
 
 model AuthenticationProvider {
-  id                  String   @id @default(cuid())
-  providerKey         String   @unique @map("provider_key")
-  name                String
-  protocol            String
-  enabled             Boolean  @default(false)
-  tenantIdCiphertext  String?  @map("tenant_id_ciphertext")
-  issuerUrl           String?  @map("issuer_url")
-  authorizationEndpoint String? @map("authorization_endpoint")
-  tokenEndpoint       String?  @map("token_endpoint")
-  userInfoEndpoint    String?  @map("user_info_endpoint")
-  clientIdCiphertext  String?  @map("client_id_ciphertext")
-  clientSecretRef     String?  @map("client_secret_ref")
-  redirectUri         String?  @map("redirect_uri")
-  logoutUri           String?  @map("logout_uri")
-  samlMetadataCiphertext String? @map("saml_metadata_ciphertext")
-  signingCertificateRef String? @map("signing_certificate_ref")
-  certificateExpiry   DateTime? @map("certificate_expiry")
-  allowedDomains      Json?    @map("allowed_domains")
-  attributeMappings   Json?    @map("attribute_mappings")
-  groupMappings       Json?    @map("group_mappings")
-  jitProvisioning     Boolean  @default(false) @map("jit_provisioning")
-  localLoginEnabled   Boolean  @default(true) @map("local_login_enabled")
-  createdAt           DateTime @default(now()) @map("created_at")
-  updatedAt           DateTime @updatedAt @map("updated_at")
+  id                     String    @id @default(cuid())
+  providerKey            String    @unique @map("provider_key")
+  name                   String
+  protocol               String
+  enabled                Boolean   @default(false)
+  tenantIdCiphertext     String?   @map("tenant_id_ciphertext")
+  issuerUrl              String?   @map("issuer_url")
+  authorizationEndpoint  String?   @map("authorization_endpoint")
+  tokenEndpoint          String?   @map("token_endpoint")
+  userInfoEndpoint       String?   @map("user_info_endpoint")
+  clientIdCiphertext     String?   @map("client_id_ciphertext")
+  clientSecretRef        String?   @map("client_secret_ref")
+  redirectUri            String?   @map("redirect_uri")
+  logoutUri              String?   @map("logout_uri")
+  samlMetadataCiphertext String?   @map("saml_metadata_ciphertext")
+  signingCertificateRef  String?   @map("signing_certificate_ref")
+  certificateExpiry      DateTime? @map("certificate_expiry")
+  allowedDomains         Json?     @map("allowed_domains")
+  attributeMappings      Json?     @map("attribute_mappings")
+  groupMappings          Json?     @map("group_mappings")
+  jitProvisioning        Boolean   @default(false) @map("jit_provisioning")
+  localLoginEnabled      Boolean   @default(true) @map("local_login_enabled")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
 
   @@map("authentication_providers")
 }
 
 model UserSession {
-  id             String   @id @default(cuid())
-  userId         String   @map("user_id")
-  sessionHash    String   @unique @map("session_hash")
-  sessionPayload Json     @map("session_payload")
-  authMethod     String   @map("auth_method")
-  mfaVerified    Boolean  @default(false) @map("mfa_verified")
-  ipAddress      String?  @map("ip_address")
+  id             String    @id @default(cuid())
+  userId         String    @map("user_id")
+  sessionHash    String    @unique @map("session_hash")
+  sessionPayload Json      @map("session_payload")
+  authMethod     String    @map("auth_method")
+  mfaVerified    Boolean   @default(false) @map("mfa_verified")
+  ipAddress      String?   @map("ip_address")
   device         String?
-  userAgent      String?  @map("user_agent")
-  expiresAt      DateTime @map("expires_at")
+  userAgent      String?   @map("user_agent")
+  expiresAt      DateTime  @map("expires_at")
   revokedAt      DateTime? @map("revoked_at")
-  createdAt      DateTime @default(now()) @map("created_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
 
   @@index([userId, expiresAt])
   @@map("user_sessions")
 }
 
 model CcpDraft {
-  id             String   @id
-  istStaffId     String   @map("ist_staff_id")
-  threadId       String   @map("thread_id")
-  linkedGoalId   String?  @map("linked_goal_id")
-  channel        String
-  recipientTo    String   @map("recipient_to")
-  originalTo     String   @map("original_to")
-  subject        String
-  body           String   @db.Text
-  status         String
-  draftedByRole  String   @map("drafted_by_role")
-  approval       Json
-  sendResult     Json?    @map("send_result")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
+  id            String   @id
+  istStaffId    String   @map("ist_staff_id")
+  threadId      String   @map("thread_id")
+  linkedGoalId  String?  @map("linked_goal_id")
+  channel       String
+  recipientTo   String   @map("recipient_to")
+  originalTo    String   @map("original_to")
+  subject       String
+  body          String   @db.Text
+  status        String
+  draftedByRole String   @map("drafted_by_role")
+  approval      Json
+  sendResult    Json?    @map("send_result")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
   @@index([istStaffId, threadId])
   @@index([status, createdAt])
@@ -887,7 +1205,7 @@ model CcpWebhookRecord {
   status            String
   attachments       Json
   rawPayload        Json     @map("raw_payload")
-  queueNote         String   @db.Text @map("queue_note")
+  queueNote         String   @map("queue_note") @db.Text
   persistedAt       DateTime @default(now()) @map("persisted_at")
 
   @@index([provider, persistedAt])
@@ -896,67 +1214,67 @@ model CcpWebhookRecord {
 }
 
 model DataClassification {
-  id          String   @id @default(cuid())
-  code        String   @unique
-  name        String
-  description String?
-  risk        String
-  defaultMaskingPolicy String? @map("default_masking_policy")
-  defaultRevealPolicy  String? @map("default_reveal_policy")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id                   String   @id @default(cuid())
+  code                 String   @unique
+  name                 String
+  description          String?
+  risk                 String
+  defaultMaskingPolicy String?  @map("default_masking_policy")
+  defaultRevealPolicy  String?  @map("default_reveal_policy")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
 
   @@map("data_classifications")
 }
 
 model SensitiveDataField {
-  id                  String   @id @default(cuid())
-  entityName          String   @map("entity_name")
-  fieldName           String   @map("field_name")
-  dataClassification  String   @map("data_classification")
-  encryptionPolicyCode String? @map("encryption_policy_code")
-  maskingPolicyCode   String?  @map("masking_policy_code")
-  revealPolicyCode    String?  @map("reveal_policy_code")
-  blindIndexRequired  Boolean  @default(false) @map("blind_index_required")
-  status              String   @default("active")
-  createdAt           DateTime @default(now()) @map("created_at")
-  updatedAt           DateTime @updatedAt @map("updated_at")
+  id                   String   @id @default(cuid())
+  entityName           String   @map("entity_name")
+  fieldName            String   @map("field_name")
+  dataClassification   String   @map("data_classification")
+  encryptionPolicyCode String?  @map("encryption_policy_code")
+  maskingPolicyCode    String?  @map("masking_policy_code")
+  revealPolicyCode     String?  @map("reveal_policy_code")
+  blindIndexRequired   Boolean  @default(false) @map("blind_index_required")
+  status               String   @default("active")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
 
   @@unique([entityName, fieldName])
   @@map("sensitive_data_fields")
 }
 
 model EncryptionPolicy {
-  id                 String   @id @default(cuid())
-  code               String   @unique
-  name               String
-  dataClassification String   @map("data_classification")
-  coveredEntities    Json     @map("covered_entities")
-  coveredFields      Json     @map("covered_fields")
-  approvedAlgorithm  String   @default("AES-256-GCM") @map("approved_algorithm")
-  minimumKeySize     Int      @default(256) @map("minimum_key_size")
-  keyProvider        String   @map("key_provider")
-  keyAlias           String   @map("key_alias")
-  keyRotationDays    Int      @default(90) @map("key_rotation_days")
-  dataResidency      String   @map("data_residency")
-  approvalRequirement String  @default("dual_approval") @map("approval_requirement")
-  status             String   @default("draft")
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @updatedAt @map("updated_at")
+  id                  String   @id @default(cuid())
+  code                String   @unique
+  name                String
+  dataClassification  String   @map("data_classification")
+  coveredEntities     Json     @map("covered_entities")
+  coveredFields       Json     @map("covered_fields")
+  approvedAlgorithm   String   @default("AES-256-GCM") @map("approved_algorithm")
+  minimumKeySize      Int      @default(256) @map("minimum_key_size")
+  keyProvider         String   @map("key_provider")
+  keyAlias            String   @map("key_alias")
+  keyRotationDays     Int      @default(90) @map("key_rotation_days")
+  dataResidency       String   @map("data_residency")
+  approvalRequirement String   @default("dual_approval") @map("approval_requirement")
+  status              String   @default("draft")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
 
   @@map("encryption_policies")
 }
 
 model EncryptionPolicyVersion {
-  id                 String   @id @default(cuid())
-  policyCode         String   @map("policy_code")
-  version            String
-  policySnapshot     Json     @map("policy_snapshot")
-  approvedBy         String?  @map("approved_by")
-  approvedAt         DateTime? @map("approved_at")
-  effectiveFrom      DateTime? @map("effective_from")
-  retiredAt          DateTime? @map("retired_at")
-  createdAt          DateTime @default(now()) @map("created_at")
+  id             String    @id @default(cuid())
+  policyCode     String    @map("policy_code")
+  version        String
+  policySnapshot Json      @map("policy_snapshot")
+  approvedBy     String?   @map("approved_by")
+  approvedAt     DateTime? @map("approved_at")
+  effectiveFrom  DateTime? @map("effective_from")
+  retiredAt      DateTime? @map("retired_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
 
   @@unique([policyCode, version])
   @@map("encryption_policy_versions")
@@ -976,33 +1294,33 @@ model MaskingPolicy {
 }
 
 model RevealPolicy {
-  id                 String   @id @default(cuid())
-  code               String   @unique
-  name               String
-  dataClassification String   @map("data_classification")
-  requiresMfa        Boolean  @default(true) @map("requires_mfa")
-  requiresApproval   Boolean  @default(false) @map("requires_approval")
-  allowedPurposes    Json     @map("allowed_purposes")
-  revealDurationSeconds Int   @default(60) @map("reveal_duration_seconds")
-  remaskOnBlur       Boolean  @default(true) @map("remask_on_blur")
-  disableCopy        Boolean  @default(true) @map("disable_copy")
-  status             String   @default("active")
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @updatedAt @map("updated_at")
+  id                    String   @id @default(cuid())
+  code                  String   @unique
+  name                  String
+  dataClassification    String   @map("data_classification")
+  requiresMfa           Boolean  @default(true) @map("requires_mfa")
+  requiresApproval      Boolean  @default(false) @map("requires_approval")
+  allowedPurposes       Json     @map("allowed_purposes")
+  revealDurationSeconds Int      @default(60) @map("reveal_duration_seconds")
+  remaskOnBlur          Boolean  @default(true) @map("remask_on_blur")
+  disableCopy           Boolean  @default(true) @map("disable_copy")
+  status                String   @default("active")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
 
   @@map("reveal_policies")
 }
 
 model RevealRequest {
-  id            String   @id @default(cuid())
-  requesterUserId String @map("requester_user_id")
-  resourceType  String  @map("resource_type")
-  resourceId    String  @map("resource_id")
-  fieldName     String  @map("field_name")
-  purpose       String
-  status        String  @default("pending")
-  requestedAt   DateTime @default(now()) @map("requested_at")
-  expiresAt     DateTime? @map("expires_at")
+  id              String    @id @default(cuid())
+  requesterUserId String    @map("requester_user_id")
+  resourceType    String    @map("resource_type")
+  resourceId      String    @map("resource_id")
+  fieldName       String    @map("field_name")
+  purpose         String
+  status          String    @default("pending")
+  requestedAt     DateTime  @default(now()) @map("requested_at")
+  expiresAt       DateTime? @map("expires_at")
 
   @@index([requesterUserId, status])
   @@map("reveal_requests")
@@ -1038,45 +1356,45 @@ model RevealEvent {
 }
 
 model CryptographicKeyReference {
-  id              String   @id @default(cuid())
-  keyAlias        String   @unique @map("key_alias")
-  provider        String
-  location        String
-  keyClass        String   @map("key_class")
-  currentVersion  String   @map("current_version")
-  status          String   @default("active")
-  expiresAt       DateTime? @map("expires_at")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  id             String    @id @default(cuid())
+  keyAlias       String    @unique @map("key_alias")
+  provider       String
+  location       String
+  keyClass       String    @map("key_class")
+  currentVersion String    @map("current_version")
+  status         String    @default("active")
+  expiresAt      DateTime? @map("expires_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
 
   @@map("cryptographic_key_references")
 }
 
 model KeyRotationRecord {
-  id              String   @id @default(cuid())
-  keyAlias        String   @map("key_alias")
-  fromVersion     String   @map("from_version")
-  toVersion       String   @map("to_version")
-  status          String   @default("pending")
-  approvedBy      String?  @map("approved_by")
-  rotatedAt       DateTime? @map("rotated_at")
-  createdAt       DateTime @default(now()) @map("created_at")
+  id          String    @id @default(cuid())
+  keyAlias    String    @map("key_alias")
+  fromVersion String    @map("from_version")
+  toVersion   String    @map("to_version")
+  status      String    @default("pending")
+  approvedBy  String?   @map("approved_by")
+  rotatedAt   DateTime? @map("rotated_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
 
   @@index([keyAlias, createdAt])
   @@map("key_rotation_records")
 }
 
 model PrivacyRequest {
-  id             String   @id @default(cuid())
-  requesterRef   String   @map("requester_ref")
-  requestType    String   @map("request_type")
-  jurisdiction   String
-  status         String   @default("open")
-  dueAt          DateTime? @map("due_at")
-  assignedTo     String?  @map("assigned_to")
-  notes          String?
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
+  id           String    @id @default(cuid())
+  requesterRef String    @map("requester_ref")
+  requestType  String    @map("request_type")
+  jurisdiction String
+  status       String    @default("open")
+  dueAt        DateTime? @map("due_at")
+  assignedTo   String?   @map("assigned_to")
+  notes        String?
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
 
   @@index([status, dueAt])
   @@map("privacy_requests")
@@ -1098,57 +1416,57 @@ model RetentionPolicy {
 }
 
 model LegalHold {
-  id           String   @id @default(cuid())
-  holdCode     String   @unique @map("hold_code")
-  resourceType String   @map("resource_type")
-  resourceId   String   @map("resource_id")
+  id           String    @id @default(cuid())
+  holdCode     String    @unique @map("hold_code")
+  resourceType String    @map("resource_type")
+  resourceId   String    @map("resource_id")
   reason       String
-  status       String   @default("active")
-  createdBy    String?  @map("created_by")
-  releasedBy   String?  @map("released_by")
+  status       String    @default("active")
+  createdBy    String?   @map("created_by")
+  releasedBy   String?   @map("released_by")
   releasedAt   DateTime? @map("released_at")
-  createdAt    DateTime @default(now()) @map("created_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
 
   @@index([resourceType, resourceId, status])
   @@map("legal_holds")
 }
 
 model SensitiveExportRequest {
-  id               String   @id @default(cuid())
-  requesterUserId  String   @map("requester_user_id")
-  exportType       String   @map("export_type")
-  dataScope        Json     @map("data_scope")
-  justification    String
-  approvalStatus   String   @default("pending") @map("approval_status")
-  encryptionRequired Boolean @default(true) @map("encryption_required")
-  expiresAt        DateTime? @map("expires_at")
-  createdAt        DateTime @default(now()) @map("created_at")
-  updatedAt        DateTime @updatedAt @map("updated_at")
+  id                 String    @id @default(cuid())
+  requesterUserId    String    @map("requester_user_id")
+  exportType         String    @map("export_type")
+  dataScope          Json      @map("data_scope")
+  justification      String
+  approvalStatus     String    @default("pending") @map("approval_status")
+  encryptionRequired Boolean   @default(true) @map("encryption_required")
+  expiresAt          DateTime? @map("expires_at")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
 
   @@index([approvalStatus, createdAt])
   @@map("sensitive_export_requests")
 }
 
 model AuditEvent {
-  id              String   @id @default(cuid())
-  timestamp       DateTime @default(now())
-  userId          String?  @map("user_id")
-  activeRole      String?  @map("active_role")
-  organization    String?
-  facility        String?
-  department      String?
-  action          String
-  module          String
-  resource        String?
-  recordReference String?  @map("record_reference")
-  purpose         String?
-  approvalReference String? @map("approval_reference")
-  ipAddress       String?  @map("ip_address")
-  device          String?
-  sessionHash     String?  @map("session_hash")
-  success         Boolean
-  riskLevel       String   @default("medium") @map("risk_level")
-  metadata        Json?
+  id                String   @id @default(cuid())
+  timestamp         DateTime @default(now())
+  userId            String?  @map("user_id")
+  activeRole        String?  @map("active_role")
+  organization      String?
+  facility          String?
+  department        String?
+  action            String
+  module            String
+  resource          String?
+  recordReference   String?  @map("record_reference")
+  purpose           String?
+  approvalReference String?  @map("approval_reference")
+  ipAddress         String?  @map("ip_address")
+  device            String?
+  sessionHash       String?  @map("session_hash")
+  success           Boolean
+  riskLevel         String   @default("medium") @map("risk_level")
+  metadata          Json?
 
   @@index([timestamp])
   @@index([userId, action])

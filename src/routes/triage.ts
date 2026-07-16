@@ -24,10 +24,20 @@ function deriveCompletionFitToFlyStatus(args: {
 }): "CLEARED" | "RESTRICTED" | "MEDICAL_REVIEW_REQUIRED" {
   const jobTitle = args.jobTitle?.toLowerCase() ?? "";
   const safetySensitiveCrew = jobTitle.includes("pilot") || jobTitle.includes("cabin crew");
+  const dispositionRequiresRestriction = new Set([
+    "HMC_EMERGENCY_DEPARTMENT",
+    "SIDRA_PEDIATRIC_ED",
+    "HMC_URGENT_REVIEW",
+    "OUTSTATION_TELECONSULT_ESCALATION"
+  ]).has(args.finalDispositionCode);
   const selfCare = args.finalDispositionCode === "SELF_CARE_WITH_CALLBACK_PRECAUTIONS";
   const taggedForReview = args.customAviationTags.some((tag) =>
     ["fit-to-fly-review", "duty-restriction", "sickness-validation"].includes(tag)
   );
+
+  if (dispositionRequiresRestriction) {
+    return "RESTRICTED";
+  }
 
   if (safetySensitiveCrew && (!selfCare || taggedForReview)) {
     return "RESTRICTED";

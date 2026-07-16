@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IST Health — Design System Preview</title>
+  <link rel="stylesheet" href="styles/ist-health.css" />
+  <style>
+    .preview-bar {
+      background: var(--color-bg);
+      border-bottom: var(--hairline-width) solid var(--color-divider);
+      padding: var(--space-3) var(--space-8);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      text-align: center;
+    }
+    .preview-bar strong { color: var(--color-heading); font-weight: var(--font-weight-semibold); }
+    .palette-swatch {
+      display: flex; align-items: center; gap: var(--space-4);
+      margin-bottom: var(--space-4);
+      font-size: var(--font-size-sm);
+      font-family: var(--font-mono);
+    }
+    .palette-swatch span:first-child {
+      width: 40px; height: 24px;
+      border: var(--hairline-width) solid var(--color-divider);
+      flex-shrink: 0;
+    }
+    .palette-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-10); }
+    .palette-theme-label {
+      font-size: var(--font-size-caption);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--letter-spacing-label);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-5);
+    }
+    .type-specimen { margin-bottom: var(--space-6); }
+    .type-specimen__label {
+      font-size: var(--font-size-caption);
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-2);
+      font-family: var(--font-mono);
+    }
+    .theme-demo-row {
+      display: flex; align-items: center; gap: var(--space-6);
+      flex-wrap: wrap; margin-top: var(--space-6);
+      padding-top: var(--space-5);
+      border-top: var(--hairline-width) solid var(--color-divider);
+    }
+    .dash-shell {
+      border-top: var(--hairline-width) solid var(--color-divider);
+    }
+    .ist-contact-block {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      line-height: var(--line-height-relaxed);
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: var(--hairline-width) solid var(--color-divider);
+    }
+    .ist-contact-block__legal {
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-1);
+    }
+    .ist-contact-block address {
+      font-style: normal;
+    }
+    .ist-app-footer {
+      margin-top: var(--space-8);
+      padding: var(--space-5) var(--space-8);
+      border-top: var(--hairline-width) solid var(--color-divider);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      text-align: center;
+      line-height: var(--line-height-relaxed);
+    }
+    .ist-app-footer__legal {
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-secondary);
+    }
+    @media (max-width: 768px) { .palette-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="preview-bar no-print">
+    <strong>IST Health Design Preview</strong> — Swiss clarity + IST brand · CSS only
+  </div>
+
+  <div class="ist-app">
+    <div class="ist-watermark" aria-hidden="true">
+      <span class="ist-watermark__text">IST</span>
+    </div>
+
+    <header class="ist-header no-print">
+      <div class="ist-header__start">
+        <a href="#" class="ist-logo ist-logo--compact" aria-label="IRIS STAR Technologies L.L.C">
+          <img class="ist-logo__img" src="assets/logo-irisstar.svg" alt="" />
+          <span class="ist-logo__compact-text" aria-hidden="true">IST</span>
+        </a>
+      </div>
+      <div class="ist-header__end">
+        <div class="ist-lang-switch" role="group" aria-label="Language">
+          <button type="button" class="is-active" data-lang="en" id="langEn">EN</button>
+          <button type="button" data-lang="ar" id="langAr">AR</button>
+        </div>
+        <div class="ist-header__divider"></div>
+        <label class="ist-theme-switch" title="Toggle light / dark mode">
+          <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode" />
+          <span class="ist-theme-switch__track">
+            <span class="ist-theme-switch__icon ist-theme-switch__icon--sun is-active" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            </span>
+            <span class="ist-theme-switch__thumb"></span>
+            <span class="ist-theme-switch__icon ist-theme-switch__icon--moon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </span>
+          </span>
+        </label>
+      </div>
+    </header>
+
+    <main class="ist-main" style="max-width: var(--layout-max-width); margin-inline: auto; width: 100%;">
+      <div class="ist-preview-tabs no-print" role="tablist">
+        <button type="button" class="ist-preview-tab is-active" data-screen="tokens" role="tab">Tokens</button>
+        <button type="button" class="ist-preview-tab" data-screen="login" role="tab">Login</button>
+        <button type="button" class="ist-preview-tab" data-screen="dashboard" role="tab">Dashboard</button>
+        <button type="button" class="ist-preview-tab" data-screen="patients" role="tab">Patients</button>
+      </div>
+
+      <!-- TOKENS -->
+      <section class="ist-preview-screen is-active" id="screen-tokens" role="tabpanel">
+        <div class="ist-page-header ist-heading-block">
+          <p class="ist-tagline" data-i18n="tagline">IRIS STAR Technologies L.L.C</p>
+          <h1 data-i18n="tokensTitle">Design System</h1>
+          <hr class="ist-divider" />
+          <p class="ist-subtitle" data-i18n="tokensSub">Swiss clarity · IST navy &amp; gold · irisstar.tech</p>
+        </div>
+
+        <div class="ist-grid ist-grid--2 palette-grid">
+          <div>
+            <p class="palette-theme-label">Light mode</p>
+            <div class="palette-swatch"><span style="background:#0a1f44"></span><code>#0a1f44</code> Navy</div>
+            <div class="palette-swatch"><span style="background:#071428"></span><code>#071428</code> Navy dark</div>
+            <div class="palette-swatch"><span style="background:#c9a66b"></span><code>#c9a66b</code> Gold accent</div>
+            <div class="palette-swatch"><span style="background:#ffffff"></span><code>#ffffff</code> Background</div>
+            <div class="palette-swatch"><span style="background:#d8dce2"></span><code>#d8dce2</code> Hairline</div>
+          </div>
+          <div>
+            <p class="palette-theme-label">Dark mode</p>
+            <div class="palette-swatch"><span style="background:#050a14"></span><code>#050a14</code> Background</div>
+            <div class="palette-swatch"><span style="background:#131d2e"></span><code>#131d2e</code> Navy dark</div>
+            <div class="palette-swatch"><span style="background:#ffffff"></span><code>#ffffff</code> Text</div>
+            <div class="palette-swatch"><span style="background:#c9a66b"></span><code>#c9a66b</code> Gold accent</div>
+            <div class="palette-swatch"><span style="background:#1e2836"></span><code>#1e2836</code> Hairline</div>
+          </div>
+        </div>
+
+        <div class="ist-section" style="margin-top:var(--space-10)">
+          <h2>Type scale</h2>
+          <hr class="ist-divider" />
+          <div class="type-specimen">
+            <p class="type-specimen__label">display · 56px · weight 900</p>
+            <p class="display">Sat</p>
+          </div>
+          <div class="type-specimen">
+            <p class="type-specimen__label">h1 · 40px · weight 800</p>
+            <h1>Good morning</h1>
+          </div>
+          <div class="type-specimen">
+            <p class="type-specimen__label">h2 · 28px · weight 700</p>
+            <h2>Today's Schedule</h2>
+          </div>
+          <div class="type-specimen">
+            <p class="type-specimen__label">body · 16px · weight 400</p>
+            <p>Fatima Al-Kuwari — General consultation, Room 4</p>
+          </div>
+          <div class="type-specimen">
+            <p class="type-specimen__label">mono · 13px — times &amp; IDs</p>
+            <p><span class="ist-time">09:00</span> &nbsp; <span class="ist-id">PAT-2024-0842</span></p>
+          </div>
+          <div class="type-specimen">
+            <p class="type-specimen__label">tagline · Georgia · gold</p>
+            <p class="ist-tagline">Hospital Information System</p>
+          </div>
+        </div>
+
+        <div class="ist-section" style="margin-top:var(--space-10)">
+          <h2>Logo</h2>
+          <hr class="ist-divider" />
+          <div style="display:flex;flex-direction:column;gap:var(--space-7);align-items:flex-start;">
+            <div>
+              <p class="type-specimen__label">.ist-logo — default (full wordmark)</p>
+              <a href="#" class="ist-logo" aria-label="IRIS STAR Technologies L.L.C">
+                <img class="ist-logo__img" src="assets/logo-irisstar-full.svg" alt="" />
+              </a>
+            </div>
+            <div>
+              <p class="type-specimen__label">.ist-logo--compact — nav / header (symbol + IST)</p>
+              <a href="#" class="ist-logo ist-logo--compact" aria-label="IRIS STAR Technologies L.L.C">
+                <img class="ist-logo__img" src="assets/logo-irisstar.svg" alt="" />
+                <span class="ist-logo__compact-text" aria-hidden="true">IST</span>
+              </a>
+            </div>
+            <div>
+              <p class="type-specimen__label">.ist-logo--lg — login inspire (220px wordmark)</p>
+              <a href="#" class="ist-logo ist-logo--lg" aria-label="IRIS STAR Technologies L.L.C">
+                <img class="ist-logo__img" src="assets/logo-irisstar-full.svg" alt="" />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="ist-grid ist-grid--2" style="margin-top:var(--space-10)">
+          <div>
+            <h3>Time | label pattern</h3>
+            <hr class="ist-divider" />
+            <div class="ist-time-label-list">
+              <div class="ist-time-label">
+                <span class="ist-time-label__time">06:00</span>
+                <span class="ist-time-label__label">Morning rounds</span>
+              </div>
+              <div class="ist-time-label">
+                <span class="ist-time-label__time">09:00</span>
+                <span class="ist-time-label__label">Fatima Al-Kuwari</span>
+              </div>
+              <div class="ist-time-label">
+                <span class="ist-time-label__time">09:30</span>
+                <span class="ist-time-label__label">Mohammed Al-Emadi</span>
+              </div>
+              <div class="ist-time-label">
+                <span class="ist-time-label__time">10:00</span>
+                <span class="ist-time-label__label">Sarah Hassan</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h3>Components</h3>
+            <hr class="ist-divider" />
+            <p style="margin-bottom:var(--space-5)">Rectangular CTAs · pill theme toggle kept</p>
+            <p>
+              <button type="button" class="ist-btn ist-btn--primary">Sign In</button>
+              <button type="button" class="ist-btn ist-btn--outline" style="margin-inline-start:12px">Outline</button>
+            </p>
+            <div class="theme-demo-row">
+              <span class="ist-label">Theme</span>
+              <label class="ist-theme-switch" title="Demo toggle">
+                <input type="checkbox" id="themeToggleDemo" aria-label="Demo theme toggle" />
+                <span class="ist-theme-switch__track">
+                  <span class="ist-theme-switch__icon ist-theme-switch__icon--sun is-active" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                  </span>
+                  <span class="ist-theme-switch__thumb"></span>
+                  <span class="ist-theme-switch__icon ist-theme-switch__icon--moon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                  </span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LOGIN -->
+      <section class="ist-preview-screen" id="screen-login" role="tabpanel">
+        <div class="ist-login-page">
+          <div class="ist-login-card">
+            <header class="ist-login-card__header">
+              <div class="ist-login-card__brand">
+                <a href="#" class="ist-logo ist-logo--compact" aria-label="IRIS STAR Technologies L.L.C">
+                  <img class="ist-logo__img" src="assets/logo-irisstar.svg" alt="" />
+                  <span class="ist-logo__compact-text" aria-hidden="true">IST</span>
+                </a>
+                <span data-i18n="loginHeaderBrand">Sign in to IST Health</span>
+              </div>
+              <p class="ist-login-card__continue">
+                <span data-i18n="loginContinue">to continue to</span>
+                <a href="#">IST Health</a>
+              </p>
+            </header>
+
+            <div class="ist-login-card__body">
+              <div class="ist-login-card__inspire">
+                <a href="#" class="ist-logo ist-logo--lg" aria-label="IRIS STAR Technologies L.L.C">
+                  <img class="ist-logo__img" src="assets/logo-irisstar-full.svg" alt="" />
+                </a>
+                <p class="ist-tagline" data-i18n="loginTagline">The Digital Health Engine for Qatar</p>
+                <h2 class="ist-login-card__inspire-title" data-i18n="loginInspireTitle">Sign in to IST Health</h2>
+                <ul class="ist-login-features">
+                  <li data-i18n="loginFeature1">Patient management</li>
+                  <li data-i18n="loginFeature2">Appointments &amp; scheduling</li>
+                  <li data-i18n="loginFeature3">Laboratory &amp; pharmacy</li>
+                  <li data-i18n="loginFeature4">Bilingual EN / AR</li>
+                </ul>
+                <span class="ist-login-card__watermark" aria-hidden="true">IST</span>
+              </div>
+
+              <div class="ist-login-card__divider-v" aria-hidden="true"></div>
+
+              <div class="ist-login-card__form-col">
+                <h2 class="ist-login-card__form-title" data-i18n="loginFormTitle">Sign in</h2>
+                <form class="ist-login-form" onsubmit="return false;">
+                  <div class="ist-field ist-field--hidden">
+                    <label for="database" data-i18n="databaseLabel">Database</label>
+                    <input class="ist-input ist-input--boxed" type="text" id="database" name="database" value="gnuhealth" tabindex="-1" aria-hidden="true" />
+                  </div>
+                  <div class="ist-field ist-field--login">
+                    <label for="login-email" data-i18n="usernameLabel">Email or username</label>
+                    <input class="ist-input ist-input--boxed" type="text" id="login-email" name="login" placeholder="staff@clinic.qa" autocomplete="username" />
+                  </div>
+                  <div class="ist-field ist-field--login">
+                    <div class="ist-field__label-row">
+                      <label for="login-password" data-i18n="passwordLabel">Password</label>
+                      <a href="#" class="ist-link" data-i18n="forgotPassword">Forgot password?</a>
+                    </div>
+                    <input class="ist-input ist-input--boxed" type="password" id="login-password" name="password" placeholder="••••••••" autocomplete="current-password" />
+                  </div>
+                  <button type="submit" class="ist-btn ist-btn--primary ist-btn--pill" data-i18n="signIn">Sign In</button>
+                </form>
+              </div>
+            </div>
+
+            <footer class="ist-login-card__footer">
+              <p class="ist-login-card__footer-text" data-i18n="loginFooterText">
+                By signing in, you agree to IST Health handling your data in accordance with our policies for healthcare operations in Qatar.
+              </p>
+              <div class="ist-contact-block">
+                <p class="ist-contact-block__legal" data-i18n="legalName">IRIS STAR Technologies L.L.C</p>
+                <address data-i18n="qatarAddress">
+                  Office 214/215, 2nd Floor, Regus D-Ring Building no 65, D-Ring Road, Old Airport, PO Box 32522, Doha, Qatar
+                </address>
+              </div>
+              <nav class="ist-login-card__footer-links" aria-label="Legal">
+                <a href="../legal/privacy.html" data-i18n="privacyPolicy">Privacy Policy</a>
+                <a href="../legal/terms.html" data-i18n="termsOfService">Terms of Service</a>
+              </nav>
+            </footer>
+          </div>
+        </div>
+      </section>
+
+      <!-- DASHBOARD -->
+      <section class="ist-preview-screen" id="screen-dashboard" role="tabpanel">
+        <div class="ist-app__body dash-shell" style="min-height:640px;">
+          <aside class="ist-sidebar">
+            <a href="#" class="ist-sidebar__logo ist-logo ist-logo--compact" aria-label="IRIS STAR Technologies L.L.C">
+              <img class="ist-logo__img" src="assets/logo-irisstar.svg" alt="" />
+              <span class="ist-logo__compact-text" aria-hidden="true">IST</span>
+            </a>
+            <nav>
+              <ul class="ist-nav">
+                <li><a href="#" class="ist-nav__link is-active" data-i18n="navDashboard">Dashboard</a></li>
+                <li><a href="#" class="ist-nav__link" data-i18n="navPatients">Patients</a></li>
+                <li><a href="#" class="ist-nav__link" data-i18n="navAppointments">Appointments</a></li>
+                <li><a href="#" class="ist-nav__link" data-i18n="navBilling">Billing</a></li>
+                <li><a href="#" class="ist-nav__link" data-i18n="navPharmacy">Pharmacy</a></li>
+                <li><a href="#" class="ist-nav__link" data-i18n="navReports">Reports</a></li>
+              </ul>
+            </nav>
+          </aside>
+          <div class="ist-main" style="padding:var(--space-9) var(--space-8)">
+            <div class="ist-dashboard">
+              <div class="ist-dashboard__welcome ist-heading-block">
+                <p class="ist-tagline" data-i18n="tagline">IRIS STAR Technologies L.L.C</p>
+                <h1 data-i18n="dashTitle">Good morning, Dr. Al-Thani</h1>
+                <hr class="ist-divider" />
+                <p class="ist-subtitle" data-i18n="dashSub">Monday, 13 July 2026 · IST Demo Clinic</p>
+              </div>
+
+              <div class="ist-stats">
+                <div class="ist-stat">
+                  <div class="ist-stat__label" data-i18n="statAppts">Today's Appointments</div>
+                  <div class="ist-stat__value">24</div>
+                  <div class="ist-stat__meta" data-i18n="statApptsMeta">6 waiting · 3 in consult</div>
+                </div>
+                <div class="ist-stat">
+                  <div class="ist-stat__label" data-i18n="statPatients">Active Patients</div>
+                  <div class="ist-stat__value">1,842</div>
+                  <div class="ist-stat__meta" data-i18n="statPatientsMeta">+12 this week</div>
+                </div>
+                <div class="ist-stat">
+                  <div class="ist-stat__label" data-i18n="statBeds">Bed Occupancy</div>
+                  <div class="ist-stat__value">78%</div>
+                  <div class="ist-stat__meta" data-i18n="statBedsMeta">14 of 18 beds</div>
+                </div>
+                <div class="ist-stat">
+                  <div class="ist-stat__label" data-i18n="statRevenue">Revenue Today</div>
+                  <div class="ist-stat__value">QAR 48K</div>
+                  <div class="ist-stat__meta" data-i18n="statRevenueMeta">Invoices pending: 7</div>
+                </div>
+              </div>
+
+              <div class="ist-quick-actions">
+                <button type="button" class="ist-btn ist-btn--primary" data-i18n="btnNewPatient">New Patient</button>
+                <button type="button" class="ist-btn ist-btn--outline" data-i18n="btnBookAppt">Book Appointment</button>
+              </div>
+
+              <div class="ist-dashboard-grid">
+                <div class="ist-schedule">
+                  <div class="ist-schedule__head">
+                    <h2 data-i18n="todaySchedule">Today's Schedule</h2>
+                    <hr class="ist-divider" />
+                  </div>
+                  <div class="ist-schedule__row">
+                    <span class="ist-schedule__time">09:00</span>
+                    <span class="ist-schedule__name">Fatima Al-Kuwari</span>
+                    <span class="ist-schedule__status is-active" data-i18n="inConsult">In consult</span>
+                  </div>
+                  <div class="ist-schedule__row">
+                    <span class="ist-schedule__time">09:30</span>
+                    <span class="ist-schedule__name">Mohammed Al-Emadi</span>
+                    <span class="ist-schedule__status is-pending" data-i18n="waiting">Waiting</span>
+                  </div>
+                  <div class="ist-schedule__row">
+                    <span class="ist-schedule__time">10:00</span>
+                    <span class="ist-schedule__name">Sarah Hassan</span>
+                    <span class="ist-schedule__status" data-i18n="scheduled">Scheduled</span>
+                  </div>
+                  <div class="ist-schedule__row">
+                    <span class="ist-schedule__time">10:30</span>
+                    <span class="ist-schedule__name">Ahmed Al-Mansouri</span>
+                    <span class="ist-schedule__status" data-i18n="scheduled">Scheduled</span>
+                  </div>
+                  <div class="ist-schedule__row">
+                    <span class="ist-schedule__time">11:00</span>
+                    <span class="ist-schedule__name">Layla Al-Naimi</span>
+                    <span class="ist-schedule__status" data-i18n="scheduled">Scheduled</span>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 data-i18n="quickStats">Quick Stats</h3>
+                  <hr class="ist-divider" />
+                  <div class="ist-quick-list">
+                    <div class="ist-quick-list__item">
+                      <span class="ist-quick-list__label" data-i18n="labPending">Lab results pending</span>
+                      <span class="ist-quick-list__value">5</span>
+                    </div>
+                    <div class="ist-quick-list__item">
+                      <span class="ist-quick-list__label" data-i18n="rxQueue">Pharmacy queue</span>
+                      <span class="ist-quick-list__value">3</span>
+                    </div>
+                    <div class="ist-quick-list__item">
+                      <span class="ist-quick-list__label" data-i18n="discharges">Discharges today</span>
+                      <span class="ist-quick-list__value">2</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <footer class="ist-app-footer">
+              <p class="ist-app-footer__legal" data-i18n="legalName">IRIS STAR Technologies L.L.C</p>
+              <p data-i18n="qatarAddressShort">Office 214/215 · Regus D-Ring Building no 65, D-Ring Road · Old Airport · PO Box 32522 · Doha, Qatar</p>
+            </footer>
+          </div>
+        </div>
+      </section>
+
+      <!-- PATIENTS -->
+      <section class="ist-preview-screen ist-patients" id="screen-patients" role="tabpanel">
+        <div class="ist-module-header ist-heading-block">
+          <div>
+            <p class="ist-tagline" data-i18n="tagline">IRIS STAR Technologies L.L.C</p>
+            <h1 class="ist-patients__title" data-i18n="patientsTitle">Patients</h1>
+            <hr class="ist-divider" />
+            <p class="ist-subtitle" data-i18n="patientsSub">Search and manage patient records</p>
+          </div>
+          <button type="button" class="ist-btn ist-btn--primary" data-i18n="btnNewPatient">New Patient</button>
+        </div>
+
+        <div class="ist-split" style="margin-bottom:var(--space-8)">
+          <div class="ist-search">
+            <svg class="ist-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="search" placeholder="Search by name, ID, phone…" data-i18n-placeholder="searchPlaceholder" />
+          </div>
+        </div>
+
+        <div class="ist-patient-list">
+          <div class="ist-patient-list__head">
+            <span data-i18n="colId">ID</span>
+            <span data-i18n="colPatient">Patient</span>
+            <span data-i18n="colPhone">Phone</span>
+            <span data-i18n="colStatus">Status</span>
+          </div>
+          <div class="ist-patient-list__row">
+            <span class="ist-patient-list__id">PAT-2024-0842</span>
+            <div>
+              <div class="ist-patient-name">Fatima Al-Kuwari</div>
+              <div class="ist-patient-meta">فاطمة الكواري</div>
+            </div>
+            <span class="ist-patient-list__phone">+974 5555 1234</span>
+            <span class="ist-status ist-status--completed" data-i18n="active">Active</span>
+          </div>
+          <div class="ist-patient-list__row">
+            <span class="ist-patient-list__id">PAT-2023-1201</span>
+            <div>
+              <div class="ist-patient-name">Mohammed Al-Emadi</div>
+              <div class="ist-patient-meta">محمد الإمادي</div>
+            </div>
+            <span class="ist-patient-list__phone">+974 5555 5678</span>
+            <span class="ist-status ist-status--completed" data-i18n="active">Active</span>
+          </div>
+          <div class="ist-patient-list__row">
+            <span class="ist-patient-list__id">PAT-2025-0033</span>
+            <div>
+              <div class="ist-patient-name">Sarah Hassan</div>
+              <div class="ist-patient-meta">سارة حسن</div>
+            </div>
+            <span class="ist-patient-list__phone">+974 5555 9012</span>
+            <span class="ist-status" data-i18n="inactive">Inactive</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="ist-toast" id="toast" role="status"></div>
+
+  <script>
+    const i18n = {
+      en: {
+        tagline: 'IRIS STAR Technologies L.L.C',
+        tokensTitle: 'Design System',
+        tokensSub: 'Swiss clarity · IST navy & gold · irisstar.tech',
+        loginTitle: 'IST Health',
+        loginSub: 'Sign in to your hospital workspace',
+        loginHeaderBrand: 'Sign in to IST Health',
+        loginContinue: 'to continue to',
+        loginTagline: 'The Digital Health Engine for Qatar',
+        loginInspireTitle: 'Sign in to IST Health',
+        loginFeature1: 'Patient management',
+        loginFeature2: 'Appointments & scheduling',
+        loginFeature3: 'Laboratory & pharmacy',
+        loginFeature4: 'Bilingual EN / AR',
+        loginFormTitle: 'Sign in',
+        databaseLabel: 'Database',
+        usernameLabel: 'Email or username',
+        emailLabel: 'Email',
+        passwordLabel: 'Password',
+        forgotPassword: 'Forgot password?',
+        instLabel: 'Institution',
+        signIn: 'Sign In',
+        loginFooterText: 'By signing in, you agree to our Terms of Service and acknowledge our Privacy Policy for healthcare operations in Qatar.',
+        legalName: 'IRIS STAR Technologies L.L.C',
+        qatarAddress: 'Office 214/215, 2nd Floor, Regus D-Ring Building no 65, D-Ring Road, Old Airport, PO Box 32522, Doha, Qatar',
+        qatarAddressShort: 'Office 214/215 · Regus D-Ring Building no 65, D-Ring Road · Old Airport · PO Box 32522 · Doha, Qatar',
+        privacyPolicy: 'Privacy Policy',
+        termsOfService: 'Terms of Service',
+        navDashboard: 'Dashboard',
+        navPatients: 'Patients',
+        navAppointments: 'Appointments',
+        navBilling: 'Billing',
+        navPharmacy: 'Pharmacy',
+        navReports: 'Reports',
+        dashTitle: 'Good morning, Dr. Al-Thani',
+        dashSub: 'Monday, 13 July 2026 · IST Demo Clinic',
+        statAppts: "Today's Appointments",
+        statApptsMeta: '6 waiting · 3 in consult',
+        statPatients: 'Active Patients',
+        statPatientsMeta: '+12 this week',
+        statBeds: 'Bed Occupancy',
+        statBedsMeta: '14 of 18 beds',
+        statRevenue: 'Revenue Today',
+        statRevenueMeta: 'Invoices pending: 7',
+        btnNewPatient: 'New Patient',
+        btnBookAppt: 'Book Appointment',
+        todaySchedule: "Today's Schedule",
+        viewAll: 'View all',
+        inConsult: 'In consult',
+        waiting: 'Waiting',
+        scheduled: 'Scheduled',
+        quickStats: 'Quick Stats',
+        labPending: 'Lab results pending',
+        rxQueue: 'Pharmacy queue',
+        discharges: 'Discharges today',
+        patientsTitle: 'Patients',
+        patientsSub: 'Search and manage patient records',
+        searchPlaceholder: 'Search by name, ID, phone…',
+        colPatient: 'Patient',
+        colId: 'ID',
+        colPhone: 'Phone',
+        colLastVisit: 'Last Visit',
+        colStatus: 'Status',
+        active: 'Active',
+        inactive: 'Inactive'
+      },
+      ar: {
+        tagline: 'IRIS STAR Technologies L.L.C',
+        tokensTitle: 'نظام التصميم',
+        tokensSub: 'وضوح سويسري · كحلي IST وذهبي · irisstar.tech',
+        loginTitle: 'IST Health',
+        loginSub: 'تسجيل الدخول إلى مساحة عمل المستشفى',
+        loginHeaderBrand: 'تسجيل الدخول إلى IST Health',
+        loginContinue: 'للمتابعة إلى',
+        loginTagline: 'محرك الصحة الرقمي لقطر',
+        loginInspireTitle: 'تسجيل الدخول إلى IST Health',
+        loginFeature1: 'إدارة المرضى',
+        loginFeature2: 'المواعيد والجدولة',
+        loginFeature3: 'المختبر والصيدلية',
+        loginFeature4: 'ثنائي اللغة EN / AR',
+        loginFormTitle: 'تسجيل الدخول',
+        databaseLabel: 'قاعدة البيانات',
+        usernameLabel: 'البريد الإلكتروني أو اسم المستخدم',
+        emailLabel: 'البريد الإلكتروني',
+        passwordLabel: 'كلمة المرور',
+        forgotPassword: 'نسيت كلمة المرور؟',
+        instLabel: 'المؤسسة',
+        signIn: 'تسجيل الدخول',
+        loginFooterText: 'بتسجيل الدخول، فإنك توافق على شروط الخدمة وتقر بسياسة الخصوصية الخاصة بعمليات الرعاية الصحية في قطر.',
+        legalName: 'IRIS STAR Technologies L.L.C',
+        qatarAddress: 'مكتب 214/215، الطابق الثاني، مبنى ريجس D-Ring رقم 65، طريق D-Ring، المطار القديم، ص.ب. 32522، الدوحة، قطر',
+        qatarAddressShort: 'مكتب 214/215 · مبنى ريجس D-Ring رقم 65 · المطار القديم · ص.ب. 32522 · الدوحة، قطر',
+        privacyPolicy: 'سياسة الخصوصية',
+        termsOfService: 'شروط الخدمة',
+        navDashboard: 'لوحة التحكم',
+        navPatients: 'المرضى',
+        navAppointments: 'المواعيد',
+        navBilling: 'الفواتير',
+        navPharmacy: 'الصيدلية',
+        navReports: 'التقارير',
+        dashTitle: 'صباح الخير، د. آل ثاني',
+        dashSub: 'الاثنين، 13 يوليو 2026 · عيادة IST التجريبية',
+        statAppts: 'مواعيد اليوم',
+        statApptsMeta: '6 في الانتظار · 3 في الاستشارة',
+        statPatients: 'المرضى النشطون',
+        statPatientsMeta: '+12 هذا الأسبوع',
+        statBeds: 'إشغال الأسرة',
+        statBedsMeta: '14 من 18 سريراً',
+        statRevenue: 'إيرادات اليوم',
+        statRevenueMeta: 'فواتير معلقة: 7',
+        btnNewPatient: 'مريض جديد',
+        btnBookAppt: 'حجز موعد',
+        todaySchedule: 'جدول اليوم',
+        viewAll: 'عرض الكل',
+        inConsult: 'في الاستشارة',
+        waiting: 'انتظار',
+        scheduled: 'مجدول',
+        quickStats: 'إحصائيات سريعة',
+        labPending: 'نتائج مختبر معلقة',
+        rxQueue: 'طابور الصيدلية',
+        discharges: 'خروج اليوم',
+        patientsTitle: 'المرضى',
+        patientsSub: 'البحث وإدارة سجلات المرضى',
+        searchPlaceholder: 'بحث بالاسم، الرقم، الهاتف…',
+        colPatient: 'المريض',
+        colId: 'الرقم',
+        colPhone: 'الهاتف',
+        colLastVisit: 'آخر زيارة',
+        colStatus: 'الحالة',
+        active: 'نشط',
+        inactive: 'غير نشط'
+      }
+    };
+
+    let currentLang = 'en';
+
+    function setLang(lang) {
+      currentLang = lang;
+      const html = document.documentElement;
+      html.lang = lang;
+      html.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      html.classList.toggle('ist-locale-ar', lang === 'ar');
+      document.getElementById('langEn').classList.toggle('is-active', lang === 'en');
+      document.getElementById('langAr').classList.toggle('is-active', lang === 'ar');
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (i18n[lang][key]) el.textContent = i18n[lang][key];
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.dataset.i18nPlaceholder;
+        if (i18n[lang][key]) el.placeholder = i18n[lang][key];
+      });
+      toast(lang === 'ar' ? 'تم التبديل إلى العربية' : 'Switched to English');
+    }
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('is-visible');
+      setTimeout(() => t.classList.remove('is-visible'), 2000);
+    }
+
+    document.getElementById('langEn').addEventListener('click', () => setLang('en'));
+    document.getElementById('langAr').addEventListener('click', () => setLang('ar'));
+
+    const THEME_KEY = 'ist-health-theme';
+
+    function updateThemeIcons(theme) {
+      document.querySelectorAll('.ist-theme-switch').forEach(sw => {
+        const sun = sw.querySelector('.ist-theme-switch__icon--sun');
+        const moon = sw.querySelector('.ist-theme-switch__icon--moon');
+        sun?.classList.toggle('is-active', theme === 'light');
+        moon?.classList.toggle('is-active', theme === 'dark');
+      });
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      const checked = theme === 'dark';
+      document.querySelectorAll('.ist-theme-switch input[type="checkbox"]').forEach(input => {
+        input.checked = checked;
+      });
+      updateThemeIcons(theme);
+    }
+
+    function setTheme(theme) {
+      localStorage.setItem(THEME_KEY, theme);
+      applyTheme(theme);
+      toast(theme === 'dark' ? 'Dark mode' : 'Light mode');
+    }
+
+    function initTheme() {
+      const stored = localStorage.getItem(THEME_KEY);
+      const fallback = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      applyTheme(stored || fallback);
+    }
+
+    initTheme();
+
+    document.querySelectorAll('.ist-theme-switch input[type="checkbox"]').forEach(input => {
+      input.addEventListener('change', () => {
+        setTheme(input.checked ? 'dark' : 'light');
+      });
+    });
+
+    document.querySelectorAll('.ist-preview-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.ist-preview-tab').forEach(t => t.classList.remove('is-active'));
+        document.querySelectorAll('.ist-preview-screen').forEach(s => s.classList.remove('is-active'));
+        tab.classList.add('is-active');
+        document.getElementById('screen-' + tab.dataset.screen).classList.add('is-active');
+      });
+    });
+  </script>
+</body>
+</html>

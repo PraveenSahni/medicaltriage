@@ -1,0 +1,157 @@
+/**
+ * IST Health — Module UI patterns (Swiss + IST)
+ */
+
+@import url("variables.css");
+
+/* Patient row — time|label inspired, no avatars by default */
+.ist-patient-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+}
+
+.ist-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-logo);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  flex-shrink: 0;
+}
+
+.ist-patient-name {
+  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-base);
+  color: var(--color-heading);
+}
+
+.ist-patient-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-family: var(--font-ar);
+}
+
+/* Module page header */
+.ist-module-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-bottom: var(--space-9);
+  flex-wrap: wrap;
+}
+
+.ist-module-header h1 {
+  margin-bottom: var(--space-3);
+}
+
+/* Patients module — dashboard heading typography (matches login / dashboard welcome) */
+.ist-patients h1,
+.ist-patients__title,
+.ist-patients .ist-module-header h1 {
+  font-family: var(--font-dashboard-heading-family);
+  font-size: var(--font-dashboard-heading-size);
+  font-weight: var(--font-dashboard-heading-weight);
+  line-height: var(--font-dashboard-heading-line-height);
+  color: var(--font-dashboard-heading-color);
+  letter-spacing: var(--font-dashboard-heading-letter-spacing);
+}
+
+.ist-patients .ist-tagline {
+  margin-bottom: var(--space-4);
+}
+
+/* Patient list — Swiss schedule pattern */
+.ist-patient-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  border-top: var(--hairline-width) solid var(--color-divider);
+  padding-top: var(--space-4);
+}
+
+.ist-patient-list__head {
+  display: grid;
+  grid-template-columns: var(--layout-time-col) 1fr 120px 100px;
+  gap: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: var(--hairline-width) solid var(--color-divider);
+  margin-bottom: var(--space-2);
+}
+
+.ist-patient-list__head span {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.ist-patient-list__row {
+  display: grid;
+  grid-template-columns: var(--layout-time-col) 1fr 120px 100px;
+  gap: var(--space-6);
+  align-items: baseline;
+  padding-block: var(--space-3);
+}
+
+.ist-patient-list__id {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.ist-patient-list__phone {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+}
+
+.ist-patient-list__date {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Worklist status — text-only */
+.ist-status {
+  display: inline-flex;
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-label);
+  color: var(--color-text-muted);
+}
+
+.ist-status--scheduled { color: var(--color-info); }
+.ist-status--waiting { color: var(--color-warning); }
+.ist-status--completed { color: var(--color-success); }
+
+/* Appointment columns (two-column Sat/Sun style) */
+.ist-appt-columns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-10);
+}
+
+.ist-appt-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .ist-patient-list__head,
+  .ist-patient-list__row {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+  .ist-patient-list__head { display: none; }
+  .ist-appt-columns { grid-template-columns: 1fr; }
+}

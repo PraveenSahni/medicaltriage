@@ -1,0 +1,509 @@
+/**
+ * IST Health — Layout (Swiss + IST)
+ */
+
+@import url("variables.css");
+
+.ist-wrap {
+  max-width: var(--layout-max-width);
+  margin-inline: auto;
+  padding-inline: var(--space-8);
+}
+
+.ist-wrap--narrow {
+  max-width: var(--layout-narrow);
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+
+.ist-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  height: var(--layout-header-height);
+  padding-inline: var(--space-8);
+  background: var(--color-bg);
+  border-bottom: var(--hairline-width) solid var(--color-divider);
+}
+
+.ist-header__start {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ist-header__end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.ist-header__divider {
+  width: var(--hairline-width);
+  height: 24px;
+  background: var(--color-divider);
+  flex-shrink: 0;
+}
+
+/* Uppercase nav links */
+.ist-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-7);
+  list-style: none;
+}
+
+.ist-nav__link {
+  font-size: var(--font-size-nav);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-nav);
+  text-transform: uppercase;
+  color: var(--color-text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ist-nav__link:hover { opacity: 0.65; }
+
+.ist-nav__link.is-active {
+  opacity: 1;
+  color: var(--color-text-accent);
+}
+
+/* App shell */
+.ist-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+}
+
+.ist-app__body {
+  display: flex;
+  flex: 1;
+  position: relative;
+  z-index: var(--z-content);
+}
+
+.ist-sidebar {
+  width: var(--layout-sidebar-width);
+  flex-shrink: 0;
+  padding: var(--space-8) 0;
+  border-inline-end: var(--hairline-width) solid var(--color-divider);
+  background: var(--color-bg-sidebar);
+}
+
+.ist-sidebar__logo {
+  padding: 0 var(--space-6) var(--space-7);
+  margin-bottom: var(--space-2);
+}
+
+.ist-header__start .ist-logo--compact,
+.ist-header__brand .ist-logo--compact,
+.ist-sidebar__logo.ist-logo--compact {
+  min-height: var(--logo-height-compact-symbol);
+}
+
+.ist-sidebar .ist-nav {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+.ist-nav-group {
+  margin-bottom: var(--space-2);
+}
+
+.ist-nav-group__label {
+  font-size: 0.68rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  padding: var(--space-3) var(--space-6) var(--space-1);
+}
+
+.ist-sidebar .ist-nav__link {
+  padding: var(--space-3) var(--space-6);
+}
+
+.ist-sidebar .ist-nav__link.is-active {
+  background: transparent;
+  border-inline-start: none;
+  color: var(--color-text-accent);
+  font-weight: var(--font-weight-bold);
+}
+
+.ist-main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-9) var(--space-8);
+}
+
+/* Hero (login / landing) — legacy centered layout */
+.ist-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: calc(100vh - var(--layout-header-height));
+  padding: var(--space-11) var(--space-8);
+  position: relative;
+  z-index: var(--z-content);
+}
+
+.ist-hero h1 {
+  max-width: 14ch;
+  margin-bottom: var(--space-4);
+}
+
+.ist-hero .ist-tagline {
+  margin-bottom: var(--space-5);
+}
+
+.ist-hero .ist-subtitle {
+  max-width: 38ch;
+  margin-bottom: var(--space-9);
+}
+
+/* ── Login page (Google-inspired split card) ─────────────── */
+
+.ist-login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--layout-header-height) - 120px);
+  margin-inline: calc(-1 * var(--space-8));
+  padding: var(--space-9) var(--space-8) var(--space-11);
+  background: var(--login-page-bg);
+  position: relative;
+  z-index: var(--z-content);
+}
+
+.ist-app:has(#screen-login.is-active) .ist-watermark {
+  display: none;
+}
+
+.ist-login-page .ist-watermark {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.ist-login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 920px;
+  background: var(--login-card-bg);
+  border-radius: var(--login-card-radius);
+  box-shadow: var(--login-card-shadow);
+  overflow: hidden;
+}
+
+.ist-login-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding: var(--space-5) var(--space-7);
+  border-bottom: var(--hairline-width) solid var(--color-divider);
+}
+
+.ist-login-card__brand {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-3) / 2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.ist-login-card__continue {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.ist-login-card__continue a {
+  color: var(--login-link-color);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.ist-login-card__continue a:hover {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ist-login-card__body {
+  display: grid;
+  grid-template-columns: 1fr var(--hairline-width) 1fr;
+  min-height: 420px;
+}
+
+.ist-login-card__divider-v {
+  background: var(--color-divider);
+  width: var(--hairline-width);
+}
+
+.ist-login-card__inspire {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-9) var(--space-8);
+  position: relative;
+  overflow: hidden;
+}
+
+.ist-login-card__inspire .ist-logo {
+  align-self: flex-start;
+  margin-inline: 0;
+  margin-bottom: var(--space-3);
+}
+
+.ist-login-card__inspire .ist-tagline {
+  margin-inline: 0;
+  margin-bottom: var(--space-2);
+}
+
+.ist-login-card__inspire-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-heading);
+  margin-inline: 0;
+  margin-bottom: var(--space-7);
+  line-height: var(--line-height-snug);
+}
+
+.ist-login-card__watermark {
+  position: absolute;
+  inset-inline-end: -20%;
+  bottom: -15%;
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 18vw, 10rem);
+  font-weight: var(--font-weight-black);
+  color: var(--color-bg-watermark);
+  letter-spacing: -0.04em;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+.ist-login-card__form-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-9) var(--space-8);
+}
+
+.ist-login-card__form-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-heading);
+  text-align: center;
+  margin-bottom: var(--space-7);
+}
+
+.ist-login-card__footer {
+  padding: var(--space-5) var(--space-7);
+  border-top: var(--hairline-width) solid var(--color-divider);
+}
+
+.ist-login-card__footer-text {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--space-3);
+  max-width: 72ch;
+}
+
+.ist-login-card__footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-6);
+}
+
+.ist-login-card__footer-links a {
+  font-size: var(--font-size-xs);
+  color: var(--login-link-color);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.ist-login-card__footer-links a:hover {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Legacy minimal login (standalone forms) */
+.ist-login {
+  width: 100%;
+  max-width: 380px;
+  margin-inline: auto;
+  padding: 0;
+}
+
+.ist-login .ist-logo {
+  margin-inline: auto;
+  margin-bottom: var(--space-9);
+}
+
+/* Page sections */
+.ist-page-header {
+  margin-bottom: var(--space-9);
+}
+
+.ist-page-header h1 {
+  margin-bottom: var(--space-3);
+}
+
+/* Dashboard heading — matches login inspire title (700 bold) */
+.ist-dashboard-heading,
+.ist-dashboard__title,
+.ist-section-title {
+  font-family: var(--font-dashboard-heading-family);
+  font-size: var(--font-dashboard-heading-size);
+  font-weight: var(--font-dashboard-heading-weight);
+  line-height: var(--font-dashboard-heading-line-height);
+  color: var(--font-dashboard-heading-color);
+  letter-spacing: var(--font-dashboard-heading-letter-spacing);
+}
+
+.ist-section {
+  margin-bottom: var(--section-gap);
+}
+
+/* Two-column grid (Swiss layout) */
+.ist-grid {
+  display: grid;
+  gap: var(--space-9);
+}
+
+.ist-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.ist-grid--3 { grid-template-columns: repeat(3, 1fr); }
+.ist-grid--4 { grid-template-columns: repeat(4, 1fr); }
+
+.ist-split {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* Time | label two-column pattern (schedule / lists) */
+.ist-time-label {
+  display: grid;
+  grid-template-columns: var(--layout-time-col) 1fr;
+  gap: var(--space-6);
+  align-items: baseline;
+  padding-block: var(--space-3);
+}
+
+.ist-time-label__time {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.ist-time-label__label {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text);
+  line-height: var(--line-height-snug);
+}
+
+.ist-time-label__meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
+.ist-time-label-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* Column heading with hairline (Sat / Sun pattern) */
+.ist-col-heading {
+  font-family: var(--font-display);
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-black);
+  line-height: var(--line-height-tight);
+  color: var(--color-heading);
+  letter-spacing: var(--letter-spacing-tight);
+  margin-bottom: var(--space-4);
+}
+
+.ist-col-heading + .ist-divider {
+  margin-top: 0;
+  margin-bottom: var(--space-6);
+}
+
+/* Login — clean, minimal */
+.ist-login {
+  width: 100%;
+  max-width: 380px;
+  margin-inline: auto;
+  padding: 0;
+}
+
+.ist-login .ist-logo {
+  margin-inline: auto;
+  margin-bottom: var(--space-9);
+}
+
+@media (max-width: 768px) {
+  .ist-header { padding-inline: var(--space-4); }
+  .ist-nav--header { display: none; }
+  .ist-grid--2, .ist-grid--3, .ist-grid--4 { grid-template-columns: 1fr; }
+  .ist-app__body { flex-direction: column; }
+  .ist-sidebar {
+    width: 100%;
+    border-inline-end: none;
+    border-bottom: var(--hairline-width) solid var(--color-divider);
+  }
+  .ist-sidebar .ist-nav { flex-direction: row; overflow-x: auto; }
+  .ist-col-heading { font-size: var(--font-size-2xl); }
+
+  .ist-login-page {
+    margin-inline: calc(-1 * var(--space-4));
+    padding: var(--space-6) var(--space-4) var(--space-8);
+    min-height: auto;
+  }
+
+  .ist-login-card__body {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .ist-login-card__divider-v { display: none; }
+
+  .ist-login-card__inspire {
+    padding: var(--space-7) var(--space-6);
+    border-bottom: var(--hairline-width) solid var(--color-divider);
+    align-items: flex-start;
+    text-align: start;
+  }
+
+  .ist-login-card__form-col { padding: var(--space-7) var(--space-6); }
+
+  .ist-login-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-4) var(--space-6);
+  }
+}

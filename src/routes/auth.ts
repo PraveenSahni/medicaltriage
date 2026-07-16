@@ -11,6 +11,22 @@ import {
 } from "../services/securityAdmin.js";
 import { LoginRequestSchema, SsoTestRequestSchema } from "../types/security.js";
 
+const controlCenterRoles = new Set([
+  "platform_super_administrator",
+  "organization_administrator",
+  "system_administrator",
+  "security_administrator",
+  "privacy_officer",
+  "compliance_auditor",
+  "clinical_governance_lead",
+  "triage_service_manager",
+  "protocol_content_manager",
+  "quality_reviewer",
+  "integration_administrator",
+  "reporting_analyst",
+  "helpdesk_support"
+]);
+
 export function createAuthRouter(): Router {
   const router = Router();
   const loginRateLimit = rateLimit({
@@ -61,9 +77,7 @@ export function createAuthRouter(): Router {
         authenticated: true,
         session: result.session,
         accessToken: signSessionJwt(result.session),
-        redirectTo: result.session.permissions.some((permission) =>
-          ["admin.users.manage", "security.sso.manage", "audit.events.view"].includes(permission)
-        )
+        redirectTo: controlCenterRoles.has(result.session.activeRole)
           ? "admin"
           : "workspace"
       });

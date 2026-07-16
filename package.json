@@ -18,6 +18,8 @@
     "simulation:jsonl": "tsx src/scripts/generateSimulationDataset.ts --jsonl",
     "synthetic:employees": "node scripts/runPython.mjs python/generate_synthetic_pdp_data.py --print-summary",
     "synthetic:employees:sample": "node scripts/runPython.mjs python/generate_synthetic_pdp_data.py --aircraft 10 --encounters 100 --output data/generated/ist_qatar_seed_data_sample.json --print-summary",
+    "synthetic:stcc-guidelines": "node scripts/runPython.mjs python/generate_synthetic_stcc_guidelines.py --print-summary",
+    "synthetic:stcc-guidelines:validate": "node scripts/runPython.mjs python/generate_synthetic_stcc_guidelines.py --validate-only",
     "clinical-sim:run": "node scripts/runPython.mjs python/clinical_simulation_engine.py --summary",
     "clinical-sim:sample": "node scripts/runPython.mjs python/clinical_simulation_engine.py --aircraft 10 --encounters 100 --summary",
     "clinical-sim:bulk-sample": "node scripts/runPython.mjs python/run_bulk_clinical_simulation.py --records 100 --start-date 2024-01-01 --end-date 2024-01-31 --output-dir data/generated/bulk_clinical_sim_100 --aircraft 10 --audit-rate 0.10",

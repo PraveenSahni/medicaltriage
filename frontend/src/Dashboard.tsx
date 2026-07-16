@@ -130,7 +130,7 @@ export default function Dashboard() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-sm font-medium text-slate-500">{kpi.label}</p>
-                    <p className="mt-2 font-display text-3xl font-extrabold text-ist-blue">{kpi.value}</p>
+                    <p className="mt-2 font-display text-3xl font-semibold text-ist-blue">{kpi.value}</p>
                   </div>
                   <span className={`kpi-icon kpi-icon-${kpi.tone}`}>
                     <Icon className="h-5 w-5" />
@@ -185,7 +185,7 @@ export default function Dashboard() {
                     }`}
                     onClick={() => setSelected(log)}
                   >
-                    <td className="table-cell font-bold text-ist-blue">{log.id}</td>
+                    <td className="table-cell font-semibold text-ist-blue">{log.id}</td>
                     <td className="table-cell">{log.staffGroup}</td>
                     <td className="table-cell">{log.protocol}</td>
                     <td className="table-cell">
@@ -231,10 +231,10 @@ export default function Dashboard() {
           Execution detail
         </div>
         <div className="mt-5 rounded-2xl border border-gray-200 bg-gray-50 p-4">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">
             {selected.id}
           </p>
-          <h3 className="mt-2 text-xl font-extrabold text-ist-blue">{selected.protocol}</h3>
+          <h3 className="mt-2 text-xl font-semibold text-ist-blue">{selected.protocol}</h3>
           <p className="mt-2 text-sm leading-6 text-slate-600">{selected.overrideRationale}</p>
         </div>
 
@@ -276,7 +276,7 @@ function OperationalCard({
     <div className="clinical-card p-5">
       <Icon className="h-5 w-5 text-ist-gold" />
       <p className="mt-4 text-sm font-medium text-slate-500">{title}</p>
-      <p className="mt-1 text-lg font-extrabold text-ist-blue">{value}</p>
+      <p className="mt-1 text-lg font-semibold text-ist-blue">{value}</p>
       <p className="mt-3 text-sm leading-6 text-slate-600">{body}</p>
     </div>
   );

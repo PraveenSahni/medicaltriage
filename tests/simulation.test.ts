@@ -11,7 +11,7 @@ async function authenticatedAgent() {
   await agent
     .post("/api/v1/auth/login")
     .send({
-      username: "nurse@ist.local",
+      username: "nurse@irisstar.tech",
       password: TEST_ADMIN_PASSWORD,
       simulateRole: "remote_triage_nurse"
     })

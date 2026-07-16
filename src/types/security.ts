@@ -195,6 +195,63 @@ export type AuditEvent = {
   risk: RiskClassification;
 };
 
+export type ControlCenterModule = {
+  id: string;
+  label: string;
+  purpose: string;
+  primaryRoles: string[];
+  requiredPermissions: string[];
+  dataBoundary: string;
+  prohibitedActions: string[];
+};
+
+export type IntegrationConnector = {
+  id: string;
+  name: string;
+  system: "Oracle HRMS" | "EMR/FHIR" | "Insurance" | "SSO" | "Analytics";
+  status: "configured" | "pending-approval" | "mock-adapter" | "disabled";
+  ownerRole: string;
+  dataHandled: string[];
+  apiSurface: string;
+  lastCheckedIso: string;
+};
+
+export type GovernanceWorkItem = {
+  id: string;
+  title: string;
+  ownerRole: string;
+  status: "active" | "pending-approval" | "requires-review";
+  control: string;
+  evidence: string;
+};
+
+export type ProtocolLibraryItem = {
+  id: string;
+  title: string;
+  category: string;
+  status: "active" | "draft" | "pending-governance";
+  ownerRole: string;
+  release: string;
+  safetyNotes: string;
+};
+
+export type ReportCatalogItem = {
+  id: string;
+  title: string;
+  audience: string;
+  dataClass: "de-identified" | "aggregate" | "restricted";
+  exportAllowed: boolean;
+  requiredPermission: string;
+};
+
+export type SupportQueueItem = {
+  id: string;
+  title: string;
+  requesterRole: string;
+  status: "open" | "in-progress" | "waiting-user";
+  dataBoundary: string;
+};
+
 export type SecurityDashboard = {
   activeUsers: number;
   suspendedUsers: number;

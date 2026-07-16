@@ -27,42 +27,57 @@ type LoginPageProps = {
 };
 
 const apiBase = import.meta.env.VITE_API_BASE_URL || "";
-const simulationLoginPassword = import.meta.env.VITE_DEMO_ADMIN_PASSWORD || "LocalMockAdmin!2026";
 
-type SimulationRole = {
-  value: string;
+type SimulationUser = {
+  id: string;
+  roleCode: string;
+  roleLabel: string;
+  name: string;
   label: string;
   username: string;
+  password: string;
   landing: string;
 };
 
-type SimulationRoleGroup = {
+type SimulationUserGroup = {
   code: string;
   label: string;
-  roles: SimulationRole[];
+  users: SimulationUser[];
 };
 
-const simulationRoleGroups: SimulationRoleGroup[] = [
+const simulationUserGroups: SimulationUserGroup[] = [
   {
     code: "A",
     label: "A - Administration",
-    roles: [
+    users: [
       {
-        value: "platform_super_administrator",
-        label: "Platform Super Administrator",
-        username: "admin@ist.local",
+        id: "platform-administrator",
+        roleCode: "platform_super_administrator",
+        roleLabel: "Platform Super Administrator",
+        name: "Platform Administrator",
+        label: "Platform Administrator",
+        username: "pa@irisstar.tech",
+        password: "PlatformAdmin@2026",
         landing: "complete system"
       },
       {
-        value: "organization_administrator",
+        id: "organization-administrator",
+        roleCode: "organization_administrator",
+        roleLabel: "Organization Administrator",
+        name: "Organization Administrator",
         label: "Organization Administrator",
-        username: "org.admin@ist.local",
+        username: "oa@irisstar.tech",
+        password: "OrgAdmin@2026",
         landing: "organization administration"
       },
       {
-        value: "system_administrator",
+        id: "system-administrator",
+        roleCode: "system_administrator",
+        roleLabel: "System Administrator",
+        name: "System Administrator",
         label: "System Administrator",
-        username: "admin@ist.local",
+        username: "sa@irisstar.tech",
+        password: "SystemAdmin@2026",
         landing: "administration"
       }
     ]
@@ -70,17 +85,25 @@ const simulationRoleGroups: SimulationRoleGroup[] = [
   {
     code: "S",
     label: "S - Security and Privacy",
-    roles: [
+    users: [
       {
-        value: "security_administrator",
+        id: "security-administrator",
+        roleCode: "security_administrator",
+        roleLabel: "Security Administrator",
+        name: "Security Administrator",
         label: "Security Administrator",
-        username: "admin@ist.local",
+        username: "sec@irisstar.tech",
+        password: "SecurityAdmin@2026",
         landing: "security"
       },
       {
-        value: "privacy_officer",
+        id: "privacy-officer",
+        roleCode: "privacy_officer",
+        roleLabel: "Privacy Officer / DPO",
+        name: "Privacy Officer",
         label: "Privacy Officer / DPO",
-        username: "privacy@ist.local",
+        username: "privacy@irisstar.tech",
+        password: "Privacy@2026",
         landing: "privacy governance"
       }
     ]
@@ -88,29 +111,45 @@ const simulationRoleGroups: SimulationRoleGroup[] = [
   {
     code: "G",
     label: "G - Governance and Quality",
-    roles: [
+    users: [
       {
-        value: "compliance_auditor",
+        id: "compliance-auditor",
+        roleCode: "compliance_auditor",
+        roleLabel: "Compliance Auditor",
+        name: "Compliance Auditor",
         label: "Compliance Auditor",
-        username: "compliance@ist.local",
+        username: "audit@irisstar.tech",
+        password: "Audit@2026",
         landing: "audit review"
       },
       {
-        value: "clinical_governance_lead",
+        id: "clinical-governance-lead",
+        roleCode: "clinical_governance_lead",
+        roleLabel: "Clinical Governance Lead",
+        name: "Clinical Governance Lead",
         label: "Clinical Governance Lead",
-        username: "governance@ist.local",
+        username: "governance@irisstar.tech",
+        password: "Governance@2026",
         landing: "clinical governance"
       },
       {
-        value: "protocol_content_manager",
+        id: "protocol-content-manager",
+        roleCode: "protocol_content_manager",
+        roleLabel: "Protocol Content Manager",
+        name: "Protocol Content Manager",
         label: "Protocol Content Manager",
-        username: "protocols@ist.local",
+        username: "protocols@irisstar.tech",
+        password: "Protocols@2026",
         landing: "protocol library"
       },
       {
-        value: "quality_reviewer",
+        id: "quality-reviewer",
+        roleCode: "quality_reviewer",
+        roleLabel: "Quality Reviewer",
+        name: "Quality Reviewer",
         label: "Quality Reviewer",
-        username: "reviewer@ist.local",
+        username: "quality@irisstar.tech",
+        password: "Quality@2026",
         landing: "audit review"
       }
     ]
@@ -118,47 +157,75 @@ const simulationRoleGroups: SimulationRoleGroup[] = [
   {
     code: "B",
     label: "B - Business and Clinical Operations",
-    roles: [
+    users: [
       {
-        value: "triage_service_manager",
+        id: "triage-service-manager",
+        roleCode: "triage_service_manager",
+        roleLabel: "Triage Service Manager",
+        name: "Triage Service Manager",
         label: "Triage Service Manager",
-        username: "triage.manager@ist.local",
+        username: "manager@irisstar.tech",
+        password: "Manager@2026",
         landing: "operations dashboard"
       },
       {
-        value: "call_intake_coordinator",
+        id: "call-intake-coordinator",
+        roleCode: "call_intake_coordinator",
+        roleLabel: "Call Intake Coordinator",
+        name: "Call Intake Coordinator",
         label: "Call Intake Coordinator",
-        username: "intake@ist.local",
+        username: "intake@irisstar.tech",
+        password: "Intake@2026",
         landing: "call intake workspace"
       },
       {
-        value: "remote_triage_nurse",
+        id: "remote-triage-nurse",
+        roleCode: "remote_triage_nurse",
+        roleLabel: "Remote Triage Nurse",
+        name: "Remote Triage Nurse",
         label: "Remote Triage Nurse",
-        username: "nurse@ist.local",
+        username: "nurse@irisstar.tech",
+        password: "Nurse@2026",
         landing: "triage workspace"
       },
       {
-        value: "senior_triage_nurse",
+        id: "senior-triage-nurse",
+        roleCode: "senior_triage_nurse",
+        roleLabel: "Senior Triage Nurse",
+        name: "Senior Triage Nurse",
         label: "Senior Triage Nurse",
-        username: "senior.nurse@ist.local",
+        username: "senior.nurse@irisstar.tech",
+        password: "SeniorNurse@2026",
         landing: "supervised triage workspace"
       },
       {
-        value: "pediatric_triage_nurse",
+        id: "pediatric-triage-nurse",
+        roleCode: "pediatric_triage_nurse",
+        roleLabel: "Pediatric Triage Nurse",
+        name: "Pediatric Triage Nurse",
         label: "Pediatric Triage Nurse",
-        username: "pediatric.nurse@ist.local",
+        username: "pediatric.nurse@irisstar.tech",
+        password: "PediatricNurse@2026",
         landing: "pediatric triage workspace"
       },
       {
-        value: "teleconsult_physician",
+        id: "teleconsult-physician",
+        roleCode: "teleconsult_physician",
+        roleLabel: "Teleconsult Physician",
+        name: "Teleconsult Physician",
         label: "Teleconsult Physician",
-        username: "physician@ist.local",
+        username: "physician@irisstar.tech",
+        password: "Physician@2026",
         landing: "physician escalation workspace"
       },
       {
-        value: "occupational_health_clinician",
+        id: "occupational-health-clinician",
+        roleCode: "occupational_health_clinician",
+        roleLabel: "Occupational Health Clinician",
+        name: "Occupational Health Clinician",
         label: "Occupational Health Clinician",
-        username: "occupational.health@ist.local",
+        username: "oh@irisstar.tech",
+        password: "OccupationalHealth@2026",
         landing: "occupational-health workspace"
       }
     ]
@@ -166,11 +233,15 @@ const simulationRoleGroups: SimulationRoleGroup[] = [
   {
     code: "I",
     label: "I - Integration",
-    roles: [
+    users: [
       {
-        value: "integration_administrator",
+        id: "integration-administrator",
+        roleCode: "integration_administrator",
+        roleLabel: "Integration Administrator",
+        name: "Integration Administrator",
         label: "Integration Administrator",
-        username: "integrations@ist.local",
+        username: "integration@irisstar.tech",
+        password: "Integration@2026",
         landing: "integration administration"
       }
     ]
@@ -178,11 +249,15 @@ const simulationRoleGroups: SimulationRoleGroup[] = [
   {
     code: "R",
     label: "R - Reporting and Analytics",
-    roles: [
+    users: [
       {
-        value: "reporting_analyst",
+        id: "reporting-analyst",
+        roleCode: "reporting_analyst",
+        roleLabel: "Reporting Analyst",
+        name: "Reporting Analyst",
         label: "Reporting Analyst",
-        username: "reports@ist.local",
+        username: "reports@irisstar.tech",
+        password: "Reports@2026",
         landing: "reporting"
       }
     ]
@@ -190,27 +265,33 @@ const simulationRoleGroups: SimulationRoleGroup[] = [
   {
     code: "U",
     label: "U - User Support",
-    roles: [
+    users: [
       {
-        value: "helpdesk_support",
+        id: "helpdesk-support",
+        roleCode: "helpdesk_support",
+        roleLabel: "Helpdesk Support",
+        name: "Helpdesk Support",
         label: "Helpdesk Support",
-        username: "helpdesk@ist.local",
+        username: "helpdesk@irisstar.tech",
+        password: "Helpdesk@2026",
         landing: "support"
       }
     ]
   }
 ] as const;
 
-const simulationRoles = simulationRoleGroups.flatMap((group) => group.roles);
+const simulationUsers = simulationUserGroups.flatMap((group) => group.users);
 
 export default function LoginPage({ onAuthenticated }: LoginPageProps) {
-  const [username, setUsername] = useState("admin@ist.local");
-  const [password, setPassword] = useState("");
+  const [simulationUserId, setSimulationUserId] = useState("platform-administrator");
+  const selectedSimulationUser =
+    simulationUsers.find((user) => user.id === simulationUserId) ?? simulationUsers[0];
+  const [username, setUsername] = useState(selectedSimulationUser.username);
+  const [password, setPassword] = useState(selectedSimulationUser.password);
   const [tenant, setTenant] = useState("ist-tech");
   const [language, setLanguage] = useState("en");
-  const [simulationRole, setSimulationRole] = useState("platform_super_administrator");
   const [rememberMe, setRememberMe] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(true);
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -256,21 +337,26 @@ export default function LoginPage({ onAuthenticated }: LoginPageProps) {
   }
 
   async function simulateSelectedRoleLogin() {
-    const selectedRole = simulationRoles.find((role) => role.value === simulationRole) ?? simulationRoles[0];
-    setUsername(selectedRole.username);
-    setPassword("");
+    setUsername(selectedSimulationUser.username);
+    setPassword(selectedSimulationUser.password);
+    setShowPassword(true);
     setRememberMe(false);
-    setStatus(`Opening simulated ${selectedRole.landing}.`);
-    await loginWithCredentials(selectedRole.username, simulationLoginPassword, false, selectedRole.value);
+    setStatus(`Opening simulated ${selectedSimulationUser.landing}.`);
+    await loginWithCredentials(selectedSimulationUser.username, selectedSimulationUser.password, false);
   }
 
   return (
     <main className="login-shell" aria-label="Sign in">
       <section className="login-brand-panel">
-        <span className="tag-label">IRIS STAR TECHNOLOGIES</span>
-        <h1>Sign in to IST Tele-Triage</h1>
+        <div className="login-brand-lockup">
+          <img className="login-brand-logo" src="/logo-irisstar.svg" alt="IRIS STAR Technologies L.L.C" />
+          <span className="tag-label">IRIS STAR TECHNOLOGIES L.L.C</span>
+        </div>
+        <h1>IST Health</h1>
+        <strong>The Digital Health Engine for Qatar</strong>
         <p>
-          Secure clinical access for remote triage, governance, administration, privacy, and audit operations.
+          Hospital Information System for governed tele-triage, clinical administration,
+          privacy, and audit operations in Doha, Qatar.
         </p>
       </section>
 
@@ -293,7 +379,7 @@ export default function LoginPage({ onAuthenticated }: LoginPageProps) {
           value={tenant}
           onChange={(event) => setTenant(event.target.value)}
         >
-          <option value="ist-tech">IST Tech</option>
+          <option value="ist-tech">IRIS STAR Technologies L.L.C</option>
         </select>
 
         <label className="field-label" htmlFor="language">
@@ -312,25 +398,43 @@ export default function LoginPage({ onAuthenticated }: LoginPageProps) {
           <option value="tl">Tagalog</option>
         </select>
 
-        <label className="field-label" htmlFor="simulation-role">
-          Simulate role
+        <label className="field-label" htmlFor="simulation-user">
+          Simulate user
         </label>
         <select
-          id="simulation-role"
+          id="simulation-user"
           className="input-control"
-          value={simulationRole}
-          onChange={(event) => setSimulationRole(event.target.value as typeof simulationRole)}
+          value={simulationUserId}
+          onChange={(event) => {
+            const nextUserId = event.target.value;
+            const nextUser = simulationUsers.find((user) => user.id === nextUserId) ?? simulationUsers[0];
+            setSimulationUserId(nextUser.id);
+            setUsername(nextUser.username);
+            setPassword(nextUser.password);
+            setShowPassword(true);
+            setStatus("");
+          }}
         >
-          {simulationRoleGroups.map((group) => (
+          {simulationUserGroups.map((group) => (
             <optgroup key={group.code} label={group.label}>
-              {group.roles.map((role) => (
-                <option key={role.value} value={role.value}>
-                  {group.code} - {role.label}
+              {group.users.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {group.code} - {user.name} - {user.roleLabel}
                 </option>
               ))}
             </optgroup>
           ))}
         </select>
+
+        <label className="field-label" htmlFor="assigned-role">
+          Assigned role
+        </label>
+        <input
+          id="assigned-role"
+          className="input-control"
+          value={selectedSimulationUser.roleCode}
+          readOnly
+        />
 
         <label className="field-label" htmlFor="username">
           Email or username
@@ -399,16 +503,19 @@ export default function LoginPage({ onAuthenticated }: LoginPageProps) {
             onClick={simulateSelectedRoleLogin}
             disabled={busy}
           >
-            Simulate role
+            Simulate user
           </button>
         </div>
 
         <div className="login-links">
           <a href="#privacy">Privacy policy</a>
           <a href="#terms">Terms of use</a>
-          <a href="mailto:helpdesk@ist.local">Helpdesk</a>
+          <a href="mailto:helpdesk@irisstar.tech">Helpdesk</a>
           <a href="#forgot-password">Forgot password</a>
         </div>
+        <p className="login-legal-line">
+          Legal entity: IRIS STAR Technologies L.L.C. Product: IST Health.
+        </p>
       </form>
     </main>
   );

@@ -1,0 +1,198 @@
+/**
+ * IST Health — Base (Swiss + IST)
+ */
+
+@import url("variables.css");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap");
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: var(--color-bg);
+  min-height: 100vh;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--color-text);
+  text-decoration: none;
+  transition: color var(--transition-fast), opacity var(--transition-fast);
+}
+
+a:hover { opacity: 0.65; }
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ── Type hierarchy (Swiss scale) ─────────────────────────── */
+
+.display,
+.ist-display {
+  font-family: var(--font-display);
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-black);
+  line-height: var(--line-height-tight);
+  color: var(--color-heading);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h1, .h1 {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--line-height-tight);
+  color: var(--color-heading);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h2, .h2 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-heading);
+  line-height: var(--line-height-snug);
+  letter-spacing: -0.02em;
+}
+
+h3, .h3 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-heading);
+  letter-spacing: -0.01em;
+}
+
+.ist-tagline,
+.tagline {
+  font-family: var(--font-accent);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: var(--letter-spacing-tagline);
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+.ist-label,
+.sec {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+p { margin: 0 0 var(--space-4); }
+
+.sub, .ist-subtitle {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Mono — times, IDs, codes */
+.ist-mono,
+.ist-time,
+.ist-id {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  padding: 2px var(--space-2);
+  background: var(--color-bg-muted);
+  border: none;
+  border-radius: var(--radius-sm);
+}
+
+/* Hairline divider under headings */
+.ist-divider,
+hr.ist-divider {
+  display: block;
+  width: 100%;
+  height: var(--hairline-width);
+  margin: var(--space-4) 0 var(--space-6);
+  border: none;
+  background: var(--color-divider);
+}
+
+.ist-heading-block {
+  margin-bottom: var(--space-7);
+}
+
+.ist-heading-block .ist-divider {
+  margin-bottom: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+.hidden { display: none !important; }
+
+/* Watermark (optional app background) */
+.ist-watermark {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-watermark);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.ist-watermark__text {
+  font-family: var(--font-display);
+  font-size: clamp(12rem, 35vw, 28rem);
+  font-weight: var(--font-weight-black);
+  color: var(--color-bg-watermark);
+  letter-spacing: -0.04em;
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+}
+
+@media (max-width: 768px) {
+  .display, .ist-display { font-size: var(--font-size-2xl); }
+  h1, .h1 { font-size: var(--font-size-xl); }
+}

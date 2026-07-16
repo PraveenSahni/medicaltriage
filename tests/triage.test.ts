@@ -17,7 +17,7 @@ async function authenticatedAgent() {
   const login = await agent
     .post("/api/v1/auth/login")
     .send({
-      username: "nurse@ist.local",
+      username: "nurse@irisstar.tech",
       password: TEST_ADMIN_PASSWORD,
       simulateRole: "remote_triage_nurse"
     })
@@ -262,6 +262,33 @@ describe("IST Qatar Phase I API", () => {
       expect(response.body.notePayload).toContain("SBAR");
       expect(response.body.notePayload).toContain("ملخص الحالة السريرية");
       expect(response.body.notePayload).toContain("Rules-first, AI-second");
+    });
+
+    it("restricts fit-to-fly status for pediatric emergency disposition", async () => {
+      const agent = await authenticatedAgent();
+      const response = await agent
+        .post("/api/v1/triage/complete")
+        .set("Accept", "application/json")
+        .send({
+          encounter_id: "enc-phase1-pediatric-emergency-001",
+          ist_staff_id: "IST-1001",
+          nurse_id: "nurse-phase1",
+          patient_age_years: 3,
+          chief_complaint: "Fever with fast breathing reported by parent.",
+          subjective: "Dependent child with fever and fast breathing.",
+          objective: "HR 118, RR 42, SpO2 92, Temp 39.1, AVPU alert.",
+          assessment: "Emergency pediatric tachypnea safety floor triggered.",
+          recommendation: "Immediate pediatric emergency department escalation.",
+          final_disposition_code: "SIDRA_PEDIATRIC_ED",
+          routing_destination: "Sidra Medicine Emergency Department",
+          safety_rationale:
+            "Age-banded pediatric tachypnea threshold triggered mandatory pediatric emergency escalation.",
+          custom_aviation_tags: []
+        })
+        .expect(200);
+
+      expect(response.body.fitToFlyStatus).toBe("RESTRICTED");
+      expect(response.body.notePayload).toContain("Sidra Medicine Emergency Department");
     });
   });
 

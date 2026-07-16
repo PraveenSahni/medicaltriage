@@ -389,6 +389,89 @@ export const samplePhase1ClinicalContent: ClinicalContentPackageInput = {
           warningSigns: ["throat swelling", "breathing difficulty", "fainting", "facial swelling"]
         }
       ]
+    },
+    {
+      id: "sample-ankle-foot-injury",
+      titleEn: "Ankle and Foot Injury",
+      clinicalDefinitionEn:
+        "Synthetic Phase 1 protocol for ankle, foot, sprain, and sport injury complaints. Replace with licensed STCC clinical content before production.",
+      backgroundInfoEn:
+        "The nurse starts with neurovascular, deformity, open wound, and weight-bearing red flags before lower-acuity sprain care.",
+      mode: "both",
+      keywords: [
+        { phrase: "ankle injury", weight: 100 },
+        { phrase: "foot injury", weight: 90 },
+        { phrase: "twisted ankle", weight: 100 },
+        { phrase: "sprain", weight: 85 },
+        { phrase: "sport injury", weight: 80 },
+        { phrase: "unable to walk", weight: 85 },
+        { phrase: "swelling", weight: 70 }
+      ],
+      questions: [
+        {
+          id: "ankle-foot-q1",
+          acuityOrder: 1,
+          severity: "Emergency",
+          questionTextEn:
+            "Foot or ankle has severe deformity, open wound with bone visible, uncontrolled bleeding, numbness, cold/blue foot, or severe pain after major trauma?",
+          dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+          rationaleEn: "Possible open fracture, vascular compromise, or severe trauma requires emergency assessment.",
+          redFlag: true,
+          keywords: ["deformity", "open wound", "bone", "bleeding", "numb", "cold", "blue", "major trauma"],
+          careAdviceIds: ["ankle-foot-emergency-red-flag"]
+        },
+        {
+          id: "ankle-foot-q2",
+          acuityOrder: 2,
+          severity: "Urgent",
+          questionTextEn:
+            "Unable to bear weight, severe swelling, marked bruising, worsening pain, or child will not walk after the injury?",
+          dispositionCode: "HMC_URGENT_REVIEW",
+          rationaleEn: "Weight-bearing failure or significant swelling requires urgent clinical review and possible imaging.",
+          keywords: ["unable to bear weight", "cannot walk", "swelling", "bruising", "worsening", "child"],
+          careAdviceIds: ["urgent-review-precautions", "ankle-foot-injury-care"]
+        },
+        {
+          id: "ankle-foot-q3",
+          acuityOrder: 3,
+          severity: "Routine",
+          questionTextEn:
+            "Mild to moderate pain, swelling, or limp after twisting the ankle but able to walk and no neurovascular red flags?",
+          dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
+          rationaleEn: "Routine clinical review is appropriate after emergency and urgent features are ruled out.",
+          keywords: ["twisting", "mild", "moderate", "limp", "able to walk", "no red flags"],
+          careAdviceIds: ["ankle-foot-injury-care", "routine-review-precautions"]
+        },
+        {
+          id: "ankle-foot-q4",
+          acuityOrder: 4,
+          severity: "Self-care",
+          questionTextEn:
+            "Minor twist with improving discomfort, normal walking, no swelling progression, and reliable callback precautions?",
+          dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          rationaleEn: "Self-care is limited to low-risk injury after higher-acuity questions are negative.",
+          keywords: ["minor", "improving", "normal walking", "callback"],
+          careAdviceIds: ["ankle-foot-injury-care"]
+        }
+      ],
+      careAdvice: [
+        {
+          id: "ankle-foot-emergency-red-flag",
+          titleEn: "Foot or ankle emergency precautions",
+          instructionTextEn:
+            "Escalate immediately when deformity, open wound, bleeding, numbness, cold/blue foot, or major trauma is present. Keep the patient from weight-bearing until assessed.",
+          dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+          warningSigns: ["open wound", "cold or blue foot", "numbness", "severe deformity", "uncontrolled bleeding"]
+        },
+        {
+          id: "ankle-foot-injury-care",
+          titleEn: "Ankle or foot injury care advice",
+          instructionTextEn:
+            "Advise rest, protection from weight-bearing if painful, elevation, and callback if pain, swelling, numbness, color change, or walking ability worsens.",
+          dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
+          warningSigns: ["worsening pain", "increasing swelling", "numbness", "color change", "cannot walk"]
+        }
+      ]
     }
   ]
 };

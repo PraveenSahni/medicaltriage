@@ -5,8 +5,8 @@ import {
   Clock3,
   Kanban,
   PhoneCall,
+  Search,
   ShieldAlert,
-  UserRoundCheck
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
@@ -14,7 +14,7 @@ import type { QueueClinicalStage, QueueItem } from "./QueueContext";
 import { useQueue } from "./QueueContext";
 
 type Severity = "Emergency" | "Urgent" | "Routine" | "Self-care";
-type BoardStatus = "incoming" | "identity" | "triage" | "disposition" | "followup";
+type BoardStatus = "incoming" | "reason" | "questions" | "disposition" | "followup";
 
 type BoardCase = {
   id: string;
@@ -36,11 +36,11 @@ type BoardCase = {
 };
 
 const boardColumns: Array<{ id: BoardStatus; title: string; limit: string; icon: typeof PhoneCall }> = [
-  { id: "incoming", title: "Incoming", limit: "Accept next call", icon: PhoneCall },
-  { id: "identity", title: "Identity", limit: "HRMS match", icon: UserRoundCheck },
-  { id: "triage", title: "Clinical triage", limit: "Rules-first checklist", icon: ShieldAlert },
+  { id: "incoming", title: "Incoming Queue", limit: "Accept next call", icon: PhoneCall },
+  { id: "reason", title: "Reason & Emergency", limit: "Rule-out first", icon: Search },
+  { id: "questions", title: "Questions", limit: "Acuity ordered", icon: ShieldAlert },
   { id: "disposition", title: "Disposition", limit: "Nurse approval", icon: AlertTriangle },
-  { id: "followup", title: "SBAR / follow-up", limit: "Copy and close", icon: CheckCircle2 }
+  { id: "followup", title: "SBAR / Complete", limit: "Copy and close", icon: CheckCircle2 }
 ];
 
 const severityStyles: Record<Severity, string> = {
@@ -57,7 +57,7 @@ const severityOrder: Record<Severity, number> = {
   "Self-care": 3
 };
 
-const statusOrder: BoardStatus[] = ["incoming", "identity", "triage", "disposition", "followup"];
+const statusOrder: BoardStatus[] = ["incoming", "reason", "questions", "disposition", "followup"];
 const stageOrder: QueueClinicalStage[] = ["INTAKE", "IDENTITY", "VITALS", "PROTOCOL", "DISPOSITION", "SBAR"];
 
 function nextStatus(status: BoardStatus) {
@@ -89,10 +89,18 @@ function severityFrom(item: QueueItem): Severity {
 
 function statusFrom(item: QueueItem): BoardStatus {
   if (item.status === "INCOMING") return "incoming";
-  if (item.currentStage === "IDENTITY") return "identity";
-  if (item.currentStage === "VITALS" || item.currentStage === "PROTOCOL") return "triage";
+  if (item.currentStage === "IDENTITY" || item.currentStage === "INTAKE") return "reason";
+  if (item.currentStage === "VITALS" || item.currentStage === "PROTOCOL") return "questions";
   if (item.currentStage === "DISPOSITION") return "disposition";
   return "followup";
+}
+
+function actionLabel(status: BoardStatus) {
+  if (status === "incoming") return "Waiting";
+  if (status === "reason") return "Reason & emergency";
+  if (status === "questions") return "Assessment questions";
+  if (status === "disposition") return "Disposition review";
+  return "SBAR / complete";
 }
 
 function minutesUntil(iso: string) {
@@ -197,7 +205,7 @@ export default function KanbanWorkspace() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <span className="tag-label">KANBAN COCKPIT</span>
-            <h1 className="mt-2 text-3xl font-semibold tracking-[0] text-[var(--tx)] md:text-4xl">
+            <h1 className="mt-2 text-3xl font-normal tracking-[0] text-[var(--tx)] md:text-4xl">
               Nurse Queue Board
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--tx2)]">
@@ -226,7 +234,7 @@ export default function KanbanWorkspace() {
           </div>
         </div>
         {(error || actionError) && (
-          <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-800">
+          <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm font-normal text-amber-800">
             {actionError ?? error}
           </div>
         )}
@@ -240,33 +248,34 @@ export default function KanbanWorkspace() {
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="grid gap-3 lg:grid-cols-5">
+        <div className="overflow-x-auto pb-2">
+          <div className="grid min-w-[1120px] gap-3 lg:grid-cols-5">
           {boardColumns.map((column) => {
             const columnCases = filteredCases.filter((boardCase) => boardCase.status === column.id);
             const ColumnIcon = column.icon;
             return (
-              <section key={column.id} className="clinical-card min-w-0 p-3" aria-label={`${column.title} column`}>
-                <div className="flex items-start justify-between gap-2">
+              <section key={column.id} className="clinical-card min-w-0 p-4" aria-label={`${column.title} column`}>
+                <div className="flex items-start justify-between gap-3 border-b border-[var(--bd)] pb-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <ColumnIcon className="h-4 w-4 text-[var(--t1)]" />
-                      <h2 className="truncate text-sm font-semibold text-[var(--tx)]">{column.title}</h2>
+                      <h2 className="truncate text-base font-normal text-[var(--tx)]">{column.title}</h2>
                     </div>
-                    <p className="mt-1 text-[11px] font-medium leading-4 text-[var(--tx3)]">{column.limit}</p>
+                    <p className="mt-1 text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--tx3)]">{column.limit}</p>
                   </div>
-                  <span className="rounded-full border border-[var(--bd)] px-2 py-1 text-[11px] font-semibold text-[var(--tx2)]">
+                  <span className="rounded-md border border-[var(--bd)] px-2 py-1 text-[11px] font-normal text-[var(--tx2)]">
                     {columnCases.length}
                   </span>
                 </div>
 
-                <div className="mt-3 grid gap-2">
+                <div className="mt-3 grid gap-3">
                   {columnCases.map((boardCase) => (
                     <button
                       key={boardCase.id}
                       type="button"
-                      className={`rounded-lg border p-3 text-left transition ${
+                      className={`kanban-call-card rounded-md border p-4 text-left transition ${
                         selectedCase?.id === boardCase.id
-                          ? "border-[var(--t1)] bg-[var(--t1bg)]"
+                          ? "border-[var(--brand-navy)] bg-[var(--t1bg)]"
                           : "border-[var(--bd)] bg-[var(--bg)] hover:border-[var(--t1bd)]"
                       }`}
                       onClick={() => {
@@ -274,27 +283,37 @@ export default function KanbanWorkspace() {
                         setActiveItemById(boardCase.id);
                       }}
                     >
-                      <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <span className="text-[11px] font-semibold text-[var(--t1)]">{boardCase.maskedPatientId}</span>
-                          <strong className="mt-1 block text-sm leading-5 text-[var(--tx)]">{boardCase.role}</strong>
+                          <span className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--t1)]">
+                            {actionLabel(boardCase.status)}
+                          </span>
+                          <strong className="mt-2 block text-base font-normal leading-5 text-[var(--tx)]">
+                            {boardCase.maskedPatientId}
+                          </strong>
+                          <span className="mt-1 block text-sm font-normal leading-5 text-[var(--tx2)]">{boardCase.role}</span>
                         </div>
-                        <span className={`rounded-full border px-2 py-1 text-[10px] font-semibold ${severityStyles[boardCase.severity]}`}>
+                        <span className={`rounded-md border px-2 py-1 text-[10px] font-normal ${severityStyles[boardCase.severity]}`}>
                           {boardCase.severity}
                         </span>
                       </div>
-                      <p className="mt-2 text-xs leading-5 text-[var(--tx2)]">{boardCase.summary}</p>
+                      <p className="mt-3 line-clamp-3 text-sm font-normal leading-6 text-[var(--tx2)]">{boardCase.summary}</p>
+                      <div className="mt-4 grid grid-cols-2 gap-2 border-t border-[var(--bd)] pt-3">
+                        <MiniFact label="Wait" value={`${boardCase.waitMinutes}m`} />
+                        <MiniFact label="Channel" value={boardCase.channel} />
+                        <MiniFact label="Patient" value={boardCase.patientType} />
+                        <MiniFact label="Station" value={boardCase.station} />
+                      </div>
                       <div className="mt-3 flex flex-wrap gap-1.5">
                         <Chip>{boardCase.waitMinutes}m</Chip>
                         <Chip>{boardCase.channel}</Chip>
-                        <Chip>{boardCase.patientType}</Chip>
                         {boardCase.safetyFloor && <Chip tone="red">Safety floor</Chip>}
                       </div>
                     </button>
                   ))}
 
                   {columnCases.length === 0 && (
-                    <div className="rounded-lg border border-dashed border-[var(--bd)] p-3 text-center text-xs font-semibold text-[var(--tx3)]">
+                    <div className="rounded-md border border-dashed border-[var(--bd)] p-4 text-center text-xs font-normal text-[var(--tx3)]">
                       {loading ? "Loading" : "Clear"}
                     </div>
                   )}
@@ -302,6 +321,7 @@ export default function KanbanWorkspace() {
               </section>
             );
           })}
+          </div>
         </div>
 
         <aside className="clinical-card p-4" aria-label="Selected call details">
@@ -309,11 +329,12 @@ export default function KanbanWorkspace() {
             <div className="space-y-4">
               <div>
                 <span className="tag-label">SELECTED CALL</span>
-                <h2 className="mt-2 text-xl font-semibold text-[var(--tx)]">{selectedCase.maskedPatientId}</h2>
+                <h2 className="mt-2 text-xl font-normal text-[var(--tx)]">{selectedCase.maskedPatientId}</h2>
                 <p className="mt-2 text-sm leading-6 text-[var(--tx2)]">{selectedCase.summary}</p>
               </div>
 
               <div className="grid gap-2">
+                <Detail label="Current action" value={actionLabel(selectedCase.status)} />
                 <Detail label="Staff ID" value={selectedCase.staffId} />
                 <Detail label="Patient" value={selectedCase.patientType} />
                 <Detail label="Owner" value={selectedCase.owner} />
@@ -323,7 +344,7 @@ export default function KanbanWorkspace() {
 
               {selectedCase.safetyFloor && (
                 <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-700">
-                  <div className="flex items-center gap-2 text-sm font-semibold">
+                  <div className="flex items-center gap-2 text-sm font-normal">
                     <ShieldAlert className="h-4 w-4" />
                     Safety floor active
                   </div>
@@ -365,7 +386,7 @@ export default function KanbanWorkspace() {
             <div className="grid min-h-[280px] place-items-center text-center text-sm text-[var(--tx3)]">
               <div>
                 <Kanban className="mx-auto h-6 w-6" />
-                <p className="mt-2 font-semibold">No call selected</p>
+        <p className="mt-2 font-normal">No call selected</p>
               </div>
             </div>
           )}
@@ -378,10 +399,10 @@ export default function KanbanWorkspace() {
 function Metric({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "red" }) {
   return (
     <div className="rounded-lg border border-[var(--bd)] bg-[var(--bg2)] p-3">
-      <strong className={`block text-2xl font-semibold ${tone === "red" ? "text-red-600" : "text-[var(--tx)]"}`}>
+      <strong className={`block text-2xl font-normal ${tone === "red" ? "text-red-600" : "text-[var(--tx)]"}`}>
         {value}
       </strong>
-      <span className="mt-1 block text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--tx3)]">{label}</span>
+      <span className="mt-1 block text-[11px] font-normal uppercase tracking-[0.08em] text-[var(--tx3)]">{label}</span>
     </div>
   );
 }
@@ -389,7 +410,7 @@ function Metric({ label, value, tone = "default" }: { label: string; value: stri
 function Chip({ children, tone = "default" }: { children: ReactNode; tone?: "default" | "red" }) {
   return (
     <span
-      className={`rounded-full border px-2 py-1 text-[10px] font-semibold ${
+      className={`rounded-md border px-2 py-1 text-[10px] font-normal ${
         tone === "red"
           ? "border-red-200 bg-red-50 text-red-700"
           : "border-[var(--bd)] bg-[var(--bg2)] text-[var(--tx2)]"
@@ -400,11 +421,20 @@ function Chip({ children, tone = "default" }: { children: ReactNode; tone?: "def
   );
 }
 
+function MiniFact({ label, value }: { label: string; value: string }) {
+  return (
+    <span className="min-w-0">
+      <small className="block text-[10px] font-normal uppercase tracking-[0.12em] text-[var(--tx3)]">{label}</small>
+      <strong className="mt-0.5 block truncate text-xs font-normal leading-5 text-[var(--tx)]">{value}</strong>
+    </span>
+  );
+}
+
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg border border-[var(--bd)] bg-[var(--bg2)] p-3">
-      <span className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--tx3)]">{label}</span>
-      <strong className="mt-1 block text-sm leading-5 text-[var(--tx)]">{value}</strong>
+      <span className="block text-[10px] font-normal uppercase tracking-[0.08em] text-[var(--tx3)]">{label}</span>
+      <strong className="mt-1 block text-sm font-normal leading-5 text-[var(--tx)]">{value}</strong>
     </div>
   );
 }

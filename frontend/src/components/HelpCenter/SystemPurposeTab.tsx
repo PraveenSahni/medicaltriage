@@ -73,7 +73,7 @@ export function SystemPurposeTab({
             body="Simplified access-staff screening for urgent red-flag detection and safe routing without requiring non-clinical staff to make clinical judgments."
           />
           <MiniDefinition
-            label="IST Tech layer"
+            label="IST Health layer"
             body="Localized staff/dependent identity, insurance status, aviation medicine rules, Arabic/English operation, and Qatar destination routing."
           />
         </div>

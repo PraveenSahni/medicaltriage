@@ -13,6 +13,7 @@ remix_-ist-technologies.zip
 *.sqlite3-shm
 *.sqlite3-wal
 data/generated/
+tmp/
 __pycache__/
 .pytest_cache/
 *.docx

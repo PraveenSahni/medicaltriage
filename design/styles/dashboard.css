@@ -1,0 +1,251 @@
+/**
+ * IST Health — Dashboard (Swiss + IST)
+ */
+
+@import url("variables.css");
+
+.ist-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.ist-dashboard__welcome {
+  margin-bottom: var(--space-2);
+  text-align: start;
+}
+
+.ist-dashboard__welcome .ist-tagline,
+.ist-dashboard__welcome h1,
+.ist-dashboard__welcome .ist-subtitle {
+  margin-inline: 0;
+  padding-inline: 0;
+  text-align: start;
+}
+
+.ist-dashboard__welcome h1 {
+  margin-bottom: var(--space-3);
+}
+
+.ist-dashboard__welcome .ist-subtitle {
+  margin-top: var(--space-4);
+  margin-bottom: 0;
+}
+
+/* Internal dashboard headings — login inspire title typography (700 bold) */
+.ist-dashboard h1,
+.ist-dashboard h2,
+.ist-dashboard h3,
+.ist-dashboard__welcome h1,
+.ist-dashboard__title,
+.ist-section-title,
+.ist-schedule__head h2,
+.ist-activity__head h2,
+.ist-dashboard-grid h2,
+.ist-dashboard-grid h3 {
+  font-family: var(--font-dashboard-heading-family);
+  font-size: var(--font-dashboard-heading-size);
+  font-weight: var(--font-dashboard-heading-weight);
+  line-height: var(--font-dashboard-heading-line-height);
+  color: var(--font-dashboard-heading-color);
+  letter-spacing: var(--font-dashboard-heading-letter-spacing);
+}
+
+.ist-dashboard__welcome .ist-tagline {
+  margin-bottom: var(--space-4);
+}
+
+/* Stats row — whitespace, hairline separators */
+.ist-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-8);
+}
+
+.ist-stat,
+.ist-metric {
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-top: var(--hairline-width) solid var(--color-divider);
+  padding-top: var(--space-5);
+  text-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ist-stat__label,
+.ist-metric__label {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+  margin-inline: 0;
+  padding-inline: 0;
+  text-align: start;
+  align-self: stretch;
+}
+
+.ist-stat__value,
+.ist-metric__value,
+.ist-quick-list__value {
+  font-family: var(--font-dashboard-heading-family);
+  font-size: var(--font-dashboard-heading-size);
+  font-weight: var(--font-dashboard-heading-weight);
+  line-height: var(--font-dashboard-heading-line-height);
+  color: var(--font-dashboard-heading-color);
+  letter-spacing: var(--font-dashboard-heading-letter-spacing);
+  margin-inline: 0;
+  padding-inline: 0;
+  text-align: start;
+  font-variant-numeric: tabular-nums;
+}
+
+.ist-stat__meta,
+.ist-metric__meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-3);
+  margin-inline: 0;
+  padding-inline: 0;
+  text-align: start;
+  align-self: stretch;
+}
+
+/* Quick actions row */
+.ist-quick-actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* Schedule section — Swiss time|label pattern */
+.ist-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.ist-schedule__head {
+  margin-bottom: var(--space-6);
+}
+
+.ist-schedule__head h2 {
+  margin-bottom: var(--space-4);
+}
+
+.ist-schedule__head .ist-divider {
+  margin: 0;
+}
+
+.ist-schedule__row {
+  display: grid;
+  grid-template-columns: var(--layout-time-col) 1fr auto;
+  gap: var(--space-6);
+  align-items: baseline;
+  padding-block: var(--space-3);
+}
+
+.ist-schedule__time {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.ist-schedule__name {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text);
+}
+
+.ist-schedule__status {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-align: end;
+}
+
+.ist-schedule__status.is-active { color: var(--color-success); }
+.ist-schedule__status.is-pending { color: var(--color-warning); }
+
+/* Legacy activity list (maps to schedule) */
+.ist-activity {
+  border: none;
+  border-top: var(--hairline-width) solid var(--color-divider);
+}
+
+.ist-activity__head {
+  padding: var(--space-6) 0 var(--space-4);
+  border-bottom: none;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.ist-activity__item {
+  display: grid;
+  grid-template-columns: var(--layout-time-col) 1fr auto;
+  gap: var(--space-6);
+  align-items: baseline;
+  padding: var(--space-3) 0;
+  border-bottom: none;
+}
+
+.ist-activity__time {
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  color: var(--color-text);
+  min-width: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.ist-activity__name {
+  flex: 1;
+  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-base);
+}
+
+/* Two-column dashboard layout */
+.ist-dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-10);
+}
+
+/* Quick stats sidebar — simple list */
+.ist-quick-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-top: var(--space-5);
+  border-top: var(--hairline-width) solid var(--color-divider);
+}
+
+.ist-quick-list__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  font-size: var(--font-size-base);
+}
+
+.ist-quick-list__label {
+  color: var(--color-text-secondary);
+}
+
+
+@media (max-width: 900px) {
+  .ist-dashboard-grid { grid-template-columns: 1fr; }
+  .ist-schedule__row,
+  .ist-activity__item {
+    grid-template-columns: 56px 1fr;
+  }
+  .ist-schedule__status { display: none; }
+}

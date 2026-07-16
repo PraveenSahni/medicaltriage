@@ -1,0 +1,115 @@
+/**
+ * IST Health — RTL (Arabic)
+ */
+
+[dir="rtl"],
+.ist-rtl {
+  font-family: var(--font-ar);
+}
+
+[dir="rtl"] .ist-tagline,
+.ist-rtl .ist-tagline {
+  font-family: var(--font-ar);
+  letter-spacing: 0.08em;
+}
+
+[dir="rtl"] .ist-nav__link,
+.ist-rtl .ist-nav__link {
+  letter-spacing: 0.06em;
+}
+
+[dir="rtl"] .ist-sidebar .ist-nav__link.is-active,
+.ist-rtl .ist-sidebar .ist-nav__link.is-active {
+  border-inline-start: none;
+  border-inline-end: 2px solid var(--color-text);
+}
+
+[dir="rtl"] .ist-theme-switch input:checked + .ist-theme-switch__track .ist-theme-switch__thumb,
+.ist-rtl .ist-theme-switch input:checked + .ist-theme-switch__track .ist-theme-switch__thumb {
+  transform: translateX(calc(-1 * (var(--theme-toggle-width) - var(--theme-toggle-thumb-size) - 6px)));
+}
+
+[dir="rtl"] .ist-toggle input:checked + .ist-toggle__track::before,
+.ist-rtl .ist-toggle input:checked + .ist-toggle__track::before {
+  transform: translateX(-20px);
+}
+
+[dir="rtl"] .ist-toggle__track::before,
+.ist-rtl .ist-toggle__track::before {
+  left: auto;
+  right: 3px;
+}
+
+[dir="rtl"] .ist-table th,
+[dir="rtl"] .ist-table td,
+.ist-rtl .ist-table th,
+.ist-rtl .ist-table td {
+  text-align: right;
+}
+
+[dir="rtl"] .ist-search input,
+.ist-rtl .ist-search input {
+  padding-inline-start: var(--space-4);
+  padding-inline-end: 40px;
+}
+
+[dir="rtl"] .ist-search__icon,
+.ist-rtl .ist-search__icon {
+  inset-inline-start: auto;
+  inset-inline-end: 14px;
+}
+
+/* Bilingual label stack */
+.ist-bilingual {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ist-bilingual__ar {
+  font-family: var(--font-ar);
+  font-size: 0.9em;
+  color: var(--color-text-secondary);
+  direction: rtl;
+}
+
+[dir="rtl"] .ist-bilingual__en {
+  font-size: 0.85em;
+  color: var(--color-text-muted);
+  direction: ltr;
+}
+
+/* Keep IDs, times, and numbers LTR in Arabic UI */
+.ist-locale-ar .ist-id,
+.ist-locale-ar .ist-time,
+.ist-locale-ar .ist-stat__value,
+.ist-locale-ar .ist-activity__time,
+.ist-locale-ar .ist-schedule__time,
+.ist-locale-ar .ist-time-label__time,
+.ist-locale-ar .ist-patient-list__id,
+.ist-locale-ar .ist-patient-list__phone,
+.ist-locale-ar .ist-patient-list__date {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+[dir="rtl"] .ist-schedule__status,
+.ist-rtl .ist-schedule__status {
+  text-align: start;
+}
+
+[dir="rtl"] .ist-login-card__inspire,
+.ist-rtl .ist-login-card__inspire {
+  align-items: flex-end;
+  text-align: start;
+}
+
+[dir="rtl"] .ist-login-card__watermark,
+.ist-rtl .ist-login-card__watermark {
+  inset-inline-end: auto;
+  inset-inline-start: -20%;
+}
+
+@media print {
+  [dir="rtl"] body { direction: rtl; text-align: right; }
+}

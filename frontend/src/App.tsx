@@ -85,10 +85,24 @@ const roleLabels: Record<string, string> = {
   helpdesk_support: "Helpdesk Support"
 };
 
-function canOpenAdminView(permissions: string[]) {
-  return permissions.some((permission) =>
-    ["admin.users.manage", "security.sso.manage", "audit.events.view"].includes(permission)
-  );
+const controlCenterRoles = new Set([
+  "platform_super_administrator",
+  "organization_administrator",
+  "system_administrator",
+  "security_administrator",
+  "privacy_officer",
+  "compliance_auditor",
+  "clinical_governance_lead",
+  "triage_service_manager",
+  "protocol_content_manager",
+  "quality_reviewer",
+  "integration_administrator",
+  "reporting_analyst",
+  "helpdesk_support"
+]);
+
+function canOpenAdminView(session: AuthenticatedSession) {
+  return controlCenterRoles.has(session.activeRole);
 }
 
 function formatRole(role: string) {
@@ -106,6 +120,11 @@ export default function App() {
   const [session, setSession] = useState<AuthenticatedSession | null>(null);
   const [sessionStatus, setSessionStatus] = useState("Checking secure session.");
   const [runtimeEnvironment, setRuntimeEnvironment] = useState<RuntimeEnvironment>(defaultRuntimeEnvironment);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = themeMode;
+    document.documentElement.classList.toggle("dark", themeMode === "dark");
+  }, [themeMode]);
 
   useEffect(() => {
     let cancelled = false;
@@ -146,7 +165,7 @@ export default function App() {
         const payload = await response.json();
         if (!cancelled) {
           setSession(payload.session);
-          setActiveView(canOpenAdminView(payload.session.permissions) ? "admin" : "workspace");
+          setActiveView(canOpenAdminView(payload.session) ? "admin" : "workspace");
           setSessionStatus("Secure session restored.");
         }
       } catch {
@@ -165,11 +184,11 @@ export default function App() {
   const heading = useMemo(() => {
     if (activeView === "admin") {
       return {
-        eyebrow: "ADMINISTRATION",
-        title: "Security, Privacy, and Access Control",
-        subtitle: "Login, SSO, users, roles, responsibilities, masking, reveal control, encryption policy, and audit monitoring.",
+        eyebrow: "CONTROL CENTER",
+        title: "Role-Based Control Center",
+        subtitle: "Users, access, security, privacy, audit, governance, protocol library, integrations, reports, and support are split by named-user responsibility.",
         metric: "31",
-        metricLabel: "SECURITY CONTROLS"
+        metricLabel: "ACCESS CONTROLS"
       };
     }
 
@@ -206,8 +225,8 @@ export default function App() {
 
     return {
       eyebrow: "TRIAGE PAGE",
-      title: "IST Tech Clinical Decision Support",
-      subtitle: "Rules-first clinical triage with aviation medicine context and SBAR drafting.",
+      title: "IST Health Clinical Decision Support",
+      subtitle: "Rules-first clinical triage for Qatar workforce health operations with SBAR drafting.",
       metric: "6",
       metricLabel: "REVIEW GATES"
     };
@@ -233,7 +252,7 @@ export default function App() {
     return <TriageWorkspace />;
   };
 
-  const hasAdminAccess = session ? canOpenAdminView(session.permissions) : false;
+  const hasAdminAccess = session ? canOpenAdminView(session) : false;
   const activeRoleLabel = session ? formatRole(session.activeRole) : "";
 
   function openView(view: ViewKey) {
@@ -297,7 +316,7 @@ export default function App() {
 
   if (!session) {
     return (
-      <div className={themeMode === "dark" ? "dark" : ""}>
+      <div>
         <div className="app-shell">
           <div className="app-frame">
             <div className="login-theme-bar">
@@ -331,9 +350,12 @@ export default function App() {
   }
 
   return (
-    <div className={themeMode === "dark" ? "dark" : ""}>
+    <div>
       <div className="app-shell">
         <div className="app-frame">
+          <div className="ist-watermark" aria-hidden="true">
+            IST
+          </div>
           <EnvironmentBanner runtimeEnvironment={runtimeEnvironment} />
           <header className="topbar" aria-label="Application navigation">
             <button
@@ -344,7 +366,7 @@ export default function App() {
             >
               <IstLogoMark />
               <span>
-                <strong>IST Tech</strong>
+                <strong>IST Health</strong>
                 <small>{session.user.fullName} | {activeRoleLabel}</small>
               </span>
             </button>
@@ -383,8 +405,8 @@ export default function App() {
                   type="button"
                   className={`header-icon-button ${activeView === "admin" ? "header-icon-button-active" : ""}`}
                   onClick={() => openView("admin")}
-                  aria-label="Open administration"
-                  title="Administration"
+                  aria-label="Open control center"
+                  title="Control Center"
                 >
                   <Settings className="h-4 w-4" />
                 </button>
@@ -446,7 +468,7 @@ export default function App() {
                 <div>
                   <strong>Core operating rule</strong>
                   <p>
-                    IST Tech does not autonomously approve a clinical disposition. It drafts, challenges,
+                    IST Health does not autonomously approve a clinical disposition. It drafts, challenges,
                     evidence-packs, and tracks the worksheet so clinicians can validate faster with traceability.
                   </p>
                 </div>
@@ -488,7 +510,7 @@ function EnvironmentBanner({ runtimeEnvironment }: { runtimeEnvironment: Runtime
 function IstLogoMark() {
   return (
     <span className="ist-logo-mark" aria-hidden="true">
-      <img className="ist-logo-image" src="/ist-logo.png" alt="" />
+      <img className="ist-logo-image" src="/logo-irisstar.svg" alt="" />
     </span>
   );
 }

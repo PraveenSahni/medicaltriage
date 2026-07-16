@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IST Health Theme Pack — Preview</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      color: var(--color-text);
+      background: var(--color-bg-subtle);
+      line-height: var(--line-height-normal);
+    }
+    .bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--layout-header-height);
+      padding: 0 var(--space-8);
+      background: var(--color-bg);
+      border-bottom: var(--hairline-width) solid var(--color-divider);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .bar__brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      font-size: 1.1rem;
+    }
+    .bar__mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 2px;
+      background: linear-gradient(135deg, var(--ist-navy) 0%, var(--ist-navy-light) 100%);
+      position: relative;
+    }
+    .bar__mark::after {
+      content: "";
+      position: absolute;
+      inset: 8px 6px 6px;
+      border-top: 2px solid var(--ist-gold);
+    }
+    .bar__actions {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+    }
+    .bar__actions button {
+      font: inherit;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: var(--hairline-width) solid var(--color-border);
+      background: var(--color-bg);
+      color: var(--color-text);
+      cursor: pointer;
+    }
+    .bar__actions button.is-active {
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+    }
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: var(--space-9) var(--space-8) var(--space-12);
+    }
+    h1 {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      margin: 0 0 var(--space-2);
+      letter-spacing: -0.02em;
+    }
+    .lede {
+      color: var(--color-text-secondary);
+      margin: 0 0 var(--space-9);
+      max-width: 52ch;
+    }
+    section {
+      margin-bottom: var(--space-10);
+    }
+    h2 {
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+      letter-spacing: var(--letter-spacing-label);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin: 0 0 var(--space-4);
+    }
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: var(--space-3);
+    }
+    .swatch {
+      border: var(--hairline-width) solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--color-bg);
+    }
+    .swatch__chip {
+      height: 56px;
+    }
+    .swatch__meta {
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--font-size-xs);
+    }
+    .swatch__meta strong {
+      display: block;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .swatch__meta span {
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+    .type-sample {
+      background: var(--color-bg);
+      border: var(--hairline-width) solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+    }
+    .type-sample .display {
+      font-size: var(--font-size-2xl);
+      font-weight: 800;
+      letter-spacing: var(--letter-spacing-tight);
+      line-height: 1.1;
+      margin-bottom: var(--space-3);
+    }
+    .type-sample .inspire {
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+    }
+    .type-sample .tagline {
+      font-family: var(--font-accent);
+      font-size: var(--font-size-xs);
+      letter-spacing: var(--letter-spacing-tagline);
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: var(--space-4);
+    }
+    .type-sample .body {
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-4);
+    }
+    .type-sample .mono {
+      font-family: var(--font-mono);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      align-items: center;
+    }
+    .ist-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: var(--btn-height);
+      padding-inline: var(--btn-padding-x);
+      border-radius: var(--radius-sm);
+      border: none;
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+    }
+    .ist-btn--primary {
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
+    }
+    .ist-btn--outline {
+      background: transparent;
+      color: var(--color-text);
+      border: var(--hairline-width) solid var(--color-text);
+    }
+    .ist-btn--pill {
+      border-radius: var(--radius-pill);
+      height: 48px;
+      min-width: 200px;
+      font-size: var(--font-size-base);
+    }
+    /* Mini login chrome */
+    .login-demo {
+      background: var(--login-page-bg);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      border: var(--hairline-width) solid var(--color-border);
+    }
+    .login-card {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--login-card-bg);
+      border-radius: var(--login-card-radius);
+      box-shadow: var(--login-card-shadow);
+      overflow: hidden;
+    }
+    .login-card__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-5) var(--space-6);
+      border-bottom: var(--hairline-width) solid var(--color-divider);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+    }
+    .login-card__head a {
+      color: var(--login-link-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .login-card__body {
+      display: grid;
+      grid-template-columns: 1.1fr 1px 0.9fr;
+      min-height: 280px;
+    }
+    .login-card__inspire {
+      padding: var(--space-7) var(--space-6);
+      position: relative;
+      overflow: hidden;
+    }
+    .login-card__inspire .wm {
+      position: absolute;
+      right: -10%;
+      bottom: -20%;
+      font-size: 6rem;
+      font-weight: 900;
+      color: var(--color-bg-watermark);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .login-card__inspire ul {
+      list-style: none;
+      margin: var(--space-5) 0 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      font-size: var(--font-size-sm);
+    }
+    .login-card__inspire li {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .login-card__inspire li::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-gold);
+      flex-shrink: 0;
+    }
+    .login-card__divider {
+      background: var(--color-divider);
+    }
+    .login-card__form {
+      padding: var(--space-7) var(--space-6);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .login-card__form h3 {
+      text-align: center;
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      margin: 0 0 var(--space-6);
+    }
+    .field {
+      margin-bottom: var(--space-4);
+    }
+    .field label {
+      display: block;
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+    .field input {
+      width: 100%;
+      height: var(--input-height);
+      padding: 0 var(--input-padding-x);
+      border: var(--hairline-width) solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--login-input-bg);
+      color: var(--color-text);
+      font: inherit;
+      font-size: var(--font-size-base);
+    }
+    .field input:focus {
+      outline: none;
+      border-color: var(--color-border-focus);
+      box-shadow: var(--shadow-focus);
+    }
+    .login-card__form .ist-btn--pill {
+      width: 100%;
+      margin-top: var(--space-2);
+    }
+    .login-card__foot {
+      padding: var(--space-4) var(--space-6);
+      border-top: var(--hairline-width) solid var(--color-divider);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+    .login-card__foot strong {
+      color: var(--color-text-secondary);
+    }
+    .paths {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+    }
+    @media (max-width: 700px) {
+      .login-card__body {
+        grid-template-columns: 1fr;
+      }
+      .login-card__divider { display: none; }
+      .bar { padding-inline: var(--space-4); }
+      main { padding-inline: var(--space-4); }
+    }
+  </style>
+</head>
+<body>
+  <header class="bar">
+    <div class="bar__brand">
+      <span class="bar__mark" aria-hidden="true"></span>
+      <span>IST HIS</span>
+    </div>
+    <div class="bar__actions">
+      <button type="button" id="btn-light" class="is-active">Light</button>
+      <button type="button" id="btn-dark">Dark</button>
+    </div>
+  </header>
+
+  <main>
+    <h1>IST Health Theme Pack</h1>
+    <p class="lede">
+      Navy / gold visual reference for IST HIS · IRIS STAR Technologies L.L.C.
+      Tokens from <span class="paths">tokens.css</span> — open this file locally in a browser.
+    </p>
+
+    <section>
+      <h2>Core palette</h2>
+      <div class="swatches">
+        <div class="swatch"><div class="swatch__chip" style="background:#0a1f44"></div><div class="swatch__meta"><strong>Navy</strong><span>#0a1f44</span></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#071428"></div><div class="swatch__meta"><strong>Navy dark</strong><span>#071428</span></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#1a3056"></div><div class="swatch__meta"><strong>Navy light</strong><span>#1a3056</span></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#3d4f6a"></div><div class="swatch__meta"><strong>Navy muted</strong><span>#3d4f6a</span></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#c9a66b"></div><div class="swatch__meta"><strong>Gold</strong><span>#c9a66b</span></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#f0e6d4"></div><div class="swatch__meta"><strong>Gold muted</strong><span>#f0e6d4</span></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#f7f8fa;border-bottom:1px solid #d8dce2"></div><div class="swatch__meta"><strong>Gray 50</strong><span>#f7f8fa</span></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#d8dce2"></div><div class="swatch__meta"><strong>Border</strong><span>#d8dce2</span></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#1f6b4a"></div><div class="swatch__meta"><strong>Success</strong><span>#1f6b4a</span></div></div>
+        <div class="swatch"><div class="swatch__chip" style="background:#8b1e2f"></div><div class="swatch__meta"><strong>Danger</strong><span>#8b1e2f</span></div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Typography</h2>
+      <div class="type-sample">
+        <div class="tagline">The Digital Health Engine for the Middle East &amp; Africa.</div>
+        <div class="display">IST HIS</div>
+        <div class="inspire">Sign in to IST HIS</div>
+        <p class="body">Inter for UI · Georgia stack for taglines · Noto Sans Arabic for RTL. Dashboard headings match login inspire title (22px / 700).</p>
+        <p class="mono">--font-sans: "Inter", "Segoe UI", …</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Buttons</h2>
+      <div class="btn-row">
+        <button type="button" class="ist-btn ist-btn--primary">Primary</button>
+        <button type="button" class="ist-btn ist-btn--outline">Outline</button>
+        <button type="button" class="ist-btn ist-btn--primary ist-btn--pill">Sign in</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Mini login chrome</h2>
+      <div class="login-demo">
+        <div class="login-card">
+          <div class="login-card__head">
+            <span>Sign in to IST HIS</span>
+            <span>to continue to <a href="#">IST HIS</a></span>
+          </div>
+          <div class="login-card__body">
+            <div class="login-card__inspire">
+              <div class="tagline">The Digital Health Engine for MEA.</div>
+              <div class="inspire" style="font-size:var(--font-size-lg);font-weight:700;margin:var(--space-3) 0">Sign in to IST HIS</div>
+              <ul>
+                <li>Patient management</li>
+                <li>Appointments &amp; scheduling</li>
+                <li>Laboratory &amp; pharmacy</li>
+                <li>Bilingual EN / AR</li>
+              </ul>
+              <span class="wm" aria-hidden="true">IST</span>
+            </div>
+            <div class="login-card__divider" aria-hidden="true"></div>
+            <div class="login-card__form">
+              <h3>Sign in</h3>
+              <div class="field">
+                <label for="u">Email or username</label>
+                <input id="u" type="text" placeholder="staff@clinic.qa" autocomplete="username" />
+              </div>
+              <div class="field">
+                <label for="p">Password</label>
+                <input id="p" type="password" placeholder="••••••••" autocomplete="current-password" />
+              </div>
+              <button type="button" class="ist-btn ist-btn--primary ist-btn--pill">Sign in</button>
+            </div>
+          </div>
+          <div class="login-card__foot">
+            <strong>IRIS STAR Technologies L.L.C</strong> · Doha, Qatar
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="paths">docs/design/IST_Health_Theme_Pack/ · Logos: assets/logo-full.svg · assets/logo-symbol.svg</p>
+  </main>
+
+  <script>
+    var root = document.documentElement;
+    var light = document.getElementById("btn-light");
+    var dark = document.getElementById("btn-dark");
+    function setTheme(name) {
+      root.setAttribute("data-theme", name);
+      light.classList.toggle("is-active", name === "light");
+      dark.classList.toggle("is-active", name === "dark");
+    }
+    light.addEventListener("click", function () { setTheme("light"); });
+    dark.addEventListener("click", function () { setTheme("dark"); });
+  </script>
+</body>
+</html>

@@ -28,7 +28,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("locks a board case for Step cockpit handoff", async () => {
-    const nurse = await agentFor("nurse@ist.local", "remote_triage_nurse");
+    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
 
     const claim = await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
 
@@ -44,8 +44,153 @@ describe("Enterprise queue orchestration", () => {
     expect(loaded.body.item.lockedBy).toBe("usr_nurse_10001");
   });
 
+  it("auto-validates dependent identity and age before nurse workflow", async () => {
+    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+
+    const loaded = await nurse.get("/api/v1/queue/case-10002").expect(200);
+
+    expect(loaded.body.item).toMatchObject({
+      id: "case-10002",
+      istStaffId: "IST-1001",
+      dependentId: "dep_ist_1001_child_02",
+      identityValidated: true,
+      identityValidationSource: "HRMS_AUTO",
+      patientAge: {
+        source: "dependent",
+        calculatedFrom: "HRMS_DATE_OF_BIRTH"
+      }
+    });
+    expect(loaded.body.item.patientAge.ageYears).toBeGreaterThanOrEqual(3);
+    expect(loaded.body.item.patientAge.ageMonths).toBeGreaterThan(0);
+  });
+
+  it("prepares protocol suggestions from the reason narrative before nurse pickup", async () => {
+    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+
+    const loaded = await nurse.get("/api/v1/queue/case-10002").expect(200);
+
+    expect(loaded.body.item.reasonNarrative).toBe("Fever with fast breathing reported by parent.");
+    expect(loaded.body.item.preparedProtocol).toMatchObject({
+      status: "PREPARED",
+      sourceType: "synthetic-sample",
+      primaryProtocolId: "sample-fever-child",
+      primaryProtocolTitle: "Fever - Child"
+    });
+    expect(loaded.body.item.preparedProtocol.extractedKeywords).toContain("fever");
+    expect(loaded.body.item.preparedProtocol.acuityQuestionPreview[0]).toMatchObject({
+      acuityOrder: 1,
+      severity: "Emergency",
+      redFlag: true
+    });
+    expect(loaded.body.item.stccProcess).toMatchObject({
+      processName: "Telehealth Triage Encounter",
+      averageDurationMinutes: "11-13",
+      currentActionTab: "REASON_AND_EMERGENCY_RULE_OUT"
+    });
+    expect(loaded.body.item.stccProcess.canonicalSteps.map((step: { id: string }) => step.id)).toEqual([
+      "OPENING_SCRIPT",
+      "REASON_FOR_VISIT",
+      "GUIDELINE_SELECTION",
+      "INITIAL_ASSESSMENT_QUESTIONS",
+      "TRIAGE_ASSESSMENT_QUESTIONS",
+      "TELEMEDICINE_ELIGIBLE",
+      "TRIAGE_DISPOSITION",
+      "CARE_ADVICE",
+      "HANDOFF_REFERRAL",
+      "CLOSING_SCRIPT"
+    ]);
+    expect(loaded.body.item.preparedProtocol.ragShadow).toMatchObject({
+      mode: "DRY_RUN_SHADOW",
+      boundary: "APPROVED_CONTENT_ONLY",
+      cannotDecideDisposition: true,
+      requiresNurseReview: true,
+      comparison: {
+        deterministicPrimaryProtocolId: "sample-fever-child",
+        shadowPrimaryProtocolId: "sample-fever-child",
+        agreement: "FULL_MATCH"
+      }
+    });
+    expect(loaded.body.item.preparedProtocol.ragShadow.prohibitedActionAcknowledgement).toEqual(
+      expect.arrayContaining([
+        "No invented questions",
+        "No invented care advice",
+        "No disposition decision authority",
+        "No downgrade below deterministic safety floor"
+      ])
+    );
+  });
+
+  it("searches the clinical content packet for a new ankle injury call without auto-approving a protocol", async () => {
+    const manager = await agentFor("manager@irisstar.tech", "triage_service_manager");
+
+    const created = await manager
+      .post("/api/v1/queue")
+      .send({
+        istStaffId: "IST-10001",
+        patientType: "Staff",
+        channel: "Phone",
+        stationCode: "DOH",
+        reasonNarrative: "Twisted ankle while playing sport",
+        slaMinutes: 10
+      })
+      .expect(201);
+
+    expect(created.body.item).toMatchObject({
+      status: "INCOMING",
+      currentStage: "INTAKE",
+      reasonNarrative: "Twisted ankle while playing sport",
+      preparedProtocol: {
+        status: "PREPARED",
+        primaryProtocolId: "sample-ankle-foot-injury",
+        primaryProtocolTitle: "Ankle and Foot Injury"
+      }
+    });
+    expect(created.body.item.matchedProtocolId).toBeUndefined();
+    expect(created.body.item.preparedProtocol.extractedKeywords).toEqual(
+      expect.arrayContaining(["twisted", "ankle", "sport"])
+    );
+    expect(created.body.item.preparedProtocol.acuityQuestionPreview[0]).toMatchObject({
+      acuityOrder: 1,
+      severity: "Emergency"
+    });
+    expect(created.body.item.preparedProtocol.ragShadow).toMatchObject({
+      mode: "DRY_RUN_SHADOW",
+      boundary: "APPROVED_CONTENT_ONLY",
+      query: "Twisted ankle while playing sport",
+      cannotDecideDisposition: true,
+      requiresNurseReview: true,
+      comparison: {
+        deterministicPrimaryProtocolId: "sample-ankle-foot-injury",
+        shadowPrimaryProtocolId: "sample-ankle-foot-injury",
+        agreement: "FULL_MATCH"
+      }
+    });
+    expect(created.body.item.stccProcess.visibleActionTabs).toEqual([
+      {
+        id: "REASON_AND_EMERGENCY_RULE_OUT",
+        label: "Reason and Emergency Rule-Out",
+        mappedStepIds: ["OPENING_SCRIPT", "REASON_FOR_VISIT", "GUIDELINE_SELECTION", "INITIAL_ASSESSMENT_QUESTIONS"]
+      },
+      {
+        id: "QUESTIONS",
+        label: "Questions",
+        mappedStepIds: ["INITIAL_ASSESSMENT_QUESTIONS", "TRIAGE_ASSESSMENT_QUESTIONS", "TELEMEDICINE_ELIGIBLE"]
+      },
+      {
+        id: "DISPOSITION_AND_CARE_ADVICE",
+        label: "Disposition and Care Advice",
+        mappedStepIds: ["TRIAGE_DISPOSITION", "CARE_ADVICE", "HANDOFF_REFERRAL"]
+      },
+      {
+        id: "SBAR_COMPLETE",
+        label: "SBAR / Complete",
+        mappedStepIds: ["HANDOFF_REFERRAL", "CLOSING_SCRIPT"]
+      }
+    ]);
+  });
+
   it("blocks call intake from editing vitals or clinical context", async () => {
-    const intake = await agentFor("intake@ist.local", "call_intake_coordinator");
+    const intake = await agentFor("intake@irisstar.tech", "call_intake_coordinator");
 
     const response = await intake
       .patch("/api/v1/queue/case-10002/context")
@@ -64,7 +209,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("rejects direct completion when clinical prerequisites are missing", async () => {
-    const nurse = await agentFor("nurse@ist.local", "remote_triage_nurse");
+    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
     await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
 
     const response = await nurse
@@ -80,16 +225,16 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("prevents another nurse from taking an active lock", async () => {
-    const nurseA = await agentFor("nurse@ist.local", "remote_triage_nurse");
+    const nurseA = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
     upsertDirectoryUserFromHrms({
       employeeId: "IST-10004",
-      email: "phcc.backup.nurse@ist.local",
+      email: "phcc.backup.nurse@irisstar.tech",
       fullName: "PHCC Backup Nurse",
       organizationCode: "PHCC",
       jobTitle: "Remote Triage Nurse",
       roles: ["remote_triage_nurse"]
     });
-    const nurseB = await agentFor("phcc.backup.nurse@ist.local", "remote_triage_nurse");
+    const nurseB = await agentFor("phcc.backup.nurse@irisstar.tech", "remote_triage_nurse");
 
     await nurseA.post("/api/v1/queue/case-10002/claim").expect(200);
 
@@ -98,7 +243,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("moves a new emergency vital-sign case to the top of the active queue", async () => {
-    const manager = await agentFor("triage.manager@ist.local", "triage_service_manager");
+    const manager = await agentFor("manager@irisstar.tech", "triage_service_manager");
 
     const created = await manager
       .post("/api/v1/queue")
@@ -115,6 +260,15 @@ describe("Enterprise queue orchestration", () => {
       .expect(201);
 
     const id = created.body.item.id as string;
+    expect(created.body.item).toMatchObject({
+      identityValidated: true,
+      identityValidationSource: "HRMS_AUTO",
+      patientAge: {
+        source: "staff",
+        calculatedFrom: "HRMS_DATE_OF_BIRTH"
+      }
+    });
+
     await manager
       .patch(`/api/v1/queue/${id}/context`)
       .send({

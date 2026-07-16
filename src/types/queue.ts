@@ -43,6 +43,7 @@ export const QueueCreateRequestSchema = z.object({
   department: z.string().min(1).max(120).optional(),
   jobTitle: z.string().min(1).max(120).optional(),
   summary: z.string().min(1).max(500).default("New tele-triage call awaiting intake."),
+  reasonNarrative: z.string().min(1).max(1000).optional(),
   safetyFloorActive: z.boolean().default(false),
   slaMinutes: z.number().int().min(1).max(720).default(15)
 });
@@ -72,6 +73,7 @@ export const QueueContextUpdateSchema = z.object({
   clinicalApproval: z.record(z.unknown()).optional(),
   sbarCopied: z.boolean().optional(),
   summary: z.string().min(1).max(500).optional(),
+  reasonNarrative: z.string().min(1).max(1000).optional(),
   assignedNurseId: z.string().min(1).max(120).optional()
 });
 export type QueueContextUpdate = z.infer<typeof QueueContextUpdateSchema>;
@@ -93,6 +95,126 @@ export type QueueTransitionLogDto = {
   timestampIso: string;
 };
 
+export type QueuePatientAgeSnapshotDto = {
+  source: "staff" | "dependent";
+  ageYears: number;
+  ageMonths: number;
+  dateOfBirthIso?: string;
+  calculatedFrom: "HRMS_DATE_OF_BIRTH" | "HRMS_AGE_FIELD";
+};
+
+export type QueueProtocolSuggestionDto = {
+  protocolId: string;
+  titleEn: string;
+  score: number;
+  matchedTerms: string[];
+  questionCount: number;
+  highestSeverity: "Emergency" | "Urgent" | "Routine" | "Self-care";
+  releaseVersion: string;
+};
+
+export type QueueProtocolQuestionPreviewDto = {
+  id: string;
+  acuityOrder: number;
+  severity: "Emergency" | "Urgent" | "Routine" | "Self-care";
+  questionTextEn: string;
+  dispositionCode: string;
+  redFlag: boolean;
+  careAdviceIds: string[];
+};
+
+export type StccProcessStepStatus = "NOT_STARTED" | "READY" | "IN_PROGRESS" | "COMPLETED" | "BLOCKED";
+
+export type StccProcessStepDto = {
+  id:
+    | "OPENING_SCRIPT"
+    | "REASON_FOR_VISIT"
+    | "GUIDELINE_SELECTION"
+    | "INITIAL_ASSESSMENT_QUESTIONS"
+    | "TRIAGE_ASSESSMENT_QUESTIONS"
+    | "TELEMEDICINE_ELIGIBLE"
+    | "TRIAGE_DISPOSITION"
+    | "CARE_ADVICE"
+    | "HANDOFF_REFERRAL"
+    | "CLOSING_SCRIPT";
+  label: string;
+  lane: "CALL_OPENING" | "GUIDELINE_SELECTION" | "ASSESSMENT" | "DISPOSITION_AND_CLOSE";
+  status: StccProcessStepStatus;
+  deterministicOwner: "SYSTEM" | "NURSE" | "SYSTEM_AND_NURSE";
+  nurseActionRequired: boolean;
+  notes: string[];
+  sourceBoundary: "HRMS" | "STCC_CONTENT" | "LOCAL_QATAR_OVERLAY" | "NURSE_DOCUMENTATION";
+};
+
+export type StccVisibleActionTab =
+  | "REASON_AND_EMERGENCY_RULE_OUT"
+  | "QUESTIONS"
+  | "DISPOSITION_AND_CARE_ADVICE"
+  | "SBAR_COMPLETE";
+
+export type StccProcessSnapshotDto = {
+  processName: "Telehealth Triage Encounter";
+  averageDurationMinutes: "11-13";
+  currentActionTab: StccVisibleActionTab;
+  canonicalSteps: StccProcessStepDto[];
+  visibleActionTabs: Array<{
+    id: StccVisibleActionTab;
+    label: string;
+    mappedStepIds: StccProcessStepDto["id"][];
+  }>;
+};
+
+export type RagShadowSuggestionDto = {
+  mode: "DRY_RUN_SHADOW";
+  boundary: "APPROVED_CONTENT_ONLY";
+  sourceType: "synthetic-sample" | "licensed-stcc" | "local-qatar-override";
+  sourceReleaseVersion: string;
+  query: string;
+  extractedReason: {
+    normalizedReason: string;
+    keywords: string[];
+    possibleRedFlags: string[];
+  };
+  retrieval: {
+    eventId: string;
+    corpusIds: string[];
+    retrievedSourceIds: string[];
+    retrievedSnippetHashes: string[];
+    confidence: number;
+  };
+  suggestedProtocolCandidates: QueueProtocolSuggestionDto[];
+  comparison: {
+    deterministicPrimaryProtocolId?: string;
+    shadowPrimaryProtocolId?: string;
+    agreement: "FULL_MATCH" | "PARTIAL_MATCH" | "NO_MATCH" | "NO_DETERMINISTIC_CANDIDATE" | "NO_SHADOW_CANDIDATE";
+    reasonCode: string;
+  };
+  prohibitedActionAcknowledgement: string[];
+  cannotDecideDisposition: true;
+  requiresNurseReview: true;
+  generatedAtIso: string;
+};
+
+export type QueuePreparedProtocolDto = {
+  status: "PENDING_REASON" | "PREPARED" | "NO_MATCH";
+  sourceType: "synthetic-sample" | "licensed-stcc" | "local-qatar-override";
+  releaseVersion: string;
+  reasonNarrative: string;
+  extractedKeywords: string[];
+  primaryProtocolId?: string;
+  primaryProtocolTitle?: string;
+  suggestions: QueueProtocolSuggestionDto[];
+  acuityQuestionPreview: QueueProtocolQuestionPreviewDto[];
+  resourceSectionsAvailable: {
+    background: boolean;
+    firstAid: boolean;
+    careAdvice: boolean;
+    seeMoreAppropriateGuideline: boolean;
+  };
+  ragShadow?: RagShadowSuggestionDto;
+  preparedAtIso: string;
+};
+
 export type QueueItemDto = {
   id: string;
   istStaffId: string;
@@ -110,12 +232,19 @@ export type QueueItemDto = {
   department?: string;
   jobTitle?: string;
   summary: string;
+  reasonNarrative?: string;
+  preparedProtocol?: QueuePreparedProtocolDto;
+  stccProcess: StccProcessSnapshotDto;
   vitals?: QueueVitals;
   matchedProtocolId?: string;
   calculatedSeverity?: QueueSeverity;
   dispositionCode?: string;
   destinationName?: string;
   identityValidated: boolean;
+  identityValidationSource?: "HRMS_AUTO" | "HRMS_LOOKUP_FAILED";
+  identityValidationMessage?: string;
+  identityValidatedAtIso?: string;
+  patientAge?: QueuePatientAgeSnapshotDto;
   safetyFloorActive: boolean;
   clinicalApproval?: Record<string, unknown>;
   sbarCopied: boolean;

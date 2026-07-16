@@ -186,7 +186,7 @@ const teleTriageStages = [
   {
     title: "Remote intake",
     body:
-      "The nurse or call-center clinician identifies the staff member, dependent, language, location, duty status, and whether the case is local, HIA-based, or outstation."
+      "When the call enters the queue, the API validates the staff/dependent relationship against HRMS, calculates age from date of birth, and carries language, location, duty status, and local/outstation context into the nurse workspace."
   },
   {
     title: "Complaint matching",
@@ -196,7 +196,7 @@ const teleTriageStages = [
   {
     title: "Acuity rule-out",
     body:
-      "Emergency questions are presented first. A positive high-acuity answer sets the minimum safety floor before any lower-acuity route is considered."
+      "Emergency rule-out is reviewed before the assessment path. After that, the assessment tab presents one acuity-ordered question at a time, with emergency-level questions ahead of urgent, routine, and self-care items."
   },
   {
     title: "Clinical plus aviation context",
@@ -238,7 +238,7 @@ const systemCards = [
     title: "Rules-first clinical safety",
     icon: ShieldCheck,
     body:
-      "The system treats deterministic triage logic as the safety floor. AI can summarize, highlight risks, and suggest next steps, but it cannot lower a protected high-acuity disposition."
+      "The system treats deterministic triage logic as the safety floor. AI can summarize, highlight risks, and flag approved protocol context for nurse review, but it cannot lower a protected high-acuity disposition."
   },
   {
     title: "Governed MedGemma copilot strategy",
@@ -247,16 +247,16 @@ const systemCards = [
       "MedGemma is planned as a clinical language copilot for explanation, summarization, translation support, and SBAR drafting. It is not the triage authority; deterministic rules and nurse approval remain the clinical control."
   },
   {
-    title: "ClearTriage-aligned nurse workflow",
+    title: "STCC-compatible nurse workflow",
     icon: Stethoscope,
     body:
-      "The clinical pathway follows the ClearTriage pattern: search by chief complaint, work through red-flag questions first, capture rationale, and produce a structured SBAR/SOAP note."
+      "The clinical pathway follows the STCC-compatible telehealth pattern: search by chief complaint, work through red-flag questions first, capture rationale, and produce a structured SBAR/SOAP note."
   },
   {
     title: "Tele-triage encounter engine",
     icon: PhoneCall,
     body:
-      "The system supports a remote consultation from caller identity through symptom capture, protocol matching, acuity rule-out, local routing, clinician validation, and SBAR handoff."
+      "The system supports a remote consultation from auto-validated HRMS identity through symptom capture, protocol matching, acuity rule-out, local routing, clinician validation, and SBAR handoff."
   },
   {
     title: "CCP employee communication",
@@ -271,7 +271,7 @@ const systemCards = [
       "A simplified screening layer is planned for front-desk or call-center staff so non-clinical users can identify urgent concerns without exercising clinical judgment."
   },
   {
-    title: "IST Tech localization",
+    title: "IST Health localization",
     icon: MapPin,
     body:
       "The MVP localizes routing around staff identity, dependents, insurance status, IST medical workflows, HMC/Sidra emergency routes, fit-to-fly gates, outstation review, and sickness validation."
@@ -285,22 +285,24 @@ const helpGuides: HelpGuide[] = [
     icon: Stethoscope,
     audience: "Remote Triage Nurse, Senior Triage Nurse, Pediatric Triage Nurse",
     goal:
-      "Run a safe remote encounter from staff validation to disposition, SBAR note, and CCP follow-up without allowing AI to downgrade the rules engine.",
+      "Run a safe remote encounter from HRMS-validated caller context to disposition, SBAR note, and CCP follow-up without allowing AI to downgrade the rules engine.",
     framework: {
       what:
-        "A nurse-led operating guide for one remote triage encounter, from caller identity through route decision, SBAR handoff, and CCP follow-up.",
+        "A nurse-led operating guide for one remote triage encounter after HRMS has already validated caller identity and calculated age at queue entry.",
       why:
         "The core problem is safe triage at call-center speed: nurses need a clear sequence that catches high-acuity findings early, keeps AI advisory, and preserves accountability.",
       how: [
-        "Validate staff or dependent context before collecting clinical detail.",
-        "Capture symptoms, vitals, age, duty state, language, and aviation flags.",
-        "Apply deterministic red floors first, then review route, rationale, SBAR, and CCP actions before final advice."
+        "Review the auto-loaded HRMS staff/dependent evidence before collecting clinical detail.",
+        "Capture symptoms, vitals, duty state, language, and aviation flags while using the calculated HRMS age.",
+        "Apply deterministic red floors first, then answer the guided assessment questions one at a time until a Yes fixes the route or the question path is exhausted."
       ]
     },
     steps: [
-      "Validate the staff ID and select the staff member or dependent context before discussing clinical detail.",
-      "Capture chief complaint, narrative, age, duty context, aviation flags, and vital signs where available.",
+      "Open the queue case only after the API has validated staff/dependent identity and calculated age from HRMS.",
+      "Use the call-context strip for pre-triage facts such as channel, wait time, patient type, age, station, and HRMS validation.",
+      "Start clinical work in the first action tab: Reason & Emergency Rule-Out. Confirm the reason narrative, review guideline search, and check emergency safety-floor rules.",
       "Use the rules-first output as the minimum safe floor: non-alert consciousness, low SpO2, extreme respiratory rate, extreme heart rate, and pediatric tachypnea cannot be downgraded.",
+      "Move to Assessment Questions only after emergency rule-out. The nurse answers the single active question; No unlocks the next acuity item, while Yes stops lower-priority questions and fixes the provisional disposition.",
       "Review the proposed route, safety rationale, and trace before copying the SOAP/SBAR handoff.",
       "Open CCP when a callback, transfer handoff, safety precaution, fit-to-duty follow-up, or employee message needs tracking."
     ],
@@ -320,14 +322,14 @@ const helpGuides: HelpGuide[] = [
       why:
         "Different users need different operational views. The nurse conducting clinical triage needs a controlled one-call sequence, while shift leads and customers often need a board view of queue load, stage distribution, and safety-floor cases.",
       how: [
-        "Use Step when actively triaging one caller, validating HRMS identity, moving through clinical stages, reviewing route rationale, and completing SBAR.",
+        "Use Step when actively triaging one caller, confirming the reason for call, ruling out emergency safety floors, answering triage assessment questions, reviewing route rationale, and completing SBAR.",
         "Use Board when supervising multiple incoming calls, checking which stage each case is in, reviewing severity mix, and deciding which case should be picked next.",
         "Do not use Board movement to bypass deterministic safety floors, clinical stage completion, route review, or Remote Triage Nurse approval."
       ]
     },
     steps: [
-      "Open Step from the header when a nurse is ready to work one case from intake through SBAR completion.",
-      "Open Board from the header when a shift lead or reviewer needs to see Incoming, Identity, Clinical triage, Disposition, and SBAR / follow-up columns.",
+      "Open Step from the header when a nurse is ready to work one case through action tabs: Reason & Emergency Rule-Out, Questions, Disposition, and SBAR / Complete.",
+      "Open Board from the header when a shift lead or reviewer needs to see Incoming, Reason / HRMS-ready, Clinical triage, Disposition, and SBAR / follow-up columns.",
       "Keep emergency and safety-floor cards visible and prioritized in either mode.",
       "When a Board card is selected for clinical work, continue the actual clinical decision in the guided Step cockpit.",
       "During UAT, capture which roles prefer Step by default and which roles prefer Board by default."
@@ -344,11 +346,12 @@ const helpGuides: HelpGuide[] = [
       "Operate the system in named-user mode so every queue action is tied to a clinician, organization, role, session, and signed transition trace.",
     framework: {
       what:
-        "The backend now supports organization-bound named users, HRMS directory sync, tenant-scoped queue visibility, lock release, and cross-tenant escalation handover.",
+        "The backend now supports organization-bound named users, HRMS directory sync, auto-validated staff/dependent queue ingress, tenant-scoped queue visibility, lock release, and cross-tenant escalation handover.",
       why:
         "For internal employee tele-triage, anonymous or shared access is not sufficient. Nurses must see only the calls routed to their organization unless an approved escalation moves the case to another organization.",
       how: [
         "Oracle-style HRMS sync upserts active users and maps job context into role and organization membership.",
+        "Queue creation validates the staff/dependent relationship and calculates age from HRMS before the case becomes nurse-visible.",
         "Inactive, on-leave, or rest-period status revokes active sessions, releases queue locks, and blocks future login.",
         "Queue list, claim, update, move, and handover operations use the authenticated user's organizationId and write signed transition evidence."
       ]
@@ -404,13 +407,13 @@ const helpGuides: HelpGuide[] = [
       why:
         "The platform handles sensitive staff and health context; access must be explainable, least-privilege, auditable, and aligned with Qatar data law and GDPR-style privacy-by-design principles.",
       how: [
-        "Validate distinct roles and permissions through the grouped simulator and Admin panels.",
+        "Validate distinct named users, assigned roles, and permissions through the grouped simulator and Admin panels.",
         "Keep PHI ephemeral until persistence, retention, and legal basis are approved.",
         "Require audit events for reveal, export, role changes, failed access, and employee-facing communication."
       ]
     },
     steps: [
-      "Use the grouped role simulator to confirm each role has a distinct access profile rather than duplicate all-access behavior.",
+      "Use the grouped named-user simulator to confirm each user has one assigned role and a distinct access profile rather than duplicate all-access behavior.",
       "Review Security Admin for users, roles, SSO, encryption, reveal controls, and audit events.",
       "Confirm PHI remains ephemeral in the current triage API scaffold unless a production persistence design is approved.",
       "Check that employee-facing CCP messages require Remote Triage Nurse approval before WhatsApp, SMS, or email send.",
@@ -456,7 +459,7 @@ const helpGuides: HelpGuide[] = [
       "Use MedGemma or another approved clinical LLM as a governed copilot while preserving the rules-first triage engine, nurse approval, and Qatar-hosted production controls.",
     framework: {
       what:
-        "A cloud and LLM strategy for using MedGemma or another approved model as an advisory copilot for explanation, summaries, missing-question prompts, and SBAR drafts.",
+        "A cloud and LLM strategy for using MedGemma or another approved model as an advisory copilot for explanation, summaries, approved-protocol context prompts, and SBAR drafts.",
       why:
         "The model must not become an invisible clinical decision-maker; the safety floor, nurse approval, privacy posture, model lineage, and Qatar-hosted controls must remain explicit.",
       how: [
@@ -466,7 +469,7 @@ const helpGuides: HelpGuide[] = [
       ]
     },
     steps: [
-      "Start with evaluation, not training: use the synthetic JSONL rows to test whether the model explains the deterministic disposition, asks useful missing-context questions, and refuses to downgrade red floors.",
+      "Start with evaluation, not training: use the synthetic JSONL rows to test whether the model explains the deterministic disposition, flags missing approved protocol context, and refuses to downgrade red floors.",
       "Use prompt engineering and retrieval before fine-tuning; clinical protocol text, local routing policy, and SBAR templates should be retrieved or injected as governed context.",
       "For MVP, run a low-cost quantized model only for non-authoritative explanation, summarization, and draft generation. Do not send real PHI to a public endpoint.",
       "For production, deploy inside GCP Doha (me-central1) using a private GKE or approved Vertex AI custom endpoint pattern, with private networking, IAM, KMS, audit logging, and VPC Service Controls.",
@@ -482,7 +485,7 @@ const validationReviewItems: ValidationReviewItem[] = [
     area: "Staff validation",
     verdict: "Correct",
     evidence:
-      "The API exposes POST /api/v1/staff/validate, accepts istStaffId and ist_staff_id, and the tests validate IST-1001 plus invalid-ID rejection.",
+      "The API exposes POST /api/v1/staff/validate and the queue service now auto-validates staff/dependent identity, stores HRMS age snapshots, and prevents manual nurse-side age entry for queue cases.",
     nextStep: "Replace mock HRMS records with Oracle Fusion HCM publicWorkers/workers adapter after HR and privacy approval."
   },
   {
@@ -676,7 +679,8 @@ const aviationDataTableCards: MatrixCard[] = [
     body:
       "The platform parses occupational parameters for airport and flight staff, then converts those fields into aviation tags, fit-to-duty controls, and clinician-visible routing evidence.",
     bullets: [
-      "Fit-to-Fly: active flight deck and cabin crew are marked RESTRICTED when high-acuity symptoms or duty-sensitive symptoms are selected.",
+      "Fit-to-Fly: STCC clinical disposition is evaluated first; Emergency and Urgent outcomes force RESTRICTED until clinician clearance.",
+      "Routine STCC outcomes for safety-sensitive crew remain RESTRICTED; self-care outcomes can still become MEDICAL_REVIEW_REQUIRED when duty, outstation, sickness, or operational symptom triggers are present.",
       "Outstation Validation: station and outstation flags create a teleconsult escalation path and preserve local-care coordination context.",
       "Sickness Validation: the system compiles standardized medical leave telemetry for nurse review instead of automatically approving leave.",
       "Vaccine Reactions: post-vaccination fever, rash, swelling, or related symptoms create structured follow-up and duty-rest review, such as ground-duty only until clinical clearance."
@@ -710,40 +714,52 @@ const qatariRoutingMatrixCards: MatrixCard[] = [
 
 const workflowSteps = [
   {
-    title: "Identify caller",
+    title: "Incoming call and HRMS validation",
     icon: UserRoundCheck,
     body:
-      "The nurse enters an IST staff ID. The API validates the staff member, duty status, department, job title, dependents, and insurance eligibility snapshot."
+      "The call or callback enters the queue with channel, wait time, caller context, staff/dependent relationship, duty status, station, and HRMS-calculated age already validated before nurse triage starts."
   },
   {
-    title: "Start encounter",
+    title: "Opening script and reason for call",
     icon: ClipboardList,
     body:
-      "The encounter opens in ephemeral mode. The selected staff member or dependent becomes the patient context without persisting PHI in this scaffold."
+      "The nurse follows the approved opening script, confirms the reason narrative, and captures the caller's own words without turning the identity step into a manual clinical tab."
   },
   {
-    title: "Capture symptoms",
-    icon: Languages,
-    body:
-      "The workspace accepts symptom search, English narrative, Arabic narrative, red flags, duration, age, and optional vital signs. Bilingual labels are present while governed translation remains a production integration."
-  },
-  {
-    title: "Apply clinical floor",
+    title: "Keyword search and guideline selection",
     icon: SearchCheck,
     body:
-      "Mock STCC-style rules check chest pain with sweating, severe constant pain over 60 minutes, breathing or consciousness concerns, stroke/anaphylaxis terms, urgent symptoms, and routine symptoms."
+      "The deterministic search layer matches search words, synonyms, age, sex, mode, and red-flag terms to candidate protocols. The nurse remains responsible for selecting or confirming the guideline."
   },
   {
-    title: "Apply aviation context",
-    icon: GitBranch,
+    title: "Emergency and initial assessment",
+    icon: AlertTriangle,
     body:
-      "Crew role, on-duty state, outstation status, sickness leave, vaccination timing, and occupational/commission visits can escalate or change the local disposition target."
+      "Emergency rule-out runs first: low SpO2, abnormal respiratory rate, abnormal heart rate, altered consciousness, pediatric danger signs, severe symptoms, and other red-floor triggers set the minimum safe route."
   },
   {
-    title: "Route and document",
+    title: "Acuity-ordered triage questions",
     icon: ClipboardCheck,
     body:
-      "The system returns severity, disposition code, destination, rationale, explainability trace, insurance notes, aviation tags, and an SBAR clipboard payload for EMR handoff."
+      "After emergency rule-out, the nurse answers one active assessment question at a time from highest acuity to lowest. A Yes fixes the disposition; a No unlocks the next lower-priority question."
+  },
+  {
+    title: "Disposition and Qatar routing",
+    icon: GitBranch,
+    body:
+      "The clinical disposition is mapped to a local source of care such as HMC, Sidra, PHCC, IST Health medical review, teleconsult, occupational health, or self-care. Aviation fit-to-fly can restrict but not downgrade care."
+  },
+  {
+    title: "Care advice and first aid",
+    icon: Stethoscope,
+    body:
+      "Mapped care advice, home-care instructions, callback precautions, first-aid content, and send-later guidance are presented from approved protocol content for nurse review."
+  },
+  {
+    title: "Closing script, SBAR, and audit",
+    icon: FileCheck2,
+    body:
+      "The nurse closes the call with approved instructions, copies the SBAR/SOAP note, opens CCP follow-up when needed, and leaves an audit trace for safety, governance, and future RAG comparison."
   }
 ];
 
@@ -754,14 +770,14 @@ const libraryAreas: LibraryArea[] = [
     eyebrow: "Remote clinical decision support",
     icon: PhoneCall,
     summary:
-      "Coordinates caller validation, symptom capture, protocol search, acuity-first questions, aviation gates, disposition routing, SBAR handoff, and human approval for remote nurse triage.",
+      "Coordinates automatic HRMS caller validation, age calculation, symptom capture, protocol search, acuity-first questions, aviation gates, disposition routing, SBAR handoff, and human approval for remote nurse triage.",
     usedBy: [
       "POST /api/v1/triage/start",
       "POST /api/v1/triage/encounters/evaluate",
       "TriageWorkspace"
     ],
     details: [
-      "The encounter starts with staff or dependent context, then applies clinical content and deterministic rules without allowing AI to approve the final disposition.",
+      "The encounter starts only after the queue API validates the staff/dependent relationship and calculates age from HRMS date of birth or age fields.",
       "The current MVP keeps PHI ephemeral and returns the decision package to the frontend for clinician validation and clipboard handoff.",
       "Production tele-triage requires persistence, role-based access, call transcription, scheduling, EMR integration, and approved clinical SOPs."
     ]
@@ -779,8 +795,8 @@ const libraryAreas: LibraryArea[] = [
       why:
         "A single layout cannot serve every user equally. Remote Triage Nurses need a strict clinical sequence, while senior nurses, service managers, and customer reviewers may need queue visibility across many calls.",
       how: [
-        "Route active clinical execution through Step so identity, symptoms, vitals, protocol, disposition, and SBAR stay ordered.",
-        "Use Board for operational awareness: incoming calls, HRMS identity state, clinical triage state, disposition review, and SBAR/follow-up load.",
+        "Route active clinical execution through Step so Reason & Emergency Rule-Out, one-question-at-a-time assessment, disposition, and SBAR stay ordered.",
+        "Use Board for operational awareness: incoming calls, HRMS-ready reason state, clinical triage state, disposition review, and SBAR/follow-up load.",
         "Keep Board actions constrained by the same deterministic safety floor, role permissions, lock ownership, route review, and nurse-approval rules as Step."
       ]
     },
@@ -795,8 +811,11 @@ const libraryAreas: LibraryArea[] = [
       "frontend/src/App.tsx"
     ],
     details: [
-      "Step cockpit is the default clinical execution mode for one active call. It presents the nurse with staged progression from intake through SBAR completion.",
-      "Board cockpit is an alternate Kanban view with Incoming, Identity, Clinical triage, Disposition, and SBAR / follow-up columns.",
+      "Step cockpit is the default clinical execution mode for one active call. It presents action tabs rather than intake/identity tabs.",
+      "Identity is not a nurse-click action in Step. The queue API validates HRMS identity and calculates age before the case becomes nurse-visible; call context appears next to the active employee/dependent call.",
+      "The first action tab combines Reason & Emergency Rule-Out so the nurse can see the reason narrative, prepared guideline search, vitals, and 911/emergency safety-floor result in one place.",
+      "The Questions action tab is a guided click-and-enable flow. Only the current acuity question is active; No unlocks the next question, and Yes stops lower-priority questions because the route has been identified.",
+      "Board cockpit is an alternate Kanban view with Incoming, Reason / HRMS-ready, Clinical triage, Disposition, and SBAR / follow-up columns.",
       "Header buttons let the customer switch between Step and Board; the app also supports direct hash navigation through #/workspace and #/kanban.",
       "QueueContext fetches /api/v1/queue and provides claim, release, move, context update, and heartbeat functions to both Step and Board.",
       "Opening a Board case into Step claims the queue item, sets a five-minute lock, and loads the same encounter context into the progressive Step cockpit.",
@@ -847,7 +866,7 @@ const libraryAreas: LibraryArea[] = [
     ],
     exampleFlow: [
       "A nurse or reviewer signs in and sees the Step / Board switch in the header.",
-      "The Remote Triage Nurse opens Step to handle one selected caller through intake, identity, symptoms, vitals, protocol, disposition, and SBAR.",
+      "The Remote Triage Nurse opens Step to handle one selected caller through Reason & Emergency Rule-Out, Questions, Disposition, and SBAR / Complete.",
       "A Senior Triage Nurse opens Board to review all waiting and in-progress calls across the five operational columns.",
       "Emergency and safety-floor cases remain visible and prioritized in both modes.",
       "When a case needs clinical decisioning, the user opens it from Board into Step; the case is claimed and locked before editing.",
@@ -868,6 +887,7 @@ const libraryAreas: LibraryArea[] = [
         "The system is for internal employee tele-triage across healthcare organizations. A nurse should not see or claim another organization's queue unless an approved escalation changes the target organization.",
       how: [
         "POST /api/v1/hrms/sync-users accepts an Oracle-style worker feed and maps employee status, job title, and organization code into local named users.",
+        "POST /api/v1/queue validates staff/dependent identity and creates an HRMS-derived patientAge snapshot before the item can be claimed.",
         "The HRMS kill switch disables inactive/on-leave/rest-period users, revokes their sessions, and releases their active queue locks.",
         "Queue orchestration checks tenant access before list, get, claim, heartbeat, context update, move, and escalation handover operations."
       ]
@@ -883,7 +903,8 @@ const libraryAreas: LibraryArea[] = [
       "tests/multiTenantRBAC.test.ts"
     ],
     details: [
-      "Organization records are represented for IST Tech, HMC, PHCC, and Sidra-style routing, with ApplicationUser sessions carrying organizationId and organizationCode.",
+      "Organization records are represented for IST Health, HMC, PHCC, and Sidra-style routing, with ApplicationUser sessions carrying organizationId and organizationCode.",
+      "Queue records carry identityValidated, identityValidationSource, identityValidatedAtIso, and patientAge metadata from the HRMS adapter so nurse workspaces do not ask for manual age entry.",
       "Queue cards carry source and target organization IDs. The target organization controls who can see and claim the active card.",
       "Platform super administrators and system administrators are the only global queue exemptions in the current implementation.",
       "The escalation handover endpoint re-scopes a queue card to the target organization, clears the active lock, returns it to Incoming, and writes a signed transition event.",
@@ -923,6 +944,7 @@ const libraryAreas: LibraryArea[] = [
     exampleFlow: [
       "Oracle Fusion HCM reports a PHCC nurse as active.",
       "POST /api/v1/hrms/sync-users upserts the named user with PHCC organization membership and remote triage role.",
+      "A call intake record is created through POST /api/v1/queue; the API validates the staff/dependent relationship and stores calculated age before the nurse sees the card.",
       "The nurse signs in and sees only PHCC-target queue cards.",
       "The nurse claims a PHCC card; the queue item is locked to that user.",
       "If HRMS later reports On-Leave, the session is revoked, the lock is released, and login returns Forbidden.",
@@ -1047,15 +1069,137 @@ const libraryAreas: LibraryArea[] = [
   {
     id: "protocols",
     title: "Clinical Protocol Library",
-    eyebrow: "STCC-style content layer",
+    eyebrow: "STCC-compatible content layer",
     icon: BookOpen,
     summary:
-      "Stores adult and pediatric algorithms, ordered triage questions, severity grades, rationale, red-flag markers, care advice links, and bilingual title fields.",
-    usedBy: ["Algorithm", "TriageQuestion", "CareAdvice", "AlgorithmCareAdvice"],
+      "Stores adult and pediatric algorithms, search words, ordered triage questions, severity grades, rationale, red-flag markers, care advice links, references, supplementals, first aid, taxonomy, telemedicine flags, and bilingual title fields.",
+    usedBy: [
+      "Algorithm",
+      "TriageQuestion",
+      "CareAdvice",
+      "AlgorithmCareAdvice",
+      "QuestionAdviceBridge",
+      "ProtocolKeywordIndex",
+      "ProtocolSynonym",
+      "ClinicalReference",
+      "ClinicalSupplemental",
+      "ProtocolFirstAid",
+      "ProtocolTaxonomy"
+    ],
     details: [
-      "Production should replace the mock rules with licensed clinical content or an approved rules service.",
-      "Questions are ordered by acuity so emergency rule-out logic appears before lower-acuity advice.",
-      "The model supports localized care advice and disposition codes connected to each algorithm."
+      "The schema is now aligned to the STCC telehealth content pattern: symptom definition, reason/search words, guideline selection, initial assessment, triage assessment questions, disposition, care advice, first aid, background, references, and supplemental content.",
+      "Questions are ordered by acuity. Emergency rule-out is handled first, then the nurse receives one active protocol question at a time until a Yes fixes the disposition or all items are answered No.",
+      "Clinical references and supplementals are separate linked structures so evidence, appendices, dosage tables, reviewer notes, and non-guideline content do not get mixed into the question path.",
+      "First-aid and care-advice content can hold plain text plus sanitized HTML/XHTML so future licensed STCC formatting can be preserved safely.",
+      "Protocol taxonomy captures category, system, anatomy, specialty, and other index groupings needed for STCC-like browsing and validation.",
+      "Source hashes, checksums, release IDs, and reconciliation metadata support annual content refresh and duplicate/lineage validation.",
+      "The model supports localized care advice and disposition codes connected to each algorithm. Local Qatar routing remains an overlay and must not downgrade the clinical disposition."
+    ],
+    helps: [
+      {
+        title: "What it gives the nurse",
+        body:
+          "A protocol can be selected from search words, then worked through as an acuity-ordered path with disposition, care advice, first aid, and handoff content attached."
+      },
+      {
+        title: "What it gives governance",
+        body:
+          "Every clinical item can be traced to release, source identifier, hash/checksum, evidence reference, and local overlay decision."
+      },
+      {
+        title: "What it gives the importer",
+        body:
+          "Licensed STCC data can be mapped into canonical runtime tables without changing the frontend workflow."
+      }
+    ],
+    exampleFlow: [
+      "Import or seed a ProtocolRelease.",
+      "Load algorithms with title, definition, background, age/sex/mode rules, source IDs, and source hashes.",
+      "Attach search words, synonyms, taxonomy, references, supplementals, first aid, and care advice.",
+      "Load questions in high-to-low acuity order and link Yes triggers to disposition and advice.",
+      "Run duplicate, bridge, row-count, ordering, and source-lineage validation before activation.",
+      "Activate the approved release while keeping local Qatar routes as a separate governed overlay."
+    ]
+  },
+  {
+    id: "stcc-rag-shadow",
+    title: "STCC-Compatible RAG Shadow Architecture",
+    eyebrow: "Bounded AI learning ledger",
+    icon: BrainCircuit,
+    summary:
+      "Runs deterministic search and nurse guideline selection in parallel with a bounded RAG shadow path, then records agreement, disagreement, blocked outputs, and learning feedback without letting AI decide clinical disposition.",
+    framework: {
+      what:
+        "A separate RAG and learning layer that compares approved-content retrieval, LLM shadow suggestions, deterministic protocol matching, and nurse selections.",
+      why:
+        "The system needs AI/ML learning evidence without turning the LLM into a clinical decision engine. Shadow mode lets the model learn from nurse/system comparison while STCC-shaped content and deterministic rules remain authoritative.",
+      how: [
+        "Restrict retrieval to approved clinical content, local Qatar overlays, opening/closing scripts, and approved care advice.",
+        "Record retrieval source IDs, snippet hashes, suggested keywords, suggested protocol candidates, model/prompt/corpus version, and confidence.",
+        "Compare deterministic primary protocol, shadow primary protocol, and nurse-selected protocol; store feedback and block unsafe outputs."
+      ]
+    },
+    usedBy: [
+      "RagRetrievalEvent",
+      "LlmShadowSuggestion",
+      "NurseSelectionEvent",
+      "ProtocolComparisonEvent",
+      "LearningFeedbackEvent",
+      "ModelEvaluationRun",
+      "SafetyBlockedOutput",
+      "preparedProtocol.ragShadow",
+      "stccProcess"
+    ],
+    details: [
+      "RAG retrieval is bounded to approved indexed content. It must not use general web medical advice or the model's open-ended medical memory during a live encounter.",
+      "The shadow model may extract reason terms, body part, duration, red flags, keywords, and candidate protocols, but it cannot decide disposition, care advice, fit-to-fly, or source of care.",
+      "The nurse-facing workflow continues to use deterministic search and nurse confirmation. RAG runs beside it and produces comparison evidence.",
+      "SafetyBlockedOutput records invented questions, invented care advice, unsafe downgrades, out-of-bound sources, and privacy-boundary violations.",
+      "LearningFeedbackEvent classifies whether the outcome needs no change, synonym tuning, keyword weight review, prompt review, content review, or safety review.",
+      "ModelEvaluationRun links every model/prompt/corpus/dataset scorecard to the feedback and blocked-output evidence."
+    ],
+    helps: [
+      {
+        title: "Keeps AI useful but bounded",
+        body:
+          "The model can help explain or suggest candidate protocols while deterministic rules and nurse approval remain the clinical control."
+      },
+      {
+        title: "Creates training evidence",
+        body:
+          "Every agreement or disagreement becomes structured evaluation data for protocol ranking, keyword tuning, prompt review, and safety scorecards."
+      },
+      {
+        title: "Protects the STCC boundary",
+        body:
+          "The RAG layer cites source IDs and snippet hashes from approved content, so hallucinated advice and unapproved sources are detectable and blockable."
+      }
+    ],
+    usefulFor: [
+      {
+        title: "Remote Triage Nurse",
+        body:
+          "Receives advisory search support without losing control of the selected guideline and final disposition."
+      },
+      {
+        title: "Clinical Governance",
+        body:
+          "Reviews mismatches between nurse selection, deterministic search, and RAG suggestions before approving any tuning or content change."
+      },
+      {
+        title: "AI/ML Team",
+        body:
+          "Uses de-identified or synthetic comparison rows to improve reason extraction, keyword ranking, and explanation quality."
+      }
+    ],
+    exampleFlow: [
+      "Caller reason is captured and normalized.",
+      "Deterministic search ranks approved protocol candidates.",
+      "Bounded RAG retrieves approved source records and produces candidate protocols with citations.",
+      "Nurse selects or confirms the guideline.",
+      "ProtocolComparisonEvent stores full match, partial match, or disagreement.",
+      "LearningFeedbackEvent records whether synonym, keyword, prompt, content, or safety review is needed.",
+      "Unsafe model output is recorded in SafetyBlockedOutput and excluded from nurse action."
     ]
   },
   {
@@ -1075,8 +1219,8 @@ const libraryAreas: LibraryArea[] = [
     ],
     details: [
       "Current state: the platform has synthetic LLM-ready data, safety wrappers, and help governance. It does not yet have a live MedGemma endpoint, training job, provider credentials, model registry, or production inference adapter.",
-      "MedGemma should be treated as a developer model that needs validation, adaptation, and independent clinical verification for the IST Tech tele-triage use case.",
-      "The LLM is allowed to explain why the deterministic engine routed a case, draft SBAR/SOAP text, suggest missing nurse questions, summarize prior CCP threads, and support bilingual wording.",
+      "MedGemma should be treated as a developer model that needs validation, adaptation, and independent clinical verification for the IST Health tele-triage use case.",
+      "The LLM is allowed to explain why the deterministic engine routed a case, draft SBAR/SOAP text, flag missing approved protocol questions or context, summarize prior CCP threads, and support bilingual wording.",
       "The LLM is not allowed to diagnose, approve or downgrade a disposition, approve fit-to-duty, approve sickness leave, bypass pediatric/adult red floors, or send WhatsApp/SMS/email without Remote Triage Nurse approval.",
       "MVP approach: evaluation-first using synthetic data, prompt engineering, retrieval of governed protocol context, and optional low-cost quantized inference for non-authoritative drafting.",
       "Cloud approach: private GCP Doha deployment in me-central1 after confirming service/accelerator availability, with private GKE or approved Vertex AI custom endpoint, IAM, KMS, audit logging, logging redaction, VPC Service Controls, and model-version governance.",
@@ -1158,9 +1302,11 @@ const libraryAreas: LibraryArea[] = [
       "python/test_safety_wrapper.py"
     ],
     details: [
-      "Phase I seeding populates an open-source Acute Chest Pain - Adult protocol, acuity-ordered questions, localized care advice, QuestionAdviceBridge mappings, and localized Qatar dispositions.",
+      "Phase I seeding populates open-source/synthetic protocol content, acuity-ordered questions, localized care advice, QuestionAdviceBridge mappings, keyword indexes, and localized Qatar dispositions.",
       "The synthetic employee data factory can generate an Oracle Fusion HCM-style API feed for a 260-aircraft aviation workforce, plus normalized IST staff/dependent projections, 5,000 historical encounters, semantic vectors, and safety audit logs.",
       "The backend keeps the clinical content shape compatible with a later licensed Schmitt-Thompson After Hours / SymptomScreen import. The clinical workspace continues to call the same API contract after the dataset swap.",
+      "Schema alignment now includes ClinicalReference, AlgorithmReference, ClinicalSupplemental, AlgorithmSupplemental, ProtocolTaxonomy, ProtocolFirstAid, telemedicine flags, sanitized formatted content, and source hash/checksum fields.",
+      "RAG shadow ledger tables are separate from source clinical data so model comparison, learning feedback, and blocked unsafe outputs cannot contaminate the approved content library.",
       "The current test layer validates staff lookup, adult emergency safety floors, pediatric tachypnea routing, stable-vitals NEWS2 calculation, bilingual SBAR generation, fit-to-fly restriction, and Python AI downgrade blocking.",
       "Seed execution requires a reachable PostgreSQL database and DATABASE_URL. Code-level validation can still run without the database through TypeScript build, Prisma validate, Jest API tests, and Python wrapper tests."
     ],
@@ -1195,6 +1341,7 @@ const libraryAreas: LibraryArea[] = [
       "Run Prisma migration against the approved PostgreSQL database.",
       "Generate or consume Oracle Fusion HCM worker/contact payloads, then map them into the IST staff-validation response and approved normalized projection.",
       "Run the Phase I seed to load open-source clinical baseline and Qatar dispositions.",
+      "Load STCC-compatible references, supplementals, first aid, taxonomy, telemedicine indicators, and source-lineage fields when the licensed import format is approved.",
       "Run API tests to prove staff validation, adult emergency routing, pediatric emergency routing, stable NEWS2 handling, and SBAR output.",
       "Run Python safety tests to prove an AI routine or homecare downgrade is blocked when RED vitals are present.",
       "At UAT or Go-Live, import licensed clinical content into the same schema and rerun the same test suite before activation."
@@ -1206,12 +1353,22 @@ const libraryAreas: LibraryArea[] = [
     eyebrow: "Relational clinical backbone",
     icon: Database,
     summary:
-      "Explains the PostgreSQL model used for clinical algorithms, questions, care advice, staff, dependents, aviation encounters, safety logs, and security administration.",
-    usedBy: ["prisma/schema.prisma", "@prisma/client", "prisma/seed.ts", "src/scripts/importClinicalContent.ts"],
+      "Explains the PostgreSQL model used for STCC-compatible clinical content, staff/dependents, queue orchestration, aviation encounters, safety logs, RAG shadow learning, and security administration.",
+    usedBy: [
+      "prisma/schema.prisma",
+      "@prisma/client",
+      "src/scripts/importClinicalContent.ts",
+      "src/services/queueOrchestration.ts",
+      "src/services/ragShadow.ts"
+    ],
     details: [
-      "Algorithm, TriageQuestion, CareAdvice, and QuestionAdviceBridge form the clinical protocol footprint prepared for open-source content now and licensed content later.",
+      "Algorithm, TriageQuestion, CareAdvice, QuestionAdviceBridge, AlgorithmCareAdvice, ProtocolKeywordIndex, and ProtocolSynonym form the core protocol footprint.",
+      "ClinicalReference, AlgorithmReference, ClinicalSupplemental, AlgorithmSupplemental, ProtocolTaxonomy, and ProtocolFirstAid close the STCC-compatible gaps for references, appendices, indexes, first aid, and non-question content.",
+      "ProtocolRelease, ClinicalContentImportJob, ClinicalContentImportError, source hashes/checksums, and reconciliation fields preserve import lineage and annual update evidence.",
       "StaffMember and Dependent are normalized triage projections of Oracle Fusion HCM worker/contact data, not the long-term HR source of truth.",
-      "AviationTriageEncounter and SafetyAuditDeviationLog preserve the route, score, final disposition, AI recommendation, override rationale, and explainability trace once persistence is approved.",
+      "TriageQueueItem and QueueTransitionLog preserve named-user queue state, call locks, STCC process snapshots, and signed movement traces.",
+      "AviationTriageEncounter and SafetyAuditDeviationLog preserve the route, score, final disposition, RAG shadow suggestion, override rationale, and explainability trace once persistence is approved.",
+      "RagRetrievalEvent, LlmShadowSuggestion, NurseSelectionEvent, ProtocolComparisonEvent, LearningFeedbackEvent, ModelEvaluationRun, and SafetyBlockedOutput preserve bounded AI/ML evidence separately from source clinical content.",
       "Security administration models define application users, roles, responsibilities, permissions, access profiles, reveal events, encryption policy metadata, and audit events."
     ],
     helps: [
@@ -1223,7 +1380,7 @@ const libraryAreas: LibraryArea[] = [
       {
         title: "Current limitation",
         body:
-          "The schema is ready, but local seed execution needs PostgreSQL running and the production retention policy must be approved before PHI persistence."
+          "The schema is aligned, but importer population, live Cloud SQL migration, retention policy, and licensed STCC activation are still separate governed tasks."
       }
     ]
   },
@@ -1284,7 +1441,7 @@ const libraryAreas: LibraryArea[] = [
     exampleFlow: [
       "Generate or select a synthetic scenario.",
       "Run semantic vector matching and reject low-confidence matches below threshold.",
-      "Apply WHO/IITT RED floors before NEWS2 or AI suggestions.",
+      "Apply WHO/IITT RED floors before NEWS2 scoring or RAG shadow suggestions.",
       "Apply aviation context for fit-to-fly, outstation, sickness, and vaccination flags.",
       "Route to local Qatar disposition and render SBAR.",
       "Export the expected outcome as JSONL for AI evaluation or governed training."
@@ -1316,7 +1473,7 @@ const libraryAreas: LibraryArea[] = [
       "Every encounter includes vitals, transcript text, semantic symptom vector, cosine-similarity protocol match, deterministic disposition, fit-to-fly impact, and SBAR-style payload.",
       "Contextual fields include patient_context, biological_sex, age band, dependent status, pregnancy/red-flag status where applicable, and aviation role.",
       "Regional fields include regional_context with Qatar season, temperature, apparent temperature, humidity, wind, heat risk, dust risk, respiratory season, vulnerable groups, health-impact tags, and demographic priors.",
-      "Exactly 5 percent of generated encounters receive a safety audit deviation log with original AI recommendation, nurse rationale, rules severity, and explainability trace."
+      "Exactly 5 percent of generated encounters receive a safety audit deviation log with original RAG shadow suggestion, nurse rationale, rules severity, and explainability trace."
     ],
     helps: [
       {
@@ -1396,7 +1553,7 @@ const libraryAreas: LibraryArea[] = [
       {
         title: "How it protects safety",
         body:
-          "The AI recommendation is compared against deterministic rules, and downgrades below RED or aviation safety floors are blocked and logged."
+          "The RAG shadow suggestion is compared against deterministic rules, and downgrades below RED or aviation safety floors are blocked and logged."
       },
       {
         title: "How it supports integrations",
@@ -1554,11 +1711,21 @@ const libraryAreas: LibraryArea[] = [
     icon: GitBranch,
     summary:
       "Describes how protocol data moves from Phase I sample content to governed licensed production content without rewriting the nurse workflow.",
-    usedBy: ["ProtocolRelease", "ClinicalContentImportJob", "ClinicalContentImportError", "ClinicalContentSourceType"],
+    usedBy: [
+      "ProtocolRelease",
+      "ClinicalContentImportJob",
+      "ClinicalContentImportError",
+      "ClinicalContentSourceType",
+      "ClinicalReference",
+      "ClinicalSupplemental",
+      "ProtocolTaxonomy",
+      "ProtocolFirstAid"
+    ],
     details: [
       "A content release carries source type, version, region, mode, active status, import metadata, and linked algorithms.",
       "Phase I can load synthetic/open-source sample content for engineering validation while retaining a clear source label.",
-      "Licensed STCC or SymptomScreen imports should use a controlled importer, checksum, row counts, skipped rows, and validation errors.",
+      "Licensed STCC or SymptomScreen imports should use a controlled importer, checksum, row counts, skipped rows, validation errors, source record hashes, relationship checks, and duplicate detection.",
+      "Release activation must include algorithms, questions, search words, care advice, references, supplementals, first aid, taxonomy, telemedicine labels, and local overlay reconciliation.",
       "Only one approved active clinical content package should drive production triage for a defined mode and region."
     ],
     exampleFlow: [
@@ -1578,7 +1745,7 @@ const libraryAreas: LibraryArea[] = [
       "Documents the screens that users see: login, triage workspace, CCP workspace, administration, Help, and Library.",
     usedBy: ["LoginPage", "TriageWorkspace", "CcpWorkspace", "AdminPortal", "HelpCenter", "App"],
     details: [
-      "Login uses IST Tech organization context and grouped simulate-role dropdowns for administration, security, governance, business, integration, reporting, and support roles.",
+      "Login uses IST Health organization context and a grouped simulate-user dropdown for administration, security, governance, business, integration, reporting, and support users.",
       "TriageWorkspace is the nurse-facing clinical page for staff/dependent context, symptom capture, rules-first evaluation, SBAR, and CCP launch.",
       "CcpWorkspace shows one employee communication index with separate visit/call threads, nurse-approved outbound drafts, and transport status.",
       "AdminPortal exposes role-aware security, privacy, access, SSO, encryption, reveal, and audit panels.",
@@ -1605,7 +1772,7 @@ const libraryAreas: LibraryArea[] = [
     eyebrow: "Rules before AI",
     icon: ShieldCheck,
     summary:
-      "Combines clinical red-flag rules and aviation gates to determine the minimum permitted severity before AI recommendations are considered.",
+      "Combines clinical red-flag rules and aviation gates to determine the minimum permitted severity before RAG shadow suggestions are reviewed.",
     usedBy: ["resolveDisposition", "evaluate_mock_stcc_floor", "severityMax"],
     details: [
       "Emergency examples include chest tightness with sweating, prolonged severe pain, breathing difficulty, altered consciousness, stroke terms, and anaphylaxis terms.",
@@ -1661,7 +1828,7 @@ const libraryAreas: LibraryArea[] = [
     eyebrow: "Explainability and quality review",
     icon: Database,
     summary:
-      "Captures AI recommendation differences, nurse overrides, downgrade blocks, rules-engine severity, and explainability traces for safety officer review.",
+      "Captures RAG shadow suggestion differences, nurse overrides, downgrade blocks, rules-engine severity, and explainability traces for safety officer review.",
     usedBy: ["buildSafetyAuditDraft", "SafetyAuditDeviationLog", "python/audit.sqlite3"],
     details: [
       "Emergency cases and AI mismatches are marked review-required.",
@@ -1696,18 +1863,29 @@ const libraryWhatWhyHow: Record<string, WhatWhyHow> = {
   },
   protocols: {
     what:
-      "The structured clinical content layer: algorithms, acuity-ordered questions, severity, rationale, disposition codes, and care advice.",
+      "The STCC-compatible clinical content layer: algorithms, search words, taxonomy, acuity-ordered questions, severity, rationale, disposition codes, care advice, first aid, references, and supplementals.",
     why:
-      "Triage safety depends on asking high-acuity questions first and tracing the final route back to approved clinical content rather than prompt wording.",
+      "Triage safety depends on asking high-acuity questions first and tracing the final route back to approved clinical content rather than prompt wording or informal nurse memory.",
     how: [
-      "Load protocol content into Algorithm, TriageQuestion, CareAdvice, and bridge tables.",
+      "Load protocol content into Algorithm, TriageQuestion, CareAdvice, bridge, keyword, synonym, reference, supplemental, taxonomy, and first-aid tables.",
       "Keep emergency questions ordered before urgent, routine, or self-care content.",
-      "Replace sample content with licensed/approved content before production activation."
+      "Use release IDs, source hashes, duplicate checks, and annual reconciliation metadata before production activation."
+    ]
+  },
+  "stcc-rag-shadow": {
+    what:
+      "A bounded RAG shadow layer that runs beside deterministic STCC-style search and nurse selection, then stores comparison evidence without changing clinical authority.",
+    why:
+      "The AI/ML engine needs learning signals, but clinical decisions must remain deterministic and nurse-approved. Shadow mode creates evidence without allowing AI to invent, downgrade, or route care.",
+    how: [
+      "Retrieve only approved source records and store source IDs, release versions, snippet hashes, and confidence.",
+      "Store LLM candidate protocols, extracted keywords, and rationale as advisory shadow suggestions.",
+      "Compare deterministic, shadow, and nurse-selected protocol outcomes; record feedback and block unsafe output."
     ]
   },
   "llm-copilot-cloud": {
     what:
-      "The governed MedGemma/LLM copilot strategy for explanation, summarization, missing-question prompts, bilingual wording, and SBAR drafting.",
+      "The governed MedGemma/LLM copilot strategy for explanation, summarization, approved-protocol context prompts, bilingual wording, and SBAR drafting.",
     why:
       "The LLM must assist without becoming an invisible clinical authority. Safety floors, route decisions, nurse approval, privacy controls, and model lineage must remain outside the model.",
     how: [
@@ -1718,24 +1896,24 @@ const libraryWhatWhyHow: Record<string, WhatWhyHow> = {
   },
   "data-ingestion": {
     what:
-      "The ingestion and QA model for clinical content, local dispositions, aviation tables, synthetic Oracle HCM-style feeds, and normalized projections.",
+      "The ingestion and QA model for STCC-compatible clinical content, local dispositions, aviation tables, synthetic Oracle HCM-style feeds, and normalized projections.",
     why:
       "The system must accept better data over time without changing the nurse workflow or weakening deterministic clinical safety.",
     how: [
       "Run migrations and seed approved baseline content into the relational schema.",
       "Map Oracle-style worker/contact payloads into IST staff/dependent validation responses.",
-      "Use tests and row-count evidence before activating any imported content release."
+      "Validate row counts, source hashes, duplicate records, missing bridges, question order, references, supplementals, first aid, and care advice before activating any imported content release."
     ]
   },
   "prisma-model": {
     what:
-      "The PostgreSQL relational backbone for protocols, staff/dependents, aviation encounters, audit logs, and security administration.",
+      "The PostgreSQL relational backbone for STCC-compatible content, staff/dependents, queue state, aviation encounters, RAG shadow evidence, audit logs, and security administration.",
     why:
       "A stable schema keeps clinical content, HR context, audit evidence, and security controls traceable as the MVP moves toward production.",
     how: [
-      "Maintain protocol, staff projection, encounter, audit, and security models in Prisma.",
+      "Maintain protocol, source-lineage, RAG ledger, staff projection, encounter, queue, audit, and security models in Prisma.",
       "Run Prisma validation, migrations, and seed against an approved PostgreSQL database.",
-      "Persist PHI only after retention, residency, and EMR-write policies are approved."
+      "Deprecate legacy convenience fields gradually after importers and runtime code move to canonical release, DOB-derived age, and organization references."
     ]
   },
   "simulation-engine": {
@@ -1887,7 +2065,7 @@ const libraryWhatWhyHow: Record<string, WhatWhyHow> = {
     why:
       "Clinical safety and compliance depend on being able to reconstruct what happened, who approved it, and why the route was selected.",
     how: [
-      "Log deterministic rule hits, AI suggestions, final disposition, and nurse rationale.",
+      "Log deterministic rule hits, RAG shadow suggestions, final disposition, and nurse rationale.",
       "Mark emergency cases and AI mismatches for safety review.",
       "Use audit dashboards and exports for QA sampling, incident follow-up, and training feedback."
     ]
@@ -1916,9 +2094,9 @@ function getLibraryWhatWhyHow(area: LibraryArea): WhatWhyHow {
 
 const routeDecisionOrder = [
   "Emergency safety floor first: pediatric emergency to Sidra, adult/general or unknown-age emergency to HMC.",
+  "STCC-selected disposition is the clinical source of truth for the care route and care advice.",
   "Outstation escalation next when the case is not already emergency and remote clinical coordination is needed.",
-  "Aviation gates next: fit-to-fly restriction, sickness validation, and occupational or commission visits.",
-  "Protocol-selected disposition is then honored from the active clinical content package.",
+  "Aviation gates then decide fit-to-fly status, sickness validation, and occupational or commission visits without downgrading the STCC disposition.",
   "If no specific route applies, severity falls back to urgent, routine, or self-care pathways."
 ];
 
@@ -1928,7 +2106,7 @@ const careFacilities = {
     category: "Pediatric and specialist hospital",
     summary:
       "Publicly listed Qatar Foundation academic medical center in Ar-Rayyan/Doha. Use for pediatric emergency routing after the emergency safety floor is triggered.",
-    sourceNote: "Official public site available; emergency workflow still needs IST Tech clinical SOP confirmation.",
+    sourceNote: "Official public site available; emergency workflow still needs IST Health clinical SOP confirmation.",
     links: [
       { label: "Official site", href: "https://www.sidra.org/" },
       { label: "Google Maps", href: "https://www.google.com/maps/search/?api=1&query=Sidra%20Medicine%20Doha%20Qatar" }
@@ -1939,7 +2117,7 @@ const careFacilities = {
     category: "Public emergency and tertiary care",
     summary:
       "Hamad General Hospital is a publicly listed HMC hospital in Doha. For life-threatening cases, the operational route should be confirmed through HMC Ambulance Service / 999 and the nearest appropriate HMC emergency facility.",
-    sourceNote: "Official HMC hospital and ambulance pages available; nearest-ED selection should be configured from live IST Tech/HMC routing policy.",
+    sourceNote: "Official HMC hospital and ambulance pages available; nearest-ED selection should be configured from live IST Health/HMC routing policy.",
     links: [
       {
         label: "Hamad General Hospital",
@@ -1960,7 +2138,7 @@ const careFacilities = {
     category: "Public urgent secondary care",
     summary:
       "Use for urgent presentations that do not meet the emergency floor but need time-sensitive HMC review or escalation from primary care.",
-    sourceNote: "Official HMC public provider pages available; exact urgent clinic/referral target should be configured by IST Tech medical governance.",
+    sourceNote: "Official HMC public provider pages available; exact urgent clinic/referral target should be configured by IST Health medical governance.",
     links: [
       {
         label: "HMC",
@@ -1977,37 +2155,37 @@ const careFacilities = {
     ]
   },
   qaHiaMedical: {
-    name: "IST Tech Medical Centre - Hamad International Airport",
-    category: "IST Tech staff medical destination",
+    name: "IST Health Medical Centre - Hamad International Airport",
+    category: "IST Health staff medical destination",
     summary:
-      "Internal IST Tech medical route for HIA-based staff care, fit-to-fly review, sickness validation, and duty-status coordination.",
+      "Internal IST Health medical route for HIA-based staff care, fit-to-fly review, sickness validation, and duty-status coordination.",
     sourceNote:
-      "No authoritative public facility page was found in open web search; confirm internal facility name, address, phone, hours, and booking rules with IST Tech.",
+      "No authoritative public facility page was found in open web search; confirm internal facility name, address, phone, hours, and booking rules with IST Health.",
     links: [
       {
         label: "Google Maps search",
         href: "https://www.google.com/maps/search/?api=1&query=medical%20centre%20Hamad%20International%20Airport%20Doha"
       },
       {
-        label: "IST Tech",
+        label: "IST Health",
         href: "#"
       }
     ]
   },
   qaOldAirportMedical: {
-    name: "IST Tech Medical - Old Airport medical commission workflow",
-    category: "IST Tech occupational / commission destination",
+    name: "IST Health Medical - Old Airport medical commission workflow",
+    category: "IST Health occupational / commission destination",
     summary:
-      "Internal IST Tech medical route for occupational health, medical commission, clearance, and staff documentation workflows around the Old Airport area.",
+      "Internal IST Health medical route for occupational health, medical commission, clearance, and staff documentation workflows around the Old Airport area.",
     sourceNote:
-      "Open sources identify Old Airport as a Doha district, but a public IST Tech medical-commission facility page was not found; confirm the formal internal name.",
+      "Open sources identify Old Airport as a Doha district, but a public IST Health medical-commission facility page was not found; confirm the formal internal name.",
     links: [
       {
         label: "Google Maps search",
         href: "https://www.google.com/maps/search/?api=1&query=medical%20commission%20Old%20Airport%20Road%20Doha"
       },
       {
-        label: "IST Tech",
+        label: "IST Health",
         href: "#"
       }
     ]
@@ -2030,29 +2208,29 @@ const careFacilities = {
     ]
   },
   qaTeleconsult: {
-    name: "IST Tech medical teleconsult escalation",
+    name: "IST Health medical teleconsult escalation",
     category: "Airline medical coordination",
     summary:
-      "Internal IST Tech medical escalation route for outstation staff, station coordination, local care referral, and operational duty restrictions.",
+      "Internal IST Health medical escalation route for outstation staff, station coordination, local care referral, and operational duty restrictions.",
     sourceNote:
-      "No public IST Tech teleconsult SOP was found; configure from internal medical, airport operations, and station-management procedures.",
+      "No public IST Health teleconsult SOP was found; configure from internal medical, airport operations, and station-management procedures.",
     links: [
       {
         label: "Google Maps search",
         href: "https://www.google.com/maps/search/?api=1&query=medical%20teleconsult%20Doha"
       },
       {
-        label: "IST Tech",
+        label: "IST Health",
         href: "#"
       }
     ]
   },
   selfCare: {
-    name: "IST Tech nurse-guided self-care with callback precautions",
+    name: "IST Health nurse-guided self-care with callback precautions",
     category: "No facility transfer",
     summary:
       "Used only after higher-acuity questions are negative and the nurse agrees approved self-care advice and callback precautions are appropriate.",
-    sourceNote: "Clinical advice must come from licensed protocol content and IST Tech medical governance.",
+    sourceNote: "Clinical advice must come from licensed protocol content and IST Health medical governance.",
     links: []
   }
 } satisfies Record<string, CareFacilityInfo>;
@@ -2074,7 +2252,7 @@ const dispositionRoutes: DispositionRouteDetail[] = [
       "Nurse follows local emergency transfer workflow and records the rule trace."
     ],
     governance:
-      "Destination and transfer procedure must be confirmed by IST Tech clinical governance and local pediatric emergency routing policy.",
+      "Destination and transfer procedure must be confirmed by IST Health clinical governance and local pediatric emergency routing policy.",
     facility: careFacilities.sidra
   },
   {
@@ -2117,8 +2295,8 @@ const dispositionRoutes: DispositionRouteDetail[] = [
   },
   {
     code: "IST_HIA_MIDFIELD_MEDICAL_CENTRE",
-    destination: "IST Tech Medical Centre - HIA",
-    severityBand: "IST Tech staff pathway",
+    destination: "IST Health Medical Centre - HIA",
+    severityBand: "IST Health staff pathway",
     trigger: "Fit-to-fly, sickness, or staff pathway",
     selectedWhen: [
       "Crew or staff case needs fit-to-fly review and is not already emergency.",
@@ -2136,7 +2314,7 @@ const dispositionRoutes: DispositionRouteDetail[] = [
   },
   {
     code: "IST_OLD_AIRPORT_MEDICAL_COMMISSION",
-    destination: "IST Tech Medical - Old Airport medical commission",
+    destination: "IST Health Medical - Old Airport medical commission",
     severityBand: "Occupational / commission",
     trigger: "Occupational or commission visit",
     selectedWhen: [
@@ -2150,12 +2328,12 @@ const dispositionRoutes: DispositionRouteDetail[] = [
       "Document whether the visit is occupational, clearance-related, or follow-up."
     ],
     governance:
-      "Occupational routing should be aligned with IST Tech medical commission workflows and HR documentation policy.",
+      "Occupational routing should be aligned with IST Health medical commission workflows and HR documentation policy.",
     facility: careFacilities.qaOldAirportMedical
   },
   {
     code: "PHCC_URGENT_CARE_OR_TELECONSULT",
-    destination: "PHCC Urgent Care or IST Tech teleconsult",
+    destination: "PHCC Urgent Care or IST Health teleconsult",
     severityBand: "Routine",
     trigger: "Routine staff pathway",
     selectedWhen: [
@@ -2174,7 +2352,7 @@ const dispositionRoutes: DispositionRouteDetail[] = [
   },
   {
     code: "OUTSTATION_TELECONSULT_ESCALATION",
-    destination: "IST Tech medical teleconsult escalation",
+    destination: "IST Health medical teleconsult escalation",
     severityBand: "Outstation urgent coordination",
     trigger: "Outstation clinical coordination",
     selectedWhen: [
@@ -2216,7 +2394,7 @@ const integrationRows = [
   ["Oracle Fusion HCM", "Validate staff identity, active worker status, assignments, contacts, dependents, absences, and documents.", "Mock adapter exists; target connector documented below."],
   ["Insurance", "Return provider, eligibility, last check, and booking notes.", "Mock eligibility cache exists; connect payer or benefits verification after insurer specs."],
   ["EMR / Oracle Health", "Move SBAR/SOAP into patient record.", "Clipboard handoff now; SMART on FHIR or approved Oracle Health API later."],
-  ["MedGemma / LLM Copilot", "Explain deterministic routing, draft SBAR, suggest missing nurse questions, summarize CCP context, and support bilingual wording.", "Strategy documented; model endpoint and adapter pending cloud implementation."],
+  ["MedGemma / LLM Copilot", "Explain deterministic routing, draft SBAR, flag missing approved protocol questions or context, summarize CCP context, and support bilingual wording.", "Strategy documented; model endpoint and adapter pending cloud implementation."],
   ["Twilio WhatsApp / SMS", "Send nurse-approved CCP messages and receive employee replies with text or media attachments.", "Adapter and webhook are built; dry-run is default until live secrets and signed webhook URL are approved."],
   ["Microsoft 365 Graph", "Send nurse-approved non-urgent CCP email through an approved mailbox.", "Adapter is built; live use needs Mail.Send app consent and mailbox-scoped access policy."],
   ["Scheduling", "Book clinic, teleconsult, commission, or urgent review slots.", "Future connector tied to disposition code."],
@@ -2290,8 +2468,8 @@ const plannedApiRows: ApiCatalogRow[] = [
   },
   {
     area: "Tenant queue orchestration",
-    api: "GET /api/v1/queue\nPOST /api/v1/queue/:id/claim\nPOST /api/v1/queue/:id/escalate",
-    use: "Restrict queue visibility and claiming to the authenticated user's organization, while allowing audited escalation handover to another target organization.",
+    api: "GET /api/v1/queue\nPOST /api/v1/queue\nPOST /api/v1/queue/:id/claim\nPOST /api/v1/queue/:id/escalate",
+    use: "Validate HRMS identity and age at queue ingress, restrict visibility and claiming to the authenticated user's organization, and allow audited escalation handover to another target organization.",
     status: "Built"
   },
   {
@@ -2339,7 +2517,7 @@ const plannedApiRows: ApiCatalogRow[] = [
   {
     area: "LLM copilot evaluation",
     api: "Future: POST /api/v1/ai/copilot/evaluate\nFuture: POST /api/v1/ai/copilot/draft\nLLM_PROVIDER=medgemma|dry-run\nLLM_ENDPOINT_URL",
-    use: "Run prompt/eval checks and return advisory summaries, missing-question prompts, and SBAR drafts without changing the deterministic disposition.",
+    use: "Run prompt/eval checks and return advisory summaries, approved-protocol context prompts, and SBAR drafts without changing the deterministic disposition.",
     status: "Planned cloud adapter"
   },
   {
@@ -2391,7 +2569,7 @@ const governanceItems = [
     title: "AI downgrade blocking",
     icon: AlertTriangle,
     body:
-      "If deterministic rules classify an encounter as Emergency, an AI suggestion below that floor is blocked and logged as a safety event."
+      "If deterministic rules classify an encounter as Emergency, a RAG shadow suggestion below that floor is blocked and logged as a safety event."
   },
   {
     title: "LLM model governance",
@@ -2450,21 +2628,22 @@ const dataLawItems = [
 
 const securityAdminHelpTopics: SecurityAdminHelpTopic[] = [
   {
-    id: "login-role-simulation",
-    title: "Login and Role Simulation",
+    id: "login-user-simulation",
+    title: "Login and Named User Simulation",
     eyebrow: "Authentication entry",
     icon: LockKeyhole,
     summary:
-      "The login page is now the single entry point for the system. It uses IST Tech branding, language selection, password visibility, SSO entry, and a simulator that opens the system as a selected role.",
+      "The login page is now the single entry point for the system. It uses IST Health branding, language selection, password visibility, SSO entry, and a simulator that opens the system as a selected named user.",
     built: [
       "Apple-style minimal login using the system font stack, light mode by default, and optional dark mode.",
-      "Organization selector is set to IST Tech, with English, Arabic, Hindi, and Tagalog language choices.",
-      "Simulate role dropdown is grouped by business category: A - Administration, S - Security and Privacy, G - Governance and Quality, B - Business and Clinical Operations, I - Integration, R - Reporting and Analytics, and U - User Support.",
+      "Organization selector is set to IST Health, with English, Arabic, Hindi, and Tagalog language choices.",
+      "Simulate user dropdown is grouped by business category: A - Administration, S - Security and Privacy, G - Governance and Quality, B - Business and Clinical Operations, I - Integration, R - Reporting and Analytics, and U - User Support.",
+      "Each simulated user has one assigned role, so changing the selected user automatically changes the login email, role, permission set, and landing area.",
       "The simulator uses the normal login API, sets a secure session cookie, and redirects by permission to admin or workspace."
     ],
     controls: [
       "Authentication errors stay generic and do not reveal whether a username exists.",
-      "The simulated role is validated by the backend against roles assigned to the demo account.",
+      "The backend derives the active role from the named user and rejects a role override when that role is not assigned to the account.",
       "Session restore uses the same permission logic as login, so refresh keeps the correct landing area."
     ],
     production: [
@@ -2483,7 +2662,8 @@ const securityAdminHelpTopics: SecurityAdminHelpTopic[] = [
       "The security layer separates role permissions, clinical responsibilities, and active-role session behavior so menus and APIs can be controlled consistently.",
     built: [
       "Seeded roles now cover Platform Super Administrator, Organization Administrator, System Administrator, Security Administrator, Privacy Officer / DPO, Compliance Auditor, Clinical Governance Lead, Triage Service Manager, Call Intake Coordinator, Remote Triage Nurse, Senior Triage Nurse, Pediatric Triage Nurse, Teleconsult Physician, Occupational Health Clinician, Protocol Content Manager, Quality Reviewer, Integration Administrator, Reporting Analyst, and Helpdesk Support.",
-      "The active role controls permissions for the current session instead of granting every role at once.",
+      "Named User Mode means every action is tied to a real authenticated user, active role, session, queue assignment, and audit identity rather than a generic actor selector.",
+      "The active role is derived from the named user and controls permissions for the current session instead of granting every role at once.",
       "Every seeded role is intended to have a distinct effective access profile across permissions, responsibilities, data scopes, clinical scopes, and integration scopes.",
       "The old global Actor selector was removed so the authenticated role is the single source of truth for menus, API access, data scope, and audit.",
       "A central authorization helper protects administration APIs independently of frontend menu visibility.",
@@ -2492,7 +2672,8 @@ const securityAdminHelpTopics: SecurityAdminHelpTopic[] = [
     controls: [
       "Platform Super Administrator has all current permissions for local simulation and demonstration.",
       "Clinical roles such as nurse, pediatric nurse, physician, and occupational-health clinician land in the triage workspace with role-specific clinical scopes.",
-      "Governance, quality, privacy, integration, and administration roles see only the administration modules allowed by their active permissions."
+      "Governance, quality, privacy, integration, and administration roles see only the Control Center modules allowed by their active permissions.",
+      "Queue locking remains named-user based: one nurse claims one call, lock ownership is audited, and HRMS status changes can release locks."
     ],
     production: [
       "Add editable role templates, access profiles, effective dates, explicit deny, queue/facility/clinical scopes, and approval workflows.",
@@ -2501,21 +2682,51 @@ const securityAdminHelpTopics: SecurityAdminHelpTopic[] = [
     ]
   },
   {
+    id: "control-center-bifurcation",
+    title: "Control Center Module Bifurcation",
+    eyebrow: "Separate workspaces",
+    icon: Workflow,
+    summary:
+      "The Control Center is split into separate modules so a role sees its own workspace instead of one overloaded administration screen.",
+    built: [
+      "Users: named-user lifecycle, HRMS directory state, account status, masked identifiers, and effective access review.",
+      "Access: roles, permissions, responsibilities, data scopes, clinical scopes, integration scopes, and segregation boundaries.",
+      "Security: SSO provider metadata, MFA posture, session/security policy, and cryptographic policy references.",
+      "Privacy: privacy assessments, purpose-based reveal requests, masking policy, and data-law evidence.",
+      "Audit: immutable event review for login, queue, reveal, override, integration, and governance activity.",
+      "Governance: clinical safety policies, red-floor rules, protocol release readiness, exception review, and quality evidence.",
+      "Protocol Library: algorithms, keywords, questions, care advice, localized routing, and content release status.",
+      "Integration: Oracle HRMS, EMR/FHIR, SSO, roster, insurance, and downstream connector status.",
+      "Reports: de-identified operational, safety, adoption, quality, and integration reports.",
+      "Support: helpdesk tickets, user issues, access support, device guidance, and non-clinical service requests."
+    ],
+    controls: [
+      "Each module has its own backend route and permission guard.",
+      "A role can open the Control Center only when it is a real control-center role, not merely because it has reveal permission for clinical work.",
+      "The Privacy Officer gets a dedicated reveal workspace, and the Integration Administrator gets a dedicated connector-status workspace."
+    ],
+    production: [
+      "Add module-specific edit/approval workflows after the read-model is validated by stakeholders.",
+      "Persist module configuration, approval history, and connector run history in production tables.",
+      "Add per-module feature flags for demo, UAT, and production environments."
+    ]
+  },
+  {
     id: "admin-portal",
-    title: "Administration Portal",
+    title: "Control Center",
     eyebrow: "Same application, protected section",
     icon: Users,
     summary:
-      "The administration portal is integrated into the existing app rather than being a parallel system. It gives authorized users a governed place to review security, users, access, SSO, privacy, and audit state.",
+      "The Control Center is integrated into the existing app rather than being a parallel system. It gives authorized users a governed place to review only the modules allowed for their active role.",
     built: [
-      "Administration dashboard with security metrics such as active users, failed logins, active sessions, privacy requests, and crypto warnings.",
-      "Users panel with masked identifiers and controlled reveal actions.",
+      "Overview module catalog filtered by active role permissions.",
+      "Users panel with masked identifiers and controlled reveal actions for administrators.",
       "Access panel for roles, responsibilities, and permissions.",
-      "SSO, privacy/encryption policy, and audit panels are available from the same admin section."
+      "Security, Privacy, Audit, Governance, Protocol Library, Integration, Reports, and Support panels are separated inside the same protected section."
     ],
     controls: [
       "Admin APIs require server-side permission checks.",
-      "The portal respects the active simulated role, so a nurse does not see the admin icon.",
+      "The portal respects the active named user's assigned role, so a nurse does not see the admin icon.",
       "User identifiers are masked by the backend before reaching the browser."
     ],
     production: [
@@ -2582,7 +2793,7 @@ const securityAdminHelpTopics: SecurityAdminHelpTopic[] = [
     built: [
       "Encryption policy records include data classification, covered entities, covered fields, algorithm, KMS provider, key alias, rotation days, masking policy, reveal policy, and data residency.",
       "AES-256-GCM is the approved field-encryption baseline in the policy model.",
-      "IST Tech Cloud KMS aliases are shown as policy references, not as keys.",
+      "IST Health Cloud KMS aliases are shown as policy references, not as keys.",
       "Privacy/encryption policies are visible through the Administration portal."
     ],
     controls: [
@@ -2636,10 +2847,10 @@ const roleAccessRows: RoleAccessRow[] = [
     category: "A - Administration",
     prefix: "A",
     role: "Organization Administrator",
-    access: "Tenant, facility, department, queue, user, and access configuration for IST Tech.",
+    access: "Tenant, facility, department, queue, user, and access configuration for IST Health.",
     permissions: ["admin.users.manage", "admin.roles.manage", "operations.dashboard.view", "reports.view", "audit.events.view"],
     responsibilities: ["administer_organization", "manage_users", "view_operational_reports"],
-    scopes: ["organization:IST Tech", "facility:*", "hrms.read"]
+    scopes: ["organization:IST Health", "facility:*", "hrms.read"]
   },
   {
     category: "A - Administration",
@@ -2648,7 +2859,7 @@ const roleAccessRows: RoleAccessRow[] = [
     access: "Application and user administration without automatic clinical-data reveal or clinical workflow rights.",
     permissions: ["admin.users.manage", "admin.roles.manage", "support.tickets.manage", "audit.events.view"],
     responsibilities: ["manage_users", "provide_helpdesk_support"],
-    scopes: ["organization:IST Tech", "support tickets", "masked users"]
+    scopes: ["organization:IST Health", "support tickets", "masked users"]
   },
   {
     category: "S - Security and Privacy",
@@ -2657,7 +2868,7 @@ const roleAccessRows: RoleAccessRow[] = [
     access: "Authentication, SSO, security policy, session, KMS policy, and security-event administration.",
     permissions: ["security.sso.manage", "crypto.policy.manage", "audit.events.view"],
     responsibilities: ["manage_sso", "manage_encryption_policy"],
-    scopes: ["organization:IST Tech", "sso", "kms"]
+    scopes: ["organization:IST Health", "sso", "kms"]
   },
   {
     category: "S - Security and Privacy",
@@ -2726,9 +2937,9 @@ const roleAccessRows: RoleAccessRow[] = [
     category: "B - Business and Clinical Operations",
     prefix: "B",
     role: "Remote Triage Nurse",
-    access: "Assigned remote triage encounters with clinical protocol access and AI recommendation visibility.",
+    access: "Assigned remote triage encounters with clinical protocol access and RAG shadow suggestion visibility.",
     permissions: ["triage.workspace.view", "triage.recommendation.view", "privacy.reveal.request"],
-    responsibilities: ["conduct_nurse_triage", "view_ai_recommendation"],
+    responsibilities: ["conduct_nurse_triage", "view_rag_shadow_suggestion"],
     scopes: ["assigned queue", "adult", "aviation", "hrms.read", "insurance.read"]
   },
   {
@@ -2737,7 +2948,7 @@ const roleAccessRows: RoleAccessRow[] = [
     role: "Senior Triage Nurse",
     access: "Complex triage, queue supervision, protocol adherence, and upward disposition override.",
     permissions: ["triage.workspace.view", "triage.call.intake", "triage.recommendation.view", "triage.disposition.override", "triage.queue.manage", "privacy.reveal.request"],
-    responsibilities: ["conduct_nurse_triage", "view_ai_recommendation", "coordinate_triage_queue"],
+    responsibilities: ["conduct_nurse_triage", "view_rag_shadow_suggestion", "coordinate_triage_queue"],
     scopes: ["assigned queue", "supervised queue", "escalation", "hrms.read", "insurance.read"]
   },
   {
@@ -2746,7 +2957,7 @@ const roleAccessRows: RoleAccessRow[] = [
     role: "Pediatric Triage Nurse",
     access: "Pediatric and dependent triage with guardian, age, and emergency routing rules.",
     permissions: ["triage.workspace.view", "triage.recommendation.view", "triage.pediatric.manage", "privacy.reveal.request"],
-    responsibilities: ["conduct_nurse_triage", "perform_pediatric_triage", "view_ai_recommendation"],
+    responsibilities: ["conduct_nurse_triage", "perform_pediatric_triage", "view_rag_shadow_suggestion"],
     scopes: ["dependent encounters", "pediatric", "emergency", "hrms.read", "insurance.read"]
   },
   {
@@ -2755,7 +2966,7 @@ const roleAccessRows: RoleAccessRow[] = [
     role: "Teleconsult Physician",
     access: "Escalated teleconsult review, physician-level disposition, and clinical override decisions.",
     permissions: ["triage.workspace.view", "triage.recommendation.view", "triage.teleconsult.manage", "triage.disposition.override", "privacy.reveal.request"],
-    responsibilities: ["approve_physician_escalation", "view_ai_recommendation"],
+    responsibilities: ["approve_physician_escalation", "view_rag_shadow_suggestion"],
     scopes: ["escalated encounters", "physician escalation", "emr.write", "insurance.read"]
   },
   {
@@ -2764,7 +2975,7 @@ const roleAccessRows: RoleAccessRow[] = [
     role: "Occupational Health Clinician",
     access: "Fit-to-work, fit-to-fly, sickness, occupational visit, and medical commission pathways.",
     permissions: ["triage.workspace.view", "triage.recommendation.view", "triage.disposition.override", "privacy.reveal.request"],
-    responsibilities: ["perform_occupational_health_review", "view_ai_recommendation"],
+    responsibilities: ["perform_occupational_health_review", "view_rag_shadow_suggestion"],
     scopes: ["occupational cases", "fit-to-fly", "sickness", "hrms.read", "emr.write"]
   },
   {
@@ -2810,15 +3021,21 @@ const securityAdminApiRows: ApiCatalogRow[] = [
     status: "Demo endpoint"
   },
   {
-    area: "Admin dashboard",
+    area: "Control Center modules",
+    api: "GET /api/v1/admin/control-modules",
+    use: "Return the module catalog filtered to the active role: Users, Access, Security, Privacy, Audit, Governance, Protocol Library, Integration, Reports, and Support.",
+    status: "Built"
+  },
+  {
+    area: "Control Center dashboard",
     api: "GET /api/v1/admin/summary",
-    use: "Return dashboard metrics for active users, failed logins, sessions, privacy requests, crypto warnings, and incidents.",
+    use: "Return dashboard metrics for active users, failed logins, sessions, privacy requests, crypto warnings, and incidents when the role has audit visibility.",
     status: "Built with seed data"
   },
   {
     area: "Identity and access",
     api: "GET /api/v1/admin/users\nGET /api/v1/admin/roles\nGET /api/v1/admin/responsibilities\nGET /api/v1/admin/permissions",
-    use: "Power the users, roles, responsibilities, and permission matrix sections of Administration.",
+    use: "Power the Users and Access sections of the Control Center.",
     status: "Built read APIs"
   },
   {
@@ -2829,9 +3046,27 @@ const securityAdminApiRows: ApiCatalogRow[] = [
   },
   {
     area: "Privacy and audit",
-    api: "POST /api/v1/admin/reveal\nGET /api/v1/admin/audit-events",
-    use: "Control personal-data reveal by purpose and show security/privacy event history.",
+    api: "GET /api/v1/admin/reveal-directory\nPOST /api/v1/admin/reveal\nGET /api/v1/admin/audit-events",
+    use: "Power the Privacy Officer reveal workspace and show security/privacy event history.",
     status: "Built demo workflow"
+  },
+  {
+    area: "Governance and protocol library",
+    api: "GET /api/v1/admin/governance\nGET /api/v1/admin/protocol-library",
+    use: "Expose clinical governance work items and protocol-library status for governance and content-management roles.",
+    status: "Built read APIs"
+  },
+  {
+    area: "Integration workbench",
+    api: "GET /api/v1/admin/integrations",
+    use: "Expose Oracle HRMS, EMR/FHIR, SSO, analytics, and connector-status records for Integration Administrator and security roles.",
+    status: "Built read API"
+  },
+  {
+    area: "Reports and support",
+    api: "GET /api/v1/admin/reports\nGET /api/v1/admin/support",
+    use: "Expose de-identified report catalog and helpdesk queue records for reporting, operations, and support roles.",
+    status: "Built read APIs"
   }
 ];
 
@@ -2986,6 +3221,10 @@ function HelpManualPanel({
           <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("llm-copilot-cloud")}>
             <BrainCircuit className="h-4 w-4" />
             LLM strategy
+          </button>
+          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("stcc-rag-shadow")}>
+            <SearchCheck className="h-4 w-4" />
+            STCC/RAG shadow
           </button>
           <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("api-contracts")}>
             <PlugZap className="h-4 w-4" />
@@ -3299,7 +3538,7 @@ function QatarPanel() {
         />
         <HelpCard
           title="Aviation-specific clinical questions"
-          body="For the IST Tech organization context, the RFI requires outstation validation, fit-to-fly review, sickness validation, vaccination reactions, occupational health, mental health triage, travel-related presentations, and staff/dependent workflows."
+          body="For the IST Health organization context, the RFI requires outstation validation, fit-to-fly review, sickness validation, vaccination reactions, occupational health, mental health triage, travel-related presentations, and staff/dependent workflows."
           icon={Route}
         />
       </div>
@@ -3461,7 +3700,7 @@ function SecurityAdministrationPanel() {
             <span className="tag-label">SECURITY ADMINISTRATION</span>
             <h3 className="help-title">Interactive security administration help</h3>
             <p>
-              This explains the login, role simulation, SSO, administration, access control,
+              This explains the login, named-user simulation, SSO, administration, access control,
               masking, encryption, and audit modules added to the existing tele-triage system.
               Select a topic to see what is built, what controls it applies, and what remains for
               production hardening.
@@ -3516,7 +3755,7 @@ function SecurityAdministrationPanel() {
 
       <ApiCatalogTable
         title="Security and administration API map"
-        body="These endpoints support the login, role simulation, SSO metadata, user/access administration, encryption policy review, reveal workflow, and audit panels."
+        body="These endpoints support the login, named-user simulation, SSO metadata, user/access administration, encryption policy review, reveal workflow, and audit panels."
         rows={securityAdminApiRows}
       />
     </section>

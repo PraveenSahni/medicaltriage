@@ -96,12 +96,39 @@ const staffDirectory: Record<string, StaffProfile> = {
     insuranceEligibilityStatus: "eligible",
     insuranceLastChecked: "2026-07-01T08:00:00.000Z",
     dependents: []
+  },
+  "IST-2205": {
+    id: "staff_ist_2205",
+    istStaffId: "IST-2205",
+    department: "Ground Operations",
+    jobTitle: "Ground Operations",
+    dutyStatus: "active",
+    dateOfBirthIso: "1988-08-27",
+    insuranceProvider: "IST Staff Health Plan",
+    insuranceEligibilityStatus: "eligible",
+    insuranceLastChecked: "2026-07-01T08:00:00.000Z",
+    dependents: []
+  },
+  "IST-90001": {
+    id: "staff_ist_90001",
+    istStaffId: "IST-90001",
+    department: "Flight Operations",
+    jobTitle: "Pilot",
+    dutyStatus: "active",
+    dateOfBirthIso: "1990-12-09",
+    insuranceProvider: "IST Staff Health Plan",
+    insuranceEligibilityStatus: "eligible",
+    insuranceLastChecked: "2026-07-01T08:00:00.000Z",
+    dependents: []
   }
 };
 
-export async function validateStaffMember(istStaffId: string): Promise<StaffValidationResult> {
-  const profile = staffDirectory[istStaffId.toUpperCase()];
+export function getStaffProfileFromDirectory(istStaffId: string): StaffProfile | undefined {
+  return staffDirectory[istStaffId.toUpperCase()];
+}
 
+export async function validateStaffMember(istStaffId: string): Promise<StaffValidationResult> {
+  const profile = getStaffProfileFromDirectory(istStaffId);
   if (!profile) {
     return {
       valid: false,
@@ -151,21 +178,29 @@ export function calculateAgeFromDateOfBirth(dateOfBirthIso: string, referenceDat
   };
 }
 
-export async function resolvePatientAgeFromHrms(args: {
+export function resolvePatientAgeFromDirectory(args: {
   istStaffId: string;
   dependentId?: string;
   referenceDate?: Date;
-}): Promise<PatientAgeResolution> {
-  const staff = await validateStaffMember(args.istStaffId);
-  if (!staff.valid || !staff.profile) {
+}): PatientAgeResolution {
+  const profile = getStaffProfileFromDirectory(args.istStaffId);
+  if (!profile) {
     return {
       ok: false,
       status: 404,
-      reason: staff.reason ?? "Staff member was not found in HRMS."
+      reason: "Staff member was not found in HRMS."
     };
   }
 
-  const dependent = findDependent(staff.profile, args.dependentId);
+  if (profile.dutyStatus === "inactive" || profile.dutyStatus === "suspended") {
+    return {
+      ok: false,
+      status: 400,
+      reason: `Staff duty status is ${profile.dutyStatus}; manual verification is required.`
+    };
+  }
+
+  const dependent = findDependent(profile, args.dependentId);
   if (args.dependentId && !dependent) {
     return {
       ok: false,
@@ -175,7 +210,7 @@ export async function resolvePatientAgeFromHrms(args: {
   }
 
   const source = dependent ? "dependent" : "staff";
-  const dateOfBirthIso = dependent?.dateOfBirthIso ?? staff.profile.dateOfBirthIso;
+  const dateOfBirthIso = dependent?.dateOfBirthIso ?? profile.dateOfBirthIso;
   if (dateOfBirthIso) {
     return {
       ok: true,
@@ -201,4 +236,12 @@ export async function resolvePatientAgeFromHrms(args: {
     status: 400,
     reason: "HRMS did not return date of birth for the selected staff member."
   };
+}
+
+export async function resolvePatientAgeFromHrms(args: {
+  istStaffId: string;
+  dependentId?: string;
+  referenceDate?: Date;
+}): Promise<PatientAgeResolution> {
+  return resolvePatientAgeFromDirectory(args);
 }

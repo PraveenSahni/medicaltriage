@@ -1,20 +1,26 @@
 import { randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import type { IncomingHttpHeaders } from "node:http";
-import { getAdminPassword } from "../config/runtime.js";
+import { getAdminPassword, isMockMode } from "../config/runtime.js";
 import type {
   AdminUser,
   AuditEvent,
   AuthenticatedSession,
   AuthMethod,
   AccountStatus,
+  ControlCenterModule,
   DirectoryStatus,
   EncryptionPolicy,
+  GovernanceWorkItem,
+  IntegrationConnector,
   Permission,
+  ProtocolLibraryItem,
   RevealRequest,
+  ReportCatalogItem,
   Role,
   SafeAdminUser,
   SecurityDashboard,
   SsoProvider,
+  SupportQueueItem,
   Responsibility
 } from "../types/security.js";
 import {
@@ -64,7 +70,9 @@ const organizationDirectory: OrganizationDirectoryRecord[] = [
 ];
 
 const organizationOverrideByUserId: Record<string, string> = {
-  usr_admin_10001: "IST_TECH",
+  usr_platform_admin_10001: "IST_TECH",
+  usr_system_admin_10001: "IST_TECH",
+  usr_security_admin_10001: "IST_TECH",
   usr_org_admin_10001: "IST_TECH",
   usr_manager_10001: "HMC",
   usr_intake_10001: "PHCC",
@@ -73,6 +81,28 @@ const organizationOverrideByUserId: Record<string, string> = {
   usr_pediatric_nurse_10001: "SIDRA",
   usr_physician_10001: "HMC",
   usr_occ_health_10001: "HMC"
+};
+
+const demoPasswordByEmail: Record<string, string> = {
+  "pa@irisstar.tech": "PlatformAdmin@2026",
+  "oa@irisstar.tech": "OrgAdmin@2026",
+  "sa@irisstar.tech": "SystemAdmin@2026",
+  "sec@irisstar.tech": "SecurityAdmin@2026",
+  "privacy@irisstar.tech": "Privacy@2026",
+  "audit@irisstar.tech": "Audit@2026",
+  "governance@irisstar.tech": "Governance@2026",
+  "manager@irisstar.tech": "Manager@2026",
+  "intake@irisstar.tech": "Intake@2026",
+  "nurse@irisstar.tech": "Nurse@2026",
+  "senior.nurse@irisstar.tech": "SeniorNurse@2026",
+  "pediatric.nurse@irisstar.tech": "PediatricNurse@2026",
+  "physician@irisstar.tech": "Physician@2026",
+  "oh@irisstar.tech": "OccupationalHealth@2026",
+  "protocols@irisstar.tech": "Protocols@2026",
+  "quality@irisstar.tech": "Quality@2026",
+  "integration@irisstar.tech": "Integration@2026",
+  "reports@irisstar.tech": "Reports@2026",
+  "helpdesk@irisstar.tech": "Helpdesk@2026"
 };
 
 function organizationByCode(code?: string): OrganizationDirectoryRecord {
@@ -770,21 +800,19 @@ const roles: Role[] = [
   }
 ];
 
-const demoAssignableRoleCodes = roles.map((role) => role.code);
-
 const initialUsers: AdminUser[] = [
   {
-    id: "usr_admin_10001",
+    id: "usr_platform_admin_10001",
     employeeId: "IST-90001",
     hrmsId: "HCM-90001",
-    fullName: "Simulated System Administrator",
-    email: "admin@ist.local",
+    fullName: "Platform Administrator",
+    email: "pa@irisstar.tech",
     mobile: "+97455551234",
     organization: "IST Tech",
     facility: "HIA Midfield",
     department: "Platform Administration",
     clinicalSpecialty: "Not applicable",
-    jobTitle: "System Administrator",
+    jobTitle: "Platform Administrator",
     professionalCategory: "Administrator",
     manager: "Chief Information Security Officer",
     country: "QA",
@@ -793,7 +821,7 @@ const initialUsers: AdminUser[] = [
     authenticationMethod: "local",
     mfaStatus: "enabled",
     accountStatus: "active",
-    roles: demoAssignableRoleCodes,
+    roles: ["platform_super_administrator"],
     responsibilities: allResponsibilityCodes,
     queues: ["HIA Staff Tele-triage", "Outstation Support", "Security Administration"],
     accessProfiles: ["platform-super-admin-profile", "security-admin-profile"],
@@ -804,11 +832,71 @@ const initialUsers: AdminUser[] = [
     updatedAtIso: "2026-07-10T08:00:00.000Z"
   },
   {
+    id: "usr_system_admin_10001",
+    employeeId: "IST-90003",
+    hrmsId: "HCM-90003",
+    fullName: "System Administrator",
+    email: "sa@irisstar.tech",
+    mobile: "+97455550003",
+    organization: "IST Tech",
+    facility: "IST Tech Operations",
+    department: "Platform Administration",
+    clinicalSpecialty: "Not applicable",
+    jobTitle: "System Administrator",
+    professionalCategory: "Administrator",
+    manager: "Platform Administrator",
+    country: "QA",
+    preferredLanguage: "en",
+    timeZone: "Asia/Qatar",
+    authenticationMethod: "local",
+    mfaStatus: "enabled",
+    accountStatus: "active",
+    roles: ["system_administrator"],
+    responsibilities: ["manage_users", "provide_helpdesk_support"],
+    queues: ["User Administration", "Support Administration"],
+    accessProfiles: ["system-admin-profile"],
+    lastLoginIso: "2026-07-10T06:35:00.000Z",
+    createdBy: "bootstrap",
+    createdAtIso: "2026-07-01T08:02:00.000Z",
+    updatedBy: "bootstrap",
+    updatedAtIso: "2026-07-10T08:00:00.000Z"
+  },
+  {
+    id: "usr_security_admin_10001",
+    employeeId: "IST-90004",
+    hrmsId: "HCM-90004",
+    fullName: "Security Administrator",
+    email: "sec@irisstar.tech",
+    mobile: "+97455550004",
+    organization: "IST Tech",
+    facility: "IST Tech Operations",
+    department: "Cyber Security",
+    clinicalSpecialty: "Not applicable",
+    jobTitle: "Security Administrator",
+    professionalCategory: "Security",
+    manager: "Platform Administrator",
+    country: "QA",
+    preferredLanguage: "en",
+    timeZone: "Asia/Qatar",
+    authenticationMethod: "local",
+    mfaStatus: "enabled",
+    accountStatus: "active",
+    roles: ["security_administrator"],
+    responsibilities: ["manage_sso", "manage_encryption_policy"],
+    queues: ["Security Administration", "SSO Configuration"],
+    accessProfiles: ["security-admin-profile"],
+    lastLoginIso: "2026-07-10T06:40:00.000Z",
+    createdBy: "bootstrap",
+    createdAtIso: "2026-07-01T08:04:00.000Z",
+    updatedBy: "bootstrap",
+    updatedAtIso: "2026-07-10T08:00:00.000Z"
+  },
+  {
     id: "usr_nurse_10001",
     employeeId: "IST-10001",
     hrmsId: "HCM-10001",
     fullName: "Remote Triage Nurse",
-    email: "nurse@ist.local",
+    email: "nurse@irisstar.tech",
     mobile: "+97455554321",
     organization: "IST Tech",
     facility: "HIA Midfield",
@@ -831,9 +919,9 @@ const initialUsers: AdminUser[] = [
     queues: ["HIA Staff Tele-triage", "Outstation Support"],
     accessProfiles: ["remote-triage-nurse-profile"],
     lastLoginIso: "2026-07-10T07:10:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:20:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:05:00.000Z"
   },
   {
@@ -841,7 +929,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-90002",
     hrmsId: "HCM-90002",
     fullName: "Organization Administrator",
-    email: "org.admin@ist.local",
+    email: "oa@irisstar.tech",
     mobile: "+97455550002",
     organization: "IST Tech",
     facility: "IST Tech Operations",
@@ -861,9 +949,9 @@ const initialUsers: AdminUser[] = [
     queues: ["Organization Administration"],
     accessProfiles: ["organization-admin-profile"],
     lastLoginIso: "2026-07-10T06:30:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:22:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:05:00.000Z"
   },
   {
@@ -871,7 +959,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-30001",
     hrmsId: "HCM-30001",
     fullName: "Triage Service Manager",
-    email: "triage.manager@ist.local",
+    email: "manager@irisstar.tech",
     mobile: "+97455553001",
     organization: "IST Tech",
     facility: "IST Tele-triage Command Centre",
@@ -891,9 +979,9 @@ const initialUsers: AdminUser[] = [
     queues: ["HIA Staff Tele-triage", "Outstation Support", "Escalation Queue"],
     accessProfiles: ["triage-service-manager-profile"],
     lastLoginIso: "2026-07-10T06:45:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:24:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:05:00.000Z"
   },
   {
@@ -901,7 +989,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-30002",
     hrmsId: "HCM-30002",
     fullName: "Call Intake Coordinator",
-    email: "intake@ist.local",
+    email: "intake@irisstar.tech",
     mobile: "+97455553002",
     organization: "IST Tech",
     facility: "IST Tele-triage Command Centre",
@@ -921,9 +1009,9 @@ const initialUsers: AdminUser[] = [
     queues: ["New Calls", "Identity Verification"],
     accessProfiles: ["call-intake-profile"],
     lastLoginIso: "2026-07-10T06:50:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:26:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:05:00.000Z"
   },
   {
@@ -931,7 +1019,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-10002",
     hrmsId: "HCM-10002",
     fullName: "Senior Triage Nurse",
-    email: "senior.nurse@ist.local",
+    email: "senior.nurse@irisstar.tech",
     mobile: "+97455551002",
     organization: "IST Tech",
     facility: "IST Tele-triage Command Centre",
@@ -954,9 +1042,9 @@ const initialUsers: AdminUser[] = [
     queues: ["HIA Staff Tele-triage", "Escalation Queue"],
     accessProfiles: ["senior-triage-nurse-profile"],
     lastLoginIso: "2026-07-10T07:05:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:28:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:05:00.000Z"
   },
   {
@@ -964,7 +1052,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-10003",
     hrmsId: "HCM-10003",
     fullName: "Pediatric Triage Nurse",
-    email: "pediatric.nurse@ist.local",
+    email: "pediatric.nurse@irisstar.tech",
     mobile: "+97455551003",
     organization: "IST Tech",
     facility: "IST Tele-triage Command Centre",
@@ -987,9 +1075,9 @@ const initialUsers: AdminUser[] = [
     queues: ["Pediatric Escalation", "Dependent Support"],
     accessProfiles: ["pediatric-triage-profile"],
     lastLoginIso: "2026-07-10T07:08:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:30:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:05:00.000Z"
   },
   {
@@ -997,7 +1085,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-11001",
     hrmsId: "HCM-11001",
     fullName: "Teleconsult Physician",
-    email: "physician@ist.local",
+    email: "physician@irisstar.tech",
     mobile: "+97455551101",
     organization: "IST Tech",
     facility: "IST Tele-triage Command Centre",
@@ -1020,9 +1108,9 @@ const initialUsers: AdminUser[] = [
     queues: ["Physician Escalation", "Emergency Review"],
     accessProfiles: ["teleconsult-physician-profile"],
     lastLoginIso: "2026-07-10T07:12:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:32:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:05:00.000Z"
   },
   {
@@ -1030,7 +1118,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-12001",
     hrmsId: "HCM-12001",
     fullName: "Occupational Health Clinician",
-    email: "occupational.health@ist.local",
+    email: "oh@irisstar.tech",
     mobile: "+97455551201",
     organization: "IST Tech",
     facility: "IST Medical Governance",
@@ -1053,9 +1141,9 @@ const initialUsers: AdminUser[] = [
     queues: ["Fit-to-fly Review", "Sickness Review", "Occupational Visits"],
     accessProfiles: ["occupational-health-profile"],
     lastLoginIso: "2026-07-10T07:14:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:34:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:05:00.000Z"
   },
   {
@@ -1063,7 +1151,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-21001",
     hrmsId: "HCM-21001",
     fullName: "Clinical Governance Lead",
-    email: "governance@ist.local",
+    email: "governance@irisstar.tech",
     mobile: "+97455552101",
     organization: "IST Tech",
     facility: "IST Medical Governance",
@@ -1086,9 +1174,9 @@ const initialUsers: AdminUser[] = [
     queues: ["Protocol Approval", "Safety Review"],
     accessProfiles: ["clinical-governance-profile"],
     lastLoginIso: "2026-07-10T07:18:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:36:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:05:00.000Z"
   },
   {
@@ -1096,7 +1184,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-22001",
     hrmsId: "HCM-22001",
     fullName: "Protocol Content Manager",
-    email: "protocols@ist.local",
+    email: "protocols@irisstar.tech",
     mobile: "+97455552201",
     organization: "IST Tech",
     facility: "IST Medical Governance",
@@ -1116,9 +1204,9 @@ const initialUsers: AdminUser[] = [
     queues: ["Protocol Library", "Care Advice Library"],
     accessProfiles: ["protocol-content-profile"],
     lastLoginIso: "2026-07-10T07:20:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:38:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:05:00.000Z"
   },
   {
@@ -1126,7 +1214,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-20001",
     hrmsId: "HCM-20001",
     fullName: "Quality Reviewer",
-    email: "reviewer@ist.local",
+    email: "quality@irisstar.tech",
     mobile: "+97455559876",
     organization: "IST Tech",
     facility: "HIA Midfield",
@@ -1146,9 +1234,9 @@ const initialUsers: AdminUser[] = [
     queues: ["Completed Encounter Review"],
     accessProfiles: ["quality-review-profile"],
     lastLoginIso: "2026-07-10T07:45:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:40:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:10:00.000Z"
   },
   {
@@ -1156,7 +1244,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-91001",
     hrmsId: "HCM-91001",
     fullName: "Privacy Officer / DPO",
-    email: "privacy@ist.local",
+    email: "privacy@irisstar.tech",
     mobile: "+97455559101",
     organization: "IST Tech",
     facility: "IST Tech Operations",
@@ -1176,9 +1264,9 @@ const initialUsers: AdminUser[] = [
     queues: ["Privacy Assessment", "Reveal Approval"],
     accessProfiles: ["privacy-officer-profile"],
     lastLoginIso: "2026-07-10T07:50:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:42:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:10:00.000Z"
   },
   {
@@ -1186,7 +1274,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-92001",
     hrmsId: "HCM-92001",
     fullName: "Compliance Auditor",
-    email: "compliance@ist.local",
+    email: "audit@irisstar.tech",
     mobile: "+97455559201",
     organization: "IST Tech",
     facility: "IST Tech Operations",
@@ -1206,9 +1294,9 @@ const initialUsers: AdminUser[] = [
     queues: ["Audit Review", "Compliance Evidence"],
     accessProfiles: ["compliance-auditor-profile"],
     lastLoginIso: "2026-07-10T07:52:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:44:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:10:00.000Z"
   },
   {
@@ -1216,7 +1304,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-93001",
     hrmsId: "HCM-93001",
     fullName: "Integration Administrator",
-    email: "integrations@ist.local",
+    email: "integration@irisstar.tech",
     mobile: "+97455559301",
     organization: "IST Tech",
     facility: "IST Tech Operations",
@@ -1236,9 +1324,9 @@ const initialUsers: AdminUser[] = [
     queues: ["HRMS Integration", "EMR Integration", "API Monitoring"],
     accessProfiles: ["integration-admin-profile"],
     lastLoginIso: "2026-07-10T07:54:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:46:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:10:00.000Z"
   },
   {
@@ -1246,7 +1334,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-94001",
     hrmsId: "HCM-94001",
     fullName: "Reporting Analyst",
-    email: "reports@ist.local",
+    email: "reports@irisstar.tech",
     mobile: "+97455559401",
     organization: "IST Tech",
     facility: "IST Tech Operations",
@@ -1266,9 +1354,9 @@ const initialUsers: AdminUser[] = [
     queues: ["Management Reports", "Quality Dashboards"],
     accessProfiles: ["reporting-analyst-profile"],
     lastLoginIso: "2026-07-10T07:56:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:48:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:10:00.000Z"
   },
   {
@@ -1276,7 +1364,7 @@ const initialUsers: AdminUser[] = [
     employeeId: "IST-95001",
     hrmsId: "HCM-95001",
     fullName: "Helpdesk Support",
-    email: "helpdesk@ist.local",
+    email: "helpdesk@irisstar.tech",
     mobile: "+97455559501",
     organization: "IST Tech",
     facility: "IST Tech Operations",
@@ -1296,9 +1384,9 @@ const initialUsers: AdminUser[] = [
     queues: ["User Support", "Access Support"],
     accessProfiles: ["helpdesk-support-profile"],
     lastLoginIso: "2026-07-10T07:58:00.000Z",
-    createdBy: "usr_admin_10001",
+    createdBy: "usr_platform_admin_10001",
     createdAtIso: "2026-07-01T08:50:00.000Z",
-    updatedBy: "usr_admin_10001",
+    updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:10:00.000Z"
   }
 ];
@@ -1329,7 +1417,7 @@ const ssoProviders: SsoProvider[] = [
     issuerUrl: "https://login.microsoftonline.com/{tenant-id}/v2.0",
     tenantId: "configure-in-secret-manager",
     redirectUri: "/api/v1/auth/sso/entra-qa/callback",
-    allowedDomains: ["ist.local", "isttech.local"],
+    allowedDomains: ["irisstar.tech", "ist.local", "isttech.local"],
     attributeMappings: {
       email: "preferred_username",
       fullName: "name",
@@ -1369,7 +1457,7 @@ const ssoProviders: SsoProvider[] = [
     issuerUrl: "https://idp.example/saml",
     tenantId: "configure-in-secret-manager",
     redirectUri: "/api/v1/auth/sso/saml-enterprise/callback",
-    allowedDomains: ["ist.local"],
+    allowedDomains: ["irisstar.tech", "ist.local"],
     attributeMappings: {
       email: "NameID",
       fullName: "displayName",
@@ -1420,11 +1508,255 @@ const encryptionPolicies: EncryptionPolicy[] = [
   }
 ];
 
+const controlCenterModules: ControlCenterModule[] = [
+  {
+    id: "users",
+    label: "Users",
+    purpose: "Named-user lifecycle, HRMS directory state, account lock/suspend, and access profile review.",
+    primaryRoles: ["Platform Super Administrator", "Organization Administrator", "System Administrator"],
+    requiredPermissions: ["admin.users.manage"],
+    dataBoundary: "Masked user directory; direct identifiers require purpose-based reveal.",
+    prohibitedActions: ["Clinical disposition approval", "Protocol approval", "Unscoped personal-data export"]
+  },
+  {
+    id: "access",
+    label: "Access",
+    purpose: "Role templates, responsibilities, permissions, access profiles, and segregation-of-duty checks.",
+    primaryRoles: ["Platform Super Administrator", "Organization Administrator", "System Administrator"],
+    requiredPermissions: ["admin.roles.manage"],
+    dataBoundary: "Role metadata and masked named-user assignments.",
+    prohibitedActions: ["Self-approval of privileged access", "Clinical record edits"]
+  },
+  {
+    id: "security",
+    label: "Security",
+    purpose: "SSO providers, session control, MFA posture, key-policy visibility, and security administration.",
+    primaryRoles: ["Security Administrator", "Integration Administrator"],
+    requiredPermissions: ["security.sso.manage", "crypto.policy.manage"],
+    dataBoundary: "Identity-provider metadata and secrets references only; no decrypted secret values.",
+    prohibitedActions: ["Personal-data reveal without privacy purpose", "Clinical override approval"]
+  },
+  {
+    id: "privacy",
+    label: "Privacy",
+    purpose: "Purpose-based reveal requests, privacy assessments, masking policy, and data-law evidence.",
+    primaryRoles: ["Privacy Officer / DPO"],
+    requiredPermissions: ["privacy.assessment.manage", "privacy.reveal.request", "crypto.policy.manage"],
+    dataBoundary: "Masked subjects by default; reveal is logged and time-limited.",
+    prohibitedActions: ["Bulk identifier export", "Reveal without purpose", "Clinical disposition entry"]
+  },
+  {
+    id: "audit",
+    label: "Audit",
+    purpose: "Immutable security, queue, reveal, override, integration, and governance evidence review.",
+    primaryRoles: ["Compliance Auditor", "Quality Reviewer", "Security Administrator"],
+    requiredPermissions: ["audit.events.view"],
+    dataBoundary: "Audit metadata without decrypted personal values.",
+    prohibitedActions: ["Changing source events", "Editing signed clinical notes"]
+  },
+  {
+    id: "governance",
+    label: "Governance",
+    purpose: "Clinical safety policy, protocol release readiness, exception review, and quality governance.",
+    primaryRoles: ["Clinical Governance Lead", "Quality Reviewer"],
+    requiredPermissions: ["clinical.governance.approve", "audit.events.view"],
+    dataBoundary: "Governance evidence, de-identified encounter quality samples, and release controls.",
+    prohibitedActions: ["Own-protocol self-approval", "Unreviewed red-floor downgrade"]
+  },
+  {
+    id: "protocol-library",
+    label: "Protocol Library",
+    purpose: "Clinical algorithms, search words, acuity-ordered questions, care advice, and localized routing data.",
+    primaryRoles: ["Protocol Content Manager", "Clinical Governance Lead"],
+    requiredPermissions: ["protocol.library.manage"],
+    dataBoundary: "Protocol metadata and synthetic/open-source demo content until licensed content is imported.",
+    prohibitedActions: ["Publishing unapproved content", "Changing signed encounter notes"]
+  },
+  {
+    id: "integration",
+    label: "Integration",
+    purpose: "Oracle HRMS, EMR/FHIR, SSO, roster, queue, and downstream connector health.",
+    primaryRoles: ["Integration Administrator"],
+    requiredPermissions: ["integration.hrms.manage", "integration.emr.manage", "security.sso.manage"],
+    dataBoundary: "Connector configuration, masked payload samples, and operational status.",
+    prohibitedActions: ["Clinical triage decision entry", "Viewing decrypted clinical payloads without assignment"]
+  },
+  {
+    id: "reports",
+    label: "Reports",
+    purpose: "De-identified operational, safety, adoption, quality, and integration reports.",
+    primaryRoles: ["Reporting Analyst", "Triage Service Manager", "Compliance Auditor"],
+    requiredPermissions: ["reports.view", "reports.export", "operations.dashboard.view"],
+    dataBoundary: "Aggregate and de-identified report datasets.",
+    prohibitedActions: ["PHI export", "Personal-data reveal"]
+  },
+  {
+    id: "support",
+    label: "Support",
+    purpose: "Helpdesk tickets, user support, device issues, and non-clinical service requests.",
+    primaryRoles: ["Helpdesk Support", "System Administrator"],
+    requiredPermissions: ["support.tickets.manage"],
+    dataBoundary: "Support tickets and masked user identifiers.",
+    prohibitedActions: ["Clinical note changes", "Privacy reveal approvals"]
+  }
+];
+
+const integrationConnectors: IntegrationConnector[] = [
+  {
+    id: "oracle-fusion-hrms",
+    name: "Oracle Fusion HRMS directory sync",
+    system: "Oracle HRMS",
+    status: "configured",
+    ownerRole: "Integration Administrator",
+    dataHandled: ["employee ID", "job title", "department", "duty status", "date of birth for age calculation"],
+    apiSurface: "Workers, Employment, Assignments, Absences, Work Schedules",
+    lastCheckedIso: "2026-07-16T07:30:00.000Z"
+  },
+  {
+    id: "emr-fhir-writeback",
+    name: "EMR/FHIR writeback",
+    system: "EMR/FHIR",
+    status: "pending-approval",
+    ownerRole: "Integration Administrator",
+    dataHandled: ["SBAR note", "disposition", "care advice acknowledgement", "encounter status"],
+    apiSurface: "FHIR Patient, Encounter, Observation, QuestionnaireResponse, DocumentReference",
+    lastCheckedIso: "2026-07-16T07:35:00.000Z"
+  },
+  {
+    id: "entra-sso",
+    name: "Microsoft Entra ID SSO",
+    system: "SSO",
+    status: "mock-adapter",
+    ownerRole: "Security Administrator",
+    dataHandled: ["user principal", "group claim", "MFA state", "role mapping"],
+    apiSurface: "OIDC/SAML provider metadata and group-role mapping",
+    lastCheckedIso: "2026-07-16T07:40:00.000Z"
+  },
+  {
+    id: "analytics-export",
+    name: "De-identified reporting export",
+    system: "Analytics",
+    status: "configured",
+    ownerRole: "Reporting Analyst",
+    dataHandled: ["aggregate queue metrics", "de-identified safety outcomes", "quality-review counts"],
+    apiSurface: "Reports catalog and governed CSV export",
+    lastCheckedIso: "2026-07-16T07:45:00.000Z"
+  }
+];
+
+const governanceWorkItems: GovernanceWorkItem[] = [
+  {
+    id: "gov-red-floor",
+    title: "Emergency safety-floor rule set",
+    ownerRole: "Clinical Governance Lead",
+    status: "active",
+    control: "Red-floor downgrades are blocked by deterministic rules before AI assistance.",
+    evidence: "Safety kernel tests and signed override audit trail."
+  },
+  {
+    id: "gov-fit-to-fly",
+    title: "Fit-to-fly routing policy",
+    ownerRole: "Occupational Health Clinician",
+    status: "requires-review",
+    control: "Aviation status is derived after emergency rule-out and disposition selection.",
+    evidence: "Synthetic aviation data plan and disposition route library."
+  },
+  {
+    id: "gov-content-release",
+    title: "Protocol release readiness",
+    ownerRole: "Protocol Content Manager",
+    status: "pending-approval",
+    control: "Demo clinical content remains synthetic/open-source until licensed STCC content is imported.",
+    evidence: "Protocol library release notes and content provenance report."
+  }
+];
+
+const protocolLibraryItems: ProtocolLibraryItem[] = [
+  {
+    id: "protocol-adult-chest-pain",
+    title: "Chest Pain or Tightness - Adult",
+    category: "Adult / emergency rule-out",
+    status: "active",
+    ownerRole: "Protocol Content Manager",
+    release: "2026.07-sample",
+    safetyNotes: "Synthetic Phase 1 content. Replace with licensed clinical content before production."
+  },
+  {
+    id: "protocol-pediatric-fever",
+    title: "Fever with Fast Breathing - Pediatric",
+    category: "Pediatric / dependent",
+    status: "draft",
+    ownerRole: "Clinical Governance Lead",
+    release: "2026.07-sample",
+    safetyNotes: "Age-banded pediatric tachypnea and SpO2 safety-floor rules remain deterministic."
+  },
+  {
+    id: "protocol-ankle-foot",
+    title: "Ankle and Foot Injury",
+    category: "Adult / injury",
+    status: "pending-governance",
+    ownerRole: "Protocol Content Manager",
+    release: "2026.07-synthetic",
+    safetyNotes: "Demo sequence follows reason for call, keyword match, acuity questions, disposition, and care advice."
+  }
+];
+
+const reportCatalogItems: ReportCatalogItem[] = [
+  {
+    id: "report-queue-health",
+    title: "Queue health and service load",
+    audience: "Triage Service Manager",
+    dataClass: "aggregate",
+    exportAllowed: true,
+    requiredPermission: "reports.export"
+  },
+  {
+    id: "report-safety-floor",
+    title: "Safety-floor trigger review",
+    audience: "Clinical Governance Lead",
+    dataClass: "de-identified",
+    exportAllowed: true,
+    requiredPermission: "reports.export"
+  },
+  {
+    id: "report-reveal-audit",
+    title: "Privacy reveal audit",
+    audience: "Privacy Officer / DPO",
+    dataClass: "restricted",
+    exportAllowed: false,
+    requiredPermission: "audit.events.view"
+  }
+];
+
+const supportQueueItems: SupportQueueItem[] = [
+  {
+    id: "support-access-lockout",
+    title: "Locked account or MFA issue",
+    requesterRole: "Any named user",
+    status: "open",
+    dataBoundary: "Helpdesk can see masked user profile and access status, not clinical notes."
+  },
+  {
+    id: "support-role-change",
+    title: "Role or queue access change",
+    requesterRole: "Manager or administrator",
+    status: "in-progress",
+    dataBoundary: "Requires role approval; no self-approval of privileged access."
+  },
+  {
+    id: "support-integration-ticket",
+    title: "Connector error investigation",
+    requesterRole: "Integration Administrator",
+    status: "waiting-user",
+    dataBoundary: "Masked payload samples and connector logs only."
+  }
+];
+
 const auditEvents: AuditEvent[] = [
   {
     id: "audit-10001",
     timestampIso: "2026-07-10T08:00:00.000Z",
-    userId: "usr_admin_10001",
+    userId: "usr_security_admin_10001",
     activeRole: "security_administrator",
     organization: "IST Tech",
     facility: "HIA Midfield",
@@ -1511,6 +1843,37 @@ export function listUsers(): SafeAdminUser[] {
   return users.map(maskUser);
 }
 
+export function listControlCenterModules(): ControlCenterModule[] {
+  return controlCenterModules.map((module) => ({ ...module }));
+}
+
+export function listRevealDirectory(): SafeAdminUser[] {
+  return users.map(maskUser);
+}
+
+export function listIntegrationConnectors(): IntegrationConnector[] {
+  return integrationConnectors.map((connector) => ({
+    ...connector,
+    dataHandled: [...connector.dataHandled]
+  }));
+}
+
+export function listGovernanceWorkItems(): GovernanceWorkItem[] {
+  return governanceWorkItems.map((item) => ({ ...item }));
+}
+
+export function listProtocolLibraryItems(): ProtocolLibraryItem[] {
+  return protocolLibraryItems.map((item) => ({ ...item }));
+}
+
+export function listReportCatalogItems(): ReportCatalogItem[] {
+  return reportCatalogItems.map((item) => ({ ...item }));
+}
+
+export function listSupportQueueItems(): SupportQueueItem[] {
+  return supportQueueItems.map((item) => ({ ...item }));
+}
+
 export function listOrganizations(): OrganizationDirectoryRecord[] {
   return organizationDirectory.map((organization) => ({ ...organization }));
 }
@@ -1594,7 +1957,7 @@ export function upsertDirectoryUserFromHrms(input: DirectoryUserUpsert): { user:
     employeeId: input.employeeId,
     hrmsId: input.hrmsId ?? input.employeeId,
     fullName: input.fullName ?? input.email ?? input.employeeId,
-    email: input.email ?? `${input.employeeId.toLowerCase()}@ist.local`,
+    email: input.email ?? `${input.employeeId.toLowerCase()}@irisstar.tech`,
     mobile: input.mobile ?? "+97400000000",
     organization: organization.name,
     organizationId: organization.id,
@@ -1747,7 +2110,10 @@ export async function authenticateLocal(args: {
   // Local credential gate for development and UAT scaffolding. Live mode must
   // provide ADMIN_PASSWORD through the deployment environment or Secret Manager.
   const configuredPassword = getAdminPassword();
-  const passwordOk = configuredPassword.length > 0 && safeCompare(args.password, configuredPassword);
+  const adminPasswordOk = configuredPassword.length > 0 && safeCompare(args.password, configuredPassword);
+  const demoPassword = user ? demoPasswordByEmail[user.email.toLowerCase()] : undefined;
+  const demoPasswordOk = Boolean(isMockMode() && demoPassword && safeCompare(args.password, demoPassword));
+  const passwordOk = adminPasswordOk || demoPasswordOk;
   if (!user || !passwordOk) {
     failedLoginAttempts.set(username, currentFailures + 1);
     await recordAuditEvent({

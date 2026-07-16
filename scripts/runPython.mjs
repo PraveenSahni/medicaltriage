@@ -23,10 +23,10 @@ const bundledPython = join(
 const candidates = [
   process.env.PYTHON_BIN,
   process.env.PYTHON,
+  bundledPython,
   "python",
   "python3",
-  "py",
-  bundledPython
+  "py"
 ].filter(Boolean);
 
 function canRunPython(command) {

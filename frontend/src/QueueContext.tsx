@@ -12,6 +12,53 @@ export type QueueVitals = {
   consciousLevel: "alert" | "voice" | "pain" | "unresponsive";
 };
 
+export type QueuePatientAgeSnapshot = {
+  source: "staff" | "dependent";
+  ageYears: number;
+  ageMonths: number;
+  dateOfBirthIso?: string;
+  calculatedFrom: "HRMS_DATE_OF_BIRTH" | "HRMS_AGE_FIELD";
+};
+
+export type QueueProtocolSuggestion = {
+  protocolId: string;
+  titleEn: string;
+  score: number;
+  matchedTerms: string[];
+  questionCount: number;
+  highestSeverity: "Emergency" | "Urgent" | "Routine" | "Self-care";
+  releaseVersion: string;
+};
+
+export type QueueProtocolQuestionPreview = {
+  id: string;
+  acuityOrder: number;
+  severity: "Emergency" | "Urgent" | "Routine" | "Self-care";
+  questionTextEn: string;
+  dispositionCode: string;
+  redFlag: boolean;
+  careAdviceIds: string[];
+};
+
+export type QueuePreparedProtocol = {
+  status: "PENDING_REASON" | "PREPARED" | "NO_MATCH";
+  sourceType: "synthetic-sample" | "licensed-stcc" | "local-qatar-override";
+  releaseVersion: string;
+  reasonNarrative: string;
+  extractedKeywords: string[];
+  primaryProtocolId?: string;
+  primaryProtocolTitle?: string;
+  suggestions: QueueProtocolSuggestion[];
+  acuityQuestionPreview: QueueProtocolQuestionPreview[];
+  resourceSectionsAvailable: {
+    background: boolean;
+    firstAid: boolean;
+    careAdvice: boolean;
+    seeMoreAppropriateGuideline: boolean;
+  };
+  preparedAtIso: string;
+};
+
 export type QueueItem = {
   id: string;
   istStaffId: string;
@@ -29,12 +76,18 @@ export type QueueItem = {
   department?: string;
   jobTitle?: string;
   summary: string;
+  reasonNarrative?: string;
+  preparedProtocol?: QueuePreparedProtocol;
   vitals?: QueueVitals;
   matchedProtocolId?: string;
   calculatedSeverity?: QueueSeverity;
   dispositionCode?: string;
   destinationName?: string;
   identityValidated: boolean;
+  identityValidationSource?: "HRMS_AUTO" | "HRMS_LOOKUP_FAILED";
+  identityValidationMessage?: string;
+  identityValidatedAtIso?: string;
+  patientAge?: QueuePatientAgeSnapshot;
   safetyFloorActive: boolean;
   clinicalApproval?: Record<string, unknown>;
   sbarCopied: boolean;

@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
 import { samplePhase1ClinicalContent } from "../data/samplePhase1ClinicalContent.js";
 import {
   ClinicalContentPackageSchema,
@@ -12,7 +14,39 @@ import {
 import type { DispositionCode, RuleTrace, Severity } from "../types/triage.js";
 import { severityMax, severityRank } from "../types/triage.js";
 
-const contentPackage = ClinicalContentPackageSchema.parse(samplePhase1ClinicalContent);
+const DEFAULT_GENERATED_CONTENT_PACKAGE_PATH = path.resolve(
+  process.cwd(),
+  "data",
+  "generated",
+  "synthetic_stcc_guidelines",
+  "clinical_content_package.json"
+);
+
+function loadContentPackage(): ClinicalContentPackage {
+  const configuredPath = process.env.CLINICAL_CONTENT_PACKAGE_PATH?.trim();
+  if (configuredPath) {
+    const absolutePath = path.resolve(configuredPath);
+    if (!existsSync(absolutePath)) {
+      throw new Error(`CLINICAL_CONTENT_PACKAGE_PATH does not exist: ${absolutePath}`);
+    }
+    return ClinicalContentPackageSchema.parse(JSON.parse(readFileSync(absolutePath, "utf8")));
+  }
+
+  if (process.env.CLINICAL_CONTENT_USE_GENERATED_STCC === "true") {
+    if (!existsSync(DEFAULT_GENERATED_CONTENT_PACKAGE_PATH)) {
+      throw new Error(
+        `Generated STCC-shaped clinical content package not found: ${DEFAULT_GENERATED_CONTENT_PACKAGE_PATH}. Run npm run synthetic:stcc-guidelines first.`
+      );
+    }
+    return ClinicalContentPackageSchema.parse(
+      JSON.parse(readFileSync(DEFAULT_GENERATED_CONTENT_PACKAGE_PATH, "utf8"))
+    );
+  }
+
+  return ClinicalContentPackageSchema.parse(samplePhase1ClinicalContent);
+}
+
+const contentPackage = loadContentPackage();
 
 function normalize(value: string): string {
   return value
@@ -95,23 +129,11 @@ function scoreProtocol(protocol: ClinicalContentProtocol, query: string): { scor
   }
 
   for (const question of protocol.questions) {
-    const questionText = normalize(question.questionTextEn);
-    if (questionText.includes(normalizedQuery)) {
-      score += 40;
-      matchedTerms.add(question.questionTextEn);
-    }
-
     for (const keyword of question.keywords) {
       const phrase = normalize(keyword);
       if (normalizedQuery.includes(phrase) || phrase.includes(normalizedQuery)) {
-        score += question.redFlag ? 35 : 20;
+        score += question.redFlag ? 12 : 8;
         matchedTerms.add(keyword);
-      }
-    }
-
-    for (const term of terms) {
-      if (questionText.includes(term)) {
-        score += question.redFlag ? 8 : 4;
       }
     }
   }
@@ -233,10 +255,10 @@ export function getCareAdviceForProtocol(
     }
   }
 
-  const allCareAdvice = contentPackage.protocols.flatMap((item) => item.careAdvice);
+  const protocolCareAdvice = protocol.careAdvice;
   const seen = new Set<string>();
 
-  return allCareAdvice.filter((advice) => {
+  return protocolCareAdvice.filter((advice) => {
     if (seen.has(advice.id)) {
       return false;
     }
