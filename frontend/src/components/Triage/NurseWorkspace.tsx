@@ -18,9 +18,11 @@ import {
   UserRoundCheck,
   X
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { QueueClinicalStage, QueueItem, QueuePreparedProtocol, QueueProtocolQuestionPreview } from "../../QueueContext";
 import { useQueue } from "../../QueueContext";
+import { SectionTabs } from "../ui/NavigationControls";
 
 type ConsciousLevel = "alert" | "voice" | "pain" | "unresponsive";
 type Severity = "Emergency" | "Urgent" | "Routine" | "Self-care";
@@ -113,11 +115,11 @@ type AssessmentResponseState = Record<string, boolean>;
 
 const apiBase = import.meta.env.VITE_API_BASE_URL || "";
 
-const stages: Array<{ id: StageId; label: string; shortLabel: string }> = [
-  { id: "reasonEmergency", label: "Reason & Rule-Out", shortLabel: "1" },
-  { id: "questions", label: "Questions", shortLabel: "2" },
-  { id: "disposition", label: "Disposition & Advice", shortLabel: "3" },
-  { id: "complete", label: "SBAR / Complete", shortLabel: "4" }
+const stages: Array<{ id: StageId; label: string; shortLabel: string; icon: LucideIcon }> = [
+  { id: "reasonEmergency", label: "Reason & Rule-Out", shortLabel: "1", icon: Search },
+  { id: "questions", label: "Questions", shortLabel: "2", icon: ListChecks },
+  { id: "disposition", label: "Disposition & Advice", shortLabel: "3", icon: Stethoscope },
+  { id: "complete", label: "SBAR / Complete", shortLabel: "4", icon: ClipboardCheck }
 ];
 
 const queueStageToStepIndex: Record<QueueClinicalStage, number> = {
@@ -1137,7 +1139,7 @@ export default function NurseWorkspace() {
 
   return (
     <section className="space-y-4" aria-label="Nurse cockpit workspace">
-      <header className="rounded-lg border border-slate-200/80 bg-white p-4 shadow-sm">
+      <header className="ist-surface ist-section-shell">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Tele-Triage Call-Q</span>
@@ -1148,7 +1150,7 @@ export default function NurseWorkspace() {
               Live telephone calls, callback requests, and one nurse-owned triage workflow with protocol guidance prepared before pickup.
             </p>
           </div>
-          <div className="grid grid-cols-4 gap-2 text-center">
+          <div className="ist-stat-row grid grid-cols-4 text-center">
             <Kpi value={queueIds.length} label="Waiting" />
             <Kpi value={activeCard ? 1 : 0} label="Active" />
             <Kpi value={holdIds.length} label="Hold" />
@@ -1177,7 +1179,7 @@ export default function NurseWorkspace() {
           onOpen={openCall}
         />
 
-        <main className="min-h-[640px] rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+        <main className="ist-surface min-h-[640px] p-4">
           {activeCard ? (
             <ActiveCallSummaryCard
               card={activeCard}
@@ -1223,7 +1225,7 @@ export default function NurseWorkspace() {
             <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <button
                 type="button"
-                className="inline-flex h-10 w-fit items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-normal text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                className="secondary-button w-fit"
                 onClick={() => setActiveFocusOpen(false)}
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -1277,9 +1279,9 @@ export default function NurseWorkspace() {
 
 function Kpi({ value, label }: { value: number; label: string }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
-      <strong className="block text-2xl text-slate-950">{value}</strong>
-      <span className="text-[11px] font-semibold uppercase text-slate-500">{label}</span>
+    <div className="ist-stat-cell">
+      <strong>{value}</strong>
+      <span>{label}</span>
     </div>
   );
 }
@@ -1330,7 +1332,7 @@ function QueuePanel({
   onOpen: (cardId: string) => void;
 }) {
   return (
-    <aside className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+    <aside className="ist-surface ist-filter-panel">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
@@ -1415,7 +1417,7 @@ function SelectControl({
         {label}
       </span>
       <select
-        className="h-9 rounded-lg border border-slate-200 bg-white px-2 text-xs font-semibold normal-case tracking-normal text-slate-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+        className="ist-control h-9 px-2 text-xs font-normal normal-case tracking-normal outline-none transition"
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >
@@ -1435,7 +1437,7 @@ function QueueCard({ card, onOpen }: { card: Card; onOpen: () => void }) {
   const action = actionLabelFor(card);
   const gender = card.biologicalSex === "unknown" ? "Not set" : card.biologicalSex.slice(0, 1).toUpperCase();
   return (
-    <article className={`rounded-lg border p-3 ${red ? "border-rose-200 bg-rose-50" : "border-slate-200 bg-white"}`}>
+    <article className={`ist-record-card ${red ? "ist-record-card-danger" : ""}`}>
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-start gap-2">
           <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-sm font-normal ${acuityClass(severity)}`}>
@@ -1464,7 +1466,7 @@ function QueueCard({ card, onOpen }: { card: Card; onOpen: () => void }) {
       </div>
       <button
         type="button"
-        className="mt-3 inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-slate-950 px-3 text-xs font-semibold text-white transition hover:bg-emerald-700"
+        className="primary-button mt-3 w-full"
         onClick={onOpen}
       >
         {action}
@@ -1564,7 +1566,7 @@ function ActiveCallPanel({
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            className="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:border-amber-300 hover:bg-amber-50"
+            className="secondary-button"
             onClick={onHold}
           >
             <PauseCircle className="h-4 w-4" />
@@ -1572,9 +1574,7 @@ function ActiveCallPanel({
           </button>
           <button
             type="button"
-            className={`inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold transition ${
-              finalStage ? "bg-emerald-600 text-white hover:bg-emerald-700" : "bg-slate-100 text-slate-400"
-            }`}
+            className="primary-button"
             onClick={onComplete}
             disabled={!finalStage}
           >
@@ -1588,7 +1588,7 @@ function ActiveCallPanel({
 
       {reasons.length > 0 && <RedFloorBanner reasons={reasons} />}
 
-      <section className="min-h-[420px] rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <section className="ist-surface min-h-[420px] p-4">
         {stages[stageIndex].id === "reasonEmergency" && (
           <ReasonEmergencyStage
             card={card}
@@ -1616,7 +1616,7 @@ function ActiveCallPanel({
       <div className="flex items-center justify-between">
         <button
           type="button"
-          className="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 disabled:opacity-40"
+          className="secondary-button"
           onClick={() => onStageChange(Math.max(stageIndex - 1, 0))}
           disabled={stageIndex === 0}
         >
@@ -1625,7 +1625,7 @@ function ActiveCallPanel({
         </button>
         <button
           type="button"
-          className="inline-flex h-10 items-center gap-2 rounded-lg bg-slate-950 px-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400"
+          className="primary-button"
           onClick={() => onStageChange(Math.min(stageIndex + 1, stages.length - 1))}
           disabled={finalStage}
         >
@@ -1638,31 +1638,21 @@ function ActiveCallPanel({
 }
 
 function Stepper({ activeIndex, onSelect }: { activeIndex: number; onSelect: (index: number) => void }) {
+  const activeStage = stages[activeIndex]?.id ?? stages[0].id;
+
   return (
-    <nav className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4" aria-label="Triage action tabs">
-      {stages.map((stage, index) => {
-        const active = index === activeIndex;
-        const complete = index < activeIndex;
-        return (
-          <button
-            key={stage.id}
-            type="button"
-            className={`min-h-[58px] min-w-0 rounded-md border px-2 py-2 text-left transition ${
-              active
-                ? "border-emerald-500 bg-emerald-50 text-emerald-800"
-                : complete
-                  ? "border-emerald-200 bg-white text-slate-700"
-                  : "border-slate-200 bg-white text-slate-500"
-            }`}
-            onClick={() => onSelect(index)}
-          >
-            <span className="block text-[10px] font-semibold uppercase tracking-[0.08em]">{stage.shortLabel}</span>
-            <strong className="mt-1 block break-words text-[11px] font-semibold leading-tight tracking-normal">
-              {stage.label}
-            </strong>
-          </button>
-        );
-      })}
+    <nav aria-label="Triage action tabs">
+      <SectionTabs
+        tabs={stages.map((stage) => ({
+          key: stage.id,
+          label: `${stage.shortLabel} · ${stage.label}`,
+          icon: stage.icon
+        }))}
+        activeTab={activeStage}
+        onChange={(stageId) => onSelect(stages.findIndex((stage) => stage.id === stageId))}
+        ariaLabel="Triage action tabs"
+        className="triage-action-tabs"
+      />
     </nav>
   );
 }
@@ -3051,9 +3041,9 @@ function InfoGrid({ items }: { items: Array<[string, string]> }) {
   return (
     <div className="grid gap-3 md:grid-cols-2">
       {items.map(([label, value]) => (
-        <div key={label} className="rounded-lg border border-slate-200 bg-white p-3">
-          <span className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">{label}</span>
-          <strong className="mt-1 block text-sm text-slate-950">{value}</strong>
+        <div key={label} className="ist-data-field">
+          <span className="ist-data-label">{label}</span>
+          <strong className="ist-data-value">{value}</strong>
         </div>
       ))}
     </div>
@@ -3062,9 +3052,9 @@ function InfoGrid({ items }: { items: Array<[string, string]> }) {
 
 function ClinicalChip({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-3">
-      <span className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">{label}</span>
-      <strong className="mt-1 block text-sm capitalize text-slate-950">{value}</strong>
+    <div className="ist-data-field">
+      <span className="ist-data-label">{label}</span>
+      <strong className="ist-data-value capitalize">{value}</strong>
     </div>
   );
 }
@@ -3152,7 +3142,7 @@ function ActiveCallSummaryCard({
   const reasons = localSafetyFloorReasons(card);
 
   return (
-    <div className="flex min-h-[580px] flex-col justify-between rounded-lg border border-slate-200 bg-slate-50 p-5">
+    <div className="ist-surface flex min-h-[580px] flex-col justify-between p-5">
       <div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
@@ -3204,7 +3194,7 @@ function ActiveCallSummaryCard({
 
 function EmptyActiveState({ holdCount, onSyntheticOpen }: { holdCount: number; onSyntheticOpen: () => void }) {
   return (
-    <div className="flex min-h-[580px] flex-col items-center justify-center rounded-lg border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
+    <div className="ist-empty-state flex min-h-[580px] flex-col items-center justify-center p-8 text-center">
       <PhoneCall className="h-10 w-10 text-emerald-600" />
       <h2 className="mt-4 text-xl font-semibold text-slate-950">No active call</h2>
       <p className="mt-2 max-w-md text-sm leading-6 text-slate-600">
@@ -3214,7 +3204,7 @@ function EmptyActiveState({ holdCount, onSyntheticOpen }: { holdCount: number; o
         <Tag>{holdCount} on hold</Tag>
         <button
           type="button"
-          className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50"
+          className="secondary-button"
           onClick={onSyntheticOpen}
         >
           <Database className="h-4 w-4" />
@@ -3248,7 +3238,7 @@ function SafetySummaryPanel({
   const note = activeCard ? sbarMarkdown(activeCard, score, assessmentResponses) : "";
   return (
     <aside className="space-y-4">
-      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <section className="ist-surface p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
             <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Safety Summary</span>
@@ -3261,23 +3251,23 @@ function SafetySummaryPanel({
         {activeCard ? (
           <div className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
             {reasons.length > 0 && (
-              <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-rose-800">
+              <div className="ist-data-field ist-data-field-danger text-rose-800">
                 <strong className="block">Red-floor override</strong>
                 {reasons.join("; ")}
               </div>
             )}
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+            <div className="ist-data-field">
               <strong className="block text-slate-950">{route?.destination}</strong>
               {route?.rationale}
             </div>
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+            <div className="ist-data-field">
               {scoreState.status === "loading" && "Authoritative score refresh in progress."}
               {scoreState.status === "ready" && score && `Authoritative API: ${score.riskBand}, score ${score.score}.`}
               {scoreState.status === "error" && scoreState.error}
               {scoreState.status === "idle" && "Awaiting score API response."}
             </div>
             {copied && (
-              <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">
+              <div className="ist-data-field ist-data-field-success flex items-center gap-2 text-emerald-800">
                 <ClipboardCheck className="h-4 w-4" />
                 SBAR copied
               </div>
@@ -3290,26 +3280,26 @@ function SafetySummaryPanel({
         )}
       </section>
 
-      <section className="rounded-lg border border-slate-200 bg-slate-950 p-4 text-white shadow-sm">
+      <section className="ist-surface p-4">
         <div className="mb-3 flex items-center gap-2">
-          <FileText className="h-5 w-5 text-emerald-300" />
-          <h3 className="text-base font-semibold">SBAR Preview</h3>
+          <FileText className="h-5 w-5 text-emerald-700" />
+          <h3 className="text-base font-normal text-slate-950">SBAR Preview</h3>
         </div>
         {activeCard ? (
-          <pre className="max-h-[340px] overflow-auto whitespace-pre-wrap rounded-lg bg-white/5 p-3 text-xs leading-5 text-slate-100">
+          <pre className="ist-text-display max-h-[340px] overflow-auto whitespace-pre-wrap p-3 text-xs leading-5">
             {note}
           </pre>
         ) : (
-          <p className="rounded-lg bg-white/5 p-3 text-sm leading-6 text-slate-300">No active note.</p>
+          <p className="ist-text-display p-3 text-sm leading-6">No active note.</p>
         )}
-        <div className="mt-3 rounded-lg border border-white/10 bg-white/5 p-3 text-xs leading-5 text-slate-300">
+        <div className="ist-data-field mt-3 text-xs leading-5">
           {writebackStatus}
         </div>
       </section>
 
       <button
         type="button"
-        className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-emerald-300 hover:bg-emerald-50"
+        className="secondary-button w-full"
         onClick={onSyntheticOpen}
       >
         <Database className="h-4 w-4" />

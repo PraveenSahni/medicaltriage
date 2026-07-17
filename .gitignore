@@ -5,6 +5,7 @@ dist-web/
 .codex/
 .pnpm-store/
 .env
+.firebase/
 .DS_Store
 *.log
 *.pid

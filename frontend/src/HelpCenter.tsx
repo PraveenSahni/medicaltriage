@@ -33,6 +33,7 @@ import { InteroperabilityTab } from "./components/HelpCenter/InteroperabilityTab
 import { SystemPurposeTab } from "./components/HelpCenter/SystemPurposeTab";
 import { TestEvidenceCenter } from "./components/HelpCenter/TestEvidenceCenter";
 import { ApiCatalogTable, HelpCard, MatrixHelpCard, MiniDefinition } from "./components/HelpCenter/shared";
+import { SectionNavigation, SectionTabs } from "./components/ui/NavigationControls";
 
 type TabKey = "help" | "tests" | "library" | "overview" | "workflow" | "qatar" | "integration" | "governance" | "security";
 
@@ -3233,25 +3234,12 @@ export default function HelpCenter() {
         </div>
       </section>
 
-      <div className="help-tabbar" role="tablist" aria-label="Help library sections">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const active = activeTab === tab.key;
-          return (
-            <button
-              key={tab.key}
-              type="button"
-              role="tab"
-              aria-selected={active}
-              className={`help-tab ${active ? "help-tab-active" : ""}`}
-              onClick={() => setActiveTab(tab.key)}
-            >
-              <Icon className="h-5 w-5" />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
-      </div>
+      <SectionTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        ariaLabel="Help library sections"
+      />
 
       {activeTab === "help" && (
         <HelpManualPanel
@@ -3297,6 +3285,27 @@ function HelpManualPanel({
   onOpenLibraryTopic: (areaId: string) => void;
   onOpenTab: (tab: TabKey) => void;
 }) {
+  const shortcuts = [
+    { key: "workflow", label: "Call flow", icon: Workflow },
+    { key: "data-ingestion", label: "Data ingestion library", icon: Database },
+    { key: "nurse-workspace-modes", label: "Workspace modes", icon: Kanban },
+    { key: "provider-neutral-call-center", label: "Call center gateway", icon: PhoneCall },
+    { key: "named-user-hrms-tenant-queue", label: "HRMS tenant controls", icon: Users },
+    { key: "llm-copilot-cloud", label: "LLM strategy", icon: BrainCircuit },
+    { key: "stcc-rag-shadow", label: "STCC/RAG shadow", icon: SearchCheck },
+    { key: "api-contracts", label: "API contracts", icon: PlugZap },
+    { key: "qatar", label: "Qatar routing", icon: MapPin },
+    { key: "security", label: "Security admin", icon: LockKeyhole }
+  ] as const;
+
+  const openShortcut = (key: (typeof shortcuts)[number]["key"]) => {
+    if (key === "workflow" || key === "qatar" || key === "security") {
+      onOpenTab(key);
+      return;
+    }
+    onOpenLibraryTopic(key);
+  };
+
   return (
     <section className="help-stack">
       <article className="help-card help-card-wide">
@@ -3315,48 +3324,12 @@ function HelpManualPanel({
           </div>
         </div>
 
-        <div className="help-chip-row">
-          <button type="button" className="secondary-button" onClick={() => onOpenTab("workflow")}>
-            <Workflow className="h-4 w-4" />
-            Call flow
-          </button>
-          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("data-ingestion")}>
-            <Database className="h-4 w-4" />
-            Data ingestion library
-          </button>
-          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("nurse-workspace-modes")}>
-            <Kanban className="h-4 w-4" />
-            Workspace modes
-          </button>
-          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("provider-neutral-call-center")}>
-            <PhoneCall className="h-4 w-4" />
-            Call center gateway
-          </button>
-          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("named-user-hrms-tenant-queue")}>
-            <Users className="h-4 w-4" />
-            HRMS tenant controls
-          </button>
-          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("llm-copilot-cloud")}>
-            <BrainCircuit className="h-4 w-4" />
-            LLM strategy
-          </button>
-          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("stcc-rag-shadow")}>
-            <SearchCheck className="h-4 w-4" />
-            STCC/RAG shadow
-          </button>
-          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("api-contracts")}>
-            <PlugZap className="h-4 w-4" />
-            API contracts
-          </button>
-          <button type="button" className="secondary-button" onClick={() => onOpenTab("qatar")}>
-            <MapPin className="h-4 w-4" />
-            Qatar routing
-          </button>
-          <button type="button" className="secondary-button" onClick={() => onOpenTab("security")}>
-            <LockKeyhole className="h-4 w-4" />
-            Security admin
-          </button>
-        </div>
+        <SectionNavigation
+          items={[...shortcuts]}
+          onSelect={openShortcut}
+          ariaLabel="Help section shortcuts"
+          className="help-section-shortcuts"
+        />
       </article>
 
       <div className="help-grid">

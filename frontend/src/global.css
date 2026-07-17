@@ -125,7 +125,7 @@ button {
 
 .environment-banner strong {
   color: var(--tx);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.12em;
 }
@@ -222,7 +222,7 @@ button {
   border-radius: 8px;
   background: var(--t1bg);
   color: var(--t1);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.02em;
 }
@@ -260,7 +260,7 @@ button {
   display: block;
   margin-top: 3px;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 1.2;
 }
@@ -406,7 +406,7 @@ button {
 
 .context-label {
   color: var(--tx2);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
 }
@@ -443,7 +443,7 @@ button {
   background: transparent;
   color: var(--tx3);
   padding: 0;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -489,7 +489,7 @@ button {
   display: block;
   margin-top: 8px;
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
 }
@@ -527,7 +527,7 @@ button {
   background: var(--bg);
   color: var(--t1);
   padding: 5px 9px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
 }
@@ -542,7 +542,7 @@ button {
   gap: 7px;
   margin-top: 18px;
   color: var(--tx3);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -598,7 +598,7 @@ button {
 
 .ccp-lookup small {
   color: var(--tx3);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
@@ -632,7 +632,7 @@ button {
 
 .ccp-metric-card span {
   color: var(--tx2);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -692,7 +692,7 @@ button {
 
 .ccp-definition-grid dt {
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -725,7 +725,7 @@ button {
 
 .ccp-next-box small {
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .ccp-thread-grid {
@@ -774,7 +774,7 @@ button {
 
 .ccp-current-thread dt {
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -820,7 +820,7 @@ button {
 .ccp-thread-card span {
   width: fit-content;
   color: var(--t1);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -835,7 +835,7 @@ button {
 
 .ccp-thread-card small {
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
@@ -909,7 +909,7 @@ button {
 .ccp-integration-note small {
   margin-top: 5px;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .ccp-integration-note {
@@ -944,7 +944,7 @@ button {
 .ccp-channel-row small {
   margin-top: 5px;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.4;
 }
 
@@ -958,7 +958,7 @@ button {
 .ccp-goal-row p,
 .ccp-goal-row small {
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -980,7 +980,7 @@ button {
 
 .ccp-goal-meta b {
   color: var(--tx);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.35;
 }
@@ -988,7 +988,7 @@ button {
 .ccp-goal-meta span,
 .ccp-goal-meta small {
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -1001,7 +1001,7 @@ button {
   border: 1px solid var(--bd);
   border-radius: 999px;
   padding: 4px 8px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
   line-height: 1;
@@ -1062,13 +1062,13 @@ button {
 
 .ccp-timeline-row time {
   color: var(--tx3);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
 .ccp-direction {
   color: var(--t1);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -1096,7 +1096,7 @@ button {
   color: var(--tx2);
   padding: 3px 7px;
   font-family: var(--font-body);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.25;
 }
@@ -1114,7 +1114,7 @@ button {
 
 .ccp-controller-list h4 {
   color: var(--tx);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -1125,7 +1125,7 @@ button {
   gap: 8px;
   margin-top: 10px;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -1165,7 +1165,7 @@ button {
 .field-label {
   display: block;
   color: var(--tx2);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1215,7 +1215,7 @@ button {
 
 .triage-readonly-value span {
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -1268,7 +1268,7 @@ button {
   gap: 4px;
   border-radius: 999px;
   padding: 4px 8px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.03em;
   line-height: 1;
@@ -1353,7 +1353,7 @@ button {
 .triage-call-header p {
   margin-top: 5px;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.35;
 }
@@ -1372,7 +1372,7 @@ button {
   background: var(--bg2);
   color: var(--tx3);
   padding: 8px 10px;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   line-height: 1;
@@ -1404,7 +1404,7 @@ button {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -1488,7 +1488,7 @@ button {
 .triage-waiting-call small {
   margin-top: 2px;
   color: var(--tx2);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -1520,7 +1520,7 @@ button {
   align-items: center;
   gap: 4px;
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -1578,7 +1578,7 @@ button {
 .synthetic-data-heading p {
   margin-top: 5px;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.4;
 }
@@ -1598,7 +1598,7 @@ button {
 .synthetic-data-run span,
 .synthetic-data-run small {
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1630,7 +1630,7 @@ button {
   gap: 4px;
   padding: 10px;
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -1678,7 +1678,7 @@ button {
 .synthetic-data-list strong {
   overflow: hidden;
   color: var(--tx);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.2;
   text-overflow: ellipsis;
@@ -1720,7 +1720,7 @@ button {
 .synthetic-sample-row span {
   margin-top: 3px;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
@@ -1738,7 +1738,7 @@ button {
   background: var(--bg);
   color: var(--tx2);
   padding: 4px 7px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1;
 }
@@ -1754,7 +1754,7 @@ button {
   overflow-wrap: anywhere;
   color: var(--tx3);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
@@ -1769,7 +1769,7 @@ button {
 .triage-compact-stagebar p {
   margin: 0;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.35;
   text-align: right;
@@ -1785,7 +1785,7 @@ button {
   justify-content: space-between;
   gap: 10px;
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1865,7 +1865,7 @@ button {
   border-radius: 999px;
   background: var(--bg2);
   color: inherit;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -1890,13 +1890,13 @@ button {
 
 .triage-step-copy strong {
   color: var(--tx);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
 .triage-step-copy small {
   color: var(--tx3);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -2096,7 +2096,7 @@ button {
 
 .triage-button-row span {
   color: var(--tx3);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -2123,7 +2123,7 @@ button {
 
 .triage-suggestion-row span {
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -2156,7 +2156,7 @@ button {
 
 .triage-final-card span,
 .triage-side-disposition span {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -2197,7 +2197,7 @@ button {
   color: var(--tx2);
   padding: 12px;
   font-family: Consolas, "SFMono-Regular", monospace;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.6;
 }
 
@@ -2250,7 +2250,7 @@ button {
 
 .triage-side-list span {
   color: var(--tx3);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -2258,7 +2258,7 @@ button {
 
 .triage-side-list strong {
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.4;
 }
@@ -2338,7 +2338,7 @@ button {
   padding: 10px 14px;
   text-align: left;
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -2362,7 +2362,7 @@ button {
   padding: 12px;
   color: var(--tx2);
   text-align: left;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -2509,7 +2509,7 @@ button {
   display: block;
   margin-top: 8px;
   color: var(--tx);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -2517,7 +2517,7 @@ button {
   display: block;
   margin-top: 4px;
   color: var(--tx2);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
@@ -2590,7 +2590,7 @@ button {
   background: var(--t1bg);
   color: var(--t1);
   padding: 4px 8px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
   line-height: 1;
@@ -2643,7 +2643,7 @@ button {
   border-radius: 8px;
   background: var(--t1bg);
   color: var(--t1);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -2690,7 +2690,7 @@ button {
 .help-topic-button small {
   margin-top: 3px;
   color: var(--tx2);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.3;
 }
 
@@ -2727,7 +2727,7 @@ button {
 .help-detail-columns h4 {
   margin-bottom: 10px;
   color: var(--tx);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -2741,7 +2741,7 @@ button {
 
 .help-detail-expanded > h4 {
   color: var(--tx);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -2839,7 +2839,7 @@ button {
 }
 
 .test-evidence-run span {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -2873,7 +2873,7 @@ button {
 .test-filters label > span {
   display: block;
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -2971,7 +2971,7 @@ button {
   background: var(--bg);
   color: var(--tx);
   padding: 8px 12px;
-  font-size: 11px;
+  font-size: 12px;
   transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
 }
 
@@ -2990,7 +2990,7 @@ button {
   align-items: center;
   gap: 8px;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .test-result-count svg {
@@ -3025,7 +3025,7 @@ button {
 .test-case-id {
   color: var(--ist-navy);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 html[data-theme="dark"] .test-case-id {
@@ -3050,7 +3050,7 @@ html[data-theme="dark"] .test-case-id {
 .test-case-title small {
   margin-top: 4px;
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .test-status,
@@ -3059,7 +3059,7 @@ html[data-theme="dark"] .test-case-id {
   align-items: center;
   gap: 6px;
   color: var(--tx2);
-  font-size: 10px;
+  font-size: 12px;
   white-space: nowrap;
 }
 
@@ -3083,7 +3083,7 @@ html[data-theme="dark"] .test-case-id {
 .test-case-date {
   color: var(--tx3);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   text-align: right;
 }
 
@@ -3153,7 +3153,7 @@ html[data-theme="dark"] .test-case-id {
   border-right: 1px solid var(--bd);
   padding: 11px;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -3163,7 +3163,7 @@ html[data-theme="dark"] .test-case-id {
 
 .test-step-head > span {
   color: var(--tx3);
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -3206,7 +3206,7 @@ html[data-theme="dark"] .test-step-failed {
   border-left: 2px solid var(--ist-gold);
   padding-left: 12px;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .test-comments ul {
@@ -3227,7 +3227,7 @@ html[data-theme="dark"] .test-step-failed {
   align-items: center;
   gap: 7px;
   color: #8b1e2f;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .test-validation-actions {
@@ -3262,7 +3262,7 @@ html[data-theme="dark"] .test-step-failed {
 }
 
 .test-empty span {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 @media (max-width: 1180px) {
@@ -3385,7 +3385,7 @@ html[data-theme="dark"] .test-step-failed {
   .test-step-row > span::before {
     color: var(--tx3);
     content: attr(data-label);
-    font-size: 9px;
+    font-size: 12px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
@@ -3433,14 +3433,14 @@ html[data-theme="dark"] .test-step-failed {
   border-radius: 7px;
   background: var(--t1bg);
   color: var(--t1);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
 }
 
 .help-route-order-step span {
   min-width: 0;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.4;
 }
 
@@ -3490,7 +3490,7 @@ html[data-theme="dark"] .test-step-failed {
 .help-route-row code {
   color: var(--v0);
   font-family: var(--font-body);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   white-space: normal;
 }
@@ -3516,7 +3516,7 @@ html[data-theme="dark"] .test-step-failed {
 
 .help-route-row small {
   color: var(--t1);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -3551,7 +3551,7 @@ html[data-theme="dark"] .test-step-failed {
   display: block;
   margin-top: 8px;
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
@@ -3572,7 +3572,7 @@ html[data-theme="dark"] .test-step-failed {
   background: var(--bg2);
   color: var(--t1);
   padding: 0 9px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   text-decoration: none;
   transition:
@@ -3606,7 +3606,7 @@ html[data-theme="dark"] .test-step-failed {
 .help-route-governance h4 {
   margin-bottom: 8px;
   color: var(--tx);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -3616,7 +3616,7 @@ html[data-theme="dark"] .test-step-failed {
   display: grid;
   gap: 7px;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.42;
 }
 
@@ -3643,7 +3643,7 @@ html[data-theme="dark"] .test-step-failed {
 .help-route-governance p {
   margin: 0;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -3654,7 +3654,7 @@ html[data-theme="dark"] .test-step-failed {
   background: var(--bg);
   color: var(--v0);
   font-family: var(--font-body);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.55;
   white-space: pre-wrap;
@@ -3696,7 +3696,7 @@ html[data-theme="dark"] .test-step-failed {
 .help-role-head {
   background: var(--bg);
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -3719,7 +3719,7 @@ html[data-theme="dark"] .test-step-failed {
   border-radius: 999px;
   background: var(--t1);
   color: #ffffff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -3738,7 +3738,7 @@ html[data-theme="dark"] .test-step-failed {
 .help-role-title small,
 .help-role-row p {
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -3763,7 +3763,7 @@ html[data-theme="dark"] .test-step-failed {
   color: var(--t1);
   padding: 3px 7px;
   font-family: var(--font-body);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.25;
   white-space: normal;
@@ -3836,7 +3836,7 @@ html[data-theme="dark"] .test-step-failed {
 .help-security-topic small {
   margin-top: 3px;
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
@@ -3881,7 +3881,7 @@ html[data-theme="dark"] .test-step-failed {
 .help-security-list h5 {
   margin-bottom: 8px;
   color: var(--tx);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -3891,7 +3891,7 @@ html[data-theme="dark"] .test-step-failed {
   display: grid;
   gap: 7px;
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.42;
 }
 
@@ -4202,14 +4202,14 @@ html[data-theme="dark"] .test-step-failed {
 
 .admin-session-card span {
   color: var(--t1);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
 }
 
 .admin-session-card small {
   color: var(--tx2);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.4;
 }
 
@@ -4242,7 +4242,7 @@ html[data-theme="dark"] .test-step-failed {
 .admin-metric span {
   margin-top: 8px;
   color: var(--tx2);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -4275,7 +4275,7 @@ html[data-theme="dark"] .test-step-failed {
 .admin-table-head {
   background: var(--bg2);
   color: var(--tx3);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -4295,7 +4295,7 @@ html[data-theme="dark"] .test-step-failed {
 .admin-table-row small {
   margin-top: 4px;
   color: var(--tx2);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
@@ -4320,7 +4320,7 @@ html[data-theme="dark"] .test-step-failed {
 .admin-list span,
 .admin-list small {
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.4;
 }
 
@@ -4569,7 +4569,7 @@ html[data-theme="dark"] .login-brand-logo {
   border-color: transparent;
   border-bottom-color: var(--bd);
   padding: 0 8px;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -4600,14 +4600,14 @@ html[data-theme="dark"] .login-brand-logo {
 
 .context-label {
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.12em;
 }
 
 .tag-label {
   color: var(--ist-gold);
   font-family: var(--font-accent);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.18em;
 }
@@ -4821,7 +4821,7 @@ html[data-theme="dark"] .login-card {
 
 .login-card .field-label {
   color: var(--tx2);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -4880,7 +4880,7 @@ html[data-theme="dark"] .login-card .primary-button {
 .login-legal-line {
   margin: 4px 0 0;
   color: var(--tx3);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.4;
   text-align: center;
 }
@@ -5757,6 +5757,9 @@ html[data-theme="dark"] .login-submit-button {
 /* IST Health typography preview: cap visible UI text at ultra-light weight. */
 :root {
   --ist-max-font-weight-preview: 400;
+  --ist-control-size: 44px;
+  --ist-control-radius: 2px;
+  --ist-control-icon-size: 18px;
 }
 
 body,
@@ -5808,6 +5811,235 @@ pre,
   font-weight: var(--ist-max-font-weight-preview) !important;
 }
 
+/* Shared IST navigation controls: mode switch, utility actions, and section tabs. */
+.ist-mode-switch {
+  display: inline-flex;
+  height: var(--ist-control-size);
+  align-items: stretch;
+}
+
+.ist-mode-option {
+  display: inline-flex;
+  min-width: max-content;
+  height: var(--ist-control-size);
+  min-height: var(--ist-control-size);
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--tx2);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+}
+
+.ist-mode-option svg,
+.ist-icon-action svg,
+.ist-section-tab svg {
+  width: var(--ist-control-icon-size);
+  height: var(--ist-control-icon-size);
+  flex: 0 0 auto;
+  stroke-width: 1.75;
+}
+
+.ist-mode-option:hover {
+  background: var(--bg2);
+  color: var(--tx);
+}
+
+.ist-mode-option-active,
+.ist-mode-option-active:hover {
+  border-bottom-color: var(--ist-gold);
+  background: transparent;
+  color: var(--ist-gold);
+}
+
+.ist-labeled-icon-action {
+  display: inline-flex;
+  min-width: max-content;
+  height: var(--ist-control-size);
+  min-height: var(--ist-control-size);
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--tx2);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+}
+
+.ist-labeled-icon-action svg {
+  width: var(--ist-control-icon-size);
+  height: var(--ist-control-icon-size);
+  flex: 0 0 auto;
+  stroke-width: 1.75;
+}
+
+.ist-labeled-icon-action:hover {
+  background: var(--bg2);
+  color: var(--tx);
+}
+
+.ist-labeled-icon-action-active,
+.ist-labeled-icon-action-active:hover {
+  border-bottom-color: var(--ist-gold);
+  background: transparent;
+  color: var(--ist-gold);
+}
+
+.ist-icon-action {
+  display: inline-flex;
+  width: var(--ist-control-size);
+  min-width: var(--ist-control-size);
+  height: var(--ist-control-size);
+  min-height: var(--ist-control-size);
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--bd);
+  border-radius: var(--ist-control-radius);
+  background: transparent;
+  color: var(--tx2);
+  box-shadow: none;
+  transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+}
+
+.ist-icon-action:hover {
+  border-color: var(--tx);
+  background: var(--bg2);
+  color: var(--tx);
+}
+
+.ist-icon-action-active,
+.ist-icon-action-active:hover {
+  border-color: var(--ist-gold);
+  background: transparent;
+  color: var(--ist-gold);
+}
+
+.ist-mode-option:focus-visible,
+.ist-icon-action:focus-visible,
+.ist-labeled-icon-action:focus-visible,
+.ist-section-tab:focus-visible {
+  outline: 2px solid var(--bg);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px var(--ist-gold);
+}
+
+.ist-mode-option:disabled,
+.ist-icon-action:disabled,
+.ist-labeled-icon-action:disabled,
+.ist-section-tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.ist-section-tabs {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--bd);
+  background: transparent;
+  scrollbar-width: thin;
+}
+
+.ist-section-tab {
+  display: inline-flex;
+  min-width: max-content;
+  min-height: 52px;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px;
+  padding: 0 14px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--tx2);
+  font-size: 12px;
+  font-weight: var(--ist-max-font-weight-preview);
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+}
+
+.ist-section-tab span {
+  display: block;
+  white-space: nowrap;
+}
+
+.ist-section-tab:hover {
+  background: var(--bg2);
+  color: var(--tx);
+}
+
+.ist-section-tab-active,
+.ist-section-tab-active:hover {
+  border-bottom-color: var(--ist-gold);
+  background: transparent;
+  color: var(--ist-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ist-mode-option,
+  .ist-icon-action,
+  .ist-labeled-icon-action,
+  .ist-section-tab {
+    transition: none;
+  }
+}
+
+@media (max-width: 1400px) {
+  .app-frame:has(.topbar) .topbar {
+    flex-wrap: wrap;
+  }
+
+  .app-frame:has(.topbar) .brand-lockup {
+    flex: 1 1 320px;
+  }
+
+  .app-frame:has(.topbar) .topbar-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 1180px) {
+  .app-frame:has(.topbar) .topbar-context {
+    flex: 1 0 100%;
+    justify-content: flex-start;
+  }
+
+  .app-frame:has(.topbar) .topbar-context .role-chip {
+    max-width: calc(100% - 56px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 760px) {
+  .ist-section-tab {
+    padding-inline: 12px;
+  }
+}
+
 /* Authenticated IST Health alignment: keep internal screens visually continuous with the finalized login. */
 .app-frame:has(.topbar) {
   width: min(100%, 1440px);
@@ -5815,9 +6047,19 @@ pre,
 }
 
 .app-frame:has(.topbar) .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
   background: color-mix(in srgb, var(--bg) 96%, transparent);
   border-bottom: 1px solid var(--bd);
   box-shadow: none;
+}
+
+.app-frame:has(.topbar) .admin-action-row {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
 }
 
 .app-frame:has(.topbar) .nav-pill,
@@ -6042,7 +6284,11 @@ html[data-theme="dark"] .app-frame:has(.topbar) .workspace-body a.bg-gray-950 {
 .app-frame:has(.topbar) .help-security-detail,
 .app-frame:has(.topbar) .help-security-list,
 .app-frame:has(.topbar) .help-icon {
-  border-radius: 4px !important;
+  border-radius: var(--ist-field-radius, 2px) !important;
+}
+
+.app-frame:has(.topbar) .help-tabbar {
+  border-radius: 0 !important;
 }
 
 .app-frame:has(.topbar) .help-tab,
@@ -6058,4 +6304,845 @@ html[data-theme="dark"] .app-frame:has(.topbar) .workspace-body a.bg-gray-950 {
 svg,
 path {
   font-weight: var(--ist-max-font-weight-preview) !important;
+}
+
+/* Shared authenticated content system: one visual grammar for every page and module. */
+.ist-surface,
+.clinical-card,
+.ccp-command-bar,
+.ccp-panel,
+.ccp-metric-card,
+.admin-hero,
+.admin-session-card,
+.admin-metric,
+.admin-table,
+.admin-list > div,
+.help-library-hero,
+.help-panel,
+.help-topic-list,
+.help-route-row,
+.help-route-detail,
+.help-route-governance,
+.help-role-row,
+.help-security-topic-list,
+.help-security-detail,
+.help-security-list {
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  background: var(--bg);
+  box-shadow: none;
+}
+
+.ist-section-shell {
+  padding: 16px;
+}
+
+.ist-filter-panel {
+  padding: 12px;
+}
+
+.ist-stat-row {
+  gap: 1px !important;
+  overflow: hidden;
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  background: var(--bd);
+}
+
+.ist-stat-cell {
+  min-width: 0;
+  padding: 14px 16px;
+  background: var(--bg2);
+  color: var(--tx);
+}
+
+.ist-stat-cell strong {
+  display: block;
+  color: inherit;
+  font-family: var(--font-body);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.ist-stat-cell span {
+  display: block;
+  margin-top: 8px;
+  color: var(--tx3);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.ist-stat-cell-danger {
+  color: #8b1e2f;
+}
+
+.ist-data-field,
+.ist-text-display {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  background: var(--bg2);
+  color: var(--tx2);
+  box-shadow: none;
+}
+
+.ccp-next-box,
+.ccp-channel-row,
+.ccp-goal-row,
+.ccp-controller-list,
+.ccp-current-thread,
+.ccp-linked-thread-panel,
+.ccp-last-communication,
+.ccp-integration-note,
+.help-stat,
+.help-mini-definition,
+.help-wwh-item,
+.help-step,
+.help-route-facility,
+.admin-metric {
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  background: var(--bg2);
+  box-shadow: none;
+}
+
+.ist-data-label {
+  display: block;
+  color: var(--tx3);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.ist-data-value {
+  display: block;
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+  color: var(--tx);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.ist-data-field-danger {
+  border-color: #f0b8c0;
+  background: #fdf2f4;
+}
+
+.ist-data-field-success {
+  border-color: #8fd4a8;
+  background: #edf7f1;
+}
+
+.app-frame:has(.topbar) .help-wwh-item > strong {
+  display: block;
+  min-width: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ist-gold);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.ist-text-display {
+  font-family: var(--font-mono);
+  white-space: pre-wrap;
+}
+
+.ist-record-card {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--tx);
+  box-shadow: none;
+}
+
+.ccp-thread-card,
+.ccp-transport-card,
+.ccp-timeline-row,
+.help-topic-button,
+.help-route-card,
+.help-route-row,
+.help-integration-row,
+.help-api-row,
+.help-security-topic,
+.admin-table-row,
+.admin-list > div {
+  border-color: var(--bd);
+  border-radius: 4px;
+  background: var(--bg);
+  box-shadow: none;
+}
+
+.ccp-thread-card-active,
+.help-topic-button-active,
+.help-security-topic-active {
+  border-color: var(--ist-gold);
+  background: var(--bg2);
+}
+
+.ist-record-card-danger {
+  border-left: 3px solid var(--ist-gold);
+  background: var(--bg);
+}
+
+.ist-record-card-selected {
+  border-color: var(--ist-navy);
+  border-left: 3px solid var(--ist-gold);
+  background: var(--bg2);
+}
+
+.ist-control,
+.input-control,
+.textarea-control {
+  border: 1px solid var(--bd);
+  border-radius: 2px;
+  background: var(--bg);
+  color: var(--tx);
+  box-shadow: none;
+}
+
+.ist-control:focus,
+.input-control:focus,
+.textarea-control:focus {
+  border-color: var(--tx);
+  box-shadow: var(--focus-ring);
+}
+
+.role-chip,
+.summary-metric {
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  background: var(--bg2);
+  box-shadow: none;
+}
+
+.summary-metric strong,
+.summary-metric span,
+.rule-callout strong,
+.rule-callout p,
+.ist-surface strong,
+.ist-surface h1,
+.ist-surface h2,
+.ist-surface h3 {
+  font-weight: 400;
+}
+
+.rule-callout {
+  border-radius: 4px;
+  background: var(--bg);
+}
+
+html[data-theme="dark"] .ist-data-field-danger {
+  border-color: #6f2935;
+  background: #241017;
+}
+
+html[data-theme="dark"] .ist-data-field-success {
+  border-color: #315f47;
+  background: #0c1d16;
+}
+
+@media (max-width: 700px) {
+  .ist-section-shell {
+    padding: 12px;
+  }
+
+  .ist-stat-cell {
+    padding: 12px;
+  }
+
+  .ist-stat-cell strong {
+    font-size: 20px;
+  }
+}
+
+/* Control Center module purposes are descriptive labels, not content headings. */
+.app-frame:has(.topbar) .workspace-body .admin-shell .help-card > .help-title {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-section-tab,
+.app-frame:has(.topbar) .workspace-body .ist-section-tab span,
+.app-frame:has(.topbar) .workspace-body .ist-mode-option,
+.app-frame:has(.topbar) .workspace-body .ist-labeled-icon-action,
+.app-frame:has(.topbar) .tag-label,
+.app-frame:has(.topbar) .context-label,
+.app-frame:has(.topbar) .workspace-body .ist-data-label {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+}
+
+/* Canonical authenticated controls and read-only displays. */
+.app-frame:has(.topbar) {
+  --ist-field-height: 44px;
+  --ist-field-radius: 2px;
+}
+
+.app-frame:has(.topbar) .workspace-body input:not([type="checkbox"]):not([type="radio"]),
+.app-frame:has(.topbar) .workspace-body select,
+.app-frame:has(.topbar) .workspace-body .input-control,
+.app-frame:has(.topbar) .workspace-body .ist-control {
+  width: 100%;
+  height: var(--ist-field-height) !important;
+  min-height: var(--ist-field-height) !important;
+  padding: 0 14px !important;
+  border: 1px solid var(--bd) !important;
+  border-radius: var(--ist-field-radius) !important;
+  background: var(--bg) !important;
+  color: var(--tx) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  box-shadow: none !important;
+}
+
+.app-frame:has(.topbar) .workspace-body textarea,
+.app-frame:has(.topbar) .workspace-body .textarea-control {
+  width: 100%;
+  min-height: 96px;
+  padding: 12px 14px !important;
+  border: 1px solid var(--bd) !important;
+  border-radius: var(--ist-field-radius) !important;
+  background: var(--bg) !important;
+  color: var(--tx) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  box-shadow: none !important;
+}
+
+.app-frame:has(.topbar) .workspace-body input:focus,
+.app-frame:has(.topbar) .workspace-body select:focus,
+.app-frame:has(.topbar) .workspace-body textarea:focus {
+  border-color: var(--tx) !important;
+  box-shadow: var(--focus-ring) !important;
+}
+
+.app-frame:has(.topbar) .workspace-body button,
+.app-frame:has(.topbar) .primary-button,
+.app-frame:has(.topbar) .secondary-button {
+  min-height: var(--ist-field-height);
+  border-radius: var(--ist-field-radius) !important;
+  font-size: 14px;
+  font-weight: 400 !important;
+  letter-spacing: 0;
+  box-shadow: none !important;
+}
+
+.app-frame:has(.topbar) .primary-button,
+.app-frame:has(.topbar) .secondary-button {
+  height: var(--ist-field-height);
+  padding: 0 14px;
+}
+
+.app-frame:has(.topbar) .primary-button {
+  border: 1px solid var(--ist-navy);
+  background: var(--ist-navy);
+  color: #ffffff;
+}
+
+.app-frame:has(.topbar) .secondary-button {
+  border: 1px solid var(--bd);
+  background: var(--bg);
+  color: var(--tx);
+}
+
+.app-frame:has(.topbar) .primary-button:disabled,
+.app-frame:has(.topbar) .secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-mode-option,
+.app-frame:has(.topbar) .workspace-body .ist-labeled-icon-action,
+.app-frame:has(.topbar) .workspace-body .ist-section-tab {
+  border-radius: 0 !important;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-section-tab {
+  min-height: 52px;
+}
+
+.app-frame:has(.topbar) .workspace-body .admin-action-row .ist-labeled-icon-action {
+  height: var(--ist-field-height);
+  min-height: var(--ist-field-height);
+  padding: 0 14px;
+  border: 1px solid var(--bd);
+  border-radius: var(--ist-field-radius) !important;
+  background: var(--bg);
+  color: var(--tx);
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.app-frame:has(.topbar) .workspace-body .admin-action-row .ist-labeled-icon-action:hover {
+  border-color: var(--tx);
+  background: var(--bg2);
+  color: var(--tx);
+}
+
+.app-frame:has(.topbar) .role-chip {
+  height: var(--ist-field-height);
+  min-height: var(--ist-field-height);
+  padding: 0 14px;
+  border: 1px solid var(--bd);
+  border-radius: var(--ist-field-radius);
+  background: var(--bg);
+  color: var(--tx);
+  font-size: 14px;
+  font-weight: 400 !important;
+  letter-spacing: 0;
+}
+
+.ist-surface,
+.clinical-card,
+.ccp-command-bar,
+.ccp-panel,
+.ccp-metric-card,
+.admin-hero,
+.admin-session-card,
+.admin-metric,
+.admin-table,
+.admin-list > div,
+.help-library-hero,
+.help-panel,
+.help-topic-list,
+.help-route-row,
+.help-route-detail,
+.help-route-governance,
+.help-role-row,
+.help-security-topic-list,
+.help-security-detail,
+.help-security-list,
+.ist-stat-row,
+.ist-data-field,
+.ist-text-display,
+.ist-record-card,
+.summary-metric,
+.rule-callout,
+.ist-empty-state,
+.ccp-next-box,
+.ccp-channel-row,
+.ccp-goal-row,
+.ccp-controller-list,
+.ccp-current-thread,
+.ccp-linked-thread-panel,
+.ccp-last-communication,
+.ccp-integration-note,
+.ccp-thread-card,
+.ccp-transport-card,
+.ccp-timeline,
+.ccp-timeline-row,
+.ccp-definition-grid > div,
+.help-card,
+.help-stat-grid,
+.help-stat,
+.help-mini-definition,
+.help-wwh-item,
+.help-step,
+.help-route-facility,
+.help-topic-button,
+.help-route-card,
+.help-integration-row,
+.help-api-row,
+.help-security-topic,
+.admin-table-row {
+  border-radius: var(--ist-field-radius, 2px);
+  box-shadow: none;
+}
+
+.help-section-shortcuts {
+  margin-top: 20px;
+}
+
+.help-section-shortcuts .ist-section-tab {
+  flex: 0 0 auto;
+}
+
+.ist-data-field,
+.ist-text-display,
+.ist-stat-cell,
+.summary-metric,
+.ccp-next-box,
+.ccp-channel-row,
+.ccp-goal-row,
+.ccp-controller-list,
+.ccp-current-thread,
+.ccp-linked-thread-panel,
+.ccp-last-communication,
+.ccp-integration-note,
+.help-stat,
+.help-mini-definition,
+.help-wwh-item,
+.help-step,
+.help-route-facility,
+.admin-metric,
+.ist-empty-state {
+  background: var(--bg);
+}
+
+.ist-empty-state {
+  border: 1px solid var(--bd);
+  color: var(--tx2);
+}
+
+.ist-data-field-danger {
+  border-color: #f0b8c0;
+  background: #fdf2f4;
+}
+
+.ist-data-field-success {
+  border-color: #8fd4a8;
+  background: #edf7f1;
+}
+
+/* Canonical open-section layout and one-color record identification. */
+.app-frame:has(.topbar) {
+  --ist-identification-line: var(--ist-gold);
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-surface,
+.app-frame:has(.topbar) .workspace-body .clinical-card,
+.app-frame:has(.topbar) .workspace-body .ccp-command-bar,
+.app-frame:has(.topbar) .workspace-body .ccp-panel,
+.app-frame:has(.topbar) .workspace-body .admin-hero,
+.app-frame:has(.topbar) .workspace-body .admin-session-card,
+.app-frame:has(.topbar) .workspace-body .admin-table,
+.app-frame:has(.topbar) .workspace-body .help-library-hero,
+.app-frame:has(.topbar) .workspace-body .help-panel,
+.app-frame:has(.topbar) .workspace-body .help-detail-panel,
+.app-frame:has(.topbar) .workspace-body .help-tabbar,
+.app-frame:has(.topbar) .workspace-body .help-topic-list,
+.app-frame:has(.topbar) .workspace-body .help-route-detail,
+.app-frame:has(.topbar) .workspace-body .help-route-governance,
+.app-frame:has(.topbar) .workspace-body .help-role-row,
+.app-frame:has(.topbar) .workspace-body .help-security-topic-list,
+.app-frame:has(.topbar) .workspace-body .help-security-detail,
+.app-frame:has(.topbar) .workspace-body .help-security-list,
+.app-frame:has(.topbar) .workspace-body .help-card {
+  border: 0 !important;
+  border-bottom: 1px solid var(--bd) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-board-column {
+  border: 0 !important;
+  border-left: 1px solid var(--bd) !important;
+  border-radius: 0 !important;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-board-column:last-of-type {
+  border-right: 1px solid var(--bd) !important;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-stat-row,
+.app-frame:has(.topbar) .workspace-body .help-stat-grid,
+.app-frame:has(.topbar) .workspace-body .admin-metric-grid,
+.app-frame:has(.topbar) .workspace-body .ccp-metric-grid {
+  gap: 0 !important;
+  overflow: visible;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-stat-cell,
+.app-frame:has(.topbar) .workspace-body .summary-metric,
+.app-frame:has(.topbar) .workspace-body .help-stat,
+.app-frame:has(.topbar) .workspace-body .admin-metric,
+.app-frame:has(.topbar) .workspace-body .ccp-metric-card {
+  border: 0 !important;
+  border-right: 1px solid var(--bd) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-stat-cell:last-child,
+.app-frame:has(.topbar) .workspace-body .summary-metric:last-child,
+.app-frame:has(.topbar) .workspace-body .help-stat:last-child,
+.app-frame:has(.topbar) .workspace-body .admin-metric:last-child,
+.app-frame:has(.topbar) .workspace-body .ccp-metric-card:last-child {
+  border-right: 0 !important;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-data-field:not(.ist-data-field-danger):not(.ist-data-field-success),
+.app-frame:has(.topbar) .workspace-body .ist-text-display,
+.app-frame:has(.topbar) .workspace-body .ccp-next-box,
+.app-frame:has(.topbar) .workspace-body .ccp-channel-row,
+.app-frame:has(.topbar) .workspace-body .ccp-goal-row,
+.app-frame:has(.topbar) .workspace-body .ccp-controller-list,
+.app-frame:has(.topbar) .workspace-body .ccp-current-thread,
+.app-frame:has(.topbar) .workspace-body .ccp-linked-thread-panel,
+.app-frame:has(.topbar) .workspace-body .ccp-last-communication,
+.app-frame:has(.topbar) .workspace-body .ccp-integration-note,
+.app-frame:has(.topbar) .workspace-body .ccp-definition-grid > div,
+.app-frame:has(.topbar) .workspace-body .help-mini-definition,
+.app-frame:has(.topbar) .workspace-body .help-wwh-item,
+.app-frame:has(.topbar) .workspace-body .help-step,
+.app-frame:has(.topbar) .workspace-body .help-route-facility,
+.app-frame:has(.topbar) .workspace-body .admin-list > div {
+  border: 0 !important;
+  border-bottom: 1px solid var(--bd) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-frame:has(.topbar) .workspace-body .admin-table-row,
+.app-frame:has(.topbar) .workspace-body .ccp-timeline,
+.app-frame:has(.topbar) .workspace-body .ccp-timeline-row,
+.app-frame:has(.topbar) .workspace-body .ccp-transport-card,
+.app-frame:has(.topbar) .workspace-body .help-topic-button,
+.app-frame:has(.topbar) .workspace-body .help-route-card,
+.app-frame:has(.topbar) .workspace-body .help-route-row,
+.app-frame:has(.topbar) .workspace-body .help-integration-row,
+.app-frame:has(.topbar) .workspace-body .help-api-row,
+.app-frame:has(.topbar) .workspace-body .help-security-topic,
+.app-frame:has(.topbar) .workspace-body .help-route-order-step {
+  border: 0 !important;
+  border-bottom: 1px solid var(--bd) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-record-card,
+.app-frame:has(.topbar) .workspace-body .ist-record-card-danger,
+.app-frame:has(.topbar) .workspace-body .ist-record-card-selected,
+.app-frame:has(.topbar) .workspace-body .kanban-call-card,
+.app-frame:has(.topbar) .workspace-body .ccp-current-thread,
+.app-frame:has(.topbar) .workspace-body .ccp-thread-card,
+.app-frame:has(.topbar) .workspace-body .ccp-thread-card-active {
+  border: 0 !important;
+  border-bottom: 1px solid var(--bd) !important;
+  border-left: 3px solid var(--ist-identification-line) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-record-card:hover,
+.app-frame:has(.topbar) .workspace-body .kanban-call-card:hover,
+.app-frame:has(.topbar) .workspace-body .ccp-thread-card:hover {
+  border-left-color: var(--ist-identification-line) !important;
+  background: var(--bg2) !important;
+}
+
+/* Final authenticated surface rules: open layout, one identification line, no display boxes. */
+.app-frame:has(.topbar) .page-summary .summary-metric {
+  min-width: 128px;
+  padding: 4px 0 4px 20px;
+  border: 0 !important;
+  border-left: 1px solid var(--bd) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-frame:has(.topbar) .rule-callout {
+  padding: 16px 0 18px;
+  border: 0 !important;
+  border-bottom: 1px solid var(--bd) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-frame:has(.topbar) .rule-callout > span {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.app-frame:has(.topbar) .workspace-body .help-library-hero > div:first-child,
+.app-frame:has(.topbar) .workspace-body .ist-empty-state {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-empty-state {
+  border-bottom: 1px solid var(--bd) !important;
+}
+
+.app-frame:has(.topbar) .workspace-body .secondary-button {
+  padding-inline: 8px;
+  border: 0 !important;
+  border-bottom: 1px solid var(--bd) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-frame:has(.topbar) .workspace-body .secondary-button:hover {
+  border-bottom-color: var(--ist-gold) !important;
+  background: transparent !important;
+  color: var(--tx);
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-data-field-danger,
+.app-frame:has(.topbar) .workspace-body .ist-data-field-success {
+  border: 0 !important;
+  border-bottom: 1px solid var(--bd) !important;
+  border-left: 3px solid var(--ist-identification-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* The same semantic type hierarchy is used on every authenticated page. */
+.app-frame:has(.topbar),
+.app-frame:has(.topbar) button,
+.app-frame:has(.topbar) input,
+.app-frame:has(.topbar) select,
+.app-frame:has(.topbar) textarea {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+}
+
+.app-frame:has(.topbar) .workspace-body span,
+.app-frame:has(.topbar) .workspace-body strong,
+.app-frame:has(.topbar) .workspace-body b,
+.app-frame:has(.topbar) .workspace-body label,
+.app-frame:has(.topbar) .workspace-body th,
+.app-frame:has(.topbar) .workspace-body dt,
+.app-frame:has(.topbar) .workspace-body small,
+.app-frame:has(.topbar) .workspace-body a {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+}
+
+.app-frame:has(.topbar) .page-summary h1,
+.app-frame:has(.topbar) .workspace-body h1 {
+  font-size: 40px !important;
+  font-weight: 400 !important;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.app-frame:has(.topbar) .workspace-body h2 {
+  font-size: 28px !important;
+  font-weight: 400 !important;
+  line-height: 1.16;
+  letter-spacing: 0;
+}
+
+.app-frame:has(.topbar) .workspace-body h3 {
+  font-size: 22px !important;
+  font-weight: 400 !important;
+  line-height: 1.24;
+  letter-spacing: 0;
+}
+
+.app-frame:has(.topbar) .workspace-body h4,
+.app-frame:has(.topbar) .workspace-body h5,
+.app-frame:has(.topbar) .workspace-body h6 {
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.app-frame:has(.topbar) .page-summary p,
+.app-frame:has(.topbar) .rule-callout p,
+.app-frame:has(.topbar) .workspace-body p,
+.app-frame:has(.topbar) .workspace-body li,
+.app-frame:has(.topbar) .workspace-body td,
+.app-frame:has(.topbar) .workspace-body dd {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.5;
+}
+
+.app-frame:has(.topbar) .workspace-body button,
+.app-frame:has(.topbar) .workspace-body input,
+.app-frame:has(.topbar) .workspace-body select,
+.app-frame:has(.topbar) .workspace-body textarea,
+.app-frame:has(.topbar) .workspace-body .ist-data-value,
+.app-frame:has(.topbar) .workspace-body code {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+}
+
+.app-frame:has(.topbar) .tag-label,
+.app-frame:has(.topbar) .context-label,
+.app-frame:has(.topbar) .workspace-body .ist-data-label,
+.app-frame:has(.topbar) .workspace-body .ist-stat-cell span,
+.app-frame:has(.topbar) .workspace-body .help-stat small,
+.app-frame:has(.topbar) .workspace-body .test-summary span,
+.app-frame:has(.topbar) .workspace-body .test-filters label > span {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.35;
+}
+
+/* Dense operational surfaces use the compact tier of the same hierarchy. */
+.app-frame:has(.topbar) .workspace-body .ist-board-column h2,
+.app-frame:has(.topbar) .workspace-body .ist-board-column h3 {
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 1.35;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-board-column p,
+.app-frame:has(.topbar) .workspace-body .ist-board-column li,
+.app-frame:has(.topbar) .workspace-body .ist-record-card p,
+.app-frame:has(.topbar) .workspace-body .ist-record-card span {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.45;
+}
+
+.app-frame:has(.topbar) .workspace-body h1 span,
+.app-frame:has(.topbar) .workspace-body h2 span,
+.app-frame:has(.topbar) .workspace-body h3 span,
+.app-frame:has(.topbar) .workspace-body h4 span,
+.app-frame:has(.topbar) .workspace-body h5 span,
+.app-frame:has(.topbar) .workspace-body h6 span {
+  font-size: inherit !important;
+}
+
+.app-frame:has(.topbar) .workspace-body .ist-board-column > div:first-child p,
+.app-frame:has(.topbar) .workspace-body .ist-record-card .ist-data-label {
+  font-size: 12px !important;
+  line-height: 1.35;
+}
+
+@media (max-width: 700px) {
+  .app-frame:has(.topbar) .page-summary h1,
+  .app-frame:has(.topbar) .workspace-body h1 {
+    font-size: 32px !important;
+  }
+
+  .app-frame:has(.topbar) .workspace-body h2 {
+    font-size: 24px !important;
+  }
+
+  .app-frame:has(.topbar) .workspace-body h3 {
+    font-size: 20px !important;
+  }
 }

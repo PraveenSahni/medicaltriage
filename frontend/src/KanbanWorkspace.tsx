@@ -217,7 +217,7 @@ export default function KanbanWorkspace() {
 
   return (
     <section className="space-y-4" aria-label="Kanban nurse cockpit">
-      <div className="clinical-card p-4">
+      <div className="ist-surface ist-section-shell">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <span className="tag-label">KANBAN COCKPIT</span>
@@ -255,7 +255,7 @@ export default function KanbanWorkspace() {
           </div>
         )}
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="ist-stat-row mt-4 grid sm:grid-cols-2 lg:grid-cols-4">
           <Metric label="Waiting calls" value={String(cases.filter((boardCase) => boardCase.status === "incoming").length)} />
           <Metric label="In clinical flow" value={String(cases.filter((boardCase) => boardCase.status !== "incoming").length)} />
           <Metric label="Safety floors" value={String(maskCount(cases))} tone="red" />
@@ -270,7 +270,7 @@ export default function KanbanWorkspace() {
             const columnCases = filteredCases.filter((boardCase) => boardCase.status === column.id);
             const ColumnIcon = column.icon;
             return (
-              <section key={column.id} className="clinical-card min-w-0 p-4" aria-label={`${column.title} column`}>
+              <section key={column.id} className="ist-surface ist-board-column min-w-0 p-4" aria-label={`${column.title} column`}>
                 <div className="flex items-start justify-between gap-3 border-b border-[var(--bd)] pb-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
@@ -289,10 +289,10 @@ export default function KanbanWorkspace() {
                     <button
                       key={boardCase.id}
                       type="button"
-                      className={`kanban-call-card rounded-md border p-4 text-left transition ${
+                      className={`ist-record-card kanban-call-card p-4 text-left transition ${
                         selectedCase?.id === boardCase.id
-                          ? "border-[var(--brand-navy)] bg-[var(--t1bg)]"
-                          : "border-[var(--bd)] bg-[var(--bg)] hover:border-[var(--t1bd)]"
+                          ? "ist-record-card-selected"
+                          : "hover:border-[var(--t1bd)]"
                       }`}
                       onClick={() => {
                         setSelectedId(boardCase.id);
@@ -345,7 +345,7 @@ export default function KanbanWorkspace() {
           </div>
         </div>
 
-        <aside className="clinical-card p-4" aria-label="Selected call details">
+        <aside className="ist-surface p-4" aria-label="Selected call details">
           {selectedCase ? (
             <div className="space-y-4">
               <div>
@@ -374,7 +374,7 @@ export default function KanbanWorkspace() {
               </div>
 
               {selectedCase.safetyFloor && (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-700">
+                <div className="ist-data-field ist-data-field-danger p-3 text-red-700">
                   <div className="flex items-center gap-2 text-sm font-normal">
                     <ShieldAlert className="h-4 w-4" />
                     Safety floor active
@@ -429,11 +429,11 @@ export default function KanbanWorkspace() {
 
 function Metric({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "red" }) {
   return (
-    <div className="rounded-lg border border-[var(--bd)] bg-[var(--bg2)] p-3">
-      <strong className={`block text-2xl font-normal ${tone === "red" ? "text-red-600" : "text-[var(--tx)]"}`}>
+    <div className={`ist-stat-cell ${tone === "red" ? "ist-stat-cell-danger" : ""}`}>
+      <strong className={tone === "red" ? "text-red-600" : ""}>
         {value}
       </strong>
-      <span className="mt-1 block text-[11px] font-normal uppercase tracking-[0.08em] text-[var(--tx3)]">{label}</span>
+      <span>{label}</span>
     </div>
   );
 }
@@ -463,9 +463,9 @@ function MiniFact({ label, value }: { label: string; value: string }) {
 
 function Detail({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-[var(--bd)] bg-[var(--bg2)] p-3">
-      <span className="block text-[10px] font-normal uppercase tracking-[0.08em] text-[var(--tx3)]">{label}</span>
-      <strong className="mt-1 block text-sm font-normal leading-5 text-[var(--tx)]">{value}</strong>
+    <div className="ist-data-field">
+      <span className="ist-data-label">{label}</span>
+      <strong className="ist-data-value">{value}</strong>
     </div>
   );
 }

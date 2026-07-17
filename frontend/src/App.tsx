@@ -1,7 +1,5 @@
 import {
-  ClipboardCheck,
   HelpCircle,
-  Kanban,
   LogOut,
   MessageSquare,
   Moon,
@@ -17,6 +15,7 @@ import KanbanWorkspace from "./KanbanWorkspace";
 import LoginPage from "./LoginPage";
 import { QueueProvider } from "./QueueContext";
 import TriageWorkspace from "./TriageWorkspace";
+import { IconActionButton, LabeledIconButton, WorkspaceModeSwitch } from "./components/ui/NavigationControls";
 
 type ViewKey = "workspace" | "kanban" | "ccp" | "help" | "admin";
 type ThemeMode = "light" | "dark";
@@ -320,15 +319,12 @@ export default function App() {
         <div className="app-shell">
           <div className="app-frame">
             <div className="login-theme-bar">
-              <button
-                type="button"
-                className="header-icon-button"
+              <IconActionButton
+                icon={themeMode === "light" ? Moon : Sun}
+                label={`Switch to ${themeMode === "light" ? "dark" : "light"} mode`}
                 onClick={() => setThemeMode((current) => (current === "light" ? "dark" : "light"))}
-                aria-label={`Switch to ${themeMode === "light" ? "dark" : "light"} mode`}
                 title={themeMode === "light" ? "Dark mode" : "Light mode"}
-              >
-                {themeMode === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-              </button>
+              />
             </div>
             <EnvironmentBanner runtimeEnvironment={runtimeEnvironment} />
             <LoginPage
@@ -378,75 +374,46 @@ export default function App() {
                   {activeRoleLabel}
                 </span>
               </div>
-              <div className="topbar-view-switch" aria-label="Triage view preference">
-                <button
-                  type="button"
-                  className={`nav-pill ${activeView === "workspace" ? "nav-pill-active" : ""}`}
-                  onClick={() => openView("workspace")}
-                  aria-label="Open step cockpit"
-                  title="Step cockpit"
-                >
-                  <ClipboardCheck className="h-4 w-4" />
-                  Step
-                </button>
-                <button
-                  type="button"
-                  className={`nav-pill ${activeView === "kanban" ? "nav-pill-active" : ""}`}
-                  onClick={() => openView("kanban")}
-                  aria-label="Open Kanban board"
-                  title="Kanban board"
-                >
-                  <Kanban className="h-4 w-4" />
-                  Board
-                </button>
-              </div>
+              <WorkspaceModeSwitch
+                value={activeView === "workspace" || activeView === "kanban" ? activeView : null}
+                onChange={openView}
+              />
               {hasAdminAccess && (
-                <button
-                  type="button"
-                  className={`header-icon-button ${activeView === "admin" ? "header-icon-button-active" : ""}`}
+                <LabeledIconButton
+                  icon={Settings}
+                  label="Control"
+                  active={activeView === "admin"}
                   onClick={() => openView("admin")}
-                  aria-label="Open control center"
                   title="Control Center"
-                >
-                  <Settings className="h-4 w-4" />
-                </button>
+                />
               )}
-              <button
-                type="button"
-                className={`header-icon-button ${activeView === "ccp" ? "header-icon-button-active" : ""}`}
+              <LabeledIconButton
+                icon={MessageSquare}
+                label="CCP"
+                active={activeView === "ccp"}
                 onClick={() => openView("ccp")}
-                aria-label="Open CCP"
                 title="CCP"
-              >
-                <MessageSquare className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                className={`header-icon-button ${activeView === "help" ? "header-icon-button-active" : ""}`}
-                onClick={() => openView("help")}
+              />
+              <LabeledIconButton
+                icon={HelpCircle}
+                label="Help"
                 aria-label="Open help and library"
+                active={activeView === "help"}
+                onClick={() => openView("help")}
                 title="Help"
-              >
-                <HelpCircle className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                className="header-icon-button"
+              />
+              <LabeledIconButton
+                icon={themeMode === "light" ? Moon : Sun}
+                label={themeMode === "light" ? "Dark" : "Light"}
                 onClick={() => setThemeMode((current) => (current === "light" ? "dark" : "light"))}
-                aria-label={`Switch to ${themeMode === "light" ? "dark" : "light"} mode`}
                 title={themeMode === "light" ? "Dark mode" : "Light mode"}
-              >
-                {themeMode === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-              </button>
-              <button
-                type="button"
-                className="header-icon-button"
+              />
+              <LabeledIconButton
+                icon={LogOut}
+                label="Sign out"
                 onClick={logout}
-                aria-label="Sign out"
                 title="Sign out"
-              >
-                <LogOut className="h-4 w-4" />
-              </button>
+              />
             </div>
           </header>
 

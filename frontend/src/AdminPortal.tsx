@@ -7,12 +7,15 @@ import {
   Fingerprint,
   KeyRound,
   LockKeyhole,
+  Mail,
   Network,
+  Phone,
   ShieldCheck,
   UserCog,
   Users
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { LabeledIconButton, SectionTabs } from "./components/ui/NavigationControls";
 
 type AdminTab =
   | "overview"
@@ -410,25 +413,12 @@ export default function AdminPortal({ session }: { session: Session }) {
         </div>
       </div>
 
-      <div className="help-tabbar admin-tabbar" role="tablist" aria-label="Control Center sections">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const active = activeTab === tab.key;
-          return (
-            <button
-              key={tab.key}
-              type="button"
-              role="tab"
-              aria-selected={active}
-              className={`help-tab ${active ? "help-tab-active" : ""}`}
-              onClick={() => setActiveTab(tab.key)}
-            >
-              <Icon className="h-5 w-5" />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
-      </div>
+      <SectionTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        ariaLabel="Control Center sections"
+      />
 
       <div className="status-pill border border-emerald-200 bg-emerald-50 text-emerald-700">
         {status}
@@ -556,14 +546,17 @@ function UsersPanel({
               <small>{user.roles.join(", ")}</small>
             </span>
             <span className="admin-action-row">
-              <button className="secondary-button" type="button" onClick={() => onReveal(user.id, "email")}>
-                <Eye className="h-4 w-4" />
-                Reveal
-              </button>
-              <button className="secondary-button" type="button">
-                <UserCog className="h-4 w-4" />
-                Effective access
-              </button>
+              <LabeledIconButton
+                icon={Eye}
+                label="Reveal"
+                aria-label={`Reveal email for ${user.fullName}`}
+                onClick={() => onReveal(user.id, "email")}
+              />
+              <LabeledIconButton
+                icon={UserCog}
+                label="Effective access"
+                aria-label={`View effective access for ${user.fullName}`}
+              />
             </span>
           </div>
         ))}
@@ -704,14 +697,18 @@ function PrivacyPanel({
               <span>{user.roles.join(", ")}</span>
               <span>{user.accountStatus}</span>
               <span className="admin-action-row">
-                <button className="secondary-button" type="button" onClick={() => onReveal(user.id, "email")}>
-                  <Eye className="h-4 w-4" />
-                  Email
-                </button>
-                <button className="secondary-button" type="button" onClick={() => onReveal(user.id, "mobile")}>
-                  <Eye className="h-4 w-4" />
-                  Mobile
-                </button>
+                <LabeledIconButton
+                  icon={Mail}
+                  label="Email"
+                  aria-label={`Reveal email for ${user.fullName}`}
+                  onClick={() => onReveal(user.id, "email")}
+                />
+                <LabeledIconButton
+                  icon={Phone}
+                  label="Mobile"
+                  aria-label={`Reveal mobile number for ${user.fullName}`}
+                  onClick={() => onReveal(user.id, "mobile")}
+                />
               </span>
             </div>
           ))}

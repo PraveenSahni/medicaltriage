@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "triage-502706"
+  },
+  "targets": {
+    "triage-502706": {
+      "hosting": {
+        "demo": [
+          "ist-triage-demo-502706"
+        ],
+        "simulation": [
+          "ist-triage-sim-502706"
+        ]
+      }
+    }
+  }
+}
