@@ -127,6 +127,7 @@ const controlCenterPermissions = [
   "protocol.library.manage",
   "integration.hrms.manage",
   "integration.emr.manage",
+  "integration.callcenter.manage",
   "reports.view",
   "support.tickets.manage",
   "operations.dashboard.view"
@@ -217,6 +218,13 @@ const endpointSpecs: EndpointSpec[] = [
     method: "get",
     path: "/api/v1/admin/integrations",
     allows: ({ permissions }) => hasAny(permissions, ["integration.hrms.manage", "integration.emr.manage", "security.sso.manage"])
+  },
+  {
+    name: "view provider-neutral call-center gateway status",
+    method: "get",
+    path: "/api/v1/call-center/status",
+    allows: ({ permissions }) =>
+      hasAny(permissions, ["integration.callcenter.manage", "triage.queue.manage", "audit.events.view"])
   },
   {
     name: "view report catalog",

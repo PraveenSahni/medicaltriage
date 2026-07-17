@@ -40,6 +40,78 @@ export type QueueProtocolQuestionPreview = {
   careAdviceIds: string[];
 };
 
+export type StccProcessStepStatus = "NOT_STARTED" | "READY" | "IN_PROGRESS" | "COMPLETED" | "BLOCKED";
+
+export type StccProcessStep = {
+  id:
+    | "OPENING_SCRIPT"
+    | "REASON_FOR_VISIT"
+    | "GUIDELINE_SELECTION"
+    | "INITIAL_ASSESSMENT_QUESTIONS"
+    | "TRIAGE_ASSESSMENT_QUESTIONS"
+    | "TELEMEDICINE_ELIGIBLE"
+    | "TRIAGE_DISPOSITION"
+    | "CARE_ADVICE"
+    | "HANDOFF_REFERRAL"
+    | "CLOSING_SCRIPT";
+  label: string;
+  lane: "CALL_OPENING" | "GUIDELINE_SELECTION" | "ASSESSMENT" | "DISPOSITION_AND_CLOSE";
+  status: StccProcessStepStatus;
+  deterministicOwner: "SYSTEM" | "NURSE" | "SYSTEM_AND_NURSE";
+  nurseActionRequired: boolean;
+  notes: string[];
+  sourceBoundary: "HRMS" | "STCC_CONTENT" | "LOCAL_QATAR_OVERLAY" | "NURSE_DOCUMENTATION";
+};
+
+export type StccVisibleActionTab =
+  | "REASON_AND_EMERGENCY_RULE_OUT"
+  | "QUESTIONS"
+  | "DISPOSITION_AND_CARE_ADVICE"
+  | "SBAR_COMPLETE";
+
+export type StccProcessSnapshot = {
+  processName: "Telehealth Triage Encounter";
+  averageDurationMinutes: "11-13";
+  currentActionTab: StccVisibleActionTab;
+  canonicalSteps: StccProcessStep[];
+  visibleActionTabs: Array<{
+    id: StccVisibleActionTab;
+    label: string;
+    mappedStepIds: StccProcessStep["id"][];
+  }>;
+};
+
+export type RagShadowSuggestion = {
+  mode: "DRY_RUN_SHADOW";
+  boundary: "APPROVED_CONTENT_ONLY";
+  sourceType: "synthetic-sample" | "licensed-stcc" | "local-qatar-override";
+  sourceReleaseVersion: string;
+  query: string;
+  extractedReason: {
+    normalizedReason: string;
+    keywords: string[];
+    possibleRedFlags: string[];
+  };
+  retrieval: {
+    eventId: string;
+    corpusIds: string[];
+    retrievedSourceIds: string[];
+    retrievedSnippetHashes: string[];
+    confidence: number;
+  };
+  suggestedProtocolCandidates: QueueProtocolSuggestion[];
+  comparison: {
+    deterministicPrimaryProtocolId?: string;
+    shadowPrimaryProtocolId?: string;
+    agreement: "FULL_MATCH" | "PARTIAL_MATCH" | "NO_MATCH" | "NO_DETERMINISTIC_CANDIDATE" | "NO_SHADOW_CANDIDATE";
+    reasonCode: string;
+  };
+  prohibitedActionAcknowledgement: string[];
+  cannotDecideDisposition: true;
+  requiresNurseReview: true;
+  generatedAtIso: string;
+};
+
 export type QueuePreparedProtocol = {
   status: "PENDING_REASON" | "PREPARED" | "NO_MATCH";
   sourceType: "synthetic-sample" | "licensed-stcc" | "local-qatar-override";
@@ -56,6 +128,7 @@ export type QueuePreparedProtocol = {
     careAdvice: boolean;
     seeMoreAppropriateGuideline: boolean;
   };
+  ragShadow?: RagShadowSuggestion;
   preparedAtIso: string;
 };
 
@@ -78,6 +151,7 @@ export type QueueItem = {
   summary: string;
   reasonNarrative?: string;
   preparedProtocol?: QueuePreparedProtocol;
+  stccProcess: StccProcessSnapshot;
   vitals?: QueueVitals;
   matchedProtocolId?: string;
   calculatedSeverity?: QueueSeverity;
@@ -101,6 +175,25 @@ export type QueueItem = {
   updatedAtIso: string;
 };
 
+export type CallCenterSession = {
+  id: string;
+  queueItemId?: string;
+  provider: string;
+  externalCallId: string;
+  direction: "INBOUND" | "OUTBOUND";
+  channel: "Phone" | "Callback";
+  status: "OFFERED" | "WAITING_CALLBACK" | "CONNECTING" | "CONNECTED" | "HELD" | "ENDED" | "NO_ANSWER" | "FAILED";
+  recording?: {
+    purpose: "SERVICE_QUALITY_AND_SAFETY";
+    noticePlayed: boolean;
+    noticeVersion: string;
+    consentStatus: "NOT_CAPTURED" | "GRANTED" | "DECLINED" | "LEGAL_BASIS";
+    storageRegion: "me-central1";
+    ragEligible: false;
+  };
+  updatedAtIso: string;
+};
+
 type QueueContextValue = {
   queue: QueueItem[];
   activeItem?: QueueItem;
@@ -108,6 +201,7 @@ type QueueContextValue = {
   error?: string;
   refreshQueue: () => Promise<void>;
   claimItem: (id: string) => Promise<QueueItem>;
+  connectCall: (id: string, action?: "ANSWER" | "START_CALLBACK") => Promise<{ item: QueueItem; call: CallCenterSession }>;
   releaseItem: (id: string) => Promise<QueueItem>;
   moveItem: (id: string, toStage: QueueClinicalStage, toStatus?: QueueStatus, reason?: string) => Promise<QueueItem>;
   updateItemContext: (id: string, update: Record<string, unknown>) => Promise<QueueItem>;
@@ -175,6 +269,24 @@ export function QueueProvider({ children }: { children: ReactNode }) {
     [updateOne]
   );
 
+  const connectCall = useCallback(
+    async (id: string, action?: "ANSWER" | "START_CALLBACK") => {
+      const item = queue.find((candidate) => candidate.id === id);
+      const resolvedAction = action ?? (item?.channel === "Callback" ? "START_CALLBACK" : "ANSWER");
+      const payload = await readJson<{ item: QueueItem; call: CallCenterSession }>(
+        await fetch(`${apiBase}/api/v1/call-center/queue/${encodeURIComponent(id)}/command`, {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: resolvedAction })
+        })
+      );
+      updateOne(payload.item);
+      return payload;
+    },
+    [queue, updateOne]
+  );
+
   const releaseItem = useCallback(
     async (id: string) => {
       const payload = await readJson<{ item: QueueItem }>(
@@ -230,10 +342,10 @@ export function QueueProvider({ children }: { children: ReactNode }) {
 
   const openItemInStep = useCallback(
     async (id: string) => {
-      await claimItem(id);
+      await connectCall(id);
       window.location.hash = "#/workspace";
     },
-    [claimItem]
+    [connectCall]
   );
 
   useEffect(() => {
@@ -266,6 +378,7 @@ export function QueueProvider({ children }: { children: ReactNode }) {
       error,
       refreshQueue,
       claimItem,
+      connectCall,
       releaseItem,
       moveItem,
       updateItemContext,
@@ -275,6 +388,7 @@ export function QueueProvider({ children }: { children: ReactNode }) {
     [
       activeItem,
       claimItem,
+      connectCall,
       error,
       loading,
       moveItem,

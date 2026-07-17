@@ -634,6 +634,7 @@ model TriageQueueItem {
   customAviationTags       Json?                     @map("custom_aviation_tags")
   queuePayload             Json?                     @map("queue_payload")
   transitionLogs           QueueTransitionLog[]
+  callCenterSessions       CallCenterSession[]
   ragRetrievalEvents       RagRetrievalEvent[]
   llmShadowSuggestions     LlmShadowSuggestion[]
   nurseSelectionEvents     NurseSelectionEvent[]
@@ -676,6 +677,58 @@ model QueueTransitionLog {
   @@index([actorId, timestamp])
   @@index([actorOrganizationId, timestamp])
   @@map("queue_transition_logs")
+}
+
+model CallCenterSession {
+  id                         String            @id
+  queueItemId                String?           @map("queue_item_id")
+  queueItem                  TriageQueueItem?  @relation(fields: [queueItemId], references: [id], onDelete: SetNull)
+  provider                   String
+  externalCallId             String            @map("external_call_id")
+  direction                  String
+  channel                    String
+  status                     String
+  aniMasked                  String?           @map("ani_masked")
+  aniHash                    String?           @map("ani_hash")
+  dnis                       String?
+  language                   String            @default("en")
+  queueName                  String?           @map("queue_name")
+  agentId                    String?           @map("agent_id")
+  recordingGovernance        Json?             @map("recording_governance")
+  requiresIdentityResolution Boolean           @default(false) @map("requires_identity_resolution")
+  startedAt                  DateTime?          @map("started_at")
+  connectedAt                DateTime?          @map("connected_at")
+  endedAt                    DateTime?          @map("ended_at")
+  events                     CallCenterEvent[]
+  createdAt                  DateTime           @default(now()) @map("created_at")
+  updatedAt                  DateTime           @updatedAt @map("updated_at")
+
+  @@unique([provider, externalCallId])
+  @@index([queueItemId, status])
+  @@index([agentId, status])
+  @@map("call_center_sessions")
+}
+
+model CallCenterEvent {
+  id                  String            @id
+  callCenterSessionId String            @map("call_center_session_id")
+  callCenterSession   CallCenterSession @relation(fields: [callCenterSessionId], references: [id], onDelete: Cascade)
+  provider            String
+  providerEventId     String            @map("provider_event_id")
+  externalCallId      String            @map("external_call_id")
+  eventType           String            @map("event_type")
+  processStatus       String            @default("RECEIVED") @map("process_status")
+  safePayload         Json              @map("safe_payload")
+  auditSignature      String            @map("audit_signature")
+  failureCode         String?           @map("failure_code")
+  occurredAt          DateTime          @map("occurred_at")
+  receivedAt          DateTime          @default(now()) @map("received_at")
+  processedAt         DateTime?         @map("processed_at")
+
+  @@unique([provider, providerEventId])
+  @@index([callCenterSessionId, occurredAt])
+  @@index([processStatus, receivedAt])
+  @@map("call_center_events")
 }
 
 model RagRetrievalEvent {

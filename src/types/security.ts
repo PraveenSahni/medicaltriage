@@ -208,7 +208,7 @@ export type ControlCenterModule = {
 export type IntegrationConnector = {
   id: string;
   name: string;
-  system: "Oracle HRMS" | "EMR/FHIR" | "Insurance" | "SSO" | "Analytics";
+  system: "Oracle HRMS" | "EMR/FHIR" | "Insurance" | "SSO" | "Analytics" | "Call Center";
   status: "configured" | "pending-approval" | "mock-adapter" | "disabled";
   ownerRole: string;
   dataHandled: string[];

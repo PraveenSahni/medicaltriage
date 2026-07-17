@@ -33,13 +33,18 @@ type BoardCase = {
   safetyFloor: boolean;
   route: string;
   owner: string;
+  ageLabel: string;
+  identityValidated: boolean;
+  protocolTitle: string;
+  ragAgreement: string;
+  ragConfidence?: number;
 };
 
 const boardColumns: Array<{ id: BoardStatus; title: string; limit: string; icon: typeof PhoneCall }> = [
-  { id: "incoming", title: "Incoming Queue", limit: "Accept next call", icon: PhoneCall },
-  { id: "reason", title: "Reason & Emergency", limit: "Rule-out first", icon: Search },
-  { id: "questions", title: "Questions", limit: "Acuity ordered", icon: ShieldAlert },
-  { id: "disposition", title: "Disposition", limit: "Nurse approval", icon: AlertTriangle },
+  { id: "incoming", title: "Incoming Queue", limit: "HRMS-ready calls", icon: PhoneCall },
+  { id: "reason", title: "Reason & Rule-Out", limit: "Opening + search", icon: Search },
+  { id: "questions", title: "Questions", limit: "High acuity first", icon: ShieldAlert },
+  { id: "disposition", title: "Disposition + Advice", limit: "Nurse approval", icon: AlertTriangle },
   { id: "followup", title: "SBAR / Complete", limit: "Copy and close", icon: CheckCircle2 }
 ];
 
@@ -58,7 +63,13 @@ const severityOrder: Record<Severity, number> = {
 };
 
 const statusOrder: BoardStatus[] = ["incoming", "reason", "questions", "disposition", "followup"];
-const stageOrder: QueueClinicalStage[] = ["INTAKE", "IDENTITY", "VITALS", "PROTOCOL", "DISPOSITION", "SBAR"];
+const queueStageByStatus: Record<BoardStatus, QueueClinicalStage> = {
+  incoming: "INTAKE",
+  reason: "VITALS",
+  questions: "PROTOCOL",
+  disposition: "DISPOSITION",
+  followup: "SBAR"
+};
 
 function nextStatus(status: BoardStatus) {
   return statusOrder[Math.min(statusOrder.indexOf(status) + 1, statusOrder.length - 1)];
@@ -66,14 +77,6 @@ function nextStatus(status: BoardStatus) {
 
 function previousStatus(status: BoardStatus) {
   return statusOrder[Math.max(statusOrder.indexOf(status) - 1, 0)];
-}
-
-function nextQueueStage(stage: QueueClinicalStage) {
-  return stageOrder[Math.min(stageOrder.indexOf(stage) + 1, stageOrder.length - 1)];
-}
-
-function previousQueueStage(stage: QueueClinicalStage) {
-  return stageOrder[Math.max(stageOrder.indexOf(stage) - 1, 0)];
 }
 
 function maskCount(cases: BoardCase[]) {
@@ -89,17 +92,21 @@ function severityFrom(item: QueueItem): Severity {
 
 function statusFrom(item: QueueItem): BoardStatus {
   if (item.status === "INCOMING") return "incoming";
-  if (item.currentStage === "IDENTITY" || item.currentStage === "INTAKE") return "reason";
-  if (item.currentStage === "VITALS" || item.currentStage === "PROTOCOL") return "questions";
+  if (item.stccProcess?.currentActionTab === "REASON_AND_EMERGENCY_RULE_OUT") return "reason";
+  if (item.stccProcess?.currentActionTab === "QUESTIONS") return "questions";
+  if (item.stccProcess?.currentActionTab === "DISPOSITION_AND_CARE_ADVICE") return "disposition";
+  if (item.stccProcess?.currentActionTab === "SBAR_COMPLETE") return "followup";
+  if (item.currentStage === "IDENTITY" || item.currentStage === "INTAKE" || item.currentStage === "VITALS") return "reason";
+  if (item.currentStage === "PROTOCOL") return "questions";
   if (item.currentStage === "DISPOSITION") return "disposition";
   return "followup";
 }
 
 function actionLabel(status: BoardStatus) {
   if (status === "incoming") return "Waiting";
-  if (status === "reason") return "Reason & emergency";
+  if (status === "reason") return "Reason & rule-out";
   if (status === "questions") return "Assessment questions";
-  if (status === "disposition") return "Disposition review";
+  if (status === "disposition") return "Disposition + advice";
   return "SBAR / complete";
 }
 
@@ -118,6 +125,7 @@ function normalizeChannel(channel: string): BoardCase["channel"] {
 }
 
 function toBoardCase(item: QueueItem): BoardCase {
+  const ragShadow = item.preparedProtocol?.ragShadow;
   return {
     id: item.id,
     maskedPatientId: maskedId(item),
@@ -134,7 +142,12 @@ function toBoardCase(item: QueueItem): BoardCase {
     summary: item.summary,
     safetyFloor: item.safetyFloorActive,
     route: item.destinationName ?? item.dispositionCode ?? "Pending route review",
-    owner: item.assignedNurseId ?? "Unassigned"
+    owner: item.assignedNurseId ?? "Unassigned",
+    ageLabel: item.patientAge ? `${item.patientAge.ageYears}y${item.patientAge.ageMonths !== undefined ? ` / ${item.patientAge.ageMonths}m` : ""}` : "HRMS pending",
+    identityValidated: item.identityValidated,
+    protocolTitle: item.preparedProtocol?.primaryProtocolTitle ?? "Protocol match pending",
+    ragAgreement: ragShadow?.comparison.agreement.replace(/_/g, " ").toLowerCase() ?? "No RAG shadow",
+    ragConfidence: ragShadow ? Math.round(ragShadow.retrieval.confidence * 100) : undefined
   };
 }
 
@@ -173,12 +186,15 @@ export default function KanbanWorkspace() {
     if (!boardCase) return;
     setActionError(undefined);
     try {
-      const toStage = direction === "forward" ? nextQueueStage(boardCase.queueStage) : previousQueueStage(boardCase.queueStage);
+      const nextBoardStatus = direction === "forward" ? nextStatus(boardCase.status) : previousStatus(boardCase.status);
+      const toStage = queueStageByStatus[nextBoardStatus];
       await moveItem(
         id,
         toStage,
-        direction === "back" && toStage === "INTAKE" ? "INCOMING" : boardCase.queueStatus === "COMPLETED" ? "COMPLETED" : "IN_PROCESS",
-        direction === "forward" ? "Board move forward with sequence validation." : "Board move back for queue correction."
+        direction === "back" && nextBoardStatus === "incoming" ? "INCOMING" : boardCase.queueStatus === "COMPLETED" ? "COMPLETED" : "IN_PROCESS",
+        direction === "forward"
+          ? "Board status aligned to STCC visible action tab; clinical decisions remain in Step cockpit."
+          : "Board status moved back for queue correction; clinical decisions remain in Step cockpit."
       );
       setSelectedId(id);
     } catch (caught) {
@@ -298,15 +314,20 @@ export default function KanbanWorkspace() {
                         </span>
                       </div>
                       <p className="mt-3 line-clamp-3 text-sm font-normal leading-6 text-[var(--tx2)]">{boardCase.summary}</p>
+                      <p className="mt-3 line-clamp-2 border-l border-[var(--bd)] pl-2 text-xs leading-5 text-[var(--tx3)]">
+                        {boardCase.protocolTitle}
+                      </p>
                       <div className="mt-4 grid grid-cols-2 gap-2 border-t border-[var(--bd)] pt-3">
                         <MiniFact label="Wait" value={`${boardCase.waitMinutes}m`} />
                         <MiniFact label="Channel" value={boardCase.channel} />
-                        <MiniFact label="Patient" value={boardCase.patientType} />
+                        <MiniFact label="Patient" value={`${boardCase.patientType} / ${boardCase.ageLabel}`} />
                         <MiniFact label="Station" value={boardCase.station} />
                       </div>
                       <div className="mt-3 flex flex-wrap gap-1.5">
                         <Chip>{boardCase.waitMinutes}m</Chip>
                         <Chip>{boardCase.channel}</Chip>
+                        <Chip>{boardCase.identityValidated ? "HRMS validated" : "HRMS review"}</Chip>
+                        {boardCase.ragConfidence !== undefined && <Chip>RAG {boardCase.ragAgreement}</Chip>}
                         {boardCase.safetyFloor && <Chip tone="red">Safety floor</Chip>}
                       </div>
                     </button>
@@ -337,6 +358,16 @@ export default function KanbanWorkspace() {
                 <Detail label="Current action" value={actionLabel(selectedCase.status)} />
                 <Detail label="Staff ID" value={selectedCase.staffId} />
                 <Detail label="Patient" value={selectedCase.patientType} />
+                <Detail label="HRMS / Age" value={`${selectedCase.identityValidated ? "Validated" : "Review"} - ${selectedCase.ageLabel}`} />
+                <Detail label="Protocol" value={selectedCase.protocolTitle} />
+                <Detail
+                  label="RAG shadow"
+                  value={
+                    selectedCase.ragConfidence !== undefined
+                      ? `${selectedCase.ragAgreement} (${selectedCase.ragConfidence}%)`
+                      : selectedCase.ragAgreement
+                  }
+                />
                 <Detail label="Owner" value={selectedCase.owner} />
                 <Detail label="Station" value={selectedCase.station} />
                 <Detail label="Route" value={selectedCase.route} />

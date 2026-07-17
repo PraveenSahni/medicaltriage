@@ -224,6 +224,45 @@ describe("Enterprise queue orchestration", () => {
     expect(response.body.code).toBe("QUEUE_SEQUENCE_BLOCKED");
   });
 
+  it("allows the nurse to enter SBAR before recording final approval and copied-note evidence", async () => {
+    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
+    await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({
+        vitals: {
+          heartRate: 135,
+          respiratoryRate: 42,
+          spo2: 91,
+          temperature: 38.2,
+          consciousLevel: "alert"
+        },
+        matchedProtocolId: "sample-fever-child",
+        calculatedSeverity: "EMERGENCY",
+        dispositionCode: "SIDRA_PEDIATRIC_ED",
+        destinationName: "Sidra Medicine Emergency Department"
+      })
+      .expect(200);
+
+    await nurse
+      .post("/api/v1/queue/case-10002/move")
+      .send({ toStage: "DISPOSITION", toStatus: "IN_PROCESS", reason: "Assessment completed" })
+      .expect(200);
+
+    const sbar = await nurse
+      .post("/api/v1/queue/case-10002/move")
+      .send({ toStage: "SBAR", toStatus: "IN_PROCESS", reason: "Open SBAR review" })
+      .expect(200);
+
+    expect(sbar.body.item).toMatchObject({
+      id: "case-10002",
+      currentStage: "SBAR",
+      status: "IN_PROCESS",
+      sbarCopied: false
+    });
+    expect(sbar.body.item.clinicalApproval).toBeUndefined();
+  });
+
   it("prevents another nurse from taking an active lock", async () => {
     const nurseA = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
     upsertDirectoryUserFromHrms({

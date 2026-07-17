@@ -198,6 +198,13 @@ const permissions: Permission[] = [
     risk: "critical"
   },
   {
+    code: "integration.callcenter.manage",
+    module: "Integration",
+    action: "administer",
+    description: "Configure provider-neutral call-center adapters, signed events, recording governance, and connector health.",
+    risk: "critical"
+  },
+  {
     code: "reports.view",
     module: "Reporting",
     action: "view",
@@ -766,11 +773,11 @@ const roles: Role[] = [
     code: "integration_administrator",
     name: "Integration Administrator",
     description: "Owns HRMS, EMR, roster, insurance, SSO connector, and API integration configuration.",
-    permissions: ["integration.hrms.manage", "integration.emr.manage", "security.sso.manage", "audit.events.view"],
+    permissions: ["integration.hrms.manage", "integration.emr.manage", "integration.callcenter.manage", "security.sso.manage", "audit.events.view"],
     responsibilities: ["manage_enterprise_integrations", "manage_sso"],
     dataScopes: ["integration_config", "connector_logs"],
     clinicalScopes: [],
-    integrationScopes: ["hrms.manage", "emr.manage", "sso", "insurance.manage"],
+    integrationScopes: ["hrms.manage", "emr.manage", "callcenter.manage", "sso", "insurance.manage"],
     status: "active",
     requiresApproval: true
   },
@@ -1577,7 +1584,7 @@ const controlCenterModules: ControlCenterModule[] = [
     label: "Integration",
     purpose: "Oracle HRMS, EMR/FHIR, SSO, roster, queue, and downstream connector health.",
     primaryRoles: ["Integration Administrator"],
-    requiredPermissions: ["integration.hrms.manage", "integration.emr.manage", "security.sso.manage"],
+    requiredPermissions: ["integration.hrms.manage", "integration.emr.manage", "integration.callcenter.manage", "security.sso.manage"],
     dataBoundary: "Connector configuration, masked payload samples, and operational status.",
     prohibitedActions: ["Clinical triage decision entry", "Viewing decrypted clinical payloads without assignment"]
   },
@@ -1602,6 +1609,16 @@ const controlCenterModules: ControlCenterModule[] = [
 ];
 
 const integrationConnectors: IntegrationConnector[] = [
+  {
+    id: "provider-neutral-call-center",
+    name: "Provider-neutral call-center gateway",
+    system: "Call Center",
+    status: "mock-adapter",
+    ownerRole: "Integration Administrator",
+    dataHandled: ["masked caller number", "call state", "queue reference", "recording governance metadata"],
+    apiSurface: "Signed normalized events plus answer, callback, hold, resume, and end commands",
+    lastCheckedIso: "2026-07-17T08:00:00.000Z"
+  },
   {
     id: "oracle-fusion-hrms",
     name: "Oracle Fusion HRMS directory sync",

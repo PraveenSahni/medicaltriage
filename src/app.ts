@@ -17,6 +17,10 @@ import { rateLimit } from "./middleware/rateLimit.js";
 import { createAdminRouter } from "./routes/admin.js";
 import { createApprovalRouter } from "./routes/approvalRouter.js";
 import { createAuthRouter } from "./routes/auth.js";
+import {
+  createCallCenterInboundRouter,
+  createCallCenterRouter
+} from "./routes/callCenterGateway.js";
 import { createCcpRouter } from "./routes/ccp.js";
 import { createEmrRouter } from "./routes/emr.js";
 import { createHrmsRouter } from "./routes/hrms.js";
@@ -157,6 +161,7 @@ export function createApp() {
 
   app.use("/api/v1/auth", createAuthRouter());
   app.use("/api/v1/hrms", createHrmsRouter());
+  app.use("/api/v1/integrations/call-center", createCallCenterInboundRouter());
   app.use("/api/v1/admin", requireAuthenticatedSession, createAdminRouter());
   app.use("/api/v1/approval", requireAuthenticatedSession, createApprovalRouter());
   app.use("/api/v1/ccp", requireAuthenticatedSession, createCcpRouter());
@@ -164,6 +169,7 @@ export function createApp() {
   app.use("/api/v1/staff", requireAuthenticatedSession, createStaffRouter());
   app.use("/api/v1/protocols", requireAuthenticatedSession, createProtocolsRouter());
   app.use("/api/v1/queue", requireAuthenticatedSession, createQueueRouter());
+  app.use("/api/v1/call-center", requireAuthenticatedSession, createCallCenterRouter());
   app.use("/api/v1/simulation", requireAuthenticatedSession, createSimulationRouter());
   app.use("/api/v1/triage", requireAuthenticatedSession, createTriageRouter());
   app.use("/api/v1/emr", requireAuthenticatedSession, createEmrRouter());

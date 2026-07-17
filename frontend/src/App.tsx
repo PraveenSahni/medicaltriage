@@ -217,9 +217,9 @@ export default function App() {
       return {
         eyebrow: "KANBAN COCKPIT",
         title: "Nurse Queue Board",
-        subtitle: "Board-level queue supervision with clinical safety floors visible across every stage.",
+        subtitle: "STCC-compatible queue supervision: incoming calls, reason and rule-out, acuity questions, disposition and advice, and SBAR completion.",
         metric: "5",
-        metricLabel: "QUEUE STAGES"
+        metricLabel: "QUEUE LANES"
       };
     }
 

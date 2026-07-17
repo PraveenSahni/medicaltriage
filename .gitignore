@@ -16,6 +16,8 @@ data/generated/
 tmp/
 __pycache__/
 .pytest_cache/
+playwright-report/
+test-results/
 *.docx
 interactive dashboard style click on enable .html
 remix_-ist-technologies/

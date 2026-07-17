@@ -31,9 +31,10 @@ import type { LucideIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { InteroperabilityTab } from "./components/HelpCenter/InteroperabilityTab";
 import { SystemPurposeTab } from "./components/HelpCenter/SystemPurposeTab";
+import { TestEvidenceCenter } from "./components/HelpCenter/TestEvidenceCenter";
 import { ApiCatalogTable, HelpCard, MatrixHelpCard, MiniDefinition } from "./components/HelpCenter/shared";
 
-type TabKey = "help" | "library" | "overview" | "workflow" | "qatar" | "integration" | "governance" | "security";
+type TabKey = "help" | "tests" | "library" | "overview" | "workflow" | "qatar" | "integration" | "governance" | "security";
 
 type HelpTab = {
   key: TabKey;
@@ -166,6 +167,7 @@ type DispositionRouteDetail = {
 
 const tabs: HelpTab[] = [
   { key: "help", label: "Help", icon: HelpCircle },
+  { key: "tests", label: "Test Results", icon: ClipboardCheck },
   { key: "library", label: "Library", icon: BookOpen },
   { key: "overview", label: "System Map", icon: ShieldCheck },
   { key: "workflow", label: "Call Flow", icon: Workflow },
@@ -308,6 +310,36 @@ const helpGuides: HelpGuide[] = [
     ],
     safety:
       "The nurse owns the final clinical advice. AI may draft or explain, but the clinician validates and approves the final disposition and any employee-facing message."
+  },
+  {
+    title: "Provider-neutral call-center guide",
+    eyebrow: "Incoming calls, callbacks, and recordings",
+    icon: PhoneCall,
+    audience: "Remote Triage Nurse, Call Intake Coordinator, Triage Service Manager, Integration Administrator, Privacy Officer",
+    goal:
+      "Connect incoming telephone calls and callbacks to the clinical queue without coupling IST Health to one telephony vendor or allowing the call platform to make clinical decisions.",
+    framework: {
+      what:
+        "A provider-neutral integration gateway that normalizes call events, synchronizes them with the IST queue, and exposes governed answer, callback, hold, resume, and end commands.",
+      why:
+        "Telephony providers should transport calls, not own HRMS identity validation, queue locks, STCC protocol selection, disposition, or care advice. A stable gateway prevents vendor lock-in and preserves one auditable clinical workflow.",
+      how: [
+        "Accept HMAC-signed provider events, normalize them, persist the event before processing, and use provider event IDs for idempotency.",
+        "Resolve the target organization, validate staff/dependent identity through HRMS, and create the clinical queue case only after identity succeeds.",
+        "When a nurse answers or starts a callback, claim the queue case first, execute the configured provider adapter, and release the lock if the provider rejects or fails.",
+        "Store recording governance metadata in GCP Doha, require the approved notice plus consent or legal basis, and keep raw recordings outside the clinical RAG corpus."
+      ]
+    },
+    steps: [
+      "A provider sends CALL_OFFERED or CALLBACK_REQUESTED to the signed inbound event endpoint.",
+      "The gateway rejects invalid signatures, deduplicates retries, masks the caller number, and records only approved operational metadata.",
+      "Unidentified callers remain in identity resolution; they do not enter the clinical queue.",
+      "The nurse selects Answer for a live incoming call or Call back for a callback case from the same cockpit.",
+      "The gateway claims the queue item, invokes the selected provider adapter, records the command result, and opens the case only after connection succeeds.",
+      "Recording availability is accepted only for me-central1 with notice, consent/legal basis, checksum metadata, and ragEligible=false."
+    ],
+    safety:
+      "The dry-run adapter and normalized event/command contracts are implemented. Production still needs an approved provider adapter, credentials, DNIS-to-organization mapping, recording bucket/KMS/retention policy, and operational monitoring."
   },
   {
     title: "Nurse cockpit mode guide",
@@ -783,6 +815,78 @@ const libraryAreas: LibraryArea[] = [
     ]
   },
   {
+    id: "provider-neutral-call-center",
+    title: "Provider-Neutral Call Center Gateway",
+    eyebrow: "Telephony transport and recording governance",
+    icon: PhoneCall,
+    summary:
+      "Defines how incoming calls, callbacks, call state, and recording metadata move between any approved contact-center provider and the IST Health queue while STCC rules and the nurse retain clinical authority.",
+    framework: {
+      what:
+        "A normalized event and command layer with durable call sessions, idempotent provider events, queue locking, adapter health, tenant routing, and recording controls.",
+      why:
+        "A provider-specific workflow would duplicate queue logic, weaken auditability, and make future contact-center replacement expensive. The gateway keeps the clinical contract stable while adapters change.",
+      how: [
+        "Receive CALL_OFFERED, CALL_CONNECTED, CALL_HELD, CALL_RESUMED, CALL_ENDED, CALLBACK_REQUESTED, CALLBACK_ANSWERED, NO_ANSWER, and RECORDING_AVAILABLE events.",
+        "Verify HMAC signatures, persist before processing, deduplicate by provider plus providerEventId, mask ANI, and retain only metadata keys from arbitrary provider payloads.",
+        "Route HRMS-validated calls into the tenant queue and hold unresolved identities outside the clinical queue.",
+        "Execute ANSWER, START_CALLBACK, HOLD, RESUME, and END through a registered provider adapter with queue-lock rollback on failure."
+      ]
+    },
+    usedBy: [
+      "POST /api/v1/integrations/call-center/events",
+      "GET /api/v1/call-center/status",
+      "GET /api/v1/call-center/sessions",
+      "POST /api/v1/call-center/queue/:queueItemId/command",
+      "src/services/callCenterGateway.ts",
+      "src/routes/callCenterGateway.ts",
+      "frontend/src/QueueContext.tsx",
+      "frontend/src/components/Triage/NurseWorkspace.tsx",
+      "prisma/schema.prisma: CallCenterSession and CallCenterEvent"
+    ],
+    details: [
+      "Telephony owns call transport and provider recording delivery. IST owns queue allocation, locks, HRMS identity, STCC workflow, safety floors, disposition, and clinical audit.",
+      "CALL_CENTER_PROVIDER selects the adapter. The current dry-run adapter proves the contract without contacting an external telephone platform.",
+      "CALL_CENTER_DEFAULT_ORGANIZATION_ID supplies live tenant routing when an event does not carry an approved target organization. Simulation defaults to the PHCC nurse queue.",
+      "Provider validation happens before a queue claim. If an available adapter later rejects a command, the gateway marks the session failed and releases the lock acquired for that command.",
+      "Raw ANI is never returned from the session API; only a masked display value is exposed. A keyed hash can support controlled correlation without storing the plain number.",
+      "Recordings must remain in GCP Doha me-central1. The gateway requires noticePlayed plus GRANTED or LEGAL_BASIS before retaining an object reference.",
+      "Raw audio is explicitly ragEligible=false. Only a separately governed, de-identified, nurse-reviewed transcript or derived evaluation dataset may be considered for model improvement.",
+      "Production work remains: approved provider adapter, private connectivity/webhook controls, retry worker and dead-letter queue, call-event monitoring, recording lifecycle, legal notice, and retention approval."
+    ],
+    helps: [
+      {
+        title: "One nurse queue",
+        body: "Incoming calls and callbacks become the same governed queue cases used by Step and Board, so contact-center integration does not create a second clinical workflow."
+      },
+      {
+        title: "Provider independence",
+        body: "A new provider implements the adapter and event translation contracts; STCC logic, nurse screens, queue locks, and audit rules remain unchanged."
+      },
+      {
+        title: "Failure containment",
+        body: "Invalid signatures, duplicate events, missing identity, unavailable adapters, provider rejection, and recording-policy violations are blocked at explicit boundaries."
+      },
+      {
+        title: "Qatar-hosted evidence",
+        body: "Call metadata and approved recording references are designed for PostgreSQL and GCP Doha controls with masked identifiers and audit signatures."
+      }
+    ],
+    usefulFor: [
+      { title: "Nurses", body: "Answer a live call or start a callback without leaving the clinical cockpit." },
+      { title: "Integration administrators", body: "Monitor adapter status, session metadata, provider contracts, and tenant routing." },
+      { title: "Privacy and audit", body: "Verify notice, consent/legal basis, residency, masking, and exclusion of raw recordings from RAG." }
+    ],
+    exampleFlow: [
+      "The provider sends a signed CALL_OFFERED event with call reference, masked identity inputs, target queue, and reason narrative.",
+      "The gateway persists the event, validates staff/dependent context, and creates one HRMS-validated queue case.",
+      "The nurse clicks Answer. IST claims the case and calls the configured adapter.",
+      "On success, the session becomes CONNECTED and the Step cockpit opens. On failure, the lock is released.",
+      "Later provider events update hold, resume, end, no-answer, or recording status without changing the clinical disposition.",
+      "The recording reference is accepted only after policy checks and remains outside the RAG knowledge boundary."
+    ]
+  },
+  {
     id: "nurse-workspace-modes",
     title: "Nurse Cockpit Modes",
     eyebrow: "Step cockpit and Kanban board",
@@ -817,8 +921,8 @@ const libraryAreas: LibraryArea[] = [
       "The Questions action tab is a guided click-and-enable flow. Only the current acuity question is active; No unlocks the next question, and Yes stops lower-priority questions because the route has been identified.",
       "Board cockpit is an alternate Kanban view with Incoming, Reason / HRMS-ready, Clinical triage, Disposition, and SBAR / follow-up columns.",
       "Header buttons let the customer switch between Step and Board; the app also supports direct hash navigation through #/workspace and #/kanban.",
-      "QueueContext fetches /api/v1/queue and provides claim, release, move, context update, and heartbeat functions to both Step and Board.",
-      "Opening a Board case into Step claims the queue item, sets a five-minute lock, and loads the same encounter context into the progressive Step cockpit.",
+      "QueueContext fetches /api/v1/queue and provides call connection, release, move, context update, and heartbeat functions to both Step and Board.",
+      "Opening an incoming or callback case connects it through the provider-neutral gateway, claims the queue item, sets a five-minute lock, and loads the same encounter context into the progressive Step cockpit.",
       "Moving a Board or Step item calls the queue sequence validator and writes a signed transition trace in the backend service path."
     ],
     helps: [
@@ -1966,7 +2070,9 @@ const libraryWhatWhyHow: Record<string, WhatWhyHow> = {
     why:
       "Every clinical or integration change needs repeatable proof that red floors, pediatric routing, SBAR, AI downgrade blocking, and UI rendering still work.",
     how: [
-      "Run Jest/Supertest for API behavior and frontend type/build checks.",
+      "Assign every maintained scenario a stable ID, reject duplicate IDs, and link each case to its owning contract or risk.",
+      "Add a case for new behavior, revise the owning case when a contract changes, and retire an obsolete case with its reason and replacement instead of leaving duplicate coverage.",
+      "Run Jest/Supertest for API, RBAC, call-center integration, queue behavior, and frontend type/build checks.",
       "Run Python safety, synthetic data, clinical simulation, and bulk simulation tests.",
       "Treat failed red-floor, routing, SBAR, or downgrade-blocking tests as release blockers."
     ]
@@ -2391,6 +2497,7 @@ const dispositionRoutes: DispositionRouteDetail[] = [
 ];
 
 const integrationRows = [
+  ["Provider-neutral Call Center", "Normalize incoming calls, callbacks, call state, and recording metadata while preserving IST queue locks and STCC clinical authority.", "Signed event and command contracts, dry-run adapter, session/event persistence schema, cockpit connection, and governance tests are built; production provider adapter is pending."],
   ["Oracle Fusion HCM", "Validate staff identity, active worker status, assignments, contacts, dependents, absences, and documents.", "Mock adapter exists; target connector documented below."],
   ["Insurance", "Return provider, eligibility, last check, and booking notes.", "Mock eligibility cache exists; connect payer or benefits verification after insurer specs."],
   ["EMR / Oracle Health", "Move SBAR/SOAP into patient record.", "Clipboard handoff now; SMART on FHIR or approved Oracle Health API later."],
@@ -2454,6 +2561,12 @@ const oracleHcmApiRows: ApiCatalogRow[] = [
 ];
 
 const plannedApiRows: ApiCatalogRow[] = [
+  {
+    area: "Provider-neutral call center",
+    api: "POST /api/v1/integrations/call-center/events\nGET /api/v1/call-center/status\nGET /api/v1/call-center/sessions\nPOST /api/v1/call-center/queue/:queueItemId/command",
+    use: "Accept signed idempotent provider events, create HRMS-validated queue cases, and execute answer/callback/hold/resume/end through a provider adapter with lock rollback.",
+    status: "Built with dry-run adapter"
+  },
   {
     area: "IST triage API",
     api: "POST /api/v1/staff/validate\nPOST /api/v1/triage/start\nPOST /api/v1/triage/encounters/evaluate",
@@ -2982,10 +3095,10 @@ const roleAccessRows: RoleAccessRow[] = [
     category: "I - Integration",
     prefix: "I",
     role: "Integration Administrator",
-    access: "HRMS, EMR, roster, insurance, SSO connector, and API integration configuration.",
-    permissions: ["integration.hrms.manage", "integration.emr.manage", "security.sso.manage", "audit.events.view"],
+    access: "HRMS, EMR, call-center, roster, insurance, SSO connector, and API integration configuration.",
+    permissions: ["integration.hrms.manage", "integration.emr.manage", "integration.callcenter.manage", "security.sso.manage", "audit.events.view"],
     responsibilities: ["manage_enterprise_integrations", "manage_sso"],
-    scopes: ["integration config", "connector logs", "hrms.manage", "emr.manage", "sso", "insurance.manage"]
+    scopes: ["integration config", "connector logs", "hrms.manage", "emr.manage", "callcenter.manage", "sso", "insurance.manage"]
   },
   {
     category: "R - Reporting and Analytics",
@@ -3146,6 +3259,7 @@ export default function HelpCenter() {
           onOpenTab={setActiveTab}
         />
       )}
+      {activeTab === "tests" && <TestEvidenceCenter />}
       {activeTab === "overview" && (
         <SystemPurposeTab
           systemCards={systemCards}
@@ -3213,6 +3327,10 @@ function HelpManualPanel({
           <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("nurse-workspace-modes")}>
             <Kanban className="h-4 w-4" />
             Workspace modes
+          </button>
+          <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("provider-neutral-call-center")}>
+            <PhoneCall className="h-4 w-4" />
+            Call center gateway
           </button>
           <button type="button" className="secondary-button" onClick={() => onOpenLibraryTopic("named-user-hrms-tenant-queue")}>
             <Users className="h-4 w-4" />

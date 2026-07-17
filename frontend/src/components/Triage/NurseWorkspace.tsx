@@ -39,6 +39,7 @@ interface Card {
   department: string;
   symptomTextRaw: string;
   preparedProtocol?: QueuePreparedProtocol;
+  stccProcess?: QueueItem["stccProcess"];
   age: number;
   ageMonths?: number;
   ageSource?: "staff" | "dependent";
@@ -113,9 +114,9 @@ type AssessmentResponseState = Record<string, boolean>;
 const apiBase = import.meta.env.VITE_API_BASE_URL || "";
 
 const stages: Array<{ id: StageId; label: string; shortLabel: string }> = [
-  { id: "reasonEmergency", label: "Reason & Emergency Rule-Out", shortLabel: "1" },
+  { id: "reasonEmergency", label: "Reason & Rule-Out", shortLabel: "1" },
   { id: "questions", label: "Questions", shortLabel: "2" },
-  { id: "disposition", label: "Disposition", shortLabel: "3" },
+  { id: "disposition", label: "Disposition & Advice", shortLabel: "3" },
   { id: "complete", label: "SBAR / Complete", shortLabel: "4" }
 ];
 
@@ -511,6 +512,7 @@ function queueItemToCard(item: QueueItem): Card {
     department: item.department ?? "Employee health",
     symptomTextRaw: item.reasonNarrative ?? item.summary,
     preparedProtocol: item.preparedProtocol,
+    stccProcess: item.stccProcess,
     age,
     ageMonths: item.patientAge?.ageMonths,
     ageSource: item.patientAge?.source,
@@ -716,7 +718,7 @@ function recordsFromCards(cards: Card[]): SyntheticReviewRecord[] {
 }
 
 export default function NurseWorkspace() {
-  const { queue, activeItem, claimItem, updateItemContext, moveItem } = useQueue();
+  const { queue, activeItem, connectCall, updateItemContext, moveItem } = useQueue();
   const [cardsById, setCardsById] = useState<Record<string, Card>>(() =>
     Object.fromEntries(initialCards.map((card) => [card.id, card]))
   );
@@ -951,8 +953,15 @@ export default function NurseWorkspace() {
 
     try {
       if (queue.some((item) => item.id === cardId)) {
-        const claimed = await claimItem(cardId);
-        setStageIndex(stageIndexFromQueue(claimed));
+        const action = cardsById[cardId]?.channel === "Callback" ? "START_CALLBACK" : "ANSWER";
+        const connected = await connectCall(cardId, action);
+        setStageIndex(stageIndexFromQueue(connected.item));
+        showToast(
+          action === "START_CALLBACK"
+            ? "Callback connected through the provider-neutral gateway."
+            : "Incoming call answered through the provider-neutral gateway.",
+          "success"
+        );
       } else {
         setStageIndex(0);
       }
@@ -960,7 +969,9 @@ export default function NurseWorkspace() {
       setHoldIds((current) => current.filter((id) => id !== cardId));
       setActiveCardId(cardId);
       setActiveFocusOpen(true);
-      showToast("Call opened and locked in the nurse cockpit.", "success");
+      if (!queue.some((item) => item.id === cardId)) {
+        showToast("Call opened in the nurse cockpit.", "success");
+      }
     } catch (error) {
       showToast(error instanceof Error ? error.message : "Unable to open queue item.", "warning");
     }
@@ -1715,60 +1726,91 @@ function ReasonEmergencyStage({
   const primarySuggestion = suggestions[0];
   const secondarySuggestionCount = Math.max(suggestions.length - 1, 0);
   const emergencyClear = emergencyReasons.length === 0;
+  const validated = card.identityValidated !== false;
+  const ragShadow = prepared?.ragShadow;
+  const sourceLabel = prepared ? `${prepared.sourceType} ${prepared.releaseVersion}` : "Pending STCC source";
 
   return (
     <StageShell
       icon={Search}
-      title="Action 1 - Reason & Emergency"
-      subtitle="Confirm the call reason, check the prepared protocol match, and rule out emergency findings before assessment questions."
+      title="Action 1 - Reason & Rule-Out"
+      subtitle="Opening script, HRMS context, reason, guideline selection, and emergency rule-out are handled before lower-acuity assessment questions."
     >
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
+      <div className="space-y-4">
         <section className="rounded-md border border-slate-200 bg-white p-4">
-          <div className="flex items-start gap-3">
-            <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-700">
-              <PhoneCall className="h-5 w-5" />
-            </span>
-            <div className="min-w-0 flex-1">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.6fr)]">
+            <div className="flex items-start gap-3">
+              <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-700">
+                <PhoneCall className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Opening script and call context</span>
+                <h4 className="mt-1 text-lg font-normal leading-tight text-slate-950">
+                  Greet caller, confirm role, and continue from HRMS-validated identity.
+                </h4>
+                <p className="mt-2 text-sm leading-6 text-slate-500">
+                  Identity and age are not a nurse action tab. The queue has already validated {card.patientType.toLowerCase()} context before pickup.
+                </p>
+              </div>
+            </div>
+            <div className="grid gap-2 text-sm">
+              <InlineEvidence label="HRMS" value={validated ? "Validated before queue entry" : "Needs review"} tone={validated ? "emerald" : "amber"} />
+              <InlineEvidence label="Age" value={`${card.age} years${card.ageMonths !== undefined ? ` (${card.ageMonths} months)` : ""}`} />
+              <InlineEvidence label="Channel" value={`${card.channel} - ${card.queueStatus}`} />
+            </div>
+          </div>
+        </section>
+
+        <section className="rounded-md border border-slate-200 bg-white p-4">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.55fr)]">
+            <div className="min-w-0">
               <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Reason for call</span>
               <label className="mt-3 block">
                 <span className="sr-only">Reason narrative</span>
                 <textarea
-                  className="min-h-[116px] w-full resize-y rounded-md border border-slate-200 bg-white p-3 text-base font-normal leading-7 text-slate-950 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                  className="min-h-[108px] w-full resize-y rounded-md border border-slate-200 bg-white p-3 text-base font-normal leading-7 text-slate-950 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
                   value={card.symptomTextRaw}
                   onChange={(event) => onUpdateCard({ symptomTextRaw: event.target.value })}
                 />
               </label>
             </div>
+            <div>
+              <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Search words</span>
+              <div className="mt-3 flex min-h-[108px] flex-wrap content-start gap-2 rounded-md border border-slate-200 bg-slate-50 p-3">
+                {terms.length > 0 ? (
+                  terms.map((term) => <Tag key={term}>{term}</Tag>)
+                ) : (
+                  <span className="text-sm text-slate-500">No search terms prepared yet.</span>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="mt-4 border-t border-slate-200 pt-4">
-            <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Prepared protocol match</span>
-            {primarySuggestion ? (
-              <div className="mt-2">
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="min-w-0">
-                    <h4 className="text-lg font-normal leading-tight text-slate-950">{primarySuggestion.titleEn}</h4>
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Guideline selection</span>
+                {primarySuggestion ? (
+                  <>
+                    <h4 className="mt-1 text-lg font-normal leading-tight text-slate-950">{primarySuggestion.titleEn}</h4>
                     <p className="mt-1 text-sm leading-6 text-slate-500">
-                      {primarySuggestion.questionCount} questions ready - highest priority {primarySuggestion.highestSeverity}
+                      {primarySuggestion.questionCount} acuity-ordered questions ready - {sourceLabel}
                       {secondarySuggestionCount > 0 ? ` - ${secondarySuggestionCount} alternate guideline${secondarySuggestionCount === 1 ? "" : "s"}` : ""}
                     </p>
-                  </div>
-                  <span className={`w-fit rounded-full border px-2.5 py-1 text-xs ${severityClass(primarySuggestion.highestSeverity)}`}>
-                    {primarySuggestion.highestSeverity}
-                  </span>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {terms.length > 0 ? (
-                    terms.map((term) => <Tag key={term}>{term}</Tag>)
-                  ) : (
-                    <span className="text-sm text-slate-500">No search terms prepared yet.</span>
-                  )}
-                </div>
+                  </>
+                ) : (
+                  <p className="mt-1 text-sm leading-6 text-slate-500">Confirm the reason narrative to prepare a protocol search.</p>
+                )}
               </div>
-            ) : (
-              <p className="mt-2 text-sm leading-6 text-slate-500">Confirm the reason narrative to prepare a protocol search.</p>
-            )}
+              {primarySuggestion && (
+                <span className={`w-fit rounded-md border px-2.5 py-1 text-xs ${severityClass(primarySuggestion.highestSeverity)}`}>
+                  highest priority {primarySuggestion.highestSeverity}
+                </span>
+              )}
+            </div>
           </div>
+
+          <RagShadowEvidencePanel ragShadow={ragShadow} />
         </section>
 
         <section className="rounded-md border border-slate-200 bg-white p-4">
@@ -1789,18 +1831,18 @@ function ReasonEmergencyStage({
               </div>
             </div>
             {scoreState.status === "ready" && score && (
-              <span className={`w-fit rounded-full border px-2.5 py-1 text-xs ${score.redAlertTriggered ? "border-rose-200 bg-rose-50 text-rose-700" : "border-slate-200 bg-slate-50 text-slate-600"}`}>
+              <span className={`w-fit rounded-md border px-2.5 py-1 text-xs ${score.redAlertTriggered ? "border-rose-200 bg-rose-50 text-rose-700" : "border-slate-200 bg-slate-50 text-slate-600"}`}>
                 API {score.score} - {score.riskBand}
               </span>
             )}
           </div>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div className="mt-4 grid gap-3 md:grid-cols-5">
             <VitalInput label="HR" value={card.vitals.heartRate} min={20} max={260} onChange={(heartRate) => onVitalsChange({ heartRate })} />
             <VitalInput label="RR" value={card.vitals.respiratoryRate} min={1} max={80} onChange={(respiratoryRate) => onVitalsChange({ respiratoryRate })} />
             <VitalInput label="SpO2" value={card.vitals.spo2} min={40} max={100} onChange={(spo2) => onVitalsChange({ spo2 })} />
             <VitalInput label="Temp" value={card.vitals.temperature} min={30} max={45} step={0.1} onChange={(temperature) => onVitalsChange({ temperature })} />
-            <label className="grid gap-1 text-xs font-normal text-slate-600 sm:col-span-2">
+            <label className="grid gap-1 text-xs font-normal text-slate-600">
               AVPU
               <select
                 className="h-11 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
@@ -1825,7 +1867,7 @@ function ReasonEmergencyStage({
             {emergencyClear ? (
               "Continue to acuity-ordered assessment questions."
             ) : (
-              <ul className="space-y-1">
+              <ul className="grid gap-1 sm:grid-cols-2">
                 {emergencyReasons.map((reason) => (
                   <li key={reason}>- {reason}</li>
                 ))}
@@ -1839,6 +1881,101 @@ function ReasonEmergencyStage({
         </section>
       </div>
     </StageShell>
+  );
+}
+
+function InlineEvidence({
+  label,
+  value,
+  tone = "slate"
+}: {
+  label: string;
+  value: string;
+  tone?: "slate" | "emerald" | "amber" | "rose";
+}) {
+  const toneClass =
+    tone === "emerald"
+      ? "text-emerald-700"
+      : tone === "amber"
+        ? "text-amber-700"
+        : tone === "rose"
+          ? "text-rose-700"
+          : "text-slate-950";
+  return (
+    <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+      <span className="block text-[10px] uppercase tracking-[0.12em] text-slate-500">{label}</span>
+      <strong className={`mt-1 block text-sm font-normal leading-5 ${toneClass}`}>{value}</strong>
+    </div>
+  );
+}
+
+type RagAgreement = NonNullable<QueuePreparedProtocol["ragShadow"]>["comparison"]["agreement"];
+
+function agreementTone(agreement?: RagAgreement): "emerald" | "amber" | "rose" | "slate" {
+  if (agreement === "FULL_MATCH") return "emerald";
+  if (agreement === "PARTIAL_MATCH") return "amber";
+  if (agreement === "NO_MATCH") return "rose";
+  return "slate";
+}
+
+function agreementLabel(value: string | undefined): string {
+  if (!value) return "No shadow result";
+  return value.replace(/_/g, " ").toLowerCase();
+}
+
+function RagShadowEvidencePanel({ ragShadow }: { ragShadow?: QueuePreparedProtocol["ragShadow"] }) {
+  if (!ragShadow) {
+    return (
+      <div className="mt-4 rounded-md border border-dashed border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-500">
+        RAG shadow has not produced an advisory comparison for this reason yet. Deterministic search and nurse selection remain authoritative.
+      </div>
+    );
+  }
+
+  const agreement = ragShadow.comparison.agreement;
+  const confidence = Math.round(ragShadow.retrieval.confidence * 100);
+  const tone = agreementTone(agreement);
+  const topCandidates = ragShadow.suggestedProtocolCandidates.slice(0, 3);
+
+  return (
+    <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-3">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">RAG shadow comparison</span>
+          <p className="mt-1 text-sm leading-6 text-slate-600">
+            Runs in parallel against approved content only. It can compare retrieval and keywords, but cannot decide disposition,
+            care advice, route, or fit-to-fly status.
+          </p>
+        </div>
+        <div className="grid min-w-[260px] gap-2 sm:grid-cols-2 lg:grid-cols-1">
+          <InlineEvidence label="Agreement" value={agreementLabel(agreement)} tone={tone} />
+          <InlineEvidence label="Confidence" value={`${confidence}%`} />
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.55fr)]">
+        <div className="min-w-0 rounded-md border border-slate-200 bg-white p-3">
+          <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Shadow candidates</span>
+          <div className="mt-2 grid gap-2">
+            {topCandidates.map((candidate) => (
+              <div key={candidate.protocolId} className="flex min-w-0 items-center justify-between gap-3 border-b border-slate-100 pb-2 last:border-b-0 last:pb-0">
+                <span className="min-w-0 truncate text-sm text-slate-800">{candidate.titleEn}</span>
+                <span className="shrink-0 font-mono text-[11px] text-slate-500">{candidate.protocolId}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-md border border-slate-200 bg-white p-3">
+          <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Boundary</span>
+          <ul className="mt-2 space-y-1 text-xs leading-5 text-slate-600">
+            {ragShadow.prohibitedActionAcknowledgement.slice(0, 4).map((item) => (
+              <li key={item}>- {item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -2461,6 +2598,7 @@ function AssessmentQuestionsStage({
     .filter((question) => responses[question.id] !== undefined);
   const futureCount = activeQuestion ? Math.max(flow.length - activeIndex - 1, 0) : 0;
   const safetyLocked = emergencyReasons.length > 0 || score?.redAlertTriggered;
+  const ragShadow = prepared?.ragShadow;
 
   return (
     <StageShell
@@ -2477,6 +2615,21 @@ function AssessmentQuestionsStage({
       {safetyLocked && (
         <div className="mb-5 border-l-2 border-rose-500 pl-3 text-sm leading-6 text-rose-800">
           Emergency safety floor is active. Questions can document findings, but cannot downgrade emergency routing.
+        </div>
+      )}
+
+      {ragShadow && (
+        <div className="mb-5 rounded-md border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-600">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+            <div>
+              <span className="block text-[11px] uppercase tracking-[0.14em] text-slate-500">RAG shadow boundary</span>
+              Questions shown here come from deterministic STCC-compatible protocol content. RAG shadow may compare the selected
+              protocol with retrieval candidates, but it cannot add, remove, reorder, or answer nurse questions.
+            </div>
+            <span className={`w-fit rounded-md border px-2.5 py-1 text-xs ${agreementTone(ragShadow.comparison.agreement) === "emerald" ? "border-emerald-200 bg-emerald-50 text-emerald-700" : agreementTone(ragShadow.comparison.agreement) === "rose" ? "border-rose-200 bg-rose-50 text-rose-700" : "border-amber-200 bg-amber-50 text-amber-700"}`}>
+              {agreementLabel(ragShadow.comparison.agreement)}
+            </span>
+          </div>
         </div>
       )}
 

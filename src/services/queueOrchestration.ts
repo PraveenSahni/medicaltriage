@@ -759,10 +759,10 @@ function initialQueueRecords(): QueueRecord[] {
       safetyFloorActive: false,
       identityValidated: true,
       sbarCopied: false,
-      assignedNurseId: "demo-remote-triage-nurse",
+      assignedNurseId: "usr_nurse_10001",
       claimedAtIso: createdAtIso,
       slaDeadlineIso: deadline(11),
-      lockedBy: "demo-remote-triage-nurse",
+      lockedBy: "usr_nurse_10001",
       lockExpiresAtIso: lockDeadline(),
       customAviationTags: ["flight_deck", "outstation", "fit-to-fly"],
       createdAtIso,
@@ -971,7 +971,7 @@ function hasCompleteVitals(record: QueueRecord): boolean {
 function validateClinicalSequence(record: QueueRecord, request: QueueMoveRequest): void {
   const targetStage = request.toStage;
   const movingForward = stageIndex(targetStage) > stageIndex(record.currentStage);
-  const completing = request.toStatus === "COMPLETED" || targetStage === "SBAR";
+  const completing = request.toStatus === "COMPLETED";
 
   if (!movingForward && request.toStatus !== "COMPLETED") {
     return;

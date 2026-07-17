@@ -63,7 +63,15 @@ function splitOrigins(value?: string): string[] {
 }
 
 function missingLiveDependencies(): string[] {
-  return REQUIRED_LIVE_DEPENDENCIES.filter((dependency) =>
+  const dependencies = [...REQUIRED_LIVE_DEPENDENCIES];
+  if (envFlag("CALL_CENTER_GATEWAY_ENABLED", false)) {
+    dependencies.push(
+      { name: "Call-center gateway provider", anyOf: ["CALL_CENTER_PROVIDER"] },
+      { name: "Call-center gateway signing secret", anyOf: ["CALL_CENTER_GATEWAY_SECRET"] },
+      { name: "Call-center target organization", anyOf: ["CALL_CENTER_DEFAULT_ORGANIZATION_ID"] }
+    );
+  }
+  return dependencies.filter((dependency) =>
     dependency.anyOf.every((envName) => !process.env[envName])
   ).map((dependency) => `${dependency.name} (${dependency.anyOf.join(" or ")})`);
 }
@@ -177,6 +185,10 @@ export function runtimeModeSummary() {
     dataProfile: environment.dataProfile,
     mockMode: isMockMode(),
     persistenceMode: shouldUseDatabasePersistence() ? "postgresql" : "mock-in-memory",
+    callCenterGateway: {
+      enabled: envFlag("CALL_CENTER_GATEWAY_ENABLED", isMockMode()),
+      provider: process.env.CALL_CENTER_PROVIDER ?? (isMockMode() ? "dry-run" : "not-configured")
+    },
     allowedCorsOrigins: getAllowedCorsOrigins(),
     adminPasswordSource: process.env.ADMIN_PASSWORD ? "environment" : "mock-local-fallback"
   };
