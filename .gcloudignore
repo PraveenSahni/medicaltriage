@@ -1,0 +1,45 @@
+# Cloud Build receives only the application source required by Dockerfile.
+.gcloudignore
+.git
+.gitignore
+.github
+.agents
+.claude
+.codex
+.pnpm-store
+node_modules
+/dist/
+/dist-web/
+/coverage/
+/playwright-report/
+/test-results/
+/tmp/
+
+# Local configuration and credentials.
+.env
+.env.*
+*.log
+*.pid
+
+# Reference/licensed source material and generated datasets are never build context.
+/data/
+/New folder/
+*.pdf
+*.docx
+*.zip
+
+# Local design/reference workspaces not needed by the runtime image.
+/remix_-ist-technologies/
+/interactive dashboard style click on enable .html
+
+# The production Dockerfile does not consume these development assets.
+/design/
+/docs/
+/python/
+/scripts/
+/tests/
+/docker-compose.yml
+/jest.config.cjs
+/playwright.config.ts
+/tsconfig.test.json
+/README.md
