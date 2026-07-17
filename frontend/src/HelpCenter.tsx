@@ -1308,12 +1308,113 @@ const libraryAreas: LibraryArea[] = [
     ]
   },
   {
+    id: "english-voice-ai-initial-assessment",
+    title: "English Voice AI Initial Assessment",
+    eyebrow: "Approved audio + governed MedGemma shadow",
+    icon: PhoneCall,
+    summary:
+      "Collects the English opening and initial assessment before nurse pickup using approved prerecorded questions, streaming speech recognition, deterministic STCC sequencing, and a constrained MedGemma interpreter. The nurse receives the recording, transcript, question-by-question evidence, and exceptions for validation before clinical triage continues.",
+    framework: {
+      what:
+        "An English-only Voice AI intake flow that identifies the caller, records the required notice, captures the reason for call, follows the approved initial-assessment script, and prepares a nurse-validation worksheet.",
+      why:
+        "The fixed clinical wording remains consistent while callers can answer naturally. Nurses validate structured evidence faster than repeating every opening question, but clinical authority, guideline confirmation, triage questions, disposition, and care advice remain human controlled.",
+      how: [
+        "Play versioned, clinically approved English audio and use voice-activity detection so caller speech pauses playback instead of being talked over.",
+        "Stream the caller response to speech-to-text, then use MedGemma only to extract structured facts and rank identifiers from the approved active protocol package.",
+        "Persist each question ID, audio version, transcript span, extracted answer, confidence, exception, and model version for nurse review; never let the model invent a question or disposition."
+      ]
+    },
+    usedBy: [
+      "future VoiceCallSession",
+      "future VoiceAssessmentTurn",
+      "approved ClinicalAudioAsset registry",
+      "STCC-compatible initialAssessmentQuestions",
+      "bounded MedGemma interpretation adapter",
+      "future nurse voice-validation workspace",
+      "RagRetrievalEvent",
+      "LlmShadowSuggestion",
+      "SafetyBlockedOutput"
+    ],
+    details: [
+      "The authoritative path is state controlled: CALL_OFFERED, RECORDING_NOTICE, IDENTITY_VALIDATION, REASON_CAPTURE, GUIDELINE_PREPARATION, INITIAL_ASSESSMENT, NURSE_VALIDATION_PENDING, NURSE_TRIAGE_ACTIVE, DISPOSITION_APPROVAL, and COMPLETE.",
+      "Employee identity is resolved from the registered phone number when possible. Otherwise the caller enters the employee ID and PIN. A dependent relationship is confirmed before any protected clinical context enters the queue.",
+      "The system plays the approved recording notice and opening script, records acknowledgement or the configured lawful basis, and stores the call reference and recording URI under the Qatar-hosted retention policy.",
+      "The reason for call is captured in the caller's own words. Deterministic search-word matching prepares one or more eligible STCC-compatible guideline candidates. MedGemma may independently extract reason terms and rank only those approved candidates for shadow comparison.",
+      "Initial assessment questions come from the selected, versioned protocol release. Each question has an approved English text and audio asset. The orchestration service chooses the next question by source order and configured branching; MedGemma does not choose or rewrite it.",
+      "Voice activity detection supports barge-in. Caller speech pauses or stops playback, the response is captured, and the question is replayed or transferred to a nurse when the answer is incomplete, contradictory, repeated, low-confidence, distressed, or requests a person.",
+      "Streaming speech-to-text creates timestamped transcript spans. MedGemma receives the minimum necessary transcript plus approved protocol context and returns structured observations, missing fields, uncertainty, and approved candidate IDs. It cannot diagnose, determine disposition, generate care advice, or clear fit-to-fly.",
+      "Emergency words or structured danger signals invoke the deterministic safety service immediately. A possible emergency stops routine automation and transfers or prioritizes the call; the model cannot suppress or downgrade that action.",
+      "Before nurse clinical work begins, the validation worksheet shows every question, approved wording, played audio version, transcript excerpt, interpreted answer, confidence, correction control, and exception. Nurse corrections are appended as audit evidence and never silently overwrite the original transcript.",
+      "The nurse confirms or changes the guideline and then completes the authoritative high-acuity-first triage questions. Disposition, local Qatar route, care advice, SBAR, fit-to-fly status, and closure remain deterministic and clinician approved.",
+      "English is the only Voice AI language in the current scope. Arabic voice assets, Arabic speech recognition, translation, and bilingual voice validation require a separate governed release."
+    ],
+    helps: [
+      {
+        title: "Consistent caller intake",
+        body:
+          "Approved recordings preserve question wording and pronunciation while barge-in and recovery rules keep the conversation usable for natural callers."
+      },
+      {
+        title: "Faster nurse validation",
+        body:
+          "The nurse reviews aligned recording, transcript, structured answer, confidence, and exceptions instead of repeating a complete opening assessment."
+      },
+      {
+        title: "Defensible clinical boundary",
+        body:
+          "STCC-compatible content, deterministic branching, emergency floors, and nurse approval remain authoritative; MedGemma operates only as an evidence interpreter and shadow comparator."
+      },
+      {
+        title: "Governed learning evidence",
+        body:
+          "Corrections create de-identified or synthetic training candidates with protocol, model, prompt, audio, transcript, and approval lineage for offline evaluation."
+      }
+    ],
+    usefulFor: [
+      {
+        title: "Caller",
+        body:
+          "Receives a predictable English opening assessment, can interrupt naturally, and can request a nurse at any time."
+      },
+      {
+        title: "Remote Triage Nurse",
+        body:
+          "Validates every collected answer and exception before taking responsibility for guideline selection and clinical triage."
+      },
+      {
+        title: "Clinical Governance",
+        body:
+          "Approves question audio, recovery scripts, model boundaries, emergency transfer rules, and release scorecards."
+      },
+      {
+        title: "AI/ML and Integration Teams",
+        body:
+          "Implement a provider-neutral voice state machine, STT adapter, bounded MedGemma contract, model registry, and auditable offline training pipeline."
+      }
+    ],
+    exampleFlow: [
+      "A call is offered and linked to a registered employee phone number, or the caller supplies employee ID and PIN; dependent access is validated when applicable.",
+      "The system plays the approved recording notice and opening script, captures acknowledgement, and creates the governed call session.",
+      "The caller states the reason for call; streaming speech-to-text produces a timestamped transcript.",
+      "Deterministic search words prepare approved guideline candidates while MedGemma independently extracts structured reason terms and ranks only those candidates in shadow mode.",
+      "The orchestration service selects the source-approved initial assessment question and plays its versioned English audio asset.",
+      "If the caller speaks during playback, voice activity detection stops or pauses the prompt and captures the answer without treating the overlap as silence.",
+      "MedGemma returns a structured interpretation with transcript evidence, approved field or candidate IDs, confidence, uncertainty, and missing information; invalid or out-of-bound output is blocked.",
+      "A low-confidence, contradictory, distressed, emergency, disconnected, or human-requested turn moves to the configured recovery or nurse-transfer path.",
+      "When the approved initial assessment is complete, the case enters NURSE_VALIDATION_PENDING with the recording, transcript, question-answer trace, and model evidence.",
+      "The nurse validates or corrects every answer, confirms or changes the guideline, and accepts responsibility for the clinical encounter.",
+      "The nurse completes deterministic high-acuity-first triage questions, approves disposition and Qatar route, provides care advice, and closes the SBAR record.",
+      "De-identified or synthetic correction evidence is reviewed offline for evaluation or adapter training; no live call updates the model automatically."
+    ]
+  },
+  {
     id: "llm-copilot-cloud",
     title: "LLM Copilot and MedGemma Cloud Strategy",
     eyebrow: "Rules-first AI-second",
     icon: BrainCircuit,
     summary:
-      "Defines how the system should use MedGemma or another approved clinical LLM for explanation, summarization, bilingual drafting, and SBAR assistance without handing over clinical decision authority.",
+      "Defines how the system should use MedGemma for constrained Voice AI interpretation, approved-protocol candidate ranking, explanation, summarization, and SBAR assistance without handing over question sequencing or clinical decision authority.",
     usedBy: [
       "LLM-ready JSONL simulation exports",
       "python/run_bulk_clinical_simulation.py",
@@ -1325,11 +1426,14 @@ const libraryAreas: LibraryArea[] = [
     details: [
       "Current state: the platform has synthetic LLM-ready data, safety wrappers, and help governance. It does not yet have a live MedGemma endpoint, training job, provider credentials, model registry, or production inference adapter.",
       "MedGemma should be treated as a developer model that needs validation, adaptation, and independent clinical verification for the IST Health tele-triage use case.",
-      "The LLM is allowed to explain why the deterministic engine routed a case, draft SBAR/SOAP text, flag missing approved protocol questions or context, summarize prior CCP threads, and support bilingual wording.",
+      "The LLM is allowed to interpret caller language into an approved structured schema, extract reason terms and initial-assessment facts, rank approved protocol or answer identifiers, explain deterministic routing, draft SBAR/SOAP text, flag missing context, and summarize prior CCP threads.",
       "The LLM is not allowed to diagnose, approve or downgrade a disposition, approve fit-to-duty, approve sickness leave, bypass pediatric/adult red floors, or send WhatsApp/SMS/email without Remote Triage Nurse approval.",
+      "MedGemma must not memorize, reproduce, rewrite, or autonomously execute licensed STCC content. At runtime it receives only the minimum approved context required for interpretation, and the deterministic orchestration service chooses the next question.",
       "MVP approach: evaluation-first using synthetic data, prompt engineering, retrieval of governed protocol context, and optional low-cost quantized inference for non-authoritative drafting.",
       "Cloud approach: private GCP Doha deployment in me-central1 after confirming service/accelerator availability, with private GKE or approved Vertex AI custom endpoint, IAM, KMS, audit logging, logging redaction, VPC Service Controls, and model-version governance.",
-      "Training approach: do not fine-tune on live PHI by default. Use synthetic or formally de-identified data, split train/validation/test sets, maintain dataset lineage, and require clinical/DPO/security approval before any tuning job.",
+      "Training approach: adapt a small MedGemma adapter only for structured extraction, uncertainty detection, contradiction detection, caller-intent classification, and approved-ID ranking. Use synthetic or formally de-identified data, split by caller and scenario, maintain dataset lineage, and require clinical, privacy, security, and content-rights approval before any tuning job.",
+      "Live calls never perform online learning. Nurse corrections enter a quarantined feedback ledger, then pass de-identification, quality review, adjudication, duplicate and leakage checks, release evaluation, and explicit promotion before a future adapter can use them.",
+      "Every adapter release records base model, adapter version, tokenizer, prompt/template version, approved corpus release, dataset manifest, metrics, known limitations, approvers, deployment target, and rollback predecessor.",
       "Operational guardrail: deterministic safety wrappers remain outside the model so a prompt change, fine-tune, or model upgrade cannot change the emergency floor."
     ],
     helps: [
@@ -1346,7 +1450,12 @@ const libraryAreas: LibraryArea[] = [
       {
         title: "How synthetic data is used",
         body:
-          "The 100-record and future 1M-record synthetic runs provide evaluation and tuning material covering children, dependents, female health, pregnancy red flags, male health, aviation duty, heat, dust, and Qatar seasonal context without using real PHI."
+          "Synthetic and governed de-identified rows provide extraction, uncertainty, interruption, contradiction, pediatric, sex-specific, aviation, heat, dust, and Qatar seasonal scenarios without teaching the model to reproduce protected protocol text."
+      },
+      {
+        title: "How MedGemma is trained",
+        body:
+          "A versioned adapter is trained offline on approved structured labels, not live calls. It must pass locked safety, hallucination, approved-ID, subgroup, latency, and regression tests before shadow deployment."
       },
       {
         title: "How cloud migration works",
@@ -1382,13 +1491,16 @@ const libraryAreas: LibraryArea[] = [
       }
     ],
     exampleFlow: [
-      "Generate or import synthetic LLM-ready rows and split them into train, validation, and test sets.",
-      "Run offline evaluation to check that the model explains the deterministic route without downgrading severity.",
-      "Add a backend LLM adapter in dry-run mode and display outputs as advisory draft content only.",
-      "Pilot quantized inference for non-PHI or synthetic payloads if the MVP needs local model behavior before cloud hosting.",
-      "For cloud UAT, deploy a private model endpoint in GCP Doha and connect it through the backend adapter.",
-      "Run clinical, privacy, security, and performance scorecards before enabling live nurse-facing assistance.",
-      "Keep nurse approval, safety-floor wrappers, CCP outbound gates, and audit logging outside the model."
+      "Confirm that protocol licensing permits the intended retrieval, labeling, evaluation, and adaptation uses; do not include protected content in training until approved.",
+      "Create synthetic and formally de-identified examples for reason extraction, initial-assessment fact extraction, approved-ID ranking, uncertainty, contradiction, interruption, and transfer intent.",
+      "Adjudicate labels, remove duplicates, split by caller and scenario to prevent leakage, and freeze train, validation, and locked test manifests.",
+      "Establish the untuned MedGemma baseline, then train a versioned adapter only on the approved structured-output tasks.",
+      "Evaluate schema validity, evidence grounding, approved-ID accuracy, hallucinated content, emergency recall, uncertainty calibration, subgroup performance, latency, and deterministic no-downgrade behavior.",
+      "Register the approved adapter, prompt, corpus, dataset, metrics, limitations, approvers, and rollback predecessor in the model registry.",
+      "Deploy behind the backend adapter in synthetic-only mode, then silent shadow mode on approved calls; never let output directly choose questions or dispositions.",
+      "Route nurse corrections to a quarantined learning ledger for offline review; no online update occurs during or after a live call.",
+      "Promote a new adapter only after clinical, privacy, security, content-rights, integration, and release-governance approval.",
+      "Keep deterministic sequencing, emergency floors, nurse approval, CCP outbound gates, and immutable audit evidence outside the model."
     ]
   },
   {

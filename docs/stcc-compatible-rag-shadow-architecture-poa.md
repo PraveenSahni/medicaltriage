@@ -246,6 +246,119 @@ The following early activities can run in parallel while preserving clinical saf
 | Keyword/search-word match | searches approved STCC keyword index | reviews suggested protocols | retrieves only from approved STCC-bounded corpus | compare ranked candidates and reasons |
 | Guideline selection | presents candidate protocols with age/sex/mode filters | selects final guideline | suggests likely guideline with citations/source IDs | mark full match, partial match, or disagreement |
 
+### 5.1 English Voice AI Initial Assessment Authority
+
+The English Voice AI is a governed collection channel, not an autonomous triage clinician. The authority order is fixed:
+
+1. The active, approved STCC release supplies the exact clinical question text, question order, answer schema, and permitted next question IDs.
+2. Deterministic identity, eligibility, safety-floor, protocol, and workflow services decide whether the encounter can advance.
+3. Prerecorded approved English audio presents fixed clinical questions without changing their wording.
+4. Streaming speech-to-text captures the caller's response.
+5. MedGemma interprets the response into a constrained structured answer and may suggest search terms or protocol/question IDs in shadow mode.
+6. The deterministic engine validates the structured output against the active protocol and safety rules.
+7. A Remote Triage Nurse reviews the recording, transcript, extracted answers, evidence, and exceptions before confirming guideline, detailed triage, disposition, care advice, or closure.
+
+Arabic voice interaction is deferred from this phase. English audio, transcript, model, and evaluation assets must therefore be explicitly tagged `en` rather than implying bilingual voice readiness.
+
+### 5.2 End-to-End Voice State Machine
+
+```text
+CALL_OFFERED
+  -> RECORDING_NOTICE
+  -> IDENTITY_VALIDATION
+  -> REASON_CAPTURE
+  -> GUIDELINE_PREPARATION
+  -> INITIAL_ASSESSMENT
+  -> NURSE_VALIDATION_PENDING
+  -> NURSE_TRIAGE_ACTIVE
+  -> DISPOSITION_APPROVAL
+  -> COMPLETE
+```
+
+Exception states are `IDENTITY_EXCEPTION`, `STT_UNCERTAIN`, `CALL_DISCONNECTED`, `HUMAN_REQUESTED`, and `EMERGENCY_TRANSFER`. Every transition must carry the call ID, encounter ID, actor, timestamp, source event ID, protocol release where applicable, and an idempotency key.
+
+### 5.3 Complete English Voice AI Flow
+
+| Stage | Automated activity | MedGemma boundary | Nurse responsibility | Required evidence |
+| --- | --- | --- | --- | --- |
+| Call offered | Provider-neutral gateway creates or updates one queue case. | No clinical inference. | Accept the call or callback when assigned. | provider event ID, queue ID, channel, timestamp, recording policy |
+| Recording notice | Play approved greeting and recording notice before clinical collection. | No rewriting of the legal/operational notice. | Take over immediately if the caller objects or requests a person. | notice version, playback result, caller response |
+| Identity validation | Match registered phone where permitted; otherwise collect employee ID and PIN, select employee/dependent, obtain DOB from HRMS, and calculate age. | May extract caller-stated identity only; cannot establish identity. | Resolve exceptions and confirm the selected person where needed. Emergency help must not be withheld for failed identity. | HRMS source, subject ID, DOB hash/reference, calculated age, validation result |
+| Reason capture | Ask the approved open reason-for-call prompt, record audio, and stream speech-to-text. Deterministic search words and bounded RAG independently rank candidates. | Extract symptom, body part, duration, onset, caller language, and possible red-flag phrases into a strict schema. Candidate matching remains provisional. | Review or clarify the reason and confirm the selected guideline. | audio segment, transcript, extracted terms, candidate IDs, scores, citations |
+| Guideline preparation | Apply age, sex, mode, release, status, and search-word filters to approved content only. | Recommend only permitted protocol IDs with approved citations; return no-match when evidence is insufficient. | Select or confirm the guideline; resolve ambiguity. | protocol/release IDs, matched search words, deterministic rank, RAG rank, nurse choice |
+| Initial assessment | Play each approved prerecorded STCC initial-assessment question by question ID and release. | Interpret the caller response into the allowed answer schema; do not rewrite, skip, reorder, or invent a question. | Validate each question and response before the initial-assessment record is accepted. | question/audio versions, transcript span, structured answer, confidence, interruption flag |
+| Interruption handling | Voice activity detection pauses or stops playback and captures barge-in speech. Classify it as an answer, emergency statement, clarification, repeat request, human request, or unrelated/unclear speech. | Produce only the constrained classification and structured fields. | Take over when confidence is low, meaning conflicts, or the caller requests a human. | VAD events, playback offset, classification, confidence, retry/escalation result |
+| Confirmation | Repeat a clear interpreted answer using a fixed confirmation template. Re-ask an unclear answer once, then route to the nurse. Partial or low-confidence answers do not advance. | May fill the constrained confirmation variables; cannot decide that uncertainty is clinically safe. | Confirm or correct the answer. | confirmation prompt/version, caller confirmation, corrections |
+| Continuous emergency monitoring | Run deterministic emergency phrase and safety-floor checks after every transcript update and structured answer. Stop automation and transfer/escalate when triggered. | May flag possible emergency terms for deterministic evaluation; cannot suppress or downgrade a trigger. | Continue emergency handoff and document the outcome. | trigger IDs, source transcript spans, rule result, transfer result |
+| Nurse validation | Present recording, synchronized transcript, HRMS identity/age, reason, candidate evidence, each question/answer, confidence, interruptions, contradictions, and emergency findings. | Shadow output remains visibly preliminary. | Accept, correct, re-ask, or reject every item; confirm the guideline. | per-item validation decision, nurse ID, timestamp, correction reason |
+| Detailed triage | After validation, run the acuity-ordered STCC triage assessment in the nurse workspace. Approved audio may play a question while the nurse controls the encounter. | May interpret answers and flag contradictions; cannot select the disposition. | Ask/validate the active question. The first confirmed Yes fixes the provisional disposition; No unlocks the next approved item. | question path, answers, rule trace, nurse actions |
+| Completion | Deterministic engine provides disposition, mapped care advice, Qatar route, fit-to-fly overlay, and callback precautions. Generate SBAR/SOAP and close or hand off. | May draft a grounded summary from validated fields only. | Approve disposition, care advice, destination, fit-to-fly status, note, and closing script. | final rule trace, approvals, note diff, recording/transcript references, audit closure |
+
+### 5.4 Prerecorded Clinical Audio Governance
+
+Prerecorded audio is preferred for fixed STCC clinical questions because it preserves approved wording, stable pronunciation, predictable latency, reproducible playback, and release-level auditability. It does not replace speech-to-text for caller responses.
+
+Runtime text-to-speech may be used only for approved dynamic administrative phrases or constrained confirmation templates. It must not paraphrase STCC clinical questions. Each clinical audio asset requires:
+
+- `protocol_release_id`
+- `question_id`
+- `language`
+- `audio_version`
+- `clinical_text_checksum`
+- `speaker_or_voice_id`
+- `approval_status`
+- `approved_by`
+- `approved_at`
+- `storage_uri`
+
+The STCC license review must explicitly confirm whether audio rendition, RAG indexing, embeddings, model evaluation, and ML adaptation are permitted.
+
+### 5.5 MedGemma Runtime Contract
+
+MedGemma is a clinical-language interpreter and bounded RAG shadow. It may:
+
+- normalize reason-for-call language and recommend approved search words;
+- map natural speech to structured fields such as Yes/No, pain score, duration, location, onset, and aggravating factors;
+- detect that a caller already answered an approved question;
+- flag contradictions, missing context, and possible emergency phrases;
+- recommend permitted protocol/question IDs with approved citations;
+- draft a nurse summary from validated facts.
+
+It may not memorize or independently execute STCC, recall licensed question text from model weights, rewrite questions, skip or reorder mandatory questions, set or downgrade a safety floor, approve a disposition, invent care advice, or learn online from a live call.
+
+Example constrained output:
+
+```json
+{
+  "active_question_id": "ABD-M-IQ-006",
+  "answer": {
+    "pain_score": 8,
+    "severity": "SEVERE"
+  },
+  "confidence": 0.97,
+  "emergency_terms_detected": ["doubled over"],
+  "recommended_action": "RUN_SAFETY_RULES"
+}
+```
+
+The backend rejects unknown fields, unknown IDs, unsupported answer values, missing source lineage, and any requested action outside the allowlist.
+
+### 5.6 MedGemma Adaptation and Training Lifecycle
+
+Do not train MedGemma to reproduce the STCC corpus. Fine-tune a versioned adapter, such as LoRA, only for constrained clinical-language interpretation after rights and governance approval.
+
+1. Confirm rights for model evaluation, derived labels, embeddings, audio, and training. Do not place verbatim licensed STCC text into model weights unless the license explicitly permits model derivatives.
+2. Build synthetic or formally de-identified examples containing transcript context, active protocol release/question ID, allowed answer schema, expected structured output, permitted action label, and nurse correction label.
+3. Split train, validation, and test data by patient/call/protocol family to prevent leakage. Keep a separate immutable, train-free safety evaluation set.
+4. Fine-tune a versioned adapter for extraction, classification, contradiction detection, and approved ID ranking, not clinical authority.
+5. Evaluate structured-field accuracy, protocol top-k recall, no-match precision, emergency-phrase recall, contradiction detection, unsupported-output rate, subgroup performance, latency, and fail-closed behavior.
+6. Require clinician, privacy, security, and AI governance review. Register base model, adapter, dataset manifest, code version, prompt/tool schema, metrics, intended use, limitations, and rollback version.
+7. Deploy in shadow mode behind a private backend adapter. Compare MedGemma, deterministic engine, and nurse decisions without allowing model output to change clinical state.
+8. Capture nurse corrections as governed labels only after de-identification and review. Retraining and promotion are offline, versioned, approved events; there is no automatic online learning.
+9. Roll back through a feature flag and registered model/adapter version whenever safety, drift, performance, or availability thresholds fail.
+
+Runtime context must supply the active release, exact approved question, allowed answer schema, permitted next IDs, deterministic safety rules, and only the minimum approved retrieval context. If the model or speech service is unavailable, the encounter remains usable as a nurse-led deterministic workflow.
+
 ## 6. RAG Boundary
 
 ### Allowed Retrieval Sources
@@ -398,6 +511,19 @@ Model metrics:
 | F5 | Define cloud deployment controls | GCP Doha private endpoint, IAM, KMS, audit logs, and VPC controls are planned |
 | F6 | Define rollback plan | failed import, unsafe model output, or bad release can be reverted |
 
+### Workstream G: English Voice AI and MedGemma Adaptation
+
+| Task | Activity | Acceptance criteria |
+| --- | --- | --- |
+| G1 | Implement the governed voice state machine | every normal and exception transition is idempotent, auditable, resumable, and cannot bypass nurse validation |
+| G2 | Build approved English audio registry | each fixed clinical prompt is linked to question/release/checksum, approved, versioned, and license-permitted |
+| G3 | Add streaming STT and barge-in handling | caller interruption pauses playback, captures the full utterance, and never advances on partial or low-confidence text |
+| G4 | Add constrained MedGemma interpreter contract | model output is schema-validated, ID-bounded, source-grounded, and rejected when unsupported or unsafe |
+| G5 | Add nurse transcript validation workspace | nurse can play synchronized audio and accept, correct, reject, or re-ask every initial-assessment answer |
+| G6 | Build governed adaptation dataset | synthetic/de-identified rows, leakage-safe splits, immutable safety set, dataset card, and rights approval exist |
+| G7 | Fine-tune and register a MedGemma adapter | adapter targets extraction/classification only and includes model, data, code, metric, limitation, and rollback lineage |
+| G8 | Run shadow comparison and safety UAT | Chrome/API/call journeys cover interruptions, uncertainty, disconnection, emergency transfer, model outage, and nurse correction with zero unsafe advancement |
+
 ## 10. Suggested Delivery Milestones
 
 ### Milestone 1: Design Lock
@@ -424,6 +550,15 @@ Model metrics:
 - export learning events
 - block unsafe outputs
 
+### Milestone 3A: English Voice AI Shadow Pilot
+
+- approve English recording notice, prompts, and clinical audio assets
+- run streaming STT, barge-in, confirmation, uncertainty, and transfer flows
+- deploy the MedGemma interpreter adapter in shadow-only mode
+- show synchronized transcript and per-answer validation to the nurse
+- prove deterministic STCC ordering and safety floors remain authoritative
+- prove nurse-led fallback when voice, speech, retrieval, or model services fail
+
 ### Milestone 4: Clinical UAT
 
 - run adult and pediatric pathways
@@ -449,6 +584,9 @@ Model metrics:
 5. What exact nurse correction reason taxonomy should drive learning.
 6. Which model provider will be used for dry-run RAG and later GCP Doha deployment.
 7. What minimum model scorecard is required before any UAT demonstration.
+8. Whether the STCC license permits approved audio renditions, embeddings, evaluation rows, derived labels, and any model adaptation.
+9. Which English voice, recording notice, retry policy, uncertainty threshold, and emergency-transfer phrase set Clinical Governance approves.
+10. Which speech, model-serving, and accelerator capabilities are available in `me-central1`, including quota, latency, failover, and data-residency constraints.
 
 ## 12. Current Definition of Done
 
@@ -460,5 +598,7 @@ This architecture has moved past design lock. The next definition of done is imp
 - LLM output is advisory, cited, logged, and blocked from clinical authority.
 - Nurse workflow remains simple and action-based.
 - Help/Library explains STCC structure, RAG shadow mode, role responsibilities, privacy, audit, and safety floors.
+- Help/Library explains the English Voice AI state machine, prerecorded clinical audio, interruption handling, nurse transcript validation, and MedGemma adaptation boundary.
+- MedGemma is trained only for constrained language interpretation, remains shadow-only until governed promotion, and cannot reproduce or execute STCC from model weights.
 - Importer work can populate references, supplementals, first aid, taxonomy, telemedicine flags, source hashes, and comparison ledgers.
 - Test plan includes positive and negative role, safety, protocol, care advice, importer, and AI/ML cases.
