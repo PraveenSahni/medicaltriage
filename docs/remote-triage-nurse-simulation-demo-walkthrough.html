@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IST Health | Remote Triage Nurse Simulation Demo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #0a1f44;
+      --navy-dark: #071428;
+      --gold: #c9a66b;
+      --gold-muted: #f7f1e8;
+      --ink: #17243a;
+      --secondary: #4a5568;
+      --muted: #7a8494;
+      --line: #d8dce2;
+      --soft: #f7f8fa;
+      --success: #1f6b4a;
+      --success-bg: #eef8f3;
+      --danger: #8b1e2f;
+      --danger-bg: #fff1f3;
+      --warning: #8a5a00;
+      --warning-bg: #fff8e8;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: #ffffff;
+      color: var(--ink);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 1.58;
+      font-weight: 400;
+    }
+
+    a { color: var(--navy); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    a:hover { opacity: 0.65; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 72px;
+      padding: 12px 5vw;
+      background: rgba(255, 255, 255, 0.97);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      color: var(--navy);
+      font-family: Georgia, serif;
+      font-size: 18px;
+    }
+    .brand-name { color: var(--navy); font-size: 17px; }
+    .brand-subtitle { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; }
+    .topbar-link {
+      white-space: nowrap;
+      color: var(--navy);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    main { width: min(1440px, 92vw); margin: 0 auto; padding: 64px 0 96px; }
+
+    .eyebrow,
+    .section-label,
+    .meta-label {
+      color: var(--gold);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 980px; margin-bottom: 18px; color: var(--navy); font-size: clamp(34px, 5vw, 56px); line-height: 1.07; font-weight: 400; }
+    h2 { margin-bottom: 12px; color: var(--navy); font-size: clamp(26px, 3vw, 38px); line-height: 1.16; font-weight: 400; }
+    h3 { margin-bottom: 8px; color: var(--navy); font-size: 21px; line-height: 1.28; font-weight: 400; }
+    p { color: var(--secondary); }
+
+    .hero { padding-bottom: 48px; border-bottom: 1px solid var(--line); }
+    .hero-copy { max-width: 880px; font-size: 18px; }
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: 36px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-meta > div { min-height: 104px; padding: 20px 22px; border-right: 1px solid var(--line); }
+    .hero-meta > div:last-child { border-right: 0; }
+    .meta-value { display: block; margin-top: 8px; color: var(--navy); font-size: 18px; }
+
+    .notice {
+      margin-top: 28px;
+      padding: 18px 20px;
+      border-left: 4px solid var(--gold);
+      background: var(--gold-muted);
+      color: var(--secondary);
+    }
+
+    .overview {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      padding: 56px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .checklist,
+    .run-list { margin: 18px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+    .checklist li,
+    .run-list li { display: grid; grid-template-columns: 38px 1fr; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .checklist strong,
+    .run-list strong { color: var(--navy); font-weight: 400; }
+    .index { color: var(--gold); font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; }
+
+    .steps { padding-top: 64px; }
+    .steps-intro { max-width: 820px; margin-bottom: 42px; }
+
+    .step {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.8fr);
+      gap: 42px;
+      padding: 46px 0 58px;
+      border-top: 1px solid var(--line);
+    }
+
+    .step:first-of-type { border-top: 0; }
+    .step-number { margin-bottom: 10px; color: var(--gold); font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: 13px; letter-spacing: 0.1em; }
+    .step-purpose { max-width: 760px; margin-bottom: 24px; }
+
+    figure { margin: 0; }
+    .screen {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--line);
+      background: var(--soft);
+    }
+    figcaption { margin-top: 10px; color: var(--muted); font-size: 12px; }
+
+    .talk-track { display: grid; align-content: start; gap: 24px; }
+    .talk-block { padding-left: 18px; border-left: 4px solid var(--navy); }
+    .talk-block.gold { border-left-color: var(--gold); }
+    .talk-block.green { border-left-color: var(--success); }
+    .talk-block.red { border-left-color: var(--danger); }
+    .talk-block h3 { font-size: 16px; }
+    .talk-block p:last-child,
+    .talk-block ul:last-child { margin-bottom: 0; }
+    .talk-block ul { margin: 0; padding-left: 20px; color: var(--secondary); }
+    .talk-block li + li { margin-top: 7px; }
+
+    .say {
+      padding: 18px 20px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      color: var(--navy);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 17px;
+    }
+
+    .outcomes {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      margin: 58px 0 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .outcome { padding: 24px; border-right: 1px solid var(--line); }
+    .outcome:last-child { border-right: 0; }
+    .outcome strong { display: block; margin-bottom: 8px; color: var(--navy); font-size: 18px; font-weight: 400; }
+
+    .boundary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      margin-top: 64px;
+      padding-top: 48px;
+      border-top: 1px solid var(--line);
+    }
+    .boundary-list { margin: 16px 0 0; padding: 0; list-style: none; }
+    .boundary-list li { padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--secondary); }
+    .status { display: inline-block; min-width: 82px; margin-right: 10px; color: var(--success); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .status.pending { color: var(--warning); }
+
+    footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+
+    @media (max-width: 980px) {
+      .hero-meta { grid-template-columns: 1fr 1fr; }
+      .hero-meta > div:nth-child(2) { border-right: 0; }
+      .hero-meta > div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+      .overview, .step, .boundary { grid-template-columns: 1fr; }
+      .step { gap: 28px; }
+      .outcomes { grid-template-columns: 1fr; }
+      .outcome { border-right: 0; border-bottom: 1px solid var(--line); }
+      .outcome:last-child { border-bottom: 0; }
+    }
+
+    @media (max-width: 620px) {
+      .topbar { align-items: flex-start; padding-inline: 20px; }
+      .brand-subtitle, .topbar-link { display: none; }
+      main { width: min(100% - 32px, 1440px); padding-top: 42px; }
+      .hero-meta { grid-template-columns: 1fr; }
+      .hero-meta > div { border-right: 0; border-bottom: 1px solid var(--line); }
+      .hero-meta > div:last-child { border-bottom: 0; }
+      .overview { gap: 30px; }
+      .step { padding-block: 36px; }
+    }
+
+    @media print {
+      .topbar { position: static; }
+      main { width: 100%; padding: 32px 0; }
+      .step { break-inside: avoid; grid-template-columns: 1.15fr 0.85fr; }
+      a { text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">IST</div>
+      <div>
+        <div class="brand-name">IST Health</div>
+        <div class="brand-subtitle">Simulation product demonstration</div>
+      </div>
+    </div>
+    <a class="topbar-link" href="https://triages.irisstar.tech" target="_blank" rel="noreferrer">Open simulation</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">B - Business and Clinical Operations</div>
+      <h1>Remote Triage Nurse simulation walkthrough</h1>
+      <p class="hero-copy">A presenter-ready, screen-by-screen demonstration of how a remote triage nurse accepts one call, applies deterministic emergency safety rules, follows acuity-ordered clinical questions, confirms the Qatar disposition and fit-to-fly result, and produces an auditable SBAR handoff.</p>
+
+      <div class="hero-meta" aria-label="Demonstration summary">
+        <div><span class="meta-label">Audience</span><span class="meta-value">Business and clinical operations</span></div>
+        <div><span class="meta-label">Primary role</span><span class="meta-value">Remote Triage Nurse</span></div>
+        <div><span class="meta-label">Environment</span><span class="meta-value">Simulation, synthetic data only</span></div>
+        <div><span class="meta-label">Recommended time</span><span class="meta-value">15 to 18 minutes</span></div>
+      </div>
+
+      <div class="notice"><strong>Demo boundary:</strong> The walkthrough demonstrates the implemented rules-first clinical workflow. It must not be described as autonomous diagnosis, production STCC content, live call-center connectivity, or a substitute for nurse approval.</div>
+    </section>
+
+    <section class="overview">
+      <div>
+        <div class="section-label">Before the audience joins</div>
+        <h2>Pre-demo checklist</h2>
+        <ul class="checklist">
+          <li><span class="index">01</span><span>Open <a href="https://triages.irisstar.tech" target="_blank" rel="noreferrer">triages.irisstar.tech</a> and confirm the gold <strong>SIMULATION</strong> banner is visible.</span></li>
+          <li><span class="index">02</span><span>Select <strong>B - Remote Triage Nurse</strong>. The simulation profile populates the assigned role and demo credentials.</span></li>
+          <li><span class="index">03</span><span>Sign in and verify the Step cockpit loads with queue records. Keep the browser at 100% zoom.</span></li>
+          <li><span class="index">04</span><span>Use the emergency chest-tightness call for a predictable safety-floor demonstration.</span></li>
+          <li><span class="index">05</span><span>Do not present synthetic protocols as licensed STCC content. Use “STCC-compatible workflow structure” throughout.</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="section-label">Presenter sequence</div>
+        <h2>Eight-screen narrative</h2>
+        <ol class="run-list">
+          <li><span class="index">01</span><span><strong>Simulation boundary</strong><br>Show the environment and named-user role selection.</span></li>
+          <li><span class="index">02</span><span><strong>One active call</strong><br>Open a single queue item and establish nurse ownership.</span></li>
+          <li><span class="index">03</span><span><strong>Reason and rule-out</strong><br>Confirm HRMS context, search terms, and emergency floor.</span></li>
+          <li><span class="index">04</span><span><strong>High-acuity first</strong><br>Show one deterministic question at a time.</span></li>
+          <li><span class="index">05</span><span><strong>Question progression</strong><br>Demonstrate that No unlocks the next item and Yes fixes disposition.</span></li>
+          <li><span class="index">06</span><span><strong>Qatar disposition</strong><br>Confirm facility route, safety rationale, and fit-to-fly restriction.</span></li>
+          <li><span class="index">07</span><span><strong>SBAR and completion</strong><br>Review the structured handoff and nurse accountability.</span></li>
+          <li><span class="index">08</span><span><strong>Close on value</strong><br>Summarize safety, speed, traceability, and operational continuity.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="steps">
+      <div class="steps-intro">
+        <div class="section-label">Live demonstration script</div>
+        <h2>Remote Triage Nurse journey</h2>
+        <p>Each screen includes the exact presenter action, suggested speaking points, proof to highlight, and a note to prevent overstatement.</p>
+      </div>
+
+      <article class="step" id="step-1">
+        <div>
+          <div class="step-number">SCREEN 01 / SIMULATION ENTRY</div>
+          <h2>Establish a safe demonstration boundary</h2>
+          <p class="step-purpose">Begin by making it explicit that every visible patient and queue record is synthetic and that the role is a named simulation user.</p>
+          <figure>
+            <img class="screen" src="assets/business-clinical-operations-demo/01-simulation-login.png" alt="IST Health simulation login screen">
+            <figcaption>Simulation login and environment banner.</figcaption>
+          </figure>
+        </div>
+        <div class="talk-track">
+          <div class="talk-block gold"><h3>Presenter action</h3><p>Point to the SIMULATION banner, organization, language, and named-user selector. Do not sign in as Platform Administrator for this journey.</p></div>
+          <div class="say">“We are using a governed simulation environment with synthetic records only. The user’s assigned role determines the screens, actions, and data they can access.”</div>
+          <div class="talk-block"><h3>What to validate</h3><ul><li>Simulation banner is visible.</li><li>No PHI is used.</li><li>Role is attached to a named user rather than chosen after login.</li></ul></div>
+          <div class="talk-block red"><h3>Presenter note</h3><p>Do not describe the simulation selector as the production authentication model. Production will use managed identity and SSO policy.</p></div>
+        </div>
+      </article>
+
+      <article class="step" id="step-2">
+        <div>
+          <div class="step-number">SCREEN 02 / NURSE ACCESS</div>
+          <h2>Select the Remote Triage Nurse profile</h2>
+          <p class="step-purpose">Show the Business and Clinical Operations grouping and select the Remote Triage Nurse named user.</p>
+          <figure>
+            <img class="screen" src="assets/business-clinical-operations-demo/02-nurse-login.png" alt="Remote Triage Nurse simulation user selected">
+            <figcaption>The nurse profile auto-populates its assigned role and simulation credentials.</figcaption>
+          </figure>
+        </div>
+        <div class="talk-track">
+          <div class="talk-block gold"><h3>Presenter action</h3><p>Select <strong>B - Remote Triage Nurse</strong>, confirm the assigned role changes, then select <strong>Simulate user</strong> or sign in using the populated simulation profile.</p></div>
+          <div class="say">“The nurse does not manually assemble permissions. The profile carries the approved role, and the application exposes only the relevant clinical workspace.”</div>
+          <div class="talk-block"><h3>What to validate</h3><ul><li>Assigned role is remote_triage_nurse.</li><li>Email changes with the selected simulation user.</li><li>The nurse lands in the Step cockpit.</li></ul></div>
+          <div class="talk-block red"><h3>Presenter note</h3><p>Simulation credentials are demonstration data. Never reuse them for a production deployment.</p></div>
+        </div>
+      </article>
+
+      <article class="step" id="step-3">
+        <div>
+          <div class="step-number">SCREEN 03 / ONE ACTIVE CALL</div>
+          <h2>Accept one caller from the clinical queue</h2>
+          <p class="step-purpose">The nurse sees waiting calls, clinical priority, patient type, channel, age, and red-floor indicators before opening one encounter.</p>
+          <figure>
+            <img class="screen" src="assets/business-clinical-operations-demo/03-nurse-cockpit-queue.png" alt="Remote Triage Nurse call queue and one active call cockpit">
+            <figcaption>The cockpit supports one nurse-owned active call at a time.</figcaption>
+          </figure>
+        </div>
+        <div class="talk-track">
+          <div class="talk-block gold"><h3>Presenter action</h3><p>Explain the queue filters, select the chest-tightness emergency record, and choose <strong>Open triage</strong>.</p></div>
+          <div class="say">“The nurse receives a prioritized queue, not an unstructured inbox. Opening the case creates one nurse-owned workflow and blocks a second active encounter until this call is completed or placed on hold.”</div>
+          <div class="talk-block green"><h3>Operational value</h3><ul><li>Clinical priority is visible before pickup.</li><li>HRMS-derived age and patient type are already available.</li><li>One-call ownership supports traceability and queue locking.</li></ul></div>
+          <div class="talk-block red"><h3>Presenter note</h3><p>Live telephony answer and callback commands are part of the provider-neutral integration design; the current demonstration uses simulated queue events.</p></div>
+        </div>
+      </article>
+
+      <article class="step" id="step-4">
+        <div>
+          <div class="step-number">SCREEN 04 / REASON AND EMERGENCY RULE-OUT</div>
+          <h2>Confirm the reason for call and apply the safety floor</h2>
+          <p class="step-purpose">The first clinical action combines caller context, protocol search preparation, vital signs, and deterministic emergency checks.</p>
+          <figure>
+            <img class="screen" src="assets/business-clinical-operations-demo/04-reason-emergency-rule-out.png" alt="Reason for call, guideline preparation, and emergency safety floor">
+            <figcaption>Reason narrative, HRMS evidence, search terms, and authoritative RED_ALERT output.</figcaption>
+          </figure>
+        </div>
+        <div class="talk-track">
+          <div class="talk-block gold"><h3>Presenter action</h3><p>Point out the validated age, incoming channel, reason narrative, prepared search words, vitals, and the red safety panel.</p></div>
+          <div class="say">“Before normal protocol progression, the rules engine checks non-negotiable red floors. Here, low SpO2 and the heart-rate threshold trigger RED_ALERT. No AI suggestion can downgrade that result.”</div>
+          <div class="talk-block green"><h3>What to validate</h3><ul><li>Identity and age are shown as HRMS validated.</li><li>Search words support protocol matching.</li><li>The API score is 10 with RED_ALERT.</li><li>RAG shadow is advisory and does not own the safety decision.</li></ul></div>
+          <div class="talk-block red"><h3>Presenter note</h3><p>The current protocol content is synthetic/open-source demo content structured for STCC compatibility. Licensed STCC content remains an import and validation dependency.</p></div>
+        </div>
+      </article>
+
+      <article class="step" id="step-5">
+        <div>
+          <div class="step-number">SCREEN 05 / ACUITY-ORDERED ASSESSMENT</div>
+          <h2>Ask one high-acuity question at a time</h2>
+          <p class="step-purpose">The screen reduces cognitive load by showing the single active question and keeping lower-priority items locked.</p>
+          <figure>
+            <img class="screen" src="assets/business-clinical-operations-demo/05-high-acuity-question.png" alt="Single high-acuity triage question with nurse response controls">
+            <figcaption>High-acuity-first assessment with a default No response and visible decision effect.</figcaption>
+          </figure>
+        </div>
+        <div class="talk-track">
+          <div class="talk-block gold"><h3>Presenter action</h3><p>Read the active question, show that lower-priority questions remain locked, and point to the Yes/No decision effect.</p></div>
+          <div class="say">“The nurse is guided through the most serious possibility first. A Yes fixes the relevant disposition; a No unlocks the next acuity item. The nurse remains the accountable decision-maker.”</div>
+          <div class="talk-block"><h3>What to validate</h3><ul><li>Only one question is active.</li><li>Priority and proposed route are visible.</li><li>The response defaults to No in the simulation.</li><li>The emergency floor remains active independently of question progression.</li></ul></div>
+          <div class="talk-block red"><h3>Presenter note</h3><p>Do not claim that a default No is a clinical answer. The nurse must validate every response captured during the call.</p></div>
+        </div>
+      </article>
+
+      <article class="step" id="step-6">
+        <div>
+          <div class="step-number">SCREEN 06 / QUESTION PROGRESSION</div>
+          <h2>Preserve an auditable assessment trace</h2>
+          <p class="step-purpose">Demonstrate that the sequence progresses only after an answer is recorded and that prior answers remain visible.</p>
+          <figure>
+            <img class="screen" src="assets/business-clinical-operations-demo/06-question-progression.png" alt="Triage question progression and assessment trace">
+            <figcaption>A No response unlocks the next available high-to-low acuity question.</figcaption>
+          </figure>
+        </div>
+        <div class="talk-track">
+          <div class="talk-block gold"><h3>Presenter action</h3><p>Select No on the first question, then show the second question and the recorded assessment trace.</p></div>
+          <div class="say">“The workflow records what was asked, what the nurse confirmed, and how the next question was selected. That trace supports clinical review, quality assurance, and later audit.”</div>
+          <div class="talk-block green"><h3>Operational value</h3><ul><li>No skipped acuity levels.</li><li>Visible answer history.</li><li>Deterministic protocol progression.</li><li>Human validation stays explicit.</li></ul></div>
+          <div class="talk-block red"><h3>Presenter note</h3><p>For an emergency-floor case, the route remains Emergency even if subsequent protocol questions are negative.</p></div>
+        </div>
+      </article>
+
+      <article class="step" id="step-7">
+        <div>
+          <div class="step-number">SCREEN 07 / DISPOSITION AND AVIATION GATE</div>
+          <h2>Confirm the Qatar route and fit-to-fly restriction</h2>
+          <p class="step-purpose">The system brings together severity, local facility routing, aviation status, rationale, first aid, and care advice for nurse approval.</p>
+          <figure>
+            <img class="screen" src="assets/business-clinical-operations-demo/07-qatar-disposition-fit-to-fly.png" alt="Emergency disposition, HMC route, and restricted fit-to-fly status">
+            <figcaption>Emergency route to HMC with fit-to-fly restricted and safety rationale visible.</figcaption>
+          </figure>
+        </div>
+        <div class="talk-track">
+          <div class="talk-block gold"><h3>Presenter action</h3><p>Point to Emergency severity, HMC Emergency Department, fit-to-fly Restricted, the governing rule, and mapped care advice.</p></div>
+          <div class="say">“The output is more than an acuity label. It combines the approved Qatar disposition route with an aviation gate. Emergency or urgent findings prevent a fit-to-fly clearance until the appropriate clinician completes review.”</div>
+          <div class="talk-block green"><h3>Qatar-specific value</h3><ul><li>Local routing to HMC, Sidra, PHCC, teleconsult, or self-care pathways.</li><li>Pediatric emergency routing can direct to Sidra.</li><li>Fit-to-fly is synchronized with clinical disposition.</li><li>Care advice remains linked to the selected disposition.</li></ul></div>
+          <div class="talk-block red"><h3>Presenter note</h3><p>Local facility mapping and aviation policy must be customer-approved before production. The nurse cannot use fit-to-fly as an independent override of emergency acuity.</p></div>
+        </div>
+      </article>
+
+      <article class="step" id="step-8">
+        <div>
+          <div class="step-number">SCREEN 08 / SBAR AND COMPLETION</div>
+          <h2>Review the structured handoff and complete the encounter</h2>
+          <p class="step-purpose">The final screen consolidates the nurse-validated encounter into an English and Arabic SOAP/SBAR note suitable for governed handoff and clipboard use.</p>
+          <figure>
+            <img class="screen" src="assets/business-clinical-operations-demo/08-sbar-completion.png" alt="Completed bilingual SBAR note and encounter summary">
+            <figcaption>Structured SBAR preview with symptoms, vitals, safety rationale, route, and fit-to-fly status.</figcaption>
+          </figure>
+        </div>
+        <div class="talk-track">
+          <div class="talk-block gold"><h3>Presenter action</h3><p>Review Situation, Background, Assessment, and Recommendation. Highlight the rule evidence and final route before completing the case.</p></div>
+          <div class="say">“The system converts the validated workflow into a consistent handoff note. The nurse reviews the evidence, approves the disposition, and leaves a traceable record for referral, follow-up, and downstream integration.”</div>
+          <div class="talk-block green"><h3>What to validate</h3><ul><li>Caller identity remains masked.</li><li>Vitals and RED_ALERT rationale are present.</li><li>HMC route and fit-to-fly restriction match the disposition screen.</li><li>The nurse, not the AI, owns completion.</li></ul></div>
+          <div class="talk-block red"><h3>Presenter note</h3><p>Clipboard note generation is implemented. Live EMR/FHIR writeback and national exchange submission require customer endpoint, consent, terminology, and conformance validation.</p></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="outcomes" aria-label="Closing value summary">
+      <div class="outcome"><strong>Safer triage</strong><span>Deterministic red floors cannot be downgraded by AI or workflow shortcuts.</span></div>
+      <div class="outcome"><strong>Faster nurse review</strong><span>HRMS context, protocol search, one-question progression, and mapped advice reduce navigation burden.</span></div>
+      <div class="outcome"><strong>Defensible operations</strong><span>Queue ownership, answer trace, disposition rationale, fit-to-fly status, and SBAR evidence remain auditable.</span></div>
+    </section>
+
+    <section class="boundary">
+      <div>
+        <div class="section-label">Demonstrated today</div>
+        <h2>Implemented capabilities</h2>
+        <ul class="boundary-list">
+          <li><span class="status">Built</span>Named simulation nurse profile and role-scoped workspace</li>
+          <li><span class="status">Built</span>Synthetic queue with one active call ownership</li>
+          <li><span class="status">Built</span>HRMS-shaped identity evidence and calculated age in the simulation</li>
+          <li><span class="status">Built</span>Rules-first emergency safety floor</li>
+          <li><span class="status">Built</span>Acuity-ordered question flow and decision trace</li>
+          <li><span class="status">Built</span>Qatar route, care advice, fit-to-fly gate, and SBAR output</li>
+        </ul>
+      </div>
+      <div>
+        <div class="section-label">Production dependencies</div>
+        <h2>State these accurately</h2>
+        <ul class="boundary-list">
+          <li><span class="status pending">Pending</span>Licensed STCC content import and customer clinical validation</li>
+          <li><span class="status pending">Pending</span>Live call-center provider integration and recording consent controls</li>
+          <li><span class="status pending">Pending</span>Oracle HRMS production connector and authoritative dependent data</li>
+          <li><span class="status pending">Pending</span>EMR/FHIR writeback and national exchange conformance</li>
+          <li><span class="status pending">Pending</span>Voice AI frontend/audio orchestration and governed model validation</li>
+          <li><span class="status pending">Pending</span>Customer-approved Qatar routing and aviation policy release</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>
+      IRIS STAR Technologies L.L.C | IST Health | Remote Triage Nurse simulation demonstration guide | Synthetic records only, no PHI.
+    </footer>
+  </main>
+</body>
+</html>

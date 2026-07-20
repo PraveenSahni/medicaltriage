@@ -70,6 +70,30 @@ export const samplePhase1ClinicalContent: ClinicalContentPackageInput = {
         { phrase: "diaphoresis", weight: 85 },
         { phrase: "heart pain", weight: 70 }
       ],
+      initialAssessmentQuestions: [
+        {
+          id: "chest-adult-iaq1",
+          sequence: 1,
+          responseType: "LOCATION",
+          promptTextEn: "Where exactly is the chest pain or tightness?",
+          clarificationPromptEn: "Please describe where you feel the pain or tightness.",
+          emergencyKeywords: ["crushing", "center of chest", "spreading to arm", "spreading to jaw"]
+        },
+        {
+          id: "chest-adult-iaq2",
+          sequence: 2,
+          responseType: "DURATION",
+          promptTextEn: "When did it start, and is it constant or does it come and go?",
+          emergencyKeywords: ["sudden", "constant", "more than five minutes"]
+        },
+        {
+          id: "chest-adult-iaq3",
+          sequence: 3,
+          responseType: "PAIN_SCALE",
+          promptTextEn: "On a scale from zero to ten, how severe is it now?",
+          clarificationPromptEn: "Please give a number from zero to ten."
+        }
+      ],
       questions: [
         {
           id: "chest-adult-q1",
@@ -157,6 +181,28 @@ export const samplePhase1ClinicalContent: ClinicalContentPackageInput = {
         { phrase: "febrile", weight: 75 },
         { phrase: "not drinking", weight: 80 }
       ],
+      initialAssessmentQuestions: [
+        {
+          id: "fever-child-iaq1",
+          sequence: 1,
+          responseType: "TEMPERATURE",
+          promptTextEn: "What is the highest temperature measured, and how was it measured?",
+          clarificationPromptEn: "Please state the temperature and the method used."
+        },
+        {
+          id: "fever-child-iaq2",
+          sequence: 2,
+          responseType: "DURATION",
+          promptTextEn: "When did the fever start?"
+        },
+        {
+          id: "fever-child-iaq3",
+          sequence: 3,
+          responseType: "OPEN_TEXT",
+          promptTextEn: "How is the child breathing, drinking, and responding to you?",
+          emergencyKeywords: ["difficult to wake", "not breathing", "blue", "seizure", "purple rash"]
+        }
+      ],
       questions: [
         {
           id: "fever-child-q1",
@@ -235,6 +281,30 @@ export const samplePhase1ClinicalContent: ClinicalContentPackageInput = {
         { phrase: "oxygen saturation", weight: 85 },
         { phrase: "cannot speak", weight: 95 }
       ],
+      initialAssessmentQuestions: [
+        {
+          id: "breathing-iaq1",
+          sequence: 1,
+          responseType: "DURATION",
+          promptTextEn: "When did the breathing problem start, and was the onset sudden or gradual?",
+          emergencyKeywords: ["sudden", "choking"]
+        },
+        {
+          id: "breathing-iaq2",
+          sequence: 2,
+          responseType: "YES_NO",
+          promptTextEn: "Can the caller speak a full sentence without stopping for breath?",
+          clarificationPromptEn: "Can they speak a complete sentence, yes or no?",
+          emergencyKeywords: ["cannot speak", "blue lips", "confused"]
+        },
+        {
+          id: "breathing-iaq3",
+          sequence: 3,
+          responseType: "OPEN_TEXT",
+          promptTextEn: "What other symptoms are present, such as chest pain, fever, wheezing, or swelling?",
+          emergencyKeywords: ["chest pain", "fainting", "face swelling", "throat swelling"]
+        }
+      ],
       questions: [
         {
           id: "breathing-q1",
@@ -294,6 +364,42 @@ export const samplePhase1ClinicalContent: ClinicalContentPackageInput = {
         { phrase: "vomiting", weight: 75 },
         { phrase: "severe pain", weight: 80 }
       ],
+      initialAssessmentQuestions: [
+        {
+          id: "abdominal-iaq1",
+          sequence: 1,
+          responseType: "LOCATION",
+          promptTextEn: "Where does it hurt?",
+          clarificationPromptEn: "Please describe the exact location of the abdominal pain."
+        },
+        {
+          id: "abdominal-iaq2",
+          sequence: 2,
+          responseType: "OPEN_TEXT",
+          promptTextEn: "Does the pain move or spread anywhere else, such as the chest or back?"
+        },
+        {
+          id: "abdominal-iaq3",
+          sequence: 3,
+          responseType: "DURATION",
+          promptTextEn: "When did the pain begin, and was the onset sudden or gradual?",
+          emergencyKeywords: ["sudden", "worst pain", "collapsed"]
+        },
+        {
+          id: "abdominal-iaq4",
+          sequence: 4,
+          responseType: "PAIN_SCALE",
+          promptTextEn: "On a scale from zero to ten, how severe is the pain now?",
+          clarificationPromptEn: "Please give a pain score from zero to ten."
+        },
+        {
+          id: "abdominal-iaq5",
+          sequence: 5,
+          responseType: "OPEN_TEXT",
+          promptTextEn: "What other symptoms are present, such as vomiting, fever, diarrhea, or blood?",
+          emergencyKeywords: ["blood in vomit", "blood in stool", "fainting", "rigid abdomen"]
+        }
+      ],
       questions: [
         {
           id: "abdominal-q1",
@@ -343,6 +449,27 @@ export const samplePhase1ClinicalContent: ClinicalContentPackageInput = {
         { phrase: "vaccination", weight: 90 },
         { phrase: "swelling", weight: 80 },
         { phrase: "itching", weight: 65 }
+      ],
+      initialAssessmentQuestions: [
+        {
+          id: "rash-iaq1",
+          sequence: 1,
+          responseType: "LOCATION",
+          promptTextEn: "Where is the rash or swelling, and is it spreading?"
+        },
+        {
+          id: "rash-iaq2",
+          sequence: 2,
+          responseType: "DURATION",
+          promptTextEn: "When did it start, and did it follow a medicine, vaccine, food, or other exposure?"
+        },
+        {
+          id: "rash-iaq3",
+          sequence: 3,
+          responseType: "YES_NO",
+          promptTextEn: "Is there any trouble breathing, throat tightness, fainting, or swelling of the face or lips?",
+          emergencyKeywords: ["trouble breathing", "throat tightness", "fainting", "face swelling", "lip swelling"]
+        }
       ],
       questions: [
         {
@@ -406,6 +533,28 @@ export const samplePhase1ClinicalContent: ClinicalContentPackageInput = {
         { phrase: "sport injury", weight: 80 },
         { phrase: "unable to walk", weight: 85 },
         { phrase: "swelling", weight: 70 }
+      ],
+      initialAssessmentQuestions: [
+        {
+          id: "ankle-foot-iaq1",
+          sequence: 1,
+          responseType: "OPEN_TEXT",
+          promptTextEn: "Please describe how the ankle or foot injury happened."
+        },
+        {
+          id: "ankle-foot-iaq2",
+          sequence: 2,
+          responseType: "YES_NO",
+          promptTextEn: "Can the patient stand and take four steps?",
+          clarificationPromptEn: "Can the patient take four steps, yes or no?"
+        },
+        {
+          id: "ankle-foot-iaq3",
+          sequence: 3,
+          responseType: "OPEN_TEXT",
+          promptTextEn: "Describe any swelling, bruising, deformity, numbness, or color change.",
+          emergencyKeywords: ["bone visible", "blue foot", "cold foot", "no feeling", "uncontrolled bleeding"]
+        }
       ],
       questions: [
         {

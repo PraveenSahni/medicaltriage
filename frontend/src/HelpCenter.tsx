@@ -1313,7 +1313,7 @@ const libraryAreas: LibraryArea[] = [
     eyebrow: "Approved audio + governed MedGemma shadow",
     icon: PhoneCall,
     summary:
-      "Collects the English opening and initial assessment before nurse pickup using approved prerecorded questions, streaming speech recognition, deterministic STCC sequencing, and a constrained MedGemma interpreter. The nurse receives the recording, transcript, question-by-question evidence, and exceptions for validation before clinical triage continues.",
+      "Defines the English opening and initial-assessment flow before nurse pickup. The implemented component foundation provides deterministic protocol-bound sequencing, transcript interpretation, exception handling, nurse validation APIs, and governed training-example export; live audio, streaming speech recognition, persistent evidence, and the nurse playback workspace remain integration work.",
     framework: {
       what:
         "An English-only Voice AI intake flow that identifies the caller, records the required notice, captures the reason for call, follows the approved initial-assessment script, and prepares a nurse-validation worksheet.",
@@ -1326,17 +1326,22 @@ const libraryAreas: LibraryArea[] = [
       ]
     },
     usedBy: [
-      "future VoiceCallSession",
-      "future VoiceAssessmentTurn",
-      "approved ClinicalAudioAsset registry",
+      "VoiceCallSession",
+      "VoiceAssessmentTurn",
+      "ClinicalAudioAsset registry schema",
       "STCC-compatible initialAssessmentQuestions",
-      "bounded MedGemma interpretation adapter",
+      "bounded MedGemma interpretation port",
+      "/api/v1/voice-assessment/sessions",
+      "/api/v1/voice-assessment/sessions/:sessionId/responses",
+      "/api/v1/voice-assessment/sessions/:sessionId/turns/:turnId/validate",
+      "/api/v1/voice-assessment/sessions/:sessionId/training-examples",
       "future nurse voice-validation workspace",
       "RagRetrievalEvent",
       "LlmShadowSuggestion",
       "SafetyBlockedOutput"
     ],
     details: [
+      "Current implementation status: the mock-runtime backend supports English protocol-bound sessions, ordered initial-assessment turns, one clarification, interruption and emergency takeover, role/owner checks, per-turn nurse validation or correction, completion gating, and validated-answer training export. It deliberately returns unavailable in database mode until the persistent repository is implemented.",
       "The authoritative path is state controlled: CALL_OFFERED, RECORDING_NOTICE, IDENTITY_VALIDATION, REASON_CAPTURE, GUIDELINE_PREPARATION, INITIAL_ASSESSMENT, NURSE_VALIDATION_PENDING, NURSE_TRIAGE_ACTIVE, DISPOSITION_APPROVAL, and COMPLETE.",
       "Employee identity is resolved from the registered phone number when possible. Otherwise the caller enters the employee ID and PIN. A dependent relationship is confirmed before any protected clinical context enters the queue.",
       "The system plays the approved recording notice and opening script, records acknowledgement or the configured lawful basis, and stores the call reference and recording URI under the Qatar-hosted retention policy.",
@@ -1390,7 +1395,7 @@ const libraryAreas: LibraryArea[] = [
       {
         title: "AI/ML and Integration Teams",
         body:
-          "Implement a provider-neutral voice state machine, STT adapter, bounded MedGemma contract, model registry, and auditable offline training pipeline."
+          "Complete the provider-neutral telephony, STT/VAD, persistence, private MedGemma endpoint, model registry, and auditable offline training pipeline around the implemented state-machine and schema boundary."
       }
     ],
     exampleFlow: [
@@ -1419,12 +1424,15 @@ const libraryAreas: LibraryArea[] = [
       "LLM-ready JSONL simulation exports",
       "python/run_bulk_clinical_simulation.py",
       "src/services/simulationEngine.ts",
+      "src/services/voiceInterpreter.ts",
+      "src/services/voiceAssessment.ts",
+      "/api/v1/voice-assessment/sessions/:sessionId/training-examples",
       "future /api/v1/ai/copilot/evaluate",
       "future /api/v1/ai/copilot/draft",
       "future GCP Doha model endpoint"
     ],
     details: [
-      "Current state: the platform has synthetic LLM-ready data, safety wrappers, and help governance. It does not yet have a live MedGemma endpoint, training job, provider credentials, model registry, or production inference adapter.",
+      "Current state: the platform has synthetic LLM-ready data, safety wrappers, a strict interpretation-only MedGemma port, schema validation that rejects clinical outcome fields, and a role-gated export of nurse-validated initial-assessment examples. It does not yet have a live MedGemma endpoint, training job, provider credentials, model registry, or production inference adapter.",
       "MedGemma should be treated as a developer model that needs validation, adaptation, and independent clinical verification for the IST Health tele-triage use case.",
       "The LLM is allowed to interpret caller language into an approved structured schema, extract reason terms and initial-assessment facts, rank approved protocol or answer identifiers, explain deterministic routing, draft SBAR/SOAP text, flag missing context, and summarize prior CCP threads.",
       "The LLM is not allowed to diagnose, approve or downgrade a disposition, approve fit-to-duty, approve sickness leave, bypass pediatric/adult red floors, or send WhatsApp/SMS/email without Remote Triage Nurse approval.",

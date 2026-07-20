@@ -281,6 +281,13 @@ Built:
 - LLM-ready JSONL output.
 - Help/Library documentation for LLM strategy.
 - Approved target architecture for English Voice AI collection and MedGemma shadow interpretation.
+- English initial-assessment session and turn contracts with release-bound protocol questions.
+- Deterministic mock-runtime orchestration for ordered questions, one clarification, interruption/emergency takeover, nurse validation, and completion gating.
+- Role and owner enforcement for clinical sessions and governance-only training export.
+- Strict interpretation-only MedGemma adapter contract that rejects clinical outcome fields.
+- Nurse-validated or corrected answer export for governed offline adaptation candidates.
+- Prisma contracts for initial-assessment questions, clinical audio assets, voice sessions, voice turns, recording governance, transcript timing, STT confidence, and interpreter lineage.
+- Focused component tests for normal, uncertain, interrupted, emergency, takeover, validation, authorization, and boundary-rejection paths.
 
 Pending:
 
@@ -291,9 +298,10 @@ Pending:
 - Model registry.
 - Production privacy and clinical approvals.
 - English audio asset registry and STCC rendition/training rights confirmation.
-- Voice state machine, streaming STT, voice activity/barge-in, confirmation, and emergency-transfer integration.
-- Nurse synchronized transcript and per-answer validation workspace.
-- MedGemma adaptation dataset, adapter training job, structured-output validator, and voice/model safety UAT.
+- Persistent database repository for the prepared Voice AI schema and idempotent telephony event/resume handling.
+- Streaming STT, voice activity/barge-in media control, approved audio playback, disconnect recovery, and emergency-transfer integration.
+- Nurse synchronized recording/transcript and per-answer validation frontend with masked playback controls.
+- MedGemma adaptation dataset, private inference endpoint, adapter training job, model registry, scorecard, and voice/model safety UAT.
 
 ## References
 

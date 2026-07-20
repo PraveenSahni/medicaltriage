@@ -7,6 +7,10 @@ type RateLimitBucket = {
 
 const buckets = new Map<string, RateLimitBucket>();
 
+export function resetRateLimitBucketsForTests(): void {
+  buckets.clear();
+}
+
 export function rateLimit(args: {
   name: string;
   windowMs: number;

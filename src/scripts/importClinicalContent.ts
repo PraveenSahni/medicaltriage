@@ -18,9 +18,16 @@ type ImportSummary = {
   dryRun: boolean;
   releaseVersion: string;
   protocolCount: number;
+  initialAssessmentQuestionCount: number;
   questionCount: number;
   careAdviceCount: number;
   keywordCount: number;
+  synonymCount: number;
+  taxonomyCount: number;
+  dispositionMappingCount: number;
+  firstAidCount: number;
+  referenceCount: number;
+  supplementalCount: number;
   localizedDispositionCount: number;
 };
 
@@ -36,6 +43,10 @@ function parseArgs() {
 
 function checksumFor(value: string): string {
   return createHash("sha256").update(value).digest("hex");
+}
+
+function recordHash(value: unknown): string {
+  return checksumFor(JSON.stringify(value));
 }
 
 async function loadContentPackage(filePath?: string): Promise<{ sourceUri: string; raw: string; data: ClinicalContentPackage }> {
@@ -112,6 +123,54 @@ function uniqueCareAdvice(contentPackage: ClinicalContentPackage): ClinicalConte
   return [...byId.values()];
 }
 
+function protocolSynonyms(protocol: ClinicalContentProtocol) {
+  const synonyms = [
+    ...protocol.synonyms,
+    ...protocol.titleVariants.map((synonym) => ({
+      canonicalTerm: protocol.titleEn,
+      synonym,
+      language: "en",
+      region: "QA"
+    }))
+  ];
+
+  const unique = new Map<string, (typeof synonyms)[number]>();
+  for (const synonym of synonyms) {
+    if (normalize(synonym.canonicalTerm) === normalize(synonym.synonym)) {
+      continue;
+    }
+
+    const key = [synonym.canonicalTerm, synonym.synonym, synonym.language, synonym.region]
+      .map(normalize)
+      .join("|");
+    unique.set(key, synonym);
+  }
+
+  return [...unique.values()];
+}
+
+function protocolReferences(protocol: ClinicalContentProtocol) {
+  const references = [...protocol.references];
+  for (const [index, url] of protocol.openSourcePatientEducationAnchors.entries()) {
+    references.push({
+      id: `${protocol.id}-public-anchor-${index + 1}`,
+      title: `Public patient education anchor - ${protocol.titleEn}`,
+      sourceName: "Public patient education",
+      citationText: "Public educational anchor. It does not replace licensed STCC clinical content.",
+      url,
+      referenceType: "public-patient-education",
+      displayOrder: references.length + 1
+    });
+  }
+
+  const unique = new Map<string, (typeof references)[number]>();
+  for (const reference of references) {
+    unique.set(reference.id, reference);
+  }
+
+  return [...unique.values()];
+}
+
 function summarize(sourceUri: string, raw: string, data: ClinicalContentPackage, dryRun: boolean): ImportSummary {
   return {
     sourceUri,
@@ -119,6 +178,10 @@ function summarize(sourceUri: string, raw: string, data: ClinicalContentPackage,
     dryRun,
     releaseVersion: data.release.version,
     protocolCount: data.protocols.length,
+    initialAssessmentQuestionCount: data.protocols.reduce(
+      (count, protocol) => count + protocol.initialAssessmentQuestions.length,
+      0
+    ),
     questionCount: data.protocols.reduce((count, protocol) => count + protocol.questions.length, 0),
     careAdviceCount: uniqueCareAdvice(data).length,
     keywordCount: data.protocols.reduce((count, protocol) => {
@@ -126,6 +189,12 @@ function summarize(sourceUri: string, raw: string, data: ClinicalContentPackage,
       const questionKeywords = protocol.questions.reduce((inner, question) => inner + question.keywords.length, 0);
       return count + protocolKeywords + questionKeywords;
     }, 0),
+    synonymCount: data.protocols.reduce((count, protocol) => count + protocolSynonyms(protocol).length, 0),
+    taxonomyCount: data.protocols.reduce((count, protocol) => count + protocol.taxonomy.length, 0),
+    dispositionMappingCount: data.protocols.reduce((count, protocol) => count + protocol.dispositionMappings.length, 0),
+    firstAidCount: data.protocols.reduce((count, protocol) => count + protocol.firstAid.length, 0),
+    referenceCount: data.protocols.reduce((count, protocol) => count + protocolReferences(protocol).length, 0),
+    supplementalCount: data.protocols.reduce((count, protocol) => count + protocol.supplementals.length, 0),
     localizedDispositionCount: data.localizedDispositions.length
   };
 }
@@ -168,7 +237,18 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
         sourceUri: summary.sourceUri,
         sourceChecksum: summary.checksum,
         status: "VALIDATED",
-        rowsRead: summary.protocolCount + summary.questionCount + summary.careAdviceCount
+        rowsRead:
+          summary.protocolCount +
+          summary.initialAssessmentQuestionCount +
+          summary.questionCount +
+          summary.careAdviceCount +
+          summary.keywordCount +
+          summary.synonymCount +
+          summary.taxonomyCount +
+          summary.dispositionMappingCount +
+          summary.firstAidCount +
+          summary.referenceCount +
+          summary.supplementalCount
       }
     })) as { id: string };
     importJob = createdImportJob;
@@ -240,6 +320,9 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
           ageMax: protocol.ageMax,
           stccVersion: contentPackage.release.version,
           mode: modeToDb(protocol.mode),
+          sourceRecordHash: recordHash(protocol),
+          sourceRecordChecksum: summary.checksum,
+          annualReconciliationStatus: "SYNTHETIC_PUBLIC_INDEX_REQUIRES_CLINICAL_VALIDATION",
           active: true
         },
         create: {
@@ -256,6 +339,9 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
           ageMax: protocol.ageMax,
           stccVersion: contentPackage.release.version,
           mode: modeToDb(protocol.mode),
+          sourceRecordHash: recordHash(protocol),
+          sourceRecordChecksum: summary.checksum,
+          annualReconciliationStatus: "SYNTHETIC_PUBLIC_INDEX_REQUIRES_CLINICAL_VALIDATION",
           active: true
         }
       });
@@ -265,6 +351,180 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
       await (prisma as any).protocolDispositionMap.deleteMany({ where: { algorithmId: algorithm.id } });
       await (prisma as any).algorithmCareAdvice.deleteMany({ where: { algorithmId: algorithm.id } });
       await (prisma as any).triageQuestion.deleteMany({ where: { algorithmId: algorithm.id } });
+      await (prisma as any).initialAssessmentQuestion.deleteMany({ where: { algorithmId: algorithm.id } });
+      await (prisma as any).protocolSynonym.deleteMany({ where: { algorithmId: algorithm.id } });
+      await (prisma as any).protocolTaxonomy.deleteMany({ where: { algorithmId: algorithm.id } });
+      await (prisma as any).protocolFirstAid.deleteMany({ where: { algorithmId: algorithm.id } });
+      await (prisma as any).algorithmReference.deleteMany({ where: { algorithmId: algorithm.id } });
+      await (prisma as any).algorithmSupplemental.deleteMany({ where: { algorithmId: algorithm.id } });
+
+      for (const initialQuestion of protocol.initialAssessmentQuestions) {
+        await (prisma as any).initialAssessmentQuestion.create({
+          data: {
+            algorithmId: algorithm.id,
+            externalQuestionId: initialQuestion.id,
+            sequence: initialQuestion.sequence,
+            responseType: initialQuestion.responseType,
+            promptTextEn: initialQuestion.promptTextEn,
+            clarificationPromptEn: initialQuestion.clarificationPromptEn,
+            required: initialQuestion.required,
+            emergencyKeywords: initialQuestion.emergencyKeywords,
+            sourceRecordHash: recordHash(initialQuestion),
+            sourceRecordChecksum: summary.checksum
+          }
+        });
+        rowsInserted += 1;
+      }
+
+      for (const synonym of protocolSynonyms(protocol)) {
+        await (prisma as any).protocolSynonym.create({
+          data: {
+            algorithmId: algorithm.id,
+            canonicalTerm: synonym.canonicalTerm,
+            synonym: synonym.synonym,
+            language: synonym.language,
+            region: synonym.region
+          }
+        });
+        rowsInserted += 1;
+      }
+
+      for (const taxonomy of protocol.taxonomy) {
+        await (prisma as any).protocolTaxonomy.create({
+          data: {
+            algorithmId: algorithm.id,
+            category: taxonomy.category,
+            value: taxonomy.value,
+            source: taxonomy.source,
+            displayOrder: taxonomy.displayOrder
+          }
+        });
+        rowsInserted += 1;
+      }
+
+      for (const dispositionMap of protocol.dispositionMappings) {
+        await (prisma as any).protocolDispositionMap.create({
+          data: {
+            algorithmId: algorithm.id,
+            severity: severityToDb(dispositionMap.severity),
+            dispositionCode: dispositionMap.dispositionCode,
+            ageMin: dispositionMap.ageMin,
+            ageMax: dispositionMap.ageMax,
+            aviationContext: dispositionMap.aviationContext,
+            routeLabelEn: dispositionMap.routeLabelEn,
+            routeRationaleEn: dispositionMap.routeRationaleEn,
+            telemedicineHeadingEn: dispositionMap.telemedicineHeadingEn,
+            sourceOfCareEn: dispositionMap.sourceOfCareEn,
+            active: true
+          }
+        });
+        rowsInserted += 1;
+      }
+
+      for (const firstAid of protocol.firstAid) {
+        await (prisma as any).protocolFirstAid.create({
+          data: {
+            algorithmId: algorithm.id,
+            titleEn: firstAid.titleEn,
+            instructionTextEn: firstAid.instructionTextEn,
+            displayOrder: firstAid.displayOrder,
+            sourceRecordHash: recordHash(firstAid)
+          }
+        });
+        rowsInserted += 1;
+      }
+
+      for (const reference of protocolReferences(protocol)) {
+        const savedReference = await (prisma as any).clinicalReference.upsert({
+          where: {
+            releaseId_externalReferenceId: {
+              releaseId: release.id,
+              externalReferenceId: reference.id
+            }
+          },
+          update: {
+            title: reference.title,
+            sourceName: reference.sourceName,
+            citationText: reference.citationText,
+            url: reference.url,
+            referenceType: reference.referenceType,
+            sourceRecordHash: recordHash(reference)
+          },
+          create: {
+            releaseId: release.id,
+            externalReferenceId: reference.id,
+            title: reference.title,
+            sourceName: reference.sourceName,
+            citationText: reference.citationText,
+            url: reference.url,
+            referenceType: reference.referenceType,
+            sourceRecordHash: recordHash(reference)
+          }
+        });
+        await (prisma as any).algorithmReference.upsert({
+          where: {
+            algorithmId_referenceId: {
+              algorithmId: algorithm.id,
+              referenceId: savedReference.id
+            }
+          },
+          update: {
+            displayOrder: reference.displayOrder,
+            sectionLabel: "reference"
+          },
+          create: {
+            algorithmId: algorithm.id,
+            referenceId: savedReference.id,
+            displayOrder: reference.displayOrder,
+            sectionLabel: "reference"
+          }
+        });
+        rowsInserted += 1;
+      }
+
+      for (const supplemental of protocol.supplementals) {
+        const savedSupplemental = await (prisma as any).clinicalSupplemental.upsert({
+          where: {
+            releaseId_externalSupplementalId: {
+              releaseId: release.id,
+              externalSupplementalId: supplemental.id
+            }
+          },
+          update: {
+            titleEn: supplemental.titleEn,
+            supplementalType: supplemental.supplementalType,
+            plainTextEn: supplemental.plainTextEn,
+            sourceRecordHash: recordHash(supplemental)
+          },
+          create: {
+            releaseId: release.id,
+            externalSupplementalId: supplemental.id,
+            titleEn: supplemental.titleEn,
+            supplementalType: supplemental.supplementalType,
+            plainTextEn: supplemental.plainTextEn,
+            sourceRecordHash: recordHash(supplemental)
+          }
+        });
+        await (prisma as any).algorithmSupplemental.upsert({
+          where: {
+            algorithmId_supplementalId: {
+              algorithmId: algorithm.id,
+              supplementalId: savedSupplemental.id
+            }
+          },
+          update: {
+            displayOrder: supplemental.displayOrder,
+            sectionLabel: supplemental.sectionLabel
+          },
+          create: {
+            algorithmId: algorithm.id,
+            supplementalId: savedSupplemental.id,
+            displayOrder: supplemental.displayOrder,
+            sectionLabel: supplemental.sectionLabel
+          }
+        });
+        rowsInserted += 1;
+      }
 
       for (const keyword of protocol.keywords) {
         await (prisma as any).protocolKeywordIndex.create({

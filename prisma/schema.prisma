@@ -151,6 +151,54 @@ enum SafetyBlockedOutputReason {
   OTHER
 }
 
+enum InitialAssessmentResponseType {
+  OPEN_TEXT
+  YES_NO
+  LOCATION
+  DURATION
+  PAIN_SCALE
+  TEMPERATURE
+}
+
+enum VoiceSessionStatus {
+  CREATED
+  ACTIVE
+  AWAITING_NURSE_VALIDATION
+  NURSE_TAKEOVER
+  COMPLETED
+  CANCELLED
+}
+
+enum VoiceTurnStatus {
+  READY
+  NEEDS_CLARIFICATION
+  AWAITING_NURSE_VALIDATION
+  VALIDATED
+  REJECTED
+}
+
+enum VoiceAnswerClassification {
+  YES
+  NO
+  OPEN_TEXT
+  UNCERTAIN
+  INTERRUPTED
+  EMERGENCY_SIGNAL
+}
+
+enum VoiceValidationStatus {
+  PENDING
+  VALIDATED
+  CORRECTED
+  REJECTED
+}
+
+enum ClinicalAudioAssetStatus {
+  DRAFT
+  APPROVED
+  RETIRED
+}
+
 model ProtocolRelease {
   id                    String                     @id @default(cuid())
   name                  String
@@ -173,29 +221,30 @@ model ProtocolRelease {
 }
 
 model Algorithm {
-  id                         String                    @id @default(cuid())
-  releaseId                  String?                   @map("release_id")
-  release                    ProtocolRelease?          @relation(fields: [releaseId], references: [id], onDelete: SetNull)
-  externalProtocolId         String?                   @unique @map("external_protocol_id")
-  mode                       ProtocolMode              @default(BOTH)
-  titleEn                    String                    @map("title_en")
-  titleAr                    String?                   @map("title_ar")
-  clinicalDefinitionEn       String?                   @map("clinical_definition_en")
-  clinicalDefinitionAr       String?                   @map("clinical_definition_ar")
-  backgroundInfoEn           String?                   @map("background_info_en")
-  backgroundInfoAr           String?                   @map("background_info_ar")
-  genderRestriction          BiologicalSex?            @map("gender_restriction")
-  ageMin                     Int?                      @map("age_min")
-  ageMax                     Int?                      @map("age_max")
+  id                         String                      @id @default(cuid())
+  releaseId                  String?                     @map("release_id")
+  release                    ProtocolRelease?            @relation(fields: [releaseId], references: [id], onDelete: SetNull)
+  externalProtocolId         String?                     @unique @map("external_protocol_id")
+  mode                       ProtocolMode                @default(BOTH)
+  titleEn                    String                      @map("title_en")
+  titleAr                    String?                     @map("title_ar")
+  clinicalDefinitionEn       String?                     @map("clinical_definition_en")
+  clinicalDefinitionAr       String?                     @map("clinical_definition_ar")
+  backgroundInfoEn           String?                     @map("background_info_en")
+  backgroundInfoAr           String?                     @map("background_info_ar")
+  genderRestriction          BiologicalSex?              @map("gender_restriction")
+  ageMin                     Int?                        @map("age_min")
+  ageMax                     Int?                        @map("age_max")
   /// @deprecated Use ProtocolRelease.version through releaseId for canonical release lineage.
-  stccVersion                String?                   @map("stcc_version")
-  sourceRecordHash           String?                   @map("source_record_hash")
-  sourceRecordChecksum       String?                   @map("source_record_checksum")
-  sourceEffectiveFrom        DateTime?                 @map("source_effective_from")
-  sourceEffectiveTo          DateTime?                 @map("source_effective_to")
-  annualReconciliationStatus String?                   @map("annual_reconciliation_status")
-  active                     Boolean                   @default(true)
+  stccVersion                String?                     @map("stcc_version")
+  sourceRecordHash           String?                     @map("source_record_hash")
+  sourceRecordChecksum       String?                     @map("source_record_checksum")
+  sourceEffectiveFrom        DateTime?                   @map("source_effective_from")
+  sourceEffectiveTo          DateTime?                   @map("source_effective_to")
+  annualReconciliationStatus String?                     @map("annual_reconciliation_status")
+  active                     Boolean                     @default(true)
   questions                  TriageQuestion[]
+  initialAssessmentQuestions InitialAssessmentQuestion[]
   careAdviceLinks            AlgorithmCareAdvice[]
   keywordIndexes             ProtocolKeywordIndex[]
   synonyms                   ProtocolSynonym[]
@@ -206,13 +255,61 @@ model Algorithm {
   firstAidItems              ProtocolFirstAid[]
   encounters                 AviationTriageEncounter[]
   matchedQueueItems          TriageQueueItem[]
-  createdAt                  DateTime                  @default(now()) @map("created_at")
-  updatedAt                  DateTime                  @updatedAt @map("updated_at")
+  voiceSessions              VoiceCallSession[]
+  createdAt                  DateTime                    @default(now()) @map("created_at")
+  updatedAt                  DateTime                    @updatedAt @map("updated_at")
 
   @@index([titleEn])
   @@index([releaseId, active])
   @@index([mode])
   @@map("algorithms")
+}
+
+/// STCC-shaped history-taking prompt used before the acuity-ordered triage
+/// assessment. It intentionally has no severity or disposition columns.
+model InitialAssessmentQuestion {
+  id                    String                        @id @default(cuid())
+  algorithmId           String                        @map("algorithm_id")
+  algorithm             Algorithm                     @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
+  externalQuestionId    String?                       @map("external_question_id")
+  sequence              Int
+  responseType          InitialAssessmentResponseType @map("response_type")
+  promptTextEn          String                        @map("prompt_text_en") @db.Text
+  clarificationPromptEn String?                       @map("clarification_prompt_en") @db.Text
+  required              Boolean                       @default(true)
+  emergencyKeywords     Json?                         @map("emergency_keywords")
+  sourceRecordHash      String?                       @map("source_record_hash")
+  sourceRecordChecksum  String?                       @map("source_record_checksum")
+  audioAssets           ClinicalAudioAsset[]
+  voiceTurns            VoiceAssessmentTurn[]
+  currentVoiceSessions  VoiceCallSession[]            @relation("VoiceSessionCurrentQuestion")
+  createdAt             DateTime                      @default(now()) @map("created_at")
+  updatedAt             DateTime                      @updatedAt @map("updated_at")
+
+  @@unique([algorithmId, sequence])
+  @@index([externalQuestionId])
+  @@map("initial_assessment_questions")
+}
+
+model ClinicalAudioAsset {
+  id                          String                    @id @default(cuid())
+  initialAssessmentQuestionId String                    @map("initial_assessment_question_id")
+  initialAssessmentQuestion   InitialAssessmentQuestion @relation(fields: [initialAssessmentQuestionId], references: [id], onDelete: Cascade)
+  language                    String                    @default("en")
+  releaseVersion              String                    @map("release_version")
+  voiceName                   String                    @map("voice_name")
+  storageUri                  String                    @map("storage_uri")
+  checksum                    String
+  status                      ClinicalAudioAssetStatus  @default(DRAFT)
+  approvedBy                  String?                   @map("approved_by")
+  approvedAt                  DateTime?                 @map("approved_at")
+  voiceTurns                  VoiceAssessmentTurn[]
+  createdAt                   DateTime                  @default(now()) @map("created_at")
+  updatedAt                   DateTime                  @updatedAt @map("updated_at")
+
+  @@unique([initialAssessmentQuestionId, language, releaseVersion, checksum])
+  @@index([status, language])
+  @@map("clinical_audio_assets")
 }
 
 model TriageQuestion {
@@ -640,6 +737,7 @@ model TriageQueueItem {
   nurseSelectionEvents     NurseSelectionEvent[]
   protocolComparisonEvents ProtocolComparisonEvent[]
   safetyBlockedOutputs     SafetyBlockedOutput[]
+  voiceSessions            VoiceCallSession[]
   createdAt                DateTime                  @default(now()) @map("created_at")
   updatedAt                DateTime                  @updatedAt @map("updated_at")
 
@@ -680,26 +778,27 @@ model QueueTransitionLog {
 }
 
 model CallCenterSession {
-  id                         String            @id
-  queueItemId                String?           @map("queue_item_id")
-  queueItem                  TriageQueueItem?  @relation(fields: [queueItemId], references: [id], onDelete: SetNull)
+  id                         String             @id
+  queueItemId                String?            @map("queue_item_id")
+  queueItem                  TriageQueueItem?   @relation(fields: [queueItemId], references: [id], onDelete: SetNull)
   provider                   String
-  externalCallId             String            @map("external_call_id")
+  externalCallId             String             @map("external_call_id")
   direction                  String
   channel                    String
   status                     String
-  aniMasked                  String?           @map("ani_masked")
-  aniHash                    String?           @map("ani_hash")
+  aniMasked                  String?            @map("ani_masked")
+  aniHash                    String?            @map("ani_hash")
   dnis                       String?
-  language                   String            @default("en")
-  queueName                  String?           @map("queue_name")
-  agentId                    String?           @map("agent_id")
-  recordingGovernance        Json?             @map("recording_governance")
-  requiresIdentityResolution Boolean           @default(false) @map("requires_identity_resolution")
+  language                   String             @default("en")
+  queueName                  String?            @map("queue_name")
+  agentId                    String?            @map("agent_id")
+  recordingGovernance        Json?              @map("recording_governance")
+  requiresIdentityResolution Boolean            @default(false) @map("requires_identity_resolution")
   startedAt                  DateTime?          @map("started_at")
   connectedAt                DateTime?          @map("connected_at")
   endedAt                    DateTime?          @map("ended_at")
   events                     CallCenterEvent[]
+  voiceSessions              VoiceCallSession[]
   createdAt                  DateTime           @default(now()) @map("created_at")
   updatedAt                  DateTime           @updatedAt @map("updated_at")
 
@@ -707,6 +806,75 @@ model CallCenterSession {
   @@index([queueItemId, status])
   @@index([agentId, status])
   @@map("call_center_sessions")
+}
+
+model VoiceCallSession {
+  id                           String                     @id @default(cuid())
+  callCenterSessionId          String?                    @map("call_center_session_id")
+  callCenterSession            CallCenterSession?         @relation(fields: [callCenterSessionId], references: [id], onDelete: SetNull)
+  queueItemId                  String?                    @map("queue_item_id")
+  queueItem                    TriageQueueItem?           @relation(fields: [queueItemId], references: [id], onDelete: SetNull)
+  protocolId                   String                     @map("protocol_id")
+  protocol                     Algorithm                  @relation(fields: [protocolId], references: [id], onDelete: Restrict)
+  releaseVersion               String                     @map("release_version")
+  language                     String                     @default("en")
+  status                       VoiceSessionStatus         @default(CREATED)
+  currentQuestionId            String?                    @map("current_question_id")
+  currentQuestion              InitialAssessmentQuestion? @relation("VoiceSessionCurrentQuestion", fields: [currentQuestionId], references: [id], onDelete: SetNull)
+  clarificationAttempts        Int                        @default(0) @map("clarification_attempts")
+  maxClarificationAttempts     Int                        @default(1) @map("max_clarification_attempts")
+  createdByUserId              String                     @map("created_by_user_id")
+  recordingNoticePlayed        Boolean                    @default(false) @map("recording_notice_played")
+  recordingAuthorizationStatus String                     @map("recording_authorization_status")
+  rawRecordingRagEligible      Boolean                    @default(false) @map("raw_recording_rag_eligible")
+  recordingStorageRegion       String                     @default("me-central1") @map("recording_storage_region")
+  takeoverReason               String?                    @map("takeover_reason") @db.Text
+  startedAt                    DateTime?                  @map("started_at")
+  completedAt                  DateTime?                  @map("completed_at")
+  turns                        VoiceAssessmentTurn[]
+  createdAt                    DateTime                   @default(now()) @map("created_at")
+  updatedAt                    DateTime                   @updatedAt @map("updated_at")
+
+  @@index([queueItemId, status])
+  @@index([callCenterSessionId, status])
+  @@index([protocolId, releaseVersion])
+  @@map("voice_call_sessions")
+}
+
+model VoiceAssessmentTurn {
+  id                   String                     @id @default(cuid())
+  sessionId            String                     @map("session_id")
+  session              VoiceCallSession           @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  questionId           String                     @map("question_id")
+  question             InitialAssessmentQuestion  @relation(fields: [questionId], references: [id], onDelete: Restrict)
+  audioAssetId         String?                    @map("audio_asset_id")
+  audioAsset           ClinicalAudioAsset?        @relation(fields: [audioAssetId], references: [id], onDelete: SetNull)
+  sequence             Int
+  attempt              Int                        @default(1)
+  promptTextSnapshot   String                     @map("prompt_text_snapshot") @db.Text
+  transcriptText       String?                    @map("transcript_text") @db.Text
+  speechStartedAtMs    Int?                       @map("speech_started_at_ms")
+  speechEndedAtMs      Int?                       @map("speech_ended_at_ms")
+  sttConfidence        Float?                     @map("stt_confidence")
+  answerClassification VoiceAnswerClassification? @map("answer_classification")
+  structuredAnswer     Json?                      @map("structured_answer")
+  interpreterEvidence  Json?                      @map("interpreter_evidence")
+  interpreterProvider  String?                    @map("interpreter_provider")
+  interpreterModel     String?                    @map("interpreter_model")
+  interpreterVersion   String?                    @map("interpreter_version")
+  status               VoiceTurnStatus            @default(READY)
+  validationStatus     VoiceValidationStatus      @default(PENDING) @map("validation_status")
+  nurseCorrectedAnswer Json?                      @map("nurse_corrected_answer")
+  validationComment    String?                    @map("validation_comment") @db.Text
+  validatedBy          String?                    @map("validated_by")
+  validatedAt          DateTime?                  @map("validated_at")
+  createdAt            DateTime                   @default(now()) @map("created_at")
+  updatedAt            DateTime                   @updatedAt @map("updated_at")
+
+  @@unique([sessionId, sequence, attempt])
+  @@index([sessionId, validationStatus])
+  @@index([questionId])
+  @@map("voice_assessment_turns")
 }
 
 model CallCenterEvent {

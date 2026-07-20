@@ -29,6 +29,7 @@ import { createQueueRouter } from "./routes/queueRouter.js";
 import { createSimulationRouter } from "./routes/simulation.js";
 import { createStaffRouter } from "./routes/staff.js";
 import { createTriageRouter } from "./routes/triage.js";
+import { createVoiceAssessmentRouter } from "./routes/voiceAssessment.js";
 import { getCurrentClinicalContentPackage } from "./services/clinicalContent.js";
 
 const staticRoot = path.resolve(process.cwd(), "dist-web");
@@ -172,6 +173,7 @@ export function createApp() {
   app.use("/api/v1/call-center", requireAuthenticatedSession, createCallCenterRouter());
   app.use("/api/v1/simulation", requireAuthenticatedSession, createSimulationRouter());
   app.use("/api/v1/triage", requireAuthenticatedSession, createTriageRouter());
+  app.use("/api/v1/voice-assessment", requireAuthenticatedSession, createVoiceAssessmentRouter());
   app.use("/api/v1/emr", requireAuthenticatedSession, createEmrRouter());
 
   if (spaIndexHtml) {

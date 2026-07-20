@@ -455,6 +455,59 @@ def disposition_for(patient_group: str, severity: Severity) -> DispositionCode:
     return "SELF_CARE_WITH_CALLBACK_PRECAUTIONS"
 
 
+def synthetic_initial_assessment_questions(protocol_id: str, title: str) -> List[Dict[str, Any]]:
+    """Create a non-authoritative, structured opening assessment for demo workflow testing."""
+    prompts = [
+        ("LOCATION", f"Where is the main symptom or concern for {title}?", "Clarify the exact body area or concern."),
+        ("OPEN_TEXT", "Does the concern spread anywhere else or affect another part of the body?", "Capture any radiation or related location."),
+        ("DURATION", "When did the concern begin?", "Record minutes, hours, days, or an approximate date."),
+        ("YES_NO", "Did it start suddenly?", "Ask whether the onset was abrupt or gradual."),
+        ("OPEN_TEXT", "Is it constant, intermittent, improving, staying the same, or worsening?", "Capture the current pattern and change over time."),
+        ("PAIN_SCALE", "How severe is it now on a scale of zero to ten, if pain is present?", "Use the caller's description if a numeric score is not possible."),
+        ("YES_NO", "Has this happened before?", "If yes, capture what happened during the previous episode."),
+        ("OPEN_TEXT", "What do you think may have triggered or caused it?", "Capture recent activity, illness, injury, exposure, or treatment context."),
+        ("OPEN_TEXT", "What makes it better or worse?", "Capture relieving and aggravating factors."),
+        ("OPEN_TEXT", "Are there any other symptoms or immediate concerns?", "Prompt for red-flag symptoms before the protocol assessment begins."),
+    ]
+    emergency_keywords = ["breathing", "blue", "fainting", "bleeding", "confusion", "unresponsive", "severe"]
+    return [
+        {
+            "id": f"{protocol_id}-iaq{index}",
+            "sequence": index,
+            "responseType": response_type,
+            "promptTextEn": prompt,
+            "clarificationPromptEn": clarification,
+            "required": True,
+            "emergencyKeywords": emergency_keywords if index in {1, 10} else [],
+            "syntheticApproximation": True,
+        }
+        for index, (response_type, prompt, clarification) in enumerate(prompts, start=1)
+    ]
+
+
+def synthetic_disposition_mappings(patient_group: str, context: Dict[str, Any]) -> List[Dict[str, Any]]:
+    routes = {
+        "Emergency": ("Emergency department escalation", "Immediate safety floor or high-acuity finding requires emergency escalation."),
+        "Urgent": ("Urgent clinical review", "Time-sensitive review is required after an urgent finding."),
+        "Routine": ("Routine clinic or teleconsult review", "A clinic or teleconsult pathway is appropriate when higher-acuity findings are absent."),
+        "Self-care": ("Self-care with callback precautions", "Self-care is only appropriate after the higher-acuity path is negative and callback precautions are understood."),
+    }
+    return [
+        {
+            "severity": severity,
+            "dispositionCode": disposition_for(patient_group, severity),
+            "ageMin": context["ageMin"],
+            "ageMax": context["ageMax"],
+            "routeLabelEn": routes[severity][0],
+            "routeRationaleEn": routes[severity][1],
+            "sourceOfCareEn": "Synthetic Qatar routing configuration; validate local provider availability and escalation policy before production.",
+            "telemedicineHeadingEn": "Teleconsult eligibility requires nurse confirmation and local policy checks.",
+            "aviationContext": {"fitToFlyDecision": "nurse-and-policy-controlled", "syntheticApproximation": True},
+        }
+        for severity in ("Emergency", "Urgent", "Routine", "Self-care")
+    ]
+
+
 def synthetic_questions(protocol_id: str, title: str, patient_group: str) -> List[Dict[str, Any]]:
     subject = title.lower()
     base = [
@@ -582,6 +635,8 @@ def build_protocol_record(
     protocol_id = stable_id(f"synthetic-stcc-{mode}-{patient_group}", title, canonical_key)
     context = title_context(title, patient_group, ",".join(item["category"] for item in index_memberships))
     search_words = search_words_for_title(title)
+    anchor_url = medlineplus_anchor.get("url") if medlineplus_anchor else None
+    source_documents = sorted({membership["url"] for membership in index_memberships if membership.get("url")})
     return {
         "id": protocol_id,
         "titleEn": title,
@@ -589,34 +644,68 @@ def build_protocol_record(
         "patientGroup": patient_group,
         "indexMemberships": index_memberships,
         "clinicalDefinitionEn": f"Synthetic definition placeholder for {title}. Replace with licensed STCC clinical definition before production.",
-        "initialAssessmentQuestions": [
-            "Synthetic: confirm caller identity, patient age, current location, callback number, and whether emergency services are already needed.",
-            "Synthetic: confirm duration, severity, progression, relevant risk context, medications or allergies, and whether symptoms are worsening.",
-        ],
+        "initialAssessmentQuestions": synthetic_initial_assessment_questions(protocol_id, title),
         "backgroundInfoEn": f"Synthetic background placeholder for {title}. This text is generated for workflow simulation and is not clinical authority.",
         "questions": synthetic_questions(protocol_id, title, patient_group),
         "careAdvice": synthetic_care_advice(protocol_id, title, patient_group),
-        "homeCareAdvice": [
-            f"Synthetic home-care handoff for {title}: use only after emergency and urgent findings are negative and nurse review agrees."
-        ],
-        "firstAidWhenAppropriate": [
-            "Synthetic first-aid placeholder: stabilize the patient, prevent further harm, and follow local emergency escalation policy when red flags are present."
+        "firstAid": [
+            {
+                "titleEn": f"Immediate safety precautions for {title}",
+                "instructionTextEn": "Synthetic first-aid placeholder: stabilize the patient, prevent further harm, and follow local emergency escalation policy when red flags are present.",
+                "displayOrder": 1,
+            }
         ],
         "references": [
             {
-                "type": "placeholder",
-                "citation": "Synthetic reference placeholder. Validate against licensed STCC package and IST Health clinical governance before use.",
+                "id": f"{protocol_id}-reference-1",
+                "title": "Synthetic clinical-content provenance notice",
+                "citationText": "Generated placeholder. Validate against the licensed STCC package and IST Health clinical governance before any production use.",
+                "referenceType": "synthetic-provenance",
+                "displayOrder": 1,
             }
         ],
-        "openSourcePatientEducationAnchors": [medlineplus_anchor] if medlineplus_anchor else [],
+        "supplementals": [
+            {
+                "id": f"{protocol_id}-homecare",
+                "titleEn": f"Home-care handoff for {title}",
+                "supplementalType": "home-care",
+                "plainTextEn": f"Synthetic home-care handoff for {title}: use only after emergency and urgent findings are negative and nurse review agrees.",
+                "displayOrder": 1,
+                "sectionLabel": "Home care",
+            },
+            *(
+                [
+                    {
+                        "id": f"{protocol_id}-pediatric-handout",
+                        "titleEn": f"Pediatric caregiver handout for {title}",
+                        "supplementalType": "pediatric-care-advice",
+                        "plainTextEn": f"Synthetic pediatric handout placeholder for {title}. Guardian instructions and red flags require clinical validation.",
+                        "displayOrder": 2,
+                        "sectionLabel": "Pediatric care advice",
+                    }
+                ]
+                if patient_group == "pediatric"
+                else []
+            ),
+        ],
+        "openSourcePatientEducationAnchors": [anchor_url] if anchor_url else [],
         "searchWords": search_words,
-        "pediatricCareAdviceHandouts": (
-            [
-                f"Synthetic pediatric handout placeholder for {title}. Guardian instructions and red flags require clinical validation."
-            ]
-            if patient_group == "pediatric"
-            else []
-        ),
+        "titleVariants": [title],
+        "synonyms": [
+            {"canonicalTerm": title, "synonym": phrase, "language": "en", "region": "QA"}
+            for phrase in search_words
+            if phrase.casefold() != title.casefold()
+        ],
+        "taxonomy": [
+            {
+                "category": membership["category"],
+                "value": membership["label"],
+                "source": "synthetic-public-index",
+                "displayOrder": index,
+            }
+            for index, membership in enumerate(index_memberships, start=1)
+        ],
+        "dispositionMappings": synthetic_disposition_mappings(patient_group, context),
         "keywords": [
             {"phrase": phrase, "language": "en", "weight": max(20, 100 - idx * 8), "source": "synthetic-public-index"}
             for idx, phrase in enumerate(search_words)
@@ -628,6 +717,14 @@ def build_protocol_record(
         "approximationLevel": "topic-derived-public-index-only",
         "requiresClinicalValidation": True,
         "licensingBoundary": "Does not contain licensed STCC question, advice, rationale, reference, or background text.",
+        "provenance": {
+            "generated": True,
+            "sourceKind": "synthetic-public-topic",
+            "sourceDocuments": source_documents,
+            "contentNotice": "Synthetic STCC-shaped workflow data generated from public topic-index metadata. It is not licensed STCC clinical content and cannot be used as clinical authority.",
+            "requiresClinicalValidation": True,
+            "licensedContentIncluded": False,
+        },
     }
 
 
@@ -777,8 +874,25 @@ def generate_package(cache_dir: Path, open_source_cache_dir: Path, output_dir: P
             "backgroundInfoEn": protocol["backgroundInfoEn"][:3000],
             "ageMin": protocol["ageMin"],
             "ageMax": protocol["ageMax"],
+            "patientGroup": protocol["patientGroup"],
             "mode": protocol["mode"],
+            "titleVariants": protocol["titleVariants"],
+            "synonyms": protocol["synonyms"],
+            "taxonomy": protocol["taxonomy"],
+            "dispositionMappings": protocol["dispositionMappings"],
             "keywords": protocol["keywords"],
+            "initialAssessmentQuestions": [
+                {
+                    "id": question["id"][:120],
+                    "sequence": question["sequence"],
+                    "responseType": question["responseType"],
+                    "promptTextEn": question["promptTextEn"][:2000],
+                    "clarificationPromptEn": question.get("clarificationPromptEn", "")[:2000],
+                    "required": question["required"],
+                    "emergencyKeywords": question["emergencyKeywords"],
+                }
+                for question in protocol["initialAssessmentQuestions"]
+            ],
             "questions": [
                 {
                     "id": question["id"][:120],
@@ -803,6 +917,11 @@ def generate_package(cache_dir: Path, open_source_cache_dir: Path, output_dir: P
                 }
                 for advice in protocol["careAdvice"]
             ],
+            "firstAid": protocol["firstAid"],
+            "references": protocol["references"],
+            "supplementals": protocol["supplementals"],
+            "openSourcePatientEducationAnchors": protocol["openSourcePatientEducationAnchors"],
+            "provenance": protocol["provenance"],
         }
         if protocol["genderRestriction"]:
             clinical_protocol["genderRestriction"] = protocol["genderRestriction"]
