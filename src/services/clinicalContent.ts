@@ -293,8 +293,62 @@ function normalize(value: string): string {
     .trim();
 }
 
+// Phase 1 of the semantic-matching plan (see
+// docs/semantic-matching-enhancement-plan-2026.md) - lightweight,
+// hand-written suffix stripping rather than a full Porter/Snowball stemmer:
+// our vocabulary is narrow lay-medical English, and a general-purpose
+// stemmer risks false collapses ("universe" -> "univers") that a narrow
+// rule set avoids. Order matters - more specific suffixes are checked first
+// so e.g. "worries" -> "worry" via the "ies" rule rather than "worrie" via
+// a bare "s"/"es" rule.
+const SUFFIX_RULES: ReadonlyArray<{ suffix: string; replacement: string }> = [
+  { suffix: "ies", replacement: "y" },
+  { suffix: "ing", replacement: "" },
+  { suffix: "ed", replacement: "" },
+  { suffix: "es", replacement: "" },
+  { suffix: "s", replacement: "" }
+];
+
+// A stemmed result shorter than this is discarded outright - short stems
+// are exactly the substrings that caused confirmed false-positive
+// regressions during Phase 0 (see the plan doc's changelog).
+const MIN_STEM_RESULT_LENGTH = 4;
+
+// Even at 4+ characters, some stems are specifically the generic
+// single-symptom words already found (during Phase 0) to cause widespread
+// cross-protocol noise, because this content set deliberately has many
+// competing protocols that legitimately share these exact words in their
+// own authored keywords (see synonymDictionary.ts's "Common symptom words"
+// comment for the full explanation). Stemming must not silently
+// reintroduce them: e.g. "hurts" -> strip "s" -> "hurt" would make any
+// query containing "hurts" newly match "hurt my hand"/"hurt my wrist"-style
+// keywords across dozens of unrelated protocols, widening a noise-floor
+// problem that most of Phase 0's effort went into containing rather than
+// fixing it. This is a deliberate, narrow blocklist of stem *outputs*, not
+// a general stopword list - only add to it with the same evidence standard
+// (a confirmed regression via the A/B sweep), not speculatively.
+const STEM_BLOCKLIST = new Set(["hurt", "ache", "sore", "pain", "swell", "itch", "faint", "dizzy", "weak", "numb"]);
+
+function stem(word: string): string | null {
+  for (const rule of SUFFIX_RULES) {
+    if (!word.endsWith(rule.suffix)) {
+      continue;
+    }
+    const stemmed = word.slice(0, word.length - rule.suffix.length) + rule.replacement;
+    if (stemmed.length < MIN_STEM_RESULT_LENGTH || STEM_BLOCKLIST.has(stemmed) || stemmed === word) {
+      return null;
+    }
+    return stemmed;
+  }
+  return null;
+}
+
 function queryTerms(query: string): string[] {
-  return [...new Set(normalize(query).split(" ").filter((part) => part.length >= 2))];
+  const rawTerms = normalize(query)
+    .split(" ")
+    .filter((part) => part.length >= 2);
+  const stemmedTerms = rawTerms.map(stem).filter((term): term is string => term !== null);
+  return [...new Set([...rawTerms, ...stemmedTerms])];
 }
 
 function modeMatches(protocolMode: ProtocolMode, requestedMode: ProtocolMode): boolean {

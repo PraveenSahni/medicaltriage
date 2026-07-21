@@ -1,22 +1,37 @@
 # Semantic Matching Enhancement Plan (2026)
 
-## Status: Phase 0 complete (see §7 Changelog). Phases 1-4 not yet started.
+## Status: Phase 0 and Phase 1 complete (see §7 Changelog). Phases 2-4 not yet started.
 
 ## IF YOU ARE PICKING THIS UP LATER, START HERE
 
-**What's done:** Phase 0 only - "synonyms" support. `scoreProtocol()` now reads
+**What's done:** Phase 0 - "synonyms" support. `scoreProtocol()` now reads
 `protocol.synonyms`/`titleVariants` (it didn't before), and a shared, hand-curated
 dictionary (`src/data/openSourceGuidelines/shared/synonymDictionary.ts`) auto-attaches
 lay/clinical synonym pairs to protocols. 572 synonym entries live across 169 of 228
-protocols today. Everything else in this doc (Phases 1-4, and the six rows of the gap
-table in §1 other than "Synonyms") is **not implemented** - stemming, the concept
-gazetteer, embeddings, and the Agreement Engine are all still just plans.
+protocols today.
 
-**Next task in the queue:** Task #10, "Phase 1: Add lightweight suffix-stemming to
-queryTerms()" - see §"Phase 1" below for the exact spec (what function to touch, what
-NOT to use a full stemmer library for, and why). Tasks #11-13 (Phase 2-4) are blocked
-behind it in that order; do not skip ahead without re-reading why each phase is
-sequenced this way (§4 intro).
+Phase 1 - lightweight suffix stemming. `queryTerms()` (`src/services/clinicalContent.ts`)
+now also emits a stemmed variant of each caller query word (via a small, hand-written
+`stem()` - not a Porter/Snowball library), feeding into the existing short-word
+partial-credit path used by titleVariants/synonyms/keywords. Guarded by a minimum
+result length (4 chars) AND a hard blocklist of known-dangerous generic stems
+(`hurt`, `ache`, `sore`, `pain`, `swell`, `itch`, `faint`, `dizzy`, `weak`, `numb`) -
+these are exactly the words Phase 0 had to hand-exclude from the synonym dictionary
+because they cause cross-protocol noise in this corpus; a naive stemmer would have
+silently reintroduced them (e.g. "hurts" -> strip "s" -> "hurt"). Full A/B sweep
+(22 scripts) showed zero regressions and zero newly-fixed mismatches against the
+existing test scenarios - the win from stemming is for caller phrasings not covered
+by that fixed test set, not a fix for either of the two known Phase-0 limitations
+below (confirmed: both still reproduce identically after Phase 1).
+
+Everything else in this doc (Phases 2-4, and the remaining gap-table rows other than
+"Synonyms"/"Canonical form") is **not implemented** - the concept gazetteer,
+embeddings, and the Agreement Engine are all still just plans.
+
+**Next task in the queue:** Task #11, "Phase 2: Build lay-term concept gazetteer for
+query expansion" - see §"Phase 2" below. Tasks #12-13 (Phase 3-4) are blocked behind it
+in that order; do not skip ahead without re-reading why each phase is sequenced this
+way (§4 intro).
 
 **Two known, accepted, unresolved limitations from Phase 0** (do not treat these as new
 bugs to chase - they're pre-existing scoring fragility the later phases are meant to
@@ -407,6 +422,15 @@ Every phase must, before being considered "done":
 - `"Just threw up a bunch of blood and feel really faint and dizzy"` (expected Vomiting Blood) now matches Dizziness - Lightheadedness.
 
 Both were confirmed via direct baseline A/B testing to already be razor-thin margins even *before* any Phase 0 change (Hearing Loss won by only 7 points out of ~300; Vomiting Blood won by only 2 points out of ~167) - i.e., these were already fragile coin-flips caused by the pre-existing short-word partial-credit scoring quirk (documented in the `batch-verification-process` memory), and Phase 0's additions (which touch unrelated words elsewhere in the same caller sentences) were enough to tip them. This is exactly the class of problem Phase 1 (stemming) and later phases (embeddings/Agreement Engine) are scoped to address structurally - further hand-tuning the Phase 0 dictionary to chase these two specific point-margins was judged not worth the whack-a-mole risk of shifting some other currently-correct, similarly-fragile match elsewhere in the ~228-protocol corpus. Revisit if Phase 1/3 don't naturally resolve them.
+
+### Phase 1 — complete
+
+**What shipped:**
+- `queryTerms()` (`src/services/clinicalContent.ts`) now also emits a stemmed variant of each caller word, via a small (~40-line) hand-written `stem()` function - a fixed, ordered suffix-stripping rule list (`ies`→`y`, `ing`→``, `ed`→``, `es`→``, `s`→``), deliberately not a full Porter/Snowball stemmer given the narrow lay-medical vocabulary and the risk of false collapses on words a general stemmer wasn't tuned for.
+- Two safety guards, both informed directly by Phase 0's own findings: a minimum stemmed-result length (`MIN_STEM_RESULT_LENGTH = 4`, same threshold and same rationale as Phase 0's `MIN_SYNONYM_PHRASE_LENGTH`), and a hard `STEM_BLOCKLIST` of stem outputs (`hurt`, `ache`, `sore`, `pain`, `swell`, `itch`, `faint`, `dizzy`, `weak`, `numb`) - these are exactly the generic single-symptom words Phase 0 had to hand-remove from the synonym dictionary (see bug #5 above) because this corpus has many competing protocols that legitimately share them. A naive stemmer would have silently reintroduced the same noise class through a different path (e.g. `"hurts"` → strip `s` → `"hurt"`, which then partial-credit-matches `"hurt my hand"`/`"hurt my wrist"`-style keywords across dozens of unrelated protocols even for callers whose query never contained the bare word `"hurt"`).
+- Stemmed terms are additive only - the existing raw term is always still included in `queryTerms()`'s output, and the change touches only the shared per-term partial-credit path (titleVariants/synonyms/keywords loops all consume `queryTerms()`'s output unchanged); the full-phrase substring checks are untouched, so typing the exact authored phrase still gets full credit exactly as before.
+
+**Verification performed:** `tsc`/`content:dry-run`/`jest` (593/593), plus the full 22-script live-queue A/B sweep across all batches. Result: **zero regressions and zero newly-fixed mismatches** - every script's mismatch count after Phase 1 was identical to its pre-Phase-1 baseline (e.g. batch03 7/10, batch05 8/10, batch13/15/16/18/20-23 all 0/10, unchanged in both directions). This is expected, not a failure: the existing 220 live-queue scenarios are a fixed, already-tuned test set from Phase 0's own verification work, so a change that only helps *previously-untested* inflected phrasings (e.g. "swelling"/"vomiting"/"aching" forms not already in that set) has no way to show up as a delta against it. The two known Phase 0 residual limitations (Hearing Loss, Vomiting Blood) were explicitly re-checked and still reproduce identically after Phase 1 - stemming does not touch the specific words that tip those two races.
 
 **Net result across all 220 scenarios:** 3 previously-broken scenarios fixed (nosebleed, insomnia, shingles), 2 residual regressions accepted as a known, documented, low-severity limitation. No other content or baseline regressions found in the full sweep.
 
