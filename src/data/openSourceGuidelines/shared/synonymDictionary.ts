@@ -113,7 +113,40 @@ const SYNONYM_GROUPS: SynonymGroup[] = [
   { canonicalTerm: "diabetes", variants: ["blood sugar problems", "high blood sugar", "low blood sugar"] },
   { canonicalTerm: "asthma", variants: ["reactive airway"] },
   { canonicalTerm: "flu", variants: ["influenza"] },
-  { canonicalTerm: "common cold", variants: ["head cold"] }
+  { canonicalTerm: "common cold", variants: ["head cold"] },
+
+  // Named conditions with a genuine, distinct lay term - added in a
+  // second pass after auditing which of the 228 protocols had zero
+  // synonym coverage (see docs/semantic-matching-enhancement-plan-2026.md,
+  // Phase 0 changelog). Deliberately skips: (a) protocols whose title
+  // already *is* the plain-English term (Fever, Hives-as-a-word-itself,
+  // Ankle/Elbow/Finger/Foot/Hip/Face Pain - there's no separate lay
+  // version to map those to), and (b) the sensitive topics Suicide
+  // Concerns, Domestic Violence, and Sexual Assault or Rape, where no
+  // generic-word expansion was added on purpose.
+  { canonicalTerm: "anaphylaxis", variants: ["severe allergic reaction", "anaphylactic shock"] },
+  { canonicalTerm: "cyanosis", variants: ["turning blue", "lips are blue"] },
+  { canonicalTerm: "hair loss", variants: ["alopecia", "balding", "thinning hair"] },
+  { canonicalTerm: "hallucinations", variants: ["seeing things that arent there", "hearing voices"] },
+  { canonicalTerm: "coma", variants: ["unresponsive", "wont wake up"] },
+  { canonicalTerm: "acne", variants: ["pimples", "breakouts"] },
+  { canonicalTerm: "hiccups", variants: ["hiccupping"] },
+  { canonicalTerm: "emergency contraception", variants: ["morning after pill", "plan b pill"] },
+  { canonicalTerm: "hoarseness", variants: ["hoarse voice", "losing my voice"] },
+  { canonicalTerm: "missed period", variants: ["late period"] },
+  { canonicalTerm: "motion sickness", variants: ["carsick", "seasick"] },
+  { canonicalTerm: "pinworms", variants: ["threadworms"] },
+  { canonicalTerm: "scrapes", variants: ["abrasion", "road rash"] },
+  { canonicalTerm: "ringworm", variants: ["fungal skin infection", "tinea"] },
+  { canonicalTerm: "fingernail infection", variants: ["paronychia", "infected nail"] },
+  { canonicalTerm: "opioid", variants: ["narcotic", "painkiller addiction"] },
+  { canonicalTerm: "hives", variants: ["urticaria", "welts"] },
+  { canonicalTerm: "drowning", variants: ["near drowning"] },
+  { canonicalTerm: "groin strain", variants: ["groin pull"] },
+  { canonicalTerm: "iud", variants: ["coil", "copper coil"] },
+  { canonicalTerm: "bed bug bite", variants: ["bedbug bite"] },
+  { canonicalTerm: "fire ant sting", variants: ["fire ant bite"] },
+  { canonicalTerm: "meningitis", variants: ["exposed to meningitis"] }
 ];
 
 function normalizeForLookup(value: string): string {
@@ -195,11 +228,27 @@ export function attachDictionarySynonyms(protocol: ProtocolInput): ProtocolInput
   // literal keywords on Heart Rate and Heartbeat Questions, and re-scoring
   // them as synonyms doubled a pre-existing short-word noise contribution
   // enough to flip a close match away from the correct protocol.
+  //
+  // The same problem can occur via the *canonical* term itself, not just a
+  // variant: `scoreProtocol()` scores each unique canonical phrase for a
+  // protocol once regardless of how many variant rows share it, so if the
+  // canonical term is itself already a literal keyword (e.g. "groin
+  // strain" was already an authored keyword on Groin Injury and Strain,
+  // and the "groin strain" synonym group's canonical term is the identical
+  // string), attaching *any* entry from that group re-scores that already-
+  // authored keyword a second time. When the canonical term duplicates an
+  // existing keyword, skip the whole group for this protocol rather than
+  // trying to suppress just the canonical-phrase scoring (the schema
+  // doesn't support scoring variants without also carrying their shared
+  // canonical term).
   const existingKeywordPhrases = new Set(
     (protocol.keywords ?? []).map((keyword) => normalizeForLookup(keyword.phrase))
   );
 
   for (const group of matchedGroups) {
+    if (existingKeywordPhrases.has(normalizeForLookup(group.canonicalTerm))) {
+      continue;
+    }
     for (const variant of group.variants) {
       const key = `${group.canonicalTerm}::${variant}`;
       if (seen.has(key) || existingKeywordPhrases.has(normalizeForLookup(variant))) {
