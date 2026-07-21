@@ -3,6 +3,7 @@ import path from "node:path";
 import { prisma } from "../db.js";
 import { samplePhase1ClinicalContent } from "../data/samplePhase1ClinicalContent.js";
 import { openSourceGuidelinesContent } from "../data/openSourceGuidelines/index.js";
+import { expandQueryWithConcepts } from "../data/openSourceGuidelines/shared/conceptGazetteer.js";
 import {
   ClinicalContentPackageSchema,
   type ClinicalContentCareAdvice,
@@ -525,12 +526,18 @@ export function getClinicalProtocolById(protocolId: string): ClinicalContentProt
 }
 
 export function searchClinicalProtocols(query: ProtocolSearchQuery): ProtocolSearchResult[] {
+  // Phase 2 of the semantic-matching plan (docs/semantic-matching-enhancement-plan-2026.md):
+  // expand the raw query with any matched lay-term concept tags before scoring.
+  // This is purely query-side - scoreProtocol() itself is unchanged, and the
+  // original query.q (used below for the empty-query filter) is untouched.
+  const expandedQuery = expandQueryWithConcepts(query.q);
+
   return listClinicalProtocols()
     .filter((protocol) => ageMatches(protocol, query.ageYears))
     .filter((protocol) => sexMatches(protocol, query.biologicalSex))
     .filter((protocol) => modeMatches(protocol.mode, query.mode))
     .map((protocol) => {
-      const scored = scoreProtocol(protocol, query.q);
+      const scored = scoreProtocol(protocol, expandedQuery);
       return {
         id: protocol.id,
         titleEn: protocol.titleEn,

@@ -167,7 +167,7 @@ const SYNONYM_GROUPS: SynonymGroup[] = [
   { canonicalTerm: "meningitis", variants: ["exposed to meningitis"] }
 ];
 
-function normalizeForLookup(value: string): string {
+export function normalizeForLookup(value: string): string {
   return value.toLowerCase().trim();
 }
 
@@ -202,7 +202,7 @@ function escapeRegExp(value: string): string {
  * itself contains "nose" as a substring (dia-gnose-d). Word-boundary
  * matching prevents this whole class of false attachment.
  */
-function containsWholeTerm(haystack: string, term: string): boolean {
+export function containsWholeTerm(haystack: string, term: string): boolean {
   const pattern = new RegExp(`(?:^|[^a-z0-9])${escapeRegExp(term)}(?:$|[^a-z0-9])`, "i");
   return pattern.test(` ${haystack} `);
 }

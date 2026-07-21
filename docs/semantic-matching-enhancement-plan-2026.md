@@ -1,6 +1,6 @@
 # Semantic Matching Enhancement Plan (2026)
 
-## Status: Phase 0 and Phase 1 complete (see §7 Changelog). Phases 2-4 not yet started.
+## Status: Phase 0, Phase 1, and Phase 2 complete (see §7 Changelog). Phases 3-4 not yet started.
 
 ## IF YOU ARE PICKING THIS UP LATER, START HERE
 
@@ -24,14 +24,30 @@ existing test scenarios - the win from stemming is for caller phrasings not cove
 by that fixed test set, not a fix for either of the two known Phase-0 limitations
 below (confirmed: both still reproduce identically after Phase 1).
 
-Everything else in this doc (Phases 2-4, and the remaining gap-table rows other than
-"Synonyms"/"Canonical form") is **not implemented** - the concept gazetteer,
-embeddings, and the Agreement Engine are all still just plans.
+Phase 2 - lay-term concept gazetteer. A new, small, verified-against-the-corpus dictionary
+(`src/data/openSourceGuidelines/shared/conceptGazetteer.ts`, ~30 entries) maps lay phrases
+that don't fit Phase 0's canonical-term/synonym shape (e.g. "funny bone", "boo boo", "the
+runs", "waterworks") to a single generic concept tag (e.g. "elbow", "injury", "diarrhea",
+"urinary"). Unlike Phase 0/1, this is query-side, not protocol-side: `expandQueryWithConcepts()`
+appends matched concept tags to the caller's query text before it reaches `scoreProtocol()`
+(wired into `searchClinicalProtocols()`), so `scoreProtocol()` itself is completely
+untouched by this phase. Every concept tag was `grep`-verified to actually appear in the
+corpus's real `titleEn`/keyword `phrase` text before being added (not guessed), and every
+tag is 4+ characters for the same substring-safety reason established in Phase 0/1 (a
+bare "ear"/"eye" was rejected in favor of "hearing"/"eyes" after checking hit counts).
+Full 22-script A/B sweep showed zero regressions (identical to the Phase 0/1 baseline);
+manual spot-checks of 7 realistic lay-phrase queries, cross-checked against a `git stash`
+baseline, confirmed real, positive ranking improvements on 4 of 7 (e.g. "my funny bone
+hurts after I fell" moved from wrongly ranking Tailbone Injury first to correctly ranking
+Elbow Injury first) with no regressions on the other 3.
 
-**Next task in the queue:** Task #11, "Phase 2: Build lay-term concept gazetteer for
-query expansion" - see §"Phase 2" below. Tasks #12-13 (Phase 3-4) are blocked behind it
-in that order; do not skip ahead without re-reading why each phase is sequenced this
-way (§4 intro).
+Everything else in this doc (Phases 3-4, and the remaining gap-table rows other than
+"Synonyms"/"Canonical form"/"Entity-concept") is **not implemented** - embeddings and the
+Agreement Engine are still just plans.
+
+**Next task in the queue:** Task #12, "Phase 3: Local embedding-based semantic similarity
+(shadow-only)" - see §"Phase 3" below. Task #13 (Phase 4) is blocked behind it; do not
+skip ahead without re-reading why each phase is sequenced this way (§4 intro).
 
 **Two known, accepted, unresolved limitations from Phase 0** (do not treat these as new
 bugs to chase - they're pre-existing scoring fragility the later phases are meant to
@@ -432,8 +448,6 @@ Both were confirmed via direct baseline A/B testing to already be razor-thin mar
 
 **Verification performed:** `tsc`/`content:dry-run`/`jest` (593/593), plus the full 22-script live-queue A/B sweep across all batches. Result: **zero regressions and zero newly-fixed mismatches** - every script's mismatch count after Phase 1 was identical to its pre-Phase-1 baseline (e.g. batch03 7/10, batch05 8/10, batch13/15/16/18/20-23 all 0/10, unchanged in both directions). This is expected, not a failure: the existing 220 live-queue scenarios are a fixed, already-tuned test set from Phase 0's own verification work, so a change that only helps *previously-untested* inflected phrasings (e.g. "swelling"/"vomiting"/"aching" forms not already in that set) has no way to show up as a delta against it. The two known Phase 0 residual limitations (Hearing Loss, Vomiting Blood) were explicitly re-checked and still reproduce identically after Phase 1 - stemming does not touch the specific words that tip those two races.
 
-**Net result across all 220 scenarios:** 3 previously-broken scenarios fixed (nosebleed, insomnia, shingles), 2 residual regressions accepted as a known, documented, low-severity limitation. No other content or baseline regressions found in the full sweep.
-
 ### Phase 0, second pass — coverage expansion
 
 After auditing coverage directly (228 protocols total, only 165 had ≥1 synonym after the first pass), added ~23 more synonym groups targeting genuine lay↔clinical term pairs for protocols that had zero coverage (anaphylaxis↔severe allergic reaction, cyanosis↔turning blue, hair loss↔alopecia, coma↔unresponsive, iud↔coil, ringworm↔tinea, pinworms↔threadworms, opioid↔narcotic, and others - see the dictionary file for the full list). Deliberately skipped protocols whose title already *is* the plain-English term (Fever, Ankle/Elbow/Finger/Foot/Hip/Face Pain) and the sensitive topics (Suicide Concerns, Domestic Violence, Sexual Assault or Rape), consistent with the first pass.
@@ -441,3 +455,15 @@ After auditing coverage directly (228 protocols total, only 165 had ≥1 synonym
 **One more regression found and fixed by the same A/B sweep process:** the "groin strain" group's canonical term was itself already a literal authored keyword on Groin Injury and Strain (batch19), so attaching the group's "groin pull" variant also re-scored the canonical "groin strain" phrase a second time - the same double-counting bug class as the "palpitations"/Heart Rate case, but via the canonical term rather than a variant. The earlier fix only checked variants against existing keywords; extended `attachDictionarySynonyms` to also skip an entire group when its canonical term duplicates an existing keyword phrase (since `scoreProtocol` scores the canonical phrase once per protocol regardless of which variant triggered attachment, there's no way to keep the variant while suppressing just the canonical scoring without a schema change - skipping the whole group for that protocol was the safe choice).
 
 **Final state:** 572 synonym entries, 169 of 228 protocols with ≥1 synonym (up from 165 after the canonical-term dedup fix cost a small amount of coverage in exchange for correctness). Re-ran the full 220-scenario sweep after the fix: confirmed back to the same known-good state as the end of the first pass, no new regressions.
+
+### Phase 2 — complete
+
+**What shipped:**
+- New file `src/data/openSourceGuidelines/shared/conceptGazetteer.ts`: ~30 hand-curated lay-phrase → concept-tag entries (e.g. `"funny bone"` → `"elbow"`, `"boo boo"`/`"owie"`/`"gash"` → `"injury"`, `"the runs"`/`"the trots"` → `"diarrhea"`, `"waterworks"` → `"urinary"`). Unlike Phase 0's protocol-side dictionary, this is query-side: `expandQueryWithConcepts()` appends matched concept tags to the caller's query text (in addition to, never instead of, the original text) before `searchClinicalProtocols()` calls `scoreProtocol()` — `scoreProtocol()` itself has zero changes in this phase.
+- Every concept tag was `grep`-verified against the real corpus (`titleEn`/keyword `phrase` text across all 23 batch files plus the formal-rule protocols) to have actual hits before being added — e.g. confirmed "elbow" appears 17 times in keyword phrases and 10 times in titles, "injury" 138 times, "diarrhea" 9 times — rather than guessed. A bare `"ear"`/`"eye"` concept tag was tried and rejected after finding `"ears"` had zero real hits in the corpus (protocols use "hearing" instead) and a 3-character tag is exactly the kind of dangerous generic substring Phase 0/1 already had to guard against; used `"hearing"`/`"eyes"` instead.
+- Reused Phase 0's `containsWholeTerm`/`normalizeForLookup` helpers (exported from `synonymDictionary.ts` rather than reimplemented) for the lay-phrase matching step, keeping the same proven word-boundary-safe matching behavior.
+- Every concept tag is 4+ characters, the same length-safety threshold established in Phase 0 (`MIN_SYNONYM_PHRASE_LENGTH`) and Phase 1 (`MIN_STEM_RESULT_LENGTH`).
+
+**Verification performed:** `tsc`/`content:dry-run`/`jest` (593/593, content package unchanged at 228 protocols since this phase touches query prep, not content), plus the full 22-script live-queue A/B sweep — zero regressions, every script's mismatch count identical to the Phase 0/1 baseline (as expected: the fixed 220-scenario test set doesn't happen to contain these specific lay phrases). Additionally ran 7 realistic ad hoc lay-phrase queries not in that fixed test set, compared directly against a `git stash` baseline (not just eyeballed) to confirm genuine, positive effect rather than no-op: `"my funny bone hurts after I fell"` moved from wrongly top-ranking Tailbone Injury (198) to correctly top-ranking Elbow Injury (214); `"spots all over my arms and legs"` moved from a tied/wrong Hand Injury top rank (192) to a clear, correct Rash or Redness - Widespread top rank (311); `"toddler has the runs"` and `"kid has a boo boo on his knee"` both improved (Diarrhea and Knee Injury respectively moved up, though didn't reach #1 in one case) with no case moving a previously-correct query to incorrect.
+
+**No regressions or new content-side bugs found this phase** — unlike Phase 0/1, no double-counting or word-boundary issues were possible by construction, since concept tags are appended once to the query (not attached per-protocol) and the existing `scoreProtocol()` per-term partial-credit loops already handle duplicate/repeated query terms via their own `Set`-based `matchedTerms` tracking.
