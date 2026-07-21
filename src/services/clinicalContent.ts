@@ -350,6 +350,81 @@ function scoreProtocol(protocol: ClinicalContentProtocol, query: string): { scor
     score += 25;
   }
 
+  // Same minimum-length guard as the synonym loop below - see its comment.
+  const MIN_VARIANT_PHRASE_LENGTH = 4;
+
+  for (const titleVariant of protocol.titleVariants) {
+    const variant = normalize(titleVariant);
+    if (!variant || variant.length < MIN_VARIANT_PHRASE_LENGTH) {
+      continue;
+    }
+    if (normalizedQuery.includes(variant) || variant.includes(normalizedQuery)) {
+      score += 120;
+      matchedTerms.add(titleVariant);
+    }
+    for (const term of terms) {
+      if (term.length >= MIN_VARIANT_PHRASE_LENGTH && variant.includes(term)) {
+        score += 15;
+        matchedTerms.add(titleVariant);
+      }
+    }
+  }
+
+  // Synonym phrases shorter than this are excluded from substring matching
+  // entirely: a short phrase like "er" or "ed" is a substring of countless
+  // unrelated words ("blistered", "swollen" contain "er"/"ed"), so scoring
+  // it via normalizedQuery.includes(phrase) produces false-positive matches
+  // against nearly any caller sentence. Confirmed via a real regression
+  // during Phase 0 authoring (see docs/semantic-matching-enhancement-plan-2026.md).
+  const MIN_SYNONYM_PHRASE_LENGTH = 4;
+
+  // Multiple synonym rows commonly share the same canonicalTerm (one row per
+  // variant word). Scoring the canonical phrase inside the per-row loop
+  // would award full credit once per row sharing that canonical term - e.g.
+  // 5 variant rows all sharing canonicalTerm "swelling" would each
+  // separately match a caller's literal "swelling" and multiply the score
+  // 5x for one real word match. Score each unique canonical phrase for a
+  // protocol at most once, tracked here, while still scoring every distinct
+  // variant phrase independently (those are genuinely different wordings).
+  const scoredCanonicalPhrases = new Set<string>();
+
+  for (const synonymEntry of protocol.synonyms) {
+    const synonymPhrase = normalize(synonymEntry.synonym);
+    const canonicalPhrase = normalize(synonymEntry.canonicalTerm);
+
+    if (
+      canonicalPhrase &&
+      canonicalPhrase.length >= MIN_SYNONYM_PHRASE_LENGTH &&
+      !scoredCanonicalPhrases.has(canonicalPhrase)
+    ) {
+      scoredCanonicalPhrases.add(canonicalPhrase);
+      if (normalizedQuery.includes(canonicalPhrase) || canonicalPhrase.includes(normalizedQuery)) {
+        score += 60;
+        matchedTerms.add(synonymEntry.canonicalTerm);
+      }
+      for (const term of terms) {
+        if (term.length >= MIN_SYNONYM_PHRASE_LENGTH && canonicalPhrase.includes(term)) {
+          score += 8;
+          matchedTerms.add(synonymEntry.canonicalTerm);
+        }
+      }
+    }
+
+    if (!synonymPhrase || synonymPhrase.length < MIN_SYNONYM_PHRASE_LENGTH) {
+      continue;
+    }
+    if (normalizedQuery.includes(synonymPhrase) || synonymPhrase.includes(normalizedQuery)) {
+      score += 60;
+      matchedTerms.add(synonymEntry.synonym);
+    }
+    for (const term of terms) {
+      if (term.length >= MIN_SYNONYM_PHRASE_LENGTH && synonymPhrase.includes(term)) {
+        score += 8;
+        matchedTerms.add(synonymEntry.synonym);
+      }
+    }
+  }
+
   for (const keyword of protocol.keywords) {
     const phrase = normalize(keyword.phrase);
     if (normalizedQuery.includes(phrase) || phrase.includes(normalizedQuery)) {
