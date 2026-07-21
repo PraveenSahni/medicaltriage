@@ -356,12 +356,30 @@ function scoreProtocol(protocol: ClinicalContentProtocol, query: string): { scor
       score += keyword.weight + 40;
       matchedTerms.add(keyword.phrase);
     }
+  }
 
-    for (const term of terms) {
-      if (phrase.includes(term)) {
-        score += Math.max(5, Math.round(keyword.weight / 4));
-        matchedTerms.add(keyword.phrase);
+  // Per-term partial credit is awarded at most once per query term, not once
+  // per keyword phrase that happens to contain it. Without this, a protocol
+  // whose own keyword bank repeats one word across several phrases (e.g.
+  // "turned blue" appearing in 3 separate authored phrases for a pediatric
+  // breath-holding-spell protocol) stacks credit for that single word 3x,
+  // which can outscore the actually-correct protocol for a caller query that
+  // only shares that one generic word - confirmed live via a full-corpus
+  // end-to-end sweep (that one protocol alone wrongly won 53 of 228 test
+  // narratives via this exact mechanism before this fix). When multiple
+  // phrases contain the same term, the highest-weight phrase wins the credit
+  // (not first-seen), so a protocol's strongest matching phrase still governs.
+  for (const term of terms) {
+    let bestMatch: { weight: number; phrase: string } | undefined;
+    for (const keyword of protocol.keywords) {
+      const phrase = normalize(keyword.phrase);
+      if (phrase.includes(term) && (!bestMatch || keyword.weight > bestMatch.weight)) {
+        bestMatch = { weight: keyword.weight, phrase: keyword.phrase };
       }
+    }
+    if (bestMatch) {
+      score += Math.max(5, Math.round(bestMatch.weight / 4));
+      matchedTerms.add(bestMatch.phrase);
     }
   }
 
