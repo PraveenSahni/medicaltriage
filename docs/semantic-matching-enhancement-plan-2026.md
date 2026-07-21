@@ -44,6 +44,57 @@ the scenario lists documented in each batch's own authoring (see the `openSource
 batch files' JSDoc comments and the `[[batch-verification-process]]` memory file for
 the pattern to follow).
 
+**If a specific caller phrase matches the wrong protocol, here is exactly how to find
+out why** (this is the one recipe that found every root cause in Phase 0 - don't
+guess, run this):
+
+```js
+// 1. Log in and get a session cookie
+const base = "http://127.0.0.1:8080";
+const loginRes = await fetch(`${base}/api/v1/auth/login`, {
+  method: "POST", headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ username: "manager@irisstar.tech", password: "Manager@2026" })
+});
+const cookie = loginRes.headers.get("set-cookie").split(";")[0];
+
+// 2. POST the exact failing caller phrase to the live queue
+const res = await fetch(`${base}/api/v1/queue`, {
+  method: "POST", headers: { "Content-Type": "application/json", Cookie: cookie },
+  body: JSON.stringify({
+    istStaffId: "IST-1001", patientType: "Staff", channel: "Phone",
+    summary: "<the exact caller phrase>", reasonNarrative: "<the exact caller phrase>"
+  })
+});
+const body = await res.json();
+
+// 3. This is the key: read the FULL suggestions list, not just primaryProtocolId.
+// Each suggestion's `matchedTerms` shows exactly which keyword/synonym/title-variant
+// phrases contributed to that protocol's score - compare the winning (wrong) protocol's
+// matchedTerms against the expected (losing) protocol's to see exactly which phrase
+// tipped it, then decide whether it's a real bug (see the double-counting/false-
+// attachment/redundant-rescoring bug classes already found and fixed) or genuine
+// pre-existing scoring fragility (see the two accepted known limitations above).
+console.log(JSON.stringify(body.item.preparedProtocol.suggestions.slice(0, 5), null, 2));
+```
+
+**Two things this recipe caught that a naive glance would miss, both already fixed but
+worth knowing the pattern for if it happens again:**
+- If a protocol's `matchedTerms` shows synonym-sourced phrases you didn't expect for
+  that query, check whether the *canonical term* (not just the variant) already
+  duplicates a literal authored keyword on that protocol - that's the exact bug fixed
+  twice in Phase 0 (once via a variant, once via a canonical term).
+- If a protocol's `matchedTerms` includes a synonym group that seems topically
+  unrelated to the caller's query, check whether that group got falsely *attached*
+  during content assembly because the protocol's own keyword text contains the
+  canonical term as a substring-without-word-boundaries (the "nose" inside "diagnosed"
+  bug) - `containsWholeTerm()` in `synonymDictionary.ts` is the fix for this class, so
+  if it recurs, the bug is more likely in a *new* piece of matching logic that doesn't
+  use that same word-boundary-aware helper yet.
+- Also worth checking early: is this actually the staff-ID call-history contamination
+  test-harness artifact (documented in `[[batch-verification-process]]` memory), not a
+  real scoring bug? Re-run the same query with a different/rarely-used `istStaffId`
+  from the 7 valid mock HRMS IDs - if the result changes, it was contamination, not code.
+
 ## 1. Problem statement
 
 `searchClinicalProtocols()` / `scoreProtocol()` (`src/services/clinicalContent.ts`) is pure
