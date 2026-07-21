@@ -2,6 +2,48 @@
 
 ## Status: Phase 0 complete (see §7 Changelog). Phases 1-4 not yet started.
 
+## IF YOU ARE PICKING THIS UP LATER, START HERE
+
+**What's done:** Phase 0 only - "synonyms" support. `scoreProtocol()` now reads
+`protocol.synonyms`/`titleVariants` (it didn't before), and a shared, hand-curated
+dictionary (`src/data/openSourceGuidelines/shared/synonymDictionary.ts`) auto-attaches
+lay/clinical synonym pairs to protocols. 572 synonym entries live across 169 of 228
+protocols today. Everything else in this doc (Phases 1-4, and the six rows of the gap
+table in §1 other than "Synonyms") is **not implemented** - stemming, the concept
+gazetteer, embeddings, and the Agreement Engine are all still just plans.
+
+**Next task in the queue:** Task #10, "Phase 1: Add lightweight suffix-stemming to
+queryTerms()" - see §"Phase 1" below for the exact spec (what function to touch, what
+NOT to use a full stemmer library for, and why). Tasks #11-13 (Phase 2-4) are blocked
+behind it in that order; do not skip ahead without re-reading why each phase is
+sequenced this way (§4 intro).
+
+**Two known, accepted, unresolved limitations from Phase 0** (do not treat these as new
+bugs to chase - they're pre-existing scoring fragility the later phases are meant to
+fix structurally, not something Phase 0 could safely resolve by further dictionary
+tuning - see §7 changelog for the full reasoning):
+- `"Suddenly cant hear well out of one ear since this morning"` incorrectly matches
+  Heart Rate and Heartbeat Questions instead of Hearing Loss or Change.
+- `"Just threw up a bunch of blood and feel really faint and dizzy"` incorrectly
+  matches Dizziness - Lightheadedness instead of Vomiting Blood.
+
+**Coverage gap still open:** 59 of 228 protocols have zero synonym coverage (mostly
+protocols whose title already is the plain lay term, plus the 3 sensitive topics left
+alone on purpose - Suicide Concerns, Domestic Violence, Sexual Assault or Rape). More
+manual dictionary entries could close some of this, but Phase 2/3 are the intended
+long-term fix so this doesn't stay a hand-curation treadmill forever.
+
+**Before touching `scoreProtocol()`, `synonymDictionary.ts`, or `queryTerms()` again:**
+read §5 "Verification standard" and follow it exactly - every change here needs a
+genuine before/after A/B sweep (`git stash` the change, re-run, compare, then re-apply),
+not just a single test run, because every regression found in Phase 0 was invisible
+without that comparison. The 22 live-queue verification scripts referenced there
+(`gen_calls.mjs` / `gen_calls_batch02.mjs` .. `batch23.mjs`) live in the session
+scratchpad directory, not the repo - if they're gone, they need to be recreated from
+the scenario lists documented in each batch's own authoring (see the `openSourceGuidelines`
+batch files' JSDoc comments and the `[[batch-verification-process]]` memory file for
+the pattern to follow).
+
 ## 1. Problem statement
 
 `searchClinicalProtocols()` / `scoreProtocol()` (`src/services/clinicalContent.ts`) is pure

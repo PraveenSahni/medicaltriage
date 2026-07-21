@@ -1,5 +1,23 @@
 import type { ClinicalContentPackageInput } from "../../../types/clinicalContent.js";
 
+/**
+ * STATUS (see docs/semantic-matching-enhancement-plan-2026.md for the full plan):
+ * This file is Phase 0 of a 5-phase semantic-matching plan - the ONLY phase
+ * implemented so far. Phases 1-4 (stemming, a lay-term concept gazetteer,
+ * local embedding similarity, and an Agreement Engine) are still just a plan,
+ * not code. 59 of 228 protocols still have zero synonym coverage - see the
+ * plan doc's "IF YOU ARE PICKING THIS UP LATER" section before adding more
+ * entries here or starting Phase 1.
+ *
+ * Before changing anything in this file: any edit here needs a genuine
+ * before/after A/B sweep (git stash the change, re-run the 22 live-queue
+ * verification scripts, compare, re-apply) - three separate real regressions
+ * were found this way during Phase 0 that a same-code re-run would have
+ * missed entirely. See the plan doc's §7 Changelog for what those were and
+ * why (canonical-term double-counting, word-boundary-less false attachment,
+ * redundant re-scoring of already-authored keywords).
+ */
+
 type ProtocolInput = ClinicalContentPackageInput["protocols"][number];
 
 /**
