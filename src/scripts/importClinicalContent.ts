@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { PrismaClient } from "@prisma/client";
 import { samplePhase1ClinicalContent } from "../data/samplePhase1ClinicalContent.js";
+import { openSourceGuidelinesContent } from "../data/openSourceGuidelines/index.js";
 import {
   ClinicalContentPackageSchema,
   type ClinicalContentCareAdvice,
@@ -34,10 +35,12 @@ type ImportSummary = {
 function parseArgs() {
   const args = process.argv.slice(2);
   const fileIndex = args.indexOf("--file");
+  const sourceIndex = args.indexOf("--source");
 
   return {
     dryRun: args.includes("--dry-run"),
-    filePath: fileIndex >= 0 ? args[fileIndex + 1] : undefined
+    filePath: fileIndex >= 0 ? args[fileIndex + 1] : undefined,
+    source: sourceIndex >= 0 ? args[sourceIndex + 1] : undefined
   };
 }
 
@@ -49,7 +52,10 @@ function recordHash(value: unknown): string {
   return checksumFor(JSON.stringify(value));
 }
 
-async function loadContentPackage(filePath?: string): Promise<{ sourceUri: string; raw: string; data: ClinicalContentPackage }> {
+async function loadContentPackage(
+  filePath?: string,
+  source?: string
+): Promise<{ sourceUri: string; raw: string; data: ClinicalContentPackage }> {
   if (filePath) {
     const absolutePath = path.resolve(filePath);
     const raw = await readFile(absolutePath, "utf8");
@@ -57,6 +63,15 @@ async function loadContentPackage(filePath?: string): Promise<{ sourceUri: strin
       sourceUri: absolutePath,
       raw,
       data: ClinicalContentPackageSchema.parse(JSON.parse(raw))
+    };
+  }
+
+  if (source === "open-source-rules") {
+    const raw = JSON.stringify(openSourceGuidelinesContent);
+    return {
+      sourceUri: "embedded:openSourceGuidelinesContent",
+      raw,
+      data: ClinicalContentPackageSchema.parse(openSourceGuidelinesContent)
     };
   }
 
@@ -102,6 +117,82 @@ function sexToDb(sex: ClinicalContentProtocol["genderRestriction"]): string | nu
   }
 
   return sex.toUpperCase();
+}
+
+function patientGroupToDb(patientGroup: ClinicalContentProtocol["patientGroup"]): string {
+  return patientGroup.toUpperCase();
+}
+
+function isoToDb(iso: string | undefined): Date | null {
+  return iso ? new Date(iso) : null;
+}
+
+/// STCC's numeric disposition-level ladder (100 -> 15), read directly from the
+/// After-Hours Telehealth Triage Guidelines Database Documentation. Structural
+/// reference data only (level numbers and heading labels) - never the licensed
+/// clinical question/advice content itself, and never consulted by the
+/// deterministic safety kernel.
+const STCC_DISPOSITION_LEVELS: Record<
+  number,
+  { headingEn: string; headingTelemedicineEn?: string; videoEligible: boolean }
+> = {
+  100: { headingEn: "Call EMS 911 Now", videoEligible: false },
+  90: { headingEn: "Go to ED Now", videoEligible: false },
+  85: { headingEn: "Go to ED Now (or PCP triage)", videoEligible: false },
+  80: {
+    headingEn: "See HCP (or PCP Triage) Within 4 Hours",
+    headingTelemedicineEn: "See HCP (or PCP triage or Video Visit) Within 4 Hours",
+    videoEligible: true
+  },
+  78: { headingEn: "Call PCP Now", headingTelemedicineEn: "Call PCP or Video Visit Now", videoEligible: true },
+  70: {
+    headingEn: "See PCP Within 24 Hours",
+    headingTelemedicineEn: "See PCP or Video Visit Within 24 Hours",
+    videoEligible: true
+  },
+  65: {
+    headingEn: "Call PCP Within 24 Hours",
+    headingTelemedicineEn: "Call PCP or Video Visit Within 24 Hours",
+    videoEligible: true
+  },
+  50: {
+    headingEn: "See PCP Within 3 Days",
+    headingTelemedicineEn: "See PCP or Video Visit Within 3 Days",
+    videoEligible: true
+  },
+  48: {
+    headingEn: "Call PCP When Office is Open",
+    headingTelemedicineEn: "Call PCP or Video Visit When Office is Open",
+    videoEligible: true
+  },
+  20: {
+    headingEn: "See PCP Within 2 Weeks",
+    headingTelemedicineEn: "See PCP or Video Visit Within 2 Weeks",
+    videoEligible: true
+  },
+  15: { headingEn: "Home Care", videoEligible: false }
+};
+
+async function dispositionLevelFor(prisma: PrismaClient, levelId: number): Promise<string> {
+  const meta = STCC_DISPOSITION_LEVELS[levelId] ?? {
+    headingEn: `STCC disposition level ${levelId}`,
+    videoEligible: false
+  };
+  const saved = await (prisma as any).disposition.upsert({
+    where: { levelId },
+    update: {
+      headingEn: meta.headingEn,
+      headingTelemedicineEn: meta.headingTelemedicineEn ?? null,
+      videoEligible: meta.videoEligible
+    },
+    create: {
+      levelId,
+      headingEn: meta.headingEn,
+      headingTelemedicineEn: meta.headingTelemedicineEn ?? null,
+      videoEligible: meta.videoEligible
+    }
+  });
+  return saved.id as string;
 }
 
 function normalize(value: string): string {
@@ -286,8 +377,13 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
           adviceTitleAr: advice.titleAr,
           instructionTextEn: advice.instructionTextEn,
           instructionTextAr: advice.instructionTextAr,
+          contentFormat: advice.contentFormat,
+          sanitizedHtmlEn: advice.sanitizedHtmlEn ?? null,
+          sanitizedHtmlAr: advice.sanitizedHtmlAr ?? null,
           dispositionCode: advice.dispositionCode,
-          warningSigns: advice.warningSigns
+          warningSigns: advice.warningSigns,
+          patientSendable: advice.patientSendable,
+          adviceCategory: advice.adviceCategory ?? null
         },
         create: {
           externalCareAdviceId: advice.id,
@@ -295,8 +391,13 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
           adviceTitleAr: advice.titleAr,
           instructionTextEn: advice.instructionTextEn,
           instructionTextAr: advice.instructionTextAr,
+          contentFormat: advice.contentFormat,
+          sanitizedHtmlEn: advice.sanitizedHtmlEn ?? null,
+          sanitizedHtmlAr: advice.sanitizedHtmlAr ?? null,
           dispositionCode: advice.dispositionCode,
-          warningSigns: advice.warningSigns
+          warningSigns: advice.warningSigns,
+          patientSendable: advice.patientSendable,
+          adviceCategory: advice.adviceCategory ?? null
         }
       });
       globalCareAdviceByExternalId.set(advice.id, saved.id);
@@ -316,6 +417,8 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
           backgroundInfoEn: protocol.backgroundInfoEn,
           backgroundInfoAr: protocol.backgroundInfoAr,
           genderRestriction: sexToDb(protocol.genderRestriction),
+          patientGroup: patientGroupToDb(protocol.patientGroup),
+          acuity: protocol.acuity ?? null,
           ageMin: protocol.ageMin,
           ageMax: protocol.ageMax,
           stccVersion: contentPackage.release.version,
@@ -323,7 +426,17 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
           sourceRecordHash: recordHash(protocol),
           sourceRecordChecksum: summary.checksum,
           annualReconciliationStatus: "SYNTHETIC_PUBLIC_INDEX_REQUIRES_CLINICAL_VALIDATION",
-          active: true
+          active: true,
+          guidelineRedirects: protocol.guidelineRedirects?.length ? protocol.guidelineRedirects : undefined,
+          painSeverityTable: protocol.painSeverity?.length ? protocol.painSeverity : undefined,
+          backgroundDetail: protocol.backgroundDetail ?? undefined,
+          authorEn: protocol.authorship?.authorEn ?? null,
+          expertReviewerEn: protocol.authorship?.expertReviewerEn ?? null,
+          lastRevisedAt: isoToDb(protocol.authorship?.lastRevisedIso),
+          lastReviewedAt: isoToDb(protocol.authorship?.lastReviewedIso),
+          versionYear: protocol.authorship?.versionYear ?? null,
+          contentSet: protocol.authorship?.contentSet ?? null,
+          provenance: protocol.provenance ?? undefined
         },
         create: {
           releaseId: release.id,
@@ -335,6 +448,8 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
           backgroundInfoEn: protocol.backgroundInfoEn,
           backgroundInfoAr: protocol.backgroundInfoAr,
           genderRestriction: sexToDb(protocol.genderRestriction),
+          patientGroup: patientGroupToDb(protocol.patientGroup),
+          acuity: protocol.acuity ?? null,
           ageMin: protocol.ageMin,
           ageMax: protocol.ageMax,
           stccVersion: contentPackage.release.version,
@@ -342,7 +457,17 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
           sourceRecordHash: recordHash(protocol),
           sourceRecordChecksum: summary.checksum,
           annualReconciliationStatus: "SYNTHETIC_PUBLIC_INDEX_REQUIRES_CLINICAL_VALIDATION",
-          active: true
+          active: true,
+          guidelineRedirects: protocol.guidelineRedirects?.length ? protocol.guidelineRedirects : undefined,
+          painSeverityTable: protocol.painSeverity?.length ? protocol.painSeverity : undefined,
+          backgroundDetail: protocol.backgroundDetail ?? undefined,
+          authorEn: protocol.authorship?.authorEn ?? null,
+          expertReviewerEn: protocol.authorship?.expertReviewerEn ?? null,
+          lastRevisedAt: isoToDb(protocol.authorship?.lastRevisedIso),
+          lastReviewedAt: isoToDb(protocol.authorship?.lastReviewedIso),
+          versionYear: protocol.authorship?.versionYear ?? null,
+          contentSet: protocol.authorship?.contentSet ?? null,
+          provenance: protocol.provenance ?? undefined
         }
       });
       rowsInserted += 1;
@@ -403,6 +528,9 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
       }
 
       for (const dispositionMap of protocol.dispositionMappings) {
+        const dispositionLevelId = dispositionMap.dispositionLevel
+          ? await dispositionLevelFor(prisma, dispositionMap.dispositionLevel)
+          : null;
         await (prisma as any).protocolDispositionMap.create({
           data: {
             algorithmId: algorithm.id,
@@ -415,6 +543,7 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
             routeRationaleEn: dispositionMap.routeRationaleEn,
             telemedicineHeadingEn: dispositionMap.telemedicineHeadingEn,
             sourceOfCareEn: dispositionMap.sourceOfCareEn,
+            dispositionLevelId,
             active: true
           }
         });
@@ -427,6 +556,8 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
             algorithmId: algorithm.id,
             titleEn: firstAid.titleEn,
             instructionTextEn: firstAid.instructionTextEn,
+            sanitizedHtmlEn: firstAid.sanitizedHtmlEn ?? null,
+            sanitizedHtmlAr: firstAid.sanitizedHtmlAr ?? null,
             displayOrder: firstAid.displayOrder,
             sourceRecordHash: recordHash(firstAid)
           }
@@ -494,6 +625,8 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
             titleEn: supplemental.titleEn,
             supplementalType: supplemental.supplementalType,
             plainTextEn: supplemental.plainTextEn,
+            sanitizedHtmlEn: supplemental.sanitizedHtmlEn ?? null,
+            sanitizedHtmlAr: supplemental.sanitizedHtmlAr ?? null,
             sourceRecordHash: recordHash(supplemental)
           },
           create: {
@@ -502,6 +635,8 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
             titleEn: supplemental.titleEn,
             supplementalType: supplemental.supplementalType,
             plainTextEn: supplemental.plainTextEn,
+            sanitizedHtmlEn: supplemental.sanitizedHtmlEn ?? null,
+            sanitizedHtmlAr: supplemental.sanitizedHtmlAr ?? null,
             sourceRecordHash: recordHash(supplemental)
           }
         });
@@ -542,16 +677,27 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
       for (const advice of protocol.careAdvice) {
         const careAdviceId = globalCareAdviceByExternalId.get(advice.id);
         if (careAdviceId) {
-          await (prisma as any).algorithmCareAdvice.create({
-            data: {
+          await (prisma as any).algorithmCareAdvice.upsert({
+            where: {
+              algorithmId_careAdviceId: {
+                algorithmId: algorithm.id,
+                careAdviceId
+              }
+            },
+            update: { displayOrder: advice.displayOrder },
+            create: {
               algorithmId: algorithm.id,
-              careAdviceId
+              careAdviceId,
+              displayOrder: advice.displayOrder
             }
           });
         }
       }
 
       for (const question of protocol.questions) {
+        const questionDispositionLevelId = question.dispositionLevel
+          ? await dispositionLevelFor(prisma, question.dispositionLevel)
+          : null;
         const savedQuestion = await (prisma as any).triageQuestion.create({
           data: {
             algorithmId: algorithm.id,
@@ -563,7 +709,11 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
             acuityDispositionCode: question.dispositionCode,
             rationaleEn: question.rationaleEn,
             redFlag: question.redFlag,
-            branching: question.branching
+            branching: question.branching,
+            telemedicineEligible: question.telemedicineEligible ?? null,
+            telemedicineNotesEn: question.telemedicineNotesEn ?? null,
+            dispositionLevelId: questionDispositionLevelId,
+            questionOrder: question.questionOrder ?? null
           }
         });
         rowsInserted += 1;
@@ -639,8 +789,8 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
 }
 
 async function main() {
-  const { dryRun, filePath } = parseArgs();
-  const loaded = await loadContentPackage(filePath);
+  const { dryRun, filePath, source } = parseArgs();
+  const loaded = await loadContentPackage(filePath, source);
   const summary = summarize(loaded.sourceUri, loaded.raw, loaded.data, dryRun);
 
   if (dryRun) {

@@ -31,6 +31,7 @@ type BoardCase = {
   station: string;
   summary: string;
   safetyFloor: boolean;
+  safetyFloorSource?: "vitals" | "symptom" | "judgment";
   route: string;
   owner: string;
   ageLabel: string;
@@ -81,6 +82,12 @@ function previousStatus(status: BoardStatus) {
 
 function maskCount(cases: BoardCase[]) {
   return cases.filter((boardCase) => boardCase.safetyFloor).length;
+}
+
+function floorSourceLabel(source: "vitals" | "symptom" | "judgment") {
+  if (source === "vitals") return "vitals thresholds";
+  if (source === "symptom") return "emergency symptom phrase";
+  return "triager judgment";
 }
 
 function severityFrom(item: QueueItem): Severity {
@@ -141,6 +148,7 @@ function toBoardCase(item: QueueItem): BoardCase {
     station: item.stationCode ?? "DOH",
     summary: item.summary,
     safetyFloor: item.safetyFloorActive,
+    safetyFloorSource: item.safetyFloorSource,
     route: item.destinationName ?? item.dispositionCode ?? "Pending route review",
     owner: item.assignedNurseId ?? "Unassigned",
     ageLabel: item.patientAge ? `${item.patientAge.ageYears}y${item.patientAge.ageMonths !== undefined ? ` / ${item.patientAge.ageMonths}m` : ""}` : "HRMS pending",
@@ -328,7 +336,11 @@ export default function KanbanWorkspace() {
                         <Chip>{boardCase.channel}</Chip>
                         <Chip>{boardCase.identityValidated ? "HRMS validated" : "HRMS review"}</Chip>
                         {boardCase.ragConfidence !== undefined && <Chip>RAG {boardCase.ragAgreement}</Chip>}
-                        {boardCase.safetyFloor && <Chip tone="red">Safety floor</Chip>}
+                        {boardCase.safetyFloor && (
+                          <Chip tone="red">
+                            Safety floor{boardCase.safetyFloorSource ? ` (${boardCase.safetyFloorSource})` : ""}
+                          </Chip>
+                        )}
                       </div>
                     </button>
                   ))}
@@ -378,6 +390,7 @@ export default function KanbanWorkspace() {
                   <div className="flex items-center gap-2 text-sm font-normal">
                     <ShieldAlert className="h-4 w-4" />
                     Safety floor active
+                    {selectedCase.safetyFloorSource ? ` - ${floorSourceLabel(selectedCase.safetyFloorSource)}` : ""}
                   </div>
                   <p className="mt-2 text-xs leading-5">
                     Case remains emergency-routed until the nurse completes deterministic checklist review.

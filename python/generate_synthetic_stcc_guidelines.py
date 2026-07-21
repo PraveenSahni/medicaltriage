@@ -485,6 +485,17 @@ def synthetic_initial_assessment_questions(protocol_id: str, title: str) -> List
     ]
 
 
+# STCC's numeric disposition-level ladder (100 -> 15). Our synthetic generator
+# only ever has 4 severity tiers, so it exercises 4 of STCC's ~11 documented
+# levels as a representative approximation, not a full clinical mapping.
+SEVERITY_TO_DISPOSITION_LEVEL: Dict[str, int] = {
+    "Emergency": 100,  # Call EMS 911 Now
+    "Urgent": 70,      # See PCP or Video Visit Within 24 Hours
+    "Routine": 50,     # See PCP or Video Visit Within 3 Days
+    "Self-care": 15,   # Home Care
+}
+
+
 def synthetic_disposition_mappings(patient_group: str, context: Dict[str, Any]) -> List[Dict[str, Any]]:
     routes = {
         "Emergency": ("Emergency department escalation", "Immediate safety floor or high-acuity finding requires emergency escalation."),
@@ -503,6 +514,7 @@ def synthetic_disposition_mappings(patient_group: str, context: Dict[str, Any]) 
             "sourceOfCareEn": "Synthetic Qatar routing configuration; validate local provider availability and escalation policy before production.",
             "telemedicineHeadingEn": "Teleconsult eligibility requires nurse confirmation and local policy checks.",
             "aviationContext": {"fitToFlyDecision": "nurse-and-policy-controlled", "syntheticApproximation": True},
+            "dispositionLevel": SEVERITY_TO_DISPOSITION_LEVEL[severity],
         }
         for severity in ("Emergency", "Urgent", "Routine", "Self-care")
     ]
@@ -536,6 +548,12 @@ def synthetic_questions(protocol_id: str, title: str, patient_group: str) -> Lis
             ["mild", "improving", "no red flags", "callback"],
         ),
     ]
+    telemedicine_notes = {
+        "Emergency": None,
+        "Urgent": "Teleconsult may be appropriate only after nurse confirms no red-flag findings.",
+        "Routine": "Teleconsult is generally suitable for routine-tier findings.",
+        "Self-care": "Teleconsult is generally suitable; caller may also be managed by phone advice alone.",
+    }
     questions = []
     for idx, (severity, question, rationale, keywords) in enumerate(base, start=1):
         disposition = disposition_for(patient_group, severity)  # type: ignore[arg-type]
@@ -551,12 +569,22 @@ def synthetic_questions(protocol_id: str, title: str, patient_group: str) -> Lis
                 "keywords": keywords,
                 "careAdviceIds": [f"{protocol_id}-{severity.lower().replace('-', '')}-advice"],
                 "syntheticApproximation": True,
+                # STCC Question.TelemedicineEligible / Question.Information analog.
+                "telemedicineEligible": severity != "Emergency",
+                "telemedicineNotesEn": telemedicine_notes[severity],
+                "dispositionLevel": SEVERITY_TO_DISPOSITION_LEVEL[severity],
+                # Exactly one synthetic TAQ occupies each mapped level today;
+                # ready for when real per-protocol STCC data has several TAQs per level.
+                "questionOrder": 1,
             }
         )
     return questions
 
 
 def synthetic_care_advice(protocol_id: str, title: str, patient_group: str) -> List[Dict[str, Any]]:
+    # adviceCategory defaults to DISPOSITION for all synthetic advice: this generator's
+    # care advice is disposition-linked by construction and does not yet distinguish
+    # STCC's other 3 audience types (Note-to-Triager / General / Call-Back-If).
     return [
         {
             "id": f"{protocol_id}-emergency-advice",
@@ -565,6 +593,8 @@ def synthetic_care_advice(protocol_id: str, title: str, patient_group: str) -> L
             "dispositionCode": disposition_for(patient_group, "Emergency"),
             "warningSigns": ["breathing difficulty", "non-alert", "fainting", "uncontrolled bleeding", "rapid worsening"],
             "syntheticApproximation": True,
+            "displayOrder": 1,
+            "adviceCategory": "DISPOSITION",
         },
         {
             "id": f"{protocol_id}-urgent-advice",
@@ -573,6 +603,8 @@ def synthetic_care_advice(protocol_id: str, title: str, patient_group: str) -> L
             "dispositionCode": disposition_for(patient_group, "Urgent"),
             "warningSigns": ["worsening symptoms", "fever", "dehydration", "new severe pain"],
             "syntheticApproximation": True,
+            "displayOrder": 2,
+            "adviceCategory": "DISPOSITION",
         },
         {
             "id": f"{protocol_id}-routine-advice",
@@ -581,6 +613,8 @@ def synthetic_care_advice(protocol_id: str, title: str, patient_group: str) -> L
             "dispositionCode": disposition_for(patient_group, "Routine"),
             "warningSigns": ["not improving", "new symptoms", "patient concern"],
             "syntheticApproximation": True,
+            "displayOrder": 3,
+            "adviceCategory": "DISPOSITION",
         },
         {
             "id": f"{protocol_id}-selfcare-advice",
@@ -589,6 +623,8 @@ def synthetic_care_advice(protocol_id: str, title: str, patient_group: str) -> L
             "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
             "warningSigns": ["worsening", "new red flag", "unable to function normally"],
             "syntheticApproximation": True,
+            "displayOrder": 4,
+            "adviceCategory": "DISPOSITION",
         },
     ]
 
@@ -622,6 +658,19 @@ def assert_unique_ids(protocols: Sequence[Dict[str, Any]], label: str) -> None:
     failed = {key: value for key, value in report.items() if value["duplicateIds"] > 0}
     if failed:
         raise RuntimeError(f"Duplicate IDs detected in {label}: {json.dumps(failed, indent=2)}")
+
+
+def synthetic_acuity(mode: str, index_memberships: List[Dict[str, str]]) -> int:
+    """Blended synthetic 1-5 guideline-level acuity approximation. NOT real STCC
+    AcuityRating. Deriving this from per-question severity alone would be a
+    constant value across all protocols, since synthetic_questions() always
+    emits the same 4 severity tiers for every protocol - so this blends in
+    mode/category signals instead, purely to make the field vary at all."""
+    categories = {membership["category"] for membership in index_memberships}
+    score = 4 if mode == "after-hours" else 3
+    if "hospice" in categories or "older-adult" in categories:
+        score -= 1
+    return max(1, min(5, score))
 
 
 def build_protocol_record(
@@ -713,6 +762,7 @@ def build_protocol_record(
         "ageMin": context["ageMin"],
         "ageMax": context["ageMax"],
         "genderRestriction": context["genderRestriction"],
+        "acuity": synthetic_acuity(mode, index_memberships),
         "syntheticApproximation": True,
         "approximationLevel": "topic-derived-public-index-only",
         "requiresClinicalValidation": True,
@@ -875,6 +925,7 @@ def generate_package(cache_dir: Path, open_source_cache_dir: Path, output_dir: P
             "ageMin": protocol["ageMin"],
             "ageMax": protocol["ageMax"],
             "patientGroup": protocol["patientGroup"],
+            "acuity": protocol["acuity"],
             "mode": protocol["mode"],
             "titleVariants": protocol["titleVariants"],
             "synonyms": protocol["synonyms"],
@@ -904,6 +955,10 @@ def generate_package(cache_dir: Path, open_source_cache_dir: Path, output_dir: P
                     "redFlag": question["redFlag"],
                     "keywords": question["keywords"],
                     "careAdviceIds": [item[:120] for item in question["careAdviceIds"]],
+                    "telemedicineEligible": question["telemedicineEligible"],
+                    "telemedicineNotesEn": question["telemedicineNotesEn"],
+                    "dispositionLevel": question["dispositionLevel"],
+                    "questionOrder": question["questionOrder"],
                 }
                 for question in protocol["questions"]
             ],
@@ -914,6 +969,8 @@ def generate_package(cache_dir: Path, open_source_cache_dir: Path, output_dir: P
                     "instructionTextEn": advice["instructionTextEn"][:5000],
                     "dispositionCode": advice["dispositionCode"],
                     "warningSigns": advice["warningSigns"],
+                    "displayOrder": advice["displayOrder"],
+                    "adviceCategory": advice["adviceCategory"],
                 }
                 for advice in protocol["careAdvice"]
             ],

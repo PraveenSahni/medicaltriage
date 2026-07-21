@@ -1,0 +1,401 @@
+titleEn,patientGroupCoverage,membershipCount,sourceTier,ruleNote,status,assignedBatch,protocolId,sourceUrls,notes
+Sore Throat,both,3,formal-rule-verified,Centor/McIsaac Score,authored,,oscr-sore-throat,,
+Ankle Injury,both,2,formal-rule-verified,Ottawa Ankle Rule,authored,,oscr-ankle-foot-injury,,
+Foot Injury,both,2,formal-rule-verified,Ottawa Ankle Rule,authored,,oscr-ankle-foot-injury,,
+Chest Pain,both,3,formal-rule-verified,HEART Score (candidate - not yet fetched/verified),verified,batch02,oscr-chest-pain-heart,https://www.ncbi.nlm.nih.gov/ (Six 2008 Neth Heart J; Backus 2013 Int J Cardiol),Live queue-match verified
+Head Injury,both,3,formal-rule-verified,Canadian CT Head Rule / PECARN (candidate - not yet fetched/verified),verified,batch02,oscr-head-injury-cch,https://pubmed.ncbi.nlm.nih.gov/11356436/ (Stiell 2001 Lancet),Live queue-match verified
+Knee Injury,both,3,formal-rule-verified,Ottawa Knee Rule (candidate - not yet fetched/verified),verified,batch02,oscr-knee-injury-ottawa,https://pubmed.ncbi.nlm.nih.gov/ (Stiell 1995 Ann Emerg Med; Stiell 1996 JAMA),Live queue-match verified
+Neck Injury,both,3,formal-rule-verified,NEXUS / Canadian C-Spine Rule (candidate - not yet fetched/verified),verified,batch02,oscr-neck-injury-nexus,https://pubmed.ncbi.nlm.nih.gov/10891516/ (Hoffman 2000 NEJM),Live queue-match verified
+Neck Pain or Stiffness,both,3,formal-rule-verified,NEXUS / Canadian C-Spine Rule (candidate - not yet fetched/verified),verified,batch02,oscr-neck-injury-nexus,https://pubmed.ncbi.nlm.nih.gov/10891516/ (Hoffman 2000 NEJM),Live queue-match verified
+Anxiety and Panic Attack,both,5,needs-guideline-research,,verified,batch03,oscg-anxiety-panic-attack,https://www.nhs.uk/mental-health/conditions/panic-disorder/,Live queue-match verified 10/10
+Confusion - Delirium,both,5,needs-guideline-research,,verified,batch04,oscg-confusion-delirium,https://www.nhs.uk/conditions/confusion/,Live queue-match verified 10/10 after keyword fixes
+Depression,both,5,needs-guideline-research,,verified,batch03,oscg-depression,https://www.nhs.uk/mental-health/conditions/clinical-depression/symptoms/,Live queue-match verified 10/10
+Difficult Call,both,5,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Information Only Call - No Triage,both,5,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Insomnia,both,5,needs-guideline-research,,verified,batch03,oscg-insomnia,https://www.nhs.uk/conditions/insomnia/,Live queue-match verified 10/10
+Medication Question Call,both,5,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Sexual Assault or Rape,both,5,needs-guideline-research,,verified,batch04,oscg-sexual-assault-rape,https://www.nhs.uk/live-well/sexual-health/help-after-rape-and-sexual-assault/,Live queue-match verified 10/10 after keyword fixes
+Suicide Concerns,both,5,needs-guideline-research,,verified,batch03,oscg-suicide-concerns,https://www.nhs.uk/every-mind-matters/urgent-support/,Live queue-match verified 10/10
+Transgender Health Concerns and Questions,both,5,needs-guideline-research,,skipped,,,,"Informational/administrative topic, not an acute triage presentation with emergency/urgent/self-care tiers"
+Weakness (Generalized) and Fatigue,both,5,needs-guideline-research,,verified,batch03,oscg-weakness-fatigue,https://www.nhs.uk/conditions/tiredness-and-fatigue/,Live queue-match verified 10/10
+911 Symptoms,both,4,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Blood Pressure - High,both,4,needs-guideline-research,,verified,batch03,oscg-blood-pressure-high,https://www.nhs.uk/conditions/high-blood-pressure-hypertension/,Live queue-match verified 10/10
+Bluish Skin or Body Part (Cyanosis),both,4,needs-guideline-research,,verified,batch04,oscg-cyanosis,https://www.nhs.uk/conditions/shortness-of-breath/,Live queue-match verified 10/10 after keyword fixes
+Cellulitis on Antibiotic Follow-up Call,both,4,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Contraception - Vaginal Ring,both,4,needs-guideline-research,,skipped,,,,"Informational/administrative contraception-method question, not an acute triage presentation"
+Cuts and Lacerations,both,4,needs-guideline-research,,verified,batch03,oscg-cuts-lacerations,https://www.nhs.uk/conditions/cuts-and-grazes/,Live queue-match verified 10/10
+Diabetes - High Blood Sugar,both,4,needs-guideline-research,,verified,batch03,oscg-diabetes-high-blood-sugar,https://www.nhs.uk/conditions/high-blood-sugar-hyperglycaemia/,Live queue-match verified 10/10
+Diabetes - Low Blood Sugar,both,4,needs-guideline-research,,verified,batch03,oscg-diabetes-low-blood-sugar,https://www.nhs.uk/conditions/low-blood-sugar-hypoglycaemia/,Live queue-match verified 10/10
+Genital Injury - Female,both,4,needs-guideline-research,,skipped,,,,No dedicated single-page NHS.UK source found for female genital injury/trauma specifically
+Hair Loss,both,4,needs-guideline-research,,verified,batch04,oscg-hair-loss,https://www.nhs.uk/conditions/hair-loss/,Live queue-match verified 10/10 after keyword fixes
+Hallucinations,both,4,needs-guideline-research,,verified,batch04,oscg-hallucinations,https://www.nhs.uk/conditions/psychosis/,Live queue-match verified 10/10 after keyword fixes
+Hearing Loss or Change,both,4,needs-guideline-research,,verified,batch03,oscg-hearing-loss,https://www.nhs.uk/conditions/hearing-loss/,Live queue-match verified 10/10
+Homicidal Threats or Attempts,both,4,needs-guideline-research,,skipped,,,,"No clean single public when-to-seek-help source found distinct from general crisis/law-enforcement guidance - needs dedicated careful sourcing later, not forced now"
+Muscle Jerks - Tics - Shudders,both,4,needs-guideline-research,,verified,batch04,oscg-muscle-jerks-tics,https://www.nhs.uk/conditions/tics/,Live queue-match verified 10/10 after keyword fixes
+Obesity or Overweight,both,4,needs-guideline-research,,skipped,,,,"Chronic condition management topic, not an acute emergency/urgent/self-care triage presentation - better suited to a different content type later"
+PCP Call - No Triage,both,4,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Pale Skin,both,4,needs-guideline-research,,verified,batch04,oscg-pale-skin,https://www.nhs.uk/conditions/iron-deficiency-anaemia/,Live queue-match verified 10/10 after keyword fixes
+Pneumonia Follow-up Call,both,4,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Poisoning,both,4,needs-guideline-research,,verified,batch04,oscg-poisoning,https://www.nhs.uk/conditions/poisoning/,Live queue-match verified 10/10 after keyword fixes
+Post-Hospitalization Follow-up Call,both,4,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Rash - Widespread On Drugs,both,4,needs-guideline-research,,verified,batch04,oscg-rash-widespread-drugs,https://www.nhs.uk/conditions/skin-rash-children/,Live queue-match verified 10/10 after keyword fixes
+Tracheostomy Symptoms and Questions,both,4,needs-guideline-research,,skipped,,,,"Device-specific specialized guidance, not covered by standard NHS.UK consumer pages"
+Vaginal Foreign Body,both,4,needs-guideline-research,,skipped,,,,"Sensitive topic needing dedicated careful sourcing, not found with a clean single NHS.UK page in this pass - deferred, not forced"
+Weight Loss - Unintended,both,4,needs-guideline-research,,verified,batch04,oscg-weight-loss-unintended,https://www.nhs.uk/conditions/unintentional-weight-loss/,Live queue-match verified 10/10 after keyword fixes
+Abdominal Injury,both,3,needs-guideline-research,,skipped,,,,Deferred alongside Abdominal Pain topics for the same reference-file-avoidance reason - abdominal topics as a family handled separately/later if at all
+Abdominal Pain - Female,both,3,needs-guideline-research,,skipped,,,,"Deliberately excluded: user kept a personal reference file (docs/protocol-review/) containing REAL copyrighted STCC content for exactly ""Abdominal Pain"" topics - excluded from this open-source pipeline entirely to eliminate any risk of resemblance, per explicit session guidance"
+Abdominal Pain - Male,both,3,needs-guideline-research,,skipped,,,,"Deliberately excluded: user kept a personal reference file (docs/protocol-review/) containing REAL copyrighted STCC content for this exact topic (Abdominal Pain - Male) - excluded from this open-source pipeline entirely to eliminate any risk of resemblance, per explicit session guidance"
+Acne,both,3,needs-guideline-research,,verified,batch05,oscg-acne,https://www.nhs.uk/conditions/acne/,Live queue-match verified 10/10 after keyword fixes
+Altitude Sickness,both,3,needs-guideline-research,,verified,batch08,oscg-altitude-sickness,https://www.nhs.uk/conditions/altitude-sickness/,Live queue-match verified 10/10 after keyword fixes
+Anaphylaxis,both,3,needs-guideline-research,,authored,batch01,oscg-anaphylaxis,https://www.nhs.uk/conditions/anaphylaxis/,NHS.UK guideline decomposition
+Animal Bite,both,3,needs-guideline-research,,authored,batch01,oscg-animal-bite,https://www.nhs.uk/conditions/animal-and-human-bites/,NHS.UK guideline decomposition
+Arm Injury,both,3,needs-guideline-research,,verified,batch06,oscg-arm-injury,https://www.nhs.uk/conditions/broken-arm-or-wrist/,Live queue-match verified 10/10 after keyword fixes
+Arm Pain,both,3,needs-guideline-research,,verified,batch15,oscg-arm-pain,https://www.nhs.uk/conditions/joint-pain/,"Non-traumatic pain variant using NHS.UK joint pain page, distinct from Arm Injury (batch06). 10/10 live-queue match."
+Athlete's Foot,both,3,needs-guideline-research,,verified,batch05,oscg-athletes-foot,https://www.nhs.uk/conditions/athletes-foot/,Live queue-match verified 10/10 after keyword fixes
+Back Injury,both,3,needs-guideline-research,,verified,batch11,oscg-back-injury,https://www.nhs.uk/conditions/whiplash/,Live queue-match verified 10/10 after keyword fixes
+Back Pain,both,3,needs-guideline-research,,authored,batch01,oscg-back-pain,https://www.nhs.uk/conditions/back-pain/,NHS.UK guideline decomposition
+Bed Bug Bite,both,3,needs-guideline-research,,verified,batch07,oscg-bed-bug-bite,https://www.nhs.uk/conditions/insect-bites-and-stings/,Live queue-match verified 10/10 after keyword fixes
+Bee or Yellow Jacket Sting,both,3,needs-guideline-research,,authored,batch01,oscg-insect-sting,https://www.nhs.uk/conditions/insect-bites-and-stings/,NHS.UK guideline decomposition
+Blood and Body Fluid Exposure,both,3,needs-guideline-research,,skipped,,,,"No dedicated NHS.UK consumer page found - this is an occupational health/infection-control topic (UKHSA guidance), not standard NHS.UK patient-facing content"
+Boil (Skin Abscess),both,3,needs-guideline-research,,verified,batch05,oscg-boil-skin-abscess,https://www.nhs.uk/conditions/boils/,Live queue-match verified 10/10 after keyword fixes
+Burns - Chemical,both,3,needs-guideline-research,,verified,batch05,oscg-burns-chemical,https://www.nhs.uk/conditions/acid-and-chemical-burns/,Live queue-match verified 10/10 after keyword fixes
+Burns - Thermal,both,3,needs-guideline-research,,authored,batch01,oscg-burns-thermal,https://www.nhs.uk/conditions/burns-and-scalds/,NHS.UK guideline decomposition
+COVID-19 - Diagnosed or Suspected,both,3,needs-guideline-research,,verified,batch05,oscg-covid19,https://www.nhs.uk/conditions/covid-19/covid-19-symptoms-and-what-to-do/,Live queue-match verified 10/10 after keyword fixes
+COVID-19 - Exposure,both,3,needs-guideline-research,,pending,,,,
+Call,both,3,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Carbon Monoxide Exposure,both,3,needs-guideline-research,,authored,batch01,oscg-carbon-monoxide,https://www.nhs.uk/conditions/carbon-monoxide-poisoning/,NHS.UK guideline decomposition
+Cast Symptoms and Questions,both,3,needs-guideline-research,,skipped,,,,"Device/equipment-specific follow-up call type, not a standard NHS.UK consumer symptom page"
+Chest Injury,both,3,needs-guideline-research,,verified,batch11,oscg-chest-injury,https://www.nhs.uk/conditions/broken-or-bruised-ribs/,Live queue-match verified 10/10 after keyword fixes
+Choking - Inhaled Foreign Body,both,3,needs-guideline-research,,verified,batch05,oscg-choking,https://www.nhs.uk/conditions/baby/first-aid-and-safety/first-aid/how-to-stop-a-child-from-choking/,Live queue-match verified 10/10 after keyword fixes
+Cold Exposure (Hypothermia),both,3,needs-guideline-research,,verified,batch05,oscg-hypothermia,https://www.nhs.uk/conditions/hypothermia/,Live queue-match verified 10/10 after keyword fixes
+Cold Sores (Fever Blisters),both,3,needs-guideline-research,,verified,batch05,oscg-cold-sores,https://www.nhs.uk/conditions/cold-sores/,Live queue-match verified 10/10 after keyword fixes
+Coma,both,3,needs-guideline-research,,verified,batch05,oscg-coma-unconscious,https://www.nhs.uk/conditions/first-aid/recovery-position/,Live queue-match verified 10/10 after keyword fixes
+Constipation,both,3,needs-guideline-research,,verified,batch05,oscg-constipation,https://www.nhs.uk/conditions/constipation/,Live queue-match verified 10/10 after keyword fixes
+Contraception - Emergency,both,3,needs-guideline-research,,verified,batch07,oscg-emergency-contraception,https://www.nhs.uk/conditions/contraception/emergency-contraception/,Live queue-match verified 10/10 after keyword fixes
+Contraception - Transdermal Patch,both,3,needs-guideline-research,,skipped,,,,"Informational/administrative contraception-method question, not an acute triage presentation"
+Coughing Up Blood,both,3,needs-guideline-research,,verified,batch06,oscg-coughing-up-blood,https://www.nhs.uk/conditions/coughing-up-blood/,Live queue-match verified 10/10 after keyword fixes
+Cracked or Dry Skin,both,3,needs-guideline-research,,verified,batch06,oscg-cracked-dry-skin,https://www.nhs.uk/conditions/atopic-eczema/,Live queue-match verified 10/10 after keyword fixes
+Diarrhea,both,3,needs-guideline-research,,verified,batch06,oscg-diarrhea,https://www.nhs.uk/conditions/diarrhoea/,Live queue-match verified 10/10 after keyword fixes
+Diarrhea on Antibiotics,both,3,needs-guideline-research,,verified,batch06,oscg-diarrhea-on-antibiotics,https://www.nhs.uk/conditions/clostridium-difficile/,Live queue-match verified 10/10 after keyword fixes
+Ear - Congestion,both,3,needs-guideline-research,,verified,batch07,oscg-ear-congestion,https://www.nhs.uk/conditions/earache/,Live queue-match verified 10/10 after keyword fixes
+Ear - Discharge,both,3,needs-guideline-research,,verified,batch07,oscg-ear-discharge,https://www.nhs.uk/conditions/ear-infection/,Live queue-match verified 10/10 after keyword fixes
+Ear - Foreign Body,both,3,needs-guideline-research,,verified,batch06,oscg-ear-foreign-body,https://www.nhs.uk/conditions/earache/,Live queue-match verified 10/10 after keyword fixes
+Ear - Otitis Externa Follow-up Call,both,3,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Ear - Swimmer's,both,3,needs-guideline-research,,verified,batch06,oscg-ear-swimmers,https://www.nhs.uk/conditions/ear-infection/,Live queue-match verified 10/10 after keyword fixes
+Ear Injury,both,3,needs-guideline-research,,verified,batch13,oscg-ear-injury,https://www.nhs.uk/conditions/earache/,Generalized from NHS.UK earache discharge/hearing-loss red flags to trauma. 10/10 live-queue match.
+Earache,both,3,needs-guideline-research,,verified,batch06,oscg-earache,https://www.nhs.uk/conditions/earache/,Live queue-match verified 10/10 after keyword fixes
+Ebola Exposure,both,3,needs-guideline-research,,pending,,,,
+Elbow Injury,both,3,needs-guideline-research,,verified,batch13,oscg-elbow-injury,https://www.nhs.uk/conditions/broken-arm-or-wrist/,Generalized from NHS.UK broken arm or wrist fracture criteria. 10/10 live-queue match.
+Eye - Allergy,both,3,needs-guideline-research,,verified,batch07,oscg-eye-allergy,https://www.nhs.uk/conditions/conjunctivitis/,Live queue-match verified 10/10 after keyword fixes
+Eye - Chemical In,both,3,needs-guideline-research,,verified,batch06,oscg-eye-chemical,https://www.nhs.uk/conditions/eye-injuries/,Live queue-match verified 10/10 after keyword fixes
+Eye - Foreign Body,both,3,needs-guideline-research,,verified,batch06,oscg-eye-foreign-body,https://www.nhs.uk/conditions/eye-injuries/,Live queue-match verified 10/10 after keyword fixes
+Eye - Pus or Discharge,both,3,needs-guideline-research,,verified,batch08,oscg-eye-pus-discharge,https://www.nhs.uk/conditions/conjunctivitis/,Live queue-match verified 10/10 after keyword fixes
+Eye Injury,both,3,needs-guideline-research,,verified,batch13,oscg-eye-injury,https://www.nhs.uk/conditions/eye-injuries/,Blunt/penetrating trauma variant of the eye injuries page already cited for Eye-Foreign-Body/Eye-Chemical-In. 10/10 live-queue match.
+Face Injury,both,3,needs-guideline-research,,verified,batch13,oscg-face-injury,https://www.nhs.uk/conditions/head-injury-and-concussion/,Synthesized from Canadian CT Head Rule emergency criteria + standard facial-fracture red flags. 10/10 live-queue match.
+Face Swelling,both,3,needs-guideline-research,,verified,batch07,oscg-face-swelling,https://www.nhs.uk/conditions/skin-rash-children/,Live queue-match verified 10/10 after keyword fixes
+Fainting,both,3,needs-guideline-research,,verified,batch07,oscg-fainting,https://www.nhs.uk/conditions/fainting/,Live queue-match verified 10/10 after keyword fixes
+Finger Injury,both,3,needs-guideline-research,,verified,batch10,oscg-finger-injury,https://www.nhs.uk/conditions/broken-arm-or-wrist/,Live queue-match verified 10/10 after keyword fixes
+Fire Ant Sting,both,3,needs-guideline-research,,verified,batch07,oscg-fire-ant-sting,https://www.nhs.uk/conditions/insect-bites-and-stings/,Live queue-match verified 10/10 after keyword fixes
+Flank Pain,both,3,needs-guideline-research,,verified,batch07,oscg-flank-pain,https://www.nhs.uk/conditions/kidney-stones/,Live queue-match verified 10/10 after keyword fixes
+Frostbite,both,3,needs-guideline-research,,authored,batch01,oscg-frostbite,https://www.nhs.uk/conditions/frostbite/,NHS.UK guideline decomposition
+Genital Injury - Male,both,3,needs-guideline-research,,verified,batch08,oscg-genital-injury-male,https://www.nhs.uk/symptoms/testicle-pain/,Live queue-match verified 10/10 after keyword fixes
+Headache,both,3,needs-guideline-research,,authored,batch01,oscg-headache,https://www.nhs.uk/conditions/headaches/,NHS.UK guideline decomposition
+Hepatitis A Exposure,both,3,needs-guideline-research,,pending,,,,
+Hiccups,both,3,needs-guideline-research,,verified,batch07,oscg-hiccups,https://www.nhs.uk/conditions/hiccups/,Live queue-match verified 10/10 after keyword fixes
+Hip Injury,both,3,needs-guideline-research,,verified,batch13,oscg-hip-injury,https://www.nhs.uk/conditions/broken-arm-or-wrist/,Generalized from NHS.UK fracture criteria + standard hip-fracture presentation knowledge. 10/10 live-queue match.
+Hoarseness,both,3,needs-guideline-research,,verified,batch08,oscg-hoarseness,https://www.nhs.uk/conditions/laryngitis/,Live queue-match verified 10/10 after keyword fixes
+Human Bite,both,3,needs-guideline-research,,verified,batch01,oscg-animal-bite,https://www.nhs.uk/conditions/animal-and-human-bites/,Already covered - oscg-animal-bite urgent tier explicitly asks about human bites
+Immunization Reactions,both,3,needs-guideline-research,,verified,batch08,oscg-immunization-reactions,https://www.nhs.uk/vaccinations/flu-vaccine/,Live queue-match verified 10/10 after keyword fixes
+Impetigo (Infected Sore),both,3,needs-guideline-research,,verified,batch08,oscg-impetigo,https://www.nhs.uk/conditions/impetigo/,Live queue-match verified 10/10 after keyword fixes
+Infection on Antibiotic Follow-up Call,both,3,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Influenza (Flu) Exposure,both,3,needs-guideline-research,,pending,,,,
+Influenza (Flu) Follow-up Call,both,3,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Insect Bite,both,3,needs-guideline-research,,verified,batch08,oscg-insect-bite-generic,https://www.nhs.uk/conditions/insect-bites-and-stings/,Live queue-match verified 10/10 after keyword fixes
+Itching - Localized,both,3,needs-guideline-research,,verified,batch08,oscg-itching-localized,https://www.nhs.uk/conditions/itchy-skin/,Live queue-match verified 10/10 after keyword fixes
+Itching - Widespread,both,3,needs-guideline-research,,verified,batch08,oscg-itching-widespread,https://www.nhs.uk/conditions/itchy-skin/,Live queue-match verified 10/10 after keyword fixes
+Jock Itch,both,3,needs-guideline-research,,verified,batch08,oscg-jock-itch,https://www.nhs.uk/conditions/athletes-foot/,Live queue-match verified 10/10 after keyword fixes
+Leech Bite,both,3,needs-guideline-research,,verified,batch10,oscg-leech-bite,https://www.nhs.uk/conditions/insect-bites-and-stings/,Live queue-match verified 10/10 after keyword fixes
+Leg Injury,both,3,needs-guideline-research,,verified,batch13,oscg-leg-injury,https://www.nhs.uk/conditions/broken-arm-or-wrist/,Generalized parallel to the existing Arm Injury protocol (batch06). 10/10 live-queue match.
+Leg Pain,both,3,needs-guideline-research,,verified,batch15,oscg-leg-pain,https://www.nhs.uk/conditions/joint-pain/,"Non-traumatic pain variant using NHS.UK joint pain page + Wells DVT concept, distinct from Leg Injury (batch13). 10/10 live-queue match."
+Lip Swelling,both,3,needs-guideline-research,,verified,batch09,oscg-lip-swelling,https://www.nhs.uk/conditions/skin-rash-children/,Live queue-match verified 10/10 after keyword fixes
+Lymph Nodes - Swollen,both,3,needs-guideline-research,,verified,batch09,oscg-swollen-lymph-nodes,https://www.nhs.uk/conditions/swollen-glands/,Live queue-match verified 10/10 after keyword fixes
+MRSA Exposure,both,3,needs-guideline-research,,pending,,,,
+Meningitis Exposure,both,3,needs-guideline-research,,verified,batch09,oscg-meningitis-exposure,https://www.nhs.uk/conditions/meningitis/,Live queue-match verified 10/10 after keyword fixes
+Menstrual Cramps,both,3,needs-guideline-research,,verified,batch09,oscg-menstrual-cramps,https://www.nhs.uk/conditions/period-pain/,Live queue-match verified 10/10 after keyword fixes
+Menstrual Period - Missed or Late,both,3,needs-guideline-research,,verified,batch09,oscg-missed-period,https://www.nhs.uk/conditions/stopped-or-missed-periods/,Live queue-match verified 10/10 after keyword fixes
+Mosquito Bite,both,3,needs-guideline-research,,verified,batch10,oscg-mosquito-bite,https://www.nhs.uk/conditions/insect-bites-and-stings/,Live queue-match verified 10/10 after keyword fixes
+Motion Sickness,both,3,needs-guideline-research,,verified,batch09,oscg-motion-sickness,https://www.nhs.uk/conditions/motion-sickness/,Live queue-match verified 10/10 after keyword fixes
+Motor Vehicle Accident,both,3,needs-guideline-research,,verified,batch09,oscg-motor-vehicle-accident,https://www.nhs.uk/conditions/whiplash/,Live queue-match verified 10/10 after keyword fixes
+Mouth Injury,both,3,needs-guideline-research,,verified,batch13,oscg-mouth-injury,,"Standard emergency first-aid/dentistry knowledge (bleeding control, avulsed-tooth window) - no dedicated NHS.UK page. 10/10 live-queue match after adding a keyword variant."
+Mouth Ulcers,both,3,needs-guideline-research,,verified,batch09,oscg-mouth-ulcers,https://www.nhs.uk/conditions/mouth-ulcers/,Live queue-match verified 10/10 after keyword fixes
+Mumps Exposure,both,3,needs-guideline-research,,pending,,,,
+Mumps Follow-up Call,both,3,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Nasal Allergies (Hay Fever),both,3,needs-guideline-research,,verified,batch09,oscg-hay-fever,https://www.nhs.uk/conditions/hay-fever/,Live queue-match verified 10/10 after keyword fixes
+Nausea,both,3,needs-guideline-research,,verified,batch09,oscg-nausea,https://www.nhs.uk/conditions/diarrhoea/,Live queue-match verified 10/10 after keyword fixes
+Needlestick,both,3,needs-guideline-research,,pending,,,,
+Neurologic Deficit,both,3,needs-guideline-research,,verified,batch10,oscg-neurologic-deficit,https://www.nhs.uk/conditions/stroke/symptoms/,Live queue-match verified 10/10 after keyword fixes
+No Contact or Duplicate Contact Call,both,3,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint"
+No Guideline Available,both,3,needs-guideline-research,,skipped,,,,"Administrative/meta placeholder, not a clinical presenting complaint"
+Nose - Foreign Body,both,3,needs-guideline-research,,verified,batch10,oscg-nose-foreign-body,https://www.nhs.uk/conditions/broken-nose/,Live queue-match verified 10/10 after keyword fixes
+Nose Injury,both,3,needs-guideline-research,,verified,batch10,oscg-nose-injury,https://www.nhs.uk/conditions/broken-nose/,Live queue-match verified 10/10 after keyword fixes
+Nosebleed,both,3,needs-guideline-research,,authored,batch01,oscg-nosebleed,https://www.nhs.uk/conditions/nosebleed/,NHS.UK guideline decomposition
+Pinworms,both,3,needs-guideline-research,,verified,batch10,oscg-pinworms,https://www.nhs.uk/conditions/threadworms/,Live queue-match verified 10/10 after keyword fixes
+Poison Ivy - Oak - Sumac,both,3,needs-guideline-research,,verified,batch10,oscg-poison-ivy-oak-sumac,https://www.nhs.uk/conditions/contact-dermatitis/,Live queue-match verified 10/10 after keyword fixes
+Post-Op Symptoms and Questions,both,3,needs-guideline-research,,verified,batch10,oscg-post-op-symptoms,https://www.nhs.uk/conditions/cuts-and-grazes/,Live queue-match verified 10/10 after keyword fixes
+Puncture Wound,both,3,needs-guideline-research,,verified,batch10,oscg-puncture-wound,https://www.nhs.uk/conditions/cuts-and-grazes/,Live queue-match verified 10/10 after keyword fixes
+Rash - Guideline Selection,both,3,needs-guideline-research,,skipped,,,,"Meta/redirect placeholder for routing to specific rash guidelines, not its own clinical presentation"
+Rash - Purple Spots or Dots,both,3,needs-guideline-research,,verified,batch11,oscg-rash-purple-spots,https://www.nhs.uk/conditions/skin-rash-children/,Live queue-match verified 10/10 after keyword fixes
+Rash or Redness - Localized,both,3,needs-guideline-research,,verified,batch11,oscg-rash-localized,https://www.nhs.uk/conditions/skin-rash-children/,Live queue-match verified 10/10 after keyword fixes
+Rash or Redness - Widespread,both,3,needs-guideline-research,,verified,batch11,oscg-rash-widespread,https://www.nhs.uk/conditions/skin-rash-children/,Live queue-match verified 10/10 after keyword fixes
+Recent Medical Visit for Injury Follow-up Call,both,3,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Ring Stuck on Finger or Toe,both,3,needs-guideline-research,,verified,batch11,oscg-ring-stuck-finger-toe,general first-aid practice (string-wrap method),Live queue-match verified 10/10 after keyword fixes
+Scabies Follow-up Call,both,3,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Scorpion Sting - North America,both,3,needs-guideline-research,,verified,batch12,oscg-scorpion-sting,https://www.nhs.uk/conditions/snake-bites/,Generalized from NHS.UK snake bite principles; genuinely relevant given Qatar/Gulf scorpion hazard. 10/10 live-queue match.
+Scrapes,both,3,needs-guideline-research,,verified,batch11,oscg-scrapes,https://www.nhs.uk/conditions/cuts-and-grazes/,Live queue-match verified 10/10 after keyword fixes
+Shingles (Zoster),both,3,needs-guideline-research,,verified,batch11,oscg-shingles,https://www.nhs.uk/conditions/shingles/,Live queue-match verified 10/10 after keyword fixes
+Shoulder Injury,both,3,needs-guideline-research,,verified,batch11,oscg-shoulder-injury,https://www.nhs.uk/conditions/broken-arm-or-wrist/,Live queue-match verified 10/10 after keyword fixes
+Sinus Pain or Congestion,both,3,needs-guideline-research,,verified,batch11,oscg-sinus-pain-congestion,https://www.nhs.uk/conditions/sinusitis-sinus-infection/,Live queue-match verified 10/10 after keyword fixes
+Skin Foreign Body,both,3,needs-guideline-research,,verified,batch12,oscg-skin-foreign-body,https://www.nhs.uk/conditions/cuts-and-grazes/,Splinter/embedded object criteria from NHS.UK cuts and grazes page + standard splinter first aid. 10/10 live-queue match.
+Skin Glue Questions,both,3,needs-guideline-research,,skipped,,,,"Procedure-specific follow-up call type, not a standard NHS.UK consumer symptom page"
+Skin Injury,both,3,needs-guideline-research,,verified,batch12,oscg-skin-injury,https://www.nhs.uk/conditions/cuts-and-grazes/,General skin-injury catch-all decomposed from NHS.UK cuts and grazes page. 10/10 live-queue match.
+Smoke and Fume Inhalation,both,3,needs-guideline-research,,verified,batch12,oscg-smoke-fume-inhalation,https://www.nhs.uk/conditions/carbon-monoxide-poisoning/; https://www.nhs.uk/conditions/poisoning/,No dedicated NHS.UK page; synthesized from carbon monoxide + poisoning guidance. 10/10 live-queue match.
+Snakebite - North America,both,3,needs-guideline-research,,verified,batch12,oscg-snakebite,https://www.nhs.uk/conditions/snake-bites/,Decomposed from NHS.UK snake bites page (reviewed 17 Jul 2026). 10/10 live-queue match.
+Sores,both,3,needs-guideline-research,,verified,batch12,oscg-sores,https://www.nhs.uk/conditions/boils/,Synthesized from NHS.UK boils/skin-infection red-flag criteria applied to a general sore presentation. 10/10 live-queue match.
+Spider Bite - North America,both,3,needs-guideline-research,,verified,batch12,oscg-spider-bite,https://www.nhs.uk/conditions/snake-bites/,Generalized from NHS.UK snake bite venomous-bite first-aid principles (no UK dangerous spiders). 10/10 live-queue match.
+Splint Symptoms and Questions,both,3,needs-guideline-research,,skipped,,,,"Device-specific follow-up call type, not a standard NHS.UK consumer symptom page"
+Stingray Injury,both,3,needs-guideline-research,,verified,batch12,oscg-stingray-injury,https://www.nhs.uk/conditions/snake-bites/,Generalized from NHS.UK venomous-injury principles + standard hot-water-immersion first aid; relevant to Gulf coastal waters. 10/10 live-queue match.
+Stools - Unusual Color,both,3,needs-guideline-research,,verified,batch12,oscg-unusual-stool-color,https://www.nhs.uk/conditions/rectal-bleeding/,Decomposed from NHS.UK rectal bleeding page (reviewed 12 Apr 2023). 10/10 live-queue match.
+Sunburn,both,3,needs-guideline-research,,authored,batch01,oscg-sunburn,https://www.nhs.uk/conditions/sunburn/,NHS.UK guideline decomposition
+Suture or Staple Questions,both,3,needs-guideline-research,,skipped,,,,"Procedure-specific follow-up call type, not a standard NHS.UK consumer symptom page"
+Swallowed Foreign Body,both,3,needs-guideline-research,,verified,batch12,oscg-swallowed-foreign-body,https://www.nhs.uk/conditions/poisoning/,No dedicated NHS.UK page; synthesized from poisoning guidance + recognized button-battery/magnet emergency knowledge. 10/10 live-queue match.
+Swallowing Difficulty,both,3,needs-guideline-research,,verified,batch15,oscg-swallowing-difficulty,https://www.nhs.uk/conditions/swallowing-problems-dysphagia/,Decomposed from NHS.UK dysphagia page (reviewed 2 May 2023). 10/10 live-queue match.
+Sweating,both,3,needs-guideline-research,,verified,batch15,oscg-sweating,https://www.nhs.uk/conditions/excessive-sweating-hyperhidrosis/,Decomposed from NHS.UK hyperhidrosis page (reviewed 7 Nov 2023) + standard sepsis/cardiac screen. 10/10 live-queue match.
+Tailbone Injury,both,3,needs-guideline-research,,verified,batch13,oscg-tailbone-injury,https://www.nhs.uk/conditions/whiplash/,Generalized from the Back Injury spinal emergency screen (batch11). 10/10 live-queue match.
+Tattoo Symptoms and Questions,both,3,needs-guideline-research,,pending,,,,
+Tick Bite,both,3,needs-guideline-research,,verified,batch15,oscg-tick-bite,https://www.nhs.uk/conditions/lyme-disease/,Decomposed from NHS.UK Lyme disease page (reviewed 3 Jun 2025). 10/10 live-queue match.
+Toe Injury,both,3,needs-guideline-research,,verified,batch13,oscg-toe-injury,https://www.nhs.uk/conditions/broken-arm-or-wrist/,Generalized parallel to the existing Finger Injury protocol (batch10). 10/10 live-queue match.
+Toenail - Ingrown,both,3,needs-guideline-research,,verified,batch15,oscg-ingrown-toenail,,Standard podiatry first aid + existing skin-infection red-flag criteria (NHS.UK page could not be retrieved). 10/10 live-queue match.
+Tooth Extraction,both,3,needs-guideline-research,,verified,batch16,oscg-tooth-extraction,,"Standard post-extraction dental first-aid knowledge (dry socket, bleeding control). 10/10 live-queue match."
+Tooth Injury,both,3,needs-guideline-research,,verified,batch13,oscg-tooth-injury,,Standard emergency dentistry knowledge (knocked-out/loosened tooth handling) - no dedicated NHS.UK page. 10/10 live-queue match.
+Toothache,both,3,needs-guideline-research,,verified,batch14,oscg-toothache,https://www.nhs.uk/conditions/toothache/,Decomposed from NHS.UK toothache page (reviewed 1 Jul 2024). 10/10 live-queue match.
+Urination Pain - Female,both,3,needs-guideline-research,,verified,batch14,oscg-urination-pain-female,https://www.nhs.uk/conditions/cystitis/,Decomposed from NHS.UK cystitis page (reviewed 11 Jul 2025) + standard sepsis screen. 10/10 live-queue match.
+Urination Pain - Male,both,3,needs-guideline-research,,verified,batch14,oscg-urination-pain-male,https://www.nhs.uk/conditions/cystitis/,Decomposed from NHS.UK cystitis page male-specific urgent criterion. 10/10 live-queue match.
+Urine - Blood In,both,3,needs-guideline-research,,verified,batch14,oscg-blood-in-urine,https://www.nhs.uk/conditions/blood-in-urine/,Decomposed from NHS.UK blood in urine page (reviewed 19 May 2023); no self-care tier per source. 10/10 live-queue match.
+Vision Loss or Change,both,3,needs-guideline-research,,verified,batch14,oscg-vision-loss-or-change,https://www.nhs.uk/conditions/vision-loss/,Decomposed from NHS.UK vision loss page (reviewed 28 Aug 2025). 10/10 live-queue match.
+Vomiting Blood,both,3,needs-guideline-research,,verified,batch14,oscg-vomiting-blood,https://www.nhs.uk/conditions/vomiting-blood/,Decomposed from NHS.UK vomiting blood page (reviewed 18 Aug 2025). 10/10 live-queue match.
+Warts,both,3,needs-guideline-research,,verified,batch16,oscg-warts,https://www.nhs.uk/conditions/warts-and-verrucas/,Decomposed from NHS.UK warts and verrucas page (reviewed 25 Jul 2023). 10/10 live-queue match.
+Worms - Other Than Pinworms,both,3,needs-guideline-research,,pending,,,,
+Wound Infection Suspected,both,3,needs-guideline-research,,verified,batch14,oscg-wound-infection-suspected,https://www.nhs.uk/conditions/boils/; https://www.nhs.uk/conditions/cuts-and-grazes/,Synthesized from existing skin-infection red-flag criteria. 10/10 live-queue match.
+(ADHD),both,2,needs-guideline-research,,skipped,,,,"Garbage title-parsing fragment (duplicate of Attention Deficit Hyperactivity Disorder, also skipped) - no genuine content possible from this fragment alone."
+Allergic Reactions - Guideline Selection,both,2,needs-guideline-research,,skipped,,,,"Administrative guideline-selection placeholder, not a clinical presentation - consistent with other -Guideline Selection entries already skipped."
+America,both,2,needs-guideline-research,,skipped,,,,Garbage title-parsing fragment from the synthetic generator (not a real topic) - no genuine content possible.
+Attention Deficit Hyperactivity Disorder,both,2,needs-guideline-research,,skipped,,,,"No genuine NHS.UK after-hours triage (""when to seek urgent help"") page exists for ADHD - it is a long-term condition management topic, not an acute phone-triage presentation, consistent with other behavioral/chronic-condition topics already skipped."
+Avian Influenza (Bird Flu) Exposure,both,2,needs-guideline-research,,pending,,,,
+Eye Pain and Other Symptoms,both,2,needs-guideline-research,,verified,batch15,oscg-eye-pain-and-other-symptoms,https://www.nhs.uk/conditions/vision-loss/,"Eye-pain tier of the NHS.UK vision loss page, distinct from Vision Loss or Change (batch14). 10/10 live-queue match."
+Fingernail Infection,both,2,needs-guideline-research,,verified,batch15,oscg-fingernail-infection,,Synthesized from existing skin-infection red-flag criteria + standard warm-soak first aid. 10/10 live-queue match.
+Follow-up Call,both,2,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Hand Injury,both,2,needs-guideline-research,,verified,batch14,oscg-hand-injury,https://www.nhs.uk/conditions/broken-arm-or-wrist/,Generalized from NHS.UK fracture criteria + standard severed-digit transport knowledge. 10/10 live-queue match.
+Heat Exposure (Heat Exhaustion and Heat Stroke),both,2,needs-guideline-research,,verified,batch14,oscg-heat-exposure,https://www.nhs.uk/conditions/heat-exhaustion-heatstroke/,Decomposed from NHS.UK heat exhaustion/heatstroke page (reviewed 28 May 2026); important given Qatar climate. 10/10 live-queue match.
+Infection Exposure Questions,both,2,needs-guideline-research,,pending,,,,
+Injury - Multiple Sites - Guideline Selection,both,2,needs-guideline-research,,skipped,,,,"Administrative guideline-selection placeholder, not a clinical presentation - consistent with other -Guideline Selection entries already skipped."
+Marine Animal Stings and Bites - North,both,2,needs-guideline-research,,verified,batch16,oscg-marine-animal-stings-bites,https://www.nhs.uk/conditions/snake-bites/,Generalized from venomous-injury principles (batch12) + standard jellyfish/sea urchin first aid; relevant to Qatar coastal waters. 10/10 live-queue match.
+Measles - Diagnosed or Suspected,both,2,needs-guideline-research,,pending,,,,
+Measles Exposure,both,2,needs-guideline-research,,verified,batch15,oscg-measles-exposure,https://www.nhs.uk/conditions/measles/,Genuine dedicated NHS.UK exposure/contact-tracing guidance. 10/10 live-queue match.
+Mononucleosis Follow-up Call,both,2,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Respiratory Multiple Symptoms Guideline Selection,both,2,needs-guideline-research,,skipped,,,,"Administrative guideline-selection placeholder, not a clinical presentation - consistent with other -Guideline Selection entries already skipped."
+Ringworm,both,2,needs-guideline-research,,verified,batch15,oscg-ringworm,https://www.nhs.uk/conditions/ringworm/,Decomposed from NHS.UK ringworm page (reviewed 3 Aug 2023). 10/10 live-queue match.
+SARS Exposure,both,2,needs-guideline-research,,pending,,,,
+Selection,both,2,needs-guideline-research,,skipped,,,,Garbage title-parsing fragment from the synthetic generator (not a real topic) - no genuine content possible.
+Strep Throat Exposure,both,2,needs-guideline-research,,pending,,,,
+Strep Throat Test Follow-up Call,both,2,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Super Glue Problems,both,2,needs-guideline-research,,pending,,,,
+Whooping Cough Exposure,both,2,needs-guideline-research,,pending,,,,
+Wrist Injury,both,2,needs-guideline-research,,verified,batch14,oscg-wrist-injury,https://www.nhs.uk/conditions/broken-arm-or-wrist/,Directly from NHS.UK broken arm or wrist page. 10/10 live-queue match.
+Attention Deficit Hyperactivity Disorder (ADHD),both,1,needs-guideline-research,,skipped,,,,"Duplicate of ""Attention Deficit Hyperactivity Disorder"" - both skipped for lack of a genuine acute-triage source."
+Bites / Stings,both,1,needs-guideline-research,,pending,,,,
+Boil (Skin Abscess) on Treatment,both,1,needs-guideline-research,,verified,batch05,oscg-boil-skin-abscess,https://www.nhs.uk/conditions/boils/,Follow-up-call variant of the already-authored Boil (Skin Abscess) protocol (batch05) - reuses the same protocol rather than duplicating content.
+Boil (Skin Abscess) on Treatment Follow-up,both,1,needs-guideline-research,,verified,batch05,oscg-boil-skin-abscess,https://www.nhs.uk/conditions/boils/,Follow-up-call variant of the already-authored Boil (Skin Abscess) protocol (batch05) - reuses the same protocol rather than duplicating content.
+Contraception - Birth Control Shot,both,1,needs-guideline-research,,verified,batch16,oscg-contraception-birth-control-shot,,Standard reproductive-health knowledge (Depo-Provera) - NHS.UK side-effects subpage could not be retrieved. 10/10 live-queue match.
+Heat Exposure (Heat Exhaustion and Heat,both,1,needs-guideline-research,,skipped,,,,"Truncated duplicate title-parsing fragment of Heat Exposure (Heat Exhaustion and Heat Stroke), which is authored separately in batch14 under the full title."
+Injury - Multiple Sites - Guideline,both,1,needs-guideline-research,,skipped,,,,"Truncated duplicate fragment of ""Injury - Multiple Sites - Guideline Selection"", itself an administrative guideline-selection placeholder, not a clinical presentation."
+Miscellaneous - Other,both,1,needs-guideline-research,,pending,,,,
+Questions,both,1,needs-guideline-research,,skipped,,,,Garbage title-parsing fragment from the synthetic generator (not a real topic) - no genuine content possible.
+Recent Medical Visit for Illness Followup Call,both,1,needs-guideline-research,,skipped,,,,"Administrative follow-up call-type placeholder, not a clinical presentation."
+Recent Medical Visit for Injury Followup Call,both,1,needs-guideline-research,,skipped,,,,"Administrative follow-up call-type placeholder, not a clinical presentation."
+Respiratory Multiple Symptoms - Guideline,both,1,needs-guideline-research,,skipped,,,,"Truncated duplicate fragment of ""Respiratory Multiple Symptoms Guideline Selection"", itself an administrative guideline-selection placeholder, not a clinical presentation."
+Sickle Cell Disease - Acute Pain,both,1,needs-guideline-research,,verified,batch16,oscg-sickle-cell-acute-pain,https://www.nhs.uk/conditions/sickle-cell-disease/,NHS.UK self-care guidance + standard hematology emergency screen (fever/chest/stroke signs); genuinely relevant given Gulf-region sickle cell prevalence. 10/10 live-queue match.
+Sickle Cell Disease - Acute Pain Episode,both,1,needs-guideline-research,,verified,batch16,oscg-sickle-cell-acute-pain,https://www.nhs.uk/conditions/sickle-cell-disease/,Duplicate title of Sickle Cell Disease - Acute Pain - same protocol reused.
+Skin - Localized Symptoms,both,1,needs-guideline-research,,verified,batch11,oscg-rash-localized,https://www.nhs.uk/conditions/skin-rash-children/,Already covered by the existing Rash or Redness - Localized protocol (batch11) - broader category label for the same presentation.
+Skin - Widespread Symptoms,both,1,needs-guideline-research,,verified,batch11,oscg-rash-widespread,https://www.nhs.uk/conditions/skin-rash-children/,Already covered by the existing Rash or Redness - Widespread protocol (batch11) - broader category label for the same presentation.
+Stroke),both,1,needs-guideline-research,,skipped,,,,"Garbage title-parsing fragment (truncated duplicate of Heat Exposure (Heat Exhaustion and Heat Stroke), which is authored separately in batch14) - no genuine content possible from this fragment alone."
+Wound Infection on Antibiotic Follow-up Call,both,1,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Wound Infection on Antibiotic Followup Call,both,1,needs-guideline-research,,pending,,,,
+Cough - Acute Productive,adult,3,formal-rule-verified,CURB-65,authored,,oscr-cough-fever-curb65,,
+Leg Swelling and Edema,adult,3,formal-rule-verified,Wells' Criteria for DVT,authored,,oscr-leg-swelling-wells-dvt,,
+Leg Swelling or Edema,pediatric,2,formal-rule-verified,Wells' Criteria for DVT,authored,,oscr-leg-swelling-wells-dvt,,
+Knee Pain,adult,3,formal-rule-verified,Ottawa Knee Rule (candidate - not yet fetched/verified),verified,batch02,oscr-knee-injury-ottawa,https://pubmed.ncbi.nlm.nih.gov/ (Stiell 1995 Ann Emerg Med; Stiell 1996 JAMA),Live queue-match verified
+Bipolar Disorder (Manic Depression),adult,5,needs-guideline-research,,pending,,,,
+Caregiver Need for Support or Respite,adult,5,needs-guideline-research,,pending,,,,
+Dementia Symptoms and Questions,adult,5,needs-guideline-research,,pending,,,,
+Domestic Violence,adult,5,needs-guideline-research,,verified,batch16,oscg-domestic-violence,https://www.nhs.uk/live-well/healthy-body/getting-help-for-domestic-violence/,Sensitive-topic handling per Suicide/Sexual Assault precedent - no UK-specific hotlines; host org must insert local Qatar contacts. 10/10 live-queue match.
+Elder or Vulnerable Adult Abuse,adult,5,needs-guideline-research,,pending,,,,
+Hospice - Agitation,adult,5,needs-guideline-research,,pending,,,,
+Hospice - Anxiety and Panic Attack,adult,5,needs-guideline-research,,pending,,,,
+Hospice - Confusion and Delirium,adult,5,needs-guideline-research,,pending,,,,
+Hospice - Death,adult,5,needs-guideline-research,,pending,,,,
+Medication Refill and Renewal Call,adult,5,needs-guideline-research,,pending,,,,
+Schizophrenia,adult,5,needs-guideline-research,,pending,,,,
+Smoking - Tobacco Use and Problems,adult,5,needs-guideline-research,,verified,batch16,oscg-smoking-tobacco-use,,Standard public-health smoking-cessation knowledge. 10/10 live-queue match.
+Alcohol Use and Problems,adult,4,needs-guideline-research,,verified,batch16,oscg-alcohol-use-and-problems,https://www.nhs.uk/live-well/alcohol-support/,Decomposed from NHS.UK alcohol support page (reviewed 16 Dec 2022); UK-specific helpline omitted per sensitive-topic handling. 10/10 live-queue match.
+COPD Oxygen Monitoring and Hypoxia,adult,4,needs-guideline-research,,pending,,,,
+Cancer - Constipation,adult,4,needs-guideline-research,,pending,,,,
+Cancer - Diarrhea,adult,4,needs-guideline-research,,pending,,,,
+Cancer - Fever,adult,4,needs-guideline-research,,pending,,,,
+Cancer - Nausea and Vomiting,adult,4,needs-guideline-research,,pending,,,,
+Cancer - Skin Symptoms and Questions,adult,4,needs-guideline-research,,pending,,,,
+Colonoscopy Symptoms and Questions,adult,4,needs-guideline-research,,pending,,,,
+Cough - Chronic,adult,4,needs-guideline-research,,verified,batch16,oscg-cough-chronic,https://www.nhs.uk/conditions/cough/,Decomposed from NHS.UK cough page (reviewed 8 Dec 2023). 10/10 live-queue match.
+Diabetes - Foot Problems and Questions,adult,4,needs-guideline-research,,pending,,,,
+Eating Disorders Symptoms and Questions,adult,4,needs-guideline-research,,verified,batch23,oscg-eating-disorders,https://www.nhs.uk/conditions/eating-disorders/,Decomposed from NHS.UK eating disorders page (reviewed 23 Jan 2024); UK Beat helpline omitted per sensitive-topic handling. 10/10 live-queue match.
+Endoscopy (Upper GI) Symptoms and Questions,adult,4,needs-guideline-research,,pending,,,,
+Falls and Falling,adult,4,needs-guideline-research,,verified,batch16,oscg-falls-and-falling,https://www.nhs.uk/conditions/falls/,Decomposed from NHS.UK falls page (reviewed 6 Mar 2025). 10/10 live-queue match.
+Feeding Tube Symptoms and Questions,adult,4,needs-guideline-research,,pending,,,,
+HIV Exposure,adult,4,needs-guideline-research,,pending,,,,
+Heart Rate and Heartbeat Questions,adult,4,needs-guideline-research,,verified,batch17,oscg-heart-rate-and-heartbeat-questions,https://www.nhs.uk/conditions/heart-palpitations/,Decomposed from NHS.UK heart palpitations page (reviewed 17 Mar 2026). 10/10 live-queue match.
+Hospice - Breathing Difficulty,adult,4,needs-guideline-research,,pending,,,,
+Hospice - Constipation,adult,4,needs-guideline-research,,pending,,,,
+Hospice - Diarrhea,adult,4,needs-guideline-research,,pending,,,,
+Hospice - Falls and Falling,adult,4,needs-guideline-research,,pending,,,,
+Hospice - Fever,adult,4,needs-guideline-research,,pending,,,,
+Hospice - Insomnia,adult,4,needs-guideline-research,,pending,,,,
+Hospice - Medication Question or Refill Call,adult,4,needs-guideline-research,,pending,,,,
+Hospice - Nausea and Vomiting,adult,4,needs-guideline-research,,pending,,,,
+Hospice - No Guideline Available,adult,4,needs-guideline-research,,pending,,,,
+Hospice - Oral Intake Decreased,adult,4,needs-guideline-research,,pending,,,,
+Hospice - Pain,adult,4,needs-guideline-research,,pending,,,,
+Hospice - Seizure,adult,4,needs-guideline-research,,pending,,,,
+Hospice - Swallowing Difficulty,adult,4,needs-guideline-research,,pending,,,,
+Hospice - Urinary Symptoms,adult,4,needs-guideline-research,,pending,,,,
+ICD and Pacemaker Symptoms and Questions,adult,4,needs-guideline-research,,verified,batch23,oscg-icd-and-pacemaker-symptoms,https://www.nhs.uk/conditions/pacemaker-implantation/,"Decomposed from NHS.UK pacemaker implantation page (reviewed 30 Mar 2026), extended to ICD shocks. 10/10 live-queue match."
+IV Not Running or Running Slowly,adult,4,needs-guideline-research,,pending,,,,
+"Injection (IM, SQ) Site Questions and Symptoms",adult,4,needs-guideline-research,,pending,,,,
+Marijuana Use and Problems,adult,4,needs-guideline-research,,verified,batch23,oscg-marijuana-use-and-problems,,Standard substance-use knowledge - no single NHS.UK page found. 10/10 live-queue match.
+Menopause Symptoms and Questions,adult,4,needs-guideline-research,,verified,batch17,oscg-menopause-symptoms,https://www.nhs.uk/conditions/menopause/symptoms/,Decomposed from NHS.UK menopause symptoms page (reviewed 19 May 2026). 10/10 live-queue match (confirmed after ruling out staff-ID call-history noise).
+Opioid Use and Problems,adult,4,needs-guideline-research,,verified,batch17,oscg-opioid-use-and-problems,,"Standard emergency medicine overdose knowledge (respiratory depression, naloxone) - no single NHS.UK page found. 10/10 live-queue match."
+Ostomy Symptoms and Questions,adult,4,needs-guideline-research,,pending,,,,
+Oxygen Monitoring and Hypoxia,adult,4,needs-guideline-research,,pending,,,,
+Post-Op Wound Drains and Tubes Symptoms and Questions,adult,4,needs-guideline-research,,pending,,,,
+Postpartum - Depression,adult,4,needs-guideline-research,,verified,batch17,oscg-postpartum-depression,https://www.nhs.uk/mental-health/conditions/post-natal-depression/,Sensitive-topic handling per Suicide Concerns precedent - no UK-specific hotlines; host org must insert local Qatar contacts. 10/10 live-queue match.
+Pregnancy - Itching,adult,4,needs-guideline-research,,verified,batch17,oscg-pregnancy-itching,https://www.nhs.uk/conditions/itching/,NHS.UK itchy skin page pregnancy/ICP warning. 10/10 live-queue match.
+Pregnancy - Urination Pain,adult,4,needs-guideline-research,,verified,batch17,oscg-pregnancy-urination-pain,https://www.nhs.uk/conditions/cystitis/,Pregnancy-specific framing of the cystitis source already used for Urination Pain - Female. 10/10 live-queue match.
+Pubic Lice,adult,4,needs-guideline-research,,verified,batch17,oscg-pubic-lice,https://www.nhs.uk/conditions/pubic-lice/,Decomposed from NHS.UK pubic lice page (reviewed 15 May 2026). 10/10 live-queue match.
+Pubic Lice Exposure,adult,4,needs-guideline-research,,verified,batch17,oscg-pubic-lice,https://www.nhs.uk/conditions/pubic-lice/,Reuses the Pubic Lice protocol - the source page already covers partner-contact/exposure guidance.
+STI Exposure,adult,4,needs-guideline-research,,pending,,,,
+STI Guideline Selection,adult,4,needs-guideline-research,,pending,,,,
+STI Questions,adult,4,needs-guideline-research,,pending,,,,
+Spinal Cord Injury - Constipation,adult,4,needs-guideline-research,,pending,,,,
+Spinal Cord Injury - Headache,adult,4,needs-guideline-research,,pending,,,,
+Substance Use and Problems,adult,4,needs-guideline-research,,verified,batch23,oscg-substance-use-and-problems,,General catch-all standard emergency toxicology knowledge. 10/10 live-queue match.
+Urinalysis Results Follow-up Call,adult,4,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Vaginal Bleeding - Postmenopausal,adult,4,needs-guideline-research,,verified,batch17,oscg-vaginal-bleeding-postmenopausal,https://www.nhs.uk/conditions/vaginal-bleeding-between-periods-or-after-sex/,Decomposed from NHS.UK vaginal bleeding page postmenopausal note. 10/10 live-queue match.
+Vaginal Discharge,adult,4,needs-guideline-research,,verified,batch17,oscg-vaginal-discharge,https://www.nhs.uk/conditions/vaginal-discharge/,Decomposed from NHS.UK vaginal discharge page (reviewed 15 Feb 2024). 10/10 live-queue match.
+Abdomen Bloating and Swelling,adult,3,needs-guideline-research,,verified,batch17,oscg-abdomen-bloating-and-swelling,https://www.nhs.uk/conditions/bloating/,Decomposed from NHS.UK bloating page (reviewed 21 Jan 2026). 10/10 live-queue match.
+Abdominal Pain - Upper,adult,3,needs-guideline-research,,verified,batch22,oscg-abdominal-pain-upper,https://www.nhs.uk/conditions/indigestion/,Decomposed from NHS.UK indigestion page (reviewed 5 May 2023); distinct from excluded Abdominal Pain Female/Male topics. 10/10 live-queue match.
+Aggressive and Destructive Behavior,pediatric,3,needs-guideline-research,,pending,,,,
+Ankle Pain,adult,3,needs-guideline-research,,verified,batch21,oscg-ankle-pain,https://www.nhs.uk/conditions/joint-pain/,Non-traumatic pain variant using NHS.UK joint pain page (batch15). 10/10 live-queue match.
+Ankle Swelling,adult,3,needs-guideline-research,,verified,batch21,oscg-ankle-swelling,https://www.nhs.uk/conditions/joint-pain/; https://www.nhs.uk/conditions/shortness-of-breath/,Joint pain + swollen-ankle/breathlessness criterion from Breathing Difficulty (batch18). 10/10 live-queue match.
+Anorexia Nervosa,pediatric,3,needs-guideline-research,,verified,batch23,oscg-eating-disorders,https://www.nhs.uk/conditions/eating-disorders/,Reuses the Eating Disorders Symptoms and Questions protocol - same NHS.UK source covers anorexia specifically.
+Arm Swelling and Edema,adult,3,needs-guideline-research,,verified,batch21,oscg-arm-swelling-and-edema,https://www.nhs.uk/conditions/joint-pain/,Joint pain + DVT-risk concept generalized from leg-swelling protocols. 10/10 live-queue match.
+Asthma Attack,adult,3,needs-guideline-research,,verified,batch18,oscg-asthma-attack,https://www.nhs.uk/conditions/asthma/asthma-attack/,Decomposed from NHS.UK asthma attack page (reviewed 7 Apr 2025). 10/10 live-queue match.
+Autism,pediatric,3,needs-guideline-research,,pending,,,,
+Bedwetting (Nocturnal Enuresis),pediatric,3,needs-guideline-research,,verified,batch23,oscg-bedwetting,https://www.nhs.uk/conditions/bedwetting/,Decomposed from NHS.UK bedwetting page (reviewed 11 Apr 2023). 10/10 live-queue match.
+Behavior Problems (Age 1-5),pediatric,3,needs-guideline-research,,pending,,,,
+Biting Behavior,pediatric,3,needs-guideline-research,,pending,,,,
+Blister - Foot and Hand,adult,3,needs-guideline-research,,verified,batch19,oscg-blister-foot-hand,https://www.nhs.uk/conditions/blisters/,Decomposed from NHS.UK blister page (reviewed 22 Nov 2023). 10/10 live-queue match.
+Blood Pressure - Low,adult,3,needs-guideline-research,,verified,batch19,oscg-blood-pressure-low,https://www.nhs.uk/conditions/low-blood-pressure-hypotension/,Decomposed from NHS.UK low blood pressure page (reviewed 11 Jul 2023) + standard shock screen. 10/10 live-queue match.
+Body Piercing Symptoms and Questions,adult,3,needs-guideline-research,,pending,,,,
+Bottle-fed Weaning Questions,pediatric,3,needs-guideline-research,,pending,,,,
+Breast Symptoms,adult,3,needs-guideline-research,,pending,,,,
+Breastfeeding - Weaning Questions,pediatric,3,needs-guideline-research,,pending,,,,
+Breath-Holding Spell,pediatric,3,needs-guideline-research,,verified,batch23,oscg-breath-holding-spell,,"Standard pediatric knowledge - NHS.UK page could not be retrieved. 10/10 live-queue match (after removing ageMax, which silently excludes protocols from search - see memory)."
+Breathing Difficulty,adult,3,needs-guideline-research,,verified,batch18,oscg-breathing-difficulty,https://www.nhs.uk/conditions/shortness-of-breath/,Decomposed from NHS.UK shortness of breath page (reviewed 30 Jan 2024). 10/10 live-queue match.
+Bruises,adult,3,needs-guideline-research,,verified,batch19,oscg-bruises,,Standard first-aid + hematology knowledge (unexplained bruising red flag) - NHS.UK page could not be retrieved. 10/10 live-queue match.
+Bullying,pediatric,3,needs-guideline-research,,verified,batch22,oscg-bullying,,Standard child/adolescent mental health knowledge + Suicide Concerns emergency tier - NHS.UK page could not be retrieved. 10/10 live-queue match.
+Burns - Electrical,adult,3,needs-guideline-research,,pending,,,,
+COPD Post-Hospitalization Follow-up Call,adult,3,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+COVID-19 - Vaccine Questions and Reactions,adult,3,needs-guideline-research,,pending,,,,
+Cancer - Mouth Symptoms,adult,3,needs-guideline-research,,pending,,,,
+"Chest Injury - Bending, Lifting, or Twisting",adult,3,needs-guideline-research,,pending,,,,
+Child Abuse Suspected,pediatric,3,needs-guideline-research,,verified,batch22,oscg-child-abuse-suspected,,"Standard child-safeguarding knowledge, sensitive-topic handling per Domestic Violence (batch16) precedent. 10/10 live-queue match."
+Child Neglect Suspected,pediatric,3,needs-guideline-research,,verified,batch22,oscg-child-neglect-suspected,,"Standard child-safeguarding knowledge, same sensitive-topic handling as Child Abuse Suspected. 10/10 live-queue match."
+Common Cold,adult,3,needs-guideline-research,,verified,batch18,oscg-common-cold,https://www.nhs.uk/conditions/common-cold/,Decomposed from NHS.UK common cold page (reviewed 22 Mar 2024). 10/10 live-queue match.
+Concussion Follow-up Call,pediatric,3,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Contraception - Birth Control Pills Combined,adult,3,needs-guideline-research,,verified,batch22,oscg-contraception-birth-control-pills-combined,,Standard ACHES blood-clot mnemonic - NHS.UK subpage could not be retrieved. 10/10 live-queue match.
+Contraception - IUD Symptoms and Questions,adult,3,needs-guideline-research,,verified,batch22,oscg-contraception-iud,https://www.nhs.uk/contraception/methods-of-contraception/iud-coil/side-effects/,Decomposed from NHS.UK IUD side-effects page (reviewed 15 Feb 2024). 10/10 live-queue match.
+Cough - Acute Non-Productive,adult,3,needs-guideline-research,,pending,,,,
+Crying - 3 Months and Older,pediatric,3,needs-guideline-research,,verified,batch23,oscg-crying-3-months-and-older,https://www.nhs.uk/conditions/colic/,Same colic source generalized past typical colic age. 10/10 live-queue match.
+Crying - Before 3 Months Old,pediatric,3,needs-guideline-research,,verified,batch23,oscg-crying-before-3-months,https://www.nhs.uk/conditions/colic/,Decomposed from NHS.UK colic page (reviewed 26 Apr 2022). 10/10 live-queue match (after removing ageMax bug).
+Dizziness - Lightheadedness,adult,3,needs-guideline-research,,verified,batch18,oscg-dizziness-lightheadedness,https://www.nhs.uk/conditions/dizziness/,Decomposed from NHS.UK dizziness page with FAST stroke red-flag reclassification. 10/10 live-queue match.
+Dizziness - Vertigo,adult,3,needs-guideline-research,,verified,batch18,oscg-dizziness-vertigo,https://www.nhs.uk/conditions/dizziness/,Same NHS.UK dizziness source split for vertigo presentation. 10/10 live-queue match.
+Drowning and Submersion Event,adult,3,needs-guideline-research,,verified,batch19,oscg-drowning-submersion-event,,Standard emergency medicine/resuscitation knowledge (delayed drowning risk) - NHS.UK page could not be retrieved. Relevant given Qatar pool/coastal exposure. 10/10 live-queue match.
+E-Cigarette (Vaping) Nicotine Symptoms or Questions,pediatric,3,needs-guideline-research,,pending,,,,
+E-Cigarettes and Vaping Symptoms and Questions,adult,3,needs-guideline-research,,pending,,,,
+Ear - Otitis Media Follow-up Call,adult,3,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Ear Piercing Symptoms and Questions,adult,3,needs-guideline-research,,pending,,,,
+Earwax,adult,3,needs-guideline-research,,verified,batch18,oscg-earwax,https://www.nhs.uk/conditions/earwax-build-up/,Decomposed from NHS.UK earwax build-up page (reviewed 5 Jan 2024). 10/10 live-queue match.
+Eating Problems of Childhood,pediatric,3,needs-guideline-research,,pending,,,,
+Elbow Pain,adult,3,needs-guideline-research,,verified,batch21,oscg-elbow-pain,https://www.nhs.uk/conditions/joint-pain/,"Non-traumatic pain variant, distinct from Elbow Injury (batch13). 10/10 live-queue match."
+Elbow Swelling,adult,3,needs-guideline-research,,verified,batch21,oscg-elbow-swelling,https://www.nhs.uk/conditions/joint-pain/,10/10 live-queue match.
+Electric Shock or Lightning Injury,adult,3,needs-guideline-research,,verified,batch19,oscg-electric-shock-lightning-injury,,Standard emergency medicine knowledge (arrhythmia/internal injury risk) - NHS.UK page could not be retrieved. 10/10 live-queue match.
+Eye - Redness,adult,3,needs-guideline-research,,verified,batch19,oscg-eye-redness,https://www.nhs.uk/conditions/red-eye/,Decomposed from NHS.UK red eye page (reviewed 27 Oct 2025). 10/10 live-queue match.
+Eyelid Swelling,adult,3,needs-guideline-research,,verified,batch19,oscg-eyelid-swelling,,Generalized from Eye Injury/Eye - Allergy emergency criteria already in this system. 10/10 live-queue match.
+Eyelid Twitch or Spasm,adult,3,needs-guideline-research,,pending,,,,
+Face Pain,adult,3,needs-guideline-research,,verified,batch22,oscg-face-pain,,"Generalized from Sinus Pain (batch11) + Toothache (batch14) criteria, distinct from Face Injury (batch13). 10/10 live-queue match."
+Fears in Childhood,pediatric,3,needs-guideline-research,,pending,,,,
+Fever,adult,3,needs-guideline-research,,verified,batch18,oscg-fever,https://www.nhs.uk/conditions/fever-in-adults/,Decomposed from NHS.UK fever in adults page (reviewed 24 May 2023). 10/10 live-queue match.
+Finger Pain,adult,3,needs-guideline-research,,verified,batch21,oscg-finger-pain,https://www.nhs.uk/conditions/joint-pain/,Distinct from Finger Injury (batch10). 10/10 live-queue match.
+Fluid Intake Increased,pediatric,3,needs-guideline-research,,verified,batch23,oscg-fluid-intake-increased,,Standard endocrinology knowledge (polydipsia/diabetes red flag) - no single NHS.UK page found. 10/10 live-queue match.
+Foot Pain,adult,3,needs-guideline-research,,verified,batch21,oscg-foot-pain,https://www.nhs.uk/conditions/joint-pain/,10/10 live-queue match.
+Groin Injury and Strain,adult,3,needs-guideline-research,,verified,batch19,oscg-groin-injury-and-strain,,Generalized from limb-strain pattern + testicular torsion/strangulated hernia red flags. 10/10 live-queue match.
+Habit Problems of Childhood,pediatric,3,needs-guideline-research,,pending,,,,
+Hallucinogenic Mushrooms - Use and Problems,adult,3,needs-guideline-research,,verified,batch23,oscg-hallucinogenic-mushrooms-use-and-problems,,Standard toxicology/substance-use knowledge. 10/10 live-queue match.
+Hand Swelling,adult,3,needs-guideline-research,,verified,batch21,oscg-hand-swelling,https://www.nhs.uk/conditions/joint-pain/,10/10 live-queue match.
+Head Lice,adult,3,needs-guideline-research,,verified,batch18,oscg-head-lice,https://www.nhs.uk/conditions/head-lice/,Decomposed from NHS.UK head lice page (reviewed 22 Apr 2024). 10/10 live-queue match.
+Heart Failure on Treatment Follow-up Call,adult,3,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Hernia,adult,3,needs-guideline-research,,verified,batch19,oscg-hernia,https://www.nhs.uk/conditions/hernia/,"Decomposed from NHS.UK hernia page (reviewed 19 May 2026), strangulation red flags. 10/10 live-queue match."
+Hip Pain,adult,3,needs-guideline-research,,verified,batch21,oscg-hip-pain,https://www.nhs.uk/conditions/joint-pain/,Distinct from Hip Injury (batch13). 10/10 live-queue match.
+Hives,adult,3,needs-guideline-research,,verified,batch18,oscg-hives,https://www.nhs.uk/conditions/hives/,Decomposed from NHS.UK hives page (reviewed 26 Apr 2024). 10/10 live-queue match.
+Home Health - Equipment or Supply Request,adult,3,needs-guideline-research,,pending,,,,
+Hospice - Caregiver Need for Support or Respite,adult,3,needs-guideline-research,,pending,,,,
+Hospice - Death Imminent or Dying Symptoms,adult,3,needs-guideline-research,,pending,,,,
+Hospice - Skin Breakdown and Pressure Sores,adult,3,needs-guideline-research,,pending,,,,
+Hospice - Weakness (Generalized) and Fatigue,adult,3,needs-guideline-research,,pending,,,,
+IV Site and Other Symptoms,adult,3,needs-guideline-research,,pending,,,,
+Influenza (Flu) Suspected,adult,3,needs-guideline-research,,verified,batch19,oscg-influenza-suspected,https://www.nhs.uk/conditions/flu/,Decomposed from NHS.UK flu page (reviewed 3 Feb 2026). 10/10 live-queue match.
+Jaundice,adult,3,needs-guideline-research,,verified,batch18,oscg-jaundice,https://www.nhs.uk/conditions/jaundice-newborn/,"Primarily from NHS.UK newborn jaundice page (reviewed 24 Mar 2026), extended to any-age jaundice. 10/10 live-queue match."
+Kidney Stone Follow-up Call,adult,3,needs-guideline-research,,skipped,,,,"Administrative/meta call-type, not a clinical presenting complaint with a public when-to-seek-help page"
+Knee Swelling,adult,3,needs-guideline-research,,verified,batch21,oscg-knee-swelling,https://www.nhs.uk/conditions/joint-pain/,Distinct from Ottawa Knee Rule (batch02). 10/10 live-queue match.
+MERS Exposure,adult,3,needs-guideline-research,,pending,,,,
+Medication - Refusal to Take,pediatric,3,needs-guideline-research,,pending,,,,
+Mouth Pain,adult,3,needs-guideline-research,,verified,batch22,oscg-mouth-pain,,Generalized from Toothache (batch14) + Mouth Injury (batch13) criteria. 10/10 live-queue match.
+Muscle Aches and Body Pain,adult,3,needs-guideline-research,,verified,batch22,oscg-muscle-aches-and-body-pain,https://www.nhs.uk/conditions/flu/,Generalized from Flu guidance (batch19) for body-aches-primary presentation. 10/10 live-queue match.
+Oral Intake Decreased,adult,3,needs-guideline-research,,pending,,,,
+Pelvic Pain - Female,adult,3,needs-guideline-research,,verified,batch22,oscg-pelvic-pain-female,https://www.nhs.uk/conditions/pelvic-pain/,Decomposed from NHS.UK pelvic pain page (reviewed 24 Nov 2025). 10/10 live-queue match.
+Post-Op Incision Symptoms and Questions,adult,3,needs-guideline-research,,pending,,,,
+Post-Op Tonsil and Adenoid Surgery,adult,3,needs-guideline-research,,pending,,,,
+Post-Traumatic Stress Disorder (PTSD),adult,3,needs-guideline-research,,pending,,,,
+Postpartum - Abdominal Pain,adult,3,needs-guideline-research,,pending,,,,
+Postpartum - Breast Pain and Engorgement,adult,3,needs-guideline-research,,verified,batch20,oscg-postpartum-breast-pain-and-engorgement,https://www.nhs.uk/conditions/mastitis/,Decomposed from NHS.UK mastitis page (reviewed 17 Mar 2023). 10/10 live-queue match.
+Postpartum - C-section Symptoms,adult,3,needs-guideline-research,,verified,batch20,oscg-postpartum-csection-symptoms,https://www.nhs.uk/conditions/caesarean-section/recovery/,Decomposed from NHS.UK C-section recovery page (reviewed 4 Jan 2023). 10/10 live-queue match.
+Postpartum - Constipation,adult,3,needs-guideline-research,,pending,,,,
+Postpartum - Fever,adult,3,needs-guideline-research,,verified,batch20,oscg-postpartum-fever,https://www.nhs.uk/conditions/caesarean-section/recovery/,C-section infection warning + standard postpartum sepsis knowledge. 10/10 live-queue match.
+Postpartum - Headache,adult,3,needs-guideline-research,,verified,batch20,oscg-postpartum-headache,https://www.nhs.uk/conditions/pre-eclampsia/,"NHS.UK pre-eclampsia page (reviewed 23 Mar 2026), covers postpartum onset. 10/10 live-queue match."
+Postpartum - High Blood Pressure,adult,3,needs-guideline-research,,verified,batch20,oscg-postpartum-high-blood-pressure,https://www.nhs.uk/conditions/pre-eclampsia/,Same pre-eclampsia source as Postpartum - Headache. 10/10 live-queue match.
+Postpartum - Leg Pain,adult,3,needs-guideline-research,,verified,batch20,oscg-postpartum-leg-pain,https://www.nhs.uk/conditions/caesarean-section/recovery/,C-section blood-clot warning generalized to all postpartum deliveries. 10/10 live-queue match.
+Postpartum - Leg Swelling and Edema,adult,3,needs-guideline-research,,verified,batch20,oscg-postpartum-leg-swelling-and-edema,https://www.nhs.uk/conditions/caesarean-section/recovery/,"Same generalized C-section blood-clot source, swelling-predominant variant. 10/10 live-queue match."
+Postpartum - Pale Skin,adult,3,needs-guideline-research,,pending,,,,
+Postpartum - Urination Pain,adult,3,needs-guideline-research,,verified,batch20,oscg-postpartum-urination-pain,https://www.nhs.uk/conditions/caesarean-section/recovery/; https://www.nhs.uk/conditions/cystitis/,Combines C-section urinary warning + cystitis source (batch14). 10/10 live-queue match.
+Postpartum - Vaginal Bleeding and Lochia,adult,3,needs-guideline-research,,verified,batch20,oscg-postpartum-vaginal-bleeding-and-lochia,,Standard obstetric postpartum hemorrhage recognition knowledge - NHS.UK lochia page could not be retrieved. 10/10 live-queue match.
+Postpartum - Vision Loss or Change,adult,3,needs-guideline-research,,verified,batch20,oscg-postpartum-vision-loss-or-change,https://www.nhs.uk/conditions/pre-eclampsia/,"Same pre-eclampsia source, distinct from general Vision Loss or Change (batch14). 10/10 live-queue match."
+Postpartum Depression,pediatric,3,needs-guideline-research,,verified,batch17,oscg-postpartum-depression,https://www.nhs.uk/mental-health/conditions/post-natal-depression/,Duplicate title of Postpartum - Depression (batch17) - same protocol reused.
+Pregnancy - Abdomen Injury,adult,3,needs-guideline-research,,pending,,,,

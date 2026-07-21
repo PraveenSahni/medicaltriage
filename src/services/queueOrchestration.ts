@@ -334,18 +334,33 @@ function queuePayloadFromUnknown(value: unknown): {
   patientAge?: QueuePatientAgeSnapshotDto;
   reasonNarrative?: string;
   preparedProtocol?: QueuePreparedProtocolDto;
+  safetyFloorSource?: QueueRecord["safetyFloorSource"];
+  initialAssessmentResponses?: Record<string, string>;
+  vitalsUnobtainable?: boolean;
 } {
   if (!isRecord(value)) {
     return {};
   }
   const source = value.identityValidationSource;
+  const floorSource = value.safetyFloorSource;
+  const initialAssessment = isRecord(value.initialAssessmentResponses)
+    ? Object.fromEntries(
+        Object.entries(value.initialAssessmentResponses).filter(
+          (entry): entry is [string, string] => typeof entry[1] === "string"
+        )
+      )
+    : undefined;
   return {
+    initialAssessmentResponses: initialAssessment,
+    vitalsUnobtainable: typeof value.vitalsUnobtainable === "boolean" ? value.vitalsUnobtainable : undefined,
     identityValidationSource: source === "HRMS_AUTO" || source === "HRMS_LOOKUP_FAILED" ? source : undefined,
     identityValidationMessage: stringFromPayload(value.identityValidationMessage),
     identityValidatedAtIso: stringFromPayload(value.identityValidatedAtIso),
     patientAge: patientAgeFromUnknown(value.patientAge),
     reasonNarrative: stringFromPayload(value.reasonNarrative),
-    preparedProtocol: preparedProtocolFromUnknown(value.preparedProtocol)
+    preparedProtocol: preparedProtocolFromUnknown(value.preparedProtocol),
+    safetyFloorSource:
+      floorSource === "vitals" || floorSource === "symptom" || floorSource === "judgment" ? floorSource : undefined
   };
 }
 
@@ -357,6 +372,9 @@ function queuePayloadFor(record: QueueRecord): Record<string, unknown> {
   if (record.patientAge) payload.patientAge = record.patientAge;
   if (record.reasonNarrative) payload.reasonNarrative = record.reasonNarrative;
   if (record.preparedProtocol) payload.preparedProtocol = record.preparedProtocol;
+  if (record.safetyFloorSource) payload.safetyFloorSource = record.safetyFloorSource;
+  if (record.initialAssessmentResponses) payload.initialAssessmentResponses = record.initialAssessmentResponses;
+  if (typeof record.vitalsUnobtainable === "boolean") payload.vitalsUnobtainable = record.vitalsUnobtainable;
   return payload;
 }
 
@@ -596,6 +614,9 @@ function dbRowToRecord(row: QueueDbRow): QueueRecord {
     identityValidatedAtIso: queuePayload.identityValidatedAtIso,
     patientAge: queuePayload.patientAge,
     safetyFloorActive: row.safetyFloorActive,
+    safetyFloorSource: queuePayload.safetyFloorSource,
+    initialAssessmentResponses: queuePayload.initialAssessmentResponses,
+    vitalsUnobtainable: queuePayload.vitalsUnobtainable,
     clinicalApproval: approvalFromUnknown(row.clinicalApproval),
     sbarCopied: row.sbarCopied,
     assignedNurseId: row.assignedNurseId ?? undefined,
@@ -696,6 +717,7 @@ function initialQueueRecords(): QueueRecord[] {
       jobTitle: "Dependent child",
       summary: "Fever with fast breathing reported by parent.",
       safetyFloorActive: true,
+      safetyFloorSource: "symptom",
       identityValidated: false,
       calculatedSeverity: "EMERGENCY",
       dispositionCode: "SIDRA_PEDIATRIC_ED",
@@ -724,6 +746,7 @@ function initialQueueRecords(): QueueRecord[] {
       jobTitle: "Cabin Crew",
       summary: "Chest tightness and sweating before duty report.",
       safetyFloorActive: true,
+      safetyFloorSource: "symptom",
       identityValidated: true,
       calculatedSeverity: "EMERGENCY",
       dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
@@ -1379,7 +1402,10 @@ export async function updateQueueContext(
   requireTenantAccess(record, session);
   requireUnlockedOrOwned(record, session);
 
-  if (isCallIntake(session) && (update.vitals || update.matchedProtocolId || update.calculatedSeverity || update.dispositionCode)) {
+  if (
+    isCallIntake(session) &&
+    (update.vitals || update.matchedProtocolId || update.calculatedSeverity || update.dispositionCode || update.initialAssessmentResponses)
+  ) {
     throw new QueueOrchestrationError(403, "Call intake coordinators cannot edit clinical queue context.", "QUEUE_ROLE_DENIED");
   }
   if (!isCallIntake(session)) {
@@ -1391,13 +1417,27 @@ export async function updateQueueContext(
     record.vitals = update.vitals;
     if (redFloorFromVitals(update.vitals)) {
       record.safetyFloorActive = true;
+      record.safetyFloorSource = "vitals";
       record.calculatedSeverity = "EMERGENCY";
     }
   }
   if (update.matchedProtocolId) record.matchedProtocolId = update.matchedProtocolId;
-  if (update.calculatedSeverity) record.calculatedSeverity = update.calculatedSeverity;
-  if (update.dispositionCode) record.dispositionCode = update.dispositionCode;
-  if (update.destinationName) record.destinationName = update.destinationName;
+  const floorBlocksDowngrade =
+    record.safetyFloorActive &&
+    record.calculatedSeverity === "EMERGENCY" &&
+    Boolean(update.calculatedSeverity) &&
+    update.calculatedSeverity !== "EMERGENCY";
+  if (update.calculatedSeverity && !floorBlocksDowngrade) {
+    record.calculatedSeverity = update.calculatedSeverity;
+    if (update.calculatedSeverity === "EMERGENCY") {
+      record.safetyFloorActive = true;
+      record.safetyFloorSource = update.floorSource ?? record.safetyFloorSource ?? "judgment";
+    }
+  }
+  if (update.dispositionCode && !floorBlocksDowngrade) record.dispositionCode = update.dispositionCode;
+  if (update.destinationName && !floorBlocksDowngrade) record.destinationName = update.destinationName;
+  if (update.initialAssessmentResponses) record.initialAssessmentResponses = update.initialAssessmentResponses;
+  if (typeof update.vitalsUnobtainable === "boolean") record.vitalsUnobtainable = update.vitalsUnobtainable;
   if (update.clinicalApproval) record.clinicalApproval = update.clinicalApproval;
   if (typeof update.sbarCopied === "boolean") record.sbarCopied = update.sbarCopied;
   if (update.summary) record.summary = update.summary;

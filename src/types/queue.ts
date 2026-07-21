@@ -9,6 +9,9 @@ export type QueueClinicalStage = z.infer<typeof QueueClinicalStageSchema>;
 export const QueueSeveritySchema = z.enum(["EMERGENCY", "URGENT", "ROUTINE", "SELF_CARE"]);
 export type QueueSeverity = z.infer<typeof QueueSeveritySchema>;
 
+export const SafetyFloorSourceSchema = z.enum(["vitals", "symptom", "judgment"]);
+export type SafetyFloorSource = z.infer<typeof SafetyFloorSourceSchema>;
+
 export const QueueVitalsSchema = z.object({
   heartRate: z.number().int().min(20).max(260),
   respiratoryRate: z.number().int().min(4).max(80),
@@ -68,9 +71,12 @@ export const QueueContextUpdateSchema = z.object({
   vitals: QueueVitalsSchema.optional(),
   matchedProtocolId: z.string().min(1).max(120).optional(),
   calculatedSeverity: QueueSeveritySchema.optional(),
+  floorSource: SafetyFloorSourceSchema.optional(),
   dispositionCode: z.string().min(2).max(120).optional(),
   destinationName: z.string().min(2).max(200).optional(),
   clinicalApproval: z.record(z.unknown()).optional(),
+  initialAssessmentResponses: z.record(z.string().max(400)).optional(),
+  vitalsUnobtainable: z.boolean().optional(),
   sbarCopied: z.boolean().optional(),
   summary: z.string().min(1).max(500).optional(),
   reasonNarrative: z.string().min(1).max(1000).optional(),
@@ -167,7 +173,12 @@ export type StccProcessSnapshotDto = {
 export type RagShadowSuggestionDto = {
   mode: "DRY_RUN_SHADOW";
   boundary: "APPROVED_CONTENT_ONLY";
-  sourceType: "synthetic-sample" | "licensed-stcc" | "local-qatar-override";
+  sourceType:
+    | "synthetic-sample"
+    | "licensed-stcc"
+    | "local-qatar-override"
+    | "open-source-clinical-rule"
+    | "open-source-guideline";
   sourceReleaseVersion: string;
   query: string;
   extractedReason: {
@@ -197,7 +208,12 @@ export type RagShadowSuggestionDto = {
 
 export type QueuePreparedProtocolDto = {
   status: "PENDING_REASON" | "PREPARED" | "NO_MATCH";
-  sourceType: "synthetic-sample" | "licensed-stcc" | "local-qatar-override";
+  sourceType:
+    | "synthetic-sample"
+    | "licensed-stcc"
+    | "local-qatar-override"
+    | "open-source-clinical-rule"
+    | "open-source-guideline";
   releaseVersion: string;
   reasonNarrative: string;
   extractedKeywords: string[];
@@ -246,6 +262,9 @@ export type QueueItemDto = {
   identityValidatedAtIso?: string;
   patientAge?: QueuePatientAgeSnapshotDto;
   safetyFloorActive: boolean;
+  safetyFloorSource?: SafetyFloorSource;
+  initialAssessmentResponses?: Record<string, string>;
+  vitalsUnobtainable?: boolean;
   clinicalApproval?: Record<string, unknown>;
   sbarCopied: boolean;
   assignedNurseId?: string;

@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 export type QueueStatus = "INCOMING" | "IN_PROCESS" | "INFO_REQUIRED" | "COMPLETED";
 export type QueueClinicalStage = "INTAKE" | "IDENTITY" | "VITALS" | "PROTOCOL" | "DISPOSITION" | "SBAR";
 export type QueueSeverity = "EMERGENCY" | "URGENT" | "ROUTINE" | "SELF_CARE";
+export type SafetyFloorSource = "vitals" | "symptom" | "judgment";
 
 export type QueueVitals = {
   heartRate: number;
@@ -84,7 +85,12 @@ export type StccProcessSnapshot = {
 export type RagShadowSuggestion = {
   mode: "DRY_RUN_SHADOW";
   boundary: "APPROVED_CONTENT_ONLY";
-  sourceType: "synthetic-sample" | "licensed-stcc" | "local-qatar-override";
+  sourceType:
+    | "synthetic-sample"
+    | "licensed-stcc"
+    | "local-qatar-override"
+    | "open-source-clinical-rule"
+    | "open-source-guideline";
   sourceReleaseVersion: string;
   query: string;
   extractedReason: {
@@ -114,7 +120,12 @@ export type RagShadowSuggestion = {
 
 export type QueuePreparedProtocol = {
   status: "PENDING_REASON" | "PREPARED" | "NO_MATCH";
-  sourceType: "synthetic-sample" | "licensed-stcc" | "local-qatar-override";
+  sourceType:
+    | "synthetic-sample"
+    | "licensed-stcc"
+    | "local-qatar-override"
+    | "open-source-clinical-rule"
+    | "open-source-guideline";
   releaseVersion: string;
   reasonNarrative: string;
   extractedKeywords: string[];
@@ -163,6 +174,9 @@ export type QueueItem = {
   identityValidatedAtIso?: string;
   patientAge?: QueuePatientAgeSnapshot;
   safetyFloorActive: boolean;
+  safetyFloorSource?: SafetyFloorSource;
+  initialAssessmentResponses?: Record<string, string>;
+  vitalsUnobtainable?: boolean;
   clinicalApproval?: Record<string, unknown>;
   sbarCopied: boolean;
   assignedNurseId?: string;

@@ -20,9 +20,16 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { QueueClinicalStage, QueueItem, QueuePreparedProtocol, QueueProtocolQuestionPreview } from "../../QueueContext";
+import type {
+  QueueClinicalStage,
+  QueueItem,
+  QueuePreparedProtocol,
+  QueueProtocolQuestionPreview,
+  SafetyFloorSource
+} from "../../QueueContext";
 import { useQueue } from "../../QueueContext";
 import { SectionTabs } from "../ui/NavigationControls";
+import InitialAssessmentPanel from "./InitialAssessmentPanel";
 
 type ConsciousLevel = "alert" | "voice" | "pain" | "unresponsive";
 type Severity = "Emergency" | "Urgent" | "Routine" | "Self-care";
@@ -59,6 +66,10 @@ interface Card {
   onDuty: boolean;
   outstation: boolean;
   crewCategory: "flight_deck" | "cabin_crew" | "ground_staff" | "dependent" | "other";
+  queueFloorActive?: boolean;
+  safetyFloorSource?: SafetyFloorSource;
+  vitalsUnobtainable?: boolean;
+  initialAssessmentResponses?: Record<string, string>;
   vitals: {
     heartRate: number;
     respiratoryRate: number;
@@ -76,6 +87,14 @@ type ApiScoreResult = {
   destinationName: string;
   routingRationale: string;
   redAlertTriggered: boolean;
+  news2?: {
+    respiratoryRate: number;
+    spo2: number;
+    temperature: number;
+    heartRate: number;
+    consciousness: number;
+    total: number;
+  };
   trace?: Array<{ ruleId: string; matched: boolean; rationale: string }>;
   patientAge?: {
     source: "staff" | "dependent";
@@ -256,13 +275,24 @@ function pediatricTachypnea(card: Card): boolean {
 
 function localSafetyFloorReasons(card: Card): string[] {
   const reasons: string[] = [];
-  if (card.vitals.consciousLevel !== "alert") reasons.push("AVPU is not Alert");
-  if (card.vitals.spo2 < 92) reasons.push("SpO2 below 92%");
-  if (card.vitals.heartRate < 60 || card.vitals.heartRate > 130) reasons.push("Heart rate outside 60-130 bpm");
-  if (card.vitals.respiratoryRate < 10 || card.vitals.respiratoryRate > 30) {
-    reasons.push("Respiratory rate outside 10-30/min");
+  if (!card.vitalsUnobtainable) {
+    if (card.vitals.consciousLevel !== "alert") reasons.push("AVPU is not Alert");
+    if (card.vitals.spo2 < 92) reasons.push("SpO2 below 92%");
+    if (card.vitals.heartRate < 60 || card.vitals.heartRate > 130) reasons.push("Heart rate outside 60-130 bpm");
+    if (card.vitals.respiratoryRate < 10 || card.vitals.respiratoryRate > 30) {
+      reasons.push("Respiratory rate outside 10-30/min");
+    }
+    if (pediatricTachypnea(card)) reasons.push("Age-banded pediatric tachypnea threshold");
   }
-  if (pediatricTachypnea(card)) reasons.push("Age-banded pediatric tachypnea threshold");
+  if (card.queueFloorActive && card.safetyFloorSource === "symptom") {
+    reasons.push("Emergency symptom phrase reported by the caller");
+  }
+  if (card.queueFloorActive && card.safetyFloorSource === "judgment") {
+    reasons.push("Nurse triager judgment: sounds life-threatening");
+  }
+  if (card.queueFloorActive && card.safetyFloorSource === "vitals" && card.vitalsUnobtainable) {
+    reasons.push("Red-floor vitals recorded earlier in the queue");
+  }
   return reasons;
 }
 
@@ -532,11 +562,15 @@ function queueItemToCard(item: QueueItem): Card {
     onDuty: item.customAviationTags.some((tag) => tag.toLowerCase().includes("fit-to-fly")),
     outstation: item.customAviationTags.some((tag) => tag.toLowerCase().includes("outstation")) || item.stationCode !== "DOH",
     crewCategory: crewCategoryFrom(item),
+    queueFloorActive: item.safetyFloorActive,
+    safetyFloorSource: item.safetyFloorSource ?? (item.safetyFloorActive ? "vitals" : undefined),
+    vitalsUnobtainable: item.vitalsUnobtainable ?? !item.vitals,
+    initialAssessmentResponses: item.initialAssessmentResponses,
     vitals: item.vitals ?? {
-      heartRate: item.safetyFloorActive ? 135 : 82,
-      respiratoryRate: item.patientType === "Dependent" && item.safetyFloorActive ? 42 : 16,
-      spo2: item.safetyFloorActive ? 91 : 98,
-      temperature: item.patientType === "Dependent" ? 38.2 : 36.9,
+      heartRate: 82,
+      respiratoryRate: 16,
+      spo2: 98,
+      temperature: item.patientType === "Dependent" ? 37.4 : 36.9,
       consciousLevel: "alert"
     }
   };
@@ -603,7 +637,14 @@ function sbarMarkdown(card: Card, score?: ApiScoreResult, assessmentResponses: A
   const route = routeFromAssessment(card, score, assessmentResponses);
   const reasons = localSafetyFloorReasons(card);
   const fitStatus = fitToFlyStatus(card, severity);
-  const vitals = `HR ${card.vitals.heartRate}, RR ${card.vitals.respiratoryRate}, SpO2 ${card.vitals.spo2}%, Temp ${card.vitals.temperature}C, AVPU ${card.vitals.consciousLevel}`;
+  const vitals = card.vitalsUnobtainable
+    ? "Vitals not obtained on call; symptom-based safety floor applied"
+    : `HR ${card.vitals.heartRate}, RR ${card.vitals.respiratoryRate}, SpO2 ${card.vitals.spo2}%, Temp ${card.vitals.temperature}C, AVPU ${card.vitals.consciousLevel}`;
+  const initialAssessmentEntries = Object.entries(card.initialAssessmentResponses ?? {});
+  const initialAssessmentLine =
+    initialAssessmentEntries.length > 0
+      ? `Initial assessment: ${initialAssessmentEntries.map(([prompt, answer]) => `${prompt} ${answer}`).join(" | ")}.`
+      : undefined;
 
   return [
     "# IST Health Tele-Triage SBAR",
@@ -611,7 +652,7 @@ function sbarMarkdown(card: Card, score?: ApiScoreResult, assessmentResponses: A
     "## English",
     `S: ${card.patientName} (${card.maskedPatientId}), ${card.age} years, ${card.jobTitle}, reports ${card.symptomTextRaw}`,
     `B: Department ${card.department}; channel ${card.channel}; station ${card.stationCode ?? "DOH"}.`,
-    `A: ${vitals}. Severity ${severity}. ${reasons.length > 0 ? `Safety floor: ${reasons.join("; ")}.` : "No emergency safety floor currently triggered."}`,
+    `A: ${vitals}. Severity ${severity}. ${reasons.length > 0 ? `Safety floor: ${reasons.join("; ")}.` : "No emergency safety floor currently triggered."}${initialAssessmentLine ? ` ${initialAssessmentLine}` : ""}`,
     `R: Route to ${route.destination} (${route.code}). Fit-to-fly ${fitStatus}. ${fitToFlyRuleText(severity)}`,
     "",
     "## Arabic",
@@ -830,7 +871,7 @@ export default function NurseWorkspace() {
     : "";
 
   useEffect(() => {
-    if (!activeCard) return undefined;
+    if (!activeCard || activeCard.vitalsUnobtainable) return undefined;
 
     let ignore = false;
     const timer = window.setTimeout(async () => {
@@ -917,6 +958,52 @@ export default function NurseWorkspace() {
         ...patch
       }
     }));
+  }
+
+  const initialAssessmentPatchTimer = useRef<number | undefined>();
+
+  function updateInitialAssessmentAnswers(cardId: string, answers: Record<string, string>) {
+    updateCard(cardId, { initialAssessmentResponses: answers });
+    if (activeItem?.id !== cardId) return;
+    window.clearTimeout(initialAssessmentPatchTimer.current);
+    initialAssessmentPatchTimer.current = window.setTimeout(() => {
+      void updateItemContext(cardId, { initialAssessmentResponses: answers });
+    }, 600);
+  }
+
+  function setVitalsUnobtainable(cardId: string, value: boolean) {
+    updateCard(cardId, { vitalsUnobtainable: value });
+    if (value) {
+      setScoreByCardId((current) => ({ ...current, [cardId]: { status: "idle" } }));
+    }
+    if (activeItem?.id === cardId) {
+      void updateItemContext(cardId, { vitalsUnobtainable: value });
+    }
+  }
+
+  async function escalateEmergency(source: "symptom" | "judgment", reason: string) {
+    if (!activeCard) return;
+    const route =
+      activeCard.age < 18
+        ? { code: "SIDRA_PEDIATRIC_ED", destination: "Sidra Medicine Emergency Department" }
+        : { code: "HMC_EMERGENCY_DEPARTMENT", destination: "Hamad Medical Corporation (HMC) Emergency Department" };
+
+    updateCard(activeCard.id, { queueFloorActive: true, safetyFloorSource: source });
+
+    if (activeItem?.id === activeCard.id) {
+      try {
+        await updateItemContext(activeCard.id, {
+          calculatedSeverity: "EMERGENCY",
+          floorSource: source,
+          dispositionCode: route.code,
+          destinationName: route.destination
+        });
+      } catch (error) {
+        showToast(error instanceof Error ? error.message : "Queue escalation failed. Escalate manually.", "warning");
+        return;
+      }
+    }
+    showToast(`Emergency floor set (${source === "judgment" ? "triager judgment" : "emergency phrase"}): ${reason}`, "warning");
   }
 
   function updateCardVitals(cardId: string, nextVitals: Partial<Card["vitals"]>) {
@@ -1007,7 +1094,7 @@ export default function NurseWorkspace() {
         const route = routeFromAssessment(activeCard, activeScoreResult, assessmentResponsesByCardId[activeCard.id] ?? {});
         const severity = activeSeverityFromAssessment(activeCard, activeScoreResult, assessmentResponsesByCardId[activeCard.id] ?? {});
         await updateItemContext(activeCard.id, {
-          vitals: activeCard.vitals,
+          vitals: activeCard.vitalsUnobtainable ? undefined : activeCard.vitals,
           matchedProtocolId: prepared?.primaryProtocolId ?? activeScoreResult?.dispositionCode ?? "phase1-rules-first-protocol",
           calculatedSeverity: severity === "Self-care" ? "SELF_CARE" : severity.toUpperCase(),
           dispositionCode: route.code,
@@ -1039,7 +1126,9 @@ export default function NurseWorkspace() {
         patient_age_years: card.age,
         chief_complaint: card.symptomTextRaw,
         subjective: card.symptomTextRaw,
-        objective: `HR ${card.vitals.heartRate}, RR ${card.vitals.respiratoryRate}, SpO2 ${card.vitals.spo2}, Temp ${card.vitals.temperature}, AVPU ${card.vitals.consciousLevel}`,
+        objective: card.vitalsUnobtainable
+          ? "Vitals not obtained on call; symptom-based safety floor applied"
+          : `HR ${card.vitals.heartRate}, RR ${card.vitals.respiratoryRate}, SpO2 ${card.vitals.spo2}, Temp ${card.vitals.temperature}, AVPU ${card.vitals.consciousLevel}`,
         assessment: `Rules-first severity ${severity}. ${localSafetyFloorReasons(card).join("; ") || "No red floor."}`,
         recommendation: route.destination,
         final_disposition_code: route.code,
@@ -1251,6 +1340,9 @@ export default function NurseWorkspace() {
               onAssessmentResponses={(updates) => updateAssessmentResponses(activeCard.id, updates)}
               onHold={holdActiveCall}
               onComplete={() => copyAndComplete(activeCard)}
+              onEscalate={escalateEmergency}
+              onVitalsUnobtainable={(value) => setVitalsUnobtainable(activeCard.id, value)}
+              onInitialAssessmentChange={(answers) => updateInitialAssessmentAnswers(activeCard.id, answers)}
             />
           </main>
         </div>
@@ -1535,7 +1627,10 @@ function ActiveCallPanel({
   onVitalsChange,
   onAssessmentResponses,
   onHold,
-  onComplete
+  onComplete,
+  onEscalate,
+  onVitalsUnobtainable,
+  onInitialAssessmentChange
 }: {
   card: Card;
   stageIndex: number;
@@ -1547,6 +1642,9 @@ function ActiveCallPanel({
   onAssessmentResponses: (updates: AssessmentResponseState) => void;
   onHold: () => void;
   onComplete: () => void;
+  onEscalate: (source: "symptom" | "judgment", reason: string) => void;
+  onVitalsUnobtainable: (value: boolean) => void;
+  onInitialAssessmentChange: (answers: Record<string, string>) => void;
 }) {
   const score = "result" in scoreState ? scoreState.result : undefined;
   const severity = activeSeverityFromAssessment(card, score, assessmentResponses);
@@ -1595,6 +1693,9 @@ function ActiveCallPanel({
             scoreState={scoreState}
             onUpdateCard={onUpdateCard}
             onVitalsChange={onVitalsChange}
+            onEscalate={onEscalate}
+            onVitalsUnobtainable={onVitalsUnobtainable}
+            onInitialAssessmentChange={onInitialAssessmentChange}
           />
         )}
         {stages[stageIndex].id === "questions" && (
@@ -1699,12 +1800,18 @@ function ReasonEmergencyStage({
   card,
   scoreState,
   onUpdateCard,
-  onVitalsChange
+  onVitalsChange,
+  onEscalate,
+  onVitalsUnobtainable,
+  onInitialAssessmentChange
 }: {
   card: Card;
   scoreState: ScoreState;
   onUpdateCard: (patch: Partial<Card>) => void;
   onVitalsChange: (nextVitals: Partial<Card["vitals"]>) => void;
+  onEscalate: (source: "symptom" | "judgment", reason: string) => void;
+  onVitalsUnobtainable: (value: boolean) => void;
+  onInitialAssessmentChange: (answers: Record<string, string>) => void;
 }) {
   const terms = keywordSearchTerms(card);
   const prepared = preparedProtocolFor(card);
@@ -1718,6 +1825,10 @@ function ReasonEmergencyStage({
   const emergencyClear = emergencyReasons.length === 0;
   const validated = card.identityValidated !== false;
   const ragShadow = prepared?.ragShadow;
+  const possibleRedFlags = ragShadow?.extractedReason.possibleRedFlags ?? [];
+  const initialAssessmentProtocolId = prepared?.primaryProtocolId ?? primarySuggestion?.protocolId;
+  const vitalsUnobtainable = Boolean(card.vitalsUnobtainable);
+  const judgmentAlreadySet = Boolean(card.queueFloorActive && card.safetyFloorSource === "judgment");
   const sourceLabel = prepared ? `${prepared.sourceType} ${prepared.releaseVersion}` : "Pending STCC source";
 
   return (
@@ -1773,6 +1884,18 @@ function ReasonEmergencyStage({
                   <span className="text-sm text-slate-500">No search terms prepared yet.</span>
                 )}
               </div>
+              {possibleRedFlags.length > 0 && (
+                <div className="mt-3">
+                  <span className="text-[11px] uppercase tracking-[0.14em] text-rose-600">Possible red flags in caller words (advisory)</span>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {possibleRedFlags.map((flag) => (
+                      <span key={flag} className="rounded-md border border-rose-200 bg-rose-50 px-2 py-0.5 text-xs text-rose-700">
+                        {flag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -1803,6 +1926,15 @@ function ReasonEmergencyStage({
           <RagShadowEvidencePanel ragShadow={ragShadow} />
         </section>
 
+        <InitialAssessmentPanel
+          protocolId={initialAssessmentProtocolId}
+          onEscalate={(reason) => onEscalate("symptom", reason)}
+          initialAnswers={card.initialAssessmentResponses}
+          onAnswersChange={onInitialAssessmentChange}
+        />
+
+        <DeterministicScoreStrip card={card} scoreState={scoreState} />
+
         <section className="rounded-md border border-slate-200 bg-white p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex items-start gap-3">
@@ -1820,13 +1952,46 @@ function ReasonEmergencyStage({
                 </h4>
               </div>
             </div>
-            {scoreState.status === "ready" && score && (
-              <span className={`w-fit rounded-md border px-2.5 py-1 text-xs ${score.redAlertTriggered ? "border-rose-200 bg-rose-50 text-rose-700" : "border-slate-200 bg-slate-50 text-slate-600"}`}>
-                API {score.score} - {score.riskBand}
-              </span>
-            )}
+            <div className="flex flex-wrap items-center gap-2">
+              {scoreState.status === "ready" && score && !vitalsUnobtainable && (
+                <span className={`w-fit rounded-md border px-2.5 py-1 text-xs ${score.redAlertTriggered ? "border-rose-200 bg-rose-50 text-rose-700" : "border-slate-200 bg-slate-50 text-slate-600"}`}>
+                  API {score.score} - {score.riskBand}
+                </span>
+              )}
+              {vitalsUnobtainable && (
+                <span className="w-fit rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-600">
+                  No vitals - symptom-based floor
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => onEscalate("judgment", "Triager assessed the presentation as life-threatening.")}
+                disabled={judgmentAlreadySet}
+                className="w-fit rounded-md border border-rose-300 bg-rose-600 px-3 py-1.5 text-xs text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {judgmentAlreadySet ? "Escalated by triager judgment" : "Sounds life-threatening - escalate now"}
+              </button>
+            </div>
           </div>
 
+          <label className="mt-4 flex w-fit items-center gap-2 text-sm text-slate-600">
+            <input
+              type="checkbox"
+              checked={vitalsUnobtainable}
+              onChange={(event) => onVitalsUnobtainable(event.target.checked)}
+              className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+            />
+            Vitals cannot be obtained on this call
+          </label>
+
+          {vitalsUnobtainable ? (
+            <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-800">
+              Vitals entry is off. The safety floor now relies on the symptom path: ask the initial assessment questions
+              above, assess consciousness in conversation, coach the caller to count breaths for 30 seconds if possible,
+              and use the escalate button on any life-threatening sign. The first triage question remains the emergency
+              screen.
+            </div>
+          ) : (
           <div className="mt-4 grid gap-3 md:grid-cols-5">
             <VitalInput label="HR" value={card.vitals.heartRate} min={20} max={260} onChange={(heartRate) => onVitalsChange({ heartRate })} />
             <VitalInput label="RR" value={card.vitals.respiratoryRate} min={1} max={80} onChange={(respiratoryRate) => onVitalsChange({ respiratoryRate })} />
@@ -1846,6 +2011,7 @@ function ReasonEmergencyStage({
               </select>
             </label>
           </div>
+          )}
 
           <div
             className={`mt-4 rounded-md border p-3 text-sm leading-6 ${
@@ -1871,6 +2037,72 @@ function ReasonEmergencyStage({
         </section>
       </div>
     </StageShell>
+  );
+}
+
+function DeterministicScoreStrip({ card, scoreState }: { card: Card; scoreState: ScoreState }) {
+  const score = "result" in scoreState ? scoreState.result : undefined;
+  const floorReasons = localSafetyFloorReasons(card);
+
+  if (card.vitalsUnobtainable) {
+    return (
+      <section className="rounded-md border border-slate-200 bg-white p-4">
+        <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Deterministic score summary</span>
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          NEWS2 scoring is suspended - vitals not obtained on this call.{" "}
+          {floorReasons.length > 0
+            ? `Safety floor active from the symptom path: ${floorReasons.join("; ")}.`
+            : "The safety floor relies on the initial assessment questions and triager judgment."}
+        </p>
+      </section>
+    );
+  }
+
+  if (!score || !score.news2) {
+    return null;
+  }
+
+  const components: Array<{ label: string; points: number }> = [
+    { label: "RR", points: score.news2.respiratoryRate },
+    { label: "SpO2", points: score.news2.spo2 },
+    { label: "Temp", points: score.news2.temperature },
+    { label: "HR", points: score.news2.heartRate },
+    { label: "AVPU", points: score.news2.consciousness }
+  ];
+  const bandTone =
+    score.riskBand === "RED_ALERT"
+      ? "border-rose-200 bg-rose-50 text-rose-700"
+      : score.riskBand === "URGENT"
+        ? "border-amber-200 bg-amber-50 text-amber-700"
+        : "border-emerald-200 bg-emerald-50 text-emerald-700";
+
+  return (
+    <section className="rounded-md border border-slate-200 bg-white p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Deterministic score summary</span>
+        <span className={`rounded-md border px-2.5 py-1 text-xs ${bandTone}`}>
+          {score.redAlertTriggered ? "Red floor override" : `NEWS2 ${score.news2.total}`} - {score.riskBand}
+        </span>
+      </div>
+      <div className="mt-3 grid grid-cols-5 gap-2">
+        {components.map((component) => (
+          <div key={component.label} className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5 text-center">
+            <span className="block text-[10px] uppercase tracking-[0.12em] text-slate-400">{component.label}</span>
+            <span
+              className={`mt-0.5 block text-sm ${
+                component.points >= 3 ? "text-rose-700" : component.points >= 1 ? "text-amber-700" : "text-emerald-700"
+              }`}
+            >
+              +{component.points}
+            </span>
+          </div>
+        ))}
+      </div>
+      <p className="mt-2 text-xs leading-5 text-slate-500">
+        Component points from the authoritative rules engine (0 = normal, 3 = severe derangement). The safety floor is
+        checked before this score and cannot be argued down by it.
+      </p>
+    </section>
   );
 }
 

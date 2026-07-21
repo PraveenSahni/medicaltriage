@@ -34,6 +34,24 @@ enum BiologicalSex {
   UNKNOWN
 }
 
+/// Adult/pediatric partitioning. STCC ships separate adult and pediatric
+/// databases; this app uses one normalized store with this discriminator.
+enum PatientGroup {
+  ADULT
+  PEDIATRIC
+  MIXED
+  UNKNOWN
+}
+
+/// Approximates STCC's four Care Advice audience/type categories
+/// (Disposition / Note-to-Triager / General / Call-Back-If).
+enum CareAdviceCategory {
+  DISPOSITION
+  NOTE_TO_TRIAGER
+  GENERAL
+  CALL_BACK_IF
+}
+
 enum DutyStatus {
   ACTIVE
   ON_LEAVE
@@ -233,8 +251,34 @@ model Algorithm {
   backgroundInfoEn           String?                     @map("background_info_en")
   backgroundInfoAr           String?                     @map("background_info_ar")
   genderRestriction          BiologicalSex?              @map("gender_restriction")
+  patientGroup               PatientGroup                @default(UNKNOWN) @map("patient_group")
+  /// Synthetic/heuristic 1-5 guideline-level acuity approximation. Not real
+  /// STCC AcuityRating and never consulted by the deterministic safety kernel.
+  acuity                     Int?                        @map("acuity")
   ageMin                     Int?                        @map("age_min")
   ageMax                     Int?                        @map("age_max")
+  /// Pre-screen questions with no disposition that route to a different
+  /// protocol (STCC's GotoGuideline pattern). Array of
+  /// {promptTextEn, targetProtocolTitleEn, targetProtocolId?, hintEn?, questionOrder}.
+  guidelineRedirects         Json?                       @map("guideline_redirects")
+  /// Per-protocol Mild/Moderate/Severe descriptive rows: {level, cls, textEn}[].
+  painSeverityTable          Json?                       @map("pain_severity_table")
+  /// {keyPointsEn[], causesUnder50En[], causesOver50En[], locationTable[]}.
+  /// Not every protocol type has all of these; empty arrays are expected.
+  backgroundDetail           Json?                       @map("background_detail")
+  authorEn                   String?                     @map("author_en")
+  /// Attribute to the source organization's editorial process only
+  /// (e.g. "NHS.UK clinical editorial review") - never an invented named clinician.
+  expertReviewerEn           String?                     @map("expert_reviewer_en")
+  lastRevisedAt              DateTime?                   @map("last_revised_at")
+  lastReviewedAt             DateTime?                   @map("last_reviewed_at")
+  versionYear                Int?                        @map("version_year")
+  contentSet                 String?                     @map("content_set")
+  /// {generated, sourceKind, sourceDocuments[], contentNotice, requiresClinicalValidation,
+  /// licensedContentIncluded} - without this column, importing a protocol into the DB and
+  /// then serving it back from the DB would silently drop its citations and
+  /// requiresClinicalValidation flag. Never consulted by the deterministic safety kernel.
+  provenance                 Json?                       @map("provenance")
   /// @deprecated Use ProtocolRelease.version through releaseId for canonical release lineage.
   stccVersion                String?                     @map("stcc_version")
   sourceRecordHash           String?                     @map("source_record_hash")
@@ -327,6 +371,12 @@ model TriageQuestion {
   branching             Json?                  @map("branching")
   telemedicineEligible  Boolean?               @map("telemedicine_eligible")
   telemedicineNotesEn   String?                @map("telemedicine_notes_en") @db.Text
+  /// STCC-shaped numeric disposition-level FK (100->15 ladder). Additive
+  /// metadata only; the deterministic safety kernel never reads this.
+  dispositionLevelId    String?                @map("disposition_level_id")
+  dispositionLevel      Disposition?           @relation(fields: [dispositionLevelId], references: [id], onDelete: SetNull)
+  /// Second sort key within a disposition level (STCC: QuestionOrder ASC).
+  questionOrder         Int?                   @map("question_order")
   sourceRecordHash      String?                @map("source_record_hash")
   sourceRecordChecksum  String?                @map("source_record_checksum")
   careAdviceLinks       QuestionAdviceBridge[]
@@ -334,6 +384,7 @@ model TriageQuestion {
   updatedAt             DateTime               @updatedAt @map("updated_at")
 
   @@index([algorithmId, acuityOrder])
+  @@index([algorithmId, dispositionLevelId, questionOrder])
   @@index([externalQuestionId])
   @@map("triage_questions")
 }
@@ -352,6 +403,9 @@ model CareAdvice {
   sourceRecordChecksum String?                @map("source_record_checksum")
   dispositionCode      AcuityDispositionCode? @map("disposition_code")
   warningSigns         Json?                  @map("warning_signs")
+  /// Approximates STCC's Advice.PatientHealthInfo flag.
+  patientSendable      Boolean                @default(false) @map("patient_sendable")
+  adviceCategory       CareAdviceCategory?    @map("advice_category")
   algorithmLinks       AlgorithmCareAdvice[]
   questionLinks        QuestionAdviceBridge[]
   createdAt            DateTime               @default(now()) @map("created_at")
@@ -365,6 +419,7 @@ model AlgorithmCareAdvice {
   careAdviceId String     @map("care_advice_id")
   algorithm    Algorithm  @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
   careAdvice   CareAdvice @relation(fields: [careAdviceId], references: [id], onDelete: Cascade)
+  displayOrder Int        @default(0) @map("display_order")
 
   @@id([algorithmId, careAdviceId])
   @@map("algorithm_care_advice")
@@ -432,6 +487,8 @@ model ProtocolDispositionMap {
   telemedicineHeadingAr String?               @map("telemedicine_heading_ar")
   sourceOfCareEn        String?               @map("source_of_care_en")
   sourceOfCareAr        String?               @map("source_of_care_ar")
+  dispositionLevelId    String?               @map("disposition_level_id")
+  dispositionLevel      Disposition?          @relation(fields: [dispositionLevelId], references: [id], onDelete: SetNull)
   active                Boolean               @default(true)
   createdAt             DateTime              @default(now()) @map("created_at")
   updatedAt             DateTime              @updatedAt @map("updated_at")
@@ -455,6 +512,25 @@ model LocalizedDisposition {
 
   @@index([region, active])
   @@map("localized_dispositions")
+}
+
+/// STCC's numeric disposition-level ladder (100 = Call EMS 911 Now down to
+/// 15 = Home Care). Structural/administrative reference data only (level
+/// numbers and heading labels), never the licensed clinical question/advice
+/// content itself. Purely additive: nothing in the deterministic safety
+/// kernel (severityMax/severityRank, dispositionRouter.ts) reads this model.
+model Disposition {
+  id                    String                   @id @default(cuid())
+  levelId               Int                      @unique @map("level_id")
+  headingEn             String                   @map("heading_en")
+  headingTelemedicineEn String?                  @map("heading_telemedicine_en")
+  videoEligible         Boolean                  @default(false) @map("video_eligible")
+  createdAt             DateTime                 @default(now()) @map("created_at")
+  updatedAt             DateTime                 @updatedAt @map("updated_at")
+  triageQuestions       TriageQuestion[]
+  dispositionMappings   ProtocolDispositionMap[]
+
+  @@map("dispositions")
 }
 
 model ClinicalContentImportJob {

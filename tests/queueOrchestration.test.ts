@@ -1,5 +1,6 @@
 import request from "supertest";
 import { createApp } from "../src/app.js";
+import { resetRateLimitBucketsForTests } from "../src/middleware/rateLimit.js";
 import { resetQueueStoreForTests } from "../src/services/queueOrchestration.js";
 import { resetSecurityStoreForTests, upsertDirectoryUserFromHrms } from "../src/services/securityAdmin.js";
 
@@ -25,6 +26,7 @@ describe("Enterprise queue orchestration", () => {
   beforeEach(() => {
     resetQueueStoreForTests();
     resetSecurityStoreForTests();
+    resetRateLimitBucketsForTests();
   });
 
   it("locks a board case for Step cockpit handoff", async () => {
@@ -325,7 +327,102 @@ describe("Enterprise queue orchestration", () => {
     expect(queue.body.queue[0]).toMatchObject({
       id,
       safetyFloorActive: true,
+      safetyFloorSource: "vitals",
       calculatedSeverity: "EMERGENCY"
+    });
+  });
+
+  it("activates the emergency floor from triager judgment without any vitals", async () => {
+    const manager = await agentFor("manager@irisstar.tech", "triage_service_manager");
+
+    const created = await manager
+      .post("/api/v1/queue")
+      .send({
+        istStaffId: "IST-90001",
+        patientType: "Staff",
+        channel: "Phone",
+        stationCode: "DOH",
+        department: "Flight Operations",
+        jobTitle: "Pilot",
+        summary: "Caller sounds severely unwell to the triager.",
+        slaMinutes: 15
+      })
+      .expect(201);
+    const id = created.body.item.id as string;
+    expect(created.body.item.safetyFloorActive).toBe(false);
+
+    const escalated = await manager
+      .patch(`/api/v1/queue/${id}/context`)
+      .send({
+        calculatedSeverity: "EMERGENCY",
+        floorSource: "judgment",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+        destinationName: "Hamad Medical Corporation (HMC) Emergency Department"
+      })
+      .expect(200);
+
+    expect(escalated.body.item).toMatchObject({
+      id,
+      safetyFloorActive: true,
+      safetyFloorSource: "judgment",
+      calculatedSeverity: "EMERGENCY",
+      dispositionCode: "HMC_EMERGENCY_DEPARTMENT"
+    });
+  });
+
+  it("blocks severity and route downgrades through context patches while the floor is active", async () => {
+    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
+
+    const attempted = await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({
+        calculatedSeverity: "ROUTINE",
+        dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
+        destinationName: "PHCC urgent care or IST teleconsult booking"
+      })
+      .expect(200);
+
+    expect(attempted.body.item).toMatchObject({
+      id: "case-10002",
+      safetyFloorActive: true,
+      calculatedSeverity: "EMERGENCY",
+      dispositionCode: "SIDRA_PEDIATRIC_ED"
+    });
+  });
+
+  it("persists structured initial-assessment answers on the queue item and blocks intake from writing them", async () => {
+    const intake = await agentFor("intake@irisstar.tech", "call_intake_coordinator");
+    const denied = await intake
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ initialAssessmentResponses: { Prompt: "Answer" } })
+      .expect(403);
+    expect(denied.body.code).toBe("QUEUE_ROLE_DENIED");
+
+    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
+
+    const answers = {
+      "What is the highest temperature measured, and how was it measured?": "39.5C (Ear)",
+      "When did the fever start?": "2 days"
+    };
+    const patched = await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ initialAssessmentResponses: answers })
+      .expect(200);
+    expect(patched.body.item.initialAssessmentResponses).toEqual(answers);
+
+    const reloaded = await nurse.get("/api/v1/queue/case-10002").expect(200);
+    expect(reloaded.body.item.initialAssessmentResponses).toEqual(answers);
+  });
+
+  it("labels the seeded symptom-reported red-floor cases with their floor source", async () => {
+    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+
+    const loaded = await nurse.get("/api/v1/queue/case-10002").expect(200);
+    expect(loaded.body.item).toMatchObject({
+      safetyFloorActive: true,
+      safetyFloorSource: "symptom"
     });
   });
 });
