@@ -3,7 +3,6 @@ import path from "node:path";
 import { prisma } from "../db.js";
 import { samplePhase1ClinicalContent } from "../data/samplePhase1ClinicalContent.js";
 import { openSourceGuidelinesContent } from "../data/openSourceGuidelines/index.js";
-import { expandQueryWithConcepts } from "../data/openSourceGuidelines/shared/conceptGazetteer.js";
 import {
   ClinicalContentPackageSchema,
   type ClinicalContentCareAdvice,
@@ -294,62 +293,8 @@ function normalize(value: string): string {
     .trim();
 }
 
-// Phase 1 of the semantic-matching plan (see
-// docs/semantic-matching-enhancement-plan-2026.md) - lightweight,
-// hand-written suffix stripping rather than a full Porter/Snowball stemmer:
-// our vocabulary is narrow lay-medical English, and a general-purpose
-// stemmer risks false collapses ("universe" -> "univers") that a narrow
-// rule set avoids. Order matters - more specific suffixes are checked first
-// so e.g. "worries" -> "worry" via the "ies" rule rather than "worrie" via
-// a bare "s"/"es" rule.
-const SUFFIX_RULES: ReadonlyArray<{ suffix: string; replacement: string }> = [
-  { suffix: "ies", replacement: "y" },
-  { suffix: "ing", replacement: "" },
-  { suffix: "ed", replacement: "" },
-  { suffix: "es", replacement: "" },
-  { suffix: "s", replacement: "" }
-];
-
-// A stemmed result shorter than this is discarded outright - short stems
-// are exactly the substrings that caused confirmed false-positive
-// regressions during Phase 0 (see the plan doc's changelog).
-const MIN_STEM_RESULT_LENGTH = 4;
-
-// Even at 4+ characters, some stems are specifically the generic
-// single-symptom words already found (during Phase 0) to cause widespread
-// cross-protocol noise, because this content set deliberately has many
-// competing protocols that legitimately share these exact words in their
-// own authored keywords (see synonymDictionary.ts's "Common symptom words"
-// comment for the full explanation). Stemming must not silently
-// reintroduce them: e.g. "hurts" -> strip "s" -> "hurt" would make any
-// query containing "hurts" newly match "hurt my hand"/"hurt my wrist"-style
-// keywords across dozens of unrelated protocols, widening a noise-floor
-// problem that most of Phase 0's effort went into containing rather than
-// fixing it. This is a deliberate, narrow blocklist of stem *outputs*, not
-// a general stopword list - only add to it with the same evidence standard
-// (a confirmed regression via the A/B sweep), not speculatively.
-const STEM_BLOCKLIST = new Set(["hurt", "ache", "sore", "pain", "swell", "itch", "faint", "dizzy", "weak", "numb"]);
-
-function stem(word: string): string | null {
-  for (const rule of SUFFIX_RULES) {
-    if (!word.endsWith(rule.suffix)) {
-      continue;
-    }
-    const stemmed = word.slice(0, word.length - rule.suffix.length) + rule.replacement;
-    if (stemmed.length < MIN_STEM_RESULT_LENGTH || STEM_BLOCKLIST.has(stemmed) || stemmed === word) {
-      return null;
-    }
-    return stemmed;
-  }
-  return null;
-}
-
 function queryTerms(query: string): string[] {
-  const rawTerms = normalize(query)
-    .split(" ")
-    .filter((part) => part.length >= 2);
-  const stemmedTerms = rawTerms.map(stem).filter((term): term is string => term !== null);
-  return [...new Set([...rawTerms, ...stemmedTerms])];
+  return [...new Set(normalize(query).split(" ").filter((part) => part.length >= 2))];
 }
 
 function modeMatches(protocolMode: ProtocolMode, requestedMode: ProtocolMode): boolean {
@@ -405,81 +350,6 @@ function scoreProtocol(protocol: ClinicalContentProtocol, query: string): { scor
     score += 25;
   }
 
-  // Same minimum-length guard as the synonym loop below - see its comment.
-  const MIN_VARIANT_PHRASE_LENGTH = 4;
-
-  for (const titleVariant of protocol.titleVariants) {
-    const variant = normalize(titleVariant);
-    if (!variant || variant.length < MIN_VARIANT_PHRASE_LENGTH) {
-      continue;
-    }
-    if (normalizedQuery.includes(variant) || variant.includes(normalizedQuery)) {
-      score += 120;
-      matchedTerms.add(titleVariant);
-    }
-    for (const term of terms) {
-      if (term.length >= MIN_VARIANT_PHRASE_LENGTH && variant.includes(term)) {
-        score += 15;
-        matchedTerms.add(titleVariant);
-      }
-    }
-  }
-
-  // Synonym phrases shorter than this are excluded from substring matching
-  // entirely: a short phrase like "er" or "ed" is a substring of countless
-  // unrelated words ("blistered", "swollen" contain "er"/"ed"), so scoring
-  // it via normalizedQuery.includes(phrase) produces false-positive matches
-  // against nearly any caller sentence. Confirmed via a real regression
-  // during Phase 0 authoring (see docs/semantic-matching-enhancement-plan-2026.md).
-  const MIN_SYNONYM_PHRASE_LENGTH = 4;
-
-  // Multiple synonym rows commonly share the same canonicalTerm (one row per
-  // variant word). Scoring the canonical phrase inside the per-row loop
-  // would award full credit once per row sharing that canonical term - e.g.
-  // 5 variant rows all sharing canonicalTerm "swelling" would each
-  // separately match a caller's literal "swelling" and multiply the score
-  // 5x for one real word match. Score each unique canonical phrase for a
-  // protocol at most once, tracked here, while still scoring every distinct
-  // variant phrase independently (those are genuinely different wordings).
-  const scoredCanonicalPhrases = new Set<string>();
-
-  for (const synonymEntry of protocol.synonyms) {
-    const synonymPhrase = normalize(synonymEntry.synonym);
-    const canonicalPhrase = normalize(synonymEntry.canonicalTerm);
-
-    if (
-      canonicalPhrase &&
-      canonicalPhrase.length >= MIN_SYNONYM_PHRASE_LENGTH &&
-      !scoredCanonicalPhrases.has(canonicalPhrase)
-    ) {
-      scoredCanonicalPhrases.add(canonicalPhrase);
-      if (normalizedQuery.includes(canonicalPhrase) || canonicalPhrase.includes(normalizedQuery)) {
-        score += 60;
-        matchedTerms.add(synonymEntry.canonicalTerm);
-      }
-      for (const term of terms) {
-        if (term.length >= MIN_SYNONYM_PHRASE_LENGTH && canonicalPhrase.includes(term)) {
-          score += 8;
-          matchedTerms.add(synonymEntry.canonicalTerm);
-        }
-      }
-    }
-
-    if (!synonymPhrase || synonymPhrase.length < MIN_SYNONYM_PHRASE_LENGTH) {
-      continue;
-    }
-    if (normalizedQuery.includes(synonymPhrase) || synonymPhrase.includes(normalizedQuery)) {
-      score += 60;
-      matchedTerms.add(synonymEntry.synonym);
-    }
-    for (const term of terms) {
-      if (term.length >= MIN_SYNONYM_PHRASE_LENGTH && synonymPhrase.includes(term)) {
-        score += 8;
-        matchedTerms.add(synonymEntry.synonym);
-      }
-    }
-  }
-
   for (const keyword of protocol.keywords) {
     const phrase = normalize(keyword.phrase);
     if (normalizedQuery.includes(phrase) || phrase.includes(normalizedQuery)) {
@@ -526,18 +396,12 @@ export function getClinicalProtocolById(protocolId: string): ClinicalContentProt
 }
 
 export function searchClinicalProtocols(query: ProtocolSearchQuery): ProtocolSearchResult[] {
-  // Phase 2 of the semantic-matching plan (docs/semantic-matching-enhancement-plan-2026.md):
-  // expand the raw query with any matched lay-term concept tags before scoring.
-  // This is purely query-side - scoreProtocol() itself is unchanged, and the
-  // original query.q (used below for the empty-query filter) is untouched.
-  const expandedQuery = expandQueryWithConcepts(query.q);
-
   return listClinicalProtocols()
     .filter((protocol) => ageMatches(protocol, query.ageYears))
     .filter((protocol) => sexMatches(protocol, query.biologicalSex))
     .filter((protocol) => modeMatches(protocol.mode, query.mode))
     .map((protocol) => {
-      const scored = scoreProtocol(protocol, expandedQuery);
+      const scored = scoreProtocol(protocol, query.q);
       return {
         id: protocol.id,
         titleEn: protocol.titleEn,

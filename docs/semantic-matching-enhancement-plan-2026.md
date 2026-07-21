@@ -1,79 +1,71 @@
 # Semantic Matching Enhancement Plan (2026)
 
-## Status: Phase 0, Phase 1, and Phase 2 complete (see §7 Changelog). Phases 3-4 not yet started.
+## Status: REVERTED. Phases 0-2 were built, verified, and shipped, then reverted in
+full on the same day after an architecture correction. Nothing from this plan is
+currently wired into any code path. See "Architecture correction" below before
+resuming any part of this plan.
 
-## IF YOU ARE PICKING THIS UP LATER, START HERE
+## ARCHITECTURE CORRECTION (read this before doing anything else)
 
-**What's done:** Phase 0 - "synonyms" support. `scoreProtocol()` now reads
-`protocol.synonyms`/`titleVariants` (it didn't before), and a shared, hand-curated
-dictionary (`src/data/openSourceGuidelines/shared/synonymDictionary.ts`) auto-attaches
-lay/clinical synonym pairs to protocols. 572 synonym entries live across 169 of 228
-protocols today.
+Phases 0-2 (synonyms, stemming, concept gazetteer) were implemented directly inside
+`scoreProtocol()`/`queryTerms()`/`searchClinicalProtocols()` in
+`src/services/clinicalContent.ts` - the single shared function that produces **both**
+(a) `primaryProtocolId`, the nurse-facing "matched protocol" surfaced in the manual
+Nurse Cockpit (`queueOrchestration.ts`'s `buildPreparedProtocol()`), and (b) the
+`deterministicSuggestions` fed into the RAG shadow-suggestion comparison
+(`RagShadowSuggestionDto`). There was no separation between the two.
 
-Phase 1 - lightweight suffix stemming. `queryTerms()` (`src/services/clinicalContent.ts`)
-now also emits a stemmed variant of each caller query word (via a small, hand-written
-`stem()` - not a Porter/Snowball library), feeding into the existing short-word
-partial-credit path used by titleVariants/synonyms/keywords. Guarded by a minimum
-result length (4 chars) AND a hard blocklist of known-dangerous generic stems
-(`hurt`, `ache`, `sore`, `pain`, `swell`, `itch`, `faint`, `dizzy`, `weak`, `numb`) -
-these are exactly the words Phase 0 had to hand-exclude from the synonym dictionary
-because they cause cross-protocol noise in this corpus; a naive stemmer would have
-silently reintroduced them (e.g. "hurts" -> strip "s" -> "hurt"). Full A/B sweep
-(22 scripts) showed zero regressions and zero newly-fixed mismatches against the
-existing test scenarios - the win from stemming is for caller phrasings not covered
-by that fixed test set, not a fix for either of the two known Phase-0 limitations
-below (confirmed: both still reproduce identically after Phase 1).
+This was confirmed to be the wrong blast radius: **the manual nurse triage process is
+meant to follow the STCC process directly** - the nurse asks the protocol's own
+questions and navigates based on the patient's actual responses, not a fuzzy
+narrative-search step. Any lay-term/synonym assistance for the nurse (e.g. showing
+alternate wording on screen for reference) is a distinct, later-phase idea, not part
+of this plan. This entire 5-phase plan (synonyms, stemming, gazetteer, embeddings,
+Agreement Engine) is scoped **only** for a separate AI-driven parallel process
+(the voice-assessment/RAG-shadow path), and must never influence
+`primaryProtocolId` or anything else the manual nurse workflow reads.
 
-Phase 2 - lay-term concept gazetteer. A new, small, verified-against-the-corpus dictionary
-(`src/data/openSourceGuidelines/shared/conceptGazetteer.ts`, ~30 entries) maps lay phrases
-that don't fit Phase 0's canonical-term/synonym shape (e.g. "funny bone", "boo boo", "the
-runs", "waterworks") to a single generic concept tag (e.g. "elbow", "injury", "diarrhea",
-"urinary"). Unlike Phase 0/1, this is query-side, not protocol-side: `expandQueryWithConcepts()`
-appends matched concept tags to the caller's query text before it reaches `scoreProtocol()`
-(wired into `searchClinicalProtocols()`), so `scoreProtocol()` itself is completely
-untouched by this phase. Every concept tag was `grep`-verified to actually appear in the
-corpus's real `titleEn`/keyword `phrase` text before being added (not guessed), and every
-tag is 4+ characters for the same substring-safety reason established in Phase 0/1 (a
-bare "ear"/"eye" was rejected in favor of "hearing"/"eyes" after checking hit counts).
-Full 22-script A/B sweep showed zero regressions (identical to the Phase 0/1 baseline);
-manual spot-checks of 7 realistic lay-phrase queries, cross-checked against a `git stash`
-baseline, confirmed real, positive ranking improvements on 4 of 7 (e.g. "my funny bone
-hurts after I fell" moved from wrongly ranking Tailbone Injury first to correctly ranking
-Elbow Injury first) with no regressions on the other 3.
+**What was reverted, and how, on 2026-07-21:**
+- `src/services/clinicalContent.ts` restored to its pre-Phase-0 state (commit
+  `9e99cd1`) via `git checkout 9e99cd1 -- src/services/clinicalContent.ts` - removes
+  the `stem()`/`STEM_BLOCKLIST` function, the titleVariants/synonyms scoring loops,
+  everything Phase 0/1 added.
+- `src/data/openSourceGuidelines/index.ts` restored the same way - removes the
+  `attachDictionarySynonymsToAll` wiring.
+- `src/data/openSourceGuidelines/shared/synonymDictionary.ts` and
+  `.../shared/conceptGazetteer.ts` deleted outright (they were only ever referenced
+  from the two files above).
+- Confirmed via `content:dry-run` that `synonymCount` returned to `0` (was `572`),
+  `tsc --noEmit` clean, and `npx jest --runInBand` still 593/593 after the revert.
+- Nothing else changed - the ~23-protocol end-to-end sample-test harness and the
+  real keyword-scoring bug it found (see below) are independent findings that still
+  stand; they are not affected by this revert.
 
-Everything else in this doc (Phases 3-4, and the remaining gap-table rows other than
-"Synonyms"/"Canonical form"/"Entity-concept") is **not implemented** - embeddings and the
-Agreement Engine are still just plans.
+**If resuming this plan for the AI-parallel process specifically:** do not repeat the
+Phase 0-2 implementation inside the shared `scoreProtocol()`. Instead, build a
+**separate** matching function (or an explicit `mode: "ai-shadow"` parameter that
+never affects the nurse-facing call path) that the RAG shadow-suggestion builder can
+call, so the manual/STCC nurse flow and the AI-parallel flow are structurally
+independent and cannot cross-contaminate again.
 
-**Next task in the queue:** Task #12, "Phase 3: Local embedding-based semantic similarity
-(shadow-only)" - see §"Phase 3" below. Task #13 (Phase 4) is blocked behind it; do not
-skip ahead without re-reading why each phase is sequenced this way (§4 intro).
+## A real, still-open bug found independently of this plan
 
-**Two known, accepted, unresolved limitations from Phase 0** (do not treat these as new
-bugs to chase - they're pre-existing scoring fragility the later phases are meant to
-fix structurally, not something Phase 0 could safely resolve by further dictionary
-tuning - see §7 changelog for the full reasoning):
-- `"Suddenly cant hear well out of one ear since this morning"` incorrectly matches
-  Heart Rate and Heartbeat Questions instead of Hearing Loss or Change.
-- `"Just threw up a bunch of blood and feel really faint and dizzy"` incorrectly
-  matches Dizziness - Lightheadedness instead of Vomiting Blood.
-
-**Coverage gap still open:** 59 of 228 protocols have zero synonym coverage (mostly
-protocols whose title already is the plain lay term, plus the 3 sensitive topics left
-alone on purpose - Suicide Concerns, Domestic Violence, Sexual Assault or Rape). More
-manual dictionary entries could close some of this, but Phase 2/3 are the intended
-long-term fix so this doesn't stay a hand-curation treadmill forever.
-
-**Before touching `scoreProtocol()`, `synonymDictionary.ts`, or `queryTerms()` again:**
-read §5 "Verification standard" and follow it exactly - every change here needs a
-genuine before/after A/B sweep (`git stash` the change, re-run, compare, then re-apply),
-not just a single test run, because every regression found in Phase 0 was invisible
-without that comparison. The 22 live-queue verification scripts referenced there
-(`gen_calls.mjs` / `gen_calls_batch02.mjs` .. `batch23.mjs`) live in the session
-scratchpad directory, not the repo - if they're gone, they need to be recreated from
-the scenario lists documented in each batch's own authoring (see the `openSourceGuidelines`
-batch files' JSDoc comments and the `[[batch-verification-process]]` memory file for
-the pattern to follow).
+While building a full end-to-end (not just protocol-matching) test harness sampling
+~10% of the corpus, `scoreProtocol()`'s core `keywords[]` partial-credit loop
+(`src/services/clinicalContent.ts` lines ~483-496, present since before Phase 0 and
+unaffected by the revert above) was found to have **no per-protocol deduplication**:
+if a protocol's own keyword bank repeats the same word across multiple phrases (e.g.
+`oscg-breath-holding-spell` has "blue" in 3 separate keyword phrases at weight 100
+each), a caller query containing that one word gets partial credit stacked once per
+phrase, which can outscore the actually-correct protocol. Confirmed live: a
+choking/diarrhea/altitude-sickness query wrongly top-matched the pediatric
+breath-holding-spell protocol via the shared word "blue"; a similar issue exists with
+"vision" on `oscg-postpartum-vision-loss-or-change`. A corpus-wide scan found 141/228
+protocols have a repeated-keyword-word pattern, though most are harmless (the
+protocol's own topic word repeated, e.g. "wrist" on `oscg-wrist-injury`) - the
+dangerous subset is specifically generic, cross-protocol symptom words. **Not yet
+fixed** - this is real, pre-existing, and independent of the Phase 0-2 revert; it
+affects whatever matching logic the manual/STCC process actually uses today.
 
 **If a specific caller phrase matches the wrong protocol, here is exactly how to find
 out why** (this is the one recipe that found every root cause in Phase 0 - don't

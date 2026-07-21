@@ -23,7 +23,6 @@ import { batch20Protocols } from "./batch20.js";
 import { batch21Protocols } from "./batch21.js";
 import { batch22Protocols } from "./batch22.js";
 import { batch23Protocols } from "./batch23.js";
-import { attachDictionarySynonymsToAll } from "./shared/synonymDictionary.js";
 
 type ProtocolInput = ClinicalContentPackageInput["protocols"][number];
 
@@ -64,5 +63,5 @@ const batchProtocols: ProtocolInput[] = [
 export const openSourceGuidelinesContent: ClinicalContentPackageInput = {
   release: openSourceClinicalRulesContent.release,
   localizedDispositions: openSourceClinicalRulesContent.localizedDispositions,
-  protocols: attachDictionarySynonymsToAll([...openSourceClinicalRulesContent.protocols, ...batchProtocols])
+  protocols: [...openSourceClinicalRulesContent.protocols, ...batchProtocols]
 };
