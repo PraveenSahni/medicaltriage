@@ -253,6 +253,14 @@ export default function App() {
 
   const hasAdminAccess = session ? canOpenAdminView(session) : false;
   const activeRoleLabel = session ? formatRole(session.activeRole) : "";
+  const viewLabels: Record<ViewKey, string> = {
+    workspace: "Triage",
+    kanban: "Triage",
+    ccp: "CCP",
+    help: "Help",
+    admin: "Admin"
+  };
+  const activeViewLabel = viewLabels[activeView];
 
   function openView(view: ViewKey) {
     const nextHashByView: Record<ViewKey, string> = {
@@ -362,18 +370,12 @@ export default function App() {
             >
               <IstLogoMark />
               <span>
-                <strong>IST Health</strong>
+                <strong>IST Health | {activeViewLabel}</strong>
                 <small>{session.user.fullName} | {activeRoleLabel}</small>
               </span>
             </button>
 
             <div className="topbar-actions" aria-label="Header actions">
-              <div className="topbar-context" aria-label="Authenticated role">
-                <span className="context-label">ROLE</span>
-                <span className="role-chip" title={activeRoleLabel}>
-                  {activeRoleLabel}
-                </span>
-              </div>
               <WorkspaceModeSwitch
                 value={activeView === "workspace" || activeView === "kanban" ? activeView : null}
                 onChange={openView}

@@ -336,15 +336,6 @@ export default function LoginPage({ onAuthenticated }: LoginPageProps) {
     await loginWithCredentials(username, password, rememberMe);
   }
 
-  async function simulateSelectedRoleLogin() {
-    setUsername(selectedSimulationUser.username);
-    setPassword(selectedSimulationUser.password);
-    setShowPassword(true);
-    setRememberMe(false);
-    setStatus(`Opening simulated ${selectedSimulationUser.landing}.`);
-    await loginWithCredentials(selectedSimulationUser.username, selectedSimulationUser.password, false);
-  }
-
   return (
     <main className="login-shell" aria-label="Sign in">
       <section className="login-brand-panel">
@@ -369,34 +360,6 @@ export default function LoginPage({ onAuthenticated }: LoginPageProps) {
             not reveal whether an account exists.
           </p>
         </div>
-
-        <label className="field-label" htmlFor="tenant">
-          Organization
-        </label>
-        <select
-          id="tenant"
-          className="input-control"
-          value={tenant}
-          onChange={(event) => setTenant(event.target.value)}
-        >
-          <option value="ist-tech">IRIS STAR Technologies L.L.C</option>
-        </select>
-
-        <label className="field-label" htmlFor="language">
-          Language
-        </label>
-        <select
-          id="language"
-          className="input-control"
-          value={language}
-          onChange={(event) => setLanguage(event.target.value)}
-          dir={language === "ar" ? "rtl" : "ltr"}
-        >
-          <option value="en">English</option>
-          <option value="ar">Arabic</option>
-          <option value="hi">Hindi</option>
-          <option value="tl">Tagalog</option>
-        </select>
 
         <label className="field-label" htmlFor="simulation-user">
           Simulate user
@@ -425,16 +388,6 @@ export default function LoginPage({ onAuthenticated }: LoginPageProps) {
             </optgroup>
           ))}
         </select>
-
-        <label className="field-label" htmlFor="assigned-role">
-          Assigned role
-        </label>
-        <input
-          id="assigned-role"
-          className="input-control"
-          value={selectedSimulationUser.roleCode}
-          readOnly
-        />
 
         <label className="field-label" htmlFor="username">
           Email or username
@@ -487,7 +440,7 @@ export default function LoginPage({ onAuthenticated }: LoginPageProps) {
 
         <div className="login-actions">
           <button className="primary-button" type="submit" disabled={busy}>
-            {busy ? "Signing in" : "Sign in"}
+            {busy ? "Logging in" : "Login"}
           </button>
           <button
             className="secondary-button"
@@ -496,14 +449,6 @@ export default function LoginPage({ onAuthenticated }: LoginPageProps) {
             disabled={busy}
           >
             Use Single Sign-On
-          </button>
-          <button
-            className="secondary-button login-sysadmin-button"
-            type="button"
-            onClick={simulateSelectedRoleLogin}
-            disabled={busy}
-          >
-            Simulate user
           </button>
         </div>
 

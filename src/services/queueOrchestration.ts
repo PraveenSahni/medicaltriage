@@ -110,6 +110,7 @@ type QueueModelClient = {
   create(args: Record<string, unknown>): Promise<QueueDbRow>;
   update(args: Record<string, unknown>): Promise<QueueDbRow>;
   updateMany(args: Record<string, unknown>): Promise<{ count: number }>;
+  delete(args: Record<string, unknown>): Promise<QueueDbRow>;
 };
 
 type QueueTransitionModelClient = {
@@ -988,7 +989,7 @@ function stageIndex(stage: QueueClinicalStage): number {
 }
 
 function hasCompleteVitals(record: QueueRecord): boolean {
-  return Boolean(record.vitals);
+  return Boolean(record.vitals) || record.vitalsUnobtainable === true;
 }
 
 function validateClinicalSequence(record: QueueRecord, request: QueueMoveRequest): void {
@@ -1212,6 +1213,21 @@ export async function getQueueItem(session: AuthenticatedSession, id: string): P
   const record = await getRecord(id);
   requireTenantAccess(record, session);
   return toDto(record);
+}
+
+export async function deleteQueueItem(session: AuthenticatedSession, id: string): Promise<void> {
+  requireQueueAccess(session);
+  if (!hasManagerControl(session)) {
+    throw new QueueOrchestrationError(403, "Only queue manager roles can delete queue items.", "QUEUE_ROLE_DENIED");
+  }
+  const record = await getRecord(id);
+  requireTenantAccess(record, session);
+
+  if (shouldUseDatabasePersistence()) {
+    await queueClient().triageQueueItem.delete({ where: { id } });
+    return;
+  }
+  store().delete(id);
 }
 
 export async function createQueueItem(session: AuthenticatedSession, request: QueueCreateRequest): Promise<QueueItemDto> {

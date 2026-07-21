@@ -2,14 +2,18 @@ import {
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
+  Check,
+  ChevronDown,
   ClipboardCheck,
   Copy,
   Database,
   FileText,
   Filter,
   ListChecks,
+  MessageCircle,
   PauseCircle,
   PhoneCall,
+  PhoneIncoming,
   Plane,
   Search,
   ShieldAlert,
@@ -632,6 +636,34 @@ function severityClass(severity: Severity): string {
   return "bg-emerald-50 text-emerald-700 border-emerald-200";
 }
 
+function severityAccentBorder(severity: Severity): string {
+  if (severity === "Emergency") return "border-rose-500";
+  if (severity === "Urgent") return "border-amber-500";
+  if (severity === "Routine") return "border-sky-500";
+  return "border-emerald-500";
+}
+
+function severityCircleClass(severity: Severity): string {
+  if (severity === "Emergency") return "bg-rose-100 text-rose-700";
+  if (severity === "Urgent") return "bg-amber-100 text-amber-700";
+  if (severity === "Routine") return "bg-sky-100 text-sky-700";
+  return "bg-emerald-100 text-emerald-700";
+}
+
+function severityTagClass(severity: Severity): string {
+  if (severity === "Emergency") return "text-rose-700";
+  if (severity === "Urgent") return "text-amber-700";
+  if (severity === "Routine") return "text-sky-700";
+  return "text-emerald-700";
+}
+
+function severityResultCardClass(severity: Severity): string {
+  if (severity === "Emergency") return "border-rose-300 bg-rose-50";
+  if (severity === "Urgent") return "border-amber-300 bg-amber-50";
+  if (severity === "Routine") return "border-sky-300 bg-sky-50";
+  return "border-emerald-300 bg-emerald-50";
+}
+
 function sbarMarkdown(card: Card, score?: ApiScoreResult, assessmentResponses: AssessmentResponseState = {}): string {
   const severity = activeSeverityFromAssessment(card, score, assessmentResponses);
   const route = routeFromAssessment(card, score, assessmentResponses);
@@ -778,7 +810,6 @@ export default function NurseWorkspace() {
   const [copiedCardIds, setCopiedCardIds] = useState<Set<string>>(() => new Set());
   const [severityFilter, setSeverityFilter] = useState<Severity | "All">("All");
   const [patientFilter, setPatientFilter] = useState<PatientType | "All">("All");
-  const [channelFilter, setChannelFilter] = useState<Channel | "All">("All");
   const [dutyFilter, setDutyFilter] = useState<"All" | "On-duty" | "Outstation">("All");
   const [sortMode, setSortMode] = useState<"Clinical priority" | "Longest wait">("Clinical priority");
   const [syntheticOpen, setSyntheticOpen] = useState(false);
@@ -835,7 +866,6 @@ export default function NurseWorkspace() {
     return cards
       .filter((card) => severityFilter === "All" || localSeverity(card) === severityFilter)
       .filter((card) => patientFilter === "All" || card.patientType === patientFilter)
-      .filter((card) => channelFilter === "All" || card.channel === channelFilter)
       .filter((card) => {
         if (dutyFilter === "All") return true;
         if (dutyFilter === "On-duty") return card.onDuty;
@@ -847,7 +877,7 @@ export default function NurseWorkspace() {
         }
         return compareTuples(priorityTuple(left), priorityTuple(right));
       });
-  }, [cardsById, channelFilter, dutyFilter, patientFilter, queueIds, severityFilter, sortMode]);
+  }, [cardsById, dutyFilter, patientFilter, queueIds, severityFilter, sortMode]);
 
   const redQueueCount = useMemo(
     () => Object.values(cardsById).filter((card) => localSafetyFloorReasons(card).length > 0).length,
@@ -1229,17 +1259,56 @@ export default function NurseWorkspace() {
   return (
     <section className="space-y-4" aria-label="Nurse cockpit workspace">
       <header className="ist-surface ist-section-shell">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Tele-Triage Call-Q</span>
-            <h1 className="mt-2 text-3xl font-semibold tracking-normal text-slate-950 md:text-5xl">
-              One Active Call
+        <div className="flex flex-nowrap items-center justify-between gap-3 overflow-x-auto">
+          <div className="shrink-0">
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Tele-Triage</span>
+            <h1 className="mt-1 text-[15px] font-semibold tracking-normal text-slate-950 md:text-[18px]">
+              Call Queue
             </h1>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-              Live telephone calls, callback requests, and one nurse-owned triage workflow with protocol guidance prepared before pickup.
-            </p>
           </div>
-          <div className="ist-stat-row grid grid-cols-4 text-center">
+
+          <div className="flex flex-nowrap items-center gap-1">
+            <ToggleFilterGroup
+              icon={Filter}
+              label="Sort"
+              fullLabel="Sort"
+              value={sortMode}
+              options={["Priority", "Wait"]}
+              valueMap={{ Priority: "Clinical priority", Wait: "Longest wait" }}
+              optionTooltips={{
+                Priority: "Sort by clinical priority (most urgent first)",
+                Wait: "Sort by longest wait time first"
+              }}
+              onChange={(value) => setSortMode(value as "Clinical priority" | "Longest wait")}
+              accent="indigo"
+            />
+            <ToggleFilterGroup
+              label="Severity"
+              fullLabel="Severity"
+              value={severityFilter}
+              options={["All", "Emergency", "Urgent", "Routine", "Self-care"]}
+              onChange={(value) => setSeverityFilter(value as Severity | "All")}
+              colorByOption={SEVERITY_OPTION_COLOR}
+            />
+            <ToggleFilterGroup
+              label="Patient"
+              fullLabel="Patient"
+              value={patientFilter}
+              options={["All", "Staff", "Dependent"]}
+              onChange={(value) => setPatientFilter(value as PatientType | "All")}
+              accent="teal"
+            />
+            <ToggleFilterGroup
+              label="Duty"
+              fullLabel="Duty status"
+              value={dutyFilter}
+              options={["All", "On-duty", "Outstation"]}
+              onChange={(value) => setDutyFilter(value as "All" | "On-duty" | "Outstation")}
+              accent="violet"
+            />
+          </div>
+
+          <div className="ist-stat-row grid shrink-0 text-center" style={{ gridTemplateColumns: "repeat(4, 75px)" }}>
             <Kpi value={queueIds.length} label="Waiting" />
             <Kpi value={activeCard ? 1 : 0} label="Active" />
             <Kpi value={holdIds.length} label="Hold" />
@@ -1255,20 +1324,24 @@ export default function NurseWorkspace() {
           cards={filteredQueue}
           queueWaitLabel={queueWaitLabel}
           redQueueCount={redQueueCount}
-          severityFilter={severityFilter}
-          patientFilter={patientFilter}
-          channelFilter={channelFilter}
-          dutyFilter={dutyFilter}
-          sortMode={sortMode}
-          onSeverityChange={setSeverityFilter}
-          onPatientChange={setPatientFilter}
-          onChannelChange={setChannelFilter}
-          onDutyChange={setDutyFilter}
-          onSortChange={setSortMode}
           onOpen={openCall}
         />
 
         <main className="ist-surface min-h-[640px] p-4">
+          {holdIds.length > 0 && (
+            <section className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+              <div className="mb-3 flex items-center gap-2 text-amber-800">
+                <PauseCircle className="h-4 w-4" />
+                <h2 className="text-sm font-semibold">Information Required / Callback Hold</h2>
+              </div>
+              <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
+                {holdIds.map((id) => (
+                  <HoldCard key={id} card={cardsById[id]} onOpen={() => openCall(id)} />
+                ))}
+              </div>
+            </section>
+          )}
+
           {activeCard ? (
             <ActiveCallSummaryCard
               card={activeCard}
@@ -1294,24 +1367,10 @@ export default function NurseWorkspace() {
         />
       </div>
 
-      {holdIds.length > 0 && (
-        <section className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-          <div className="mb-3 flex items-center gap-2 text-amber-800">
-            <PauseCircle className="h-4 w-4" />
-            <h2 className="text-sm font-semibold">Information Required / Callback Hold</h2>
-          </div>
-          <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
-            {holdIds.map((id) => (
-              <HoldCard key={id} card={cardsById[id]} onOpen={() => openCall(id)} />
-            ))}
-          </div>
-        </section>
-      )}
-
       {activeCard && activeFocusOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-50" role="dialog" aria-modal="true" aria-label="Active triage focus">
-          <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur">
-            <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-4 py-2 backdrop-blur">
+            <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-2">
               <button
                 type="button"
                 className="secondary-button w-fit"
@@ -1320,15 +1379,36 @@ export default function NurseWorkspace() {
                 <ArrowLeft className="h-4 w-4" />
                 Back to queue
               </button>
-              <div className="min-w-0 sm:text-right">
-                <span className="text-[11px] uppercase tracking-[0.14em] text-emerald-700">Active triage focus</span>
-                <p className="truncate text-sm text-slate-600">
-                  {activeCard.maskedPatientId} - {stages[stageIndex].label}
-                </p>
+              <div className="flex min-w-0 flex-1 items-center justify-end gap-3">
+                <div className="min-w-0 text-right">
+                  <span className="text-[11px] uppercase tracking-[0.14em] text-emerald-700">Active triage focus</span>
+                  <p className="truncate text-xs text-slate-600">
+                    {activeCard.maskedPatientId} - {stages[stageIndex].label}
+                  </p>
+                </div>
+                <div className="flex shrink-0 flex-wrap gap-2">
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={holdActiveCall}
+                  >
+                    <PauseCircle className="h-4 w-4" />
+                    Hold
+                  </button>
+                  <button
+                    type="button"
+                    className="primary-button"
+                    onClick={() => copyAndComplete(activeCard)}
+                    disabled={stageIndex !== stages.length - 1}
+                  >
+                    <Copy className="h-4 w-4" />
+                    Complete
+                  </button>
+                </div>
               </div>
             </div>
           </header>
-          <main className="mx-auto max-w-7xl px-4 py-5">
+          <main className="mx-auto max-w-[1600px] px-4 py-3">
             <ActiveCallPanel
               card={activeCard}
               stageIndex={stageIndex}
@@ -1338,8 +1418,6 @@ export default function NurseWorkspace() {
               onUpdateCard={(patch) => updateCard(activeCard.id, patch)}
               onVitalsChange={(nextVitals) => updateCardVitals(activeCard.id, nextVitals)}
               onAssessmentResponses={(updates) => updateAssessmentResponses(activeCard.id, updates)}
-              onHold={holdActiveCall}
-              onComplete={() => copyAndComplete(activeCard)}
               onEscalate={escalateEmergency}
               onVitalsUnobtainable={(value) => setVitalsUnobtainable(activeCard.id, value)}
               onInitialAssessmentChange={(answers) => updateInitialAssessmentAnswers(activeCard.id, answers)}
@@ -1396,31 +1474,11 @@ function QueuePanel({
   cards,
   queueWaitLabel,
   redQueueCount,
-  severityFilter,
-  patientFilter,
-  channelFilter,
-  dutyFilter,
-  sortMode,
-  onSeverityChange,
-  onPatientChange,
-  onChannelChange,
-  onDutyChange,
-  onSortChange,
   onOpen
 }: {
   cards: Card[];
   queueWaitLabel: string;
   redQueueCount: number;
-  severityFilter: Severity | "All";
-  patientFilter: PatientType | "All";
-  channelFilter: Channel | "All";
-  dutyFilter: "All" | "On-duty" | "Outstation";
-  sortMode: "Clinical priority" | "Longest wait";
-  onSeverityChange: (value: Severity | "All") => void;
-  onPatientChange: (value: PatientType | "All") => void;
-  onChannelChange: (value: Channel | "All") => void;
-  onDutyChange: (value: "All" | "On-duty" | "Outstation") => void;
-  onSortChange: (value: "Clinical priority" | "Longest wait") => void;
   onOpen: (cardId: string) => void;
 }) {
   return (
@@ -1429,53 +1487,15 @@ function QueuePanel({
         <div>
           <div className="flex items-center gap-2">
             <PhoneCall className="h-4 w-4 text-emerald-600" />
-            <h2 className="text-sm font-semibold text-slate-950">Call Queue</h2>
+            <p className="text-xs text-slate-500">{queueWaitLabel} · {redQueueCount} red-floor cases</p>
           </div>
-          <p className="mt-1 text-[11px] uppercase tracking-[0.08em] text-slate-400">Telephone calls and callbacks</p>
-          <p className="mt-1 text-xs text-slate-500">{queueWaitLabel} · {redQueueCount} red-floor cases</p>
         </div>
         <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
           Live
         </span>
       </div>
 
-      <div className="grid gap-2">
-        <SelectControl
-          icon={Filter}
-          label="Sort"
-          value={sortMode}
-          options={["Clinical priority", "Longest wait"]}
-          onChange={(value) => onSortChange(value as "Clinical priority" | "Longest wait")}
-        />
-        <div className="grid grid-cols-2 gap-2">
-          <SelectControl
-            label="Severity"
-            value={severityFilter}
-            options={["All", "Emergency", "Urgent", "Routine", "Self-care"]}
-            onChange={(value) => onSeverityChange(value as Severity | "All")}
-          />
-          <SelectControl
-            label="Patient"
-            value={patientFilter}
-            options={["All", "Staff", "Dependent"]}
-            onChange={(value) => onPatientChange(value as PatientType | "All")}
-          />
-          <SelectControl
-            label="Channel"
-            value={channelFilter}
-            options={["All", "Phone", "WhatsApp", "Callback"]}
-            onChange={(value) => onChannelChange(value as Channel | "All")}
-          />
-          <SelectControl
-            label="Duty"
-            value={dutyFilter}
-            options={["All", "On-duty", "Outstation"]}
-            onChange={(value) => onDutyChange(value as "All" | "On-duty" | "Outstation")}
-          />
-        </div>
-      </div>
-
-      <div className="mt-4 max-h-[650px] space-y-2 overflow-auto pr-1">
+      <div className="max-h-[650px] space-y-2 overflow-auto pr-1">
         {cards.length === 0 && (
           <div className="rounded-lg border border-dashed border-slate-200 p-5 text-center text-xs font-semibold text-slate-400">
             No calls match the selected filters.
@@ -1520,6 +1540,118 @@ function SelectControl({
         ))}
       </select>
     </label>
+  );
+}
+
+type FilterAccent = "slate" | "indigo" | "teal" | "violet";
+
+const ACCENT_LABEL_CLASS: Record<FilterAccent, string> = {
+  slate: "text-slate-400",
+  indigo: "text-indigo-500",
+  teal: "text-teal-600",
+  violet: "text-violet-500"
+};
+
+const ACCENT_GROUP_BG: Record<FilterAccent, string> = {
+  slate: "bg-slate-50/60",
+  indigo: "bg-indigo-50/50",
+  teal: "bg-teal-50/50",
+  violet: "bg-violet-50/50"
+};
+
+const ACCENT_PILL_ACTIVE: Record<FilterAccent, string> = {
+  slate: "bg-slate-900 text-white",
+  indigo: "bg-indigo-600 text-white",
+  teal: "bg-teal-600 text-white",
+  violet: "bg-violet-600 text-white"
+};
+
+const ACCENT_PILL_INACTIVE: Record<FilterAccent, string> = {
+  slate: "bg-slate-100 text-slate-600 hover:bg-slate-200",
+  indigo: "bg-indigo-100/70 text-indigo-700 hover:bg-indigo-100",
+  teal: "bg-teal-100/70 text-teal-700 hover:bg-teal-100",
+  violet: "bg-violet-100/70 text-violet-700 hover:bg-violet-100"
+};
+
+/** Semantic per-option colors for the Severity group only - mirrors the
+ *  Emergency/Urgent/Routine/Self-care colors already used on queue cards
+ *  (see severityBadgeClass-style lookups elsewhere in this file). */
+const SEVERITY_OPTION_COLOR: Record<string, { active: string; inactive: string }> = {
+  Emergency: { active: "bg-rose-700 text-white", inactive: "bg-rose-50 text-rose-700 hover:bg-rose-100" },
+  Urgent: { active: "bg-amber-600 text-white", inactive: "bg-amber-50 text-amber-700 hover:bg-amber-100" },
+  Routine: { active: "bg-blue-600 text-white", inactive: "bg-blue-50 text-blue-700 hover:bg-blue-100" },
+  "Self-care": { active: "bg-emerald-600 text-white", inactive: "bg-emerald-50 text-emerald-700 hover:bg-emerald-100" }
+};
+
+function ToggleFilterGroup({
+  icon: Icon,
+  label,
+  fullLabel,
+  value,
+  options,
+  valueMap,
+  optionTooltips,
+  onChange,
+  accent = "slate",
+  colorByOption
+}: {
+  icon?: typeof Filter;
+  label: string;
+  /** Full-word group name used in the hover tooltip (label itself may be abbreviated). */
+  fullLabel?: string;
+  value: string;
+  options: string[];
+  /** Optional display-label -> actual-value map, for showing shorter option
+   *  text than the underlying value (e.g. "Priority" for "Clinical priority"). */
+  valueMap?: Record<string, string>;
+  /** Optional per-option hover-tooltip override; falls back to a generic
+   *  "{group}: show only {option}" description when not provided. */
+  optionTooltips?: Record<string, string>;
+  onChange: (value: string) => void;
+  /** Group-wide accent color for the label and active/inactive pills. */
+  accent?: FilterAccent;
+  /** Optional per-option color override (e.g. Severity's semantic colors),
+   *  takes precedence over `accent` for the matching option. */
+  colorByOption?: Record<string, { active: string; inactive: string }>;
+}) {
+  return (
+    <div className={`flex shrink-0 flex-col items-center gap-0.5 rounded-md px-1.5 py-1 ${ACCENT_GROUP_BG[accent]}`}>
+      <span
+        className={`flex items-center justify-center gap-0.5 whitespace-nowrap text-[9px] font-semibold uppercase tracking-[0.04em] ${ACCENT_LABEL_CLASS[accent]}`}
+      >
+        {Icon && <Icon className="h-2.5 w-2.5" />}
+        {label}
+      </span>
+      <div className="flex flex-nowrap gap-0.5">
+        {options.map((option) => {
+          const actualValue = valueMap?.[option] ?? option;
+          const active = actualValue === value;
+          const tooltip =
+            optionTooltips?.[option] ??
+            `${fullLabel ?? label}: show ${option === "All" ? "all calls" : `only ${option}`}`;
+          const colors = colorByOption?.[option];
+          const colorClass = colors
+            ? active
+              ? colors.active
+              : colors.inactive
+            : active
+              ? ACCENT_PILL_ACTIVE[accent]
+              : ACCENT_PILL_INACTIVE[accent];
+          return (
+            <button
+              key={option}
+              type="button"
+              onClick={() => onChange(actualValue)}
+              aria-pressed={active}
+              title={tooltip}
+              className={`ist-filter-toggle flex h-[36px] w-[63px] shrink-0 items-center justify-center whitespace-nowrap px-1.5 text-center text-[10px] font-medium leading-none transition ${colorClass}`}
+            >
+              {option}
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -1626,8 +1758,6 @@ function ActiveCallPanel({
   onUpdateCard,
   onVitalsChange,
   onAssessmentResponses,
-  onHold,
-  onComplete,
   onEscalate,
   onVitalsUnobtainable,
   onInitialAssessmentChange
@@ -1640,8 +1770,6 @@ function ActiveCallPanel({
   onUpdateCard: (patch: Partial<Card>) => void;
   onVitalsChange: (nextVitals: Partial<Card["vitals"]>) => void;
   onAssessmentResponses: (updates: AssessmentResponseState) => void;
-  onHold: () => void;
-  onComplete: () => void;
   onEscalate: (source: "symptom" | "judgment", reason: string) => void;
   onVitalsUnobtainable: (value: boolean) => void;
   onInitialAssessmentChange: (answers: Record<string, string>) => void;
@@ -1653,40 +1781,12 @@ function ActiveCallPanel({
   const finalStage = stageIndex === stages.length - 1;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-        <div>
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">Active Triage</span>
-          <h2 className="mt-2 text-2xl font-semibold text-slate-950">{card.maskedPatientId}</h2>
-          <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-600">{card.symptomTextRaw}</p>
-          <CallContextStrip card={card} />
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            className="secondary-button"
-            onClick={onHold}
-          >
-            <PauseCircle className="h-4 w-4" />
-            Hold
-          </button>
-          <button
-            type="button"
-            className="primary-button"
-            onClick={onComplete}
-            disabled={!finalStage}
-          >
-            <Copy className="h-4 w-4" />
-            Complete
-          </button>
-        </div>
-      </div>
-
+    <div className="space-y-2">
       <Stepper activeIndex={stageIndex} onSelect={onStageChange} />
 
       {reasons.length > 0 && <RedFloorBanner reasons={reasons} />}
 
-      <section className="ist-surface min-h-[420px] p-4">
+      <section className="ist-surface p-3">
         {stages[stageIndex].id === "reasonEmergency" && (
           <ReasonEmergencyStage
             card={card}
@@ -1760,11 +1860,11 @@ function Stepper({ activeIndex, onSelect }: { activeIndex: number; onSelect: (in
 
 function RedFloorBanner({ reasons }: { reasons: string[] }) {
   return (
-    <div className="rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-rose-800">
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:gap-2">
-        <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" />
-        <p className="text-sm leading-6">
-          <strong className="font-normal">Emergency safety floor active:</strong> {reasons.join("; ")}
+    <div className="rounded-md border border-rose-200 bg-rose-50 px-3 py-1.5 text-rose-800">
+      <div className="flex items-start gap-2">
+        <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+        <p className="text-xs leading-5">
+          <strong className="ist-emphasis font-semibold">Emergency safety floor active:</strong> {reasons.join("; ")}
         </p>
       </div>
     </div>
@@ -1774,14 +1874,29 @@ function RedFloorBanner({ reasons }: { reasons: string[] }) {
 function CallContextStrip({ card }: { card: Card }) {
   const validated = card.identityValidated !== false;
   return (
-    <dl className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs leading-5 text-slate-500">
-      <CallContextFact label="Channel" value={card.channel} />
+    <dl className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-0.5 text-xs leading-5 text-slate-500">
+      <ChannelIcon channel={card.channel} />
       <CallContextFact label="Wait" value={`${card.queueWaitMinutes}m`} />
       <CallContextFact label="Patient" value={card.patientType} />
       <CallContextFact label="Age" value={`${card.age}y${card.ageMonths !== undefined ? ` / ${card.ageMonths}m` : ""}`} />
       <CallContextFact label="Station" value={card.stationCode ?? "DOH"} />
       <CallContextFact label="HRMS" value={validated ? "Validated" : "Review"} tone={validated ? "emerald" : "amber"} />
     </dl>
+  );
+}
+
+function ChannelIcon({ channel }: { channel: string }) {
+  const Icon = channel === "WhatsApp" ? MessageCircle : channel === "Callback" ? PhoneIncoming : PhoneCall;
+  const toneClass =
+    channel === "WhatsApp"
+      ? "bg-emerald-50 text-emerald-600"
+      : channel === "Callback"
+        ? "bg-amber-50 text-amber-600"
+        : "bg-sky-50 text-sky-600";
+  return (
+    <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md ${toneClass}`} title={channel}>
+      <Icon className="h-3 w-3" />
+    </span>
   );
 }
 
@@ -1823,7 +1938,6 @@ function ReasonEmergencyStage({
   const primarySuggestion = suggestions[0];
   const secondarySuggestionCount = Math.max(suggestions.length - 1, 0);
   const emergencyClear = emergencyReasons.length === 0;
-  const validated = card.identityValidated !== false;
   const ragShadow = prepared?.ragShadow;
   const possibleRedFlags = ragShadow?.extractedReason.possibleRedFlags ?? [];
   const initialAssessmentProtocolId = prepared?.primaryProtocolId ?? primarySuggestion?.protocolId;
@@ -1837,93 +1951,82 @@ function ReasonEmergencyStage({
       title="Action 1 - Reason & Rule-Out"
       subtitle="Opening script, HRMS context, reason, guideline selection, and emergency rule-out are handled before lower-acuity assessment questions."
     >
-      <div className="space-y-4">
-        <section className="rounded-md border border-slate-200 bg-white p-4">
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.6fr)]">
-            <div className="flex items-start gap-3">
-              <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-700">
-                <PhoneCall className="h-5 w-5" />
-              </span>
-              <div className="min-w-0">
-                <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Opening script and call context</span>
-                <h4 className="mt-1 text-lg font-normal leading-tight text-slate-950">
-                  Greet caller, confirm role, and continue from HRMS-validated identity.
-                </h4>
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                  Identity and age are not a nurse action tab. The queue has already validated {card.patientType.toLowerCase()} context before pickup.
-                </p>
-              </div>
-            </div>
-            <div className="grid gap-2 text-sm">
-              <InlineEvidence label="HRMS" value={validated ? "Validated before queue entry" : "Needs review"} tone={validated ? "emerald" : "amber"} />
-              <InlineEvidence label="Age" value={`${card.age} years${card.ageMonths !== undefined ? ` (${card.ageMonths} months)` : ""}`} />
-              <InlineEvidence label="Channel" value={`${card.channel} - ${card.queueStatus}`} />
+      <div className="space-y-2">
+        <section className="rounded-md border-l-4 border-emerald-500 bg-emerald-50/40 p-2.5">
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-emerald-100 text-emerald-700">
+              <PhoneCall className="h-3.5 w-3.5" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <h4 className="ist-emphasis text-base font-semibold leading-tight text-slate-950">
+                Greet caller, confirm role <span className="font-normal text-slate-600">({card.symptomTextRaw})</span>
+              </h4>
+              <CallContextStrip card={card} />
             </div>
           </div>
         </section>
 
-        <section className="rounded-md border border-slate-200 bg-white p-4">
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.55fr)]">
+        <section className="rounded-md border border-slate-200 bg-white p-3">
+          <div className="grid gap-3 lg:grid-cols-2">
             <div className="min-w-0">
               <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Reason for call</span>
-              <label className="mt-3 block">
+              <label className="mt-1.5 block">
                 <span className="sr-only">Reason narrative</span>
                 <textarea
-                  className="min-h-[108px] w-full resize-y rounded-md border border-slate-200 bg-white p-3 text-base font-normal leading-7 text-slate-950 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                  className="min-h-[60px] w-full resize-y rounded-md border border-slate-200 bg-white p-2 text-sm font-normal leading-6 text-slate-950 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
                   value={card.symptomTextRaw}
                   onChange={(event) => onUpdateCard({ symptomTextRaw: event.target.value })}
                 />
               </label>
-            </div>
-            <div>
-              <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Search words</span>
-              <div className="mt-3 flex min-h-[108px] flex-wrap content-start gap-2 rounded-md border border-slate-200 bg-slate-50 p-3">
-                {terms.length > 0 ? (
-                  terms.map((term) => <Tag key={term}>{term}</Tag>)
-                ) : (
-                  <span className="text-sm text-slate-500">No search terms prepared yet.</span>
-                )}
-              </div>
-              {possibleRedFlags.length > 0 && (
-                <div className="mt-3">
-                  <span className="text-[11px] uppercase tracking-[0.14em] text-rose-600">Possible red flags in caller words (advisory)</span>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {possibleRedFlags.map((flag) => (
-                      <span key={flag} className="rounded-md border border-rose-200 bg-rose-50 px-2 py-0.5 text-xs text-rose-700">
-                        {flag}
-                      </span>
-                    ))}
-                  </div>
+              {terms.length > 0 && (
+                <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                  <span className="text-[10px] uppercase tracking-[0.1em] text-slate-400">Search words</span>
+                  {terms.map((term) => (
+                    <Tag key={term}>{term}</Tag>
+                  ))}
                 </div>
               )}
             </div>
-          </div>
 
-          <div className="mt-4 border-t border-slate-200 pt-4">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-              <div>
-                <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Guideline selection</span>
-                {primarySuggestion ? (
-                  <>
-                    <h4 className="mt-1 text-lg font-normal leading-tight text-slate-950">{primarySuggestion.titleEn}</h4>
-                    <p className="mt-1 text-sm leading-6 text-slate-500">
-                      {primarySuggestion.questionCount} acuity-ordered questions ready - {sourceLabel}
-                      {secondarySuggestionCount > 0 ? ` - ${secondarySuggestionCount} alternate guideline${secondarySuggestionCount === 1 ? "" : "s"}` : ""}
-                    </p>
-                  </>
-                ) : (
-                  <p className="mt-1 text-sm leading-6 text-slate-500">Confirm the reason narrative to prepare a protocol search.</p>
-                )}
-              </div>
-              {primarySuggestion && (
-                <span className={`w-fit rounded-md border px-2.5 py-1 text-xs ${severityClass(primarySuggestion.highestSeverity)}`}>
-                  highest priority {primarySuggestion.highestSeverity}
-                </span>
+            <div className="min-w-0 border-slate-200 pt-2 lg:border-l lg:pl-3 lg:pt-0">
+              {possibleRedFlags.length > 0 && (
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[10px] uppercase tracking-[0.1em] text-rose-500">Possible red flags (advisory)</span>
+                  {possibleRedFlags.map((flag) => (
+                    <span key={flag} className="rounded-md border border-rose-200 bg-rose-50 px-2 py-0.5 text-xs text-rose-700">
+                      {flag}
+                    </span>
+                  ))}
+                </div>
               )}
+
+              <div className={possibleRedFlags.length > 0 ? "mt-2 border-t border-slate-200 pt-2" : ""}>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Guideline selection</span>
+                    {primarySuggestion ? (
+                      <>
+                        <h4 className="text-sm font-normal leading-tight text-slate-950">{primarySuggestion.titleEn}</h4>
+                        <p className="text-xs leading-5 text-slate-500">
+                          {primarySuggestion.questionCount} acuity-ordered questions - {sourceLabel}
+                          {secondarySuggestionCount > 0 ? ` - ${secondarySuggestionCount} alternate${secondarySuggestionCount === 1 ? "" : "s"}` : ""}
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-sm leading-6 text-slate-500">Confirm the reason narrative to prepare a protocol search.</p>
+                    )}
+                  </div>
+                  {primarySuggestion && (
+                    <span className={`w-fit shrink-0 rounded-md border px-2.5 py-1 text-xs ${severityClass(primarySuggestion.highestSeverity)}`}>
+                      highest priority {primarySuggestion.highestSeverity}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <RagShadowEvidencePanel ragShadow={ragShadow} />
             </div>
           </div>
-
-          <RagShadowEvidencePanel ragShadow={ragShadow} />
         </section>
 
         <InitialAssessmentPanel
@@ -1935,31 +2038,28 @@ function ReasonEmergencyStage({
 
         <DeterministicScoreStrip card={card} scoreState={scoreState} />
 
-        <section className="rounded-md border border-slate-200 bg-white p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div className="flex items-start gap-3">
+        <section className="rounded-md border border-slate-200 bg-white p-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
               <span
-                className={`mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md ${
+                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md ${
                   emergencyClear ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
                 }`}
               >
-                <ShieldAlert className="h-5 w-5" />
+                <ShieldAlert className="h-4 w-4" />
               </span>
-              <div>
-                <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Emergency rule-out</span>
-                <h4 className={`mt-1 text-lg font-normal ${emergencyClear ? "text-emerald-700" : "text-rose-700"}`}>
-                  {emergencyClear ? "No red floor active" : "Emergency safety floor active"}
-                </h4>
-              </div>
+              <h4 className={`ist-emphasis text-sm font-semibold ${emergencyClear ? "text-emerald-700" : "text-rose-700"}`}>
+                {emergencyClear ? "No red floor active" : "Emergency safety floor active"}
+              </h4>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1.5">
               {scoreState.status === "ready" && score && !vitalsUnobtainable && (
-                <span className={`w-fit rounded-md border px-2.5 py-1 text-xs ${score.redAlertTriggered ? "border-rose-200 bg-rose-50 text-rose-700" : "border-slate-200 bg-slate-50 text-slate-600"}`}>
+                <span className={`w-fit rounded-md border px-2 py-0.5 text-xs ${score.redAlertTriggered ? "border-rose-200 bg-rose-50 text-rose-700" : "border-slate-200 bg-slate-50 text-slate-600"}`}>
                   API {score.score} - {score.riskBand}
                 </span>
               )}
               {vitalsUnobtainable && (
-                <span className="w-fit rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-600">
+                <span className="w-fit rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs text-slate-600">
                   No vitals - symptom-based floor
                 </span>
               )}
@@ -1967,32 +2067,31 @@ function ReasonEmergencyStage({
                 type="button"
                 onClick={() => onEscalate("judgment", "Triager assessed the presentation as life-threatening.")}
                 disabled={judgmentAlreadySet}
-                className="w-fit rounded-md border border-rose-300 bg-rose-600 px-3 py-1.5 text-xs text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="ist-emphasis w-fit rounded-md border border-rose-300 bg-rose-600 px-2.5 py-1 text-xs font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {judgmentAlreadySet ? "Escalated by triager judgment" : "Sounds life-threatening - escalate now"}
               </button>
             </div>
           </div>
 
-          <label className="mt-4 flex w-fit items-center gap-2 text-sm text-slate-600">
+          <label className="mt-2 flex w-fit items-center gap-2 text-xs text-slate-600">
             <input
               type="checkbox"
               checked={vitalsUnobtainable}
               onChange={(event) => onVitalsUnobtainable(event.target.checked)}
-              className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+              className="h-3.5 w-3.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
             />
             Vitals cannot be obtained on this call
           </label>
 
           {vitalsUnobtainable ? (
-            <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-800">
-              Vitals entry is off. The safety floor now relies on the symptom path: ask the initial assessment questions
-              above, assess consciousness in conversation, coach the caller to count breaths for 30 seconds if possible,
-              and use the escalate button on any life-threatening sign. The first triage question remains the emergency
-              screen.
+            <div className="mt-2 rounded-md border border-amber-200 bg-amber-50 p-2 text-xs leading-5 text-amber-800">
+              Vitals entry is off. The safety floor now relies on the symptom path: ask the initial assessment questions,
+              assess consciousness in conversation, coach the caller to count breaths for 30 seconds if possible, and use
+              the escalate button on any life-threatening sign.
             </div>
           ) : (
-          <div className="mt-4 grid gap-3 md:grid-cols-5">
+          <div className="mt-2 grid gap-2 md:grid-cols-5">
             <VitalInput label="HR" value={card.vitals.heartRate} min={20} max={260} onChange={(heartRate) => onVitalsChange({ heartRate })} />
             <VitalInput label="RR" value={card.vitals.respiratoryRate} min={1} max={80} onChange={(respiratoryRate) => onVitalsChange({ respiratoryRate })} />
             <VitalInput label="SpO2" value={card.vitals.spo2} min={40} max={100} onChange={(spo2) => onVitalsChange({ spo2 })} />
@@ -2000,7 +2099,7 @@ function ReasonEmergencyStage({
             <label className="grid gap-1 text-xs font-normal text-slate-600">
               AVPU
               <select
-                className="h-11 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                className="h-9 rounded-md border border-slate-200 bg-white px-2 text-sm text-slate-950 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
                 value={card.vitals.consciousLevel}
                 onChange={(event) => onVitalsChange({ consciousLevel: event.target.value as ConsciousLevel })}
               >
@@ -2013,27 +2112,15 @@ function ReasonEmergencyStage({
           </div>
           )}
 
-          <div
-            className={`mt-4 rounded-md border p-3 text-sm leading-6 ${
-              emergencyClear
-                ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-                : "border-rose-200 bg-rose-50 text-rose-800"
-            }`}
-          >
-            {emergencyClear ? (
-              "Continue to acuity-ordered assessment questions."
-            ) : (
-              <ul className="grid gap-1 sm:grid-cols-2">
+          {!emergencyClear && (
+            <div className="mt-2 rounded-md border border-rose-200 bg-rose-50 p-2 text-xs leading-5 text-rose-800">
+              <ul className="grid gap-0.5 sm:grid-cols-2">
                 {emergencyReasons.map((reason) => (
                   <li key={reason}>- {reason}</li>
                 ))}
               </ul>
-            )}
-          </div>
-
-          <p className="mt-3 text-xs leading-5 text-slate-500">
-            Emergency rule-out is the minimum safety floor. Assessment questions can document, but they cannot downgrade an active red-floor route.
-          </p>
+            </div>
+          )}
         </section>
       </div>
     </StageShell>
@@ -2046,14 +2133,16 @@ function DeterministicScoreStrip({ card, scoreState }: { card: Card; scoreState:
 
   if (card.vitalsUnobtainable) {
     return (
-      <section className="rounded-md border border-slate-200 bg-white p-4">
-        <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Deterministic score summary</span>
-        <p className="mt-2 text-sm leading-6 text-slate-600">
-          NEWS2 scoring is suspended - vitals not obtained on this call.{" "}
-          {floorReasons.length > 0
-            ? `Safety floor active from the symptom path: ${floorReasons.join("; ")}.`
-            : "The safety floor relies on the initial assessment questions and triager judgment."}
-        </p>
+      <section className="rounded-md border border-slate-200 bg-white p-2.5">
+        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+          <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Deterministic score summary</span>
+          <span className="text-xs leading-5 text-slate-600">
+            NEWS2 suspended - vitals not obtained.{" "}
+            {floorReasons.length > 0
+              ? `Safety floor active: ${floorReasons.join("; ")}.`
+              : "Floor relies on initial assessment and triager judgment."}
+          </span>
+        </div>
       </section>
     );
   }
@@ -2077,19 +2166,19 @@ function DeterministicScoreStrip({ card, scoreState }: { card: Card; scoreState:
         : "border-emerald-200 bg-emerald-50 text-emerald-700";
 
   return (
-    <section className="rounded-md border border-slate-200 bg-white p-4">
+    <section className="rounded-md border border-slate-200 bg-white p-2.5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Deterministic score summary</span>
-        <span className={`rounded-md border px-2.5 py-1 text-xs ${bandTone}`}>
+        <span className={`rounded-md border px-2 py-0.5 text-xs ${bandTone}`}>
           {score.redAlertTriggered ? "Red floor override" : `NEWS2 ${score.news2.total}`} - {score.riskBand}
         </span>
       </div>
-      <div className="mt-3 grid grid-cols-5 gap-2">
+      <div className="mt-2 grid grid-cols-5 gap-1.5">
         {components.map((component) => (
-          <div key={component.label} className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5 text-center">
-            <span className="block text-[10px] uppercase tracking-[0.12em] text-slate-400">{component.label}</span>
+          <div key={component.label} className="rounded-md border border-slate-200 bg-slate-50 px-1.5 py-1 text-center">
+            <span className="block text-[9px] uppercase tracking-[0.1em] text-slate-400">{component.label}</span>
             <span
-              className={`mt-0.5 block text-sm ${
+              className={`block text-xs ${
                 component.points >= 3 ? "text-rose-700" : component.points >= 1 ? "text-amber-700" : "text-emerald-700"
               }`}
             >
@@ -2098,10 +2187,6 @@ function DeterministicScoreStrip({ card, scoreState }: { card: Card; scoreState:
           </div>
         ))}
       </div>
-      <p className="mt-2 text-xs leading-5 text-slate-500">
-        Component points from the authoritative rules engine (0 = normal, 3 = severe derangement). The safety floor is
-        checked before this score and cannot be argued down by it.
-      </p>
     </section>
   );
 }
@@ -2146,10 +2231,12 @@ function agreementLabel(value: string | undefined): string {
 }
 
 function RagShadowEvidencePanel({ ragShadow }: { ragShadow?: QueuePreparedProtocol["ragShadow"] }) {
+  const [expanded, setExpanded] = useState(false);
+
   if (!ragShadow) {
     return (
-      <div className="mt-4 rounded-md border border-dashed border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-500">
-        RAG shadow has not produced an advisory comparison for this reason yet. Deterministic search and nurse selection remain authoritative.
+      <div className="mt-2 rounded-md border border-dashed border-slate-200 bg-slate-50 px-3 py-1.5 text-xs leading-5 text-slate-500">
+        RAG shadow has not produced an advisory comparison yet. Deterministic search and nurse selection remain authoritative.
       </div>
     );
   }
@@ -2157,46 +2244,53 @@ function RagShadowEvidencePanel({ ragShadow }: { ragShadow?: QueuePreparedProtoc
   const agreement = ragShadow.comparison.agreement;
   const confidence = Math.round(ragShadow.retrieval.confidence * 100);
   const tone = agreementTone(agreement);
+  const toneClass =
+    tone === "emerald" ? "text-emerald-700" : tone === "amber" ? "text-amber-700" : tone === "rose" ? "text-rose-700" : "text-slate-700";
   const topCandidates = ragShadow.suggestedProtocolCandidates.slice(0, 3);
 
   return (
-    <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-3">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-        <div>
-          <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">RAG shadow comparison</span>
-          <p className="mt-1 text-sm leading-6 text-slate-600">
+    <div className="mt-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+      <button
+        type="button"
+        onClick={() => setExpanded((current) => !current)}
+        className="flex w-full items-center justify-between gap-2 text-left"
+      >
+        <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">
+          RAG shadow (advisory) - <span className={`normal-case ${toneClass}`}>{agreementLabel(agreement)}</span>, {confidence}% confidence
+        </span>
+        <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-slate-400 transition-transform ${expanded ? "rotate-180" : ""}`} />
+      </button>
+
+      {expanded && (
+        <div className="mt-2 space-y-2">
+          <p className="text-xs leading-5 text-slate-600">
             Runs in parallel against approved content only. It can compare retrieval and keywords, but cannot decide disposition,
             care advice, route, or fit-to-fly status.
           </p>
-        </div>
-        <div className="grid min-w-[260px] gap-2 sm:grid-cols-2 lg:grid-cols-1">
-          <InlineEvidence label="Agreement" value={agreementLabel(agreement)} tone={tone} />
-          <InlineEvidence label="Confidence" value={`${confidence}%`} />
-        </div>
-      </div>
-
-      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.55fr)]">
-        <div className="min-w-0 rounded-md border border-slate-200 bg-white p-3">
-          <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Shadow candidates</span>
-          <div className="mt-2 grid gap-2">
-            {topCandidates.map((candidate) => (
-              <div key={candidate.protocolId} className="flex min-w-0 items-center justify-between gap-3 border-b border-slate-100 pb-2 last:border-b-0 last:pb-0">
-                <span className="min-w-0 truncate text-sm text-slate-800">{candidate.titleEn}</span>
-                <span className="shrink-0 font-mono text-[11px] text-slate-500">{candidate.protocolId}</span>
+          <div className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(220px,0.55fr)]">
+            <div className="min-w-0 rounded-md border border-slate-200 bg-white p-2">
+              <span className="text-[10px] uppercase tracking-[0.12em] text-slate-500">Shadow candidates</span>
+              <div className="mt-1 grid gap-1">
+                {topCandidates.map((candidate) => (
+                  <div key={candidate.protocolId} className="flex min-w-0 items-center justify-between gap-3 border-b border-slate-100 py-1 last:border-b-0">
+                    <span className="min-w-0 truncate text-xs text-slate-800">{candidate.titleEn}</span>
+                    <span className="shrink-0 font-mono text-[10px] text-slate-500">{candidate.protocolId}</span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            <div className="rounded-md border border-slate-200 bg-white p-2">
+              <span className="text-[10px] uppercase tracking-[0.12em] text-slate-500">Boundary</span>
+              <ul className="mt-1 space-y-0.5 text-[11px] leading-4 text-slate-600">
+                {ragShadow.prohibitedActionAcknowledgement.slice(0, 4).map((item) => (
+                  <li key={item}>- {item}</li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
-
-        <div className="rounded-md border border-slate-200 bg-white p-3">
-          <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Boundary</span>
-          <ul className="mt-2 space-y-1 text-xs leading-5 text-slate-600">
-            {ragShadow.prohibitedActionAcknowledgement.slice(0, 4).map((item) => (
-              <li key={item}>- {item}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -2774,12 +2868,6 @@ function assessmentFlowItems(questions: QueueProtocolQuestionPreview[]): Assessm
   );
 }
 
-function responseLabel(value: boolean | undefined): string {
-  if (value === true) return "Yes";
-  if (value === false) return "No";
-  return "Pending";
-}
-
 function AssessmentQuestionsStage({
   card,
   score,
@@ -2791,10 +2879,10 @@ function AssessmentQuestionsStage({
   responses: AssessmentResponseState;
   onResponses: (updates: AssessmentResponseState) => void;
 }) {
+  const [view, setView] = useState<"guided" | "reference">("guided");
   const prepared = preparedProtocolFor(card);
   const questions = assessmentQuestionsFor(card);
   const flow = assessmentFlowItems(questions);
-  const emergencyReasons = localSafetyFloorReasons(card);
   const answeredCount = flow.filter((question) => responses[question.id] !== undefined).length;
   const firstYesIndex = flow.findIndex((question) => responses[question.id] === true);
   const firstPendingIndex = flow.findIndex((question) => responses[question.id] === undefined);
@@ -2806,8 +2894,6 @@ function AssessmentQuestionsStage({
         ? firstPendingIndex
         : Math.max(flow.length - 1, 0);
   const activeQuestion = flow[activeIndex];
-  const activeResponse = activeQuestion ? responses[activeQuestion.id] : undefined;
-  const activeNoDefault = activeResponse === undefined;
   const selectedQuestion = firstYesIndex >= 0 ? flow[firstYesIndex] : undefined;
   const progress =
     flow.length === 0
@@ -2815,12 +2901,8 @@ function AssessmentQuestionsStage({
       : selectedQuestion || allAnsweredNo
         ? 100
         : Math.round((answeredCount / flow.length) * 100);
-  const completedItems = flow
-    .slice(0, selectedQuestion ? firstYesIndex + 1 : activeIndex)
-    .filter((question) => responses[question.id] !== undefined);
+  const visibleItems = flow.slice(0, activeIndex + 1);
   const futureCount = activeQuestion ? Math.max(flow.length - activeIndex - 1, 0) : 0;
-  const safetyLocked = emergencyReasons.length > 0 || score?.redAlertTriggered;
-  const ragShadow = prepared?.ragShadow;
 
   return (
     <StageShell
@@ -2828,288 +2910,258 @@ function AssessmentQuestionsStage({
       title="Action 2 - Assessment Questions"
       subtitle="Ask one acuity-ordered question at a time. Stop when a Yes fixes the disposition."
     >
-      <div className="mb-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-slate-200 pb-4 text-[11px] uppercase tracking-[0.12em] text-slate-500">
+      <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-slate-200 pb-4 text-[11px] uppercase tracking-[0.12em] text-slate-500">
         <span>Protocol: <span className="normal-case tracking-normal text-slate-800">{prepared?.primaryProtocolTitle ?? "Safety-net protocol"}</span></span>
         <span>Risk: <span className="normal-case tracking-normal text-slate-800">{score?.riskBand ?? "Pending"}</span></span>
         <span>Answered: <span className="normal-case tracking-normal text-slate-800">{answeredCount} / {flow.length}</span></span>
       </div>
 
-      {safetyLocked && (
-        <div className="mb-5 border-l-2 border-rose-500 pl-3 text-sm leading-6 text-rose-800">
-          Emergency safety floor is active. Questions can document findings, but cannot downgrade emergency routing.
-        </div>
-      )}
-
-      {ragShadow && (
-        <div className="mb-5 rounded-md border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-600">
-          <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-            <div>
-              <span className="block text-[11px] uppercase tracking-[0.14em] text-slate-500">RAG shadow boundary</span>
-              Questions shown here come from deterministic STCC-compatible protocol content. RAG shadow may compare the selected
-              protocol with retrieval candidates, but it cannot add, remove, reorder, or answer nurse questions.
-            </div>
-            <span className={`w-fit rounded-md border px-2.5 py-1 text-xs ${agreementTone(ragShadow.comparison.agreement) === "emerald" ? "border-emerald-200 bg-emerald-50 text-emerald-700" : agreementTone(ragShadow.comparison.agreement) === "rose" ? "border-rose-200 bg-rose-50 text-rose-700" : "border-amber-200 bg-amber-50 text-amber-700"}`}>
-              {agreementLabel(ragShadow.comparison.agreement)}
-            </span>
-          </div>
-        </div>
-      )}
-
-      <div className="mb-6">
-        <div className="flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.12em] text-slate-500">
-          <span>{selectedQuestion ? "Disposition found" : allAnsweredNo ? "Question path complete" : `Question ${Math.min(activeIndex + 1, flow.length)} of ${flow.length}`}</span>
-          <span>{progress}%</span>
-        </div>
-        <div className="mt-2 h-px bg-slate-200">
-          <div className="h-px bg-emerald-700 transition-all" style={{ width: `${progress}%` }} />
-        </div>
+      <div className="mb-4 flex gap-1.5">
+        <button
+          type="button"
+          onClick={() => setView("guided")}
+          className={`rounded-none border px-3 py-1.5 text-xs font-semibold transition ${
+            view === "guided" ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+          }`}
+        >
+          Guided Walkthrough (Yes/No)
+        </button>
+        <button
+          type="button"
+          onClick={() => setView("reference")}
+          className={`rounded-none border px-3 py-1.5 text-xs font-semibold transition ${
+            view === "reference" ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+          }`}
+        >
+          Reference List
+        </button>
       </div>
 
-      {selectedQuestion && (
-        <div className="mb-5 border-l-2 border-emerald-600 pl-3 text-sm leading-6 text-emerald-800">
-          <strong className="block font-normal">Disposition identified: {selectedQuestion.groupTitle}</strong>
-          Stop lower-priority questioning and proceed to disposition review.
-        </div>
-      )}
-
-      {allAnsweredNo && (
-        <div className="mb-5 border-l-2 border-slate-400 pl-3 text-sm leading-6 text-slate-700">
-          All assessment questions were answered No. Proceed with the safest available route and callback precautions.
-        </div>
-      )}
-
-      {activeQuestion ? (
-        <div className="space-y-6">
-          <section className="border-b border-slate-200 pb-6">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div className="min-w-0">
-                <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">
-                  {activeQuestion.severity} priority - {activeQuestion.groupQuestionNumber} of {activeQuestion.groupQuestionCount}
-                </span>
-                <h4 className="mt-2 text-xl font-normal leading-tight text-slate-950">{activeQuestion.groupTitle}</h4>
-              </div>
-              <span className={`w-fit rounded-md border px-2.5 py-1 text-xs font-normal ${severityClass(activeQuestion.severity)}`}>
-                {activeQuestion.severity}
-              </span>
+      {view === "reference" ? (
+        <ReferenceQuestionsView card={card} responses={responses} onResponses={onResponses} />
+      ) : (
+        <>
+          <div className="mb-4">
+            <div className="flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.12em] text-slate-500">
+              <span>{selectedQuestion ? "Disposition found" : allAnsweredNo ? "Question path complete" : `Question ${Math.min(activeIndex + 1, flow.length)} of ${flow.length}`}</span>
+              <span>{progress}%</span>
             </div>
-
-            <span className="mt-6 block text-[11px] uppercase tracking-[0.14em] text-slate-500">Ask now</span>
-            <p className="mt-2 max-w-5xl text-xl font-normal leading-9 text-slate-950">{activeQuestion.questionTextEn}</p>
-          </section>
-
-          <section>
-            <span className="block text-[11px] uppercase tracking-[0.14em] text-slate-500">Nurse response</span>
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              <button
-                type="button"
-                className={`min-h-14 rounded-md border px-4 text-left transition ${
-                  activeResponse === false
-                    ? "border-slate-950 bg-slate-950 text-white"
-                    : activeNoDefault
-                      ? "border-slate-950 bg-slate-50 text-slate-950 hover:bg-slate-100"
-                    : "border-slate-200 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50"
-                }`}
-                onClick={() => onResponses({ [activeQuestion.id]: false })}
-                aria-pressed={activeResponse !== true}
-              >
-                <span className="block text-[11px] uppercase tracking-[0.12em] opacity-75">
-                  No{activeNoDefault ? " - default" : ""}
-                </span>
-                <strong className="mt-1 block font-normal">{futureCount > 0 ? "Continue to next question" : "Complete question path"}</strong>
-              </button>
-              <button
-                type="button"
-                className={`min-h-14 rounded-md border px-4 text-left transition ${
-                  activeResponse === true
-                    ? "border-emerald-700 bg-emerald-700 text-white"
-                    : "border-slate-200 bg-white text-slate-600 hover:border-emerald-600 hover:bg-emerald-50 hover:text-emerald-800"
-                }`}
-                onClick={() => onResponses({ [activeQuestion.id]: true })}
-                aria-pressed={activeResponse === true}
-              >
-                <span className="block text-[11px] uppercase tracking-[0.12em] opacity-75">Yes</span>
-                <strong className="mt-1 block font-normal">Use this disposition</strong>
-              </button>
+            <div className="mt-2 h-px bg-slate-200">
+              <div className="h-px bg-emerald-700 transition-all" style={{ width: `${progress}%` }} />
             </div>
-            <p className="mt-3 text-sm leading-6 text-slate-500">
-              Default is No for screen focus. Click No to record and continue; click Yes only when this disposition is confirmed.
-            </p>
-          </section>
+          </div>
 
-          <details className="border-t border-slate-200 pt-4 text-sm leading-6 text-slate-600">
-            <summary className="cursor-pointer text-[11px] uppercase tracking-[0.14em] text-slate-500">
-              Clinical trace
-            </summary>
-            <div className="mt-3 space-y-3">
-              <p>
-                Yes routes to <span className="text-slate-950">{activeQuestion.groupTitle}</span> using{" "}
-                <span className="font-mono text-xs">{activeQuestion.dispositionCode}</span>. No continues to the next high-to-low priority item.
-              </p>
-              {completedItems.length === 0 ? (
-                <p className="text-slate-500">No answers recorded yet.</p>
-              ) : (
-                <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
-                  {completedItems.map((question) => (
-                    <div key={question.id} className="border-l border-slate-200 pl-3">
-                      <span className="font-mono text-[11px] text-slate-500">Q{question.sequence} - {responseLabel(responses[question.id])}</span>
-                      <p className="mt-1 line-clamp-2 text-slate-700">{question.questionTextEn}</p>
-                    </div>
-                  ))}
+          {flow.length === 0 ? (
+            <div className="border-l-2 border-slate-300 pl-3 text-sm leading-6 text-slate-600">
+              No protocol questions are prepared yet. Confirm the reason for call and protocol search before assessment.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {visibleItems.map((question) => (
+                <AssessmentStepCard
+                  key={question.id}
+                  item={question}
+                  answer={responses[question.id]}
+                  onAnswer={(value) => onResponses({ [question.id]: value })}
+                  isFrontier={question.id === activeQuestion?.id}
+                />
+              ))}
+
+              {(selectedQuestion || allAnsweredNo) && (
+                <div className={`rounded-md border-2 p-4 ${selectedQuestion ? severityResultCardClass(selectedQuestion.severity) : "border-slate-300 bg-slate-50"}`}>
+                  <span className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                    {selectedQuestion ? "Disposition identified" : "Question path complete"}
+                  </span>
+                  <h4 className={`mt-1 text-xl font-bold ${selectedQuestion ? severityTagClass(selectedQuestion.severity) : "text-slate-700"}`}>
+                    {selectedQuestion ? selectedQuestion.groupTitle : "No criteria met - nurse judgment"}
+                  </h4>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    {selectedQuestion
+                      ? "Stop lower-priority questioning and proceed to disposition review."
+                      : "All assessment questions were answered No. Proceed with the safest available route and callback precautions."}
+                  </p>
                 </div>
               )}
-              {!selectedQuestion && !allAnsweredNo && futureCount > 0 && (
-                <p className="text-slate-500">
-                  {futureCount} lower-priority question{futureCount === 1 ? "" : "s"} locked until this answer is recorded.
-                </p>
-              )}
             </div>
-          </details>
-        </div>
-      ) : (
-        <div className="border-l-2 border-slate-300 pl-3 text-sm leading-6 text-slate-600">
-          No protocol questions are prepared yet. Confirm the reason for call and protocol search before assessment.
-        </div>
+          )}
+
+          {activeQuestion && (
+            <details open className="mt-4 border-t border-slate-200 pt-4 text-sm leading-6 text-slate-600">
+              <summary className="cursor-pointer text-[11px] uppercase tracking-[0.14em] text-slate-500">
+                Clinical trace
+              </summary>
+              <div className="mt-3 space-y-2">
+                <p>
+                  Yes routes to <span className="text-slate-950">{activeQuestion.groupTitle}</span> using{" "}
+                  <span className="font-mono text-xs">{activeQuestion.dispositionCode}</span>. No continues to the next high-to-low priority item.
+                </p>
+                {!selectedQuestion && !allAnsweredNo && futureCount > 0 && (
+                  <p className="text-slate-500">
+                    {futureCount} lower-priority question{futureCount === 1 ? "" : "s"} locked until this answer is recorded.
+                  </p>
+                )}
+              </div>
+            </details>
+          )}
+        </>
       )}
     </StageShell>
   );
 }
 
-// Archived legacy grouped assessment page. Kept for rollback/reference at the user's request.
-function LegacyAssessmentQuestionsStage({
+function AssessmentStepCard({
+  item,
+  answer,
+  onAnswer,
+  isFrontier
+}: {
+  item: AssessmentFlowItem;
+  answer: boolean | undefined;
+  onAnswer: (value: boolean) => void;
+  isFrontier: boolean;
+}) {
+  const answered = answer !== undefined;
+  return (
+    <div className={`rounded-md border border-slate-200 border-l-4 bg-white p-3 ${severityAccentBorder(item.severity)}`}>
+      <div className="flex items-start gap-3">
+        <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${severityCircleClass(item.severity)}`}>
+          {answered ? <Check className="h-3.5 w-3.5" /> : item.sequence}
+        </span>
+        <div className="min-w-0 flex-1">
+          <span className={`block text-[11px] font-semibold uppercase tracking-[0.14em] ${severityTagClass(item.severity)}`}>
+            {item.groupTitle}
+          </span>
+          <p className="ist-emphasis mt-1 text-base font-semibold leading-6 text-slate-950">{item.questionTextEn}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => onAnswer(false)}
+              aria-pressed={answer === false}
+              className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition ${
+                answer === false
+                  ? "border-emerald-600 bg-emerald-600 text-white"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-emerald-400 hover:bg-emerald-50"
+              }`}
+            >
+              No{isFrontier && !answered ? " - default" : ""}
+            </button>
+            <button
+              type="button"
+              onClick={() => onAnswer(true)}
+              aria-pressed={answer === true}
+              className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition ${
+                answer === true
+                  ? "border-rose-600 bg-rose-600 text-white"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-rose-400 hover:bg-rose-50"
+              }`}
+            >
+              Yes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ReferenceQuestionsView({
   card,
-  score,
   responses,
   onResponses
 }: {
   card: Card;
-  score?: ApiScoreResult;
   responses: AssessmentResponseState;
   onResponses: (updates: AssessmentResponseState) => void;
 }) {
-  const prepared = card.preparedProtocol;
   const questions = assessmentQuestionsFor(card);
-  const emergencyReasons = localSafetyFloorReasons(card);
-  const answeredCount = questions.filter((question) => responses[question.id] !== undefined).length;
   const groups = dispositionQuestionGroups(questions);
   const resolvedGroupIndex = groups.findIndex((group) =>
     group.questions.some((question) => responses[question.id] === true)
   );
-  const firstIncompleteGroupIndex = groups.findIndex((group) =>
-    group.questions.some((question) => responses[question.id] === undefined)
-  );
-  const activeGroupIndex =
-    resolvedGroupIndex >= 0
-      ? resolvedGroupIndex
-      : firstIncompleteGroupIndex >= 0
-        ? firstIncompleteGroupIndex
-        : groups.length - 1;
-  const finalGroup = resolvedGroupIndex >= 0 ? groups[resolvedGroupIndex] : undefined;
-  const visibleGroups = groups.slice(0, Math.max(activeGroupIndex + 1, 1));
 
   return (
-    <StageShell
-      icon={ListChecks}
-      title="Action 2 - Triage Assessment Questions"
-      subtitle="Ask by disposition level. First Yes identifies the route; lower-level questions stop."
-    >
-      <div className="mb-4 grid gap-3 md:grid-cols-3">
-        <ClinicalChip label="Protocol" value={prepared?.primaryProtocolTitle ?? "Safety-net protocol"} />
-        <ClinicalChip label="Risk band" value={score?.riskBand ?? "Pending score"} />
-        <ClinicalChip label="Answered" value={`${answeredCount} of ${questions.length}`} />
-      </div>
+    <div className="space-y-3">
+      {groups.map((group, groupIndex) => {
+        const lockedByHigherYes = resolvedGroupIndex >= 0 && groupIndex > resolvedGroupIndex;
+        const groupCompleteNo = group.questions.every((question) => responses[question.id] === false);
+        const groupHasYes = group.questions.some((question) => responses[question.id] === true);
+        const noToAllUpdates = Object.fromEntries(group.questions.map((question) => [question.id, false]));
 
-      {emergencyReasons.length > 0 && (
-        <div className="mb-4 rounded-md border border-rose-200 bg-rose-50 p-3 text-sm leading-6 text-rose-800">
-          Emergency safety floor is still active. These questions support documentation only and cannot downgrade emergency routing.
-        </div>
-      )}
-
-      {finalGroup && (
-        <div className="mb-4 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm leading-6 text-emerald-800">
-          <strong className="block font-normal">Disposition identified: {finalGroup.title}</strong>
-          Stop lower-level questioning and proceed to disposition review.
-        </div>
-      )}
-
-      <div className="space-y-4">
-        {visibleGroups.map((group, groupIndex) => {
-          const lockedByHigherYes = resolvedGroupIndex >= 0 && groupIndex > resolvedGroupIndex;
-          const groupCompleteNo = group.questions.every((question) => responses[question.id] === false);
-          const groupHasYes = group.questions.some((question) => responses[question.id] === true);
-          const noToAllUpdates = Object.fromEntries(group.questions.map((question) => [question.id, false]));
-
-          return (
-            <section key={group.code} className="overflow-hidden rounded-md border border-slate-200 bg-white">
-              <header className={`flex flex-col gap-2 px-3 py-3 md:flex-row md:items-center md:justify-between ${groupHeaderClass(group.severity)}`}>
-                <div>
-                  <strong className="block font-normal">{group.title}</strong>
-                  <span className="font-mono text-[11px] uppercase tracking-[0.08em]">{group.code}</span>
-                </div>
-                {!groupHasYes && !groupCompleteNo && !lockedByHigherYes && (
-                  <button
-                    type="button"
-                    className="h-8 rounded-md border border-white/60 px-3 text-xs transition hover:bg-white/20"
-                    onClick={() => onResponses(noToAllUpdates)}
-                  >
-                    No to all
-                  </button>
-                )}
-                {groupCompleteNo && <span className="text-xs">All no - continue next level</span>}
-                {groupHasYes && <span className="text-xs">Yes captured - disposition fixed</span>}
-              </header>
-
-              <div className="divide-y divide-slate-100">
-                {group.questions.map((question) => {
-                  const answeredYes = responses[question.id] === true;
-                  const answeredNo = responses[question.id] === false;
-                  const disabled = lockedByHigherYes || (resolvedGroupIndex >= 0 && !answeredYes && groupIndex !== resolvedGroupIndex);
-                  return (
-                    <article key={question.id} className={`p-3 ${disabled ? "opacity-50" : ""}`}>
-                      <div className="grid gap-3 md:grid-cols-[28px_28px_minmax(0,1fr)] md:items-start">
-                        <button
-                          type="button"
-                          className={`h-6 w-6 rounded-full border text-[10px] transition ${
-                            answeredYes
-                              ? "border-emerald-700 bg-emerald-700 text-white"
-                              : "border-slate-300 bg-white text-slate-500 hover:border-emerald-500"
-                          }`}
-                          onClick={() => onResponses({ [question.id]: true })}
-                          disabled={disabled}
-                          aria-pressed={answeredYes}
-                          aria-label={`Answer yes to ${question.questionTextEn}`}
-                        >
-                          Y
-                        </button>
-                        <button
-                          type="button"
-                          className={`h-6 w-6 rounded-full border text-[10px] transition ${
-                            answeredNo
-                              ? "border-slate-900 bg-slate-950 text-white"
-                              : "border-slate-300 bg-white text-slate-500 hover:border-slate-500"
-                          }`}
-                          onClick={() => onResponses({ [question.id]: false })}
-                          disabled={disabled}
-                          aria-pressed={answeredNo}
-                          aria-label={`Answer no to ${question.questionTextEn}`}
-                        >
-                          N
-                        </button>
-                        <div className="min-w-0">
-                          <p className="text-sm leading-6 text-slate-800">{question.questionTextEn}</p>
-                          <span className="mt-1 block text-xs leading-5 text-slate-500">
-                            Ask only until a Yes identifies the level of care.
-                          </span>
-                        </div>
-                      </div>
-                    </article>
-                  );
-                })}
+        return (
+          <details key={group.code} open className="overflow-hidden rounded-md border border-slate-200 bg-white">
+            <summary className={`flex cursor-pointer list-none flex-col gap-2 px-3 py-3 md:flex-row md:items-center md:justify-between ${groupHeaderClass(group.severity)}`}>
+              <div className="flex items-center gap-2">
+                <strong className="font-semibold">{group.title}</strong>
+                <span className="font-mono text-[11px] uppercase tracking-[0.08em]">{group.code}</span>
+                <span className="rounded-full bg-white/30 px-2 py-0.5 text-[11px] font-semibold">{group.questions.length}</span>
               </div>
-            </section>
-          );
-        })}
-      </div>
-    </StageShell>
+              {!groupHasYes && !groupCompleteNo && !lockedByHigherYes && (
+                <button
+                  type="button"
+                  className="h-8 w-fit rounded-md border border-white/60 px-3 text-xs transition hover:bg-white/20"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    onResponses(noToAllUpdates);
+                  }}
+                >
+                  No to all
+                </button>
+              )}
+              {groupCompleteNo && <span className="text-xs">All no - continue next level</span>}
+              {groupHasYes && <span className="text-xs">Yes captured - disposition fixed</span>}
+            </summary>
+
+            <div className="divide-y divide-slate-100">
+              {group.questions.map((question) => {
+                const answeredYes = responses[question.id] === true;
+                const answeredNo = responses[question.id] === false;
+                const disabled = lockedByHigherYes || (resolvedGroupIndex >= 0 && !answeredYes && groupIndex !== resolvedGroupIndex);
+                return (
+                  <article key={question.id} className={`p-3 ${disabled ? "opacity-50" : ""}`}>
+                    <div className="grid gap-3 md:grid-cols-[28px_28px_minmax(0,1fr)] md:items-start">
+                      <button
+                        type="button"
+                        className={`h-6 w-6 rounded-full border text-[10px] transition ${
+                          answeredYes
+                            ? "border-rose-600 bg-rose-600 text-white"
+                            : "border-slate-300 bg-white text-slate-500 hover:border-rose-500"
+                        }`}
+                        onClick={() => onResponses({ [question.id]: true })}
+                        disabled={disabled}
+                        aria-pressed={answeredYes}
+                        aria-label={`Answer yes to ${question.questionTextEn}`}
+                      >
+                        Y
+                      </button>
+                      <button
+                        type="button"
+                        className={`h-6 w-6 rounded-full border text-[10px] transition ${
+                          answeredNo
+                            ? "border-emerald-600 bg-emerald-600 text-white"
+                            : "border-slate-300 bg-white text-slate-500 hover:border-emerald-500"
+                        }`}
+                        onClick={() => onResponses({ [question.id]: false })}
+                        disabled={disabled}
+                        aria-pressed={answeredNo}
+                        aria-label={`Answer no to ${question.questionTextEn}`}
+                      >
+                        N
+                      </button>
+                      <div className="min-w-0">
+                        <p className="text-sm leading-6 text-slate-800">{question.questionTextEn}</p>
+                        <span className="mt-1 block text-xs leading-5 text-slate-500">
+                          Ask only until a Yes identifies the level of care.
+                        </span>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </details>
+        );
+      })}
+    </div>
   );
 }
 
@@ -3184,33 +3236,21 @@ function DispositionStage({
         </span>
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-md border border-slate-200 bg-white">
-        <div className="border-b border-slate-200 bg-slate-50 px-3 py-2 text-[11px] uppercase tracking-[0.12em] text-slate-500">
-          Care advice / first aid to give now
+      <div className="mt-4 overflow-hidden rounded-md border-l-4 border-emerald-500 bg-emerald-50/40">
+        <div className="flex items-center gap-2 px-3 py-2">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-emerald-100 text-emerald-700">
+            <PhoneCall className="h-3 w-3" />
+          </span>
+          <span className="text-[11px] uppercase tracking-[0.12em] text-emerald-700">Say to caller now - care advice / first aid</span>
         </div>
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-emerald-100/70 bg-white">
           {advice.map((item) => (
             <article key={item.title} className="p-3 text-sm leading-6 text-slate-700">
-              <strong className="block font-normal text-slate-950">{item.title}</strong>
+              <strong className="ist-emphasis block font-semibold text-slate-950">{item.title}</strong>
               {item.body}
             </article>
           ))}
         </div>
-      </div>
-    </StageShell>
-  );
-
-  return (
-    <StageShell icon={Plane} title="Stage 6 · Disposition" subtitle="Aviation and local routing gates are reviewed before completion.">
-      <div className="grid gap-3 lg:grid-cols-3">
-        <ClinicalMetric icon={AlertTriangle} label="Severity" value={severity} tone={severity === "Emergency" ? "rose" : "emerald"} />
-        <ClinicalMetric icon={TimerReset} label="Disposition" value={route.code} tone="slate" />
-        <ClinicalMetric icon={Plane} label="Fit-to-fly" value={fitStatus} tone={fitToFlyTone(fitStatus)} />
-      </div>
-      <div className="mt-4 rounded-lg border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-700">
-        <strong className="block text-slate-950">{route.destination}</strong>
-        {score?.routingRationale ?? route.rationale}
-        <span className="mt-3 block font-semibold text-slate-950">{fitToFlyRuleText(severity)}</span>
       </div>
     </StageShell>
   );
@@ -3255,13 +3295,13 @@ function StageShell({
 }) {
   return (
     <div>
-      <div className="mb-4 flex items-center gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
-          <Icon className="h-5 w-5" />
+      <div className="mb-2 flex items-center gap-2">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
+          <Icon className="h-4 w-4" />
         </span>
-        <div>
-          <h3 className="text-lg font-semibold text-slate-950">{title}</h3>
-          <p className="text-sm text-slate-500">{subtitle}</p>
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-slate-950">{title}</h3>
+          <p className="text-xs text-slate-500">{subtitle}</p>
         </div>
       </div>
       {children}

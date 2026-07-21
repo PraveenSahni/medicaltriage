@@ -344,61 +344,54 @@ export default function InitialAssessmentPanel({
   }, [answers, state]);
 
   return (
-    <section className="rounded-md border border-slate-200 bg-white p-4">
-      <div className="flex items-start gap-3">
-        <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-sky-50 text-sky-700">
-          <NotebookPen className="h-5 w-5" />
+    <section className="rounded-md border border-slate-200 bg-white p-3">
+      <div className="flex items-center gap-2">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-sky-50 text-sky-700">
+          <NotebookPen className="h-4 w-4" />
         </span>
-        <div className="min-w-0">
-          <span className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Initial assessment questions</span>
-          <h4 className="mt-1 text-lg font-normal leading-tight text-slate-950">
-            {state.status === "ready" ? `History taking - ${state.protocolTitle}` : "History taking"}
-          </h4>
-          <p className="mt-1 text-sm leading-6 text-slate-500">
-            STCC-shaped history prompts carry no dispositions. An emergency phrase in a recorded answer offers immediate
-            escalation before lower-acuity questions.
-          </p>
-        </div>
+        <h4 className="min-w-0 truncate text-sm font-normal leading-tight text-slate-950">
+          {state.status === "ready" ? `History taking - ${state.protocolTitle}` : "History taking"}
+        </h4>
       </div>
 
       {state.status === "idle" && (
-        <p className="mt-4 rounded-md border border-dashed border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-500">
+        <p className="mt-2 rounded-md border border-dashed border-slate-200 bg-slate-50 p-2 text-xs leading-5 text-slate-500">
           Confirm the reason narrative and guideline selection to load history-taking prompts.
         </p>
       )}
       {state.status === "loading" && (
-        <p className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-500">
+        <p className="mt-2 rounded-md border border-slate-200 bg-slate-50 p-2 text-xs leading-5 text-slate-500">
           Loading initial assessment questions...
         </p>
       )}
       {state.status === "error" && (
-        <p className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-800">
+        <p className="mt-2 rounded-md border border-amber-200 bg-amber-50 p-2 text-xs leading-5 text-amber-800">
           Initial assessment questions unavailable: {state.message}
         </p>
       )}
 
       {state.status === "ready" && state.questions.length === 0 && (
-        <p className="mt-4 rounded-md border border-dashed border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-500">
+        <p className="mt-2 rounded-md border border-dashed border-slate-200 bg-slate-50 p-2 text-xs leading-5 text-slate-500">
           This guideline has no initial assessment prompts.
         </p>
       )}
 
       {state.status === "ready" && state.questions.length > 0 && (
-        <ol className="mt-4 grid gap-3">
+        <ol className="mt-2 grid gap-2 lg:grid-cols-2">
           {state.questions.map((question) => {
             const answer = answers[question.id] ?? "";
             const hit = answer ? findEmergencyHit(question, answer) : undefined;
             return (
-              <li key={question.id} className={`rounded-md border p-3 ${hit ? "border-rose-300 bg-rose-50" : "border-slate-200 bg-slate-50"}`}>
-                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              <li key={question.id} className={`rounded-md border p-2 ${hit ? "border-rose-300 bg-rose-50" : "border-slate-200 bg-slate-50"}`}>
+                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                   <span className="text-[10px] uppercase tracking-[0.12em] text-slate-400">{question.sequence}.</span>
-                  <span className="text-sm font-normal leading-6 text-slate-950">{question.promptTextEn}</span>
-                  {question.required && <span className="text-[10px] uppercase tracking-[0.12em] text-amber-600">required</span>}
+                  <span className="ist-emphasis text-xs font-semibold leading-5 text-slate-950">{question.promptTextEn}</span>
+                  {question.required && <span className="text-[9px] uppercase tracking-[0.12em] text-amber-600">required</span>}
                 </div>
                 {question.clarificationPromptEn && (
-                  <p className="mt-1 text-xs leading-5 text-slate-500">{question.clarificationPromptEn}</p>
+                  <p className="mt-0.5 text-[11px] leading-4 text-slate-500">{question.clarificationPromptEn}</p>
                 )}
-                <div className="mt-2">
+                <div className="mt-1.5">
                   <AnswerInput
                     question={question}
                     value={answer}
@@ -406,10 +399,10 @@ export default function InitialAssessmentPanel({
                   />
                 </div>
                 {hit && (
-                  <div className="mt-2 flex flex-col gap-2 rounded-md border border-rose-200 bg-white p-2 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-sm leading-6 text-rose-800">
-                      <Siren className="mr-1 inline h-4 w-4 align-text-bottom" />
-                      Emergency phrase detected: <strong className="font-normal">&quot;{hit.keyword}&quot;</strong>
+                  <div className="mt-1.5 flex flex-col gap-1.5 rounded-md border border-rose-200 bg-white p-1.5 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-xs leading-5 text-rose-800">
+                      <Siren className="mr-1 inline h-3.5 w-3.5 align-text-bottom" />
+                      Emergency phrase detected: <strong className="ist-emphasis font-semibold">&quot;{hit.keyword}&quot;</strong>
                     </p>
                     <button
                       type="button"
@@ -418,7 +411,7 @@ export default function InitialAssessmentPanel({
                         onEscalate(`Emergency phrase "${hit.keyword}" recorded during initial assessment.`);
                       }}
                       disabled={escalatedKeywords.has(hit.keyword)}
-                      className="w-fit rounded-md border border-rose-300 bg-rose-600 px-3 py-1.5 text-sm text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="ist-emphasis w-fit rounded-md border border-rose-300 bg-rose-600 px-2.5 py-1 text-xs font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {escalatedKeywords.has(hit.keyword) ? "Escalated" : "Escalate now"}
                     </button>

@@ -4,6 +4,7 @@ import type { AuthorizedRequest } from "../services/authorization.js";
 import {
   claimQueueItem,
   createQueueItem,
+  deleteQueueItem,
   escalateQueueItemToOrganization,
   getQueueItem,
   heartbeatQueueItem,
@@ -93,6 +94,15 @@ export function createQueueRouter(): Router {
     try {
       const item = await getQueueItem(sessionFrom(req), req.params.id);
       return res.json({ item });
+    } catch (error) {
+      return handleQueueError(error, next, res);
+    }
+  });
+
+  router.delete("/:id", async (req: AuthorizedRequest, res, next) => {
+    try {
+      await deleteQueueItem(sessionFrom(req), req.params.id);
+      return res.status(204).send();
     } catch (error) {
       return handleQueueError(error, next, res);
     }
