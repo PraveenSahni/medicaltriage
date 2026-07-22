@@ -411,7 +411,7 @@ export default function KanbanWorkspace() {
                   type="button"
                   className="secondary-button"
                   onClick={() => moveCase(selectedCase.id, "forward")}
-                  disabled={selectedCase.status === "followup"}
+                  disabled={selectedCase.status === "followup" || selectedCase.queueStatus === "COMPLETED"}
                 >
                   Move forward
                   <ArrowRight className="h-4 w-4" />
@@ -420,10 +420,15 @@ export default function KanbanWorkspace() {
                   type="button"
                   className="secondary-button"
                   onClick={() => moveCase(selectedCase.id, "back")}
-                  disabled={selectedCase.status === "incoming"}
+                  disabled={selectedCase.status === "incoming" || selectedCase.queueStatus === "COMPLETED"}
                 >
                   Move back
                 </button>
+                {selectedCase.queueStatus === "COMPLETED" && (
+                  <p className="text-xs font-semibold text-emerald-700">
+                    🔒 This encounter is completed and its clinical record is locked.
+                  </p>
+                )}
               </div>
             </div>
           ) : (

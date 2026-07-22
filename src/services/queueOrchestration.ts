@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { shouldUseDatabasePersistence } from "../config/runtime.js";
+import { isMockMode, shouldUseDatabasePersistence } from "../config/runtime.js";
 import { prisma } from "../db.js";
 import { auditSignatureFor } from "./safetyKernel.js";
 import { getOrganizationById } from "./securityAdmin.js";
@@ -997,6 +997,14 @@ function validateClinicalSequence(record: QueueRecord, request: QueueMoveRequest
   const movingForward = stageIndex(targetStage) > stageIndex(record.currentStage);
   const completing = request.toStatus === "COMPLETED";
 
+  if (stageIndex(record.currentStage) >= stageIndex("DISPOSITION") && stageIndex(targetStage) < stageIndex("DISPOSITION")) {
+    throw new QueueOrchestrationError(
+      409,
+      "Disposition has already been reached for this case. The record is read-only and cannot move back to an earlier stage.",
+      "QUEUE_DISPOSITION_LOCKED"
+    );
+  }
+
   if (!movingForward && request.toStatus !== "COMPLETED") {
     return;
   }
@@ -1235,7 +1243,7 @@ export async function createQueueItem(session: AuthenticatedSession, request: Qu
   if (!isCallIntake(session) && !hasManagerControl(session)) {
     throw new QueueOrchestrationError(403, "Only intake or queue manager roles can create queue items.", "QUEUE_ROLE_DENIED");
   }
-  const createdAtIso = nowIso();
+  const createdAtIso = request.seedCreatedAtIso && isMockMode() ? request.seedCreatedAtIso : nowIso();
   const organizationId = request.organizationId ?? session.user.organizationId ?? "org_ist_tech";
   const targetOrganizationId = request.targetOrganizationId ?? organizationId;
   const staffValidation = await validateStaffMember(request.istStaffId);
@@ -1417,6 +1425,31 @@ export async function updateQueueContext(
   const record = await getRecord(id);
   requireTenantAccess(record, session);
   requireUnlockedOrOwned(record, session);
+  if (record.status === "COMPLETED") {
+    throw new QueueOrchestrationError(
+      409,
+      "This encounter is completed and its clinical record is locked. Reopen it explicitly before editing.",
+      "QUEUE_ITEM_COMPLETED_LOCKED"
+    );
+  }
+  if (stageIndex(record.currentStage) >= stageIndex("DISPOSITION") && record.dispositionCode) {
+    const editsClinicalFields =
+      (update.vitals && JSON.stringify(update.vitals) !== JSON.stringify(record.vitals)) ||
+      (typeof update.vitalsUnobtainable === "boolean" && update.vitalsUnobtainable !== record.vitalsUnobtainable) ||
+      (update.matchedProtocolId && update.matchedProtocolId !== record.matchedProtocolId) ||
+      (update.initialAssessmentResponses &&
+        JSON.stringify(update.initialAssessmentResponses) !== JSON.stringify(record.initialAssessmentResponses)) ||
+      (update.calculatedSeverity && update.calculatedSeverity !== record.calculatedSeverity) ||
+      (update.dispositionCode && update.dispositionCode !== record.dispositionCode) ||
+      (update.destinationName && update.destinationName !== record.destinationName);
+    if (editsClinicalFields) {
+      throw new QueueOrchestrationError(
+        409,
+        "Disposition has already been reached for this case. The record is read-only; only SBAR/hand-off fields can still be recorded.",
+        "QUEUE_DISPOSITION_LOCKED"
+      );
+    }
+  }
 
   if (
     isCallIntake(session) &&
@@ -1480,6 +1513,13 @@ export async function moveQueueItem(
   requireQueueAccess(session);
   const record = await getRecord(id);
   requireTenantAccess(record, session);
+  if (record.status === "COMPLETED" && request.toStatus !== "COMPLETED") {
+    throw new QueueOrchestrationError(
+      409,
+      "This encounter is completed and its clinical record is locked. Reopen it explicitly before moving it.",
+      "QUEUE_ITEM_COMPLETED_LOCKED"
+    );
+  }
   validateMovePermissions(record, session, request);
   validateClinicalSequence(record, request);
 

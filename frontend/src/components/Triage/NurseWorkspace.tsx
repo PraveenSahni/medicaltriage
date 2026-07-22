@@ -1107,7 +1107,7 @@ export default function NurseWorkspace() {
 
   async function handleStageChange(nextIndex: number) {
     const boundedIndex = Math.max(0, Math.min(nextIndex, stages.length - 1));
-    if (!activeItem || activeItem.id !== activeCardId) {
+    if (!activeItem || activeItem.id !== activeCardId || activeCard?.queueStatus === "Closed") {
       setStageIndex(boundedIndex);
       return;
     }
@@ -1779,14 +1779,25 @@ function ActiveCallPanel({
   const route = routeFromAssessment(card, score, assessmentResponses);
   const reasons = localSafetyFloorReasons(card);
   const finalStage = stageIndex === stages.length - 1;
+  const isLocked = card.queueStatus === "Closed";
 
   return (
     <div className="space-y-2">
       <Stepper activeIndex={stageIndex} onSelect={onStageChange} />
 
+      {isLocked && (
+        <div className="ist-surface flex items-center gap-2 border border-emerald-200 bg-emerald-50 p-3 text-sm font-semibold text-emerald-800">
+          <span aria-hidden="true">🔒</span>
+          <span>
+            This encounter is completed. Its clinical record is locked and cannot be edited. Reopen it explicitly
+            (queue manager action) before making changes.
+          </span>
+        </div>
+      )}
+
       {reasons.length > 0 && <RedFloorBanner reasons={reasons} />}
 
-      <section className="ist-surface p-3">
+      <section className={`ist-surface p-3 ${isLocked ? "pointer-events-none opacity-60" : ""}`} aria-disabled={isLocked}>
         {stages[stageIndex].id === "reasonEmergency" && (
           <ReasonEmergencyStage
             card={card}

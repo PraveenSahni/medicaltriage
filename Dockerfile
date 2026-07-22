@@ -15,6 +15,7 @@ FROM dependencies AS build
 COPY tsconfig.json ./
 COPY src ./src
 COPY frontend ./frontend
+COPY data/generated/ist_qatar_seed_data.json ./data/generated/ist_qatar_seed_data.json
 RUN pnpm run build
 RUN pnpm run build:web
 RUN pnpm prune --prod
@@ -34,6 +35,7 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/dist-web ./dist-web
+COPY --from=build /app/data ./data
 
 EXPOSE 8080
 

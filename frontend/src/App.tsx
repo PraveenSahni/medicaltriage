@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import AdminPortal from "./AdminPortal";
+import { clearAccessToken } from "./authToken";
 import CcpWorkspace from "./CcpWorkspace";
 import HelpCenter from "./HelpCenter";
 import KanbanWorkspace from "./KanbanWorkspace";
@@ -316,6 +317,7 @@ export default function App() {
 
   async function logout() {
     await fetch(`${apiBase}/api/v1/auth/logout`, { method: "POST", credentials: "include" });
+    clearAccessToken();
     setSession(null);
     setActiveView("workspace");
     setSessionStatus("Signed out.");

@@ -6,7 +6,6 @@
 node_modules
 dist
 dist-web
-data/generated
 python/__pycache__
 python/*.sqlite3
 python/*.sqlite3-shm

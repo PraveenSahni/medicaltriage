@@ -48,7 +48,11 @@ export const QueueCreateRequestSchema = z.object({
   summary: z.string().min(1).max(500).default("New tele-triage call awaiting intake."),
   reasonNarrative: z.string().min(1).max(1000).optional(),
   safetyFloorActive: z.boolean().default(false),
-  slaMinutes: z.number().int().min(1).max(720).default(15)
+  slaMinutes: z.number().int().min(1).max(720).default(15),
+  // Synthetic-seeding only: lets a mock-mode batch backdate createdAt/updatedAt
+  // so demo/test data can be spread across a realistic time window instead of
+  // all landing at "now". Ignored outside mock mode - see createQueueItem().
+  seedCreatedAtIso: z.string().datetime().optional()
 });
 export type QueueCreateRequest = z.infer<typeof QueueCreateRequestSchema>;
 

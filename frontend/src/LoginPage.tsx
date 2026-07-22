@@ -3,6 +3,7 @@ import {
   EyeOff
 } from "lucide-react";
 import { FormEvent, useState } from "react";
+import { setAccessToken } from "./authToken";
 
 type AuthenticatedSession = {
   sessionId: string;
@@ -323,6 +324,7 @@ export default function LoginPage({ onAuthenticated }: LoginPageProps) {
         setStatus(payload.message ?? "Sign-in failed. Check your credentials or contact the helpdesk.");
         return;
       }
+      setAccessToken(payload.accessToken);
       onAuthenticated(payload.session, payload.redirectTo === "admin" ? "admin" : "workspace");
     } catch {
       setStatus("Authentication service is not reachable. Contact the helpdesk.");

@@ -21,8 +21,12 @@ node_modules
 *.log
 *.pid
 
-# Reference/licensed source material and generated datasets are never build context.
-/data/
+# Reference/licensed source material and generated datasets are never build context,
+# except the synthetic HRMS staff directory the mock HRMS adapter reads at runtime.
+/data/*
+!/data/generated
+/data/generated/*
+!/data/generated/ist_qatar_seed_data.json
 /New folder/
 *.pdf
 *.docx
