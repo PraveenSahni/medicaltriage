@@ -16,9 +16,10 @@ import KanbanWorkspace from "./KanbanWorkspace";
 import LoginPage from "./LoginPage";
 import { QueueProvider } from "./QueueContext";
 import TriageWorkspace from "./TriageWorkspace";
+import NurseWorkspaceRedesign from "./components/Triage/NurseWorkspaceRedesign";
 import { IconActionButton, LabeledIconButton, WorkspaceModeSwitch } from "./components/ui/NavigationControls";
 
-type ViewKey = "workspace" | "kanban" | "ccp" | "help" | "admin";
+type ViewKey = "workspace" | "cockpitV2" | "kanban" | "ccp" | "help" | "admin";
 type ThemeMode = "light" | "dark";
 type EnvironmentTone = "simulation" | "demo" | "uat" | "production";
 
@@ -249,6 +250,10 @@ export default function App() {
       return <KanbanWorkspace />;
     }
 
+    if (activeView === "cockpitV2") {
+      return <NurseWorkspaceRedesign />;
+    }
+
     return <TriageWorkspace />;
   };
 
@@ -256,6 +261,7 @@ export default function App() {
   const activeRoleLabel = session ? formatRole(session.activeRole) : "";
   const viewLabels: Record<ViewKey, string> = {
     workspace: "Triage",
+    cockpitV2: "Triage (Redesign)",
     kanban: "Triage",
     ccp: "CCP",
     help: "Help",
@@ -266,6 +272,7 @@ export default function App() {
   function openView(view: ViewKey) {
     const nextHashByView: Record<ViewKey, string> = {
       workspace: "#/workspace",
+      cockpitV2: "#/cockpit-v2",
       kanban: "#/kanban",
       ccp: "#/ccp",
       help: "#/help",
@@ -287,6 +294,11 @@ export default function App() {
 
       if (target === "workspace" || target === "triage") {
         setActiveView("workspace");
+        return;
+      }
+
+      if (target === "cockpit-v2" || target === "cockpitv2") {
+        setActiveView("cockpitV2");
         return;
       }
 

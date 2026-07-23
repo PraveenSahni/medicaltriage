@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nurse Cockpit — Open Calls Preview (6 Real Protocols)</title>
+<style>
+  :root {
+    --bg: #f7f6f3; --bg2: #f1efe9; --card: #ffffff;
+    --ink: #1a1a19; --muted: #6b6a66; --tx3: #9c9a92; --line: #e0dfd9;
+    --accent: #185FA5;
+    --ems: #A32D2D;   --emsbg: #FCEBEB;   --emsbd: #F09595;
+    --hcp4: #7A5D00;  --hcp4bg: #FAF3D1;  --hcp4bd: #D9BC2B;
+    --pcp24: #185FA5; --pcp24bg: #E6F1FB; --pcp24bd: #85B7EB;
+    --home: #0F6E56;  --homebg: #E1F5EE;  --homebd: #5DCAA5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.55; font-size: 14px;
+  }
+  .note {
+    background: #FFF7EC; border-bottom: 1px solid #EF9F27; padding: 10px 20px;
+    font-size: 12.5px; color: #854F0B;
+  }
+  .layout { display: flex; min-height: calc(100vh - 40px); }
+  .sidebar {
+    width: 300px; flex-shrink: 0; background: var(--card); border-right: 1px solid var(--line);
+    padding: 16px 0; overflow-y: auto;
+  }
+  .sidebar h2 { font-size: 0.95rem; margin: 0 16px 12px; }
+  .call-item {
+    padding: 12px 16px; border-left: 3px solid transparent; border-bottom: 1px solid var(--line);
+  }
+  .call-item.active { border-left-color: var(--accent); background: #E6F1FB; }
+  .call-item.held { border-left-color: var(--hcp4bd); background: var(--hcp4bg); }
+  .call-item.locked { opacity: .5; }
+  .call-item.completed { opacity: .45; }
+  .call-item .cid { font-size: 0.68rem; color: var(--tx3); font-weight: 700; letter-spacing: .3px; display: flex; align-items: center; gap: 6px; }
+  .call-item .title { font-weight: 700; margin: 2px 0; }
+  .call-item .narrative { font-size: 0.82rem; color: var(--muted); }
+  .call-tag {
+    font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .3px;
+    border-radius: 999px; padding: 1px 7px;
+  }
+  .tag-active { background: var(--pcp24bg); color: var(--pcp24); }
+  .tag-held { background: var(--hcp4bg); color: var(--hcp4); }
+  .tag-locked { background: var(--bg2); color: var(--tx3); }
+  .tag-done { background: var(--homebg); color: var(--home); }
+  .answer-btn {
+    margin-top: 8px; width: 100%; background: var(--ink); color: #fff; border: none;
+    border-radius: 7px; padding: 8px 10px; font-size: .82rem; font-weight: 700; cursor: pointer;
+  }
+  .answer-btn:hover { opacity: .88; }
+  .answer-btn.resume-btn { background: var(--hcp4); }
+  .answer-btn:disabled { background: var(--tx3); cursor: not-allowed; opacity: .7; }
+  .complete-btn {
+    background: var(--home); color: #fff; border: none; border-radius: 8px;
+    padding: 9px 20px; font-size: .86rem; font-weight: 700; cursor: pointer;
+  }
+  .complete-btn:hover { opacity: .88; }
+
+  .main { flex: 1; padding: 24px 32px; max-width: 1040px; }
+  h1 { font-size: 1.3rem; margin: 0 0 2px; }
+  .sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 18px; }
+
+  .prog-wrap { margin: 4px 0 18px; }
+  .prog-row { display: flex; justify-content: space-between; font-size: .74rem; color: var(--tx3); margin-bottom: 4px; font-weight: 600; }
+  .prog-track { height: 5px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width .3s; }
+
+  .step {
+    background: var(--card); border: 1px solid var(--line);
+    border-left: 4px solid var(--gcbd, var(--line));
+    border-radius: 10px; padding: 14px 16px; margin: 10px 0;
+  }
+  .step-hdr { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: .82rem; flex-shrink: 0;
+    background: var(--gcbg, var(--bg2)); color: var(--gc, var(--muted));
+  }
+  .gtag { font-size: .66rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--gc, var(--accent)); }
+  .step-title { font-weight: 600; margin-top: 2px; }
+  .choices { display: flex; gap: 8px; flex-wrap: wrap; }
+  .choice {
+    padding: 8px 28px; border-radius: 7px; border: 1.5px solid var(--line);
+    background: var(--bg2); cursor: pointer; font-weight: 700; font-size: .9rem;
+    transition: all .15s; user-select: none;
+  }
+  .choice:hover { background: #eceae3; }
+  .choice.sel-yes { background: var(--emsbg); border-color: var(--emsbd); color: var(--ems); }
+  .choice.sel-no { background: var(--homebg); border-color: var(--homebd); color: var(--home); }
+
+  /* Collapsed / answered TAQ card - click-to-expand for review */
+  .step.asked { border-left-color: var(--homebd); background: #fafaf8; }
+  .step.asked .step-hdr { margin-bottom: 0; }
+  .step.asked .step-num { background: var(--homebg); color: var(--home); }
+  .step.asked .step-title { font-weight: 500; color: var(--muted); }
+  .step.asked .ans { margin-top: 3px; font-size: .82rem; color: var(--home); font-weight: 600; }
+  .step.asked .chev { margin-left: auto; align-self: center; color: var(--tx3); font-size: .75rem; transition: transform .15s; flex-shrink: 0; }
+  .step.asked.open .chev { transform: rotate(90deg); }
+  .step.asked.open .step-title { color: var(--ink); font-weight: 600; }
+
+  .action-hdr {
+    display: flex; align-items: center; gap: 10px; font-size: 1.02rem; font-weight: 700;
+    margin: 18px 0 4px; color: var(--ink);
+  }
+  .action-hdr-2 { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .action-num {
+    width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: .82rem; flex-shrink: 0;
+  }
+  .action-sub-note { font-size: .8rem; color: var(--tx3); margin-bottom: 12px; }
+
+  .no-active-call {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 100px 20px; color: var(--tx3);
+  }
+  .no-active-call .nac-icon {
+    width: 46px; height: 46px; border-radius: 50%; background: var(--bg2);
+    display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 12px;
+  }
+  .no-active-call h2 { margin: 0 0 6px; color: var(--muted); font-size: 1.1rem; }
+  .no-active-call p { max-width: 380px; font-size: .85rem; margin: 0; }
+
+  .active-call-hdr { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .hold-btn {
+    background: var(--card); border: 1.5px solid var(--hcp4bd); color: var(--hcp4);
+    border-radius: 8px; padding: 8px 16px; font-size: .84rem; font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  .hold-btn:hover { background: var(--hcp4bg); }
+  .active-call-actions { display: flex; gap: 8px; align-items: flex-start; }
+
+  .stage-tabs {
+    display: flex; gap: 28px; border-bottom: 1px solid var(--line);
+    margin: 16px 0 14px; padding-bottom: 0;
+  }
+  .stage-tab {
+    background: none; border: none; cursor: pointer; padding: 6px 4px 10px;
+    font-size: .78rem; font-weight: 600; letter-spacing: .3px; text-transform: uppercase;
+    color: var(--tx3); display: flex; align-items: center; gap: 6px;
+    border-bottom: 3px solid transparent; margin-bottom: -1px; transition: color .15s, border-color .15s;
+  }
+  .stage-tab .stg-icon { font-size: .85rem; opacity: .55; }
+  .stage-tab:hover:not(.stage-tab-active) { color: var(--muted); }
+  .stage-tab.stage-tab-active {
+    color: var(--hcp4); font-weight: 800; border-bottom-color: var(--hcp4);
+  }
+  .stage-tab.stage-tab-active .stg-icon { opacity: 1; }
+  .escalate-btn {
+    background: var(--ems); color: #fff; border: 1.5px solid var(--ems);
+    border-radius: 8px; padding: 8px 16px; font-size: .84rem; font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  .escalate-btn:hover { background: #8a2626; }
+  .escalate-btn:disabled { background: var(--tx3); border-color: var(--tx3); cursor: not-allowed; opacity: .7; }
+
+  .opening-script {
+    display: flex; gap: 10px; align-items: flex-start;
+    border-left: 4px solid var(--homebd); background: var(--homebg);
+    border-radius: 8px; padding: 10px 14px; margin-bottom: 14px;
+  }
+  .opening-script .os-icon {
+    width: 26px; height: 26px; border-radius: 7px; background: var(--home); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: .8rem; flex-shrink: 0;
+  }
+  .opening-script .os-script { font-weight: 700; font-size: .92rem; color: var(--ink); }
+  .opening-script .os-script span { font-weight: 400; color: var(--muted); }
+  .os-facts { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 4px; font-size: .78rem; color: var(--muted); }
+  .os-facts b { color: var(--ink); font-weight: 700; }
+  .os-facts .hrms-ok { color: var(--home); font-weight: 700; }
+  .os-facts .hrms-warn { color: var(--hcp4); font-weight: 700; }
+
+  .iaq-note {
+    font-size: .84rem; color: var(--muted); background: var(--bg2);
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 14px; margin: 10px 0 4px;
+  }
+  .iaq-body { margin-top: 10px; }
+  .iaq-choices { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .iaq-chip {
+    padding: 6px 14px; border-radius: 999px; border: 1.5px solid var(--line);
+    background: var(--card); font-size: .82rem; font-weight: 600; cursor: pointer; color: var(--muted);
+  }
+  .iaq-chip:hover { background: #eceae3; }
+  .iaq-chip.sel { background: var(--pcp24bg); border-color: var(--pcp24bd); color: var(--pcp24); }
+  .iaq-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .iaq-text {
+    flex: 1; min-width: 220px; padding: 7px 10px; border-radius: 7px;
+    border: 1.5px solid var(--line); background: var(--card); color: var(--ink); font-size: .85rem; font-family: inherit;
+  }
+  .iaq-text:focus { outline: none; border-color: var(--accent); }
+  .iaq-save {
+    padding: 7px 20px; border-radius: 7px; border: 1.5px solid var(--accent);
+    background: var(--accent); color: #fff; cursor: pointer; font-weight: 700; font-size: .8rem;
+  }
+  .continue-gate {
+    margin: 16px 0; padding: 14px 16px; border-radius: 10px; background: var(--homebg);
+    border: 1px solid var(--homebd); color: var(--home); font-weight: 600; font-size: .88rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .continue-gate button {
+    background: var(--home); color: #fff; border: none; border-radius: 7px;
+    padding: 8px 18px; font-weight: 700; font-size: .84rem; cursor: pointer; flex-shrink: 0;
+  }
+  .iaq-progress { font-size: .78rem; color: var(--tx3); margin: 6px 0 12px; }
+
+  .sub-hdr { font-size: .88rem; font-weight: 700; color: var(--muted); margin: 16px 0 6px; text-transform: uppercase; letter-spacing: .4px; }
+  .optional-tag {
+    font-size: .66rem; font-weight: 700; text-transform: none; letter-spacing: 0;
+    background: var(--bg2); border: 1px solid var(--line); color: var(--tx3);
+    border-radius: 999px; padding: 1px 8px; margin-left: 6px; vertical-align: middle;
+  }
+
+  .reason-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .reason-card label {
+    font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--muted);
+  }
+  .reason-card textarea {
+    width: 100%; min-height: 54px; padding: 9px 12px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+    font-family: inherit; font-size: .9rem; resize: vertical;
+  }
+  .reason-card textarea:focus { outline: none; border-color: var(--accent); }
+
+  .redflag-banner {
+    display: flex; align-items: flex-start; gap: 10px; border-radius: 8px;
+    padding: 10px 14px; margin: 8px 0; font-size: .85rem; font-weight: 600;
+  }
+  .redflag-banner.active { background: var(--emsbg); border: 1px solid var(--emsbd); color: var(--ems); }
+  .redflag-banner.clear { background: var(--homebg); border: 1px solid var(--homebd); color: var(--home); font-weight: 500; }
+
+  .vitals-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px;
+  }
+  .vitals-unobtainable {
+    display: flex; align-items: center; gap: 8px; font-size: .85rem; font-weight: 600;
+    color: var(--muted); cursor: pointer; margin-bottom: 10px;
+  }
+  .vitals-unobtainable input { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
+  .vitals-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  @media (max-width: 900px) {
+    .vitals-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+  }
+  .vfield label { display: block; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; color: var(--tx3); margin-bottom: 3px; }
+  .vfield input, .vfield select {
+    width: 100%; padding: 7px 9px; border-radius: 7px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--ink); font-size: .88rem; font-family: inherit;
+  }
+  .vfield input:focus, .vfield select:focus { outline: none; border-color: var(--accent); }
+  .vitals-card.disabled .vitals-grid { opacity: .4; pointer-events: none; }
+
+  .temp-row { display: flex; align-items: center; gap: 8px; }
+  .temp-row input[type=range] { flex: 1; accent-color: var(--accent); }
+  .temp-value { font-weight: 700; font-size: .88rem; min-width: 52px; text-align: right; }
+
+  .r-card {
+    border-radius: 10px; border: 1.5px dashed var(--gcbd, var(--line));
+    background: var(--gcbg, var(--bg2)); padding: 18px; margin: 12px 0;
+  }
+  .r-title { font-size: 1.3rem; font-weight: 800; color: var(--gc, var(--ink)); margin-bottom: 4px; letter-spacing: .3px; }
+  .r-sub { font-weight: 600; margin-bottom: 6px; }
+  .r-detail { font-size: .86rem; color: var(--muted); font-style: italic; margin-bottom: 12px; }
+  .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 7px; }
+  .fc {
+    background: var(--card); border: 1px solid var(--line); border-radius: 7px;
+    padding: 9px 12px; font-size: .82rem; line-height: 1.5; color: var(--ink);
+  }
+  .fc b { display: block; color: var(--gc, var(--accent)); font-size: .78rem; text-transform: uppercase; letter-spacing: .3px; }
+  .flow-actions { margin-top: 14px; }
+  .flow-actions button {
+    background: var(--card); border: 1px solid var(--line); color: var(--accent);
+    border-radius: 8px; padding: 7px 16px; font-size: .84rem; font-weight: 600; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div class="note">
+  PREVIEW ONLY — 6 real open calls seeded from our own local queue, each matched to a real
+  protocol via our actual search/match logic. Nothing in the live Nurse Cockpit app has been changed.
+</div>
+<div class="layout">
+  <div class="sidebar">
+    <h2>Open Calls (Waiting)</h2>
+    <div id="call-list"></div>
+  </div>
+  <div class="main">
+    <div id="no-active-call" class="no-active-call">
+      <div class="nac-icon">&#9742;</div>
+      <h2>No active call</h2>
+      <p>Select a caller from the incoming queue. The cockpit blocks a second active encounter until the current call is completed or placed on hold.</p>
+    </div>
+
+    <div id="active-call-content" style="display:none">
+    <div class="active-call-hdr">
+      <div>
+        <h1 id="call-title"></h1>
+        <div class="sub" id="call-sub"></div>
+      </div>
+      <div class="active-call-actions" id="active-call-actions">
+        <button class="escalate-btn" id="escalate-btn" onclick="escalateEmergencyNow()">&#9888; Sounds life-threatening - escalate now</button>
+        <button class="hold-btn" onclick="holdCurrentCall()">&#10074;&#10074; Hold Call</button>
+      </div>
+      <div id="readonly-badge" style="display:none;background:var(--tx3);color:#fff;border-radius:6px;padding:6px 12px;font-size:.78rem;font-weight:600;white-space:nowrap">&#128274; Closed — Read Only</div>
+    </div>
+
+    <nav class="stage-tabs" id="stage-tabs">
+      <button class="stage-tab" data-stage="0" onclick="switchStage(0)"><span class="stg-icon">&#128269;</span>1 &middot; Reason &amp; Rule-Out</button>
+      <button class="stage-tab" data-stage="1" onclick="switchStage(1)"><span class="stg-icon">&#9776;</span>2 &middot; Questions</button>
+      <button class="stage-tab" data-stage="2" onclick="switchStage(2)"><span class="stg-icon">&#9877;</span>3 &middot; Disposition &amp; Advice</button>
+      <button class="stage-tab" data-stage="3" onclick="switchStage(3)"><span class="stg-icon">&#128203;</span>4 &middot; SBAR / Complete</button>
+    </nav>
+
+    <div id="stage-panel-0">
+    <div class="action-sub-note">Opening script, HRMS context, reason, guideline selection, and emergency rule-out are handled before lower-acuity assessment questions.</div>
+
+    <!-- 0. Caller Details and Script -->
+    <div class="opening-script" id="opening-script"></div>
+
+    <!-- 1. History Taking -->
+    <div class="sub-hdr">History Taking</div>
+    <div class="reason-card">
+      <label for="history-input">Reason for Call — in the caller's own words</label>
+      <textarea id="history-input" oninput="onHistoryInput()"></textarea>
+    </div>
+
+    <!-- 2. Possible Red Flag Advisory -->
+    <div id="redflag-advisory"></div>
+
+    <!-- 3. Vital Taking (Optional) - includes Temperature -->
+    <div class="sub-hdr">Vital Taking <span class="optional-tag">Optional</span></div>
+    <div class="vitals-card">
+      <label class="vitals-unobtainable">
+        <input type="checkbox" id="vitals-unobtainable" onchange="onVitalsUnobtainableChange()">
+        Vitals cannot be obtained on this call
+      </label>
+      <div class="vitals-grid" id="vitals-grid">
+        <div class="vfield">
+          <label>Heart Rate (bpm)</label>
+          <input type="number" id="v-hr" placeholder="60-100" oninput="onVitalsInput()">
+        </div>
+        <div class="vfield">
+          <label>Respiratory Rate (/min)</label>
+          <input type="number" id="v-rr" placeholder="12-20" oninput="onVitalsInput()">
+        </div>
+        <div class="vfield">
+          <label>SpO2 (%)</label>
+          <input type="number" id="v-spo2" placeholder="95-100" oninput="onVitalsInput()">
+        </div>
+        <div class="vfield">
+          <label>Consciousness (AVPU)</label>
+          <select id="v-avpu" onchange="onVitalsInput()">
+            <option value="alert">Alert</option>
+            <option value="voice">Responds to Voice</option>
+            <option value="pain">Responds to Pain</option>
+            <option value="unresponsive">Unresponsive</option>
+          </select>
+        </div>
+        <div class="vfield">
+          <label>Temperature</label>
+          <div class="temp-row">
+            <input type="range" id="temp-slider" min="34" max="42" step="0.1" value="37.0" oninput="onVitalsInput()">
+            <span class="temp-value" id="temp-value">37.0°C</span>
+          </div>
+        </div>
+        <div class="vfield">
+          <label>Temperature Taken Via</label>
+          <select id="temp-method" onchange="onVitalsInput()">
+            <option value="Oral">Oral</option>
+            <option value="Ear">Ear</option>
+            <option value="Forehead">Forehead</option>
+            <option value="Axillary">Axillary</option>
+            <option value="Rectal">Rectal</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-hdr">Initial Assessment Questions</div>
+    <div class="iaq-note">Click a question to expand it, choose or type the caller's answer. Answering auto-advances to the next question.</div>
+    <div id="iaq-flow"></div>
+    <div id="iaq-gate"></div>
+    </div>
+
+    <div id="stage-panel-1" style="display:none">
+      <div class="action-sub-note">Questions are presented high-to-low acuity; a Yes fixes the disposition, a No unlocks the next item.</div>
+      <div class="prog-wrap">
+        <div class="prog-row"><span id="prog-label">Question 1</span><span id="prog-pct">0%</span></div>
+        <div class="prog-track"><div class="prog-fill" id="prog-bar" style="width:0%"></div></div>
+      </div>
+      <div id="flow"></div>
+      <div class="flow-actions"><button onclick="restartCurrent()">&#8635; Restart Walkthrough</button></div>
+    </div>
+
+    <div id="stage-panel-2" style="display:none">
+      <div class="action-sub-note">The clinical disposition is determined by rules and nurse-confirmed answers. Care advice is mapped from approved content.</div>
+      <div id="disposition-panel-content"></div>
+    </div>
+
+    <div id="stage-panel-3" style="display:none">
+      <div class="action-sub-note">Copy the SBAR handoff, deliver callback instructions, and close the call.</div>
+      <div id="sbar-panel-content"></div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CALLS = [
+  {
+    "caseId": "case-69edf85c-3a78-4916-9be7-f69fdf74b8b9",
+    "staffId": "IST-00042",
+    "reasonNarrative": "Caller says: mild-to-moderate back pain that started gradually a few days ago.",
+    "title": "Back Pain",
+    "protocolId": "oscg-back-pain",
+    "taqs": [
+      {
+        "q": "Is there numbness, tingling or weakness in BOTH legs, loss of feeling around the genitals or back passage, new difficulty controlling bladder or bowel, chest pain, or did the pain start after a serious accident such as a car crash or a fall from height?",
+        "ro": "NHS.UK back pain guidance lists bilateral leg symptoms, saddle numbness, new bladder/bowel changes, sexual dysfunction, concurrent chest pain, and a major-trauma trigger as its own call-999/A&E criteria - possible cauda equina syndrome or major trauma.",
+        "dc": "HMC_EMERGENCY_DEPARTMENT",
+        "v": "--ems",
+        "label": "Go to ED Now",
+        "ca": "Emergency back pain precautions",
+        "caSendable": false,
+        "caText": "Keep the caller as still and comfortable as possible. Arrange emergency transport immediately."
+      },
+      {
+        "q": "Does the caller feel hot, cold, shivery, or generally unwell, OR is this severe pain that started suddenly and is quickly getting worse?",
+        "ro": "NHS.UK guidance flags fever/feeling unwell with back pain, and sudden severe or rapidly worsening pain, as needing a same-day GP appointment or 111 call.",
+        "dc": "HMC_URGENT_REVIEW",
+        "v": "--hcp4",
+        "label": "See HCP Within 4 Hours",
+        "ca": "Urgent back pain review",
+        "caSendable": false,
+        "caText": "Arrange same-day or next-day medical review. Rest in a comfortable position and avoid heavy lifting until seen."
+      },
+      {
+        "q": "Has the pain lasted several weeks despite home treatment, is it interfering with daily activities, is there unexplained weight loss, a new lump or change in the shape of the back, is it worse at night or with rest, worse with coughing or straining, or is it upper back pain between the shoulder blades?",
+        "ro": "NHS.UK guidance lists these as reasons to book a routine GP appointment rather than manage entirely at home.",
+        "dc": "PHCC_URGENT_CARE_OR_TELECONSULT",
+        "v": "--pcp24",
+        "label": "See PCP Within 24 Hours",
+        "ca": "Routine back pain follow-up",
+        "caSendable": false,
+        "caText": "Book a routine GP appointment. Continue gentle activity and over-the-counter pain relief in the meantime."
+      },
+      {
+        "q": "Is this mild-to-moderate pain of gradual onset with none of the concerning features above?",
+        "ro": "NHS.UK guidance recommends staying active, anti-inflammatory medicine, and heat/ice for uncomplicated back pain without red-flag features.",
+        "dc": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        "v": "--home",
+        "label": "Home Care",
+        "ca": "Home care for uncomplicated back pain",
+        "caSendable": true,
+        "caText": "Stay as active as possible, use anti-inflammatory pain relief per local policy, and apply ice or heat packs. Gentle stretching and short walks usually help more than bed rest."
+      }
+    ],
+    "iaqs": [
+      {
+        "responseType": "LOCATION",
+        "prompt": "Where exactly is the pain - lower back, upper back, or does it spread down a leg?",
+        "clarification": null
+      },
+      {
+        "responseType": "DURATION",
+        "prompt": "When did the pain start, and did it follow an injury or accident?",
+        "clarification": null
+      },
+      {
+        "responseType": "YES_NO",
+        "prompt": "Any numbness, tingling, or weakness in either leg?",
+        "clarification": null
+      }
+    ],
+    "sampleAnswers": [
+      "Lower back, no radiation down either leg",
+      "Started 3 days ago, gradual onset, no injury or fall",
+      "No"
+    ],
+    "context": {
+      "channel": "Phone",
+      "waitMinutes": 18,
+      "patientType": "Staff",
+      "age": 35,
+      "ageMonths": 420,
+      "station": "DOH",
+      "hrmsValidated": true
+    }
+  },
+  {
+    "caseId": "case-4b10b65d-d956-424a-996a-7bd371f40c96",
+    "staffId": "IST-00108",
+    "reasonNarrative": "Caller says: twisted ankle playing football, can't put weight on it.",
+    "title": "Ankle and Foot Injury (Ottawa Ankle Rule)",
+    "protocolId": "oscr-ankle-foot-injury",
+    "taqs": [
+      {
+        "q": "Is there an obvious deformity, visible bone, open wound, uncontrolled bleeding, or is the foot cold, pale, blue, or numb?",
+        "ro": "Universal emergency rule-out added ahead of the Ottawa Ankle Rule itself (not part of the published rule) - signs of neurovascular compromise or open fracture require immediate emergency care regardless of the imaging-decision criteria below.",
+        "dc": "HMC_EMERGENCY_DEPARTMENT",
+        "v": "--ems",
+        "label": "Go to ED Now",
+        "ca": "Emergency ankle/foot injury precautions",
+        "caSendable": false,
+        "caText": "Keep the limb still, do not attempt to realign a deformity, elevate if possible, and arrange emergency transport."
+      },
+      {
+        "q": "Ottawa Ankle Rule criterion 1: is there bone tenderness over the posterior 6 cm or tip of the lateral or medial malleolus (the bony bumps on either side of the ankle)?",
+        "ro": "Published Ottawa Ankle Rule malleolar-zone criterion. A positive answer to ANY malleolar/midfoot/weight-bearing criterion means imaging is indicated (Stiell et al., 1992).",
+        "dc": "HMC_URGENT_REVIEW",
+        "v": "--hcp4",
+        "label": "See HCP Within 4 Hours",
+        "ca": "Ottawa Ankle Rule positive - arrange imaging",
+        "caSendable": false,
+        "caText": "Arrange same-day or next-day X-ray evaluation per the Ottawa Ankle Rule. Until then: rest the ankle, avoid weight-bearing, apply ice 20 minutes at a time, and elevate."
+      },
+      {
+        "q": "Ottawa Ankle Rule criterion 2: is there bone tenderness over the navicular bone (top of the midfoot) or the base of the fifth metatarsal (outer midfoot)?",
+        "ro": "Published Ottawa Ankle Rule midfoot-zone criterion.",
+        "dc": "HMC_URGENT_REVIEW",
+        "v": "--hcp4",
+        "label": "See HCP Within 4 Hours",
+        "ca": "Ottawa Ankle Rule positive - arrange imaging",
+        "caSendable": false,
+        "caText": "Arrange same-day or next-day X-ray evaluation per the Ottawa Ankle Rule. Until then: rest the ankle, avoid weight-bearing, apply ice 20 minutes at a time, and elevate."
+      },
+      {
+        "q": "Ottawa Ankle Rule criterion 3: was the patient unable to take four steps, both right after the injury and right now?",
+        "ro": "Published Ottawa Ankle Rule weight-bearing criterion.",
+        "dc": "HMC_URGENT_REVIEW",
+        "v": "--hcp4",
+        "label": "See HCP Within 4 Hours",
+        "ca": "Ottawa Ankle Rule positive - arrange imaging",
+        "caSendable": false,
+        "caText": "Arrange same-day or next-day X-ray evaluation per the Ottawa Ankle Rule. Until then: rest the ankle, avoid weight-bearing, apply ice 20 minutes at a time, and elevate."
+      },
+      {
+        "q": "If all three Ottawa criteria above are No: mild swelling or pain only, can bear weight, no bone tenderness at the specified points?",
+        "ro": "The Ottawa Ankle Rule's own validated conclusion: a patient who meets NONE of the malleolar, midfoot, or weight-bearing criteria does not need an ankle/foot X-ray.",
+        "dc": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        "v": "--home",
+        "label": "Home Care",
+        "ca": "Ottawa Ankle Rule negative - home care (RICE)",
+        "caSendable": true,
+        "caText": "Rest, Ice (20 minutes at a time), Compression (elastic bandage, not too tight), Elevation above heart level. Gradually resume weight-bearing as tolerated over several days."
+      }
+    ],
+    "iaqs": [
+      {
+        "responseType": "LOCATION",
+        "prompt": "Where exactly does the ankle or foot hurt?",
+        "clarification": "Ask the caller to point to or describe the exact spot."
+      },
+      {
+        "responseType": "DURATION",
+        "prompt": "When did the injury happen?",
+        "clarification": null
+      },
+      {
+        "responseType": "YES_NO",
+        "prompt": "Did you hear or feel a snap or pop at the time of injury?",
+        "clarification": null
+      }
+    ],
+    "sampleAnswers": [
+      "Outer ankle bone (lateral malleolus)",
+      "About 30 minutes ago, twisted it playing football",
+      "Yes, felt a pop at the time"
+    ],
+    "context": {
+      "channel": "Phone",
+      "waitMinutes": 6,
+      "patientType": "Staff",
+      "age": 27,
+      "ageMonths": 328,
+      "station": "DOH",
+      "hrmsValidated": true
+    }
+  },
+  {
+    "caseId": "case-a1be8961-abc9-4df2-815b-b22b77ee5cbf",
+    "staffId": "IST-00215",
+    "reasonNarrative": "Caller says: sore throat and mild fever since yesterday.",
+    "title": "Sore Throat (Centor/McIsaac Score)",
+    "protocolId": "oscr-sore-throat",
+    "taqs": [
+      {
+        "q": "Is there drooling or inability to swallow saliva, a muffled ('hot potato') voice, stridor, severe difficulty breathing, or inability to open the mouth fully?",
+        "ro": "Universal emergency rule-out added ahead of the Centor/McIsaac score itself (not part of the published score) - these are standard emergency-medicine red flags for airway compromise, epiglottitis, or peritonsillar abscess.",
+        "dc": "HMC_EMERGENCY_DEPARTMENT",
+        "v": "--ems",
+        "label": "Go to ED Now",
+        "ca": "Emergency airway precautions",
+        "caSendable": false,
+        "caText": "Do not attempt to examine the throat further. Arrange emergency transport immediately."
+      },
+      {
+        "q": "Centor/McIsaac criterion: is there tonsillar exudate or swelling visible on the tonsils?",
+        "ro": "Worth +1 point in the McIsaac score. Nurse should tally all criteria below before deciding disposition, per the published score bands (see final question).",
+        "dc": "PHCC_URGENT_CARE_OR_TELECONSULT",
+        "v": "--pcp24",
+        "label": "See PCP Within 24 Hours",
+        "ca": "Centor/McIsaac tally in progress",
+        "caSendable": false,
+        "caText": "Continue recording each criterion; the total score (with age adjustment) determines whether rapid strep testing or antibiotics are appropriate per the published score bands."
+      },
+      {
+        "q": "Centor/McIsaac criterion: is there tender swelling of the front neck (anterior cervical) lymph nodes?",
+        "ro": "Worth +1 point in the McIsaac score.",
+        "dc": "PHCC_URGENT_CARE_OR_TELECONSULT",
+        "v": "--pcp24",
+        "label": "See PCP Within 24 Hours",
+        "ca": "Centor/McIsaac tally in progress",
+        "caSendable": false,
+        "caText": "Continue recording each criterion; the total score (with age adjustment) determines whether rapid strep testing or antibiotics are appropriate per the published score bands."
+      },
+      {
+        "q": "Centor/McIsaac criterion: is there a measured or reported fever above 38C (100.4F)?",
+        "ro": "Worth +1 point in the McIsaac score.",
+        "dc": "PHCC_URGENT_CARE_OR_TELECONSULT",
+        "v": "--pcp24",
+        "label": "See PCP Within 24 Hours",
+        "ca": "Centor/McIsaac tally in progress",
+        "caSendable": false,
+        "caText": "Continue recording each criterion; the total score (with age adjustment) determines whether rapid strep testing or antibiotics are appropriate per the published score bands."
+      },
+      {
+        "q": "Centor/McIsaac criterion: is cough ABSENT (no cough at all)?",
+        "ro": "Worth +1 point in the McIsaac score if cough is absent. Presence of cough scores 0 for this item.",
+        "dc": "PHCC_URGENT_CARE_OR_TELECONSULT",
+        "v": "--pcp24",
+        "label": "See PCP Within 24 Hours",
+        "ca": "Centor/McIsaac tally in progress",
+        "caSendable": false,
+        "caText": "Continue recording each criterion; the total score (with age adjustment) determines whether rapid strep testing or antibiotics are appropriate per the published score bands."
+      },
+      {
+        "q": "After tallying age band (3-14: +1, 15-44: 0, 45+: -1) plus the four criteria above (max total 5): is the total score 1 or less?",
+        "ro": "Published McIsaac score bands: <=1 point (~1-2.5% strep risk) = no testing or antibiotics needed; 2 points = rapid strep test optional; 3 points = rapid strep test recommended; >=4 points = rapid strep test or empiric treatment per local policy. This system only automates the emergency floor; the nurse applies the actual score band using the tallied answers above.",
+        "dc": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        "v": "--home",
+        "label": "Home Care",
+        "ca": "Low Centor/McIsaac score - supportive care",
+        "caSendable": true,
+        "caText": "Warm salt-water gargles, fluids, over-the-counter pain relief per local policy, and rest. Most sore throats are viral and resolve without antibiotics."
+      }
+    ],
+    "iaqs": [
+      {
+        "responseType": "DURATION",
+        "prompt": "When did the sore throat start?",
+        "clarification": null
+      },
+      {
+        "responseType": "TEMPERATURE",
+        "prompt": "Have you measured a temperature? If so, what was it, and how was it measured?",
+        "clarification": null
+      },
+      {
+        "responseType": "YES_NO",
+        "prompt": "Do you have a cough?",
+        "clarification": null
+      }
+    ],
+    "sampleAnswers": [
+      "Since yesterday evening",
+      "37.9C (Oral)",
+      "No"
+    ],
+    "context": {
+      "channel": "WhatsApp",
+      "waitMinutes": 12,
+      "patientType": "Dependent",
+      "age": 22,
+      "ageMonths": 264,
+      "station": "DOH",
+      "hrmsValidated": true
+    }
+  },
+  {
+    "caseId": "case-af360d6c-0518-4f80-bfd8-09e9cd3b2d86",
+    "staffId": "IST-00330",
+    "reasonNarrative": "Caller says: dog bite on the hand, small wound, not bleeding heavily.",
+    "title": "Animal Bite",
+    "protocolId": "oscg-animal-bite",
+    "taqs": [
+      {
+        "q": "Is the wound large or deep, or is bleeding not stopping with direct pressure?",
+        "ro": "NHS.UK animal and human bites guidance lists a large or deep wound, or bleeding that cannot be stopped, as call-999/A&E criteria.",
+        "dc": "HMC_EMERGENCY_DEPARTMENT",
+        "v": "--ems",
+        "label": "Go to ED Now",
+        "ca": "Emergency bite wound precautions",
+        "caSendable": false,
+        "caText": "Apply firm direct pressure with a clean cloth and arrange emergency transport immediately."
+      },
+      {
+        "q": "Might there be debris such as teeth, hair, or dirt in the wound; is it hot, swollen, or leaking fluid; is there fever or chills; does it smell unpleasant; is it on the hands, feet, face, or head; was it a human bite; or has the caller not had a tetanus vaccine in the last 10 years?",
+        "ro": "NHS.UK guidance lists these as reasons to call 111 for same-day assessment rather than manage entirely at home.",
+        "dc": "HMC_URGENT_REVIEW",
+        "v": "--hcp4",
+        "label": "See HCP Within 4 Hours",
+        "ca": "Urgent bite wound review",
+        "caSendable": false,
+        "caText": "Clean the wound with soap and warm water, cover with a clean dressing, and arrange same-day medical review for possible antibiotics or tetanus assessment."
+      },
+      {
+        "q": "Is this a minor, shallow bite with none of the features above?",
+        "ro": "NHS.UK guidance describes most bites as not serious and manageable at home with basic first aid.",
+        "dc": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        "v": "--home",
+        "label": "Home Care",
+        "ca": "Home care for a minor bite",
+        "caSendable": true,
+        "caText": "Clean the wound with soap and warm water, gently encourage a little bleeding to flush the wound, pat dry, cover with a clean dressing, and take paracetamol or ibuprofen for pain as needed."
+      }
+    ],
+    "iaqs": [
+      {
+        "responseType": "OPEN_TEXT",
+        "prompt": "What animal (or person) caused the bite, and where on the body?",
+        "clarification": null
+      },
+      {
+        "responseType": "DURATION",
+        "prompt": "When did the bite happen?",
+        "clarification": null
+      },
+      {
+        "responseType": "YES_NO",
+        "prompt": "Has the caller had a tetanus vaccine within the last 10 years?",
+        "clarification": null
+      }
+    ],
+    "sampleAnswers": [
+      "Family dog bit the hand while playing",
+      "About 20 minutes ago",
+      "Yes, vaccinated about 3 years ago"
+    ],
+    "context": {
+      "channel": "Callback",
+      "waitMinutes": 4,
+      "patientType": "Staff",
+      "age": 41,
+      "ageMonths": 496,
+      "station": "LHR",
+      "hrmsValidated": true
+    }
+  },
+  {
+    "caseId": "case-e7023d5f-f389-4af8-966c-112798a0a42f",
+    "staffId": "IST-00417",
+    "reasonNarrative": "Caller says: severe headache with sensitivity to light, similar to past migraines.",
+    "title": "Headache",
+    "protocolId": "oscg-headache",
+    "taqs": [
+      {
+        "q": "Has there been a seizure, numbness or weakness in the body or face, sudden extremely painful onset, a head injury in the last 3 months, difficulty speaking, balancing, walking, or remembering things, drowsiness or confusion, loss of vision, a non-fading rash, or a very high temperature with a stiff neck or light sensitivity?",
+        "ro": "NHS.UK headache guidance lists these as call-999/A&E criteria - possible stroke, meningitis, or other serious cause.",
+        "dc": "HMC_EMERGENCY_DEPARTMENT",
+        "v": "--ems",
+        "label": "Go to ED Now",
+        "ca": "Emergency headache precautions",
+        "caSendable": false,
+        "caText": "Keep the caller still and calm and arrange emergency transport immediately."
+      },
+      {
+        "q": "Are there vision or eye problems, is the headache triggered or worsened by coughing, sneezing, bending down, or exercise, is there vomiting, is a child's headache getting worse or waking them at night, or is there jaw pain when eating or a tender scalp?",
+        "ro": "NHS.UK guidance lists these as reasons to call 111 or get an urgent GP appointment.",
+        "dc": "HMC_URGENT_REVIEW",
+        "v": "--hcp4",
+        "label": "See HCP Within 4 Hours",
+        "ca": "Urgent headache review",
+        "caSendable": false,
+        "caText": "Arrange same-day or next-day medical review, especially for vision changes or persistent vomiting."
+      },
+      {
+        "q": "Is this a mild-to-moderate headache with none of the features above?",
+        "ro": "NHS.UK guidance recommends hydration, rest, and simple pain relief for uncomplicated headaches.",
+        "dc": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        "v": "--home",
+        "label": "Home Care",
+        "ca": "Home care for a typical headache",
+        "caSendable": true,
+        "caText": "Drink water, rest in a quiet dim room, and take paracetamol or ibuprofen as directed. Avoid skipping meals, excess screen time, and alcohol."
+      }
+    ],
+    "iaqs": [
+      {
+        "responseType": "DURATION",
+        "prompt": "When did the headache start, and how suddenly?",
+        "clarification": null
+      },
+      {
+        "responseType": "YES_NO",
+        "prompt": "Any recent head injury (within the last 3 months)?",
+        "clarification": null
+      },
+      {
+        "responseType": "PAIN_SCALE",
+        "prompt": "How severe is the pain, 0-10?",
+        "clarification": null
+      }
+    ],
+    "sampleAnswers": [
+      "Started gradually about 2 hours ago",
+      "No",
+      "Moderate (4-7)"
+    ],
+    "context": {
+      "channel": "Phone",
+      "waitMinutes": 9,
+      "patientType": "Staff",
+      "age": 33,
+      "ageMonths": 396,
+      "station": "DOH",
+      "hrmsValidated": true
+    }
+  },
+  {
+    "caseId": "case-e26d6e6f-21f1-4afb-9090-d281301071c3",
+    "staffId": "IST-00502",
+    "reasonNarrative": "Caller says: vomiting since this morning, feeling dehydrated.",
+    "title": "Nausea",
+    "protocolId": "oscg-nausea",
+    "taqs": [
+      {
+        "q": "Is there vomit that looks like blood or ground coffee, green vomit, a stiff neck with light sensitivity, a sudden severe headache or tummy ache, blue/grey/pale skin, severe breathing difficulty, or confusion?",
+        "ro": "NHS.UK diarrhoea and vomiting guidance lists these as call-999/A&E criteria.",
+        "dc": "HMC_EMERGENCY_DEPARTMENT",
+        "v": "--ems",
+        "label": "Go to ED Now",
+        "ca": "Emergency precautions",
+        "caSendable": false,
+        "caText": "Keep the person calm and arrange emergency transport immediately."
+      },
+      {
+        "q": "Is the person unable to keep fluids down, or has vomiting lasted more than 2 days?",
+        "ro": "NHS.UK guidance recommends calling 111 for these features.",
+        "dc": "HMC_URGENT_REVIEW",
+        "v": "--hcp4",
+        "label": "See HCP Within 4 Hours",
+        "ca": "Urgent nausea review",
+        "caSendable": false,
+        "caText": "Arrange same-day medical review, especially if fluids cannot be kept down."
+      },
+      {
+        "q": "Is this mild nausea with none of the features above?",
+        "ro": "NHS.UK guidance: rest and small sips of fluid usually help mild nausea, which typically settles within a day or two.",
+        "dc": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        "v": "--home",
+        "label": "Home Care",
+        "ca": "Home care for mild nausea",
+        "caSendable": true,
+        "caText": "Rest, sip fluids slowly, avoid fatty or spicy food, and eat small, plain meals when able."
+      }
+    ],
+    "iaqs": [
+      {
+        "responseType": "DURATION",
+        "prompt": "How long has the nausea lasted?",
+        "clarification": null
+      },
+      {
+        "responseType": "YES_NO",
+        "prompt": "Any vomiting?",
+        "clarification": null
+      },
+      {
+        "responseType": "YES_NO",
+        "prompt": "Able to keep fluids down?",
+        "clarification": null
+      }
+    ],
+    "sampleAnswers": [
+      "Since this morning, about 6 hours",
+      "Yes, vomited twice",
+      "No, unable to keep fluids down"
+    ],
+    "context": {
+      "channel": "Phone",
+      "waitMinutes": 15,
+      "patientType": "Dependent",
+      "age": 8,
+      "ageMonths": 100,
+      "station": "DOH",
+      "hrmsValidated": false
+    }
+  }
+];
+  let currentIdx = 0;
+  // true when viewing a call that is already "completed" - every mutating
+  // action (escalate, hold, answer TAQ/IAQ, care-advice checkboxes, complete)
+  // is blocked; the nurse can look but not touch, same as our real app's
+  // disposition-lock once a record reaches Closed.
+  let viewOnly = false;
+
+  // Queue lock model, mirroring the real cockpit: only one call can be
+  // "active" (open in the main panel) at a time. Answering a call locks the
+  // rest of the queue until that call is completed or placed on hold. A
+  // held call surfaces at the top of the list with a Resume action.
+  let callStates = CALLS.map(() => "waiting"); // "waiting" | "held" | "completed"
+  let activeIdx = null;
+
+  const MAX_HELD_CALLS = 1; // more than this many held at once blocks answering new calls
+
+  function heldCount() {
+    return callStates.filter((s) => s === "held").length;
+  }
+
+  function callItemHtml(i) {
+    const c = CALLS[i];
+    const state = callStates[i];
+    const isActive = activeIdx === i;
+    const tooManyHeld = heldCount() > MAX_HELD_CALLS;
+    let tag = "";
+    let action = "";
+    let cls = "call-item";
+    if (isActive) {
+      cls += " active";
+      tag = `<span class="call-tag tag-active">Open Now</span>`;
+      action = "";
+    } else if (state === "held") {
+      cls += " held";
+      tag = `<span class="call-tag tag-held">On Hold</span>`;
+      action = `<button class="answer-btn resume-btn" onclick="event.stopPropagation();resumeCall(${i})">&#8635; Resume</button>`;
+    } else if (state === "completed") {
+      cls += " completed";
+      tag = `<span class="call-tag tag-done">Closed</span>`;
+      action = `<button class="answer-btn" onclick="event.stopPropagation();openCall(${i})">&#128274; View (read only)</button>`;
+    } else if (activeIdx !== null) {
+      cls += " locked";
+      tag = `<span class="call-tag tag-locked">Queue Locked</span>`;
+    } else if (tooManyHeld) {
+      cls += " locked";
+      tag = `<span class="call-tag tag-locked">Resume a Held Call First</span>`;
+      action = `<button class="answer-btn" disabled>Answer call &rarr;</button>`;
+    } else {
+      action = `<button class="answer-btn" onclick="event.stopPropagation();answerCall(${i})">Answer call &rarr;</button>`;
+    }
+    return `<div class="${cls}">
+      <div class="cid">${c.staffId} ${tag}</div>
+      <div class="title">${c.title}</div>
+      <div class="narrative">${c.reasonNarrative}</div>
+      ${action}
+    </div>`;
+  }
+
+  function renderCallList() {
+    // Held calls float to the top so the nurse can find them and unhold
+    // quickly; the currently active call shows next; waiting calls keep
+    // their original order below.
+    const order = CALLS.map((_, i) => i).sort((a, b) => {
+      const rank = (i) => (callStates[i] === "held" ? 0 : i === activeIdx ? 1 : callStates[i] === "completed" ? 3 : 2);
+      return rank(a) - rank(b);
+    });
+    document.getElementById("call-list").innerHTML = order.map(callItemHtml).join("");
+  }
+
+  function answerCall(i) {
+    if (activeIdx !== null) return; // queue is locked while another call is active
+    if (heldCount() > MAX_HELD_CALLS) return; // too many calls already parked on hold
+    activeIdx = i;
+    callStates[i] = "waiting";
+    openCall(i);
+  }
+
+  function resumeCall(i) {
+    if (activeIdx !== null) return;
+    activeIdx = i;
+    callStates[i] = "waiting";
+    openCall(i);
+  }
+
+  function holdCurrentCall() {
+    if (viewOnly || activeIdx === null) return;
+    callStates[activeIdx] = "held";
+    activeIdx = null;
+    renderCallList();
+    document.getElementById("active-call-content").style.display = "none";
+    document.getElementById("no-active-call").style.display = "flex";
+  }
+
+  // Snapshots of the real answers recorded at completion time, keyed by call
+  // index - the global answers/iaqAnswers objects are reused across calls,
+  // so a completed call's actual trail must be captured here to be shown
+  // read-only later instead of whatever the next-opened call resets them to.
+  const savedAnswers = {};
+  const savedIaqAnswers = {};
+
+  function completeCurrentCall() {
+    if (viewOnly || activeIdx === null) return;
+    savedAnswers[activeIdx] = { ...answers };
+    savedIaqAnswers[activeIdx] = { ...iaqAnswers };
+    callStates[activeIdx] = "completed";
+    activeIdx = null;
+    renderCallList();
+    document.getElementById("active-call-content").style.display = "none";
+    document.getElementById("no-active-call").style.display = "flex";
+  }
+
+  // answers[i] = true/false once answered; reviewOpenIndex = an already-answered
+  // card the nurse clicked to re-open for review (collapses again on re-answer
+  // or when a different card is opened).
+  let answers = {};
+  let reviewOpenIndex = null;
+
+  // Which mechanism reached the Emergency floor for the current call, if any:
+  // "judgment" (manual escalate button) or "symptom" (auto-detected red flag).
+  let escalationSource = null;
+
+  // IAQ (Action 1 - Reason & Rule-Out) state, separate from the TAQ state above.
+  let iaqAnswers = {};
+  let iaqOpenIndex = 0;
+
+  function openCall(i) {
+    currentIdx = i;
+    viewOnly = callStates[i] === "completed";
+    answers = viewOnly ? { ...(savedAnswers[i] || {}) } : {};
+    escalationSource = null;
+    reviewOpenIndex = null;
+    renderCallList();
+    document.getElementById("no-active-call").style.display = "none";
+    document.getElementById("active-call-content").style.display = "block";
+    document.getElementById("active-call-actions").style.display = viewOnly ? "none" : "flex";
+    document.getElementById("readonly-badge").style.display = viewOnly ? "block" : "none";
+    const c = CALLS[i];
+
+    // Pre-populate Reason & Rule-Out with the answers already gathered at
+    // intake (matching this call's reason narrative) - the nurse reviews
+    // and can still click any card open to correct it before continuing.
+    if (viewOnly) {
+      iaqAnswers = { ...(savedIaqAnswers[i] || {}) };
+    } else {
+      iaqAnswers = {};
+      (c.sampleAnswers || []).forEach((val, idx) => { iaqAnswers[idx] = val; });
+    }
+    iaqOpenIndex = -1;
+
+    document.getElementById("call-title").textContent = c.title;
+    document.getElementById("call-sub").textContent = `${c.protocolId} · Case ${c.caseId.slice(0, 14)}...`;
+    switchStage(0);
+    renderIaqFlow();
+    renderFlow();
+    renderOpeningScript(c);
+
+    // History Taking - pre-filled with the reason narrative already captured at intake.
+    document.getElementById("history-input").value = c.reasonNarrative;
+    // Vital Taking (incl. Temperature) - reset to unobtainable-by-default for a
+    // fresh call (matches the real phone-triage reality: vitals are rarely
+    // measurable over the phone).
+    document.getElementById("vitals-unobtainable").checked = true;
+    ["v-hr", "v-rr", "v-spo2"].forEach(id => (document.getElementById(id).value = ""));
+    document.getElementById("v-avpu").value = "alert";
+    document.getElementById("temp-slider").value = "37.0";
+    document.getElementById("temp-method").value = "Oral";
+    onVitalsUnobtainableChange();
+
+    renderRedFlagAdvisory();
+    updateEscalateButton();
+  }
+
+  // "Greet caller, confirm role" opening script + caller-context facts -
+  // mirrors the real app's CallContextStrip (wait, patient, age, station, HRMS).
+  function renderOpeningScript(c) {
+    const ctx = c.context;
+    const hrmsHtml = ctx.hrmsValidated
+      ? `<span class="hrms-ok">HRMS Validated</span>`
+      : `<span class="hrms-warn">HRMS Review Needed</span>`;
+    document.getElementById("opening-script").innerHTML = `
+      <div class="os-icon">&#9742;</div>
+      <div>
+        <div class="os-script">Greet caller, confirm role <span>(${c.reasonNarrative})</span></div>
+        <div class="os-facts">
+          <span>${ctx.channel}</span>
+          <span><b>Wait</b> ${ctx.waitMinutes}m</span>
+          <span><b>Patient</b> ${ctx.patientType}</span>
+          <span><b>Age</b> ${ctx.age}y / ${ctx.ageMonths}m</span>
+          <span><b>Station</b> ${ctx.station}</span>
+          ${hrmsHtml}
+        </div>
+      </div>`;
+  }
+
+  // A small, illustrative red-flag phrase set - mirrors how the real app's
+  // "symptom" safety floor works (localSafetyFloorReasons in NurseWorkspace.tsx),
+  // just simplified for this preview: scan History Taking free text for
+  // well-known emergency phrases.
+  const RED_FLAG_PHRASES = [
+    "can't breathe", "cannot breathe", "difficulty breathing", "chest pain",
+    "unconscious", "unresponsive", "not breathing", "blue lips", "severe bleeding",
+    "seizure", "stroke", "confused", "confusion", "can't wake", "cannot wake",
+    "numbness in both legs", "loss of bladder control", "vomiting blood"
+  ];
+
+  function computeVitalsRedFlags() {
+    const unobtainable = document.getElementById("vitals-unobtainable").checked;
+    if (unobtainable) return [];
+    const reasons = [];
+    const hr = Number(document.getElementById("v-hr").value);
+    const rr = Number(document.getElementById("v-rr").value);
+    const spo2 = Number(document.getElementById("v-spo2").value);
+    const avpu = document.getElementById("v-avpu").value;
+    if (document.getElementById("v-hr").value && (hr < 60 || hr > 130)) reasons.push("Heart rate outside 60-130 bpm");
+    if (document.getElementById("v-rr").value && (rr < 10 || rr > 30)) reasons.push("Respiratory rate outside 10-30/min");
+    if (document.getElementById("v-spo2").value && spo2 < 92) reasons.push("SpO2 below 92%");
+    if (avpu !== "alert") reasons.push("AVPU is not Alert");
+    return reasons;
+  }
+
+  function renderRedFlagAdvisory() {
+    const history = (document.getElementById("history-input").value || "").toLowerCase();
+    const phraseHits = RED_FLAG_PHRASES.filter(p => history.includes(p));
+    const vitalsReasons = computeVitalsRedFlags();
+    const allReasons = [...phraseHits.map(p => `Emergency phrase reported by caller: "${p}"`), ...vitalsReasons];
+    const el = document.getElementById("redflag-advisory");
+
+    if (allReasons.length && answers[0] !== true) {
+      // Matches the real "symptom" safety floor: this isn't advisory-only -
+      // it automatically forces the Emergency disposition, same as the
+      // manual "escalate now" button (source differs, floor is identical).
+      escalateBySymptom(allReasons);
+      return; // escalateBySymptom re-renders this banner itself
+    }
+
+    if (allReasons.length && answers[0] === true) {
+      el.innerHTML = `<div class="redflag-banner active">
+        <span>&#9888;</span>
+        <span>Emergency safety floor auto-applied (symptom-based) — ${allReasons.join("; ")}. This cannot be downgraded below Emergency for this call.</span>
+      </div>`;
+    } else {
+      el.innerHTML = `<div class="redflag-banner clear">
+        <span>&#10003;</span>
+        <span>No red-flag phrases detected in the history so far, and no vitals currently outside safe range.</span>
+      </div>`;
+    }
+  }
+
+  function escalateBySymptom(reasons) {
+    escalationSource = "symptom";
+    switchStage(1);
+    choose(0, true);
+    updateEscalateButton();
+    document.getElementById("redflag-advisory").innerHTML = `<div class="redflag-banner active">
+      <span>&#9888;</span>
+      <span>Emergency safety floor auto-applied (symptom-based) — ${reasons.join("; ")}. This cannot be downgraded below Emergency for this call.</span>
+    </div>`;
+  }
+
+  function onHistoryInput() { renderRedFlagAdvisory(); }
+
+  function onVitalsUnobtainableChange() {
+    const unobtainable = document.getElementById("vitals-unobtainable").checked;
+    document.getElementById("vitals-grid").closest(".vitals-card").classList.toggle("disabled", unobtainable);
+    renderRedFlagAdvisory();
+  }
+
+  function onVitalsInput() {
+    const val = document.getElementById("temp-slider").value;
+    document.getElementById("temp-value").textContent = Number(val).toFixed(1) + "°C";
+    renderRedFlagAdvisory();
+  }
+
+  function iaqWidgetHtml(i, item) {
+    switch (item.responseType) {
+      case "YES_NO":
+        return `<div class="iaq-choices">
+          <div class="iaq-chip" onclick="iaqSave(${i}, 'Yes')">Yes</div>
+          <div class="iaq-chip" onclick="iaqSave(${i}, 'No')">No</div>
+        </div>`;
+      case "PAIN_SCALE":
+        return `<div class="iaq-choices">
+          ${["Mild (1-3)", "Moderate (4-7)", "Severe (8-10)"].map(c => `<div class="iaq-chip" onclick="iaqSave(${i}, '${c}')">${c}</div>`).join("")}
+        </div>`;
+      case "TEMPERATURE":
+        return `<div class="iaq-row">
+          <input class="iaq-text" type="text" id="iaq-text-${i}" placeholder="e.g., 38.2C (Oral), or Not measured">
+          <button class="iaq-save" onclick="iaqSaveFromInput(${i})">Save</button>
+        </div>`;
+      case "DURATION":
+        return `<div class="iaq-row">
+          <input class="iaq-text" type="text" id="iaq-text-${i}" placeholder="e.g., started 2 hours ago">
+          <button class="iaq-save" onclick="iaqSaveFromInput(${i})">Save</button>
+        </div>`;
+      case "LOCATION":
+        return `<div class="iaq-row">
+          <input class="iaq-text" type="text" id="iaq-text-${i}" placeholder="e.g., lower back, spreads down right leg">
+          <button class="iaq-save" onclick="iaqSaveFromInput(${i})">Save</button>
+        </div>`;
+      default:
+        return `<div class="iaq-row">
+          <input class="iaq-text" type="text" id="iaq-text-${i}" placeholder="Record the caller's answer in their own words">
+          <button class="iaq-save" onclick="iaqSaveFromInput(${i})">Save</button>
+        </div>`;
+    }
+  }
+
+  function iaqCardHtml(i, item) {
+    const answered = i in iaqAnswers;
+    const isOpen = iaqOpenIndex === i;
+    const card = document.createElement("div");
+    card.className = "step" + (answered ? " asked" : "") + (isOpen ? " open" : "");
+    card.style.setProperty("--gc", "var(--pcp24)");
+    card.style.setProperty("--gcbg", "var(--pcp24bg)");
+    card.style.setProperty("--gcbd", "var(--pcp24bd)");
+    card.innerHTML =
+      `<div class="step-hdr" onclick="iaqToggle(${i})" style="cursor:pointer">
+         <div class="step-num">${answered ? "&#10003;" : (i + 1)}</div>
+         <div style="flex:1">
+           <div class="gtag">${item.responseType.replace("_", " ")}</div>
+           <div class="step-title">${item.prompt}</div>
+           ${answered ? `<div class="ans">&#10132; ${iaqAnswers[i]}</div>` : ""}
+         </div>
+         <div class="chev">&#9654;</div>
+       </div>
+       ${isOpen ? `<div class="iaq-body" onclick="event.stopPropagation()">
+         ${item.clarification ? `<div class="iaq-note" style="margin:0 0 8px">${item.clarification}</div>` : ""}
+         ${iaqWidgetHtml(i, item)}
+       </div>` : ""}`;
+    return card;
+  }
+
+  function renderIaqFlow() {
+    const iaqs = CALLS[currentIdx].iaqs;
+    const container = document.getElementById("iaq-flow");
+    container.innerHTML = "";
+    iaqs.forEach((item, i) => container.appendChild(iaqCardHtml(i, item)));
+
+    const answeredCount = Object.keys(iaqAnswers).length;
+    const gate = document.getElementById("iaq-gate");
+    if (answeredCount === iaqs.length) {
+      gate.innerHTML = `<div class="continue-gate">
+        <span>All ${iaqs.length} initial assessment questions answered.</span>
+        <button onclick="switchStage(1)">Triage Questions &rarr;</button>
+      </div>`;
+    } else {
+      gate.innerHTML = `<div class="iaq-progress">${answeredCount} of ${iaqs.length} answered</div>`;
+    }
+  }
+
+  function iaqToggle(i) {
+    iaqOpenIndex = iaqOpenIndex === i ? -1 : i;
+    renderIaqFlow();
+  }
+
+  function iaqSave(i, value) {
+    if (viewOnly) return;
+    iaqAnswers[i] = value;
+    const iaqs = CALLS[currentIdx].iaqs;
+    let next = -1;
+    for (let j = i + 1; j < iaqs.length; j++) if (!(j in iaqAnswers)) { next = j; break; }
+    iaqOpenIndex = next;
+    renderIaqFlow();
+  }
+
+  function iaqSaveFromInput(i) {
+    const input = document.getElementById("iaq-text-" + i);
+    const val = input.value.trim();
+    if (!val) { input.style.borderColor = "var(--emsbd)"; return; }
+    iaqSave(i, val);
+  }
+
+  function switchStage(idx) {
+    for (let i = 0; i <= 3; i++) {
+      const panel = document.getElementById("stage-panel-" + i);
+      if (panel) panel.style.display = i === idx ? "block" : "none";
+      const tab = document.querySelector(`.stage-tab[data-stage="${i}"]`);
+      if (tab) tab.classList.toggle("stage-tab-active", i === idx);
+    }
+    if (idx === 2) renderDispositionPanel();
+    if (idx === 3) renderSbarPanel();
+    const panel = document.getElementById("stage-panel-" + idx);
+    if (panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function renderDispositionPanel() {
+    const t = CALLS[currentIdx].taqs[firstYesIndex()];
+    const el = document.getElementById("disposition-panel-content");
+    if (!t) {
+      el.innerHTML = `<div class="iaq-note">No disposition reached yet — complete the Questions stage first.</div>`;
+      return;
+    }
+    const adviceRow = t.ca
+      ? `<div class="ca-item" style="border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin-top:10px">
+          <div style="font-weight:600;font-size:.86rem;margin-bottom:4px">${t.ca}</div>
+          ${t.caText ? `<div style="font-size:.8rem;color:var(--muted);margin-bottom:8px">${t.caText}</div>` : ""}
+          <label style="display:inline-flex;align-items:center;gap:6px;font-size:.8rem;margin-right:18px">
+            <input type="checkbox" checked disabled> Given Now
+          </label>
+          <label style="display:inline-flex;align-items:center;gap:6px;font-size:.8rem;${t.caSendable && !viewOnly ? "" : "opacity:.45"}">
+            <input type="checkbox" ${t.caSendable && !viewOnly ? "" : "disabled"}> Send Later
+          </label>
+        </div>`
+      : "";
+    const continueRow = viewOnly
+      ? ""
+      : `<div class="flow-actions" style="margin-top:14px">
+      <button class="complete-btn" onclick="switchStage(3)">Continue to SBAR &rarr;</button>
+    </div>`;
+    el.innerHTML = `<div class="r-card" style="--gc:var(${t.v});--gcbg:var(${t.v}bg);--gcbd:var(${t.v}bd)">
+      <div class="r-title">${t.label.toUpperCase()}</div>
+      <div class="r-detail">${t.ro}</div>
+    </div>
+    ${adviceRow}
+    ${continueRow}`;
+  }
+
+  function renderSbarPanel() {
+    const c = CALLS[currentIdx];
+    const t = CALLS[currentIdx].taqs[firstYesIndex()];
+    const el = document.getElementById("sbar-panel-content");
+    const dispositionLine = t ? t.label : "Not yet determined";
+    const sbarText = `S: ${c.staffId}, reports ${c.reasonNarrative}\nB: Reason & Rule-Out and Questions completed via structured triage.\nA: Disposition: ${dispositionLine}.\nR: Route per disposition; callback precautions given as applicable.`;
+    const actionsRow = viewOnly
+      ? `<div style="margin-top:12px;font-size:.8rem;color:var(--muted)">&#128274; This call is closed - SBAR is shown for reference only.</div>`
+      : `<div class="flow-actions" style="margin-top:12px">
+        <button class="complete-btn" id="copy-sbar-btn" onclick="copySbar()" style="background:var(--muted)">Copy SBAR</button>
+        <button class="complete-btn" id="complete-call-btn" onclick="completeCurrentCall()">&#10003; Complete Call</button>
+      </div>`;
+    el.innerHTML = `<div class="reason-card">
+      <label>SBAR Preview</label>
+      <div id="sbar-text" style="font-size:.86rem;line-height:1.7">
+        <b>S:</b> ${c.staffId}, reports ${c.reasonNarrative}<br>
+        <b>B:</b> Reason & Rule-Out and Questions completed via structured triage.<br>
+        <b>A:</b> Disposition: ${dispositionLine}.<br>
+        <b>R:</b> Route per disposition; callback precautions given as applicable.
+      </div>
+      ${actionsRow}
+    </div>`;
+    el.dataset.sbarText = sbarText;
+  }
+
+  function copySbar() {
+    const el = document.getElementById("sbar-panel-content");
+    const text = el ? el.dataset.sbarText : "";
+    if (navigator.clipboard && text) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
+    const copyBtn = document.getElementById("copy-sbar-btn");
+    if (copyBtn) copyBtn.textContent = "✓ Copied";
+  }
+
+  // "Sounds life-threatening - escalate now" - a triager-judgment shortcut
+  // that jumps straight to the Emergency disposition, bypassing IAQ/TAQ
+  // gating entirely. Question 0 is always the Emergency-tier TAQ for every
+  // protocol in this content set, so answering it Yes reaches exactly the
+  // same terminal card the normal walkthrough would reach on a real "Yes".
+  function escalateEmergencyNow() {
+    if (viewOnly) return;
+    escalationSource = "judgment";
+    switchStage(1);
+    choose(0, true);
+    updateEscalateButton();
+  }
+
+  function updateEscalateButton() {
+    const btn = document.getElementById("escalate-btn");
+    if (!btn) return;
+    const escalated = answers[0] === true;
+    btn.disabled = escalated;
+    if (!escalated) {
+      btn.textContent = "⚠ Sounds life-threatening - escalate now";
+    } else if (escalationSource === "symptom") {
+      btn.textContent = "✓ Escalated - emergency symptom phrase detected";
+    } else {
+      btn.textContent = "✓ Escalated by triager judgment";
+    }
+  }
+
+  function groupColors(el, t) {
+    el.style.setProperty("--gc", `var(${t.v})`);
+    el.style.setProperty("--gcbg", `var(${t.v}bg)`);
+    el.style.setProperty("--gcbd", `var(${t.v}bd)`);
+  }
+
+  function frontierIndex() {
+    // The first unanswered question, i.e. the one that should be expanded.
+    const taqs = CALLS[currentIdx].taqs;
+    for (let i = 0; i < taqs.length; i++) if (!(i in answers)) return i;
+    return taqs.length; // all answered "No" -> end card
+  }
+
+  function firstYesIndex() {
+    const taqs = CALLS[currentIdx].taqs;
+    for (let i = 0; i < taqs.length; i++) if (answers[i] === true) return i;
+    return -1;
+  }
+
+  function setProgress() {
+    const taqs = CALLS[currentIdx].taqs;
+    const bar = document.getElementById("prog-bar");
+    const lab = document.getElementById("prog-label");
+    const pct = document.getElementById("prog-pct");
+    const yesAt = firstYesIndex();
+    const answeredCount = Object.keys(answers).length;
+    if (yesAt !== -1 || answeredCount === taqs.length) {
+      bar.style.width = "100%"; lab.textContent = "Complete — disposition reached"; pct.textContent = "100%";
+      return;
+    }
+    const n = frontierIndex() + 1;
+    const p = Math.round((n - 1) / taqs.length * 100);
+    bar.style.width = p + "%";
+    lab.textContent = `Question ${n} of ${taqs.length}`;
+    pct.textContent = p + "%";
+  }
+
+  function collapsedCardHtml(i, t) {
+    const answer = answers[i] ? "Yes" : "No";
+    const isOpenForReview = reviewOpenIndex === i;
+    const card = document.createElement("div");
+    card.className = "step asked" + (isOpenForReview ? " open" : "");
+    card.id = "qcard-" + i;
+    groupColors(card, t);
+    card.innerHTML =
+      `<div class="step-hdr" onclick="toggleReview(${i})" style="cursor:pointer">
+         <div class="step-num">&#10003;</div>
+         <div style="flex:1">
+           <div class="gtag">${t.label}</div>
+           <div class="step-title">${t.q}</div>
+           <div class="ans">&#10132; ${answer}</div>
+         </div>
+         <div class="chev">&#9654;</div>
+       </div>
+       ${isOpenForReview ? `<div class="choices" style="margin-top:10px">
+         <div class="choice ${answers[i] ? 'sel-yes' : ''}" onclick="event.stopPropagation();choose(${i}, true)">Yes</div>
+         <div class="choice ${!answers[i] ? 'sel-no' : ''}" onclick="event.stopPropagation();choose(${i}, false)">No</div>
+       </div>` : ""}`;
+    return card;
+  }
+
+  function expandedCardHtml(i, t) {
+    const card = document.createElement("div");
+    card.className = "step"; card.id = "qcard-" + i;
+    groupColors(card, t);
+    card.innerHTML =
+      `<div class="step-hdr">
+         <div class="step-num">${i + 1}</div>
+         <div><div class="gtag">${t.label}</div><div class="step-title">${t.q}</div></div>
+       </div>
+       <div class="choices">
+         <div class="choice" onclick="choose(${i}, true)">Yes</div>
+         <div class="choice" onclick="choose(${i}, false)">No</div>
+       </div>`;
+    return card;
+  }
+
+  function resultCardHtml(i, t) {
+    const card = document.createElement("div");
+    card.className = "r-card"; card.id = "resultcard";
+    groupColors(card, t);
+    card.innerHTML =
+      `<div class="r-title">${t.label.toUpperCase()}</div>
+       <div class="r-sub">Triggered by Question ${i + 1}</div>
+       <div class="r-detail">${t.ro}</div>
+       ${t.ca ? `<div class="file-grid"><div class="fc"><b>Care Advice</b>${t.ca}</div></div>` : ""}`;
+    return card;
+  }
+
+  function endCardHtml() {
+    const end = document.createElement("div");
+    end.className = "r-card"; end.id = "endcard";
+    end.style.setProperty("--gc", "var(--muted)");
+    end.style.setProperty("--gcbg", "var(--bg2)");
+    end.style.setProperty("--gcbd", "var(--line)");
+    end.innerHTML = `<div class="r-title">NO CRITERIA MET</div><div class="r-sub">All ${CALLS[currentIdx].taqs.length} questions answered "No"</div>`;
+    return end;
+  }
+
+  // Rebuilds the whole stack from `answers` state each time: every answered
+  // question collapses to a one-line summary (click to re-open for review);
+  // only the current frontier question is fully expanded with Yes/No. This
+  // is what makes the expansion dynamic instead of a static stacked list.
+  function renderFlow() {
+    const taqs = CALLS[currentIdx].taqs;
+    const flow = document.getElementById("flow");
+    flow.innerHTML = "";
+    const yesAt = firstYesIndex();
+    const lastVisible = yesAt !== -1 ? yesAt : frontierIndex();
+
+    for (let i = 0; i <= Math.min(lastVisible, taqs.length - 1); i++) {
+      const t = taqs[i];
+      let card;
+      if (i in answers) card = collapsedCardHtml(i, t);
+      else card = expandedCardHtml(i, t);
+      flow.appendChild(card);
+    }
+
+    const dispositionReached = yesAt !== -1 || Object.keys(answers).length === taqs.length;
+    if (yesAt !== -1) {
+      flow.appendChild(resultCardHtml(yesAt, taqs[yesAt]));
+    } else if (Object.keys(answers).length === taqs.length) {
+      flow.appendChild(endCardHtml());
+    }
+    if (dispositionReached) {
+      // Disposition is fixed, but the call isn't complete yet - the real
+      // flow still requires Disposition & Advice, then SBAR/Complete.
+      const nextRow = document.createElement("div");
+      nextRow.className = "flow-actions";
+      nextRow.innerHTML = `<button class="complete-btn" onclick="switchStage(2)">Disposition &amp; Advice &rarr;</button>`;
+      flow.appendChild(nextRow);
+    }
+
+    setProgress();
+    const last = flow.lastElementChild;
+    if (last) last.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function toggleReview(i) {
+    if (!(i in answers)) return; // only answered cards can be reviewed
+    reviewOpenIndex = reviewOpenIndex === i ? null : i;
+    renderFlow();
+  }
+
+  function choose(i, yes) {
+    if (viewOnly) return;
+    answers[i] = yes;
+    reviewOpenIndex = null;
+    // Changing an earlier answer invalidates everything asked after it.
+    for (const key of Object.keys(answers)) {
+      if (Number(key) > i) delete answers[key];
+    }
+    renderFlow();
+    updateEscalateButton();
+  }
+
+  function startFlow() {
+    answers = {};
+    reviewOpenIndex = null;
+    renderFlow();
+  }
+  function restartCurrent() { startFlow(); }
+
+  renderCallList();
+</script>
+</body>
+</html>

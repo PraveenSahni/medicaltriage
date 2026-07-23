@@ -118,6 +118,14 @@ export type RagShadowSuggestion = {
   generatedAtIso: string;
 };
 
+export type QueueCareAdvice = {
+  id: string;
+  titleEn: string;
+  instructionTextEn: string;
+  patientSendable: boolean;
+  adviceCategory?: "DISPOSITION" | "NOTE_TO_TRIAGER" | "GENERAL" | "CALL_BACK_IF";
+};
+
 export type QueuePreparedProtocol = {
   status: "PENDING_REASON" | "PREPARED" | "NO_MATCH";
   sourceType:
@@ -133,6 +141,7 @@ export type QueuePreparedProtocol = {
   primaryProtocolTitle?: string;
   suggestions: QueueProtocolSuggestion[];
   acuityQuestionPreview: QueueProtocolQuestionPreview[];
+  careAdviceItems: QueueCareAdvice[];
   resourceSectionsAvailable: {
     background: boolean;
     firstAid: boolean;
@@ -176,6 +185,7 @@ export type QueueItem = {
   safetyFloorActive: boolean;
   safetyFloorSource?: SafetyFloorSource;
   initialAssessmentResponses?: Record<string, string>;
+  careAdviceAcknowledgements?: Record<string, { givenNow?: boolean; sendLater?: boolean }>;
   vitalsUnobtainable?: boolean;
   clinicalApproval?: Record<string, unknown>;
   sbarCopied: boolean;

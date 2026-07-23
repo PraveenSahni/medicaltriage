@@ -36,6 +36,11 @@
   --trbd: #f0b8c0;
   --shadow: none;
   --focus-ring: 0 0 0 2px var(--bg), 0 0 0 5px var(--t1);
+
+  /* Nurse Cockpit accent, used only by the scoped .login-card rules below -
+     the rest of the app keeps its navy --t1 accent. */
+  --login-accent: #185fa5;
+  --login-accent-hover: #12518d;
 }
 
 .dark,
@@ -4746,16 +4751,17 @@ html[data-theme="dark"] .primary-button {
 .login-brand-lockup {
   display: inline-flex;
   align-items: center;
-  gap: 20px;
+  gap: 8px;
   margin-bottom: 36px;
 }
 
 .login-brand-logo {
   display: block;
-  width: 152px;
-  height: auto;
+  width: 76px;
+  height: 76px;
   margin: 0;
   flex: 0 0 auto;
+  fill: var(--tx);
 }
 
 .login-brand-panel h1 {
@@ -4795,9 +4801,9 @@ html[data-theme="dark"] .primary-button {
   gap: 10px;
   padding: 24px;
   border: 1px solid var(--bd);
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--bg);
-  box-shadow: 0 4px 24px rgba(10, 31, 68, 0.08), 0 1px 3px rgba(10, 31, 68, 0.06);
+  box-shadow: 0 4px 24px rgba(26, 26, 25, 0.08), 0 1px 3px rgba(26, 26, 25, 0.06);
 }
 
 html[data-theme="dark"] .login-card {
@@ -4826,9 +4832,14 @@ html[data-theme="dark"] .login-card {
 
 .login-card .input-control {
   min-height: 40px;
-  border-radius: 12px;
+  border-radius: 8px;
   color: var(--tx);
   font-size: 14px;
+}
+
+.login-card .input-control:focus {
+  border-color: var(--login-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--login-accent) 16%, transparent);
 }
 
 .password-row {
@@ -4838,31 +4849,42 @@ html[data-theme="dark"] .login-card {
 .password-row .header-icon-button {
   width: 40px;
   min-height: 40px;
-  border-radius: 12px;
+  border-radius: 8px;
 }
 
 .login-card .primary-button,
 .login-card .secondary-button {
   min-height: 40px;
-  border-radius: 999px;
+  border-radius: 8px;
 }
 
 .login-card .primary-button {
-  background: var(--t1);
-  border-color: var(--t1);
-  color: var(--bg);
+  background: var(--login-accent);
+  border-color: var(--login-accent);
+  color: #ffffff;
+  transition: opacity 120ms ease;
+}
+
+.login-card .primary-button:hover:not(:disabled) {
+  opacity: 0.88;
+  background: var(--login-accent-hover);
+  border-color: var(--login-accent-hover);
 }
 
 html[data-theme="dark"] .login-card .primary-button {
-  background: #ffffff;
-  border-color: #ffffff;
-  color: #050a14;
+  background: var(--login-accent);
+  border-color: var(--login-accent);
+  color: #ffffff;
 }
 
 .login-card .secondary-button {
-  border-color: var(--bd);
+  border-color: var(--login-accent);
   background: transparent;
-  color: var(--tx);
+  color: var(--login-accent);
+}
+
+.login-card .secondary-button:hover:not(:disabled) {
+  opacity: 0.88;
 }
 
 .login-card .login-sysadmin-button {
@@ -4870,8 +4892,12 @@ html[data-theme="dark"] .login-card .primary-button {
   color: var(--ist-gold);
 }
 
+.login-card .login-check input[type="checkbox"] {
+  accent-color: var(--login-accent);
+}
+
 .login-links a {
-  color: var(--t1);
+  color: var(--login-accent);
 }
 
 .login-legal-line {
@@ -6457,6 +6483,19 @@ path {
   white-space: pre-wrap;
 }
 
+.ist-readonly-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  border-radius: 6px;
+  background: var(--tx3);
+  color: #ffffff;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .ist-record-card {
   min-width: 0;
   padding: 12px;
@@ -7156,4 +7195,26 @@ html[data-theme="dark"] .ist-data-field-success {
   .app-frame:has(.topbar) .workspace-body h3 {
     font-size: 20px !important;
   }
+}
+
+/* ============================================================================
+   APP-WIDE BLANK RESET - every screen, every button, no old design left.
+   Placed at the very end of the file and given very high specificity
+   (6 repeated [class] attribute selectors) so it wins over every other
+   !important rule in this file regardless of source order or how many
+   classes that rule's selector chains together.
+   ============================================================================ */
+html body [class][class][class][class][class][class],
+html body [class][class][class][class][class][class] * {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  font-weight: normal !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
 }
