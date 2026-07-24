@@ -44,7 +44,7 @@ revisit later.
 
 | Role | Permissions | What it actually unlocks |
 | --- | --- | --- |
-| **Triage Service Manager** | `triage.queue.manage`, `operations.dashboard.view`, `reports.view`, `audit.events.view` | Broad queue access (`queueRouter.ts`), call-center gateway command endpoints (`callCenterGateway.ts`) - real, enforced queue-management authority. |
+| **Triage Service Manager** | `triage.queue.manage`, `operations.dashboard.view`, `reports.view`, `audit.events.view` | Broad queue access (`queueRouter.ts`), call-center gateway command endpoints (`callCenterGateway.ts`) - real, enforced queue-management authority. This is also the only role whose *active* role (checked by exact string match, `canAccessServiceManagerBoard()` in `frontend/src/cockpit/roles.ts`) opens the read-only Triage Service Manager Board at `#/service-manager-board` (see [Current System Baseline](business-clinical-operations-product-capabilities.md#2a-current-system-baseline---triage-service-manager-board)); this is a frontend routing gate in addition to, not instead of, the backend permission check above. |
 | **Call Intake Coordinator** | `triage.workspace.view`, `triage.call.intake` | The *only* role (checked by literal role-name match, `isCallIntake()` in `queueOrchestration.ts`) permitted to create new queue items (`POST /api/v1/queue`) and edit call context before a nurse claims it. Real, enforced. |
 | **Remote Triage Nurse** | `triage.workspace.view`, `triage.recommendation.view`, `privacy.reveal.request` | Baseline: open/work the triage cockpit, view AI/RAG shadow suggestions. |
 | **Senior Triage Nurse** | `triage.workspace.view`, `triage.call.intake`, `triage.recommendation.view`, `triage.disposition.override`, `triage.queue.manage`, `privacy.reveal.request` | Genuine superset of Remote Triage Nurse: also passes `isCallIntake()` (can intake calls like the coordinator) *plus* `triage.queue.manage` (queue-level control). Real, enforced difference. |
@@ -137,7 +137,7 @@ into Compliance Auditor, which moves to the G group.)
 
 ## 4. What implementing this touches (not yet done)
 
-- `frontend/src/LoginPage.tsx` - the `simulationUserGroups` dropdown data (19 -> 15 entries).
+- `frontend/src/LoginPage.tsx` no longer exists in the repository - the simulated-user login UI now lives under `frontend/src/auth/` (e.g. `LoginLayout.tsx`, `LoginCard.tsx`). Locate the equivalent `simulationUserGroups`-style dropdown data there (19 -> 15 entries) before making this change.
 - `src/services/securityAdmin.ts` - the `roles` array (RBAC role-to-permission definitions) and the seeded demo `users` array (any user currently assigned a dropped role needs reassignment to its replacement).
 - Anywhere a dropped role's string is referenced directly (grep for `"organization_administrator"`, `"quality_reviewer"`, `"reporting_analyst"`, `"protocol_content_manager"` before touching, to catch any missed reference).
 - No route/middleware changes needed - the 4 dropped roles were never checked by name, only by permission code, and their permissions already exist on the roles absorbing them.

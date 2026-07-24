@@ -196,6 +196,13 @@ export function TriageServiceManagerBoard({ session, onLogout, onOpenNurseCockpi
           <button type="button" className="smb-soft-btn" onClick={onLogout}>
             Sign out
           </button>
+          {/* Opens the standalone Help & Library page in a new tab (server-
+              rendered at GET /help) - a plain link, not a client-side action,
+              so this board's own state (filters, drawer, generator toggle)
+              is never touched by clicking it. */}
+          <a className="smb-soft-btn" href="/help" target="_blank" rel="noopener noreferrer" title="Help">
+            Help
+          </a>
         </div>
       </header>
 

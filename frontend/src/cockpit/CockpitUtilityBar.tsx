@@ -1,4 +1,4 @@
-import { ArrowLeft, LogOut } from "lucide-react";
+import { ArrowLeft, HelpCircle, LogOut } from "lucide-react";
 import type { AuthenticatedSession } from "../auth/session";
 
 type CockpitUtilityBarProps = {
@@ -44,6 +44,20 @@ export function CockpitUtilityBar({ session, onLogout, onBack }: CockpitUtilityB
         >
           <LogOut size={14} />
         </button>
+        {/* Opens the standalone Help & Library page in a new tab (server-
+            rendered at GET /help, outside the SPA bundle) - a plain link, not
+            a client-side action, so this workspace's own state is never
+            touched by clicking it. */}
+        <a
+          className="cockpit-utility-btn"
+          href="/help"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Help"
+          aria-label="Help"
+        >
+          <HelpCircle size={14} />
+        </a>
       </div>
     </div>
   );

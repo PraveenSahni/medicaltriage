@@ -34,6 +34,70 @@ The product is not positioned as an autonomous symptom checker. It is a clinical
 
 No demo-ready label should be interpreted as production clinical approval. Production use requires licensed clinical content, customer governance approval, validated integrations, controlled migration, clinical UAT, and operational sign-off.
 
+## 2A. Current System Baseline - Triage Service Manager Board
+
+This section records the verified, as-built behavior of the read-only Triage
+Service Manager Board as of the last documentation audit, so the capability
+descriptions below can be read against ground truth rather than design intent.
+
+- **Role used:** the frontend route gate is `canAccessServiceManagerBoard()` in
+  `frontend/src/cockpit/roles.ts`, which allows only the exact active role
+  `triage_service_manager` (not membership in a role list). This is a
+  frontend routing gate layered on top of - not a replacement for - the
+  backend `triage.queue.manage` permission check described in
+  [Roles and Permissions](roles-and-permissions.md).
+- **Route:** `#/service-manager-board`, rendered as the `serviceManagerBoard`
+  view in `frontend/src/App.tsx`. A user with the active role
+  `triage_service_manager` lands here directly after login, and can also
+  reach it from the Nurse Cockpit's own Back button (dual access, since the
+  same role also passes the Nurse Cockpit gate).
+- **Queue source:** the board consumes the same `QueueProvider`/`useQueue()`
+  context (`frontend/src/QueueContext.tsx`) as the Nurse Cockpit - there is no
+  separate queue integration or separate poll for the board.
+- **Polling mechanism:** a 15-second interval inside `QueueContext.tsx` calls
+  `GET /api/v1/queue` and `GET /api/v1/call-center/sessions`. The board does
+  not add any additional polling of its own.
+- **QueueItem source:** the board renders the same `QueueItem` type defined in
+  `QueueContext.tsx` used elsewhere in the application; it introduces no new
+  fields or endpoints.
+- **Workflow-stage mapping:** `mapExistingStatusToBoardColumn()` in
+  `frontend/src/serviceManagerBoard/boardMapping.ts` buckets each item into
+  one of six visual columns: Waiting Calls, Reason & Rule-Out, Questions,
+  Disposition & Advice, SBAR/Complete (active SBAR only), and Closed
+  (`status === "COMPLETED"`, a distinct terminal column separate from
+  SBAR/Complete). `COMPLETED` maps to Closed regardless of stage; `INCOMING`
+  maps to Waiting; everything else maps by `currentStage`
+  (INTAKE/IDENTITY/VITALS to Reason & Rule-Out, PROTOCOL to Questions,
+  DISPOSITION to Disposition & Advice, SBAR to SBAR/Complete).
+- **Read-only limitation (precisely scoped):** the board never destructures or
+  calls `claimItem`, `connectCall`, `releaseItem`, `moveItem`, or
+  `updateItemContext` from `QueueContext`. The one deliberate exception is the
+  "Generate Calls" toggle, which calls `generateDemoStccCall()`
+  (`frontend/src/serviceManagerBoard/demoStccCallGenerator.ts`), a
+  `POST /api/v1/queue` that creates a brand-new synthetic demo call. It never
+  edits, advances, or reads back any existing call, so it does not conflict
+  with the board's read-only posture over existing queue records. This is a
+  frontend behavioral guarantee (enforced by never invoking the mutation
+  functions and covered by component tests), not a distinct backend-enforced
+  restriction - the same backend permission (`triage.queue.manage`) that
+  allows queue mutation is still held by this role.
+- **Search/sort/filter scope:** search, sort, and filter in
+  `TriageServiceManagerBoard.tsx` operate entirely on the queue array already
+  loaded into memory from `useQueue()`. No query parameters are sent to the
+  API and no refetch is triggered by search/sort/filter changes.
+- **Summary calculations:** the four summary tiles (`ServiceSummary.tsx`) are
+  computed client-side by helpers in `boardMapping.ts`: waiting count, longest
+  wait, in-flow count, safety-alert count, and "Assigned Nurses" - the last of
+  these, `countAssignedNurses()`, is a distinct count of `lockedBy`/
+  `assignedNurseId` values across non-completed items, i.e. an assignment
+  count, not a live presence/online-status count (no such signal exists).
+- **Id-masking rule:** `maskId()` in `boardMapping.ts` always renders a fixed
+  8-asterisk prefix followed by the last 4 characters of the raw id (12
+  characters total), regardless of the raw id's actual length.
+- **No backend/API/database changes:** building this board did not require or
+  introduce any new backend route, service, or database change. It is a
+  frontend-only, read-mostly consumer of the existing queue API surface.
+
 ## 3. Executive Capability Summary
 
 | Product area | Capability | Current position |
@@ -41,7 +105,7 @@ No demo-ready label should be interpreted as production clinical approval. Produ
 | Call operations | Incoming calls, callbacks, hold/resume/end, recordings, and provider-neutral event normalization | Foundation implemented; provider connection is an external dependency |
 | Workforce identity | Employee/dependent validation, calculated age, organization context, and eligibility | Demo ready with synthetic HRMS; Oracle tenant connection is an external dependency |
 | Nurse operations | One-call-at-a-time cockpit, priority queue, locking, hold, and completion | Demo ready |
-| Supervisor operations | Kanban queue board with action stage, safety status, owner, protocol, and routing visibility | Demo ready |
+| Supervisor operations | Triage Service Manager Board: read-only workflow-stage supervision (action stage, safety status, owner, protocol, and routing visibility) with search/sort/filter and a masked-identifier drawer | Demo ready |
 | Clinical workflow | STCC-compatible encounter flow from reason for call to closing and handoff | Demo ready with synthetic/open-source content; licensed STCC import is an external dependency |
 | Clinical safety | Deterministic red-floor rules, minimum disposition, and no unsafe AI downgrade | Demo ready and tested |
 | Protocol assessment | Search words, guideline candidates, initial assessment, and acuity-ordered triage questions | Search/guideline and triage-question demo ready; initial-assessment backend capability built, with frontend alignment pending; full licensed catalogue is an external dependency |
@@ -184,15 +248,13 @@ The cockpit supports:
 
 > **Validation comment:** **Where:** `#/workspace`. **How:** open a queue item, move through the four action tabs, verify that unavailable actions remain disabled until prerequisites are complete, and confirm the safety summary and SBAR preview update with the encounter.
 
-### 6.5 Kanban Supervisor and Shift-Lead Board
+### 6.5 Triage Service Manager Board (Read-Only Supervisor Board)
 
 **Status:** Demo ready.
 
-The board gives supervisors a stage-level view of demand and flow while preserving the same backend queue state used by the nurse cockpit. Cards show the current clinical action, owner, wait time, channel, HRMS validation, protocol, RAG match, safety floor, and route.
+The Triage Service Manager Board is the single supervisor workspace for stage-level demand and flow, at `#/service-manager-board`, gated to the `triage_service_manager` active role only (`frontend/src/cockpit/roles.ts`). It is a strict observation surface over the same shared queue data used by the Nurse Cockpit - it never issues a claim/move/context-update/release/connect-call request against an existing queue record. It provides six workflow columns (Waiting Calls, Reason & Rule-Out, Questions, Disposition & Advice, SBAR/Complete, and a separate terminal Closed column), local search/sort/filter, a masked-identifier read-only call drawer, and four summary tiles including an "Assigned Nurses" count (distinct assigned/locked nurses on open items, not a live-presence count). See "Current System Baseline" above and the Documentation Traceability Table below for the exact source files. A "Generate Calls" toggle is the one narrow exception to read-only: it creates new synthetic demo calls but never touches an existing one.
 
-The board is designed for supervision, allocation, and bottleneck detection. Manual card movement is governed by valid state transitions; it is not a way to bypass required clinical questions or approval gates.
-
-> **Validation comment:** **Where:** `#/kanban`. **How:** compare a case in the board with the same case in `#/workspace`, verify the stage and owner match, then attempt a valid forward or backward transition. Confirm an invalid transition or safety-gate bypass is rejected.
+> **Validation comment:** **Where:** `#/service-manager-board`. **How:** sign in as Triage Service Manager, confirm the board loads directly, search/sort/filter locally without any network request firing, open a card's read-only drawer, and confirm no claim/answer/move/escalate/complete control is ever rendered.
 
 ### 6.6 Named-User Roles and Role-Based Control Center
 
@@ -454,7 +516,7 @@ The shadow comparison captures:
 - match/difference classification;
 - blocked or unsupported outputs.
 
-> **Validation comment:** **Where:** `#/workspace` reason/guideline area, Kanban card details, and Help > STCC/RAG Shadow. **How:** inspect the RAG match and confidence for a synthetic case, compare it with deterministic search and nurse selection, and verify a disagreement is logged without changing the nurse-selected protocol or disposition.
+> **Validation comment:** **Where:** `#/workspace` reason/guideline area and Help > STCC/RAG Shadow. **How:** inspect the RAG match and confidence for a synthetic case, compare it with deterministic search and nurse selection, and verify a disagreement is logged without changing the nurse-selected protocol or disposition.
 
 ### 8.2 English Voice AI Initial Assessment
 
@@ -608,7 +670,7 @@ The data-boundary rules are:
 |---|---|---|---|
 | Login and simulation user selection | All demo users | Named user, organization, language, assigned role, simulation credentials | Root application URL |
 | Step cockpit | Triage nurses and clinicians | One active call, guided assessment, disposition, advice, and handoff | `#/workspace` |
-| Kanban board | Senior nurses, service managers, supervisors | Queue supervision, ownership, bottlenecks, safety and stage visibility | `#/kanban` |
+| Triage Service Manager Board | Triage Service Manager (role-gated) | Read-only workflow-stage supervision, search/sort/filter, masked call detail | `#/service-manager-board` |
 | CCP | Nurses and follow-up teams | Employee communication continuity and approved follow-up | `#/ccp` |
 | Control Center | Administrators, security, privacy, governance, integration, quality | Role-separated operational control and evidence | `#/admin` |
 | Help and Clinical Library | All authorized users | Operating guidance, architecture, protocols, integrations, role responsibilities, and tests | `#/help` |
@@ -632,7 +694,7 @@ Show that IST Health can safely coordinate a high-volume employee tele-triage se
 - Open the queue and explain incoming calls versus callbacks.
 - Show HRMS-validated age and patient context.
 - Demonstrate one active call and nurse locking.
-- Open the Kanban board to show shift-level supervision.
+- Open the Triage Service Manager Board (`#/service-manager-board`) to show shift-level supervision.
 
 #### Part 3: Pediatric emergency journey - 8 minutes
 
@@ -709,11 +771,11 @@ Show that IST Health can safely coordinate a high-volume employee tele-triage se
 |---|---|---|---|
 | Login and named role | Root URL | Authentication/session endpoints | valid/invalid login, lockout, role assignment |
 | Queue and nurse lock | `#/workspace` | queue list/claim/release/heartbeat/move | ownership, expiry, conflict, next-best call |
-| Kanban synchronization | `#/kanban` | queue stage endpoints | same state in cockpit and board, valid transitions |
+| Triage Service Manager Board sync | `#/service-manager-board` | queue list endpoint | same state as cockpit, no mutation call ever fired |
 | HRMS identity/age | workspace context | `/api/v1/staff/validate` | employee, dependent, unknown ID, calculated age |
 | Rules-first safety | workspace safety summary | triage scoring/safety-kernel services | red floors, no downgrade, pediatric thresholds |
 | Protocol flow | four action tabs | protocol/search/triage endpoints | search match, question order, disposition, advice |
-| RAG shadow | workspace/Kanban details | retrieval/comparison services | bounded IDs, disagreement capture, no control |
+| RAG shadow | workspace details | retrieval/comparison services | bounded IDs, disagreement capture, no control |
 | Voice assessment | backend foundation | `/api/v1/voice-assessment` | ambiguity, interruption, emergency, correction, validation |
 | CCP | `#/ccp` | CCP draft/approve/inbound/summary endpoints | separate threads, approval gate, consent/opt-out |
 | Privacy reveal | `#/admin` | admin privacy APIs | purpose, expiry, denied roles, audit |
@@ -788,7 +850,7 @@ The product presentation must state the following clearly:
 9. **Qatar advantage: local routes, aviation health, occupational pathways, and fit-to-fly controls**
 10. **SBAR, consent-gated FHIR, and Qatar National HIE/EMR write-back boundary**
 11. **CCP follow-up and communication continuity**
-12. **Kanban supervision and business operations**
+12. **Triage Service Manager Board supervision and business operations**
 13. **Named users, RBAC, privacy, audit, and governance**
 14. **RAG shadow and English Voice AI foundation**
 15. **Qatar-resident GCP architecture and data boundary**
@@ -802,6 +864,21 @@ The product presentation must state the following clearly:
 IST Health brings call-center operations, employee identity, clinical protocol execution, local referral, aviation context, communication continuity, and enterprise governance into one traceable platform. Its key differentiator is not unrestricted AI. It is the controlled collaboration between deterministic clinical rules, approved content, operational workflow, a bounded AI shadow, and accountable clinicians.
 
 For a business audience, this means higher operational visibility, standardized service delivery, reduced duplication, and auditable workforce-health support. For a clinical audience, it means high-acuity-first assessment, protected safety floors, approved advice, nurse authority, and a transparent evidence trail from first contact to final handoff.
+
+## 17A. Documentation Traceability Table - Triage Service Manager Board
+
+| Doc area | Actual source file(s) | Status | Description |
+|---|---|---|---|
+| Role access / route gate | `frontend/src/cockpit/roles.ts` (`canAccessServiceManagerBoard`), `frontend/src/App.tsx` (`serviceManagerBoard` view, hash routing, Access Denied) | Current | Active-role-only gate (`triage_service_manager`); dual access from Nurse Cockpit's Back button. |
+| Queue data source / polling | `frontend/src/QueueContext.tsx` | Current | Shared `QueueProvider`; 15s interval `GET /api/v1/queue` + `GET /api/v1/call-center/sessions`; no board-specific polling. |
+| Workflow-stage mapping | `frontend/src/serviceManagerBoard/boardMapping.ts` | Current | `mapExistingStatusToBoardColumn()`, `cardTitle()`, `maskId()`, `deriveWaitTime()`, `countAssignedNurses()`, and related summary helpers. |
+| Board shell / toolbar wiring | `frontend/src/serviceManagerBoard/TriageServiceManagerBoard.tsx` | Current | Top-level component; owns search/sort/filter state, drawer state, and the "Generate Calls" demo-only mutation exception. |
+| Search / sort / filter UI | `frontend/src/serviceManagerBoard/BoardToolbar.tsx`, `SearchControl.tsx`, `SortPopover.tsx`, `FilterPopover.tsx` | Current | 100% client-side filtering/sorting over the already-loaded queue array. |
+| Column / card rendering | `frontend/src/serviceManagerBoard/WorkflowColumn.tsx`, `ManagerCallCard.tsx`, `EmptyColumnState.tsx` | Current | Read-only cards; no claim/answer/move/escalate controls rendered. |
+| Read-only detail drawer | `frontend/src/serviceManagerBoard/ReadOnlyCallDrawer.tsx` | Current | Stage progress, patient/station/protocol/priority detail, safety-floor explanation, explicit "Observation only" notice. |
+| Demo call generation (sole mutation exception) | `frontend/src/serviceManagerBoard/demoStccCallGenerator.ts` | Current | `POST /api/v1/queue` to create a new synthetic call only; never edits an existing record. |
+| Styling | `frontend/src/serviceManagerBoard/serviceManagerBoard.css` | Current | Scoped under `#service-manager-board-root` (mirrors `#cockpit-root`) to avoid the legacy global-CSS background rule. |
+| Tests | `frontend/src/serviceManagerBoard/roles.test.ts`, `boardMapping.test.ts`, `ManagerCallCard.test.tsx`, `TriageServiceManagerBoard.test.tsx` | Current | Cover role gating, column mapping, id masking, summary aggregation, narrative/title de-duplication, and the absence of any mutation-function call. |
 
 ## 18. Reference Documents
 

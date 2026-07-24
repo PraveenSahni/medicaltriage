@@ -23,6 +23,7 @@ import {
 } from "./routes/callCenterGateway.js";
 import { createCcpRouter } from "./routes/ccp.js";
 import { createEmrRouter } from "./routes/emr.js";
+import { createHelpApiRouter, createHelpPageRouter } from "./routes/helpRouter.js";
 import { createHrmsRouter } from "./routes/hrms.js";
 import { createProtocolsRouter } from "./routes/protocols.js";
 import { createQueueRouter } from "./routes/queueRouter.js";
@@ -175,6 +176,12 @@ export function createApp() {
   app.use("/api/v1/triage", requireAuthenticatedSession, createTriageRouter());
   app.use("/api/v1/voice-assessment", requireAuthenticatedSession, createVoiceAssessmentRouter());
   app.use("/api/v1/emr", requireAuthenticatedSession, createEmrRouter());
+  app.use("/api/v1/help", createHelpApiRouter());
+  // Mounted before the SPA catch-all below so /help is a genuinely separate
+  // server-rendered page (not part of the Vite SPA bundle) - opening it in a
+  // new tab never touches the Nurse Cockpit's or Service Manager Board's live
+  // state in the other tab.
+  app.use(createHelpPageRouter());
 
   if (spaIndexHtml) {
     app.use(express.static(staticRoot, { index: false }));
