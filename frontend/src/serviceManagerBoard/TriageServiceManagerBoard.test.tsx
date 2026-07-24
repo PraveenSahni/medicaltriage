@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { act, render, screen, fireEvent } from "@testing-library/react";
 import { TriageServiceManagerBoard } from "./TriageServiceManagerBoard";
 import type { QueueItem } from "../QueueContext";
 import type { AuthenticatedSession } from "../auth/session";
@@ -29,6 +29,11 @@ jest.mock("../QueueContext", () => ({
     setActiveItemById: jest.fn(),
     clearActiveItem: jest.fn()
   })
+}));
+
+const generateDemoStccCall = jest.fn();
+jest.mock("./demoStccCallGenerator", () => ({
+  generateDemoStccCall: () => generateDemoStccCall()
 }));
 
 function makeItem(overrides: Partial<QueueItem> = {}): QueueItem {
@@ -157,5 +162,39 @@ describe("TriageServiceManagerBoard", () => {
     document.querySelectorAll("button").forEach((button) => {
       expect(button.textContent ?? "").not.toMatch(forbidden);
     });
+  });
+
+  it("toggling Generate Calls on starts continuous generation, and toggling off stops it, without calling other mutation functions", async () => {
+    jest.useFakeTimers({ legacyFakeTimers: false });
+    generateDemoStccCall.mockResolvedValue(undefined);
+    renderBoard();
+
+    const toggle = screen.getByText("▶ Generate Calls");
+    fireEvent.click(toggle);
+    expect(screen.getByText("■ Stop Generating")).toBeInTheDocument();
+
+    await act(async () => {
+      await jest.advanceTimersByTimeAsync(0);
+    });
+    expect(generateDemoStccCall).toHaveBeenCalledTimes(1);
+    expect(refreshQueue).toHaveBeenCalled();
+
+    await act(async () => {
+      await jest.advanceTimersByTimeAsync(20_000);
+    });
+    expect(generateDemoStccCall).toHaveBeenCalledTimes(2);
+
+    fireEvent.click(screen.getByText("■ Stop Generating"));
+    expect(screen.getByText("▶ Generate Calls")).toBeInTheDocument();
+
+    await act(async () => {
+      await jest.advanceTimersByTimeAsync(60_000);
+    });
+    expect(generateDemoStccCall).toHaveBeenCalledTimes(2);
+
+    expect(claimItem).not.toHaveBeenCalled();
+    expect(moveItem).not.toHaveBeenCalled();
+    expect(updateItemContext).not.toHaveBeenCalled();
+    jest.useRealTimers();
   });
 });

@@ -1,5 +1,5 @@
 import "./serviceManagerBoard.css";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueue, type QueueItem } from "../QueueContext";
 import type { AuthenticatedSession } from "../auth/session";
 import { canAccessNurseCockpit } from "../cockpit/roles";
@@ -19,6 +19,7 @@ import { ReadOnlyCallDrawer } from "./ReadOnlyCallDrawer";
 import { ServiceSummary } from "./ServiceSummary";
 import { DEFAULT_FILTERS, type BoardFilters } from "./FilterPopover";
 import type { SortMode } from "./SortPopover";
+import { generateDemoStccCall } from "./demoStccCallGenerator";
 
 type TriageServiceManagerBoardProps = {
   session: AuthenticatedSession;
@@ -49,7 +50,10 @@ export function TriageServiceManagerBoard({ session, onLogout, onOpenNurseCockpi
   const [sortMode, setSortMode] = useState<SortMode>("priority");
   const [filters, setFilters] = useState<BoardFilters>(DEFAULT_FILTERS);
   const [drawerItemId, setDrawerItemId] = useState<string | undefined>();
+  const [autoGenerateOn, setAutoGenerateOn] = useState(false);
+  const [generateError, setGenerateError] = useState<string | undefined>();
   const boardRef = useRef<HTMLElement>(null);
+  const generatingRef = useRef(false);
 
   const nurseOptions = useMemo(
     () => [...new Set(queue.map((item) => item.lockedByName).filter((name): name is string => Boolean(name)))].sort(),
@@ -132,6 +136,33 @@ export function TriageServiceManagerBoard({ session, onLogout, onOpenNurseCockpi
     boardRef.current?.scrollIntoView?.({ behavior: "smooth", block: "start" });
   }
 
+  // While toggled on, keeps generating one new demo call (licensed STCC
+  // "Abdominal Pain - Male" content only) every 20 seconds until toggled off.
+  // A generation already in flight is never overlapped.
+  useEffect(() => {
+    if (!autoGenerateOn) {
+      return;
+    }
+    async function tick() {
+      if (generatingRef.current) {
+        return;
+      }
+      generatingRef.current = true;
+      try {
+        await generateDemoStccCall();
+        await refreshQueue();
+        setGenerateError(undefined);
+      } catch (caught) {
+        setGenerateError(caught instanceof Error ? caught.message : "Failed to generate call.");
+      } finally {
+        generatingRef.current = false;
+      }
+    }
+    void tick();
+    const handle = window.setInterval(() => void tick(), 20_000);
+    return () => window.clearInterval(handle);
+  }, [autoGenerateOn, refreshQueue]);
+
   return (
     <div id="service-manager-board-root" className="smb-app">
       <header className="smb-topbar">
@@ -145,6 +176,15 @@ export function TriageServiceManagerBoard({ session, onLogout, onOpenNurseCockpi
           <span className="smb-status-dot" /> {session.user.fullName} · No call controls
         </div>
         <div className="smb-top-actions">
+          <button
+            type="button"
+            className={`smb-soft-btn${autoGenerateOn ? " smb-soft-btn-active" : ""}`}
+            onClick={() => setAutoGenerateOn((current) => !current)}
+            aria-pressed={autoGenerateOn}
+            title="Continuously generate demo incoming calls across the available protocol content"
+          >
+            {autoGenerateOn ? "■ Stop Generating" : "▶ Generate Calls"}
+          </button>
           {hasCockpitAccess && onOpenNurseCockpit && (
             <button type="button" className="smb-soft-btn" onClick={onOpenNurseCockpit}>
               Nurse Cockpit
@@ -201,6 +241,7 @@ export function TriageServiceManagerBoard({ session, onLogout, onOpenNurseCockpi
 
         {loading && queue.length === 0 && <p className="smb-status">Loading triage service...</p>}
         {error && <p className="smb-status smb-status-error">Unable to load the triage service board.</p>}
+        {generateError && <p className="smb-status smb-status-error">{generateError}</p>}
 
         <section className="smb-board" ref={boardRef} aria-label="Triage clinical flow board">
           {BOARD_COLUMNS.map((column) => (

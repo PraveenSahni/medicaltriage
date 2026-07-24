@@ -52,12 +52,16 @@ export function mapExistingStatusToBoardColumn(item: QueueItem): BoardColumnId {
   }
 }
 
-/** MM:SS elapsed since the call was created - only meaningful for waiting calls. */
+/**
+ * HH:MM elapsed since the call was created - only meaningful for waiting
+ * calls. Hours are uncapped (e.g. "27:46" for a wait over a day), unlike a
+ * MM:SS clock which becomes unreadable once the wait exceeds 59 minutes.
+ */
 export function deriveWaitTime(item: QueueItem): string {
-  const totalSeconds = Math.max(0, Math.round((Date.now() - new Date(item.createdAtIso).getTime()) / 1000));
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  const totalMinutes = Math.max(0, Math.round((Date.now() - new Date(item.createdAtIso).getTime()) / 60_000));
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
 const MASK_PREFIX_LENGTH = 8;

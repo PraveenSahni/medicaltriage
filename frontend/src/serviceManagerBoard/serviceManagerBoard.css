@@ -115,6 +115,17 @@
   color: var(--ink, #1a1a19) !important;
 }
 
+#service-manager-board-root .smb-soft-btn-active {
+  background: var(--ok, #0f6e56) !important;
+  border-color: var(--ok, #0f6e56) !important;
+  color: #ffffff !important;
+}
+
+#service-manager-board-root .smb-soft-btn-active:hover {
+  background: var(--ok, #0f6e56) !important;
+  color: #ffffff !important;
+}
+
 /* Page container - full width, compact padding, no legacy Nurse Cockpit
    max-width restriction. */
 #service-manager-board-root .smb-content {

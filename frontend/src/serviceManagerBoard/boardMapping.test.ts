@@ -72,9 +72,14 @@ describe("mapExistingStatusToBoardColumn", () => {
 });
 
 describe("deriveWaitTime", () => {
-  it("formats elapsed time as MM:SS", () => {
-    const createdAtIso = new Date(Date.now() - 90_000).toISOString();
+  it("formats elapsed time as HH:MM", () => {
+    const createdAtIso = new Date(Date.now() - 90 * 60_000).toISOString();
     expect(deriveWaitTime(makeItem({ createdAtIso }))).toBe("01:30");
+  });
+
+  it("does not roll over or truncate once the wait exceeds 59 minutes", () => {
+    const createdAtIso = new Date(Date.now() - (27 * 60 + 46) * 60_000).toISOString();
+    expect(deriveWaitTime(makeItem({ createdAtIso }))).toBe("27:46");
   });
 });
 
