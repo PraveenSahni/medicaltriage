@@ -9,6 +9,7 @@ export type PatientAgeResolution =
       ageMonths: number;
       dateOfBirthIso?: string;
       calculatedFrom: "HRMS_DATE_OF_BIRTH" | "HRMS_AGE_FIELD";
+      biologicalSex?: "female" | "male" | "other" | "unknown";
     }
   | { ok: false; status: 400 | 404; reason: string };
 
@@ -106,6 +107,7 @@ export function resolvePatientAgeFromDirectory(args: {
   }
 
   const source = dependent ? "dependent" : "staff";
+  const biologicalSex = dependent?.biologicalSex ?? profile.biologicalSex;
   const dateOfBirthIso = dependent?.dateOfBirthIso ?? profile.dateOfBirthIso;
   if (dateOfBirthIso) {
     return {
@@ -113,6 +115,7 @@ export function resolvePatientAgeFromDirectory(args: {
       source,
       dateOfBirthIso,
       calculatedFrom: "HRMS_DATE_OF_BIRTH",
+      biologicalSex,
       ...calculateAgeFromDateOfBirth(dateOfBirthIso, args.referenceDate)
     };
   }
@@ -123,7 +126,8 @@ export function resolvePatientAgeFromDirectory(args: {
       source,
       ageYears: dependent.age,
       ageMonths: dependent.age * 12,
-      calculatedFrom: "HRMS_AGE_FIELD"
+      calculatedFrom: "HRMS_AGE_FIELD",
+      biologicalSex
     };
   }
 

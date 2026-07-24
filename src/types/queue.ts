@@ -111,6 +111,7 @@ export type QueuePatientAgeSnapshotDto = {
   ageMonths: number;
   dateOfBirthIso?: string;
   calculatedFrom: "HRMS_DATE_OF_BIRTH" | "HRMS_AGE_FIELD";
+  biologicalSex?: "female" | "male" | "other" | "unknown";
 };
 
 export type QueueProtocolSuggestionDto = {
@@ -275,6 +276,7 @@ export type QueueItemDto = {
   claimedAtIso?: string;
   slaDeadlineIso: string;
   lockedBy?: string;
+  lockedByName?: string;
   lockExpiresAtIso?: string;
   customAviationTags: string[];
   createdAtIso: string;

@@ -324,7 +324,39 @@ async function seedStaffDirectory() {
   }
 }
 
+// Mirrors src/services/securityAdmin.ts's in-memory organizationDirectory
+// exactly (same ids/codes) - TriageQueueItem.organizationId is a real FK to
+// this table once queue persistence runs against the database, so these
+// rows must exist with the same ids the rest of the app already assumes.
+async function seedOrganizations() {
+  const organizations = [
+    { id: "org_ist_tech", code: "IST_TECH", name: "IST Tech", mophLicenseNumber: "IST-TECH-PLATFORM" },
+    {
+      id: "org_hmc",
+      code: "HMC",
+      name: "Hamad Medical Corporation (HMC)",
+      mophLicenseNumber: "urn:oid:2.16.634.1.1.1.hmc"
+    },
+    {
+      id: "org_phcc",
+      code: "PHCC",
+      name: "Primary Health Care Corporation (PHCC)",
+      mophLicenseNumber: "urn:oid:2.16.634.1.1.1.phcc"
+    },
+    { id: "org_sidra", code: "SIDRA", name: "Sidra Medicine", mophLicenseNumber: "urn:oid:2.16.634.1.1.1.sidra" }
+  ];
+
+  for (const org of organizations) {
+    await prisma.organization.upsert({
+      where: { id: org.id },
+      create: org,
+      update: { code: org.code, name: org.name, mophLicenseNumber: org.mophLicenseNumber }
+    });
+  }
+}
+
 async function main() {
+  await seedOrganizations();
   await seedClinicalContent();
   await seedStaffDirectory();
 

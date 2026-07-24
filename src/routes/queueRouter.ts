@@ -6,6 +6,7 @@ import {
   createQueueItem,
   deleteQueueItem,
   escalateQueueItemToOrganization,
+  getCompletionCounter,
   getQueueItem,
   heartbeatQueueItem,
   listQueueItems,
@@ -88,6 +89,16 @@ export function createQueueRouter(): Router {
     } catch (error) {
       return handleQueueError(error, next, res);
     }
+  });
+
+  // Registered before "/:id" so "stats" isn't swallowed as a queue item id.
+  // In-memory counter that increments on every real completion (see
+  // recordCompletion() in queueOrchestration.ts) - lets a long-running bulk
+  // pass be watched live (GET /api/v1/queue/stats/completions) without
+  // re-querying the database from an external script.
+  router.get("/stats/completions", async (req: AuthorizedRequest, res) => {
+    sessionFrom(req);
+    return res.json({ completions: getCompletionCounter() });
   });
 
   router.get("/:id", async (req: AuthorizedRequest, res, next) => {

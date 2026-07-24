@@ -1,12 +1,13 @@
 import { randomUUID } from "node:crypto";
-import { isMockMode, shouldUseDatabasePersistence } from "../config/runtime.js";
+import { isMockMode, shouldPersistQueueInDatabase } from "../config/runtime.js";
 import { prisma } from "../db.js";
 import { auditSignatureFor } from "./safetyKernel.js";
-import { getOrganizationById } from "./securityAdmin.js";
+import { getOrganizationById, listUsers } from "./securityAdmin.js";
 import { findDependent, resolvePatientAgeFromDirectory, validateStaffMember } from "./hrms.js";
 import {
   getClinicalProtocolById,
   getCurrentClinicalContentPackage,
+  listClinicalProtocols,
   searchClinicalProtocols
 } from "./clinicalContent.js";
 import { buildRagShadowSuggestion, buildStccProcessSnapshot } from "./ragShadow.js";
@@ -147,7 +148,24 @@ const managerRoles = new Set([
 
 const globalForQueue = globalThis as unknown as {
   istTriageQueueStore?: Map<string, QueueRecord>;
+  istTriageCompletionCounter?: number;
 };
+
+/**
+ * Simple in-memory running total of completed encounters this API process
+ * has seen, logged on every completion so a bulk run's real-time progress is
+ * visible directly in the API server's own log output - no need to poll the
+ * database separately to watch a long batch move forward.
+ */
+function recordCompletion(recordId: string): void {
+  globalForQueue.istTriageCompletionCounter = (globalForQueue.istTriageCompletionCounter ?? 0) + 1;
+  // eslint-disable-next-line no-console
+  console.log(`[queue] completed #${globalForQueue.istTriageCompletionCounter}: ${recordId}`);
+}
+
+export function getCompletionCounter(): number {
+  return globalForQueue.istTriageCompletionCounter ?? 0;
+}
 
 function nowIso(): string {
   return new Date().toISOString();
@@ -223,12 +241,17 @@ function patientAgeFromUnknown(value: unknown): QueuePatientAgeSnapshotDto | und
   ) {
     return undefined;
   }
+  const biologicalSex = value.biologicalSex;
   return {
     source,
     ageYears,
     ageMonths,
     dateOfBirthIso: stringFromPayload(value.dateOfBirthIso),
-    calculatedFrom
+    calculatedFrom,
+    biologicalSex:
+      biologicalSex === "female" || biologicalSex === "male" || biologicalSex === "other" || biologicalSex === "unknown"
+        ? biologicalSex
+        : undefined
   };
 }
 
@@ -338,6 +361,8 @@ function queuePayloadFromUnknown(value: unknown): {
   safetyFloorSource?: QueueRecord["safetyFloorSource"];
   initialAssessmentResponses?: Record<string, string>;
   vitalsUnobtainable?: boolean;
+  matchedProtocolId?: string;
+  dependentId?: string;
 } {
   if (!isRecord(value)) {
     return {};
@@ -361,7 +386,9 @@ function queuePayloadFromUnknown(value: unknown): {
     reasonNarrative: stringFromPayload(value.reasonNarrative),
     preparedProtocol: preparedProtocolFromUnknown(value.preparedProtocol),
     safetyFloorSource:
-      floorSource === "vitals" || floorSource === "symptom" || floorSource === "judgment" ? floorSource : undefined
+      floorSource === "vitals" || floorSource === "symptom" || floorSource === "judgment" ? floorSource : undefined,
+    matchedProtocolId: stringFromPayload(value.matchedProtocolId),
+    dependentId: stringFromPayload(value.dependentId)
   };
 }
 
@@ -376,6 +403,17 @@ function queuePayloadFor(record: QueueRecord): Record<string, unknown> {
   if (record.safetyFloorSource) payload.safetyFloorSource = record.safetyFloorSource;
   if (record.initialAssessmentResponses) payload.initialAssessmentResponses = record.initialAssessmentResponses;
   if (typeof record.vitalsUnobtainable === "boolean") payload.vitalsUnobtainable = record.vitalsUnobtainable;
+  // The app-facing matchedProtocolId is the file-based external protocol id
+  // (e.g. "stcc-abdominal-pain-male"), not the Algorithm table's internal
+  // cuid that the FK column of the same name actually stores - stash the
+  // external id here so it round-trips correctly regardless of whether a
+  // matching Algorithm row exists in the database (see resolveAlgorithmDbId).
+  if (record.matchedProtocolId) payload.matchedProtocolId = record.matchedProtocolId;
+  // Same reasoning as matchedProtocolId: dependentId is an HRMS-issued id
+  // from the JSON-mocked directory (hrmsOracleAdapter.ts), not a row in the
+  // Prisma Dependent table (which stays unseeded/legacy here) - the FK
+  // column can't safely hold it, so it round-trips via the payload instead.
+  if (record.dependentId) payload.dependentId = record.dependentId;
   return payload;
 }
 
@@ -391,6 +429,9 @@ function ageSnapshotFromResolution(result: ReturnType<typeof resolvePatientAgeFr
   };
   if (result.dateOfBirthIso) {
     snapshot.dateOfBirthIso = result.dateOfBirthIso;
+  }
+  if (result.biologicalSex) {
+    snapshot.biologicalSex = result.biologicalSex;
   }
   return snapshot;
 }
@@ -535,6 +576,7 @@ function buildPreparedProtocol(record: QueueRecord, preparedAtIso: string): Queu
   const suggestions = searchClinicalProtocols({
     q: reasonNarrative,
     ageYears: record.patientAge?.ageYears,
+    biologicalSex: record.patientAge?.biologicalSex,
     mode: contentPackage.release.mode,
     limit: 5
   }).map(suggestionFromSearchResult);
@@ -588,7 +630,7 @@ function dbRowToRecord(row: QueueDbRow): QueueRecord {
   return {
     id: row.id,
     istStaffId: row.istStaffId,
-    dependentId: row.dependentId ?? undefined,
+    dependentId: queuePayload.dependentId ?? row.dependentId ?? undefined,
     organizationId: row.organizationId ?? undefined,
     organizationCode: organizationCodeFor(row.organizationId ?? undefined),
     targetOrganizationId: row.targetOrganizationId ?? undefined,
@@ -605,7 +647,7 @@ function dbRowToRecord(row: QueueDbRow): QueueRecord {
     reasonNarrative: queuePayload.reasonNarrative ?? row.summary ?? "Tele-triage queue item",
     preparedProtocol: queuePayload.preparedProtocol,
     vitals: isVitals(row.vitals) ? row.vitals : undefined,
-    matchedProtocolId: row.matchedProtocolId ?? undefined,
+    matchedProtocolId: queuePayload.matchedProtocolId ?? row.matchedProtocolId ?? undefined,
     calculatedSeverity: row.calculatedSeverity ?? undefined,
     dispositionCode: row.dispositionCode ?? undefined,
     destinationName: row.destinationName ?? undefined,
@@ -647,10 +689,19 @@ function dbRowToRecord(row: QueueDbRow): QueueRecord {
   };
 }
 
+// Resolves the raw lockedBy user id (e.g. "usr_nurse_10001") to the real
+// signed-in user's display name, so the sidebar can show "with Nurse X"
+// instead of either a meaningless id or a fabricated name.
+function resolveLockedByName(userId: string | undefined): string | undefined {
+  if (!userId) return undefined;
+  return listUsers().find((user) => user.id === userId)?.fullName;
+}
+
 function toDto(record: QueueRecord): QueueItemDto {
   const prepared = ensurePreparedProtocol(record);
   return jsonClone({
     ...prepared,
+    lockedByName: resolveLockedByName(prepared.lockedBy),
     stccProcess: buildStccProcessSnapshot(prepared)
   });
 }
@@ -695,6 +746,75 @@ function redFloorFromVitals(vitals: QueueVitals | undefined): boolean {
     vitals.heartRate < 60 ||
     vitals.heartRate > 130
   );
+}
+
+/**
+ * 20 fresh, unclaimed test calls exercising every disposition tier of the
+ * real licensed STCC "Abdominal Pain - Male" guideline
+ * (src/data/stccLicensedContent), for full manual walkthrough QA now that
+ * CLINICAL_CONTENT_SOURCE=stcc-licensed is the active content source. Each
+ * `summary` is an ordinary plain-language caller complaint (never copied
+ * from the licensed TAQ question text) chosen to search-match the real
+ * protocol and plausibly reach the noted disposition level when a nurse
+ * walks it through Reason & Rule-Out -> Questions -> Disposition -> SBAR.
+ *
+ * istStaffId values are real, active, adult-male person numbers pulled from
+ * the actual Oracle Fusion HCM mock directory (data/generated/ist_qatar_seed_data.json,
+ * served through hrmsOracleAdapter.ts/hrms.ts) - not fabricated IDs - so
+ * `hydrateRecordIdentity()` validates them against HRMS exactly like a real
+ * incoming call, matching the protocol's own ageMin:18/genderRestriction:male
+ * eligibility, and the full workflow (including the identity-gated SBAR
+ * completion step) can be exercised end-to-end without a separate bypass.
+ */
+function abdominalPainMaleTestCases(createdAtIso: string): QueueRecord[] {
+  const cases: Array<{ istStaffId: string; summary: string; department: string; jobTitle: string; channel: QueueRecord["channel"] }> = [
+    { istStaffId: "IST-00007", summary: "Sudden severe stomach pain, caller sounds confused, family says he looks pale and clammy.", department: "Administration", jobTitle: "CDC Analyst", channel: "Phone" },
+    { istStaffId: "IST-00009", summary: "Collapsed briefly after severe stomach pain, now conscious but shaky and weak.", department: "Flight Operations", jobTitle: "Captain", channel: "Callback" },
+    { istStaffId: "IST-00010", summary: "Severe belly pain for over an hour, just vomited and it had blood in it.", department: "Inflight Services", jobTitle: "Cabin Crew", channel: "Phone" },
+    { istStaffId: "IST-00012", summary: "63-year-old with sudden severe abdominal pain, worse than anything before.", department: "Administration", jobTitle: "CDC Analyst", channel: "WhatsApp" },
+    { istStaffId: "IST-00013", summary: "Vomiting green-colored fluid, abdomen pain has been getting worse over the last hour.", department: "Ground Operations", jobTitle: "Airport Customer Service", channel: "Phone" },
+    { istStaffId: "IST-00015", summary: "Sounds extremely unwell on the phone, weak voice, reports bad stomach pain.", department: "Ground Operations", jobTitle: "Catering Coordinator", channel: "Callback" },
+    { istStaffId: "IST-00017", summary: "Constant moderate stomach pain for about three hours, no vomiting so far.", department: "Administration", jobTitle: "HR Specialist", channel: "Phone" },
+    { istStaffId: "IST-00021", summary: "Whites of the eyes look yellow, mild stomach discomfort for the last two days.", department: "Flight Operations", jobTitle: "First Officer", channel: "WhatsApp" },
+    { istStaffId: "IST-00027", summary: "High fever around 103F along with a stomach ache since this morning.", department: "Flight Operations", jobTitle: "First Officer", channel: "Phone" },
+    { istStaffId: "IST-00030", summary: "Severe stomach cramp that started about twenty minutes ago, nothing else yet.", department: "Inflight Services", jobTitle: "Cabin Supervisor", channel: "Callback" },
+    { istStaffId: "IST-00032", summary: "Cramping stomach pain that comes and goes, going on for more than a day.", department: "Administration", jobTitle: "HR Specialist", channel: "Phone" },
+    { istStaffId: "IST-00033", summary: "Noticed pink-tinged urine along with some mild stomach discomfort today.", department: "Ground Operations", jobTitle: "Ramp Agent", channel: "WhatsApp" },
+    { istStaffId: "IST-00034", summary: "Vomited once this morning with a couple of streaks of blood, feels fine now.", department: "Inflight Services", jobTitle: "Cabin Supervisor", channel: "Phone" },
+    { istStaffId: "IST-00038", summary: "Recurring stomach pain on and off for the past two months, nothing acute.", department: "Administration", jobTitle: "Medical Commission Clerk", channel: "Callback" },
+    { istStaffId: "IST-00040", summary: "Constipated for a few days and noticed a little blood on the toilet paper.", department: "Flight Operations", jobTitle: "Captain", channel: "Phone" },
+    { istStaffId: "IST-00042", summary: "Mild stomach ache for about the last hour, nothing else going on.", department: "Flight Operations", jobTitle: "First Officer", channel: "WhatsApp" },
+    { istStaffId: "IST-00047", summary: "Occasional mild stomach cramps on and off today, otherwise feeling okay.", department: "Ground Operations", jobTitle: "Airport Customer Service", channel: "Phone" },
+    { istStaffId: "IST-00048", summary: "Caller reports his colleague can't be woken up and is holding his stomach.", department: "Ground Operations", jobTitle: "Ramp Agent", channel: "Phone" },
+    { istStaffId: "IST-00054", summary: "Noticed black, tarry-looking stools since yesterday plus abdominal discomfort.", department: "Inflight Services", jobTitle: "Cabin Crew", channel: "Callback" },
+    { istStaffId: "IST-00055", summary: "Repeated vomiting with a greenish tinge and moderate stomach pain building for an hour.", department: "Engineering", jobTitle: "Avionics Engineer", channel: "WhatsApp" }
+  ];
+
+  return cases.map((testCase, index) => ({
+    id: `case-abd-${9001 + index}`,
+    istStaffId: testCase.istStaffId,
+    organizationId: "org_phcc",
+    organizationCode: "PHCC",
+    targetOrganizationId: "org_phcc",
+    targetOrganizationCode: "PHCC",
+    status: "INCOMING",
+    currentStage: "INTAKE",
+    priorityScore: 0,
+    patientType: "Staff",
+    channel: testCase.channel,
+    stationCode: "DOH",
+    department: testCase.department,
+    jobTitle: testCase.jobTitle,
+    summary: testCase.summary,
+    safetyFloorActive: false,
+    identityValidated: false,
+    sbarCopied: false,
+    slaDeadlineIso: deadline(20),
+    customAviationTags: ["stcc-licensed-test-case", "abdominal-pain-male"],
+    createdAtIso,
+    updatedAtIso: createdAtIso,
+    transitionLogs: []
+  }));
 }
 
 function initialQueueRecords(): QueueRecord[] {
@@ -857,7 +977,8 @@ function initialQueueRecords(): QueueRecord[] {
       createdAtIso,
       updatedAtIso: createdAtIso,
       transitionLogs: []
-    }
+    },
+    ...abdominalPainMaleTestCases(createdAtIso)
   ];
 
   return rows.map((record) => {
@@ -879,6 +1000,160 @@ function store(): Map<string, QueueRecord> {
 
 export function resetQueueStoreForTests(): void {
   globalForQueue.istTriageQueueStore = new Map(initialQueueRecords().map((record) => [record.id, record]));
+}
+
+/**
+ * One-time migration helper (see src/scripts/seedQueueDatabase.ts): inserts
+ * the same starter records that back the in-memory store
+ * (initialQueueRecords()) as real rows in triage_queue_items, so switching
+ * QUEUE_DB_PERSISTENCE=true doesn't start from an empty queue. Safe to
+ * re-run - each record is created with `skipDuplicates` semantics via a
+ * pre-check rather than upsert, since QueueRecord has no natural unique key
+ * besides id.
+ */
+async function insertQueueRecordIfAbsent(record: QueueRecord): Promise<boolean> {
+  const existing = await queueClient().triageQueueItem.findUnique({ where: { id: record.id } });
+  if (existing) {
+    return false;
+  }
+  await queueClient().triageQueueItem.create({
+    data: {
+      id: record.id,
+      istStaffId: record.istStaffId,
+      // Not a Prisma Dependent row id - see queuePayloadFor's comment.
+      dependentId: null,
+      organizationId: record.organizationId,
+      targetOrganizationId: record.targetOrganizationId,
+      status: record.status,
+      currentStage: record.currentStage,
+      priorityScore: record.priorityScore,
+      patientType: record.patientType,
+      channel: record.channel,
+      stationCode: record.stationCode,
+      department: record.department,
+      jobTitle: record.jobTitle,
+      summary: record.summary,
+      calculatedSeverity: record.calculatedSeverity,
+      dispositionCode: record.dispositionCode,
+      destinationName: record.destinationName,
+      identityValidated: record.identityValidated,
+      safetyFloorActive: record.safetyFloorActive,
+      clinicalApproval: record.clinicalApproval,
+      sbarCopied: record.sbarCopied,
+      assignedNurseId: record.assignedNurseId,
+      claimedAt: record.claimedAtIso ? new Date(record.claimedAtIso) : null,
+      slaDeadline: new Date(record.slaDeadlineIso),
+      customAviationTags: record.customAviationTags,
+      queuePayload: queuePayloadFor(record)
+    }
+  });
+  return true;
+}
+
+export async function seedQueueDatabaseFromInitialRecords(): Promise<{ inserted: number; skipped: number }> {
+  const records = initialQueueRecords();
+  let inserted = 0;
+  let skipped = 0;
+  for (const record of records) {
+    if (await insertQueueRecordIfAbsent(record)) {
+      inserted += 1;
+    } else {
+      skipped += 1;
+    }
+  }
+  return { inserted, skipped };
+}
+
+export type BulkSyntheticCandidate = {
+  istStaffId: string;
+  department: string;
+  jobTitle: string;
+  ageYears: number;
+  biologicalSex: "female" | "male" | "other" | "unknown";
+};
+
+/**
+ * One record per real, currently-loaded protocol (see src/scripts/seedBulkSyntheticQueue.ts)
+ * so validation testing has near-complete coverage of the actual content
+ * package, not just the 20 hand-authored STCC abdominal-pain cases. The real
+ * licensed STCC protocol is skipped here - it already has its own dedicated,
+ * hand-written test cases (abdominalPainMaleTestCases) that shouldn't be
+ * duplicated. Reason narratives are built from each open-source protocol's
+ * own titleEn/clinicalDefinitionEn (our own authored content, never STCC's
+ * licensed text), matched against a real HRMS candidate whose age/sex
+ * satisfies that protocol's own ageMin/ageMax/genderRestriction, exactly like
+ * abdominalPainMaleTestCases does for the STCC protocol.
+ */
+export async function seedBulkSyntheticQueueRecords(
+  candidates: BulkSyntheticCandidate[],
+  recordsPerProtocol = 1
+): Promise<{ inserted: number; skipped: number; totalProtocols: number }> {
+  const protocols = listClinicalProtocols().filter((protocol) => !protocol.id.startsWith("stcc-"));
+  const createdAtIso = nowIso();
+  const usedCandidates = new Set<string>();
+  let inserted = 0;
+  let skipped = 0;
+  let cursor = 0;
+
+  for (const protocol of protocols) {
+    for (let variant = 1; variant <= recordsPerProtocol; variant++) {
+      let match: BulkSyntheticCandidate | undefined;
+      for (let attempt = 0; attempt < candidates.length; attempt++) {
+        const candidate = candidates[(cursor + attempt) % candidates.length];
+        if (usedCandidates.has(candidate.istStaffId)) continue;
+        if (typeof protocol.ageMin === "number" && candidate.ageYears < protocol.ageMin) continue;
+        if (typeof protocol.ageMax === "number" && candidate.ageYears > protocol.ageMax) continue;
+        if (protocol.genderRestriction && protocol.genderRestriction !== candidate.biologicalSex) continue;
+        match = candidate;
+        cursor = (cursor + attempt + 1) % candidates.length;
+        break;
+      }
+      if (!match) {
+        skipped += 1;
+        continue;
+      }
+      usedCandidates.add(match.istStaffId);
+
+      const id = recordsPerProtocol > 1 ? `case-bulk-${protocol.id}-${variant}` : `case-bulk-${protocol.id}`;
+      const summary = (protocol.clinicalDefinitionEn ?? protocol.titleEn).slice(0, 240);
+      const baseRecord: QueueRecord = {
+        id,
+        istStaffId: match.istStaffId,
+        organizationId: "org_phcc",
+        organizationCode: "PHCC",
+        targetOrganizationId: "org_phcc",
+        targetOrganizationCode: "PHCC",
+        status: "INCOMING",
+        currentStage: "INTAKE",
+        priorityScore: 0,
+        patientType: "Staff",
+        channel: "Phone",
+        stationCode: "DOH",
+        department: match.department,
+        jobTitle: match.jobTitle,
+        summary,
+        safetyFloorActive: false,
+        identityValidated: false,
+        sbarCopied: false,
+        slaDeadlineIso: deadline(30),
+        customAviationTags: ["bulk-synthetic", protocol.id],
+        createdAtIso,
+        updatedAtIso: createdAtIso,
+        transitionLogs: []
+      };
+      const hydrated = hydrateRecordIdentity(baseRecord);
+      const prepared = ensurePreparedProtocol(hydrated);
+      const record: QueueRecord = { ...prepared, priorityScore: computePriority(prepared) };
+
+      if (await insertQueueRecordIfAbsent(record)) {
+        inserted += 1;
+      } else {
+        skipped += 1;
+      }
+    }
+  }
+
+  return { inserted, skipped, totalProtocols: protocols.length };
 }
 
 function isSupervisor(session: AuthenticatedSession): boolean {
@@ -1051,8 +1326,23 @@ function matchesFilter(record: QueueRecord, filters: QueueListQuery): boolean {
   );
 }
 
+// Real, licensed STCC protocols are named with a "stcc-" external id prefix
+// (see src/data/stccLicensedContent/index.ts) to distinguish them from the
+// synthetic open-source-guideline set ("oscg-"/"oscr-" prefixes). Surfacing
+// them first lets validation testing focus on genuine STCC-backed records
+// instead of them being buried among synthetic ones at the same priority tier.
+function isRealStccProtocolMatch(record: QueueRecord): boolean {
+  const protocolId = record.matchedProtocolId ?? record.preparedProtocol?.primaryProtocolId;
+  return typeof protocolId === "string" && protocolId.startsWith("stcc-");
+}
+
 function sorted(records: QueueRecord[]): QueueRecord[] {
   return [...records].sort((left, right) => {
+    const leftIsStcc = isRealStccProtocolMatch(left);
+    const rightIsStcc = isRealStccProtocolMatch(right);
+    if (leftIsStcc !== rightIsStcc) {
+      return leftIsStcc ? -1 : 1;
+    }
     if (right.priorityScore !== left.priorityScore) {
       return right.priorityScore - left.priorityScore;
     }
@@ -1061,11 +1351,29 @@ function sorted(records: QueueRecord[]): QueueRecord[] {
 }
 
 async function listDbRecords(filters: QueueListQuery): Promise<QueueRecord[]> {
-  const rows = await queueClient().triageQueueItem.findMany({
-    include: { transitionLogs: { orderBy: { timestamp: "desc" }, take: 20 } },
-    orderBy: [{ priorityScore: "desc" }, { slaDeadline: "asc" }],
-    take: 250
-  });
+  // Open and completed records are fetched with separate take() windows so
+  // neither bucket can starve the other: a single combined query - even with
+  // COMPLETED sorted last - still hits one shared take(250) cap, so once
+  // total open records across all orgs exceeds 250, completed calls vanish
+  // from the list entirely (found via bulk end-to-end testing: 440 open
+  // records system-wide left zero room for the 281 completed ones, even
+  // though the UI's own Completed tab should always be able to show its own
+  // items regardless of how many open calls exist elsewhere).
+  const [openRows, completedRows] = await Promise.all([
+    queueClient().triageQueueItem.findMany({
+      where: { status: { not: "COMPLETED" } },
+      include: { transitionLogs: { orderBy: { timestamp: "desc" }, take: 20 } },
+      orderBy: [{ priorityScore: "desc" }, { slaDeadline: "asc" }],
+      take: 250
+    }),
+    queueClient().triageQueueItem.findMany({
+      where: { status: "COMPLETED" },
+      include: { transitionLogs: { orderBy: { timestamp: "desc" }, take: 20 } },
+      orderBy: [{ updatedAt: "desc" }],
+      take: 100
+    })
+  ]);
+  const rows = [...openRows, ...completedRows];
   return sorted(rows.map(dbRowToRecord).filter((record) => matchesFilter(record, filters)));
 }
 
@@ -1077,27 +1385,48 @@ async function getDbRecord(id: string): Promise<QueueRecord | undefined> {
   return row ? dbRowToRecord(row) : undefined;
 }
 
+// TriageQueueItem.matchedProtocolId is an FK to Algorithm.id (an internal
+// cuid), but every in-app consumer of matchedProtocolId deals in the
+// file-based external protocol id (e.g. "stcc-abdominal-pain-male") used by
+// searchClinicalProtocols()/getClinicalProtocolById(). Resolve the external
+// id to its DB row here so we never write a value the FK constraint would
+// reject; the external id itself still round-trips via queuePayload.
+async function resolveAlgorithmDbId(externalProtocolId: string | undefined): Promise<string | null> {
+  if (!externalProtocolId) {
+    return null;
+  }
+  const algorithm = await prisma.algorithm.findUnique({
+    where: { externalProtocolId },
+    select: { id: true }
+  });
+  return algorithm?.id ?? null;
+}
+
 async function saveDbRecord(record: QueueRecord): Promise<QueueRecord> {
+  // Prisma treats `undefined` in an update's data object as "field not
+  // provided" (leaves the column untouched), not "set to null" - so clearing
+  // a nullable field (e.g. releaseQueueItem setting lockedBy = undefined)
+  // silently no-ops unless undefined is coalesced to null explicitly here.
   const updated = await queueClient().triageQueueItem.update({
     where: { id: record.id },
     data: {
       status: record.status,
       currentStage: record.currentStage,
-      organizationId: record.organizationId,
-      targetOrganizationId: record.targetOrganizationId,
+      organizationId: record.organizationId ?? null,
+      targetOrganizationId: record.targetOrganizationId ?? null,
       priorityScore: record.priorityScore,
-      vitals: record.vitals,
-      matchedProtocolId: record.matchedProtocolId,
-      calculatedSeverity: record.calculatedSeverity,
-      dispositionCode: record.dispositionCode,
-      destinationName: record.destinationName,
+      vitals: record.vitals ?? null,
+      matchedProtocolId: await resolveAlgorithmDbId(record.matchedProtocolId),
+      calculatedSeverity: record.calculatedSeverity ?? null,
+      dispositionCode: record.dispositionCode ?? null,
+      destinationName: record.destinationName ?? null,
       identityValidated: record.identityValidated,
       safetyFloorActive: record.safetyFloorActive,
-      clinicalApproval: record.clinicalApproval,
+      clinicalApproval: record.clinicalApproval ?? null,
       sbarCopied: record.sbarCopied,
-      assignedNurseId: record.assignedNurseId,
+      assignedNurseId: record.assignedNurseId ?? null,
       claimedAt: record.claimedAtIso ? new Date(record.claimedAtIso) : null,
-      lockedBy: record.lockedBy,
+      lockedBy: record.lockedBy ?? null,
       lockExpiresAt: record.lockExpiresAtIso ? new Date(record.lockExpiresAtIso) : null,
       summary: record.summary,
       customAviationTags: record.customAviationTags,
@@ -1153,7 +1482,7 @@ function saveMockRecord(record: QueueRecord): QueueRecord {
 }
 
 async function getRecord(id: string): Promise<QueueRecord> {
-  const record = shouldUseDatabasePersistence() ? await getDbRecord(id) : getMockRecord(id);
+  const record = shouldPersistQueueInDatabase() ? await getDbRecord(id) : getMockRecord(id);
   if (!record) {
     throw new QueueOrchestrationError(404, `Queue item ${id} was not found.`, "QUEUE_NOT_FOUND");
   }
@@ -1161,7 +1490,7 @@ async function getRecord(id: string): Promise<QueueRecord> {
 }
 
 async function saveRecord(record: QueueRecord): Promise<QueueRecord> {
-  return shouldUseDatabasePersistence() ? saveDbRecord(record) : saveMockRecord(record);
+  return shouldPersistQueueInDatabase() ? saveDbRecord(record) : saveMockRecord(record);
 }
 
 function appendTransition(
@@ -1210,7 +1539,7 @@ function appendTransition(
 
 export async function listQueueItems(session: AuthenticatedSession, filters: QueueListQuery = {}): Promise<QueueItemDto[]> {
   requireQueueAccess(session);
-  const records = shouldUseDatabasePersistence()
+  const records = shouldPersistQueueInDatabase()
     ? await listDbRecords(filters)
     : sorted(Array.from(store().values()).filter((record) => matchesFilter(record, filters)));
   return records.filter((record) => canSeeTenant(record, session)).map(toDto);
@@ -1231,7 +1560,7 @@ export async function deleteQueueItem(session: AuthenticatedSession, id: string)
   const record = await getRecord(id);
   requireTenantAccess(record, session);
 
-  if (shouldUseDatabasePersistence()) {
+  if (shouldPersistQueueInDatabase()) {
     await queueClient().triageQueueItem.delete({ where: { id } });
     return;
   }
@@ -1307,12 +1636,13 @@ export async function createQueueItem(session: AuthenticatedSession, request: Qu
   record.preparedProtocol = preparedRecord.preparedProtocol;
   record.priorityScore = computePriority(record);
 
-  if (shouldUseDatabasePersistence()) {
+  if (shouldPersistQueueInDatabase()) {
     const row = await queueClient().triageQueueItem.create({
       data: {
         id: record.id,
         istStaffId: record.istStaffId,
-        dependentId: record.dependentId,
+        // Not a Prisma Dependent row id - see queuePayloadFor's comment.
+        dependentId: null,
         organizationId: record.organizationId,
         targetOrganizationId: record.targetOrganizationId,
         status: record.status,
@@ -1361,7 +1691,7 @@ export async function claimQueueItem(session: AuthenticatedSession, id: string):
   const transition = appendTransition(record, session, previous, "Queue item claimed and locked for active triage.");
   record.priorityScore = computePriority(record);
   const saved = await saveRecord(record);
-  if (shouldUseDatabasePersistence()) {
+  if (shouldPersistQueueInDatabase()) {
     await addDbTransition(saved, transition);
   }
   return toDto(saved);
@@ -1388,8 +1718,14 @@ export async function releaseQueueItem(session: AuthenticatedSession, id: string
   requireQueueAccess(session);
   const record = await getRecord(id);
   requireTenantAccess(record, session);
-  if (record.lockedBy !== session.user.id && !canTakeOverLock(session)) {
+  // Releasing is idempotent: a record with no active lock has nothing to
+  // protect, so a second/duplicate release call should be a harmless no-op
+  // rather than a 423 - only a genuinely different lock owner is rejected.
+  if (record.lockedBy && record.lockedBy !== session.user.id && !canTakeOverLock(session)) {
     throw new QueueOrchestrationError(423, "Only the lock owner or a supervisor can release this queue item.", "QUEUE_ITEM_LOCKED");
+  }
+  if (!record.lockedBy) {
+    return toDto(record);
   }
   const previous = { status: record.status, currentStage: record.currentStage };
   record.lockedBy = undefined;
@@ -1397,7 +1733,7 @@ export async function releaseQueueItem(session: AuthenticatedSession, id: string
   record.updatedAtIso = nowIso();
   const transition = appendTransition(record, session, previous, "Queue item released.");
   const saved = await saveRecord(record);
-  if (shouldUseDatabasePersistence()) {
+  if (shouldPersistQueueInDatabase()) {
     await addDbTransition(saved, transition);
   }
   return toDto(saved);
@@ -1532,12 +1868,15 @@ export async function moveQueueItem(
   } else if (record.status === "INCOMING") {
     record.status = "IN_PROCESS";
   }
+  if (previous.status !== "COMPLETED" && record.status === "COMPLETED") {
+    recordCompletion(record.id);
+  }
 
   record.updatedAtIso = nowIso();
   const transition = appendTransition(record, session, previous, request.reason);
   record.priorityScore = computePriority(record);
   const saved = await saveRecord(record);
-  if (shouldUseDatabasePersistence()) {
+  if (shouldPersistQueueInDatabase()) {
     await addDbTransition(saved, transition);
   }
   return toDto(saved);
@@ -1570,14 +1909,14 @@ export async function escalateQueueItemToOrganization(
   });
   record.priorityScore = computePriority(record);
   const saved = await saveRecord(record);
-  if (shouldUseDatabasePersistence()) {
+  if (shouldPersistQueueInDatabase()) {
     await addDbTransition(saved, transition);
   }
   return toDto(saved);
 }
 
 export async function releaseQueueLocksForUser(userId: string): Promise<number> {
-  if (shouldUseDatabasePersistence()) {
+  if (shouldPersistQueueInDatabase()) {
     const result = await queueClient().triageQueueItem.updateMany({
       where: { lockedBy: userId },
       data: {

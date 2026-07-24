@@ -97,6 +97,14 @@ export function shouldUseDatabasePersistence(): boolean {
   return !isMockMode();
 }
 
+// Queue persistence is opt-in independently of MOCK_MODE: flipping MOCK_MODE
+// off also disables demo-password auth and other mocked integrations
+// (callCenterGateway, voiceAssessment, fhirWriteback), so the queue store
+// gets its own explicit flag instead of reusing shouldUseDatabasePersistence().
+export function shouldPersistQueueInDatabase(): boolean {
+  return envFlag("QUEUE_DB_PERSISTENCE", false);
+}
+
 export function getAdminPassword(): string {
   return process.env.ADMIN_PASSWORD ?? (isMockMode() ? MOCK_LOCAL_ADMIN_PASSWORD : "");
 }

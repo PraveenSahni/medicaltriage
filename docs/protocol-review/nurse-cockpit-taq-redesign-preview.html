@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nurse Cockpit — TAQ Redesign Preview (Back Pain)</title>
+<style>
+  :root {
+    --bg: #f7f6f3; --bg2: #f1efe9; --card: #ffffff;
+    --ink: #1a1a19; --muted: #6b6a66; --tx3: #9c9a92; --line: #e0dfd9;
+    --accent: #185FA5;
+
+    /* Per-disposition urgency colors, matching the STCC reference's approach */
+    --ems: #A32D2D;   --emsbg: #FCEBEB;   --emsbd: #F09595;
+    --hcp4: #7A5D00;  --hcp4bg: #FAF3D1;  --hcp4bd: #D9BC2B;
+    --pcp24: #185FA5; --pcp24bg: #E6F1FB; --pcp24bd: #85B7EB;
+    --home: #0F6E56;  --homebg: #E1F5EE;  --homebd: #5DCAA5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.55; font-size: 14px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 28px 16px 80px; }
+  .note {
+    background: #FFF7EC; border: 1px solid #EF9F27; border-radius: 8px;
+    padding: 10px 16px; font-size: 12.5px; color: #854F0B; margin-bottom: 20px;
+  }
+  h1 { font-size: 1.35rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+
+  .viewtoggle { display: flex; gap: 8px; margin: 0 0 16px; }
+  .viewtoggle button {
+    background: var(--card); border: 1px solid var(--line); color: var(--muted);
+    border-radius: 8px; padding: 7px 16px; font-size: .82rem; font-weight: 600; cursor: pointer;
+  }
+  .viewtoggle button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .prog-wrap { margin: 4px 0 18px; }
+  .prog-row { display: flex; justify-content: space-between; font-size: .74rem; color: var(--tx3); margin-bottom: 4px; font-weight: 600; }
+  .prog-track { height: 5px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width .3s; }
+
+  .step {
+    background: var(--card); border: 1px solid var(--line);
+    border-left: 4px solid var(--gcbd, var(--line));
+    border-radius: 10px; padding: 14px 16px; margin: 10px 0;
+  }
+  .step-hdr { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: .82rem; flex-shrink: 0;
+    background: var(--gcbg, var(--bg2)); color: var(--gc, var(--muted));
+  }
+  .gtag { font-size: .66rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--gc, var(--accent)); }
+  .step-title { font-weight: 600; margin-top: 2px; }
+  .choices { display: flex; gap: 8px; flex-wrap: wrap; }
+  .choice {
+    padding: 8px 28px; border-radius: 7px; border: 1.5px solid var(--line);
+    background: var(--bg2); cursor: pointer; font-weight: 700; font-size: .9rem;
+    transition: all .15s; user-select: none;
+  }
+  .choice:hover { background: #eceae3; }
+  .choice.sel-yes { background: var(--emsbg); border-color: var(--emsbd); color: var(--ems); }
+  .choice.sel-no { background: var(--homebg); border-color: var(--homebd); color: var(--home); }
+
+  .r-card {
+    border-radius: 10px; border: 1.5px dashed var(--gcbd, var(--line));
+    background: var(--gcbg, var(--bg2)); padding: 18px; margin: 12px 0;
+  }
+  .r-title { font-size: 1.3rem; font-weight: 800; color: var(--gc, var(--ink)); margin-bottom: 4px; letter-spacing: .3px; }
+  .r-sub { font-weight: 600; margin-bottom: 6px; }
+  .r-detail { font-size: .86rem; color: var(--muted); font-style: italic; margin-bottom: 12px; }
+  .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 7px; margin-bottom: 4px; }
+  .fc {
+    background: var(--card); border: 1px solid var(--line); border-radius: 7px;
+    padding: 9px 12px; font-size: .82rem; line-height: 1.5; color: var(--ink);
+  }
+  .fc b { display: block; color: var(--gc, var(--accent)); font-size: .78rem; text-transform: uppercase; letter-spacing: .3px; }
+
+  .flow-actions { margin-top: 14px; }
+  .flow-actions button {
+    background: var(--card); border: 1px solid var(--line); color: var(--accent);
+    border-radius: 8px; padding: 7px 16px; font-size: .84rem; font-weight: 600; cursor: pointer;
+  }
+
+  /* Reference list view */
+  details.dispo {
+    border: 1px solid var(--line); border-left: 5px solid var(--dc, var(--accent));
+    border-radius: 8px; margin: 10px 0; background: var(--card);
+  }
+  details.dispo > summary {
+    list-style: none; cursor: pointer; padding: 11px 16px;
+    font-weight: 650; color: var(--dc, var(--ink)); display: flex; align-items: center; gap: 10px;
+  }
+  details.dispo > summary::-webkit-details-marker { display: none; }
+  details.dispo > summary::before { content: "▸"; font-size: .8rem; transition: transform .15s ease; }
+  details.dispo[open] > summary::before { transform: rotate(90deg); }
+  details.dispo > .body { padding: 2px 18px 14px 34px; }
+  .count {
+    margin-left: auto; font-size: .72rem; font-weight: 700;
+    background: var(--bg2); color: var(--dc); border-radius: 999px; padding: 2px 9px;
+  }
+  .taq { border-bottom: 1px dashed var(--line); padding: 10px 0; }
+  .taq:last-child { border-bottom: none; }
+  .taq .q { font-weight: 600; }
+  .taq .ro { font-size: .84rem; color: var(--muted); margin-top: 3px; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="note">
+    PREVIEW ONLY — this is a standalone mock of the proposed TAQ redesign, built from our own
+    real "Back Pain" protocol data (open-source-guideline content, not STCC). Nothing in the
+    live Nurse Cockpit app has been changed yet.
+  </div>
+
+  <h1>Back Pain — Triage Assessment Questions</h1>
+  <div class="sub">Adult / mixed &nbsp;|&nbsp; IST Health Open-Source Guideline Content &nbsp;|&nbsp; oscg-back-pain</div>
+
+  <div class="viewtoggle">
+    <button id="btn-guided" class="active" onclick="setView('guided')">Guided Walkthrough (Yes/No)</button>
+    <button id="btn-reference" onclick="setView('reference')">Reference List</button>
+  </div>
+
+  <div id="guided-view">
+    <div class="prog-wrap">
+      <div class="prog-row">
+        <span id="prog-label">Question 1</span>
+        <span id="prog-pct">0%</span>
+      </div>
+      <div class="prog-track"><div class="prog-fill" id="prog-bar" style="width:0%"></div></div>
+    </div>
+    <div id="flow"></div>
+    <div class="flow-actions"><button onclick="startFlow()">&#8635; Restart Walkthrough</button></div>
+  </div>
+
+  <div id="reference-view" style="display:none"></div>
+
+</div>
+
+<script>
+  // Real protocol data (fetched from our own API, oscg-back-pain) — colors are
+  // the proposed per-disposition palette, not the old flat 4-tier severity system.
+  const GROUPS = [
+    { n: "Go to ED Now", v: "--ems", code: "HMC_EMERGENCY_DEPARTMENT" },
+    { n: "See HCP Within 4 Hours", v: "--hcp4", code: "HMC_URGENT_REVIEW" },
+    { n: "See PCP Within 24 Hours", v: "--pcp24", code: "PHCC_URGENT_CARE_OR_TELECONSULT" },
+    { n: "Home Care", v: "--home", code: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS" }
+  ];
+  const TAQS = [
+    { g: 0, q: "Is there numbness, tingling or weakness in BOTH legs, loss of feeling around the genitals or back passage, new difficulty controlling bladder or bowel, chest pain, or did the pain start after a serious accident such as a car crash or a fall from height?",
+      ro: "NHS.UK back pain guidance lists bilateral leg symptoms, saddle numbness, new bladder/bowel changes, sexual dysfunction, concurrent chest pain, and a major-trauma trigger as its own call-999/A&E criteria.",
+      ca: ["Emergency back pain precautions"] },
+    { g: 1, q: "Does the caller feel hot, cold, shivery, or generally unwell, OR is this severe pain that started suddenly and is quickly getting worse?",
+      ro: "NHS.UK guidance flags fever/feeling unwell with back pain, and sudden severe or rapidly worsening pain, as needing a same-day GP appointment.",
+      ca: ["Urgent back pain review"] },
+    { g: 2, q: "Has the pain lasted several weeks despite home treatment, is it interfering with daily activities, is there unexplained weight loss, a new lump or change in the shape of the back, is it worse at night or with rest, worse with coughing or straining, or is it upper back pain between the shoulder blades?",
+      ro: "NHS.UK guidance lists these as reasons to book a routine GP appointment rather than manage entirely at home.",
+      ca: ["Routine back pain follow-up"] },
+    { g: 3, q: "Is this mild-to-moderate pain of gradual onset with none of the concerning features above?",
+      ro: "NHS.UK guidance recommends staying active, anti-inflammatory medicine, and heat/ice for uncomplicated back pain without red-flag features.",
+      ca: ["Home care for uncomplicated back pain"] }
+  ];
+
+  function setView(which) {
+    document.getElementById("guided-view").style.display = which === "guided" ? "" : "none";
+    document.getElementById("reference-view").style.display = which === "reference" ? "" : "none";
+    document.getElementById("btn-guided").classList.toggle("active", which === "guided");
+    document.getElementById("btn-reference").classList.toggle("active", which === "reference");
+    if (which === "reference") renderReferenceView();
+  }
+
+  function setProgress(n) {
+    const bar = document.getElementById("prog-bar");
+    const lab = document.getElementById("prog-label");
+    const pct = document.getElementById("prog-pct");
+    if (n === "done") { bar.style.width = "100%"; lab.textContent = "Complete — disposition reached"; pct.textContent = "100%"; return; }
+    const p = Math.round((n - 1) / TAQS.length * 100);
+    bar.style.width = p + "%";
+    lab.textContent = `Question ${n} of ${TAQS.length}`;
+    pct.textContent = p + "%";
+  }
+
+  function groupColors(el, grp) {
+    el.style.setProperty("--gc", `var(${grp.v})`);
+    el.style.setProperty("--gcbg", `var(${grp.v}bg)`);
+    el.style.setProperty("--gcbd", `var(${grp.v}bd)`);
+  }
+
+  function addCard(i) {
+    const flow = document.getElementById("flow");
+    if (i >= TAQS.length) { addEndCard(); return; }
+    const t = TAQS[i], grp = GROUPS[t.g];
+    const card = document.createElement("div");
+    card.className = "step"; card.id = "qcard-" + i;
+    groupColors(card, grp);
+    card.innerHTML =
+      `<div class="step-hdr">
+         <div class="step-num">${i + 1}</div>
+         <div><div class="gtag">${grp.n}</div><div class="step-title">${t.q}</div></div>
+       </div>
+       <div class="choices">
+         <div class="choice" onclick="choose(${i}, true)">Yes</div>
+         <div class="choice" onclick="choose(${i}, false)">No</div>
+       </div>`;
+    flow.appendChild(card);
+    setProgress(i + 1);
+    card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function showResult(i) {
+    const flow = document.getElementById("flow");
+    const t = TAQS[i], grp = GROUPS[t.g];
+    const card = document.createElement("div");
+    card.className = "r-card"; card.id = "resultcard";
+    groupColors(card, grp);
+    card.innerHTML =
+      `<div class="r-title">${grp.n.toUpperCase()}</div>
+       <div class="r-sub">Triggered by Question ${i + 1}</div>
+       <div class="r-detail">${t.ro}</div>
+       ${t.ca.length ? `<div class="file-grid">${t.ca.map(c => `<div class="fc"><b>Care Advice</b>${c}</div>`).join("")}</div>` : ""}`;
+    flow.appendChild(card);
+    setProgress("done");
+    card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function addEndCard() {
+    const flow = document.getElementById("flow");
+    const end = document.createElement("div");
+    end.className = "r-card"; end.id = "endcard";
+    end.style.setProperty("--gc", "var(--muted)");
+    end.style.setProperty("--gcbg", "var(--bg2)");
+    end.style.setProperty("--gcbd", "var(--line)");
+    end.innerHTML = `<div class="r-title">NO CRITERIA MET</div><div class="r-sub">All ${TAQS.length} questions answered "No"</div>`;
+    flow.appendChild(end);
+    setProgress("done");
+  }
+
+  function choose(i, yes) {
+    const card = document.getElementById("qcard-" + i);
+    let n = card.nextSibling;
+    while (n) { const nx = n.nextSibling; n.remove(); n = nx; }
+    const ch = card.querySelectorAll(".choice");
+    ch[0].classList.toggle("sel-yes", yes);
+    ch[1].classList.toggle("sel-no", !yes);
+    if (yes) { showResult(i); } else { addCard(i + 1); }
+  }
+
+  function startFlow() {
+    document.getElementById("flow").innerHTML = "";
+    addCard(0);
+  }
+
+  function renderReferenceView() {
+    const html = GROUPS.map((grp, gi) => {
+      const taqs = TAQS.filter(t => t.g === gi);
+      const rows = taqs.map(t => `<div class="taq"><div class="q">${t.q}</div><div class="ro">${t.ro}</div></div>`).join("");
+      return `<details class="dispo" style="--dc:var(${grp.v})">
+        <summary>${grp.n} <span class="count">${taqs.length}</span></summary>
+        <div class="body">${rows}</div>
+      </details>`;
+    }).join("");
+    document.getElementById("reference-view").innerHTML = html;
+  }
+
+  startFlow();
+</script>
+</body>
+</html>

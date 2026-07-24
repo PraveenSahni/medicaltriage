@@ -19,6 +19,7 @@ export type QueuePatientAgeSnapshot = {
   ageMonths: number;
   dateOfBirthIso?: string;
   calculatedFrom: "HRMS_DATE_OF_BIRTH" | "HRMS_AGE_FIELD";
+  biologicalSex?: "female" | "male" | "other" | "unknown";
 };
 
 export type QueueProtocolSuggestion = {
@@ -193,6 +194,7 @@ export type QueueItem = {
   claimedAtIso?: string;
   slaDeadlineIso: string;
   lockedBy?: string;
+  lockedByName?: string;
   lockExpiresAtIso?: string;
   customAviationTags: string[];
   createdAtIso: string;
@@ -223,14 +225,20 @@ type QueueContextValue = {
   activeItem?: QueueItem;
   loading: boolean;
   error?: string;
+  /** queueItemId -> CallCenterSession, joined on CallCenterSession.queueItemId === QueueItem.id */
+  callCenterSessionsByQueueItemId: Record<string, CallCenterSession>;
   refreshQueue: () => Promise<void>;
   claimItem: (id: string) => Promise<QueueItem>;
-  connectCall: (id: string, action?: "ANSWER" | "START_CALLBACK") => Promise<{ item: QueueItem; call: CallCenterSession }>;
+  connectCall: (
+    id: string,
+    action?: "ANSWER" | "START_CALLBACK" | "HOLD" | "RESUME" | "END"
+  ) => Promise<{ item: QueueItem; call: CallCenterSession }>;
   releaseItem: (id: string) => Promise<QueueItem>;
   moveItem: (id: string, toStage: QueueClinicalStage, toStatus?: QueueStatus, reason?: string) => Promise<QueueItem>;
   updateItemContext: (id: string, update: Record<string, unknown>) => Promise<QueueItem>;
   openItemInStep: (id: string) => Promise<void>;
   setActiveItemById: (id: string) => void;
+  clearActiveItem: () => void;
 };
 
 const QueueContext = createContext<QueueContextValue | undefined>(undefined);
@@ -249,6 +257,29 @@ export function QueueProvider({ children }: { children: ReactNode }) {
   const [activeItem, setActiveItem] = useState<QueueItem | undefined>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | undefined>();
+  const [callCenterSessionsByQueueItemId, setCallCenterSessionsByQueueItemId] = useState<
+    Record<string, CallCenterSession>
+  >({});
+
+  const refreshCallCenterSessions = useCallback(async () => {
+    try {
+      const response = await fetch(`${apiBase}/api/v1/call-center/sessions`, { credentials: "include" });
+      if (!response.ok) {
+        return;
+      }
+      const payload = (await response.json()) as { sessions?: CallCenterSession[] } | CallCenterSession[];
+      const sessions = Array.isArray(payload) ? payload : payload.sessions ?? [];
+      const byQueueItemId: Record<string, CallCenterSession> = {};
+      for (const session of sessions) {
+        if (session.queueItemId) {
+          byQueueItemId[session.queueItemId] = session;
+        }
+      }
+      setCallCenterSessionsByQueueItemId(byQueueItemId);
+    } catch {
+      // Non-fatal - hold-state badges just stay stale until the next poll.
+    }
+  }, []);
 
   const refreshQueue = useCallback(async () => {
     setLoading(true);
@@ -268,7 +299,13 @@ export function QueueProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     void refreshQueue();
-  }, [refreshQueue]);
+    void refreshCallCenterSessions();
+    const handle = window.setInterval(() => {
+      void refreshQueue();
+      void refreshCallCenterSessions();
+    }, 15_000);
+    return () => window.clearInterval(handle);
+  }, [refreshQueue, refreshCallCenterSessions]);
 
   const updateOne = useCallback((item: QueueItem) => {
     setQueue((current) => {
@@ -294,7 +331,7 @@ export function QueueProvider({ children }: { children: ReactNode }) {
   );
 
   const connectCall = useCallback(
-    async (id: string, action?: "ANSWER" | "START_CALLBACK") => {
+    async (id: string, action?: "ANSWER" | "START_CALLBACK" | "HOLD" | "RESUME" | "END") => {
       const item = queue.find((candidate) => candidate.id === id);
       const resolvedAction = action ?? (item?.channel === "Callback" ? "START_CALLBACK" : "ANSWER");
       const payload = await readJson<{ item: QueueItem; call: CallCenterSession }>(
@@ -306,6 +343,7 @@ export function QueueProvider({ children }: { children: ReactNode }) {
         })
       );
       updateOne(payload.item);
+      setCallCenterSessionsByQueueItemId((current) => ({ ...current, [id]: payload.call }));
       return payload;
     },
     [queue, updateOne]
@@ -364,6 +402,15 @@ export function QueueProvider({ children }: { children: ReactNode }) {
     [queue]
   );
 
+  // Matches the preview's completeCurrentCall() (activeIdx = null): without
+  // this, the sidebar's tagForItem keeps treating the just-completed call as
+  // still "active" (activeItemId stays truthy), so every other waiting call
+  // shows Queue Locked until the page is reloaded - the nurse would be stuck
+  // unable to pick up the next call.
+  const clearActiveItem = useCallback(() => {
+    setActiveItem(undefined);
+  }, []);
+
   const openItemInStep = useCallback(
     async (id: string) => {
       await connectCall(id);
@@ -400,6 +447,7 @@ export function QueueProvider({ children }: { children: ReactNode }) {
       activeItem,
       loading,
       error,
+      callCenterSessionsByQueueItemId,
       refreshQueue,
       claimItem,
       connectCall,
@@ -407,11 +455,14 @@ export function QueueProvider({ children }: { children: ReactNode }) {
       moveItem,
       updateItemContext,
       openItemInStep,
-      setActiveItemById
+      setActiveItemById,
+      clearActiveItem
     }),
     [
       activeItem,
+      callCenterSessionsByQueueItemId,
       claimItem,
+      clearActiveItem,
       connectCall,
       error,
       loading,

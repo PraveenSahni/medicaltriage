@@ -13,32 +13,19 @@ import { clearAccessToken } from "./authToken";
 import CcpWorkspace from "./CcpWorkspace";
 import HelpCenter from "./HelpCenter";
 import KanbanWorkspace from "./KanbanWorkspace";
-import LoginPage from "./LoginPage";
+import { LoginLayout } from "./auth/LoginLayout";
+import { LoginCard } from "./auth/LoginCard";
+import type { AuthenticatedSession } from "./auth/session";
 import { QueueProvider } from "./QueueContext";
 import TriageWorkspace from "./TriageWorkspace";
 import NurseWorkspaceRedesign from "./components/Triage/NurseWorkspaceRedesign";
-import { IconActionButton, LabeledIconButton, WorkspaceModeSwitch } from "./components/ui/NavigationControls";
+import { LabeledIconButton, WorkspaceModeSwitch } from "./components/ui/NavigationControls";
+import { CockpitApp } from "./cockpit/CockpitApp";
+import { canAccessNurseCockpit } from "./cockpit/roles";
 
-type ViewKey = "workspace" | "cockpitV2" | "kanban" | "ccp" | "help" | "admin";
+type ViewKey = "workspace" | "cockpitV2" | "cockpit" | "kanban" | "ccp" | "help" | "admin";
 type ThemeMode = "light" | "dark";
 type EnvironmentTone = "simulation" | "demo" | "uat" | "production";
-
-type AuthenticatedSession = {
-  sessionId: string;
-  user: {
-    id: string;
-    fullName: string;
-    department: string;
-    facility: string;
-    roles: string[];
-    accountStatus: string;
-    mfaStatus: string;
-  };
-  activeRole: string;
-  permissions: string[];
-  expiresAtIso: string;
-  mfaVerified: boolean;
-};
 
 type RuntimeEnvironment = {
   environment: EnvironmentTone;
@@ -166,7 +153,13 @@ export default function App() {
         const payload = await response.json();
         if (!cancelled) {
           setSession(payload.session);
-          setActiveView(canOpenAdminView(payload.session) ? "admin" : "workspace");
+          setActiveView(
+            canAccessNurseCockpit(payload.session.activeRole)
+              ? "cockpit"
+              : canOpenAdminView(payload.session)
+                ? "admin"
+                : "workspace"
+          );
           setSessionStatus("Secure session restored.");
         }
       } catch {
@@ -258,10 +251,12 @@ export default function App() {
   };
 
   const hasAdminAccess = session ? canOpenAdminView(session) : false;
+  const hasCockpitAccess = session ? canAccessNurseCockpit(session.activeRole) : false;
   const activeRoleLabel = session ? formatRole(session.activeRole) : "";
   const viewLabels: Record<ViewKey, string> = {
     workspace: "Triage",
     cockpitV2: "Triage (Redesign)",
+    cockpit: "Nurse Cockpit",
     kanban: "Triage",
     ccp: "CCP",
     help: "Help",
@@ -273,6 +268,7 @@ export default function App() {
     const nextHashByView: Record<ViewKey, string> = {
       workspace: "#/workspace",
       cockpitV2: "#/cockpit-v2",
+      cockpit: "#/cockpit",
       kanban: "#/kanban",
       ccp: "#/ccp",
       help: "#/help",
@@ -299,6 +295,11 @@ export default function App() {
 
       if (target === "cockpit-v2" || target === "cockpitv2") {
         setActiveView("cockpitV2");
+        return;
+      }
+
+      if (target === "cockpit" || target === "nurse-cockpit") {
+        setActiveView("cockpit");
         return;
       }
 
@@ -337,33 +338,37 @@ export default function App() {
 
   if (!session) {
     return (
-      <div>
-        <div className="app-shell">
-          <div className="app-frame">
-            <div className="login-theme-bar">
-              <IconActionButton
-                icon={themeMode === "light" ? Moon : Sun}
-                label={`Switch to ${themeMode === "light" ? "dark" : "light"} mode`}
-                onClick={() => setThemeMode((current) => (current === "light" ? "dark" : "light"))}
-                title={themeMode === "light" ? "Dark mode" : "Light mode"}
-              />
-            </div>
-            <EnvironmentBanner runtimeEnvironment={runtimeEnvironment} />
-            <LoginPage
-              onAuthenticated={(nextSession, redirectTo) => {
-                setSession(nextSession);
-                setActiveView(redirectTo);
-                window.location.hash = redirectTo === "admin" ? "#/admin" : "#/workspace";
-                setSessionStatus("Signed in.");
-              }}
-            />
-            <footer className="app-footer login-footer">
-              <ShieldCheck className="h-4 w-4" />
-              {sessionStatus}
-            </footer>
-          </div>
+      <LoginLayout>
+        <LoginCard
+          onAuthenticated={(nextSession, redirectTo) => {
+            setSession(nextSession);
+            const nextView: ViewKey = canAccessNurseCockpit(nextSession.activeRole) ? "cockpit" : redirectTo;
+            setActiveView(nextView);
+            window.location.hash =
+              nextView === "cockpit" ? "#/cockpit" : nextView === "admin" ? "#/admin" : "#/workspace";
+            setSessionStatus("Signed in.");
+          }}
+        />
+      </LoginLayout>
+    );
+  }
+
+  // The Nurse Cockpit route bypasses the old application shell entirely - no
+  // topbar, no environment banner, no workspace-body wrapper. It is rendered
+  // directly here, above the old-shell return below, per the approved design
+  // reference (docs/protocol-review/nurse-cockpit-open-calls-preview.html).
+  if (activeView === "cockpit") {
+    if (!canAccessNurseCockpit(session.activeRole)) {
+      return (
+        <div className="minimal-boundary">
+          <AccessDenied onLogout={logout} />
         </div>
-      </div>
+      );
+    }
+    return (
+      <QueueProvider>
+        <CockpitApp session={session} onLogout={logout} />
+      </QueueProvider>
     );
   }
 
@@ -390,6 +395,15 @@ export default function App() {
             </button>
 
             <div className="topbar-actions" aria-label="Header actions">
+              {hasCockpitAccess && (
+                <LabeledIconButton
+                  icon={ShieldCheck}
+                  label="Cockpit"
+                  active={false}
+                  onClick={() => openView("cockpit")}
+                  title="Nurse Cockpit"
+                />
+              )}
               <WorkspaceModeSwitch
                 value={activeView === "workspace" || activeView === "kanban" ? activeView : null}
                 onChange={openView}
@@ -487,6 +501,18 @@ function EnvironmentBanner({ runtimeEnvironment }: { runtimeEnvironment: Runtime
       <strong>{runtimeEnvironment.banner.label}</strong>
       <span>{runtimeEnvironment.banner.description}</span>
     </aside>
+  );
+}
+
+function AccessDenied({ onLogout }: { onLogout: () => void }) {
+  return (
+    <div className="access-denied" role="alert">
+      <h1>Access Denied</h1>
+      <p>Your account role is not authorized to open the Nurse Cockpit.</p>
+      <button type="button" className="primary-button" onClick={onLogout}>
+        Sign out
+      </button>
+    </div>
   );
 }
 

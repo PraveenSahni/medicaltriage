@@ -7218,3 +7218,27 @@ html body [class][class][class][class][class][class] * {
   text-transform: none !important;
   letter-spacing: normal !important;
 }
+
+.access-denied {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50vh;
+  text-align: center;
+  padding: 24px;
+}
+
+/* Minimal, non-shell boundary for routes that must not mount the old
+   AppShell/TopBar (e.g. Nurse Cockpit access-denied) - full viewport,
+   no navigation, no dashboard chrome. */
+.minimal-boundary {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f6f3;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}

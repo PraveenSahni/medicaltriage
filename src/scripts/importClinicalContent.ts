@@ -4,6 +4,7 @@ import path from "node:path";
 import { PrismaClient } from "@prisma/client";
 import { samplePhase1ClinicalContent } from "../data/samplePhase1ClinicalContent.js";
 import { openSourceGuidelinesContent } from "../data/openSourceGuidelines/index.js";
+import { stccLicensedContent } from "../data/stccLicensedContent/index.js";
 import {
   ClinicalContentPackageSchema,
   type ClinicalContentCareAdvice,
@@ -72,6 +73,37 @@ async function loadContentPackage(
       sourceUri: "embedded:openSourceGuidelinesContent",
       raw,
       data: ClinicalContentPackageSchema.parse(openSourceGuidelinesContent)
+    };
+  }
+
+  if (source === "stcc-licensed") {
+    const raw = JSON.stringify(stccLicensedContent);
+    return {
+      sourceUri: "embedded:stccLicensedContent",
+      raw,
+      data: ClinicalContentPackageSchema.parse(stccLicensedContent)
+    };
+  }
+
+  // Mirrors the runtime merge in clinicalContent.ts's loadSynchronousContentPackage():
+  // the real licensed STCC protocol plus every open-source guideline protocol,
+  // so the database ends up with exactly the same protocol set the live app
+  // matches against when CLINICAL_CONTENT_SOURCE=stcc-licensed.
+  if (source === "stcc-licensed-merged") {
+    const merged: ClinicalContentPackage = ClinicalContentPackageSchema.parse({
+      release: stccLicensedContent.release,
+      protocols: [...stccLicensedContent.protocols, ...openSourceGuidelinesContent.protocols],
+      localizedDispositions: [
+        ...(stccLicensedContent.localizedDispositions ?? []),
+        ...(openSourceGuidelinesContent.localizedDispositions ?? []).filter(
+          (row) => !stccLicensedContent.localizedDispositions?.some((stccRow) => stccRow.code === row.code)
+        )
+      ]
+    });
+    return {
+      sourceUri: "embedded:stccLicensedContent+openSourceGuidelinesContent",
+      raw: JSON.stringify(merged),
+      data: merged
     };
   }
 

@@ -192,6 +192,7 @@ export type StaffProfile = {
   jobTitle: string;
   dutyStatus: "active" | "on-leave" | "suspended" | "inactive";
   dateOfBirthIso?: string;
+  biologicalSex?: "female" | "male" | "other" | "unknown";
   insuranceProvider?: string;
   insuranceEligibilityStatus: "eligible" | "ineligible" | "pending-verification" | "unknown";
   insuranceLastChecked?: string;

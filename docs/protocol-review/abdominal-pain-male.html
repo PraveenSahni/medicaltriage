@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abdominal Pain - Male | Nurse Triage Application</title>
+<style>
+  :root {
+    --bg: #f7f6f3; --bg2: #f1efe9; --bg3: #e7e4dc;
+    --card: #ffffff;
+    --ink: #1a1a19; --muted: #6b6a66; --tx3: #9c9a92;
+    --line: #e0dfd9;
+    --accent: #185FA5;
+    --hdr1: #0b4f66; --hdr2: #0e6e8c;
+    --ems: #A32D2D;       --emsbg: #FCEBEB;       --emsbd: #F09595;
+    --guideline: #534AB7; --guidelinebg: #EEEDFE; --guidelinebd: #AFA9EC;
+    --ed: #993C1D;        --edbg: #FAECE7;        --edbd: #F0997B;
+    --educc: #854F0B;     --educcbg: #FAEEDA;     --educcbd: #EF9F27;
+    --hcp4: #7A5D00;      --hcp4bg: #FAF3D1;      --hcp4bd: #D9BC2B;
+    --urgent: #0B6B70;    --urgentbg: #DFF5F6;    --urgentbd: #5BC6CC;
+    --pcp24: #185FA5;     --pcp24bg: #E6F1FB;     --pcp24bd: #85B7EB;
+    --pcp3d: #2C6E8F;     --pcp3dbg: #E4F2F8;     --pcp3dbd: #7FBBD6;
+    --pcp2w: #3E7223;     --pcp2wbg: #EAF6E2;     --pcp2wbd: #9CD177;
+    --home: #0F6E56;      --homebg: #E1F5EE;      --homebd: #5DCAA5;
+    --ok: #2e7d32; --okbg: #e8f5e9; --okbd: #a5d6a7;
+  }
+  @media (prefers-color-scheme: dark) { :root {
+    --bg: #1a1a19; --bg2: #2c2c2a; --bg3: #3d3d3a;
+    --card: #232322;
+    --ink: #e8e6de; --muted: #9c9a92; --tx3: #6b6a66;
+    --line: #444441;
+    --accent: #85B7EB;
+    --hdr1: #0b3a4c; --hdr2: #0d5468;
+    --ems: #F7C1C1;       --emsbg: #501313;       --emsbd: #C24242;
+    --guideline: #CECBF6; --guidelinebg: #26215C; --guidelinebd: #7F77DD;
+    --ed: #F0B39E;        --edbg: #4A1B0C;        --edbd: #D85A30;
+    --educc: #FAC775;     --educcbg: #412402;     --educcbd: #BA7517;
+    --hcp4: #EBD98A;      --hcp4bg: #3A3002;      --hcp4bd: #A08A18;
+    --urgent: #9FDDE0;    --urgentbg: #043A3D;    --urgentbd: #1C8B91;
+    --pcp24: #B5D4F4;     --pcp24bg: #042C53;     --pcp24bd: #378ADD;
+    --pcp3d: #AFD3E4;     --pcp3dbg: #0B3140;     --pcp3dbd: #3E85A8;
+    --pcp2w: #C4E5AB;     --pcp2wbg: #1E3510;     --pcp2wbd: #5E9636;
+    --home: #9FE1CB;      --homebg: #04342C;      --homebd: #1D9E75;
+    --ok: #9FE1CB; --okbg: #04342C; --okbd: #1D9E75;
+  }}
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 14px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 80px; }
+
+  header.doc {
+    background: linear-gradient(135deg, var(--hdr1), var(--hdr2));
+    color: #fff;
+    border-radius: 12px;
+    padding: 26px 28px;
+    margin-bottom: 22px;
+  }
+  header.doc h1 { margin: 0 0 6px; font-size: 1.7rem; letter-spacing: .2px; }
+  header.doc .sub { opacity: .92; font-size: .95rem; }
+  header.doc .meta {
+    display: flex; flex-wrap: wrap; gap: 8px 18px;
+    margin-top: 14px; font-size: .83rem; opacity: .88;
+  }
+  header.doc .meta span b { font-weight: 600; }
+
+  .dbstatus {
+    display: flex; align-items: center; gap: 8px; font-size: .78rem;
+    background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+    padding: 8px 14px; margin-bottom: 16px; color: var(--muted);
+  }
+  .dbstatus .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--tx3); flex-shrink: 0; }
+  .dbstatus.ok .dot { background: var(--ok); }
+  .dbstatus.err { background: var(--emsbg); border-color: var(--emsbd); color: var(--ems); }
+  .dbstatus.err .dot { background: var(--ems); }
+  .dbstatus code { background: var(--bg2); border-radius: 4px; padding: 1px 5px; font-size: .82em; }
+
+  .toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .toolbar button {
+    background: var(--card); border: 1px solid var(--line); color: var(--accent);
+    border-radius: 8px; padding: 7px 14px; font-size: .85rem; cursor: pointer; font-weight: 600;
+  }
+  .toolbar button:hover { background: var(--bg3); }
+
+  details.section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  details.section > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 15px 20px;
+    font-size: 1.05rem;
+    font-weight: 650;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+  }
+  details.section > summary::-webkit-details-marker { display: none; }
+  details.section > summary::before {
+    content: "▸";
+    color: var(--accent);
+    font-size: .9rem;
+    transition: transform .15s ease;
+  }
+  details.section[open] > summary::before { transform: rotate(90deg); }
+  details.section > summary:hover { background: var(--bg2); }
+  details.section > .body { padding: 4px 22px 20px 40px; border-top: 1px solid var(--line); }
+
+  .tag {
+    font-size: .68rem; font-weight: 700; letter-spacing: .4px;
+    padding: 2px 8px; border-radius: 999px; color: var(--card); text-transform: uppercase;
+    margin-left: auto;
+  }
+
+  /* reason for call */
+  .reason-card { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .reason-card textarea {
+    width: 100%; min-height: 54px; padding: 9px 12px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    font-family: inherit; font-size: .9rem; resize: vertical;
+  }
+  .reason-card textarea:focus { outline: none; border-color: var(--accent); }
+  .reason-card label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); }
+
+  /* disposition blocks inside TAQ reference view */
+  details.dispo {
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--dc, var(--accent));
+    border-radius: 8px;
+    margin: 12px 0;
+    background: var(--card);
+  }
+  details.dispo > summary {
+    list-style: none; cursor: pointer; padding: 11px 16px;
+    font-weight: 650; color: var(--dc, var(--ink)); display: flex; align-items: center; gap: 10px;
+  }
+  details.dispo > summary::-webkit-details-marker { display: none; }
+  details.dispo > summary::before { content: "▸"; font-size: .8rem; transition: transform .15s ease; }
+  details.dispo[open] > summary::before { transform: rotate(90deg); }
+  details.dispo > .body { padding: 2px 18px 14px 34px; }
+  .count {
+    margin-left: auto; font-size: .72rem; font-weight: 700;
+    background: color-mix(in srgb, var(--dc) 12%, var(--card));
+    color: var(--dc); border-radius: 999px; padding: 2px 9px;
+  }
+
+  .taq { border-bottom: 1px dashed var(--line); padding: 10px 0; }
+  .taq:last-child { border-bottom: none; }
+  .taq .q { font-weight: 600; }
+  .taq .ro { font-size: .86rem; color: var(--muted); margin-top: 3px; font-style: italic; }
+  .taq .ca { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+  .taq .ca .lbl { font-size: .72rem; font-weight: 700; color: var(--muted); letter-spacing: .5px; }
+  .telemed-badge {
+    display: inline-flex; align-items: center; gap: 4px; font-size: .66rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .3px; color: var(--ok); background: var(--okbg);
+    border: 1px solid var(--okbd); border-radius: 999px; padding: 2px 8px; margin-left: 8px; vertical-align: middle;
+  }
+  .chip {
+    display: inline-block; font-size: .74rem; font-weight: 600;
+    background: var(--bg2); color: var(--accent);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 1px 9px; text-decoration: none;
+  }
+  .chip:hover { background: var(--accent); color: var(--bg); }
+
+  /* care advice items */
+  .ca-item {
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 16px; margin: 10px 0; background: var(--card);
+    scroll-margin-top: 16px;
+  }
+  .ca-item.flash { animation: flash 1.6s ease; }
+  @keyframes flash {
+    0% { background: color-mix(in srgb, var(--accent) 25%, var(--card)); }
+    100% { background: var(--card); }
+  }
+  .ca-item .ca-head { display: flex; align-items: baseline; gap: 10px; font-weight: 650; }
+  .ca-item .ca-num {
+    font-size: .74rem; font-weight: 700; color: #fff; background: var(--accent);
+    border-radius: 6px; padding: 1px 8px; flex-shrink: 0;
+  }
+  .ca-item ul { margin: 8px 0 2px; padding-left: 22px; }
+  .ca-item li { margin: 3px 0; }
+  .ca-item .note { font-size: .85rem; color: var(--muted); font-style: italic; }
+  .cb-row { display: flex; gap: 16px; margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--line); }
+  .cb-row label { display: flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 600; color: var(--muted); cursor: pointer; }
+  .cb-row input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
+  .cb-row label.disabled { opacity: .45; cursor: not-allowed; }
+  .cb-row .given.checked { color: var(--ok); }
+  .internal-tag { font-size: .68rem; color: var(--tx3); font-style: italic; }
+
+  ul.plain { margin: 8px 0; padding-left: 22px; }
+  ul.plain li { margin: 4px 0; }
+  ol.qs { margin: 8px 0; padding-left: 24px; }
+  ol.qs li { margin: 8px 0; }
+  ol.qs .hint { color: var(--muted); font-size: .9rem; }
+
+  .sev { display: grid; gap: 8px; margin: 10px 0; }
+  .sev .row { display: flex; gap: 12px; align-items: baseline; border-left: 4px solid; padding: 6px 12px; border-radius: 4px; background: var(--bg2); }
+  .sev .mild { border-color: #66bb6a; }
+  .sev .mod  { border-color: #ffa726; }
+  .sev .sevr { border-color: #ef5350; }
+  .sev b { min-width: 130px; }
+
+  h3.sub { margin: 18px 0 6px; font-size: .98rem; color: var(--accent); }
+  table.loc { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: .92rem; }
+  table.loc th, table.loc td { border: 1px solid var(--line); padding: 7px 12px; text-align: left; }
+  table.loc th { background: var(--bg2); }
+
+  ol.refs { padding-left: 24px; font-size: .88rem; }
+  ol.refs li { margin: 6px 0; }
+
+  .words { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .words span {
+    font-size: .76rem; background: var(--bg2); border: 1px solid var(--line);
+    border-radius: 999px; padding: 2px 10px; color: var(--muted);
+  }
+  .copyright { font-size: .85rem; color: var(--muted); }
+  .copyright b { color: var(--ink); }
+
+  /* guided walkthrough — dashboard style */
+  .viewtoggle { display: flex; gap: 8px; margin: 12px 0 4px; }
+  .viewtoggle button {
+    background: var(--card); border: 1px solid var(--line); color: var(--muted);
+    border-radius: 8px; padding: 7px 16px; font-size: .82rem; font-weight: 600; cursor: pointer;
+  }
+  .viewtoggle button.active { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  .guided-note {
+    font-size: .84rem; color: var(--muted); background: var(--bg2);
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 14px; margin: 10px 0 4px;
+  }
+  .prog-wrap { margin: 14px 0 6px; }
+  .prog-row { display: flex; justify-content: space-between; font-size: .74rem; color: var(--tx3); margin-bottom: 4px; font-weight: 600; }
+  .prog-track { height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width .3s; }
+  .step {
+    background: var(--card); border: 1px solid var(--line);
+    border-left: 4px solid var(--gcbd, var(--line));
+    border-radius: 10px; padding: 14px 16px; margin: 10px 0;
+  }
+  .step-hdr { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+  .step-num {
+    width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: .85rem; flex-shrink: 0;
+    background: var(--gcbg, var(--bg2)); color: var(--gc, var(--muted));
+  }
+  .gtag { font-size: .66rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--gc, var(--accent)); }
+  .step-title { font-weight: 600; margin-top: 2px; }
+  .step-title .hint { color: var(--muted); font-weight: 400; font-size: .88em; }
+  .choices { display: flex; gap: 8px; flex-wrap: wrap; }
+  .choice {
+    padding: 8px 28px; border-radius: 7px; border: 1.5px solid var(--line);
+    background: var(--bg2); cursor: pointer; font-weight: 700; font-size: .9rem;
+    transition: all .15s; user-select: none;
+  }
+  .choice:hover { background: var(--bg3); }
+  .choice.sel-yes { background: var(--emsbg); border-color: var(--emsbd); color: var(--ems); }
+  .choice.sel-no { background: var(--homebg); border-color: var(--homebd); color: var(--home); }
+  .r-card {
+    border-radius: 10px; border: 1.5px dashed var(--gcbd, var(--line));
+    background: var(--gcbg, var(--bg2)); padding: 18px; margin: 12px 0;
+  }
+  .r-title { font-size: 1.35rem; font-weight: 800; color: var(--gc, var(--ink)); margin-bottom: 4px; letter-spacing: .3px; }
+  .r-sub { font-weight: 600; margin-bottom: 6px; }
+  .r-sub .hint { color: var(--muted); font-weight: 400; font-size: .88em; }
+  .r-detail { font-size: .88rem; color: var(--muted); font-style: italic; margin-bottom: 12px; }
+  .r-stats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .r-stat { background: var(--card); border: 1px solid var(--line); border-radius: 7px; padding: 6px 14px; font-size: .7rem; color: var(--muted); }
+  .r-stat b { display: block; font-size: 1.05rem; color: var(--ink); }
+  .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 7px; margin-bottom: 10px; }
+  .fc {
+    background: var(--card); border: 1px solid var(--line); border-radius: 7px;
+    padding: 8px 11px; font-size: .78rem; cursor: pointer; line-height: 1.5; color: var(--muted);
+  }
+  .fc:hover { border-color: var(--gcbd, var(--accent)); }
+  .fc b { display: block; color: var(--gc, var(--accent)); font-size: .8rem; }
+  .r-note { font-size: .78rem; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; color: var(--muted); }
+  .flow-actions { margin-top: 14px; }
+  .flow-actions button {
+    background: var(--card); border: 1px solid var(--line); color: var(--accent);
+    border-radius: 8px; padding: 7px 16px; font-size: .84rem; font-weight: 600; cursor: pointer;
+  }
+  .flow-actions button:hover { background: var(--bg3); }
+
+  /* initial assessment — clickable expandable question cards */
+  .iaq .step-hdr { cursor: pointer; margin-bottom: 0; user-select: none; }
+  .iaq .chev { margin-left: auto; align-self: center; color: var(--tx3); font-size: .8rem; transition: transform .15s; flex-shrink: 0; }
+  .iaq.open .chev { transform: rotate(90deg); }
+  .iaq-body { display: none; margin-top: 10px; }
+  .iaq.open .iaq-body { display: block; }
+  .iaq-prompts {
+    background: var(--bg2); border: 1px solid var(--line); border-radius: 7px;
+    padding: 9px 12px; font-size: .86rem; line-height: 1.65; margin-bottom: 10px;
+  }
+  .iaq-prompts ul { margin: 0; padding-left: 20px; }
+  .iaq-prompts li { margin: 3px 0; }
+  .iaq-prompts .hint { color: var(--muted); font-size: .92em; }
+  .achips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .achip {
+    padding: 5px 13px; border-radius: 999px; border: 1.5px solid var(--line);
+    background: var(--card); font-size: .78rem; font-weight: 600; cursor: pointer;
+    color: var(--muted); transition: all .15s; user-select: none;
+  }
+  .achip:hover { background: var(--bg3); }
+  .achip.sel { background: var(--pcp24bg); border-color: var(--pcp24bd); color: var(--pcp24); }
+  .arow { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .atext {
+    flex: 1; min-width: 220px; padding: 7px 10px; border-radius: 7px;
+    border: 1.5px solid var(--line); background: var(--card); color: var(--ink);
+    font-size: .85rem; font-family: inherit;
+  }
+  .atext:focus { outline: none; border-color: var(--accent); }
+  .atext.err { border-color: var(--emsbd); }
+  .iaq .save {
+    padding: 7px 20px; border-radius: 7px; border: 1.5px solid var(--accent);
+    background: var(--accent); color: var(--bg); cursor: pointer; font-weight: 700; font-size: .8rem;
+  }
+  .iaq .save:hover { opacity: .85; }
+  .ans { margin-top: 4px; font-size: .82rem; color: var(--home); font-weight: 600; display: none; }
+  .iaq.asked .ans { display: block; }
+  .iaq.asked { border-left-color: var(--homebd); }
+  .iaq.asked .step-num { background: var(--homebg); color: var(--home); }
+  .iaq.asked .gtag { color: var(--home); }
+  .sum-tbl { width: 100%; border-collapse: collapse; font-size: .82rem; margin-bottom: 10px; }
+  .sum-tbl td { padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
+  .sum-tbl td.k {
+    font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+    color: var(--muted); white-space: nowrap; width: 1%; padding-top: 7px;
+  }
+  .sum-tbl td.v { color: var(--ink); }
+  .sum-tbl td.v.empty { color: var(--tx3); }
+  .sum-actions { display: flex; gap: 8px; }
+  .sum-actions button {
+    background: var(--card); border: 1px solid var(--line); color: var(--accent);
+    border-radius: 7px; padding: 6px 16px; font-size: .8rem; font-weight: 600; cursor: pointer;
+  }
+  .sum-actions button:hover { background: var(--bg3); }
+  .sum-actions button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+  /* clickable body map */
+  .bodymap-wrap { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; margin-bottom: 10px; }
+  .bodymap { width: 200px; flex-shrink: 0; }
+  .zone { fill: var(--bg3); stroke: var(--line); stroke-width: 1; cursor: pointer; transition: fill .15s; }
+  .zone:hover { fill: color-mix(in srgb, var(--pcp24bd) 40%, var(--bg3)); }
+  .zone.sel { fill: var(--pcp24bd); stroke: var(--pcp24); }
+  .zlbl { font-size: 6.5px; fill: var(--muted); pointer-events: none; text-anchor: middle; font-weight: 700; font-family: inherit; }
+  .zone-side { flex: 1; min-width: 230px; display: flex; flex-direction: column; gap: 8px; }
+  .zsel { font-size: .82rem; color: var(--pcp24); font-weight: 600; }
+  .zone-note { display: flex; flex-direction: column; gap: 6px; font-size: .8rem; }
+  .znote { border-radius: 6px; padding: 6px 10px; border: 1px solid var(--line); background: var(--bg2); line-height: 1.5; color: var(--muted); }
+  .znote.warn-chest { background: var(--educcbg); border-color: var(--educcbd); color: var(--educc); }
+  .znote.warn-upper { background: var(--hcp4bg); border-color: var(--hcp4bd); color: var(--hcp4); }
+  .znote.warn-ed { background: var(--emsbg); border-color: var(--emsbd); color: var(--ems); }
+
+  /* encounter summary */
+  .es-row { display: flex; gap: 6px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+  .es-row:last-child { border-bottom: none; }
+  .es-row .k { flex: 0 0 170px; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); }
+  .es-row .v { flex: 1; }
+  .es-row .v.empty { color: var(--tx3); }
+  .es-row .v ul { margin: 0; padding-left: 18px; }
+  .toast {
+    position: fixed; bottom: 20px; right: 20px; background: var(--ok); color: var(--bg);
+    padding: 10px 18px; border-radius: 8px; font-size: .85rem; font-weight: 600;
+    box-shadow: 0 4px 14px rgba(0,0,0,.25); opacity: 0; transform: translateY(8px);
+    transition: all .25s; pointer-events: none; z-index: 50;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="doc">
+    <h1 id="hdr-title">Abdominal Pain &mdash; Male</h1>
+    <div class="sub" id="hdr-sub">After Hours Telehealth Triage Guidelines &nbsp;|&nbsp; Adult &nbsp;|&nbsp; 2026</div>
+    <div class="meta" id="hdr-meta"></div>
+  </header>
+
+  <div class="dbstatus" id="dbstatus"><span class="dot"></span><span id="dbstatus-text">Loading guideline from data/abdominal-pain-male.db.json &hellip;</span></div>
+
+  <div class="toolbar">
+    <button onclick="setAll(true)">Expand All</button>
+    <button onclick="setAll(false)">Collapse All</button>
+  </div>
+
+  <!-- REASON FOR CALL -->
+  <div class="reason-card">
+    <label for="reason-input">Reason for Call</label>
+    <textarea id="reason-input" placeholder="e.g., Caller has stomach pain since this morning, worse after eating." oninput="onReasonInput()"></textarea>
+  </div>
+
+  <!-- 1. DEFINITION -->
+  <details class="section" open>
+    <summary>Definition <span class="tag" style="background:var(--accent)">Scope</span></summary>
+    <div class="body">
+      <ul class="plain" id="def-list"></ul>
+    </div>
+  </details>
+
+  <!-- 2. PAIN SEVERITY -->
+  <details class="section">
+    <summary>Pain Severity Definitions</summary>
+    <div class="body">
+      <div class="sev" id="sev-list"></div>
+    </div>
+  </details>
+
+  <!-- 3. INITIAL ASSESSMENT QUESTIONS -->
+  <details class="section">
+    <summary>Initial Assessment Questions</summary>
+    <div class="body">
+      <div class="guided-note">
+        Click a question to expand it, select or type the caller's answer, then <b>Save</b> &mdash;
+        the next question expands automatically and every answer collects into the Assessment Summary below.
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-row">
+          <span id="iaq-label">0 of 10 answered</span>
+          <span id="iaq-pct">0%</span>
+        </div>
+        <div class="prog-track"><div class="prog-fill" id="iaq-bar" style="width:0%"></div></div>
+      </div>
+      <div id="iaq-flow"></div>
+      <div id="iaq-summary"></div>
+    </div>
+  </details>
+
+  <!-- 4. TAQs -->
+  <details class="section" open>
+    <summary>Triage Assessment Questions (TAQs)</summary>
+    <div class="body">
+
+      <div class="viewtoggle">
+        <button id="btn-guided" class="active" onclick="setView('guided')">Guided Walkthrough (Yes/No)</button>
+        <button id="btn-reference" onclick="setView('reference')">Reference List</button>
+      </div>
+
+      <div id="guided-view">
+        <div class="guided-note">
+          Answer each question in order. Questions are asked from highest to lowest urgency (sorted by
+          <code>DispositionLevel DESC, QuestionOrder ASC</code>, per the STCC database's documented sort rule) &mdash;
+          the first <b>"Yes"</b> determines the disposition. <b>"No"</b> expands the next question.
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-row">
+            <span id="prog-label">Question 1</span>
+            <span id="prog-pct">0%</span>
+          </div>
+          <div class="prog-track"><div class="prog-fill" id="prog-bar" style="width:0%"></div></div>
+        </div>
+        <div id="flow"></div>
+        <div class="flow-actions"><button onclick="startFlow()">&#8635; Restart Walkthrough</button></div>
+      </div>
+
+      <div id="reference-view" style="display:none">
+        <div id="reference-view-content"></div>
+      </div>
+
+    </div>
+  </details>
+
+  <!-- 5. CARE ADVICE -->
+  <details class="section" id="care-advice">
+    <summary>Care Advice (CA)</summary>
+    <div class="body">
+      <div class="guided-note">
+        <b>Given Now</b> is spoken to the caller for every advice item. <b>Send Later</b> (patient portal, text, app) is only
+        available when the database's <code>Advice.PatientHealthInfo</code> flag is true &mdash; disposition scripts and
+        triager-only notes cannot be sent to the patient.
+      </div>
+      <div id="ca-list"></div>
+    </div>
+  </details>
+
+  <!-- 6. ENCOUNTER SUMMARY -->
+  <details class="section" id="encounter-summary">
+    <summary>Encounter Summary</summary>
+    <div class="body">
+      <div id="es-content"></div>
+    </div>
+  </details>
+
+  <!-- 7. BACKGROUND INFORMATION -->
+  <details class="section">
+    <summary>Background Information</summary>
+    <div class="body" id="bg-content"></div>
+  </details>
+
+  <!-- 8. FIRST AID -->
+  <details class="section">
+    <summary>First Aid</summary>
+    <div class="body">
+      <ul class="plain" id="firstaid-list"></ul>
+    </div>
+  </details>
+
+  <!-- 9. REFERENCES -->
+  <details class="section">
+    <summary>References</summary>
+    <div class="body">
+      <ol class="refs" id="refs-list"></ol>
+    </div>
+  </details>
+
+  <!-- 10. SEARCH WORDS -->
+  <details class="section">
+    <summary>Search Words</summary>
+    <div class="body">
+      <div class="words" id="words-list"></div>
+    </div>
+  </details>
+
+  <!-- 11. AUTHOR AND COPYRIGHT -->
+  <details class="section">
+    <summary>Author and Copyright</summary>
+    <div class="body copyright" id="copyright-content"></div>
+  </details>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ======================================================================
+  // DATA LAYER — fetches the Algorithm/Disposition/Question/Advice record
+  // set from a JSON export shaped like the STCC After-Hours Access Database.
+  // Swap fetchAlgorithm() for a real API call (e.g. GET /api/algorithms/79)
+  // when this sits behind a real backend instead of a static JSON file.
+  // ======================================================================
+  let DB, ALGO, ADVICE_MAP, GROUPS, TAQS, IAQ;
+  const encounter = { reasonForCall: "", disposition: null, dispositionDetail: null, positiveQuestion: null, telemed: false, care: {} };
+
+  async function fetchAlgorithm(algorithmId) {
+    const res = await fetch("./data/abdominal-pain-male.db.json", { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const db = await res.json();
+    if (db.algorithm.AlgorithmID !== algorithmId) throw new Error("AlgorithmID mismatch");
+    return db;
+  }
+
+  function buildFromDB(db) {
+    DB = db;
+    ALGO = db.algorithm;
+    ADVICE_MAP = new Map(db.advice.map(a => [a.AdviceID, a]));
+    db.advice.forEach(a => { encounter.care[a.AdviceID] = { givenNow: false, sendLater: false }; });
+
+    // ORDER BY Question.DispositionLevel DESC, Question.QuestionOrder ASC (documented STCC sort rule)
+    const dispSorted = db.dispositions.slice().sort((a, b) => b.LevelID - a.LevelID);
+    const redirectQs = db.questions.filter(q => q.DispositionLevel === null)
+                                    .sort((a, b) => a.QuestionOrder - b.QuestionOrder);
+    GROUPS = [];
+    TAQS = [];
+    dispSorted.forEach(disp => {
+      GROUPS.push({ n: disp.DispositionHeading, v: disp.CssVar, levelId: disp.LevelID, video: !!disp.Video });
+      const gi = GROUPS.length - 1;
+      db.questions.filter(q => q.DispositionLevel === disp.LevelID)
+                   .sort((a, b) => a.QuestionOrder - b.QuestionOrder)
+                   .forEach(q => TAQS.push(mapQuestion(q, gi)));
+      if (disp.LevelID === 100 && redirectQs.length) {
+        GROUPS.push({ n: "See More Appropriate Guideline", v: "--guideline", levelId: null, video: false });
+        const gi2 = GROUPS.length - 1;
+        redirectQs.forEach(q => TAQS.push(mapQuestion(q, gi2)));
+      }
+    });
+
+    IAQ = db.initialAssessmentQuestions.map(x => ({
+      t: x.Category, q: x.Question, p: x.Prompts || [], map: !!x.Map,
+      choices: x.Choices || [], multi: !!x.Multi, ph: x.Placeholder || ""
+    }));
+  }
+
+  function mapQuestion(q, gi) {
+    return { g: gi, q: q.Question, ro: q.Information, goto: q.GotoGuideline,
+             ca: q.AdviceIDs || [], telemed: !!q.TelemedicineEligible, qid: q.QuestionID };
+  }
+
+  function setDbStatus(ok, text) {
+    const el = document.getElementById("dbstatus");
+    el.className = "dbstatus" + (ok === true ? " ok" : ok === false ? " err" : "");
+    document.getElementById("dbstatus-text").innerHTML = text;
+  }
+
+  // ======================================================================
+  // STATIC CONTENT — rendered from Algorithm/Reference/Searchword records
+  // ======================================================================
+  function renderStaticContent() {
+    document.getElementById("hdr-title").textContent = ALGO.Title.replace(" - ", " — ");
+    document.getElementById("hdr-sub").textContent = `${ALGO.ContentSet} | ${ALGO.VersionYear}`;
+    document.getElementById("hdr-meta").innerHTML = `
+      <span><b>Author:</b> ${ALGO.Author}</span>
+      <span><b>Last Revised:</b> ${ALGO.LastRevised}</span>
+      <span><b>Last Reviewed:</b> ${ALGO.LastReviewed}</span>
+      <span><b>Version Year:</b> ${ALGO.VersionYear}</span>
+      <span><b>Source:</b> ${ALGO.Company}</span>`;
+
+    document.getElementById("def-list").innerHTML = ALGO.Definition.map(d => `<li>${d}</li>`).join("");
+
+    document.getElementById("sev-list").innerHTML = ALGO.PainSeverity.map(s =>
+      `<div class="row ${s.cls}"><b>${s.level}</b><span>${s.text}</span></div>`).join("");
+
+    const bg = ALGO.Background;
+    document.getElementById("bg-content").innerHTML = `
+      <h3 class="sub">Key Points</h3>
+      <ul class="plain">${bg.KeyPoints.map(k => `<li>${k}</li>`).join("")}</ul>
+      <h3 class="sub">Causes &mdash; Top causes in men under 50 years of age</h3>
+      <ul class="plain">${bg.CausesUnder50.map(c => `<li>${c}</li>`).join("")}</ul>
+      <h3 class="sub">Causes &mdash; Top causes in men over 50 years of age</h3>
+      <ul class="plain">${bg.CausesOver50.map(c => `<li>${c}</li>`).join("")}</ul>
+      <h3 class="sub">How Does the Location of the Pain Help Predict the Cause?</h3>
+      <table class="loc"><tr><th>Location</th><th>Likely Source</th></tr>
+        ${bg.LocationTable.map(r => `<tr><td>${r.loc}</td><td>${r.source}</td></tr>`).join("")}
+      </table>
+      <h3 class="sub">Expert Reviewer</h3>
+      <ul class="plain"><li>${bg.ExpertReviewer}</li>
+        <li>The Author and Editorial Team are extremely grateful for this subject matter expertise and critical review.</li></ul>`;
+
+    document.getElementById("firstaid-list").innerHTML = ALGO.FirstAid.map(f => `<li>${f}</li>`).join("");
+    document.getElementById("refs-list").innerHTML = DB.references.map(r => `<li>${r}</li>`).join("");
+    document.getElementById("words-list").innerHTML = DB.searchwords.map(w => `<span>${w}</span>`).join("");
+    document.getElementById("copyright-content").innerHTML = `
+      <p><b>Author:</b> ${ALGO.Author}<br>
+      <b>Content Set:</b> ${ALGO.ContentSet}<br>
+      <b>Last Revised:</b> ${ALGO.LastRevised} &nbsp;|&nbsp; <b>Last Reviewed:</b> ${ALGO.LastReviewed} &nbsp;|&nbsp; <b>Version Year:</b> ${ALGO.VersionYear}<br>
+      <b>Copyright:</b> ${ALGO.Copyright}<br>
+      <b>Company:</b> ${ALGO.Company}</p>`;
+  }
+
+  function setAll(open) {
+    document.querySelectorAll("details").forEach(d => d.open = open);
+  }
+
+  // Clicking a CA chip: open the Care Advice section and flash the target item
+  document.addEventListener("click", function (e) {
+    const a = e.target.closest("a.chip");
+    if (!a) return;
+    const target = document.querySelector(a.getAttribute("href"));
+    if (!target) return;
+    document.getElementById("care-advice").open = true;
+    target.classList.remove("flash");
+    void target.offsetWidth;
+    target.classList.add("flash");
+  });
+
+  // ======================================================================
+  // REFERENCE VIEW — colored disposition list, generated from GROUPS/TAQS
+  // ======================================================================
+  function renderReferenceView() {
+    const byGroup = new Map();
+    TAQS.forEach(t => { if (!byGroup.has(t.g)) byGroup.set(t.g, []); byGroup.get(t.g).push(t); });
+    const html = [...byGroup.entries()].map(([gi, taqs]) => {
+      const grp = GROUPS[gi];
+      const rows = taqs.map(t => `
+        <div class="taq">
+          <div class="q">${t.q}${t.telemed ? '<span class="telemed-badge">Video visit eligible</span>' : ""}</div>
+          ${t.goto ? `<div class="ro">${t.goto}</div>` : t.ro ? `<div class="ro">${t.ro}</div>` : ""}
+          ${t.ca && t.ca.length ? `<div class="ca"><span class="lbl">CA:</span>${t.ca.map(n => `<a class="chip" href="#ca-${n}">${n}</a>`).join("")}</div>` : ""}
+        </div>`).join("");
+      return `<details class="dispo" style="--dc:var(${grp.v})">
+        <summary>${grp.n} <span class="count">${taqs.length}</span></summary>
+        <div class="body">${rows}</div>
+      </details>`;
+    }).join("");
+    document.getElementById("reference-view-content").innerHTML = html;
+  }
+
+  // ======================================================================
+  // CARE ADVICE — generated from db.advice, with Given Now / Send Later
+  // checkboxes gated on Advice.PatientHealthInfo
+  // ======================================================================
+  function renderCareAdvice() {
+    const sorted = DB.advice.slice().sort((a, b) => a.AlgorithmOrder - b.AlgorithmOrder);
+    document.getElementById("ca-list").innerHTML = sorted.map(a => {
+      const body = a.Content.length ? `<ul>${a.Content.map(c => `<li>${c}</li>`).join("")}</ul>` : "";
+      const cb = a.Internal
+        ? `<span class="internal-tag">Internal record &mdash; not spoken or sent to the patient.</span>`
+        : `<div class="cb-row">
+             <label class="given"><input type="checkbox" onchange="setCare(${a.AdviceID}, 'givenNow', this.checked)"> Given Now</label>
+             <label class="${a.PatientHealthInfo ? "" : "disabled"}">
+               <input type="checkbox" ${a.PatientHealthInfo ? "" : "disabled"} onchange="setCare(${a.AdviceID}, 'sendLater', this.checked)"> Send Later
+             </label>
+           </div>`;
+      return `<div class="ca-item" id="ca-${a.AdviceID}">
+        <div class="ca-head"><span class="ca-num">${a.AdviceID}</span>${a.Title}</div>
+        ${body}
+        ${cb}
+      </div>`;
+    }).join("");
+  }
+
+  function setCare(adviceId, field, val) {
+    encounter.care[adviceId][field] = val;
+    renderEncounterSummary();
+  }
+
+  // ======================================================================
+  // GUIDED YES/NO WALKTHROUGH
+  // ======================================================================
+  function setView(which) {
+    document.getElementById("guided-view").style.display = which === "guided" ? "" : "none";
+    document.getElementById("reference-view").style.display = which === "reference" ? "" : "none";
+    document.getElementById("btn-guided").classList.toggle("active", which === "guided");
+    document.getElementById("btn-reference").classList.toggle("active", which === "reference");
+  }
+
+  function setProgress(n) {
+    const bar = document.getElementById("prog-bar");
+    const lab = document.getElementById("prog-label");
+    const pct = document.getElementById("prog-pct");
+    if (n === "done") {
+      bar.style.width = "100%";
+      lab.textContent = "Complete — disposition reached";
+      pct.textContent = "100%";
+      return;
+    }
+    const p = Math.round((n - 1) / TAQS.length * 100);
+    bar.style.width = p + "%";
+    lab.textContent = `Question ${n} of ${TAQS.length}`;
+    pct.textContent = p + "%";
+  }
+
+  function groupColors(el, grp) {
+    el.style.setProperty("--gc", `var(${grp.v})`);
+    el.style.setProperty("--gcbg", `var(${grp.v}bg)`);
+    el.style.setProperty("--gcbd", `var(${grp.v}bd)`);
+  }
+
+  function addCard(i) {
+    const flow = document.getElementById("flow");
+    if (i >= TAQS.length) { addEndCard(); return; }
+    const t = TAQS[i], grp = GROUPS[t.g];
+    const card = document.createElement("div");
+    card.className = "step";
+    card.id = "qcard-" + i;
+    groupColors(card, grp);
+    card.innerHTML =
+      `<div class="step-hdr">
+         <div class="step-num">${i + 1}</div>
+         <div>
+           <div class="gtag">${grp.n}</div>
+           <div class="step-title">${t.q}${t.telemed ? '<span class="telemed-badge">Video visit eligible</span>' : ""}</div>
+         </div>
+       </div>
+       <div class="choices">
+         <div class="choice" onclick="choose(${i}, true)">Yes</div>
+         <div class="choice" onclick="choose(${i}, false)">No</div>
+       </div>`;
+    flow.appendChild(card);
+    setProgress(i + 1);
+    card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function caGridHtml(ca) {
+    return `<div class="file-grid">` +
+      ca.map(n => `<div class="fc" onclick="goCA(${n})"><b>CA ${n}</b>${(ADVICE_MAP.get(n) || {}).Title || ""}</div>`).join("") +
+      `</div>`;
+  }
+
+  function showResult(i) {
+    const flow = document.getElementById("flow");
+    const t = TAQS[i], grp = GROUPS[t.g];
+    const card = document.createElement("div");
+    card.className = "r-card";
+    card.id = "resultcard";
+    groupColors(card, grp);
+    card.innerHTML =
+      `<div class="r-title">${(t.goto ? "See More Appropriate Guideline" : grp.n).toUpperCase()}${t.telemed ? '<span class="telemed-badge">Video visit eligible</span>' : ""}</div>` +
+      `<div class="r-sub">${t.goto ? t.goto : `Triggered by Question ${i + 1}: ${t.q}`}</div>` +
+      `<div class="r-detail">${t.ro ? t.ro :
+        (t.goto ? "Exit this guideline and triage using the guideline named above."
+                : `Disposition per ${ALGO.Title} (${ALGO.Age}) guideline.`)}</div>` +
+      `<div class="r-stats">
+         <div class="r-stat"><b>${t.g + 1} / ${GROUPS.length}</b>Urgency level (1 = highest)</div>
+         <div class="r-stat"><b>Q${i + 1} of ${TAQS.length}</b>Decided at</div>
+         <div class="r-stat"><b>${t.ca ? t.ca.length : 0}</b>Care advice items</div>
+       </div>` +
+      (t.ca && t.ca.length ? caGridHtml(t.ca) : "") +
+      (t.ca && t.ca.length ? `<div class="r-note">Click a care advice card to open it in the Care Advice section, where you can check Given Now / Send Later.</div>` : "");
+    flow.appendChild(card);
+    setProgress("done");
+    card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+    encounter.disposition = t.goto ? "See More Appropriate Guideline" : grp.n;
+    encounter.dispositionDetail = t.goto || null;
+    encounter.positiveQuestion = t.goto ? null : t.q.replace(/<[^>]+>/g, "");
+    encounter.telemed = t.telemed;
+    renderEncounterSummary();
+  }
+
+  function addEndCard() {
+    const flow = document.getElementById("flow");
+    const end = document.createElement("div");
+    end.className = "r-card";
+    end.id = "endcard";
+    end.style.setProperty("--gc", "var(--muted)");
+    end.style.setProperty("--gcbg", "var(--bg2)");
+    end.style.setProperty("--gcbd", "var(--line)");
+    end.innerHTML =
+      `<div class="r-title">NO CRITERIA MET</div>
+       <div class="r-sub">All ${TAQS.length} questions answered "No"</div>
+       <div class="r-detail">Use nurse judgment &mdash; consider Home Care or a PCP consult.</div>
+       <div class="file-grid"><div class="fc" onclick="goCA(47)"><b>CA 47</b>${(ADVICE_MAP.get(47) || {}).Title || ""}</div></div>`;
+    flow.appendChild(end);
+    setProgress("done");
+    end.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+    encounter.disposition = "No criteria met — nurse judgment";
+    encounter.dispositionDetail = null;
+    encounter.positiveQuestion = null;
+    encounter.telemed = false;
+    renderEncounterSummary();
+  }
+
+  function choose(i, yes) {
+    const card = document.getElementById("qcard-" + i);
+    let n = card.nextSibling, removedResult = false;
+    while (n) {
+      const nx = n.nextSibling;
+      if (n.id === "resultcard" || n.id === "endcard") removedResult = true;
+      n.remove();
+      n = nx;
+    }
+    if (removedResult) {
+      encounter.disposition = null; encounter.dispositionDetail = null;
+      encounter.positiveQuestion = null; encounter.telemed = false;
+      renderEncounterSummary();
+    }
+    const ch = card.querySelectorAll(".choice");
+    ch[0].classList.toggle("sel-yes", yes);
+    ch[1].classList.toggle("sel-no", !yes);
+    if (yes) { showResult(i); } else { addCard(i + 1); }
+  }
+
+  function goCA(n) {
+    const el = document.getElementById("ca-" + n);
+    if (!el) return;
+    document.getElementById("care-advice").open = true;
+    el.classList.remove("flash");
+    void el.offsetWidth;
+    el.classList.add("flash");
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function startFlow() {
+    const flow = document.getElementById("flow");
+    flow.innerHTML = "";
+    encounter.disposition = null; encounter.dispositionDetail = null;
+    encounter.positiveQuestion = null; encounter.telemed = false;
+    renderEncounterSummary();
+    addCard(0);
+  }
+
+  // ======================================================================
+  // INITIAL ASSESSMENT QUESTIONS — answer capture + clickable body map
+  // ======================================================================
+  const iaqAnswers = {};
+
+  const ZONES = {
+    head: "Head", neck: "Neck",
+    chestR: "Right chest", chestL: "Left chest",
+    armR: "Right arm", armL: "Left arm",
+    ruq: "Right upper quadrant (RUQ)", epi: "Epigastric (upper middle)", luq: "Left upper quadrant (LUQ)",
+    rflank: "Right flank", peri: "Around navel (periumbilical)", lflank: "Left flank",
+    rlq: "Right lower quadrant (RLQ)", supra: "Suprapubic (above pubic bone)", llq: "Left lower quadrant (LLQ)",
+    groin: "Groin", genital: "Scrotum/testicle",
+    legR: "Right leg", legL: "Left leg"
+  };
+  const zoneSel = new Set();
+
+  function bodyMapHtml() {
+    const z = (shape, id) => shape.replace(">", ` onclick="zoneToggle('${id}', event)"><title>${ZONES[id]}</title>`);
+    return `<div class="bodymap-wrap">
+      <svg class="bodymap" viewBox="0 0 200 430" xmlns="http://www.w3.org/2000/svg">
+        <text class="zlbl" x="40" y="16" font-size="10">R</text>
+        <text class="zlbl" x="160" y="16" font-size="10">L</text>
+        ${z(`<circle class="zone" cx="100" cy="28" r="20">`, "head")}</circle>
+        ${z(`<rect class="zone" x="90" y="48" width="20" height="12">`, "neck")}</rect>
+        ${z(`<rect class="zone" x="62" y="60" width="38" height="42" rx="4">`, "chestR")}</rect>
+        ${z(`<rect class="zone" x="100" y="60" width="38" height="42" rx="4">`, "chestL")}</rect>
+        <text class="zlbl" x="81" y="84">CHEST</text>
+        <text class="zlbl" x="119" y="84">CHEST</text>
+        ${z(`<rect class="zone" x="38" y="64" width="20" height="125" rx="9">`, "armR")}</rect>
+        ${z(`<rect class="zone" x="142" y="64" width="20" height="125" rx="9">`, "armL")}</rect>
+        ${z(`<rect class="zone" x="62" y="102" width="25.4" height="26">`, "ruq")}</rect>
+        ${z(`<rect class="zone" x="87.4" y="102" width="25.2" height="26">`, "epi")}</rect>
+        ${z(`<rect class="zone" x="112.6" y="102" width="25.4" height="26">`, "luq")}</rect>
+        <text class="zlbl" x="74.7" y="117">RUQ</text>
+        <text class="zlbl" x="100" y="117">EPI</text>
+        <text class="zlbl" x="125.3" y="117">LUQ</text>
+        ${z(`<rect class="zone" x="62" y="128" width="25.4" height="26">`, "rflank")}</rect>
+        ${z(`<rect class="zone" x="87.4" y="128" width="25.2" height="26">`, "peri")}</rect>
+        ${z(`<rect class="zone" x="112.6" y="128" width="25.4" height="26">`, "lflank")}</rect>
+        <text class="zlbl" x="74.7" y="143">FLANK</text>
+        <text class="zlbl" x="100" y="143">NAVEL</text>
+        <text class="zlbl" x="125.3" y="143">FLANK</text>
+        ${z(`<rect class="zone" x="62" y="154" width="25.4" height="26">`, "rlq")}</rect>
+        ${z(`<rect class="zone" x="87.4" y="154" width="25.2" height="26">`, "supra")}</rect>
+        ${z(`<rect class="zone" x="112.6" y="154" width="25.4" height="26">`, "llq")}</rect>
+        <text class="zlbl" x="74.7" y="169">RLQ</text>
+        <text class="zlbl" x="100" y="169">PUBIC</text>
+        <text class="zlbl" x="125.3" y="169">LLQ</text>
+        ${z(`<rect class="zone" x="62" y="180" width="76" height="24">`, "groin")}</rect>
+        <text class="zlbl" x="100" y="195">GROIN</text>
+        ${z(`<rect class="zone" x="86" y="206" width="28" height="17" rx="7">`, "genital")}</rect>
+        <text class="zlbl" x="100" y="217" font-size="5.5">SCROTUM</text>
+        ${z(`<rect class="zone" x="64" y="227" width="32" height="175" rx="11">`, "legR")}</rect>
+        ${z(`<rect class="zone" x="104" y="227" width="32" height="175" rx="11">`, "legL")}</rect>
+      </svg>
+      <div class="zone-side">
+        <div class="zsel" id="zone-sel-0">No region selected yet &mdash; click the figure (patient's right is on your left)</div>
+        <div class="zone-note" id="zone-note-0"></div>
+      </div>
+    </div>`;
+  }
+
+  function zoneToggle(id, ev) {
+    ev.stopPropagation();
+    const el = ev.currentTarget;
+    if (zoneSel.has(id)) { zoneSel.delete(id); el.classList.remove("sel"); }
+    else { zoneSel.add(id); el.classList.add("sel"); }
+    zoneNotes();
+  }
+
+  function zoneNotes() {
+    const sel = [...zoneSel];
+    const selEl = document.getElementById("zone-sel-0");
+    const noteEl = document.getElementById("zone-note-0");
+    if (!selEl || !noteEl) return;
+    selEl.innerHTML = sel.length
+      ? "Selected: <b>" + sel.map(id => ZONES[id]).join(", ") + "</b>"
+      : "No region selected yet &mdash; click the figure (patient's right is on your left)";
+    const notes = [];
+    if (sel.some(id => id === "chestR" || id === "chestL"))
+      notes.push(`<div class="znote warn-chest">&#9888; Chest pain &rarr; use <b>Chest Pain (Adult)</b> guideline first &mdash; then return to this guideline.</div>`);
+    if (sel.some(id => ["ruq", "epi", "luq"].includes(id)))
+      notes.push(`<div class="znote warn-upper">&#9888; Pain mainly above the belly button &rarr; consider <b>Abdominal Pain - Upper (Adult)</b> guideline.</div>`);
+    if (sel.includes("genital"))
+      notes.push(`<div class="znote warn-ed">&#9888; Scrotum/testicle pain present &gt; 1 hour &rarr; <b>Go to ED Now</b> (R/O: testicular torsion) &mdash; see TAQs.</div>`);
+    if (sel.some(id => ["head", "neck", "armR", "armL", "legR", "legL"].includes(id)))
+      notes.push(`<div class="znote">Outside the abdominal pain definition &mdash; record as radiation / other symptoms, or consider a different guideline.</div>`);
+    noteEl.innerHTML = notes.join("");
+  }
+
+  function renderIAQ() {
+    zoneSel.clear();
+    const iaqFlow = document.getElementById("iaq-flow");
+    iaqFlow.innerHTML = IAQ.map((item, i) =>
+      `<div class="step iaq${i === 0 ? " open" : ""}" id="iaq-${i}"
+            style="--gc:var(--pcp24);--gcbg:var(--pcp24bg);--gcbd:var(--pcp24bd)">
+         <div class="step-hdr" onclick="iaqToggle(${i})">
+           <div class="step-num" id="iaq-num-${i}">${i + 1}</div>
+           <div>
+             <div class="gtag">${item.t}</div>
+             <div class="step-title">${item.q}</div>
+             <div class="ans" id="iaq-ans-${i}"></div>
+           </div>
+           <div class="chev">&#9654;</div>
+         </div>
+         <div class="iaq-body">
+           ${item.p.length ? `<div class="iaq-prompts"><ul>${item.p.map(x => `<li>${x}</li>`).join("")}</ul></div>` : ""}
+           ${item.map ? bodyMapHtml() : ""}
+           ${item.choices.length ? `<div class="achips">${item.choices.map((c, j) =>
+             `<div class="achip" id="iaq-chip-${i}-${j}" onclick="achipToggle(${i}, ${j}, event)">${c}</div>`).join("")}</div>` : ""}
+           <div class="arow">
+             <input class="atext" type="text" id="iaq-text-${i}" placeholder="${item.ph}"
+                    onkeydown="if(event.key==='Enter')iaqSave(${i}, event)">
+             <button class="save" onclick="iaqSave(${i}, event)">Save answer</button>
+           </div>
+         </div>
+       </div>`).join("");
+    renderSummary();
+    iaqProgress();
+  }
+
+  function iaqToggle(i) {
+    document.getElementById("iaq-" + i).classList.toggle("open");
+  }
+
+  function achipToggle(i, j, ev) {
+    ev.stopPropagation();
+    const chip = document.getElementById(`iaq-chip-${i}-${j}`);
+    if (!IAQ[i].multi) {
+      document.querySelectorAll(`#iaq-${i} .achip`).forEach(c => { if (c !== chip) c.classList.remove("sel"); });
+    }
+    chip.classList.toggle("sel");
+  }
+
+  function iaqSave(i, ev) {
+    ev.stopPropagation();
+    const input = document.getElementById("iaq-text-" + i);
+    const zones = IAQ[i].map ? [...zoneSel].map(id => ZONES[id]) : [];
+    const chips = [...zones, ...[...document.querySelectorAll(`#iaq-${i} .achip.sel`)].map(c => c.textContent)];
+    const text = input.value.trim();
+    if (!chips.length && !text) {
+      input.classList.add("err");
+      input.focus();
+      setTimeout(() => input.classList.remove("err"), 1200);
+      return;
+    }
+    const answer = chips.join(", ") + (chips.length && text ? " — " : "") + text;
+    iaqAnswers[i] = answer;
+    const card = document.getElementById("iaq-" + i);
+    card.classList.add("asked");
+    card.classList.remove("open");
+    document.getElementById("iaq-num-" + i).innerHTML = "&#10003;";
+    document.getElementById("iaq-ans-" + i).textContent = "➔ " + answer;
+    for (let j = i + 1; j < IAQ.length; j++) {
+      const nextCard = document.getElementById("iaq-" + j);
+      if (!nextCard.classList.contains("asked")) {
+        nextCard.classList.add("open");
+        nextCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        break;
+      }
+    }
+    renderSummary();
+    iaqProgress();
+    renderEncounterSummary();
+  }
+
+  function renderSummary() {
+    const rows = IAQ.map((item, i) => {
+      const a = iaqAnswers[i];
+      return `<tr><td class="k">${item.t}</td><td class="v${a ? "" : " empty"}">${a || "—"}</td></tr>`;
+    }).join("");
+    document.getElementById("iaq-summary").innerHTML =
+      `<div class="r-card" style="--gc:var(--accent);--gcbg:var(--bg2);--gcbd:var(--line)">
+         <div class="r-sub">Assessment Summary</div>
+         <table class="sum-tbl">${rows}</table>
+         <div class="sum-actions"><button onclick="copySummary(event)">Copy summary</button></div>
+       </div>`;
+  }
+
+  function copySummary(ev) {
+    const lines = IAQ.map((item, i) => `${item.t.toUpperCase()}: ${iaqAnswers[i] || "-"}`);
+    const text = `INITIAL ASSESSMENT — ${ALGO.Title} (${ALGO.Age})\n` + lines.join("\n");
+    const btn = ev.target;
+    const flash = ok => {
+      btn.textContent = ok ? "Copied ✓" : "Copy failed";
+      setTimeout(() => btn.textContent = "Copy summary", 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => flash(true), () => flash(false));
+    } else {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      ta.remove();
+      flash(ok);
+    }
+  }
+
+  function iaqProgress() {
+    const answered = Object.keys(iaqAnswers).length;
+    const p = Math.round(answered / IAQ.length * 100);
+    document.getElementById("iaq-bar").style.width = p + "%";
+    document.getElementById("iaq-label").textContent =
+      answered === IAQ.length ? "All questions answered — proceed to TAQs" : `${answered} of ${IAQ.length} answered`;
+    document.getElementById("iaq-pct").textContent = p + "%";
+  }
+
+  function onReasonInput() {
+    encounter.reasonForCall = document.getElementById("reason-input").value;
+    renderEncounterSummary();
+  }
+
+  // ======================================================================
+  // ENCOUNTER SUMMARY — compiled live from encounter state
+  // ======================================================================
+  function renderEncounterSummary() {
+    const given = DB ? DB.advice.filter(a => encounter.care[a.AdviceID] && encounter.care[a.AdviceID].givenNow) : [];
+    const sendLater = DB ? DB.advice.filter(a => encounter.care[a.AdviceID] && encounter.care[a.AdviceID].sendLater) : [];
+    const callBackBullets = given.filter(a => a.Title === "Call Back If").flatMap(a => a.Content);
+
+    const row = (k, v) => `<div class="es-row"><div class="k">${k}</div><div class="v${v ? "" : " empty"}">${v || "—"}</div></div>`;
+    const listRow = (k, items) => `<div class="es-row"><div class="k">${k}</div><div class="v${items.length ? "" : " empty"}">${
+      items.length ? `<ul>${items.map(x => `<li>${x}</li>`).join("")}</ul>` : "—"}</div></div>`;
+
+    document.getElementById("es-content").innerHTML = `
+      ${row("Date", new Date().toLocaleDateString())}
+      ${row("Reason for Call", encounter.reasonForCall.trim())}
+      ${row("Guideline Used", ALGO ? `${ALGO.Title} (${ALGO.Age})` : "")}
+      ${row("Disposition", encounter.disposition + (encounter.telemed ? " &nbsp;<span class=\"telemed-badge\">Video visit eligible</span>" : ""))}
+      ${row("Positive Triage Assessment Question", encounter.positiveQuestion || (encounter.dispositionDetail ? encounter.dispositionDetail.replace(/<[^>]+>/g, "") : ""))}
+      ${listRow("Care Advice — Given Now", given.map(a => a.Title))}
+      ${listRow("Care Advice — Send Later", sendLater.map(a => a.Title))}
+      ${listRow("Call Back If", callBackBullets)}
+      <div class="sum-actions" style="margin-top:12px">
+        <button class="primary" onclick="saveEncounter()">Save to Patient Record</button>
+        <button onclick="window.print()">Print</button>
+      </div>`;
+  }
+
+  function saveEncounter() {
+    const record = {
+      date: new Date().toISOString(),
+      reasonForCall: encounter.reasonForCall,
+      guidelineUsed: ALGO.Title,
+      disposition: encounter.disposition,
+      positiveQuestion: encounter.positiveQuestion,
+      careGivenNow: DB.advice.filter(a => encounter.care[a.AdviceID].givenNow).map(a => a.Title),
+      careSendLater: DB.advice.filter(a => encounter.care[a.AdviceID].sendLater).map(a => a.Title),
+      initialAssessment: IAQ.map((item, i) => ({ category: item.t, answer: iaqAnswers[i] || null }))
+    };
+    const key = "encounterHistory_" + ALGO.AlgorithmID;
+    const history = JSON.parse(localStorage.getItem(key) || "[]");
+    history.push(record);
+    localStorage.setItem(key, JSON.stringify(history));
+    showToast(`Saved to patient record (${history.length} encounter${history.length > 1 ? "s" : ""} on file).`);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2600);
+  }
+
+  // ======================================================================
+  // BOOTSTRAP
+  // ======================================================================
+  fetchAlgorithm(79).then(db => {
+    buildFromDB(db);
+    renderStaticContent();
+    renderReferenceView();
+    renderCareAdvice();
+    renderIAQ();
+    startFlow();
+    setDbStatus(true, `Loaded from <code>data/abdominal-pain-male.db.json</code> &mdash; Algorithm #${ALGO.AlgorithmID}, ${GROUPS.filter(g=>g.levelId!==null).length} dispositions, ${TAQS.length} questions, ${DB.advice.length} advice records.`);
+  }).catch(err => {
+    setDbStatus(false, `Could not load the guideline database: <code>${err.message}</code>. If you opened this file directly (file://), some browsers block local JSON fetches &mdash; serve the folder with a local web server (e.g. <code>npx serve</code>) and reload.`);
+  });
+</script>
+</body>
+</html>

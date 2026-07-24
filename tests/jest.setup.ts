@@ -9,3 +9,6 @@
 process.env.CLINICAL_CONTENT_USE_GENERATED_STCC = "false";
 process.env.CLINICAL_CONTENT_PACKAGE_PATH = "";
 process.env.CLINICAL_CONTENT_SOURCE = "";
+// Same reasoning: queue persistence must stay in-memory for tests regardless
+// of a developer's local .env choice to run the live app against Cloud SQL.
+process.env.QUEUE_DB_PERSISTENCE = "false";

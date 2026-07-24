@@ -1,0 +1,266 @@
+/* New Nurse Cockpit-aligned login screen. Self-contained under #login-root so
+   it never inherits the old application shell's 12px typography cap, 44px
+   button-height reset, or any other .workspace-body-scoped styling. Tokens
+   are the same ones used in frontend/src/cockpit/cockpit.css. */
+
+#login-root {
+  --bg: #f7f6f3;
+  --bg2: #f1efe9;
+  --card: #ffffff;
+  --ink: #1a1a19;
+  --muted: #6b6a66;
+  --tx3: #9c9a92;
+  --line: #e0dfd9;
+  --accent: #185fa5;
+  --ems: #a32d2d;
+  --emsbg: #fcebeb;
+  --emsbd: #f09595;
+
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif !important;
+  font-size: 14px !important;
+  color: var(--ink) !important;
+  background: var(--bg) !important;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px !important;
+  box-sizing: border-box;
+}
+
+#login-root * {
+  box-sizing: border-box;
+}
+
+#login-root button,
+#login-root input {
+  min-height: 0 !important;
+  height: auto !important;
+  letter-spacing: normal !important;
+  box-shadow: none !important;
+}
+
+#login-root .login-card {
+  width: 100%;
+  max-width: 420px !important;
+  background: var(--card) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 2px rgba(26, 26, 25, 0.04), 0 8px 24px rgba(26, 26, 25, 0.06) !important;
+  padding: 32px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 480px) {
+  #login-root .login-card {
+    width: calc(100% - 32px) !important;
+    padding: 24px !important;
+  }
+}
+
+#login-root .login-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+#login-root .login-brand-mark {
+  width: 26px;
+  height: 26px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+#login-root .login-brand-word {
+  font-size: 0.86rem !important;
+  font-weight: 700 !important;
+  color: var(--muted) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.4px !important;
+}
+
+#login-root .login-title {
+  font-size: 1.3rem !important;
+  font-weight: 700 !important;
+  color: var(--ink) !important;
+  margin: 0 !important;
+}
+
+#login-root .login-subtitle {
+  font-size: 0.85rem !important;
+  color: var(--muted) !important;
+  margin: 0 !important;
+}
+
+#login-root .login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#login-root .login-field label {
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.4px !important;
+  color: var(--muted) !important;
+}
+
+#login-root .login-input-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+#login-root .login-input {
+  width: 100%;
+  height: 44px !important;
+  padding: 0 14px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  background: var(--card) !important;
+  color: var(--ink) !important;
+  font-size: 0.9rem !important;
+  font-family: inherit !important;
+}
+
+#login-root .login-input:focus {
+  outline: none !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px rgba(24, 95, 165, 0.16) !important;
+}
+
+#login-root .login-input.has-toggle {
+  padding-right: 44px !important;
+}
+
+#login-root .login-input-toggle {
+  position: absolute;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px !important;
+  border: none !important;
+  background: transparent !important;
+  color: var(--tx3) !important;
+  cursor: pointer;
+  border-radius: 6px !important;
+}
+
+#login-root .login-input-toggle:hover {
+  background: var(--bg2) !important;
+  color: var(--muted) !important;
+}
+
+#login-root .login-input-toggle:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 1px;
+}
+
+#login-root .login-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem !important;
+  color: var(--muted) !important;
+  cursor: pointer;
+}
+
+#login-root .login-check input {
+  width: 15px;
+  height: 15px !important;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+#login-root .login-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--emsbg) !important;
+  border: 1px solid var(--emsbd) !important;
+  color: var(--ems) !important;
+  border-radius: 8px !important;
+  padding: 10px 12px !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+}
+
+#login-root .login-primary-btn {
+  width: 100%;
+  height: 44px !important;
+  border: none !important;
+  border-radius: 8px !important;
+  background: var(--accent) !important;
+  color: #fff !important;
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+}
+
+#login-root .login-primary-btn:hover:not(:disabled) {
+  opacity: 0.9 !important;
+}
+
+#login-root .login-primary-btn:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px;
+}
+
+#login-root .login-primary-btn:disabled {
+  background: var(--tx3) !important;
+  cursor: not-allowed;
+  opacity: 0.8 !important;
+}
+
+#login-root .login-secondary-btn {
+  width: 100%;
+  height: 44px !important;
+  border: 1.5px solid var(--accent) !important;
+  border-radius: 8px !important;
+  background: var(--card) !important;
+  color: var(--accent) !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+}
+
+#login-root .login-secondary-btn:hover:not(:disabled) {
+  background: var(--bg2) !important;
+}
+
+#login-root .login-secondary-btn:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px;
+}
+
+#login-root .login-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  justify-content: center;
+  font-size: 0.76rem !important;
+}
+
+#login-root .login-links a {
+  color: var(--tx3) !important;
+  text-decoration: none;
+}
+
+#login-root .login-links a:hover {
+  color: var(--muted) !important;
+  text-decoration: underline;
+}
+
+#login-root .login-legal {
+  text-align: center;
+  font-size: 0.72rem !important;
+  color: var(--tx3) !important;
+  margin: 0 !important;
+}

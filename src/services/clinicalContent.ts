@@ -3,6 +3,7 @@ import path from "node:path";
 import { prisma } from "../db.js";
 import { samplePhase1ClinicalContent } from "../data/samplePhase1ClinicalContent.js";
 import { openSourceGuidelinesContent } from "../data/openSourceGuidelines/index.js";
+import { stccLicensedContent } from "../data/stccLicensedContent/index.js";
 import {
   ClinicalContentPackageSchema,
   type ClinicalContentCareAdvice,
@@ -233,6 +234,27 @@ async function loadContentPackageFromDatabase(): Promise<ClinicalContentPackage>
 }
 
 function loadSynchronousContentPackage(): ClinicalContentPackage {
+  // Highest priority: real, licensed STCC content (see src/data/stccLicensedContent),
+  // merged with the open-source guideline set rather than replacing it - the
+  // STCC import only covers one real topic (adult male abdominal pain), so
+  // every other call reason (fever, dizziness, sore throat, etc.) still needs
+  // the open-source protocols to have anything to match against. Protocol ids
+  // don't collide between the two sets (verified: 228 open-source protocols,
+  // 1 STCC protocol, zero overlap), and both packages share the same release
+  // mode ("after-hours"), so a straight protocol-array concat is safe.
+  if (process.env.CLINICAL_CONTENT_SOURCE === "stcc-licensed") {
+    return ClinicalContentPackageSchema.parse({
+      release: stccLicensedContent.release,
+      protocols: [...stccLicensedContent.protocols, ...openSourceGuidelinesContent.protocols],
+      localizedDispositions: [
+        ...(stccLicensedContent.localizedDispositions ?? []),
+        ...(openSourceGuidelinesContent.localizedDispositions ?? []).filter(
+          (row) => !stccLicensedContent.localizedDispositions?.some((stccRow) => stccRow.code === row.code)
+        )
+      ]
+    });
+  }
+
   const configuredPath = process.env.CLINICAL_CONTENT_PACKAGE_PATH?.trim();
   if (configuredPath) {
     const absolutePath = path.resolve(configuredPath);

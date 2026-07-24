@@ -1,0 +1,91 @@
+import { useState } from "react";
+import { useQueue, type QueueItem } from "../QueueContext";
+import type { AuthenticatedSession } from "../auth/session";
+
+type ActiveCallHeaderProps = {
+  item: QueueItem;
+  session: AuthenticatedSession;
+  isHeld: boolean;
+  isReadOnly: boolean;
+  isEscalated: boolean;
+  escalationSource?: "symptom" | "judgment";
+  onEscalate: () => void;
+};
+
+export function ActiveCallHeader({
+  item,
+  session,
+  isHeld,
+  isReadOnly,
+  isEscalated,
+  escalationSource,
+  onEscalate
+}: ActiveCallHeaderProps) {
+  const { connectCall } = useQueue();
+  const [busy, setBusy] = useState(false);
+  const [actionError, setActionError] = useState("");
+
+  const canEscalate = session.permissions.includes("triage.queue.manage");
+  const canHold = session.permissions.includes("triage.workspace.view");
+
+  async function toggleHold() {
+    setBusy(true);
+    setActionError("");
+    try {
+      await connectCall(item.id, isHeld ? "RESUME" : "HOLD");
+    } catch (caught) {
+      setActionError(caught instanceof Error ? caught.message : "Hold/Resume failed.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const escalateLabel = !isEscalated
+    ? "⚠ Sounds life-threatening - escalate now"
+    : escalationSource === "symptom"
+      ? "✓ Escalated - emergency symptom phrase detected"
+      : "✓ Escalated by triager judgment";
+
+  return (
+    <div className="active-call-hdr">
+      <div>
+        <h1>{item.summary}</h1>
+        <div className="sub">
+          {item.matchedProtocolId ?? item.preparedProtocol?.primaryProtocolId ?? "No protocol matched"} &middot; Case{" "}
+          {item.id}
+        </div>
+      </div>
+
+      {!isReadOnly && (
+        <div className="active-call-actions">
+          {actionError && (
+            <span className="cockpit-action-error" role="alert">
+              {actionError}
+            </span>
+          )}
+          {canEscalate && (
+            <button type="button" className="escalate-btn" onClick={onEscalate} disabled={busy || isEscalated}>
+              {escalateLabel}
+            </button>
+          )}
+          {canHold && (
+            <button
+              type="button"
+              className={isHeld ? "answer-btn resume-btn" : "hold-btn"}
+              onClick={toggleHold}
+              disabled={busy}
+            >
+              {isHeld ? "↻ Resume" : "❚❚ Hold Call"}
+            </button>
+          )}
+        </div>
+      )}
+
+      {isReadOnly && (
+        <div className="ist-readonly-badge" role="status">
+          &#128274; Closed - Read Only
+        </div>
+      )}
+    </div>
+  );
+}

@@ -446,6 +446,7 @@ export function resolveStaffProfile(istStaffId: string): StaffProfile | undefine
     jobTitle: assignment?.JobName ?? worker.JobName,
     dutyStatus: dutyStatusFromOracle(assignmentStatusType, hasApprovedAbsence),
     dateOfBirthIso: workerDetail?.DateOfBirth,
+    biologicalSex: workerDetail?.Gender ? biologicalSexFromOracleGender(workerDetail.Gender) : undefined,
     insuranceProvider: "IST Staff Health Plan",
     insuranceEligibilityStatus: "eligible",
     insuranceLastChecked: "2026-07-01T08:00:00.000Z",
