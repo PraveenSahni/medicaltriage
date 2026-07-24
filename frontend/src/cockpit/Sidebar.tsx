@@ -58,11 +58,20 @@ function priorityRank(severity: QueueSeverity | undefined): number {
   }
 }
 
+// MM:SS for waits under an hour (precise, matches a live countdown feel);
+// once a wait exceeds 59 minutes, MM:SS becomes unreadable (minutes keeps
+// counting past 59 with no rollover into hours, e.g. "1683:24"), so switch
+// to HH:MM instead.
 function waitClock(item: QueueItem): string {
   const totalSeconds = Math.max(0, Math.round((Date.now() - new Date(item.createdAtIso).getTime()) / 1000));
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  if (totalMinutes < 60) {
+    const seconds = totalSeconds % 60;
+    return `${String(totalMinutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  }
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
 // This is a multi-nurse system: the top-left label reflects whether the call
