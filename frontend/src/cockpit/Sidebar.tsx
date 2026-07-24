@@ -14,6 +14,7 @@ type SidebarProps = {
   onOpenCall: (item: QueueItem) => void;
   session: AuthenticatedSession;
   onLogout: () => void;
+  onBack?: () => void;
 };
 
 type CallTag = "waiting" | "open-now" | "on-hold" | "queue-locked" | "closed" | "assigned-to-other";
@@ -116,7 +117,8 @@ export function Sidebar({
   currentUserId,
   onOpenCall,
   session,
-  onLogout
+  onLogout,
+  onBack
 }: SidebarProps) {
   const { claimItem, connectCall } = useQueue();
   const [claimError, setClaimError] = useState("");
@@ -228,7 +230,7 @@ export function Sidebar({
 
   return (
     <aside className="cockpit-sidebar" aria-label="Open calls">
-      <CockpitUtilityBar session={session} onLogout={onLogout} />
+      <CockpitUtilityBar session={session} onLogout={onLogout} onBack={onBack} />
       <div className="cockpit-sidebar-body">
       <div className="cockpit-sidebar-tabs" role="tablist" aria-label="Call list">
         <button

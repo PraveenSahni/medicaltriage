@@ -37,9 +37,10 @@ function stageKeyForQueueItem(item: QueueItem): CockpitStageKey {
 type CockpitAppProps = {
   session: AuthenticatedSession;
   onLogout: () => void;
+  onBack?: () => void;
 };
 
-export function CockpitApp({ session, onLogout }: CockpitAppProps) {
+export function CockpitApp({ session, onLogout, onBack }: CockpitAppProps) {
   const {
     queue,
     activeItem,
@@ -112,6 +113,7 @@ export function CockpitApp({ session, onLogout }: CockpitAppProps) {
           onOpenCall={openCall}
           session={session}
           onLogout={onLogout}
+          onBack={onBack}
         />
 
         <main className="cockpit-main">

@@ -52,3 +52,14 @@ export function isNurseCockpitRole(roleCode: string | undefined | null): roleCod
 export function canAccessNurseCockpit(activeRole: string | undefined | null): boolean {
   return isNurseCockpitRole(activeRole);
 }
+
+/**
+ * Gate for the read-only Triage Service Manager Board - a distinct workspace
+ * from the Nurse Cockpit, restricted to the manager role only. A session may
+ * still hold other roles (see canAccessNurseCockpit above); this checks only
+ * the active role, matching the same active-role-not-membership rule used for
+ * cockpit access.
+ */
+export function canAccessServiceManagerBoard(activeRole: string | undefined | null): boolean {
+  return activeRole === "triage_service_manager";
+}

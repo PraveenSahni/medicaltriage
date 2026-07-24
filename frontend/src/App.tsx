@@ -1,5 +1,6 @@
 import {
   HelpCircle,
+  LayoutGrid,
   LogOut,
   MessageSquare,
   Moon,
@@ -21,9 +22,10 @@ import TriageWorkspace from "./TriageWorkspace";
 import NurseWorkspaceRedesign from "./components/Triage/NurseWorkspaceRedesign";
 import { LabeledIconButton, WorkspaceModeSwitch } from "./components/ui/NavigationControls";
 import { CockpitApp } from "./cockpit/CockpitApp";
-import { canAccessNurseCockpit } from "./cockpit/roles";
+import { canAccessNurseCockpit, canAccessServiceManagerBoard } from "./cockpit/roles";
+import { TriageServiceManagerBoard } from "./serviceManagerBoard/TriageServiceManagerBoard";
 
-type ViewKey = "workspace" | "cockpitV2" | "cockpit" | "kanban" | "ccp" | "help" | "admin";
+type ViewKey = "workspace" | "cockpitV2" | "cockpit" | "kanban" | "ccp" | "help" | "admin" | "serviceManagerBoard";
 type ThemeMode = "light" | "dark";
 type EnvironmentTone = "simulation" | "demo" | "uat" | "production";
 
@@ -154,11 +156,13 @@ export default function App() {
         if (!cancelled) {
           setSession(payload.session);
           setActiveView(
-            canAccessNurseCockpit(payload.session.activeRole)
-              ? "cockpit"
-              : canOpenAdminView(payload.session)
-                ? "admin"
-                : "workspace"
+            canAccessServiceManagerBoard(payload.session.activeRole)
+              ? "serviceManagerBoard"
+              : canAccessNurseCockpit(payload.session.activeRole)
+                ? "cockpit"
+                : canOpenAdminView(payload.session)
+                  ? "admin"
+                  : "workspace"
           );
           setSessionStatus("Secure session restored.");
         }
@@ -252,6 +256,7 @@ export default function App() {
 
   const hasAdminAccess = session ? canOpenAdminView(session) : false;
   const hasCockpitAccess = session ? canAccessNurseCockpit(session.activeRole) : false;
+  const hasServiceManagerBoardAccess = session ? canAccessServiceManagerBoard(session.activeRole) : false;
   const activeRoleLabel = session ? formatRole(session.activeRole) : "";
   const viewLabels: Record<ViewKey, string> = {
     workspace: "Triage",
@@ -260,7 +265,8 @@ export default function App() {
     kanban: "Triage",
     ccp: "CCP",
     help: "Help",
-    admin: "Admin"
+    admin: "Admin",
+    serviceManagerBoard: "Service Manager Board"
   };
   const activeViewLabel = viewLabels[activeView];
 
@@ -272,7 +278,8 @@ export default function App() {
       kanban: "#/kanban",
       ccp: "#/ccp",
       help: "#/help",
-      admin: "#/admin"
+      admin: "#/admin",
+      serviceManagerBoard: "#/service-manager-board"
     };
     setActiveView(view);
     if (window.location.hash !== nextHashByView[view]) {
@@ -300,6 +307,11 @@ export default function App() {
 
       if (target === "cockpit" || target === "nurse-cockpit") {
         setActiveView("cockpit");
+        return;
+      }
+
+      if (target === "service-manager-board" || target === "servicemanagerboard") {
+        setActiveView("serviceManagerBoard");
         return;
       }
 
@@ -342,10 +354,20 @@ export default function App() {
         <LoginCard
           onAuthenticated={(nextSession, redirectTo) => {
             setSession(nextSession);
-            const nextView: ViewKey = canAccessNurseCockpit(nextSession.activeRole) ? "cockpit" : redirectTo;
+            const nextView: ViewKey = canAccessServiceManagerBoard(nextSession.activeRole)
+              ? "serviceManagerBoard"
+              : canAccessNurseCockpit(nextSession.activeRole)
+                ? "cockpit"
+                : redirectTo;
             setActiveView(nextView);
             window.location.hash =
-              nextView === "cockpit" ? "#/cockpit" : nextView === "admin" ? "#/admin" : "#/workspace";
+              nextView === "serviceManagerBoard"
+                ? "#/service-manager-board"
+                : nextView === "cockpit"
+                  ? "#/cockpit"
+                  : nextView === "admin"
+                    ? "#/admin"
+                    : "#/workspace";
             setSessionStatus("Signed in.");
           }}
         />
@@ -367,7 +389,37 @@ export default function App() {
     }
     return (
       <QueueProvider>
-        <CockpitApp session={session} onLogout={logout} />
+        <CockpitApp
+          session={session}
+          onLogout={logout}
+          onBack={
+            canAccessServiceManagerBoard(session.activeRole) ? () => openView("serviceManagerBoard") : undefined
+          }
+        />
+      </QueueProvider>
+    );
+  }
+
+  // The Triage Service Manager Board is a second, distinct route that also
+  // bypasses the old application shell entirely, mirroring the Nurse
+  // Cockpit's own bypass above. Read-only: it reuses the same QueueProvider
+  // (existing polling, no separate queue integration) but never touches any
+  // of its mutation methods.
+  if (activeView === "serviceManagerBoard") {
+    if (!canAccessServiceManagerBoard(session.activeRole)) {
+      return (
+        <div className="minimal-boundary">
+          <AccessDenied onLogout={logout} workspaceLabel="Triage Service Manager Board" />
+        </div>
+      );
+    }
+    return (
+      <QueueProvider>
+        <TriageServiceManagerBoard
+          session={session}
+          onLogout={logout}
+          onOpenNurseCockpit={hasCockpitAccess ? () => openView("cockpit") : undefined}
+        />
       </QueueProvider>
     );
   }
@@ -402,6 +454,15 @@ export default function App() {
                   active={false}
                   onClick={() => openView("cockpit")}
                   title="Nurse Cockpit"
+                />
+              )}
+              {hasServiceManagerBoardAccess && (
+                <LabeledIconButton
+                  icon={LayoutGrid}
+                  label="Manager"
+                  active={false}
+                  onClick={() => openView("serviceManagerBoard")}
+                  title="Triage Service Manager Board"
                 />
               )}
               <WorkspaceModeSwitch
@@ -504,11 +565,11 @@ function EnvironmentBanner({ runtimeEnvironment }: { runtimeEnvironment: Runtime
   );
 }
 
-function AccessDenied({ onLogout }: { onLogout: () => void }) {
+function AccessDenied({ onLogout, workspaceLabel = "Nurse Cockpit" }: { onLogout: () => void; workspaceLabel?: string }) {
   return (
     <div className="access-denied" role="alert">
       <h1>Access Denied</h1>
-      <p>Your account role is not authorized to open the Nurse Cockpit.</p>
+      <p>Your account role is not authorized to open the {workspaceLabel}.</p>
       <button type="button" className="primary-button" onClick={onLogout}>
         Sign out
       </button>

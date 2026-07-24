@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triage Service Manager — Read-Only Live Clinical Flow</title>
+<style>
+  :root {
+    --bg:#f7f6f3; --bg2:#f1efe9; --card:#ffffff;
+    --ink:#1a1a19; --muted:#6b6a66; --tx3:#9c9a92; --line:#e0dfd9;
+    --accent:#185FA5;
+    --ems:#A32D2D; --emsbg:#FCEBEB; --emsbd:#F09595;
+    --urgent:#7A5D00; --urgentbg:#FAF3D1; --urgentbd:#D9BC2B;
+    --info:#185FA5; --infobg:#E6F1FB; --infobd:#85B7EB;
+    --ok:#0F6E56; --okbg:#E1F5EE; --okbd:#5DCAA5;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+  button,input,select{font:inherit}
+
+  .app{min-height:100vh;display:flex;flex-direction:column}
+  .topbar{height:58px;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;min-width:220px}
+  .brand-copy b{display:block;font-size:.95rem}
+  .brand-copy span{display:block;color:var(--muted);font-size:.72rem;margin-top:1px}
+  .shift{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.8rem}
+  .status-dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+  .top-actions{display:flex;align-items:center;gap:8px}
+  .icon-btn,.soft-btn{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:8px;cursor:pointer}
+  .icon-btn{width:36px;height:36px;display:grid;place-items:center}
+  .soft-btn{padding:8px 12px;font-weight:600}
+  .icon-btn:hover,.soft-btn:hover{background:var(--bg2);color:var(--ink)}
+
+  .content{padding:16px 18px 18px;display:flex;flex-direction:column;gap:14px;min-height:0;flex:1}
+  .summary{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .metric{padding:12px 15px;border-right:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px}
+  .metric:last-child{border-right:none}
+  .metric-label{font-size:.68rem;letter-spacing:.8px;text-transform:uppercase;color:var(--tx3);font-weight:700}
+  .metric-note{font-size:.76rem;color:var(--muted);margin-top:3px}
+  .metric-value{font-size:1.4rem;font-weight:700;line-height:1}
+  .metric.alert .metric-value{color:var(--ems)}
+
+  .attention{display:none;align-items:center;justify-content:space-between;gap:14px;background:var(--emsbg);border:1px solid var(--emsbd);border-radius:9px;padding:9px 12px;color:var(--ems)}
+  .attention.show{display:flex}
+  .attention-copy{display:flex;align-items:center;gap:9px;min-width:0}
+  .attention-copy b{font-size:.84rem}
+  .attention-copy span{font-size:.78rem;color:#7f3434;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .attention button{border:none;background:transparent;color:var(--ems);font-weight:700;cursor:pointer;white-space:nowrap}
+
+  .toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .search-wrap{position:relative;max-width:420px;flex:1}
+  .search-wrap>span{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--tx3)}
+  .search{width:100%;height:38px;border:1px solid var(--line);border-radius:8px;background:var(--card);padding:0 12px 0 34px;color:var(--ink)}
+  .search:focus{outline:none;border-color:var(--accent)}
+  .queue-tools{display:flex;align-items:center;gap:6px}
+  .tool-menu{position:relative}
+  .tool-button{position:relative;width:38px;height:38px;border:1px solid var(--line);background:var(--card);border-radius:8px;color:var(--muted);font-weight:700;cursor:pointer;display:grid;place-items:center}
+  .tool-button:hover,.tool-button.open,.tool-button.filtered{background:var(--infobg);border-color:var(--infobd);color:var(--info)}
+  .active-count{position:absolute;right:-5px;top:-5px;min-width:17px;height:17px;border-radius:999px;background:var(--accent);color:#fff;border:2px solid var(--bg);display:grid;place-items:center;font-size:.58rem;line-height:1}
+  .active-count.hidden{display:none}
+  .tool-popover{display:none;position:absolute;right:0;top:44px;width:210px;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 28px rgba(0,0,0,.11);padding:6px;z-index:12}
+  .tool-popover.open{display:block}
+  .tool-popover.filter-panel{width:260px;padding:12px}
+  .popover-title{font-size:.64rem;letter-spacing:.8px;text-transform:uppercase;color:var(--tx3);font-weight:700;padding:5px 7px 7px}
+  .tool-option{width:100%;border:0;background:transparent;border-radius:7px;padding:8px 9px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);cursor:pointer;text-align:left;font-size:.8rem}
+  .tool-option:hover{background:var(--bg2);color:var(--ink)}
+  .tool-option.selected{color:var(--accent);font-weight:700}
+  .tool-option .check{visibility:hidden}
+  .tool-option.selected .check{visibility:visible}
+  .filter-row{display:grid;grid-template-columns:88px 1fr;align-items:center;gap:9px;margin:8px 0}
+  .filter-row label{font-size:.72rem;color:var(--muted);font-weight:600}
+  .filter-row select{width:100%;height:34px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink);padding:0 8px;font-size:.78rem}
+  .filter-row select:focus{outline:none;border-color:var(--accent)}
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;margin-top:3px;border-top:1px solid var(--line);font-size:.76rem;color:var(--muted);font-weight:600}
+  .toggle-row input{width:16px;height:16px;accent-color:var(--accent)}
+  .filter-footer{display:flex;justify-content:flex-end;border-top:1px solid var(--line);margin-top:8px;padding-top:9px}
+  .reset-btn{border:0;background:transparent;color:var(--accent);font-size:.75rem;font-weight:700;cursor:pointer;padding:4px}
+
+  .board{display:grid;grid-template-columns:1.08fr 1fr 1fr 1fr 1fr;gap:10px;min-height:620px;flex:1;overflow:auto;padding-bottom:4px}
+  .column{min-width:225px;background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;min-height:100%}
+  .column-head{padding:12px 12px 10px;border-bottom:1px solid var(--line);background:var(--card);border-radius:10px 10px 0 0;position:sticky;top:0;z-index:2}
+  .column-title-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .column-title{font-size:.82rem;font-weight:700;display:flex;align-items:center;gap:7px;min-width:0}
+  .column-icon{color:var(--accent)}
+  .count{min-width:22px;height:22px;border:1px solid var(--line);border-radius:6px;display:grid;place-items:center;font-size:.7rem;color:var(--muted);background:var(--bg)}
+  .column-sub{font-size:.64rem;letter-spacing:.8px;text-transform:uppercase;color:var(--tx3);font-weight:700;margin-top:3px}
+  .cards{padding:10px;display:flex;flex-direction:column;gap:9px}
+  .empty{margin:10px;border:1px dashed var(--line);border-radius:8px;min-height:58px;display:grid;place-items:center;color:var(--tx3);font-size:.76rem;background:rgba(255,255,255,.5)}
+
+  .case-card{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--infobd);border-radius:8px;padding:10px;cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s}
+  .case-card:hover{transform:translateY(-1px);border-color:var(--infobd);box-shadow:0 4px 12px rgba(0,0,0,.05)}
+  .case-card.emergency{border-left-color:var(--emsbd)}
+  .case-card.urgent{border-left-color:var(--urgentbd)}
+  .case-card.safe{border-left-color:var(--okbd)}
+  .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+  .case-id{font-size:.67rem;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .wait{font-size:.7rem;color:var(--muted);white-space:nowrap}
+  .wait strong{color:var(--ink)}
+  .severity{display:inline-flex;align-items:center;gap:5px;font-size:.62rem;font-weight:700;border-radius:999px;padding:2px 7px;margin-top:6px}
+  .severity.emergency{background:var(--emsbg);color:var(--ems)}
+  .severity.urgent{background:var(--urgentbg);color:var(--urgent)}
+  .severity.routine{background:var(--infobg);color:var(--info)}
+  .case-title{font-size:.85rem;font-weight:700;line-height:1.35;margin:7px 0 4px}
+  .case-text{font-size:.76rem;color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px;padding-top:8px;border-top:1px solid var(--line);font-size:.7rem;color:var(--muted)}
+  .owner{max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mini-flag{display:inline-flex;align-items:center;gap:4px;color:var(--ems);font-weight:700}
+  .mini-ok{display:inline-flex;align-items:center;gap:4px;color:var(--ok);font-weight:700}
+
+  .drawer-backdrop{position:fixed;inset:0;background:rgba(20,20,18,.18);display:none;justify-content:flex-end;z-index:20}
+  .drawer-backdrop.open{display:flex}
+  .drawer{width:min(430px,92vw);height:100%;background:var(--card);border-left:1px solid var(--line);box-shadow:-10px 0 30px rgba(0,0,0,.08);padding:18px;overflow-y:auto;animation:slideIn .16s ease-out}
+  @keyframes slideIn{from{transform:translateX(24px);opacity:.6}to{transform:translateX(0);opacity:1}}
+  .drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .drawer-head h2{font-size:1.05rem;margin:2px 0 4px}
+  .drawer-head p{margin:0;color:var(--muted);font-size:.78rem;line-height:1.45}
+  .close-btn{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;background:var(--card);cursor:pointer;color:var(--muted)}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:12px;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .detail{padding:10px 11px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+  .detail:nth-child(2n){border-right:none}
+  .detail:nth-last-child(-n+2){border-bottom:none}
+  .detail-label{font-size:.62rem;letter-spacing:.7px;text-transform:uppercase;color:var(--tx3);font-weight:700}
+  .detail-value{font-size:.8rem;font-weight:600;margin-top:3px}
+  .drawer-section{margin-top:16px}
+  .drawer-section h3{font-size:.72rem;letter-spacing:.8px;text-transform:uppercase;color:var(--tx3);margin:0 0 7px}
+  .reason-box{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 11px;font-size:.82rem;line-height:1.5}
+  .readonly-note{display:flex;align-items:flex-start;gap:9px;margin-top:16px;padding:10px 11px;border:1px solid var(--infobd);background:var(--infobg);border-radius:8px;color:var(--info);font-size:.78rem;line-height:1.45}
+  .readonly-note strong{display:block;margin-bottom:2px}
+  .stage-progress{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:8px}
+  .stage-progress-item{height:6px;border-radius:999px;background:var(--bg2);border:1px solid var(--line)}
+  .stage-progress-item.done{background:var(--okbd);border-color:var(--okbd)}
+  .stage-progress-item.current{background:var(--accent);border-color:var(--accent)}
+  .stage-progress-labels{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:5px;color:var(--tx3);font-size:.58rem;text-transform:uppercase;letter-spacing:.35px}
+  .stage-progress-labels span{text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:var(--ink);color:#fff;border-radius:8px;padding:9px 13px;font-size:.8rem;transition:.18s;z-index:40}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media(max-width:1050px){
+    .summary{grid-template-columns:repeat(2,1fr)}
+    .metric:nth-child(2){border-right:none}
+    .metric:nth-child(-n+2){border-bottom:1px solid var(--line)}
+    .board{grid-template-columns:repeat(5,235px)}
+  }
+  @media(max-width:680px){
+    .brand-copy span,.shift{display:none}
+    .content{padding:12px}
+    .summary{grid-template-columns:1fr 1fr}
+    .toolbar{align-items:center;flex-direction:row}
+    .search-wrap{max-width:none}
+    .tool-popover.filter-panel{width:min(260px,calc(100vw - 24px))}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-copy">
+        <b>Triage Service Manager</b>
+        <span>Live clinical flow · Read only</span>
+      </div>
+    </div>
+    <div class="shift"><span class="status-dot"></span> Live monitoring · No call controls</div>
+    <div class="top-actions">
+      <button class="soft-btn" onclick="refreshBoard()">↻ Refresh</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="summary" aria-label="Service summary">
+      <div class="metric">
+        <div><div class="metric-label">Waiting calls</div><div class="metric-note" id="longest-wait">Longest wait 18m</div></div>
+        <div class="metric-value" id="waiting-count">2</div>
+      </div>
+      <div class="metric">
+        <div><div class="metric-label">In clinical flow</div><div class="metric-note">Across active stages</div></div>
+        <div class="metric-value" id="flow-count">4</div>
+      </div>
+      <div class="metric alert">
+        <div><div class="metric-label">Safety alerts</div><div class="metric-note">For manager awareness</div></div>
+        <div class="metric-value" id="safety-count">1</div>
+      </div>
+      <div class="metric">
+        <div><div class="metric-label">Active nurses</div><div class="metric-note">1 currently available</div></div>
+        <div class="metric-value">4</div>
+      </div>
+    </section>
+
+    <section class="attention show" id="attention-strip">
+      <div class="attention-copy"><span>⚠</span><div><b>Manager attention:</b> <span id="attention-text">1 emergency safety-floor case is in Reason & Rule-Out.</span></div></div>
+      <button onclick="showSafetyOnly()">Locate on board</button>
+    </section>
+
+    <section class="toolbar">
+      <div class="search-wrap"><span>⌕</span><input id="search" class="search" placeholder="Search calls..." oninput="renderBoard()" aria-label="Search calls"></div>
+      <div class="queue-tools" aria-label="Board search, sort and filter controls">
+        <div class="tool-menu">
+          <button class="tool-button" id="sort-button" onclick="toggleToolMenu('sort-menu','sort-button')" title="Sort calls" aria-label="Sort calls" aria-expanded="false">⇅</button>
+          <div class="tool-popover" id="sort-menu" role="menu">
+            <div class="popover-title">Sort within each stage</div>
+            <button class="tool-option selected" data-sort="priority" onclick="setSort('priority')"><span>Smart priority</span><span class="check">✓</span></button>
+            <button class="tool-option" data-sort="longest" onclick="setSort('longest')"><span>Longest waiting</span><span class="check">✓</span></button>
+            <button class="tool-option" data-sort="recent" onclick="setSort('recent')"><span>Recently added</span><span class="check">✓</span></button>
+          </div>
+        </div>
+        <div class="tool-menu">
+          <button class="tool-button" id="filter-button" onclick="toggleToolMenu('filter-menu','filter-button')" title="Filter calls" aria-label="Filter calls" aria-expanded="false">⚙<span class="active-count hidden" id="filter-count">0</span></button>
+          <div class="tool-popover filter-panel" id="filter-menu">
+            <div class="popover-title" style="padding:0 0 5px">Filter calls</div>
+            <div class="filter-row"><label for="filter-severity">Priority</label><select id="filter-severity" onchange="filtersChanged()"><option value="all">All</option><option value="emergency">Emergency</option><option value="urgent">Urgent</option><option value="routine">Routine</option></select></div>
+            <div class="filter-row"><label for="filter-assignment">Assignment</label><select id="filter-assignment" onchange="filtersChanged()"><option value="all">All</option><option value="unassigned">Unassigned</option><option value="assigned">Assigned</option></select></div>
+            <div class="filter-row"><label for="filter-nurse">Nurse</label><select id="filter-nurse" onchange="filtersChanged()"><option value="all">All nurses</option></select></div>
+            <div class="filter-row"><label for="filter-station">Station</label><select id="filter-station" onchange="filtersChanged()"><option value="all">All stations</option></select></div>
+            <label class="toggle-row"><span>Needs attention only</span><input id="filter-attention" type="checkbox" onchange="filtersChanged()"></label>
+            <div class="filter-footer"><button class="reset-btn" onclick="resetFilters()">Reset filters</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="board" id="board" aria-label="Triage clinical flow board"></section>
+  </main>
+</div>
+
+<div class="drawer-backdrop" id="drawer-backdrop" onclick="backdropClose(event)">
+  <aside class="drawer" id="drawer" aria-label="Call details"></aside>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const STAGES = [
+  {id:'waiting', title:'Waiting Calls', sub:'Awaiting a nurse', icon:'☎'},
+  {id:'reason', title:'Reason & Rule-Out', sub:'Opening + safety search', icon:'⌕'},
+  {id:'questions', title:'Questions', sub:'High acuity first', icon:'◈'},
+  {id:'disposition', title:'Disposition & Advice', sub:'In nurse review', icon:'⚠'},
+  {id:'sbar', title:'SBAR / Complete', sub:'Preparing closure', icon:'✓'}
+];
+
+const CALLS = [
+  {id:'IST-00042', stage:'waiting', severity:'routine', title:'Back pain', reason:'Mild-to-moderate back pain that started gradually a few days ago.', wait:18, channel:'Phone', patient:'Staff · 35y', station:'DOH', nurse:'Unassigned', protocol:'Back Pain', hrms:'Validated', safety:false},
+  {id:'IST-00108', stage:'waiting', severity:'urgent', title:'Ankle and foot injury', reason:"Twisted ankle playing football and cannot put weight on it.", wait:6, channel:'Phone', patient:'Staff · 27y', station:'DOH', nurse:'Unassigned', protocol:'Ottawa Ankle Rule', hrms:'Validated', safety:false},
+  {id:'IST-00215', stage:'reason', severity:'emergency', title:'Chest tightness', reason:'Chest tightness and sweating before duty report.', wait:0, channel:'Phone', patient:'Staff · 32y', station:'DOH', nurse:'Nurse Aisha', protocol:'Chest Pain', hrms:'Validated', safety:true},
+  {id:'IST-00330', stage:'questions', severity:'routine', title:'Animal bite', reason:'Dog bite on the hand; small wound and no heavy bleeding.', wait:0, channel:'Callback', patient:'Staff · 41y', station:'LHR', nurse:'Nurse Sara', protocol:'Animal Bite', hrms:'Validated', safety:false},
+  {id:'IST-00417', stage:'disposition', severity:'urgent', title:'Back pain after ramp duty', reason:'Reduced mobility after ramp duty, with no reported trauma red flags.', wait:0, channel:'Phone', patient:'Staff · 37y', station:'DOH', nurse:'Nurse Mariam', protocol:'Back Pain', hrms:'Validated', safety:false},
+  {id:'IST-00502', stage:'sbar', severity:'routine', title:'Nausea and vomiting', reason:'Vomiting since this morning and feeling dehydrated.', wait:0, channel:'Phone', patient:'Dependent · 8y', station:'DOH', nurse:'Nurse Omar', protocol:'Nausea', hrms:'Review needed', safety:false}
+];
+
+let sortMode='priority';
+const boardFilters={severity:'all',assignment:'all',nurse:'all',station:'all',attention:false};
+
+function closeToolMenus(exceptId){
+  document.querySelectorAll('.tool-popover.open').forEach(menu=>{
+    if(menu.id!==exceptId){
+      menu.classList.remove('open');
+      const button=document.querySelector(`[aria-controls="${menu.id}"]`);
+      if(button){button.classList.remove('open');button.setAttribute('aria-expanded','false')}
+    }
+  });
+  document.querySelectorAll('.tool-button.open').forEach(button=>{
+    const controlled=button.getAttribute('data-controls');
+    if(controlled!==exceptId){button.classList.remove('open');button.setAttribute('aria-expanded','false')}
+  });
+}
+
+function toggleToolMenu(menuId,buttonId){
+  const menu=document.getElementById(menuId);
+  const button=document.getElementById(buttonId);
+  const willOpen=!menu.classList.contains('open');
+  closeToolMenus(menuId);
+  menu.classList.toggle('open',willOpen);
+  button.classList.toggle('open',willOpen);
+  button.setAttribute('aria-expanded',String(willOpen));
+  button.setAttribute('data-controls',menuId);
+}
+
+function setSort(mode){
+  sortMode=mode;
+  document.querySelectorAll('[data-sort]').forEach(option=>option.classList.toggle('selected',option.dataset.sort===mode));
+  document.getElementById('sort-menu').classList.remove('open');
+  document.getElementById('sort-button').classList.remove('open');
+  document.getElementById('sort-button').setAttribute('aria-expanded','false');
+  renderBoard();
+}
+
+function populateFilterOptions(){
+  const nurses=[...new Set(CALLS.map(c=>c.nurse).filter(n=>n&&n!=='Unassigned'))].sort();
+  const stations=[...new Set(CALLS.map(c=>c.station).filter(Boolean))].sort();
+  document.getElementById('filter-nurse').innerHTML='<option value="all">All nurses</option>'+nurses.map(n=>`<option value="${n}">${n}</option>`).join('');
+  document.getElementById('filter-station').innerHTML='<option value="all">All stations</option>'+stations.map(s=>`<option value="${s}">${s}</option>`).join('');
+}
+
+function filtersChanged(){
+  boardFilters.severity=document.getElementById('filter-severity').value;
+  boardFilters.assignment=document.getElementById('filter-assignment').value;
+  boardFilters.nurse=document.getElementById('filter-nurse').value;
+  boardFilters.station=document.getElementById('filter-station').value;
+  boardFilters.attention=document.getElementById('filter-attention').checked;
+  updateFilterIndicator();
+  renderBoard();
+}
+
+function activeFilterCount(){
+  return Number(boardFilters.severity!=='all')+Number(boardFilters.assignment!=='all')+Number(boardFilters.nurse!=='all')+Number(boardFilters.station!=='all')+Number(boardFilters.attention);
+}
+
+function updateFilterIndicator(){
+  const count=activeFilterCount();
+  const badge=document.getElementById('filter-count');
+  const button=document.getElementById('filter-button');
+  badge.textContent=count;
+  badge.classList.toggle('hidden',count===0);
+  button.classList.toggle('filtered',count>0);
+}
+
+function resetFilters(){
+  document.getElementById('filter-severity').value='all';
+  document.getElementById('filter-assignment').value='all';
+  document.getElementById('filter-nurse').value='all';
+  document.getElementById('filter-station').value='all';
+  document.getElementById('filter-attention').checked=false;
+  filtersChanged();
+}
+
+function showSafetyOnly(){
+  resetFilters();
+  document.getElementById('filter-attention').checked=true;
+  filtersChanged();
+  document.getElementById('filter-menu').classList.remove('open');
+  document.getElementById('filter-button').classList.remove('open');
+  const card=document.querySelector('.case-card.emergency');
+  if(card) card.scrollIntoView({behavior:'smooth',block:'center',inline:'center'});
+}
+
+function filteredCalls(){
+  const q=document.getElementById('search').value.trim().toLowerCase();
+  return CALLS.filter(c=>{
+    const matchesSearch=!q || [c.id,c.title,c.reason,c.nurse,c.station,c.protocol,c.patient,c.channel].join(' ').toLowerCase().includes(q);
+    const matchesSeverity=boardFilters.severity==='all'||c.severity===boardFilters.severity;
+    const matchesAssignment=boardFilters.assignment==='all'||(boardFilters.assignment==='unassigned'?c.nurse==='Unassigned':c.nurse!=='Unassigned');
+    const matchesNurse=boardFilters.nurse==='all'||c.nurse===boardFilters.nurse;
+    const matchesStation=boardFilters.station==='all'||c.station===boardFilters.station;
+    const matchesAttention=!boardFilters.attention||c.safety||c.severity==='emergency'||c.severity==='urgent';
+    return matchesSearch&&matchesSeverity&&matchesAssignment&&matchesNurse&&matchesStation&&matchesAttention;
+  });
+}
+
+function sortCalls(calls){
+  const priorityRank=c=>c.safety?0:c.severity==='emergency'?1:c.severity==='urgent'?2:3;
+  return [...calls].sort((a,b)=>{
+    if(sortMode==='longest') return (b.wait-a.wait)||(priorityRank(a)-priorityRank(b))||(CALLS.indexOf(a)-CALLS.indexOf(b));
+    if(sortMode==='recent') return CALLS.indexOf(b)-CALLS.indexOf(a);
+    return (priorityRank(a)-priorityRank(b))||(b.wait-a.wait)||(CALLS.indexOf(a)-CALLS.indexOf(b));
+  });
+}
+
+function severityLabel(s){return s==='emergency'?'Emergency':s==='urgent'?'Urgent':'Routine'}
+
+function cardHtml(c){
+  const status=c.safety?'<span class="mini-flag">⚠ Safety floor</span>':(c.stage==='sbar'?'<span class="mini-ok">✓ Ready to close</span>':'<span>'+c.station+'</span>');
+  return `<article class="case-card ${c.severity}${c.safety?' emergency':''}" onclick="openDrawer('${c.id}')" tabindex="0" onkeydown="if(event.key==='Enter')openDrawer('${c.id}')">
+    <div class="card-top"><div class="case-id">${c.id.replace(/(IST-)\d{2}/,'$1**')}</div><div class="wait">${c.wait?'<strong>'+c.wait+'m</strong> wait':'Active'}</div></div>
+    <span class="severity ${c.severity}">${severityLabel(c.severity)}</span>
+    <div class="case-title">${c.title}</div>
+    <div class="case-text">${c.reason}</div>
+    <div class="card-meta"><span class="owner">${c.nurse}</span>${status}</div>
+  </article>`;
+}
+
+function renderBoard(){
+  const visible=filteredCalls();
+  document.getElementById('board').innerHTML=STAGES.map(stage=>{
+    const cards=sortCalls(visible.filter(c=>c.stage===stage.id));
+    const filtering=Boolean(document.getElementById('search').value.trim())||activeFilterCount()>0;
+    return `<section class="column">
+      <header class="column-head"><div class="column-title-row"><div class="column-title"><span class="column-icon">${stage.icon}</span><span>${stage.title}</span></div><span class="count">${cards.length}</span></div><div class="column-sub">${stage.sub}</div></header>
+      ${cards.length?`<div class="cards">${cards.map(cardHtml).join('')}</div>`:`<div class="empty">${filtering?'No matching calls':'Clear'}</div>`}
+    </section>`;
+  }).join('');
+  updateSummary();
+}
+
+function updateSummary(){
+  const waiting=CALLS.filter(c=>c.stage==='waiting').length;
+  const flow=CALLS.filter(c=>c.stage!=='waiting').length;
+  const safety=CALLS.filter(c=>c.safety).length;
+  const longest=Math.max(...CALLS.filter(c=>c.stage==='waiting').map(c=>c.wait),0);
+  document.getElementById('waiting-count').textContent=waiting;
+  document.getElementById('flow-count').textContent=flow;
+  document.getElementById('safety-count').textContent=safety;
+  document.getElementById('longest-wait').textContent=`Longest wait ${longest}m`;
+  document.getElementById('attention-strip').classList.toggle('show',safety>0);
+  document.getElementById('attention-text').textContent=safety===1?'1 emergency safety-floor case is in Reason & Rule-Out.':`${safety} safety-floor cases require oversight.`;
+}
+
+function openDrawer(id){
+  const c=CALLS.find(x=>x.id===id); if(!c)return;
+  const currentIndex=STAGES.findIndex(s=>s.id===c.stage);
+  const progressBars=STAGES.map((s,i)=>`<span class="stage-progress-item ${i<currentIndex?'done':i===currentIndex?'current':''}"></span>`).join('');
+  const progressLabels=STAGES.map(s=>`<span>${s.title.replace('Reason & Rule-Out','Rule-Out').replace('Disposition & Advice','Advice').replace('SBAR / Complete','Complete')}</span>`).join('');
+  document.getElementById('drawer').innerHTML=`
+    <div class="drawer-head">
+      <div><div class="case-id">Read-only call progress</div><h2>${c.id.replace(/(IST-)\d{2}/,'$1**')} · ${c.title}</h2><p>${c.reason}</p></div>
+      <button class="close-btn" onclick="closeDrawer()" aria-label="Close details">✕</button>
+    </div>
+    <div class="drawer-section"><h3>Clinical progress</h3><div class="stage-progress">${progressBars}</div><div class="stage-progress-labels">${progressLabels}</div></div>
+    <div class="detail-grid">
+      <div class="detail"><div class="detail-label">Current stage</div><div class="detail-value">${STAGES.find(s=>s.id===c.stage).title}</div></div>
+      <div class="detail"><div class="detail-label">Assigned nurse</div><div class="detail-value">${c.nurse}</div></div>
+      <div class="detail"><div class="detail-label">Patient</div><div class="detail-value">${c.patient}</div></div>
+      <div class="detail"><div class="detail-label">Station</div><div class="detail-value">${c.station}</div></div>
+      <div class="detail"><div class="detail-label">Protocol</div><div class="detail-value">${c.protocol}</div></div>
+      <div class="detail"><div class="detail-label">HRMS</div><div class="detail-value">${c.hrms}</div></div>
+    </div>
+    <div class="drawer-section"><h3>Reason for call</h3><div class="reason-box">${c.reason}</div></div>
+    <div class="drawer-section"><h3>Safety status</h3><div class="reason-box">${c.safety?'Emergency safety floor is active and visible for awareness. The assigned nurse remains responsible for the clinical workflow.':'No safety-floor condition is currently highlighted.'}</div></div>
+    <div class="readonly-note"><span>◉</span><div><strong>Observation only</strong>This Service Manager board cannot answer, hold, reassign, edit, escalate, complete, or otherwise change the call or clinical record.</div></div>`;
+  document.getElementById('drawer-backdrop').classList.add('open');
+}
+
+function closeDrawer(){document.getElementById('drawer-backdrop').classList.remove('open')}
+function backdropClose(e){if(e.target.id==='drawer-backdrop')closeDrawer()}
+function actionToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600)}
+function refreshBoard(){renderBoard();actionToast('Board refreshed')}
+document.addEventListener('click',e=>{if(!e.target.closest('.tool-menu'))closeToolMenus()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();closeToolMenus()}});
+populateFilterOptions();
+updateFilterIndicator();
+renderBoard();
+</script>
+</body>
+</html>

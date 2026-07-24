@@ -1,0 +1,866 @@
+/* Triage Service Manager Board stylesheet - visual language matches the
+   approved reference (docs/IST-Health-Tele-Triage-ServiceManager-board.html)
+   and the existing Nurse Cockpit (frontend/src/cockpit/cockpit.css), scoped
+   under .smb-app so nothing else in the app is affected. Token values below
+   are the same values cockpit.css defines under #cockpit-root - duplicated
+   here (not imported) because CSS custom properties don't cross that scope
+   boundary; this is a values match, not a new design system. Every var()
+   usage below carries an explicit fallback so nothing renders transparent/
+   invisible if a token is ever missing. */
+
+#service-manager-board-root.smb-app {
+  --bg: #f7f6f3;
+  --bg2: #f1efe9;
+  --card: #ffffff;
+  --ink: #1a1a19;
+  --muted: #6b6a66;
+  --tx3: #9c9a92;
+  --line: #e0dfd9;
+  --accent: #185fa5;
+  --ems: #a32d2d;
+  --emsbg: #fcebeb;
+  --emsbd: #f09595;
+  --urgent: #7a5d00;
+  --urgentbg: #faf3d1;
+  --urgentbd: #d9bc2b;
+  --info: #185fa5;
+  --infobg: #e6f1fb;
+  --infobd: #85b7eb;
+  --ok: #0f6e56;
+  --okbg: #e1f5ee;
+  --okbd: #5dcaa5;
+
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--bg, #f7f6f3) !important;
+  color: var(--ink, #1a1a19) !important;
+  font-size: 14px;
+}
+
+#service-manager-board-root.smb-app * {
+  box-sizing: border-box;
+}
+
+#service-manager-board-root.smb-app button,
+#service-manager-board-root.smb-app input,
+#service-manager-board-root.smb-app select {
+  font: inherit;
+}
+
+#service-manager-board-root .smb-topbar {
+  height: 58px;
+  background: var(--card, #ffffff) !important;
+  border-bottom: 1px solid var(--line, #e0dfd9) !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+#service-manager-board-root .smb-brand-copy b {
+  display: block;
+  font-size: 15px;
+  font-weight: 700 !important;
+  color: var(--ink, #1a1a19) !important;
+}
+
+#service-manager-board-root .smb-brand-copy span {
+  display: block;
+  color: var(--muted, #6b6a66) !important;
+  font-size: 12px;
+  margin-top: 1px;
+}
+
+#service-manager-board-root .smb-shift {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted, #6b6a66) !important;
+  font-size: 12px;
+}
+
+#service-manager-board-root .smb-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50% !important;
+  background: var(--ok, #0f6e56) !important;
+  flex-shrink: 0;
+}
+
+#service-manager-board-root .smb-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#service-manager-board-root .smb-soft-btn {
+  border: 1px solid var(--line, #e0dfd9) !important;
+  background: var(--card, #ffffff) !important;
+  color: var(--muted, #6b6a66) !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600 !important;
+}
+
+#service-manager-board-root .smb-soft-btn:hover {
+  background: var(--bg2, #f1efe9) !important;
+  color: var(--ink, #1a1a19) !important;
+}
+
+/* Page container - full width, compact padding, no legacy Nurse Cockpit
+   max-width restriction. */
+#service-manager-board-root .smb-content {
+  width: 100%;
+  max-width: none;
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  flex: 1;
+}
+
+/* ---------- Summary strip ---------- */
+
+#service-manager-board-root .smb-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  background: var(--card, #ffffff) !important;
+  border: 1px solid var(--line, #e0dfd9) !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+}
+
+#service-manager-board-root .smb-metric {
+  padding: 12px 16px;
+  border-right: 1px solid var(--line, #e0dfd9) !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 64px;
+}
+
+#service-manager-board-root .smb-metric:last-child {
+  border-right: none !important;
+}
+
+#service-manager-board-root .smb-metric-label {
+  font-size: 11px;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
+  color: var(--tx3, #9c9a92) !important;
+  font-weight: 700 !important;
+}
+
+#service-manager-board-root .smb-metric-note {
+  font-size: 12px;
+  color: var(--muted, #6b6a66) !important;
+  margin-top: 3px;
+}
+
+#service-manager-board-root .smb-metric-value {
+  font-size: 22px;
+  font-weight: 700 !important;
+  line-height: 1;
+  color: var(--ink, #1a1a19) !important;
+}
+
+#service-manager-board-root .smb-metric-alert .smb-metric-value {
+  color: var(--ems, #a32d2d) !important;
+}
+
+/* ---------- Attention strip ---------- */
+
+#service-manager-board-root .smb-attention {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: var(--emsbg, #fcebeb) !important;
+  border: 1px solid var(--emsbd, #f09595) !important;
+  border-radius: 8px !important;
+  padding: 9px 12px;
+  color: var(--ems, #a32d2d) !important;
+}
+
+#service-manager-board-root .smb-attention-show {
+  display: flex;
+}
+
+#service-manager-board-root .smb-attention-copy {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  font-size: 13px;
+}
+
+#service-manager-board-root .smb-attention-copy b {
+  font-size: 13px;
+}
+
+#service-manager-board-root .smb-attention button {
+  border: none !important;
+  background: transparent !important;
+  color: var(--ems, #a32d2d) !important;
+  font-weight: 700 !important;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ---------- Toolbar: search / sort / filter ---------- */
+
+#service-manager-board-root .smb-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#service-manager-board-root .smb-search-wrap {
+  position: relative;
+  max-width: 420px;
+  flex: 1;
+}
+
+#service-manager-board-root .smb-search-wrap > span {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--tx3, #9c9a92) !important;
+}
+
+#service-manager-board-root .smb-search {
+  width: 100%;
+  height: 38px;
+  border: 1px solid var(--line, #e0dfd9) !important;
+  border-radius: 8px !important;
+  background: var(--card, #ffffff) !important;
+  padding: 0 12px 0 34px;
+  color: var(--ink, #1a1a19) !important;
+  font-size: 13px;
+}
+
+#service-manager-board-root .smb-search::placeholder {
+  color: var(--tx3, #9c9a92) !important;
+}
+
+#service-manager-board-root .smb-search:focus {
+  outline: none;
+  border-color: var(--accent, #185fa5) !important;
+}
+
+#service-manager-board-root .smb-queue-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#service-manager-board-root .smb-tool-menu {
+  position: relative;
+}
+
+#service-manager-board-root .smb-tool-button {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line, #e0dfd9) !important;
+  background: var(--card, #ffffff) !important;
+  border-radius: 8px !important;
+  color: var(--muted, #6b6a66) !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+#service-manager-board-root .smb-tool-button:hover,
+#service-manager-board-root .smb-tool-button-open,
+#service-manager-board-root .smb-tool-button-filtered {
+  background: var(--infobg, #e6f1fb) !important;
+  border-color: var(--infobd, #85b7eb) !important;
+  color: var(--info, #185fa5) !important;
+}
+
+#service-manager-board-root .smb-active-count {
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 999px !important;
+  background: var(--accent, #185fa5) !important;
+  color: #fff !important;
+  border: 2px solid var(--bg, #f7f6f3) !important;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  line-height: 1;
+}
+
+#service-manager-board-root .smb-popover {
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 44px;
+  width: 210px;
+  background: var(--card, #ffffff) !important;
+  border: 1px solid var(--line, #e0dfd9) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.11) !important;
+  padding: 6px;
+  z-index: 12;
+}
+
+#service-manager-board-root .smb-filter-panel {
+  width: 260px;
+  padding: 12px;
+}
+
+#service-manager-board-root .smb-popover-title {
+  font-size: 11px;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
+  color: var(--tx3, #9c9a92) !important;
+  font-weight: 700 !important;
+  padding: 5px 7px 7px;
+}
+
+#service-manager-board-root .smb-tool-option {
+  width: 100%;
+  border: 0 !important;
+  background: transparent !important;
+  border-radius: 7px !important;
+  padding: 8px 9px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted, #6b6a66) !important;
+  cursor: pointer;
+  text-align: left;
+  font-size: 13px;
+}
+
+#service-manager-board-root .smb-tool-option:hover {
+  background: var(--bg2, #f1efe9) !important;
+  color: var(--ink, #1a1a19) !important;
+}
+
+#service-manager-board-root .smb-tool-option-selected {
+  color: var(--accent, #185fa5) !important;
+  font-weight: 700 !important;
+}
+
+#service-manager-board-root .smb-check {
+  visibility: hidden;
+}
+
+#service-manager-board-root .smb-tool-option-selected .smb-check {
+  visibility: visible;
+}
+
+#service-manager-board-root .smb-filter-row {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  align-items: center;
+  gap: 9px;
+  margin: 8px 0;
+}
+
+#service-manager-board-root .smb-filter-row label {
+  font-size: 12px;
+  color: var(--muted, #6b6a66) !important;
+  font-weight: 600 !important;
+}
+
+#service-manager-board-root .smb-filter-row select {
+  width: 100%;
+  height: 34px;
+  border: 1px solid var(--line, #e0dfd9) !important;
+  border-radius: 7px !important;
+  background: var(--bg, #f7f6f3) !important;
+  color: var(--ink, #1a1a19) !important;
+  padding: 0 8px;
+  font-size: 12px;
+}
+
+#service-manager-board-root .smb-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  margin-top: 3px;
+  border-top: 1px solid var(--line, #e0dfd9) !important;
+  font-size: 12px;
+  color: var(--muted, #6b6a66) !important;
+  font-weight: 600 !important;
+}
+
+#service-manager-board-root .smb-toggle-row input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent, #185fa5);
+}
+
+#service-manager-board-root .smb-filter-footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid var(--line, #e0dfd9) !important;
+  margin-top: 8px;
+  padding-top: 9px;
+}
+
+#service-manager-board-root .smb-reset-btn {
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--accent, #185fa5) !important;
+  font-size: 12px;
+  font-weight: 700 !important;
+  cursor: pointer;
+  padding: 4px;
+}
+
+#service-manager-board-root .smb-status {
+  color: var(--muted, #6b6a66) !important;
+  font-size: 13px;
+}
+
+#service-manager-board-root .smb-status-error {
+  color: var(--ems, #a32d2d) !important;
+}
+
+/* ---------- Workflow board ---------- */
+
+#service-manager-board-root .smb-board {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(220px, 1fr));
+  gap: 10px;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+}
+
+#service-manager-board-root .smb-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 245px;
+  height: calc(100vh - 300px);
+  min-height: 320px;
+  background: var(--bg2, #f1efe9) !important;
+  border: 1px solid var(--line, #e0dfd9) !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+}
+
+#service-manager-board-root .smb-column-head {
+  padding: 11px 12px 10px;
+  border-bottom: 1px solid var(--line, #e0dfd9) !important;
+  background: var(--card, #ffffff) !important;
+  flex-shrink: 0;
+}
+
+#service-manager-board-root .smb-column-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#service-manager-board-root .smb-column-title {
+  font-size: 13px;
+  font-weight: 700 !important;
+  color: var(--ink, #1a1a19) !important;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+#service-manager-board-root .smb-column-icon {
+  color: var(--accent, #185fa5) !important;
+}
+
+#service-manager-board-root .smb-count {
+  min-width: 22px;
+  height: 22px;
+  border: 1px solid var(--line, #e0dfd9) !important;
+  border-radius: 6px !important;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  color: var(--muted, #6b6a66) !important;
+  background: var(--bg, #f7f6f3) !important;
+  flex-shrink: 0;
+}
+
+#service-manager-board-root .smb-column-sub {
+  font-size: 11px;
+  letter-spacing: 0.6px !important;
+  text-transform: uppercase !important;
+  color: var(--tx3, #9c9a92) !important;
+  font-weight: 700 !important;
+  margin-top: 3px;
+}
+
+/* Column body scrolls independently of the page - a long Waiting Calls list
+   no longer stretches the whole browser page. */
+#service-manager-board-root .smb-cards {
+  flex: 1;
+  min-height: 0;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+#service-manager-board-root .smb-empty {
+  margin: 8px;
+  border: 1px dashed var(--line, #e0dfd9) !important;
+  border-radius: 8px !important;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tx3, #9c9a92) !important;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.45) !important;
+  text-align: center;
+  padding: 10px;
+}
+
+/* ---------- Call cards ---------- */
+
+#service-manager-board-root .smb-card {
+  position: relative;
+  background: var(--card, #ffffff) !important;
+  border: 1px solid var(--line, #e0dfd9) !important;
+  border-left: 3px solid var(--gcbd, var(--infobd, #85b7eb)) !important;
+  border-radius: 8px !important;
+  padding: 10px 11px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  transition: border-color 0.12s, box-shadow 0.12s;
+  flex-shrink: 0;
+}
+
+#service-manager-board-root .smb-card:hover {
+  border-color: var(--accent, #185fa5) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07) !important;
+}
+
+#service-manager-board-root .smb-card-emergency {
+  border-left-color: var(--emsbd, #f09595);
+}
+
+#service-manager-board-root .smb-card-completed {
+  opacity: 0.72;
+}
+
+#service-manager-board-root .smb-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#service-manager-board-root .smb-case-id {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  font-family: "SF Mono", "Roboto Mono", Consolas, "Liberation Mono", monospace;
+  letter-spacing: 0.4px !important;
+  text-transform: uppercase !important;
+  color: var(--muted, #6b6a66) !important;
+  font-weight: 700 !important;
+}
+
+#service-manager-board-root .smb-wait {
+  font-size: 12px;
+  color: var(--muted, #6b6a66) !important;
+  white-space: nowrap;
+}
+
+#service-manager-board-root .smb-wait strong {
+  color: var(--ink, #1a1a19) !important;
+  font-weight: 700 !important;
+}
+
+#service-manager-board-root .smb-wait-active {
+  color: var(--accent, #185fa5) !important;
+  font-weight: 700 !important;
+}
+
+#service-manager-board-root .smb-wait-completed {
+  color: var(--ok, #0f6e56) !important;
+  font-weight: 700 !important;
+}
+
+#service-manager-board-root .smb-severity {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700 !important;
+  border-radius: 999px !important;
+  padding: 2px 8px;
+  margin-top: 6px;
+  background: var(--gcbg, var(--infobg, #e6f1fb)) !important;
+  color: var(--gc, var(--info, #185fa5)) !important;
+}
+
+#service-manager-board-root .smb-card-title {
+  font-size: 14px;
+  font-weight: 700 !important;
+  line-height: 1.4;
+  margin: 7px 0 4px;
+  color: var(--ink, #1a1a19) !important;
+}
+
+#service-manager-board-root .smb-card-text {
+  font-size: 12.5px;
+  color: var(--muted, #6b6a66) !important;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+#service-manager-board-root .smb-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line, #e0dfd9) !important;
+  font-size: 12px;
+  color: var(--muted, #6b6a66) !important;
+}
+
+#service-manager-board-root .smb-owner {
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#service-manager-board-root .smb-mini-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ems, #a32d2d) !important;
+  font-weight: 700 !important;
+}
+
+/* ---------- Read-only drawer ---------- */
+
+#service-manager-board-root .smb-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 18, 0.18) !important;
+  display: none;
+  justify-content: flex-end;
+  z-index: 20;
+}
+
+#service-manager-board-root .smb-drawer-backdrop-open {
+  display: flex;
+}
+
+#service-manager-board-root .smb-drawer {
+  width: min(430px, 92vw);
+  height: 100%;
+  background: var(--card, #ffffff) !important;
+  border-left: 1px solid var(--line, #e0dfd9) !important;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.08) !important;
+  padding: 18px;
+  overflow-y: auto;
+  color: var(--ink, #1a1a19) !important;
+}
+
+#service-manager-board-root .smb-drawer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line, #e0dfd9) !important;
+}
+
+#service-manager-board-root .smb-drawer-head h2 {
+  font-size: 16px;
+  margin: 2px 0 4px;
+  color: var(--ink, #1a1a19) !important;
+}
+
+#service-manager-board-root .smb-drawer-head p {
+  margin: 0;
+  color: var(--muted, #6b6a66) !important;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+#service-manager-board-root .smb-close-btn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line, #e0dfd9) !important;
+  border-radius: 8px !important;
+  background: var(--card, #ffffff) !important;
+  cursor: pointer;
+  color: var(--muted, #6b6a66) !important;
+  flex-shrink: 0;
+}
+
+#service-manager-board-root .smb-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-top: 12px;
+  border: 1px solid var(--line, #e0dfd9) !important;
+  border-radius: 9px !important;
+  overflow: hidden;
+}
+
+#service-manager-board-root .smb-detail {
+  padding: 10px 11px;
+  border-bottom: 1px solid var(--line, #e0dfd9) !important;
+  border-right: 1px solid var(--line, #e0dfd9) !important;
+}
+
+#service-manager-board-root .smb-detail:nth-child(2n) {
+  border-right: none !important;
+}
+
+#service-manager-board-root .smb-detail-label {
+  font-size: 11px;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  color: var(--tx3, #9c9a92) !important;
+  font-weight: 700 !important;
+}
+
+#service-manager-board-root .smb-detail-value {
+  font-size: 13px;
+  font-weight: 600 !important;
+  margin-top: 3px;
+  color: var(--ink, #1a1a19) !important;
+}
+
+#service-manager-board-root .smb-drawer-section {
+  margin-top: 16px;
+}
+
+#service-manager-board-root .smb-drawer-section h3 {
+  font-size: 12px;
+  letter-spacing: 0.6px !important;
+  text-transform: uppercase !important;
+  color: var(--tx3, #9c9a92) !important;
+  margin: 0 0 7px;
+}
+
+#service-manager-board-root .smb-reason-box {
+  background: var(--bg, #f7f6f3) !important;
+  border: 1px solid var(--line, #e0dfd9) !important;
+  border-radius: 8px !important;
+  padding: 10px 11px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink, #1a1a19) !important;
+}
+
+#service-manager-board-root .smb-readonly-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 16px;
+  padding: 10px 11px;
+  border: 1px solid var(--infobd, #85b7eb) !important;
+  background: var(--infobg, #e6f1fb) !important;
+  border-radius: 8px !important;
+  color: var(--info, #185fa5) !important;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+#service-manager-board-root .smb-readonly-note strong {
+  display: block;
+  margin-bottom: 2px;
+}
+
+#service-manager-board-root .smb-stage-progress {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+  margin-top: 8px;
+}
+
+#service-manager-board-root .smb-stage-progress-item {
+  height: 6px;
+  border-radius: 999px !important;
+  background: var(--bg2, #f1efe9) !important;
+  border: 1px solid var(--line, #e0dfd9) !important;
+}
+
+#service-manager-board-root .smb-done {
+  background: var(--okbd, #5dcaa5) !important;
+  border-color: var(--okbd, #5dcaa5) !important;
+}
+
+#service-manager-board-root .smb-current {
+  background: var(--accent, #185fa5) !important;
+  border-color: var(--accent, #185fa5) !important;
+}
+
+#service-manager-board-root .smb-stage-progress-labels {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  margin-top: 5px;
+  color: var(--tx3, #9c9a92) !important;
+  font-size: 10px;
+  text-transform: uppercase !important;
+  letter-spacing: 0.3px !important;
+}
+
+#service-manager-board-root .smb-stage-progress-labels span {
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 1050px) {
+  #service-manager-board-root .smb-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  #service-manager-board-root .smb-board {
+    grid-template-columns: repeat(5, 245px);
+  }
+}
+
+@media (max-width: 680px) {
+  #service-manager-board-root .smb-content {
+    padding: 12px;
+  }
+  #service-manager-board-root .smb-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+  #service-manager-board-root .smb-search-wrap {
+    max-width: none;
+  }
+}

@@ -1,0 +1,161 @@
+import { render, screen, fireEvent } from "@testing-library/react";
+import { TriageServiceManagerBoard } from "./TriageServiceManagerBoard";
+import type { QueueItem } from "../QueueContext";
+import type { AuthenticatedSession } from "../auth/session";
+
+const claimItem = jest.fn();
+const connectCall = jest.fn();
+const releaseItem = jest.fn();
+const moveItem = jest.fn();
+const updateItemContext = jest.fn();
+const openItemInStep = jest.fn();
+const refreshQueue = jest.fn();
+
+let mockQueue: QueueItem[] = [];
+
+jest.mock("../QueueContext", () => ({
+  useQueue: () => ({
+    queue: mockQueue,
+    loading: false,
+    error: undefined,
+    callCenterSessionsByQueueItemId: {},
+    refreshQueue,
+    claimItem,
+    connectCall,
+    releaseItem,
+    moveItem,
+    updateItemContext,
+    openItemInStep,
+    setActiveItemById: jest.fn(),
+    clearActiveItem: jest.fn()
+  })
+}));
+
+function makeItem(overrides: Partial<QueueItem> = {}): QueueItem {
+  return {
+    id: `queue-item-${Math.random().toString(36).slice(2, 10)}`,
+    istStaffId: "IST-000042",
+    status: "INCOMING",
+    currentStage: "INTAKE",
+    priorityScore: 0,
+    patientType: "Staff",
+    channel: "Phone",
+    summary: "Back pain",
+    reasonNarrative: "Mild back pain since this morning.",
+    identityValidated: true,
+    safetyFloorActive: false,
+    sbarCopied: false,
+    slaDeadlineIso: new Date().toISOString(),
+    customAviationTags: [],
+    createdAtIso: new Date().toISOString(),
+    updatedAtIso: new Date().toISOString(),
+    stccProcess: {
+      processName: "Telehealth Triage Encounter",
+      averageDurationMinutes: "11-13",
+      currentActionTab: "REASON_AND_EMERGENCY_RULE_OUT",
+      canonicalSteps: [],
+      visibleActionTabs: []
+    },
+    ...overrides
+  } as QueueItem;
+}
+
+const session: AuthenticatedSession = {
+  sessionId: "sess-1",
+  user: {
+    id: "user-1",
+    fullName: "Test Manager",
+    email: "manager@irisstar.tech",
+    department: "Operations",
+    facility: "DOH",
+    roles: ["triage_service_manager"],
+    accountStatus: "ACTIVE",
+    mfaStatus: "VERIFIED"
+  },
+  activeRole: "triage_service_manager",
+  permissions: ["triage.queue.manage"],
+  expiresAtIso: new Date(Date.now() + 3_600_000).toISOString(),
+  mfaVerified: true
+};
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  mockQueue = [
+    makeItem({ id: "waiting-1", status: "INCOMING", reasonNarrative: "Back pain that started gradually." }),
+    makeItem({
+      id: "safety-1",
+      status: "IN_PROCESS",
+      currentStage: "VITALS",
+      safetyFloorActive: true,
+      calculatedSeverity: "EMERGENCY",
+      lockedBy: "nurse-a",
+      lockedByName: "Nurse Aisha",
+      reasonNarrative: "Chest tightness and sweating."
+    }),
+    makeItem({
+      id: "completed-1",
+      status: "COMPLETED",
+      currentStage: "SBAR",
+      lockedBy: "nurse-b",
+      lockedByName: "Nurse Omar",
+      reasonNarrative: "Nausea and vomiting."
+    })
+  ];
+});
+
+function renderBoard() {
+  return render(<TriageServiceManagerBoard session={session} onLogout={jest.fn()} />);
+}
+
+describe("TriageServiceManagerBoard", () => {
+  it("places queue items in the correct visual column", () => {
+    renderBoard();
+    expect(screen.getAllByText(/Back pain that started gradually/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Chest tightness and sweating/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Nausea and vomiting/).length).toBeGreaterThan(0);
+  });
+
+  it("search filters cards locally without calling any mutation function", () => {
+    renderBoard();
+    const search = screen.getByLabelText("Search calls");
+    fireEvent.change(search, { target: { value: "chest tightness" } });
+
+    expect(screen.getAllByText(/Chest tightness and sweating/).length).toBeGreaterThan(0);
+    expect(screen.queryAllByText(/Back pain that started gradually/).length).toBe(0);
+
+    expect(claimItem).not.toHaveBeenCalled();
+    expect(connectCall).not.toHaveBeenCalled();
+    expect(releaseItem).not.toHaveBeenCalled();
+    expect(moveItem).not.toHaveBeenCalled();
+    expect(updateItemContext).not.toHaveBeenCalled();
+  });
+
+  it("shows the attention strip only when a safety alert exists, and Locate on board applies the attention filter", () => {
+    renderBoard();
+    expect(screen.getByText("Locate on board")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("Locate on board"));
+    expect(screen.getAllByText(/Chest tightness and sweating/).length).toBeGreaterThan(0);
+    expect(screen.queryAllByText(/Back pain that started gradually/).length).toBe(0);
+  });
+
+  it("opens a read-only drawer on card click and closes it again, without calling mutation functions", () => {
+    renderBoard();
+    fireEvent.click(screen.getAllByText(/Back pain that started gradually/)[0]);
+    expect(screen.getByText("Observation only")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByLabelText("Close details"));
+    expect(screen.queryByText("Observation only")).not.toBeInTheDocument();
+
+    expect(claimItem).not.toHaveBeenCalled();
+    expect(moveItem).not.toHaveBeenCalled();
+    expect(updateItemContext).not.toHaveBeenCalled();
+  });
+
+  it("never renders any claim/answer/hold/resume/escalate/complete control", () => {
+    renderBoard();
+    const forbidden = /answer|claim|hold|resume|escalate|reassign|complete call/i;
+    document.querySelectorAll("button").forEach((button) => {
+      expect(button.textContent ?? "").not.toMatch(forbidden);
+    });
+  });
+});
