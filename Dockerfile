@@ -36,6 +36,7 @@ COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/dist-web ./dist-web
 COPY --from=build /app/data ./data
+COPY docs/protocol-review/data ./docs/protocol-review/data
 
 EXPOSE 8080
 

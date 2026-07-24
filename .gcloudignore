@@ -36,9 +36,15 @@ node_modules
 /remix_-ist-technologies/
 /interactive dashboard style click on enable .html
 
-# The production Dockerfile does not consume these development assets.
+# The production Dockerfile does not consume these development assets,
+# except the licensed STCC content file the runtime reads eagerly at startup.
 /design/
-/docs/
+/docs/*
+!/docs/protocol-review/
+/docs/protocol-review/*
+!/docs/protocol-review/data/
+/docs/protocol-review/data/*
+!/docs/protocol-review/data/abdominal-pain-male.db.json
 /python/
 /scripts/
 /tests/
