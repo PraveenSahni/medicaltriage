@@ -15,6 +15,7 @@
     "content:dry-run": "tsx src/scripts/importClinicalContent.ts --dry-run",
     "content:import": "tsx src/scripts/importClinicalContent.ts",
     "catalog:validate": "node scripts/validateOpenSourceCatalog.mjs",
+    "catalog:library": "node scripts/generateProtocolLibrary.mjs",
     "catalog:preflight": "node scripts/preflightOpenSourceCatalog.mjs",
     "catalog:preflight:self-test": "node scripts/preflightOpenSourceCatalog.mjs --self-test",
     "catalog:regenerate:plan": "node scripts/regenerateOpenSourceCatalog.mjs",
