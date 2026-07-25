@@ -41,6 +41,15 @@
       "Acuity": 5
     },
     {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
       "LevelID": 50,
       "DispositionHeading": "Clinical Review",
       "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",

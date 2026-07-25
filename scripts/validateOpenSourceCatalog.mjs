@@ -57,6 +57,15 @@ function adviceText(advice) {
   return Array.isArray(content) ? content.join(" ") : String(content);
 }
 
+function missingDispositionLevels({ questions, dispositions, questionLevelField, dispositionLevelField }) {
+  const declared = new Set((dispositions ?? []).map((row) => row[dispositionLevelField]));
+  return [...new Set(
+    (questions ?? [])
+      .map((question) => question[questionLevelField])
+      .filter((level) => typeof level === "number" && !declared.has(level)),
+  )].sort((a, b) => a - b);
+}
+
 function assertAdviceLinks({ questions, advice, idField, adviceIdsField, label, errors }) {
   const adviceById = new Map((advice ?? []).map((item) => [String(item[idField]), item]));
   for (const question of questions ?? []) {
@@ -81,6 +90,15 @@ export function runSelfTests() {
   assert.match("Route remains GOVERNANCE_REQUIRED.", malformedNurseVisiblePattern);
   assert.match("Use Qatar 999/an emergency service.", malformedNurseVisiblePattern);
   assert.doesNotMatch("Call Qatar 999 or attend the Emergency Department.", malformedNurseVisiblePattern);
+  assert.deepEqual(
+    missingDispositionLevels({
+      questions: [{ DispositionLevel: 70 }, { DispositionLevel: 100 }, { DispositionLevel: null }],
+      dispositions: [{ LevelID: 100 }],
+      questionLevelField: "DispositionLevel",
+      dispositionLevelField: "LevelID",
+    }),
+    [70],
+  );
 
   const errors = [];
   const linked = assertAdviceLinks({
@@ -98,7 +116,7 @@ export function runSelfTests() {
   assert.ok(canonical.has("oscr-chest-pain-heart"));
   assert.ok(canonical.has("oscg-snakebite"));
   assert.ok(!canonical.has("oscg-elbow-pain-child"));
-  return { status: "PASS", assertions: 16 };
+  return { status: "PASS", assertions: 17 };
 }
 
 function sourceProtocolId(entry) {
@@ -185,6 +203,17 @@ export function validateCatalog({ requireRuntime = true, requirePdfs = true } = 
       if (malformedNurseVisiblePattern.test(dbNurseVisibleText(doc))) {
         errors.push(
           `Batch ${batch} ID ${entry.algorithmId}: generated JSON contains malformed or internal placeholder text in nurse-visible content`,
+        );
+      }
+      const missingDbDispositionLevels = missingDispositionLevels({
+        questions: doc.questions,
+        dispositions: doc.dispositions,
+        questionLevelField: "DispositionLevel",
+        dispositionLevelField: "LevelID",
+      });
+      if (missingDbDispositionLevels.length) {
+        errors.push(
+          `Batch ${batch} ID ${entry.algorithmId}: question disposition level(s) ${missingDbDispositionLevels.join(", ")} have no declared disposition row`,
         );
       }
       for (const question of doc.questions ?? []) {

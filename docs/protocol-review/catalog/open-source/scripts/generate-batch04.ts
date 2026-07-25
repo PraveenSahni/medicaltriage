@@ -228,6 +228,38 @@ for (const protocol of batch04Protocols) {
           });
         }
       }
+      if (redirect?.dispositionLevel !== undefined && !dispositions.has(redirect.dispositionLevel)) {
+        const level = redirect.dispositionLevel;
+        dispositions.set(level, {
+          LevelID: level,
+          DispositionHeading:
+            level >= 100
+              ? "Emergency Department Now"
+              : level >= 70
+                ? "Urgent Clinical Review"
+                : level >= 40
+                  ? "Clinical Review"
+                  : "Self Care with Callback Precautions",
+          DispositionHeading_Telemedicine:
+            level >= 100
+              ? "Emergency transport / in-person assessment now"
+              : level >= 70
+                ? "Urgent clinical assessment"
+                : level >= 40
+                  ? "Prompt telemedicine or in-person review"
+                  : "Home care with safety-net advice",
+          Video: level < 100,
+          CssVar:
+            level >= 100 ? "--ems" : level >= 70 ? "--urgent" : level >= 40 ? "--review" : "--self-care",
+          DestinationCode:
+            level >= 100
+              ? "HMC_EMERGENCY_DEPARTMENT"
+              : level >= 70
+                ? "HMC_URGENT_REVIEW"
+                : "PHCC_URGENT_CARE_OR_TELECONSULT",
+          Acuity: level >= 100 ? 5 : level >= 70 ? 4 : level >= 40 ? 3 : 2,
+        });
+      }
       if (isChildSexualAssault && !dispositions.has(78)) {
         dispositions.set(78, {
           LevelID: 78,
