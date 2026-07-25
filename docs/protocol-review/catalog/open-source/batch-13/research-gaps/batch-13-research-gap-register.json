@@ -1,6 +1,6 @@
 {
   "batch": "13",
-  "count": 60,
+  "count": 30,
   "gaps": [
     {
       "gapId": "B13-1285-algorithm-LastRevised",
@@ -46,54 +46,6 @@
       "gapId": "B13-1286-localization",
       "algorithmId": 1286,
       "protocol": "Ear Injury - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1287-algorithm-LastRevised",
-      "algorithmId": 1287,
-      "protocol": "Ear Injury - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1287-clinicalReview",
-      "algorithmId": 1287,
-      "protocol": "Ear Injury - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1287-localization",
-      "algorithmId": 1287,
-      "protocol": "Ear Injury - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1288-algorithm-LastRevised",
-      "algorithmId": 1288,
-      "protocol": "Ear Injury - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1288-clinicalReview",
-      "algorithmId": 1288,
-      "protocol": "Ear Injury - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1288-localization",
-      "algorithmId": 1288,
-      "protocol": "Ear Injury - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -147,54 +99,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B13-1291-algorithm-LastRevised",
-      "algorithmId": 1291,
-      "protocol": "Elbow Injury - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1291-clinicalReview",
-      "algorithmId": 1291,
-      "protocol": "Elbow Injury - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1291-localization",
-      "algorithmId": 1291,
-      "protocol": "Elbow Injury - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1292-algorithm-LastRevised",
-      "algorithmId": 1292,
-      "protocol": "Elbow Injury - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1292-clinicalReview",
-      "algorithmId": 1292,
-      "protocol": "Elbow Injury - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1292-localization",
-      "algorithmId": 1292,
-      "protocol": "Elbow Injury - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B13-1293-algorithm-LastRevised",
       "algorithmId": 1293,
       "protocol": "Eye Injury - Male (Adult)",
@@ -238,54 +142,6 @@
       "gapId": "B13-1294-localization",
       "algorithmId": 1294,
       "protocol": "Eye Injury - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1295-algorithm-LastRevised",
-      "algorithmId": 1295,
-      "protocol": "Eye Injury - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1295-clinicalReview",
-      "algorithmId": 1295,
-      "protocol": "Eye Injury - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1295-localization",
-      "algorithmId": 1295,
-      "protocol": "Eye Injury - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1296-algorithm-LastRevised",
-      "algorithmId": 1296,
-      "protocol": "Eye Injury - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1296-clinicalReview",
-      "algorithmId": 1296,
-      "protocol": "Eye Injury - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1296-localization",
-      "algorithmId": 1296,
-      "protocol": "Eye Injury - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -339,54 +195,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B13-1299-algorithm-LastRevised",
-      "algorithmId": 1299,
-      "protocol": "Hip Injury - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1299-clinicalReview",
-      "algorithmId": 1299,
-      "protocol": "Hip Injury - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1299-localization",
-      "algorithmId": 1299,
-      "protocol": "Hip Injury - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1300-algorithm-LastRevised",
-      "algorithmId": 1300,
-      "protocol": "Hip Injury - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1300-clinicalReview",
-      "algorithmId": 1300,
-      "protocol": "Hip Injury - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1300-localization",
-      "algorithmId": 1300,
-      "protocol": "Hip Injury - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B13-1301-algorithm-LastRevised",
       "algorithmId": 1301,
       "protocol": "Leg Injury - Male (Adult)",
@@ -430,54 +238,6 @@
       "gapId": "B13-1302-localization",
       "algorithmId": 1302,
       "protocol": "Leg Injury - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1303-algorithm-LastRevised",
-      "algorithmId": 1303,
-      "protocol": "Leg Injury - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1303-clinicalReview",
-      "algorithmId": 1303,
-      "protocol": "Leg Injury - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1303-localization",
-      "algorithmId": 1303,
-      "protocol": "Leg Injury - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1304-algorithm-LastRevised",
-      "algorithmId": 1304,
-      "protocol": "Leg Injury - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1304-clinicalReview",
-      "algorithmId": 1304,
-      "protocol": "Leg Injury - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B13-1304-localization",
-      "algorithmId": 1304,
-      "protocol": "Leg Injury - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"

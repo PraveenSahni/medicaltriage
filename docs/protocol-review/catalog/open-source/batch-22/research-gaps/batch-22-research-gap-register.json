@@ -1,6 +1,6 @@
 {
   "batch": "22",
-  "count": 60,
+  "count": 30,
   "gaps": [
     {
       "gapId": "B22-1465-algorithm-LastRevised",
@@ -22,30 +22,6 @@
       "gapId": "B22-1465-localization",
       "algorithmId": 1465,
       "protocol": "Pelvic Pain - Female - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1466-algorithm-LastRevised",
-      "algorithmId": 1466,
-      "protocol": "Pelvic Pain - Female - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1466-clinicalReview",
-      "algorithmId": 1466,
-      "protocol": "Pelvic Pain - Female - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1466-localization",
-      "algorithmId": 1466,
-      "protocol": "Pelvic Pain - Female - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -99,54 +75,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B22-1469-algorithm-LastRevised",
-      "algorithmId": 1469,
-      "protocol": "Abdominal Pain - Upper - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1469-clinicalReview",
-      "algorithmId": 1469,
-      "protocol": "Abdominal Pain - Upper - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1469-localization",
-      "algorithmId": 1469,
-      "protocol": "Abdominal Pain - Upper - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1470-algorithm-LastRevised",
-      "algorithmId": 1470,
-      "protocol": "Abdominal Pain - Upper - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1470-clinicalReview",
-      "algorithmId": 1470,
-      "protocol": "Abdominal Pain - Upper - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1470-localization",
-      "algorithmId": 1470,
-      "protocol": "Abdominal Pain - Upper - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B22-1471-algorithm-LastRevised",
       "algorithmId": 1471,
       "protocol": "Contraception - IUD Symptoms and Questions - Female (Adult)",
@@ -166,30 +94,6 @@
       "gapId": "B22-1471-localization",
       "algorithmId": 1471,
       "protocol": "Contraception - IUD Symptoms and Questions - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1472-algorithm-LastRevised",
-      "algorithmId": 1472,
-      "protocol": "Contraception - IUD Symptoms and Questions - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1472-clinicalReview",
-      "algorithmId": 1472,
-      "protocol": "Contraception - IUD Symptoms and Questions - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1472-localization",
-      "algorithmId": 1472,
-      "protocol": "Contraception - IUD Symptoms and Questions - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -243,54 +147,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B22-1475-algorithm-LastRevised",
-      "algorithmId": 1475,
-      "protocol": "Measles Exposure - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1475-clinicalReview",
-      "algorithmId": 1475,
-      "protocol": "Measles Exposure - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1475-localization",
-      "algorithmId": 1475,
-      "protocol": "Measles Exposure - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1476-algorithm-LastRevised",
-      "algorithmId": 1476,
-      "protocol": "Measles Exposure - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1476-clinicalReview",
-      "algorithmId": 1476,
-      "protocol": "Measles Exposure - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1476-localization",
-      "algorithmId": 1476,
-      "protocol": "Measles Exposure - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B22-1477-algorithm-LastRevised",
       "algorithmId": 1477,
       "protocol": "Urine - Blood In - Male (Adult)",
@@ -339,54 +195,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B22-1479-algorithm-LastRevised",
-      "algorithmId": 1479,
-      "protocol": "Urine - Blood In - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1479-clinicalReview",
-      "algorithmId": 1479,
-      "protocol": "Urine - Blood In - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1479-localization",
-      "algorithmId": 1479,
-      "protocol": "Urine - Blood In - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1480-algorithm-LastRevised",
-      "algorithmId": 1480,
-      "protocol": "Urine - Blood In - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1480-clinicalReview",
-      "algorithmId": 1480,
-      "protocol": "Urine - Blood In - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1480-localization",
-      "algorithmId": 1480,
-      "protocol": "Urine - Blood In - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B22-1481-algorithm-LastRevised",
       "algorithmId": 1481,
       "protocol": "Urination Pain - Female - Female (Adult)",
@@ -411,30 +219,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B22-1482-algorithm-LastRevised",
-      "algorithmId": 1482,
-      "protocol": "Urination Pain - Female - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1482-clinicalReview",
-      "algorithmId": 1482,
-      "protocol": "Urination Pain - Female - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1482-localization",
-      "algorithmId": 1482,
-      "protocol": "Urination Pain - Female - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B22-1483-algorithm-LastRevised",
       "algorithmId": 1483,
       "protocol": "Urination Pain - Male - Male (Adult)",
@@ -454,30 +238,6 @@
       "gapId": "B22-1483-localization",
       "algorithmId": 1483,
       "protocol": "Urination Pain - Male - Male (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1484-algorithm-LastRevised",
-      "algorithmId": 1484,
-      "protocol": "Urination Pain - Male - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1484-clinicalReview",
-      "algorithmId": 1484,
-      "protocol": "Urination Pain - Male - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B22-1484-localization",
-      "algorithmId": 1484,
-      "protocol": "Urination Pain - Male - Male (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"

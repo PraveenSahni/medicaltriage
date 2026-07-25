@@ -3,6 +3,10 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import {
+  ADULT_ONLY_ALGORITHM_IDS,
+  ADULT_ONLY_CATALOG_COUNT,
+} from "./adultOnlyCatalogPolicy.mjs";
 
 export const REPO_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1")), "..");
 export const CATALOG_ROOT = path.join(REPO_ROOT, "docs", "protocol-review", "catalog", "open-source");
@@ -154,6 +158,9 @@ export function validateCatalog({ requireRuntime = true, requirePdfs = true } = 
     }
 
     for (const entry of manifest.entries) {
+      if (entry.ageGroup !== "Adult") {
+        errors.push(`Batch ${batch} ID ${entry.algorithmId}: adult-only catalog contains ${entry.ageGroup} entry`);
+      }
       const protocolSourceId = sourceProtocolId(entry);
       if (!protocolSourceId) errors.push(`Batch ${batch} ID ${entry.algorithmId}: missing sourceProtocolId`);
       else {
@@ -191,6 +198,9 @@ export function validateCatalog({ requireRuntime = true, requirePdfs = true } = 
       ids.push(doc.algorithm?.AlgorithmID);
       if (doc.algorithm?.AlgorithmID !== entry.algorithmId) {
         errors.push(`Batch ${batch}: manifest/JSON AlgorithmID mismatch for ${entry.file}`);
+      }
+      if (!/^Adult\b/.test(doc.algorithm?.Age ?? "") || /\bChild\b/i.test(doc.algorithm?.Title ?? "")) {
+        errors.push(`Batch ${batch} ID ${entry.algorithmId}: generated JSON is not explicitly adult-only`);
       }
       if (hash(doc) !== entry.canonicalContentHash) {
         errors.push(`Batch ${batch} ID ${entry.algorithmId}: canonicalContentHash mismatch`);
@@ -288,6 +298,13 @@ export function validateCatalog({ requireRuntime = true, requirePdfs = true } = 
           }
         }
         for (const protocol of runtime.protocols ?? []) {
+          if (
+            protocol.patientGroup !== "adult" ||
+            Number(protocol.ageMin) < 18 ||
+            (protocol.ageMax !== null && protocol.ageMax !== undefined)
+          ) {
+            errors.push(`Batch ${batch} runtime ${protocol.id}: protocol is not restricted to adults 18+`);
+          }
           if (!manifestTitles.has(protocol.titleEn)) {
             errors.push(`Batch ${batch} runtime ${protocol.id}: title is not covered by the manifest`);
           }
@@ -340,10 +357,14 @@ export function validateCatalog({ requireRuntime = true, requirePdfs = true } = 
   }
 
   const sorted = [...ids].sort((a, b) => a - b);
-  const expected = Array.from({ length: 504 }, (_, index) => 1001 + index);
-  if (records !== 504) errors.push(`Expected 504 catalog records, found ${records}`);
+  const expected = ADULT_ONLY_ALGORITHM_IDS;
+  if (records !== ADULT_ONLY_CATALOG_COUNT) {
+    errors.push(`Expected ${ADULT_ONLY_CATALOG_COUNT} adult-only catalog records, found ${records}`);
+  }
   if (new Set(ids).size !== ids.length) errors.push("Duplicate AlgorithmID values found");
-  if (sorted.join(",") !== expected.join(",")) errors.push("AlgorithmID sequence must be exactly 1001-1504");
+  if (sorted.join(",") !== expected.join(",")) {
+    errors.push("Adult AlgorithmIDs do not match the frozen adult-only UAT policy");
+  }
 
   return {
     status: errors.length ? "FAIL" : "PASS",

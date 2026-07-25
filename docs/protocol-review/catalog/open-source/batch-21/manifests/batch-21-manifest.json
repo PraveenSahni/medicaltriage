@@ -3,14 +3,14 @@
   "importBatch": "open-source-batch-21",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 9,
-  "protocolCount": 20,
+  "protocolCount": 18,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1445-1464",
   "applicabilityPolicy": {
     "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
-    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "pediatricSpecificProtocols": "Excluded from this adult-only UAT catalog.",
     "adultSpecificProtocols": "Adult-only; never generate Child variants.",
-    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "mixedAgeProtocols": "Generate Adult variants only; under-18 use is outside this UAT catalog.",
     "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
   },
   "excludedSourceFamilies": [
@@ -427,54 +427,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/ankle-pain-child-male.db.json",
-      "algorithmId": 1463,
-      "title": "Ankle Pain - Male (Child)",
-      "protocolFamily": "Ankle Pain",
-      "sourceProtocolId": "oscg-ankle-pain",
-      "canonicalSourceProtocolId": "oscg-ankle-pain",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "a7caba4c319034908a8e14aaf5545c171f7e011de6ad271a3bc6ba5339eb1c6e",
-      "redirectTarget": "Motor Vehicle Accident",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/ankle-pain-child-female.db.json",
-      "algorithmId": 1464,
-      "title": "Ankle Pain - Female (Child)",
-      "protocolFamily": "Ankle Pain",
-      "sourceProtocolId": "oscg-ankle-pain",
-      "canonicalSourceProtocolId": "oscg-ankle-pain",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "f2428d187f9e5ad0d3cb9edcd42c93550d3a0fc80f4617a0ece0b68abeddb937",
-      "redirectTarget": "Motor Vehicle Accident",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

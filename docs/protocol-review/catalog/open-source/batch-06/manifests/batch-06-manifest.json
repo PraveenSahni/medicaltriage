@@ -3,7 +3,7 @@
   "importBatch": "open-source-batch-06",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 5,
-  "protocolCount": 20,
+  "protocolCount": 10,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1145-1164",
   "applicabilityPolicy": {
@@ -59,52 +59,6 @@
       "canonicalSourceProtocolId": "oscg-diarrhea"
     },
     {
-      "file": "json/diarrhea-child-male.db.json",
-      "algorithmId": 1147,
-      "title": "Diarrhea - Male (Child)",
-      "protocolFamily": "Diarrhea",
-      "sourceProtocolId": "oscg-diarrhea",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "50d5a3d2fc684f5d77cf865615f812665b1e997435f0d9ba206638f3ac3fa9e9",
-      "redirectTarget": "Diarrhea on Antibiotics",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing the source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-diarrhea"
-    },
-    {
-      "file": "json/diarrhea-child-female.db.json",
-      "algorithmId": 1148,
-      "title": "Diarrhea - Female (Child)",
-      "protocolFamily": "Diarrhea",
-      "sourceProtocolId": "oscg-diarrhea",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "fffabdab731514b16f7d9cab04e6a497411fc85e740e9c5569f05ec31b97df04",
-      "redirectTarget": "Diarrhea on Antibiotics",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing the source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-diarrhea"
-    },
-    {
       "file": "json/diarrhea-on-antibiotics-adult-male.db.json",
       "algorithmId": 1149,
       "title": "Diarrhea on Antibiotics - Male (Adult)",
@@ -141,52 +95,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-diarrhea-on-antibiotics"
-    },
-    {
-      "file": "json/diarrhea-on-antibiotics-child-male.db.json",
-      "algorithmId": 1151,
-      "title": "Diarrhea on Antibiotics - Male (Child)",
-      "protocolFamily": "Diarrhea on Antibiotics",
-      "sourceProtocolId": "oscg-diarrhea-on-antibiotics",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "b51364b9d187285ab63de9058b1009c5981b64b4f4c07cc8d13693b657053a59",
-      "redirectTarget": "Diarrhea",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing the source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-diarrhea-on-antibiotics"
-    },
-    {
-      "file": "json/diarrhea-on-antibiotics-child-female.db.json",
-      "algorithmId": 1152,
-      "title": "Diarrhea on Antibiotics - Female (Child)",
-      "protocolFamily": "Diarrhea on Antibiotics",
-      "sourceProtocolId": "oscg-diarrhea-on-antibiotics",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3400203f29b16c4ad65b965ebdba22695e986cb80b6a25ecb85235654c1b9b25",
-      "redirectTarget": "Diarrhea",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing the source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -239,52 +147,6 @@
       "canonicalSourceProtocolId": "oscg-earache"
     },
     {
-      "file": "json/earache-child-male.db.json",
-      "algorithmId": 1155,
-      "title": "Earache - Male (Child)",
-      "protocolFamily": "Earache",
-      "sourceProtocolId": "oscg-earache",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "b941ff7361d21245c92afd2180fcfaf6718053dc33877d34b56899612f430263",
-      "redirectTarget": "Ear - Foreign Body",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing the source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-earache"
-    },
-    {
-      "file": "json/earache-child-female.db.json",
-      "algorithmId": 1156,
-      "title": "Earache - Female (Child)",
-      "protocolFamily": "Earache",
-      "sourceProtocolId": "oscg-earache",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "e614fd231c37d8870437501a1a1981f8f171e1c72d9b713e4a1bb9a59ab77e3f",
-      "redirectTarget": "Ear - Foreign Body",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing the source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-earache"
-    },
-    {
       "file": "json/ear-foreign-body-adult-male.db.json",
       "algorithmId": 1157,
       "title": "Ear - Foreign Body - Male (Adult)",
@@ -329,52 +191,6 @@
       "canonicalSourceProtocolId": "oscg-ear-foreign-body"
     },
     {
-      "file": "json/ear-foreign-body-child-male.db.json",
-      "algorithmId": 1159,
-      "title": "Ear - Foreign Body - Male (Child)",
-      "protocolFamily": "Ear - Foreign Body",
-      "sourceProtocolId": "oscg-ear-foreign-body",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "a9cf3acf9694fa40ff69b631bbe9bfe93ae49b4bbaf7ee796053fd849d57e09f",
-      "redirectTarget": "Earache",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing the source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-ear-foreign-body"
-    },
-    {
-      "file": "json/ear-foreign-body-child-female.db.json",
-      "algorithmId": 1160,
-      "title": "Ear - Foreign Body - Female (Child)",
-      "protocolFamily": "Ear - Foreign Body",
-      "sourceProtocolId": "oscg-ear-foreign-body",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "5925727780f901174d9e66e1d097abb0a3a917c7f294018167cabca4c5af4d9e",
-      "redirectTarget": "Earache",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing the source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-ear-foreign-body"
-    },
-    {
       "file": "json/ear-swimmer-s-adult-male.db.json",
       "algorithmId": 1161,
       "title": "Ear - Swimmer's - Male (Adult)",
@@ -411,52 +227,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-ear-swimmers"
-    },
-    {
-      "file": "json/ear-swimmer-s-child-male.db.json",
-      "algorithmId": 1163,
-      "title": "Ear - Swimmer's - Male (Child)",
-      "protocolFamily": "Ear - Swimmer's",
-      "sourceProtocolId": "oscg-ear-swimmers",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "dd6e79d8553ebed57da9311df852be327ca9fb3cc7b154e634e535392b5e78b8",
-      "redirectTarget": "Earache",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing the source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-ear-swimmers"
-    },
-    {
-      "file": "json/ear-swimmer-s-child-female.db.json",
-      "algorithmId": 1164,
-      "title": "Ear - Swimmer's - Female (Child)",
-      "protocolFamily": "Ear - Swimmer's",
-      "sourceProtocolId": "oscg-ear-swimmers",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "809eed6ce759def9041734a5391d576df049123ddcb2c7f157d2c86e69e0e179",
-      "redirectTarget": "Earache",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing the source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

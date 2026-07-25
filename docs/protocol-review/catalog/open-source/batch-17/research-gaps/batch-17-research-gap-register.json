@@ -1,6 +1,6 @@
 {
   "batch": "17",
-  "count": 60,
+  "count": 30,
   "gaps": [
     {
       "gapId": "B17-1365-algorithm-LastRevised",
@@ -22,30 +22,6 @@
       "gapId": "B17-1365-localization",
       "algorithmId": 1365,
       "protocol": "Pregnancy - Itching - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1366-algorithm-LastRevised",
-      "algorithmId": 1366,
-      "protocol": "Pregnancy - Itching - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1366-clinicalReview",
-      "algorithmId": 1366,
-      "protocol": "Pregnancy - Itching - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1366-localization",
-      "algorithmId": 1366,
-      "protocol": "Pregnancy - Itching - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -75,30 +51,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B17-1368-algorithm-LastRevised",
-      "algorithmId": 1368,
-      "protocol": "Pregnancy - Urination Pain - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1368-clinicalReview",
-      "algorithmId": 1368,
-      "protocol": "Pregnancy - Urination Pain - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1368-localization",
-      "algorithmId": 1368,
-      "protocol": "Pregnancy - Urination Pain - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B17-1369-algorithm-LastRevised",
       "algorithmId": 1369,
       "protocol": "Vaginal Discharge - Female (Adult)",
@@ -118,30 +70,6 @@
       "gapId": "B17-1369-localization",
       "algorithmId": 1369,
       "protocol": "Vaginal Discharge - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1370-algorithm-LastRevised",
-      "algorithmId": 1370,
-      "protocol": "Vaginal Discharge - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1370-clinicalReview",
-      "algorithmId": 1370,
-      "protocol": "Vaginal Discharge - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1370-localization",
-      "algorithmId": 1370,
-      "protocol": "Vaginal Discharge - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -195,54 +123,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B17-1373-algorithm-LastRevised",
-      "algorithmId": 1373,
-      "protocol": "Pubic Lice - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1373-clinicalReview",
-      "algorithmId": 1373,
-      "protocol": "Pubic Lice - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1373-localization",
-      "algorithmId": 1373,
-      "protocol": "Pubic Lice - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1374-algorithm-LastRevised",
-      "algorithmId": 1374,
-      "protocol": "Pubic Lice - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1374-clinicalReview",
-      "algorithmId": 1374,
-      "protocol": "Pubic Lice - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1374-localization",
-      "algorithmId": 1374,
-      "protocol": "Pubic Lice - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B17-1375-algorithm-LastRevised",
       "algorithmId": 1375,
       "protocol": "Postpartum - Depression - Female (Adult)",
@@ -262,30 +142,6 @@
       "gapId": "B17-1375-localization",
       "algorithmId": 1375,
       "protocol": "Postpartum - Depression - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1376-algorithm-LastRevised",
-      "algorithmId": 1376,
-      "protocol": "Postpartum - Depression - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1376-clinicalReview",
-      "algorithmId": 1376,
-      "protocol": "Postpartum - Depression - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1376-localization",
-      "algorithmId": 1376,
-      "protocol": "Postpartum - Depression - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -339,54 +195,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B17-1379-algorithm-LastRevised",
-      "algorithmId": 1379,
-      "protocol": "Heart Rate and Heartbeat Questions - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1379-clinicalReview",
-      "algorithmId": 1379,
-      "protocol": "Heart Rate and Heartbeat Questions - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1379-localization",
-      "algorithmId": 1379,
-      "protocol": "Heart Rate and Heartbeat Questions - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1380-algorithm-LastRevised",
-      "algorithmId": 1380,
-      "protocol": "Heart Rate and Heartbeat Questions - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1380-clinicalReview",
-      "algorithmId": 1380,
-      "protocol": "Heart Rate and Heartbeat Questions - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1380-localization",
-      "algorithmId": 1380,
-      "protocol": "Heart Rate and Heartbeat Questions - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B17-1381-algorithm-LastRevised",
       "algorithmId": 1381,
       "protocol": "Abdomen Bloating and Swelling - Male (Adult)",
@@ -430,54 +238,6 @@
       "gapId": "B17-1382-localization",
       "algorithmId": 1382,
       "protocol": "Abdomen Bloating and Swelling - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1383-algorithm-LastRevised",
-      "algorithmId": 1383,
-      "protocol": "Abdomen Bloating and Swelling - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1383-clinicalReview",
-      "algorithmId": 1383,
-      "protocol": "Abdomen Bloating and Swelling - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1383-localization",
-      "algorithmId": 1383,
-      "protocol": "Abdomen Bloating and Swelling - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1384-algorithm-LastRevised",
-      "algorithmId": 1384,
-      "protocol": "Abdomen Bloating and Swelling - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1384-clinicalReview",
-      "algorithmId": 1384,
-      "protocol": "Abdomen Bloating and Swelling - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B17-1384-localization",
-      "algorithmId": 1384,
-      "protocol": "Abdomen Bloating and Swelling - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"

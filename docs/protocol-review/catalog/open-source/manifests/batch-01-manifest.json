@@ -3,14 +3,14 @@
   "importBatch": "open-source-batch-01",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 10,
-  "protocolCount": 40,
+  "protocolCount": 20,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1001-1040",
   "applicabilityPolicy": {
     "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
-    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "pediatricSpecificProtocols": "Excluded from this adult-only UAT catalog.",
     "adultSpecificProtocols": "Adult-only; never generate Child variants.",
-    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "mixedAgeProtocols": "Generate Adult variants only; under-18 use is outside this UAT catalog.",
     "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
   },
   "excludedSourceFamilies": [],
@@ -88,80 +88,6 @@
       }
     },
     {
-      "file": "json/back-pain-child-male.db.json",
-      "algorithmId": 1003,
-      "title": "Back Pain - Male (Child)",
-      "protocolFamily": "Back Pain",
-      "sourceProtocolId": "oscg-back-pain",
-      "canonicalSourceProtocolId": "oscg-back-pain",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 5,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "f4b1bfe3f4a7a506ef09857e7ab6d59a31f1899917e6cd5493d0bbe9515beeec",
-      "redirectTarget": "",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Back pain\", https://www.nhs.uk/conditions/back-pain/ (page last reviewed 05 March 2026)",
-          "Northern Care Alliance NHS Foundation Trust, \"Paediatrics - Under 16 years Back Pain\", https://www.northerncarealliance.nhs.uk/patient-information/patient-leaflets/paediatrics-under-16-years-back-pain",
-          "Sheffield Children's NHS Foundation Trust, Emergency Department Medical Guideline 4.24 \"Back Pain\", https://www.sheffieldchildrens.nhs.uk/download/1721/acute-injury-and-orthopaedics/64216/4-24-back-pain.pdf"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published back pain guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 5.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/back-pain-child-female.db.json",
-      "algorithmId": 1004,
-      "title": "Back Pain - Female (Child)",
-      "protocolFamily": "Back Pain",
-      "sourceProtocolId": "oscg-back-pain",
-      "canonicalSourceProtocolId": "oscg-back-pain",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 5,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "e535b7acf675613eb5168276c3ef10db42af89f2f23f57b9fa224194fd63216d",
-      "redirectTarget": "",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Back pain\", https://www.nhs.uk/conditions/back-pain/ (page last reviewed 05 March 2026)",
-          "Northern Care Alliance NHS Foundation Trust, \"Paediatrics - Under 16 years Back Pain\", https://www.northerncarealliance.nhs.uk/patient-information/patient-leaflets/paediatrics-under-16-years-back-pain",
-          "Sheffield Children's NHS Foundation Trust, Emergency Department Medical Guideline 4.24 \"Back Pain\", https://www.sheffieldchildrens.nhs.uk/download/1721/acute-injury-and-orthopaedics/64216/4-24-back-pain.pdf"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published back pain guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 5.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/burns-thermal-adult-male.db.json",
       "algorithmId": 1005,
       "title": "Burns - Thermal - Male (Adult)",
@@ -223,76 +149,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/burns-thermal-child-male.db.json",
-      "algorithmId": 1007,
-      "title": "Burns - Thermal - Male (Child)",
-      "protocolFamily": "Burns - Thermal",
-      "sourceProtocolId": "oscg-burns-thermal",
-      "canonicalSourceProtocolId": "oscg-burns-thermal",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "534fe4b505130955491d3e35ed1bc4d3beb9275d15773c97446fd00da89f0eb1",
-      "redirectTarget": "Burns - Chemical",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Burns and scalds\", https://www.nhs.uk/conditions/burns-and-scalds/ (page last reviewed 31 March 2026)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published burns and scalds guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/burns-thermal-child-female.db.json",
-      "algorithmId": 1008,
-      "title": "Burns - Thermal - Female (Child)",
-      "protocolFamily": "Burns - Thermal",
-      "sourceProtocolId": "oscg-burns-thermal",
-      "canonicalSourceProtocolId": "oscg-burns-thermal",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "d17a57ca52d83155749e1ab1db66d7a7302419b4c2062433dbf84724a684ee5c",
-      "redirectTarget": "Burns - Chemical",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Burns and scalds\", https://www.nhs.uk/conditions/burns-and-scalds/ (page last reviewed 31 March 2026)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published burns and scalds guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -368,76 +224,6 @@
       }
     },
     {
-      "file": "json/animal-bite-child-male.db.json",
-      "algorithmId": 1011,
-      "title": "Animal Bite - Male (Child)",
-      "protocolFamily": "Animal Bite",
-      "sourceProtocolId": "oscg-animal-bite",
-      "canonicalSourceProtocolId": "oscg-animal-bite",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "079cafb2c4166e4bcf2074851b07beeab87e097d64adaed894ec3894f7ce79c2",
-      "redirectTarget": "Insect Bite | Bee or Yellow Jacket Sting",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Animal and human bites\", https://www.nhs.uk/conditions/animal-and-human-bites/ (page last reviewed 27 October 2025)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published animal and human bites guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/animal-bite-child-female.db.json",
-      "algorithmId": 1012,
-      "title": "Animal Bite - Female (Child)",
-      "protocolFamily": "Animal Bite",
-      "sourceProtocolId": "oscg-animal-bite",
-      "canonicalSourceProtocolId": "oscg-animal-bite",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "f009d34166dfa499358cc90385ed3f59d21f87434f9e84ef095981af9f0a2529",
-      "redirectTarget": "Insect Bite | Bee or Yellow Jacket Sting",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Animal and human bites\", https://www.nhs.uk/conditions/animal-and-human-bites/ (page last reviewed 27 October 2025)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published animal and human bites guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/bee-or-yellow-jacket-sting-adult-male.db.json",
       "algorithmId": 1013,
       "title": "Bee or Yellow Jacket Sting - Male (Adult)",
@@ -499,76 +285,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/bee-or-yellow-jacket-sting-child-male.db.json",
-      "algorithmId": 1015,
-      "title": "Bee or Yellow Jacket Sting - Male (Child)",
-      "protocolFamily": "Bee or Yellow Jacket Sting",
-      "sourceProtocolId": "oscg-insect-sting",
-      "canonicalSourceProtocolId": "oscg-insect-sting",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "d7928da2d5a682524094985f21c06e35e92386a3d8959b7e8ad6f26a00c4f948",
-      "redirectTarget": "Anaphylaxis",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Insect bites and stings\", https://www.nhs.uk/conditions/insect-bites-and-stings/ (page last reviewed 01 June 2023)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published insect bites and stings guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/bee-or-yellow-jacket-sting-child-female.db.json",
-      "algorithmId": 1016,
-      "title": "Bee or Yellow Jacket Sting - Female (Child)",
-      "protocolFamily": "Bee or Yellow Jacket Sting",
-      "sourceProtocolId": "oscg-insect-sting",
-      "canonicalSourceProtocolId": "oscg-insect-sting",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "4755c4cddfb0a6a38435bce977c02ab7519e50fee679ee3227bcd203991a6922",
-      "redirectTarget": "Anaphylaxis",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Insect bites and stings\", https://www.nhs.uk/conditions/insect-bites-and-stings/ (page last reviewed 01 June 2023)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published insect bites and stings guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -648,80 +364,6 @@
       }
     },
     {
-      "file": "json/anaphylaxis-child-male.db.json",
-      "algorithmId": 1019,
-      "title": "Anaphylaxis - Male (Child)",
-      "protocolFamily": "Anaphylaxis",
-      "sourceProtocolId": "oscg-anaphylaxis",
-      "canonicalSourceProtocolId": "oscg-anaphylaxis",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "050ae35817bdb86993850583f35db876ec824b408372feed20ef871053f34a8f",
-      "redirectTarget": "Allergic Reaction or Hives",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "Hamad Medical Corporation, \"Life-Threatening Medical Emergency\", https://hamad.qa/EN/Emergency/Pages/Life-ThreateningMedicalEmergency.aspx (accessed 25 July 2026)",
-          "Resuscitation Council UK, \"First Aid Guidelines — Anaphylaxis\", 2025, https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/first-aid-guidelines (accessed 25 July 2026)",
-          "NHS.UK, \"Anaphylaxis\", https://www.nhs.uk/conditions/anaphylaxis/ (page last reviewed 21 June 2023)"
-        ],
-        "contentNotice": "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION USE. Qatar emergency routing is localized to HMC Ambulance Service via 999. Clinical recognition and first-aid wording is adapted from public Resuscitation Council UK and NHS guidance into IST Health's STCC-shaped format. Not licensed Schmitt-Thompson (STCC) content. Requires approval by qualified Qatar clinical and operational governance reviewers before nurse-led UAT; requires separate production clinical validation and release governance."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/anaphylaxis-child-female.db.json",
-      "algorithmId": 1020,
-      "title": "Anaphylaxis - Female (Child)",
-      "protocolFamily": "Anaphylaxis",
-      "sourceProtocolId": "oscg-anaphylaxis",
-      "canonicalSourceProtocolId": "oscg-anaphylaxis",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "5f9ee8f716d494c41488247b7dc60141d385c732b3256c6ee51f38cf50e76b49",
-      "redirectTarget": "Allergic Reaction or Hives",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "Hamad Medical Corporation, \"Life-Threatening Medical Emergency\", https://hamad.qa/EN/Emergency/Pages/Life-ThreateningMedicalEmergency.aspx (accessed 25 July 2026)",
-          "Resuscitation Council UK, \"First Aid Guidelines — Anaphylaxis\", 2025, https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/first-aid-guidelines (accessed 25 July 2026)",
-          "NHS.UK, \"Anaphylaxis\", https://www.nhs.uk/conditions/anaphylaxis/ (page last reviewed 21 June 2023)"
-        ],
-        "contentNotice": "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION USE. Qatar emergency routing is localized to HMC Ambulance Service via 999. Clinical recognition and first-aid wording is adapted from public Resuscitation Council UK and NHS guidance into IST Health's STCC-shaped format. Not licensed Schmitt-Thompson (STCC) content. Requires approval by qualified Qatar clinical and operational governance reviewers before nurse-led UAT; requires separate production clinical validation and release governance."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/carbon-monoxide-exposure-adult-male.db.json",
       "algorithmId": 1021,
       "title": "Carbon Monoxide Exposure - Male (Adult)",
@@ -783,76 +425,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/carbon-monoxide-exposure-child-male.db.json",
-      "algorithmId": 1023,
-      "title": "Carbon Monoxide Exposure - Male (Child)",
-      "protocolFamily": "Carbon Monoxide Exposure",
-      "sourceProtocolId": "oscg-carbon-monoxide",
-      "canonicalSourceProtocolId": "oscg-carbon-monoxide",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "e73506691d367c5f8fcd08f82d28dbe76b70b98cde6e0d5d779ec2e5aa7cab02",
-      "redirectTarget": "",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Carbon monoxide poisoning\", https://www.nhs.uk/conditions/carbon-monoxide-poisoning/ (page last reviewed 16 December 2025)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published carbon monoxide poisoning guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/carbon-monoxide-exposure-child-female.db.json",
-      "algorithmId": 1024,
-      "title": "Carbon Monoxide Exposure - Female (Child)",
-      "protocolFamily": "Carbon Monoxide Exposure",
-      "sourceProtocolId": "oscg-carbon-monoxide",
-      "canonicalSourceProtocolId": "oscg-carbon-monoxide",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3548fd649af8b1c2a01a2ba627cd6a5cc48871497f986a2d645691242d132d70",
-      "redirectTarget": "",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Carbon monoxide poisoning\", https://www.nhs.uk/conditions/carbon-monoxide-poisoning/ (page last reviewed 16 December 2025)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published carbon monoxide poisoning guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -928,76 +500,6 @@
       }
     },
     {
-      "file": "json/nosebleed-child-male.db.json",
-      "algorithmId": 1027,
-      "title": "Nosebleed - Male (Child)",
-      "protocolFamily": "Nosebleed",
-      "sourceProtocolId": "oscg-nosebleed",
-      "canonicalSourceProtocolId": "oscg-nosebleed",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "048912cf16ed6fc4313a3eff86e39eeb7610d8d963487f99228270de43ed8b3d",
-      "redirectTarget": "Nose Injury",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Nosebleed\", https://www.nhs.uk/conditions/nosebleed/ (page last reviewed 05 December 2023)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published nosebleed guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/nosebleed-child-female.db.json",
-      "algorithmId": 1028,
-      "title": "Nosebleed - Female (Child)",
-      "protocolFamily": "Nosebleed",
-      "sourceProtocolId": "oscg-nosebleed",
-      "canonicalSourceProtocolId": "oscg-nosebleed",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "9bc48d1aa86528d9f8451f984e24ab98fc0820cf800aa7fcfc9a4e993426f89b",
-      "redirectTarget": "Nose Injury",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Nosebleed\", https://www.nhs.uk/conditions/nosebleed/ (page last reviewed 05 December 2023)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published nosebleed guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/headache-adult-male.db.json",
       "algorithmId": 1029,
       "title": "Headache - Male (Adult)",
@@ -1059,76 +561,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/headache-child-male.db.json",
-      "algorithmId": 1031,
-      "title": "Headache - Male (Child)",
-      "protocolFamily": "Headache",
-      "sourceProtocolId": "oscg-headache",
-      "canonicalSourceProtocolId": "oscg-headache",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "035fcca62996e363ad29a23ae1204dedfeddc58865b35590c0ac0fdc5b4b6dea",
-      "redirectTarget": "",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Headaches\", https://www.nhs.uk/conditions/headaches/ (page last reviewed 17 April 2024)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published headaches guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/headache-child-female.db.json",
-      "algorithmId": 1032,
-      "title": "Headache - Female (Child)",
-      "protocolFamily": "Headache",
-      "sourceProtocolId": "oscg-headache",
-      "canonicalSourceProtocolId": "oscg-headache",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "4e82dea09eee7bbe386b362cdb87203f698e0ee9d2b9ef009cdc23de5007db06",
-      "redirectTarget": "",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Headaches\", https://www.nhs.uk/conditions/headaches/ (page last reviewed 17 April 2024)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published headaches guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -1204,76 +636,6 @@
       }
     },
     {
-      "file": "json/sunburn-child-male.db.json",
-      "algorithmId": 1035,
-      "title": "Sunburn - Male (Child)",
-      "protocolFamily": "Sunburn",
-      "sourceProtocolId": "oscg-sunburn",
-      "canonicalSourceProtocolId": "oscg-sunburn",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "e787d07f4523f76c50940d38767decbe0be03c5f66b2280b6f4420ed604b8aa5",
-      "redirectTarget": "Burns - Thermal | Burns - Chemical",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Sunburn\", https://www.nhs.uk/conditions/sunburn/ (page last reviewed 24 November 2025)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published sunburn guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/sunburn-child-female.db.json",
-      "algorithmId": 1036,
-      "title": "Sunburn - Female (Child)",
-      "protocolFamily": "Sunburn",
-      "sourceProtocolId": "oscg-sunburn",
-      "canonicalSourceProtocolId": "oscg-sunburn",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "d9b3958c5725f445dcb6f1f8c7c739483fdcbb32dd53f9749292a6371083a702",
-      "redirectTarget": "Burns - Thermal | Burns - Chemical",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Sunburn\", https://www.nhs.uk/conditions/sunburn/ (page last reviewed 24 November 2025)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published sunburn guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/frostbite-adult-male.db.json",
       "algorithmId": 1037,
       "title": "Frostbite - Male (Adult)",
@@ -1335,76 +697,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/frostbite-child-male.db.json",
-      "algorithmId": 1039,
-      "title": "Frostbite - Male (Child)",
-      "protocolFamily": "Frostbite",
-      "sourceProtocolId": "oscg-frostbite",
-      "canonicalSourceProtocolId": "oscg-frostbite",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "86d9ab590ecba0958803aac747fdc9f470d83385b3d38671d0cdd5122a02a30c",
-      "redirectTarget": "Cold Exposure (Hypothermia)",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Frostbite\", https://www.nhs.uk/conditions/frostbite/ (page last reviewed 09 June 2025)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published frostbite guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/frostbite-child-female.db.json",
-      "algorithmId": 1040,
-      "title": "Frostbite - Female (Child)",
-      "protocolFamily": "Frostbite",
-      "sourceProtocolId": "oscg-frostbite",
-      "canonicalSourceProtocolId": "oscg-frostbite",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch01-canonical-source-regeneration-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "50897d9bcf0aa4a3597f01c5ab36eff7a64782596479fcd19e384a839376ed3f",
-      "redirectTarget": "Cold Exposure (Hypothermia)",
-      "sourceProvenance": {
-        "usageStatus": "UAT_ONLY",
-        "productionEligible": false,
-        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
-        "requiresClinicalValidation": true,
-        "licensedContentIncluded": false,
-        "sourceDocuments": [
-          "NHS.UK, \"Frostbite\", https://www.nhs.uk/conditions/frostbite/ (page last reviewed 09 June 2025)"
-        ],
-        "contentNotice": "Decomposed from NHS.UK's published frostbite guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use. UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation draft. Exact Qatar routes, medication/dose eligibility, pediatric handling, pregnancy/postpartum handling, safeguarding, and escalation details are GOVERNANCE_REQUIRED. All branches are non-telemedicine pending Qatar clinical and nursing approval."
-      },
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

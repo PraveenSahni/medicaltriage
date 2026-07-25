@@ -18,7 +18,7 @@
     "catalog:preflight": "node scripts/preflightOpenSourceCatalog.mjs",
     "catalog:preflight:self-test": "node scripts/preflightOpenSourceCatalog.mjs --self-test",
     "catalog:regenerate:plan": "node scripts/regenerateOpenSourceCatalog.mjs",
-    "catalog:regenerate": "node scripts/regenerateOpenSourceCatalog.mjs --execute --canonical-approved --confirm REGENERATE-UAT-CATALOG-504",
+    "catalog:regenerate": "node scripts/regenerateOpenSourceCatalog.mjs --execute --canonical-approved --confirm REGENERATE-ADULT-UAT-CATALOG-258",
     "simulation:run": "tsx src/scripts/generateSimulationDataset.ts",
     "simulation:jsonl": "tsx src/scripts/generateSimulationDataset.ts --jsonl",
     "synthetic:employees": "node scripts/runPython.mjs python/generate_synthetic_pdp_data.py --print-summary",

@@ -11,6 +11,7 @@ import {
   fingerprintTree,
   verifiedOsTempRoot,
 } from "./lib/isolatedTemp.mjs";
+import { ADULT_ONLY_CATALOG_COUNT } from "./adultOnlyCatalogPolicy.mjs";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SOURCE_ROOT = path.join(REPO_ROOT, "src", "data", "openSourceGuidelines");
@@ -169,8 +170,14 @@ function auditGeneratedCatalog(catalog) {
   }
 
   const uniqueIds = new Set(algorithmIds);
-  if (algorithmIds.length !== 504 || uniqueIds.size !== 504) {
-    errors.push(`Expected 504 unique generated AlgorithmIDs; received ${algorithmIds.length}/${uniqueIds.size}`);
+  if (
+    algorithmIds.length !== ADULT_ONLY_CATALOG_COUNT ||
+    uniqueIds.size !== ADULT_ONLY_CATALOG_COUNT
+  ) {
+    errors.push(
+      `Expected ${ADULT_ONLY_CATALOG_COUNT} unique adult-only AlgorithmIDs; ` +
+      `received ${algorithmIds.length}/${uniqueIds.size}`,
+    );
   }
   if (blockedUsages.length) {
     errors.push(`${blockedUsages.length} generated redirect usage(s) remain blocked`);
@@ -277,10 +284,10 @@ function main() {
         "--batch-root", batchRoot(stagingCatalog, batch),
         "--manifest", manifestName(batch),
       ], stagingRoot);
-      const validatorName = `validate-batch${String(batch).padStart(2, "0")}.mjs`;
+      const validatorName = "validate-adult-only-batch.mjs";
       const stagingBatchValidator = path.join(stagingCatalogScripts, validatorName);
       fs.copyFileSync(path.join(GENERATOR_ROOT, validatorName), stagingBatchValidator);
-      const validatorResult = runResult(process.execPath, [stagingBatchValidator], stagingRoot);
+      const validatorResult = runResult(process.execPath, [stagingBatchValidator, String(batch)], stagingRoot);
       const validatorOutput = `${validatorResult.stdout ?? ""}${validatorResult.stderr ?? ""}`.trim();
       if (validatorResult.status !== 0) {
         batchValidatorFailures.push({ batch, output: validatorOutput });
@@ -301,6 +308,10 @@ function main() {
     fs.mkdirSync(stagingScripts, { recursive: true });
     const stagingValidator = path.join(stagingScripts, "validateOpenSourceCatalog.mjs");
     fs.copyFileSync(path.join(REPO_ROOT, "scripts", "validateOpenSourceCatalog.mjs"), stagingValidator);
+    fs.copyFileSync(
+      path.join(REPO_ROOT, "scripts", "adultOnlyCatalogPolicy.mjs"),
+      path.join(stagingScripts, "adultOnlyCatalogPolicy.mjs"),
+    );
     const acceptanceResult = spawnSync(process.execPath, [stagingValidator, "--skip-pdfs"], {
       cwd: stagingRoot,
       encoding: "utf8",

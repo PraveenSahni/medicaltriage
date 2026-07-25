@@ -152,6 +152,7 @@ for (const protocol of batch03Protocols) {
   for (const age of ageGroups) {
     for (const gender of ["Male", "Female"] as const) {
       const algorithmId = nextId++;
+      if (age.label === "Child") continue;
       const ageSlug = age.label.toLowerCase();
       const slug = `${slugify(protocol.titleEn)}-${ageSlug}-${gender.toLowerCase()}`;
       const adviceIds = new Map(

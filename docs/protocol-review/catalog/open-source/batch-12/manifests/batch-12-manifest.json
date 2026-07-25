@@ -3,14 +3,14 @@
   "importBatch": "open-source-batch-12",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 5,
-  "protocolCount": 20,
+  "protocolCount": 10,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1265-1284",
   "applicabilityPolicy": {
     "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
-    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "pediatricSpecificProtocols": "Excluded from this adult-only UAT catalog.",
     "adultSpecificProtocols": "Adult-only; never generate Child variants.",
-    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "mixedAgeProtocols": "Generate Adult variants only; under-18 use is outside this UAT catalog.",
     "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
   },
   "excludedSourceFamilies": [
@@ -67,54 +67,6 @@
       }
     },
     {
-      "file": "json/skin-foreign-body-child-male.db.json",
-      "algorithmId": 1267,
-      "title": "Skin Foreign Body - Male (Child)",
-      "protocolFamily": "Skin Foreign Body",
-      "sourceProtocolId": "oscg-skin-foreign-body",
-      "canonicalSourceProtocolId": "oscg-skin-foreign-body",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch12-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "b931a55bb74e6244284ed65113366d008ff346f56fc499b20a4c7213f9074d27",
-      "redirectTarget": "Puncture Wound",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/skin-foreign-body-child-female.db.json",
-      "algorithmId": 1268,
-      "title": "Skin Foreign Body - Female (Child)",
-      "protocolFamily": "Skin Foreign Body",
-      "sourceProtocolId": "oscg-skin-foreign-body",
-      "canonicalSourceProtocolId": "oscg-skin-foreign-body",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch12-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3eda10197df34a811f4944534c197c76cdeec54bb69c6737da8ebd4859209e2b",
-      "redirectTarget": "Puncture Wound",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/stools-unusual-color-adult-male.db.json",
       "algorithmId": 1269,
       "title": "Stools - Unusual Color - Male (Adult)",
@@ -154,54 +106,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/stools-unusual-color-child-male.db.json",
-      "algorithmId": 1271,
-      "title": "Stools - Unusual Color - Male (Child)",
-      "protocolFamily": "Stools - Unusual Color",
-      "sourceProtocolId": "oscg-unusual-stool-color",
-      "canonicalSourceProtocolId": "oscg-unusual-stool-color",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch12-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "aeaf4d896e992a2c718f57e39a783c740a7b046d96421a81309a018ad794d4b0",
-      "redirectTarget": "Diarrhea",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/stools-unusual-color-child-female.db.json",
-      "algorithmId": 1272,
-      "title": "Stools - Unusual Color - Female (Child)",
-      "protocolFamily": "Stools - Unusual Color",
-      "sourceProtocolId": "oscg-unusual-stool-color",
-      "canonicalSourceProtocolId": "oscg-unusual-stool-color",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch12-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "757f33d1025927e22b7fccf2843c4f610845a29e041d5ca3fc6c4ba7ee1038ee",
-      "redirectTarget": "Diarrhea",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -255,54 +159,6 @@
       }
     },
     {
-      "file": "json/swallowed-foreign-body-child-male.db.json",
-      "algorithmId": 1275,
-      "title": "Swallowed Foreign Body - Male (Child)",
-      "protocolFamily": "Swallowed Foreign Body",
-      "sourceProtocolId": "oscg-swallowed-foreign-body",
-      "canonicalSourceProtocolId": "oscg-swallowed-foreign-body",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch12-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "17190d6e89270b347496886f08f244a443504c8c031028441f14800ede0d0670",
-      "redirectTarget": "Poisoning",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/swallowed-foreign-body-child-female.db.json",
-      "algorithmId": 1276,
-      "title": "Swallowed Foreign Body - Female (Child)",
-      "protocolFamily": "Swallowed Foreign Body",
-      "sourceProtocolId": "oscg-swallowed-foreign-body",
-      "canonicalSourceProtocolId": "oscg-swallowed-foreign-body",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch12-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "87779e012afa2712ec2e1fbf1be7bd0611e5a5a5ab7e7ddf2d1d286a91073887",
-      "redirectTarget": "Poisoning",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/sores-adult-male.db.json",
       "algorithmId": 1277,
       "title": "Sores - Male (Adult)",
@@ -349,54 +205,6 @@
       }
     },
     {
-      "file": "json/sores-child-male.db.json",
-      "algorithmId": 1279,
-      "title": "Sores - Male (Child)",
-      "protocolFamily": "Sores",
-      "sourceProtocolId": "oscg-sores",
-      "canonicalSourceProtocolId": "oscg-sores",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch12-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "762dfe97f6bec760127d0220f7bbd96f585fe6982bef3c426640120e923afb39",
-      "redirectTarget": "Boil (Skin Abscess)",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/sores-child-female.db.json",
-      "algorithmId": 1280,
-      "title": "Sores - Female (Child)",
-      "protocolFamily": "Sores",
-      "sourceProtocolId": "oscg-sores",
-      "canonicalSourceProtocolId": "oscg-sores",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch12-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "40173e8f0e99dea5a67aef37fb812610aa386cc754d7231eed0b3a0ab169c0cb",
-      "redirectTarget": "Boil (Skin Abscess)",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/skin-injury-adult-male.db.json",
       "algorithmId": 1281,
       "title": "Skin Injury - Male (Adult)",
@@ -436,54 +244,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/skin-injury-child-male.db.json",
-      "algorithmId": 1283,
-      "title": "Skin Injury - Male (Child)",
-      "protocolFamily": "Skin Injury",
-      "sourceProtocolId": "oscg-skin-injury",
-      "canonicalSourceProtocolId": "oscg-skin-injury",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch12-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "dda900239b00f481569b2a0997aafd09372e12ae460bd7ca63ff94b171c64f94",
-      "redirectTarget": "Burns - Thermal",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/skin-injury-child-female.db.json",
-      "algorithmId": 1284,
-      "title": "Skin Injury - Female (Child)",
-      "protocolFamily": "Skin Injury",
-      "sourceProtocolId": "oscg-skin-injury",
-      "canonicalSourceProtocolId": "oscg-skin-injury",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch12-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "4a232b8fc7401003a8508134331752c2659b3ef3a4bf954da5fb0fdf27285c9a",
-      "redirectTarget": "Burns - Thermal",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

@@ -1,6 +1,6 @@
 {
   "batch": "19",
-  "count": 60,
+  "count": 30,
   "gaps": [
     {
       "gapId": "B19-1405-algorithm-LastRevised",
@@ -46,54 +46,6 @@
       "gapId": "B19-1406-localization",
       "algorithmId": 1406,
       "protocol": "Eye - Redness - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1407-algorithm-LastRevised",
-      "algorithmId": 1407,
-      "protocol": "Eye - Redness - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1407-clinicalReview",
-      "algorithmId": 1407,
-      "protocol": "Eye - Redness - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1407-localization",
-      "algorithmId": 1407,
-      "protocol": "Eye - Redness - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1408-algorithm-LastRevised",
-      "algorithmId": 1408,
-      "protocol": "Eye - Redness - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1408-clinicalReview",
-      "algorithmId": 1408,
-      "protocol": "Eye - Redness - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1408-localization",
-      "algorithmId": 1408,
-      "protocol": "Eye - Redness - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -147,54 +99,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B19-1411-algorithm-LastRevised",
-      "algorithmId": 1411,
-      "protocol": "Blood Pressure - Low - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1411-clinicalReview",
-      "algorithmId": 1411,
-      "protocol": "Blood Pressure - Low - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1411-localization",
-      "algorithmId": 1411,
-      "protocol": "Blood Pressure - Low - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1412-algorithm-LastRevised",
-      "algorithmId": 1412,
-      "protocol": "Blood Pressure - Low - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1412-clinicalReview",
-      "algorithmId": 1412,
-      "protocol": "Blood Pressure - Low - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1412-localization",
-      "algorithmId": 1412,
-      "protocol": "Blood Pressure - Low - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B19-1413-algorithm-LastRevised",
       "algorithmId": 1413,
       "protocol": "Influenza (Flu) Suspected - Male (Adult)",
@@ -238,54 +142,6 @@
       "gapId": "B19-1414-localization",
       "algorithmId": 1414,
       "protocol": "Influenza (Flu) Suspected - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1415-algorithm-LastRevised",
-      "algorithmId": 1415,
-      "protocol": "Influenza (Flu) Suspected - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1415-clinicalReview",
-      "algorithmId": 1415,
-      "protocol": "Influenza (Flu) Suspected - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1415-localization",
-      "algorithmId": 1415,
-      "protocol": "Influenza (Flu) Suspected - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1416-algorithm-LastRevised",
-      "algorithmId": 1416,
-      "protocol": "Influenza (Flu) Suspected - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1416-clinicalReview",
-      "algorithmId": 1416,
-      "protocol": "Influenza (Flu) Suspected - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1416-localization",
-      "algorithmId": 1416,
-      "protocol": "Influenza (Flu) Suspected - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -339,54 +195,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B19-1419-algorithm-LastRevised",
-      "algorithmId": 1419,
-      "protocol": "Hernia - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1419-clinicalReview",
-      "algorithmId": 1419,
-      "protocol": "Hernia - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1419-localization",
-      "algorithmId": 1419,
-      "protocol": "Hernia - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1420-algorithm-LastRevised",
-      "algorithmId": 1420,
-      "protocol": "Hernia - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1420-clinicalReview",
-      "algorithmId": 1420,
-      "protocol": "Hernia - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1420-localization",
-      "algorithmId": 1420,
-      "protocol": "Hernia - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B19-1421-algorithm-LastRevised",
       "algorithmId": 1421,
       "protocol": "Blister - Foot and Hand - Male (Adult)",
@@ -430,54 +238,6 @@
       "gapId": "B19-1422-localization",
       "algorithmId": 1422,
       "protocol": "Blister - Foot and Hand - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1423-algorithm-LastRevised",
-      "algorithmId": 1423,
-      "protocol": "Blister - Foot and Hand - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1423-clinicalReview",
-      "algorithmId": 1423,
-      "protocol": "Blister - Foot and Hand - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1423-localization",
-      "algorithmId": 1423,
-      "protocol": "Blister - Foot and Hand - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1424-algorithm-LastRevised",
-      "algorithmId": 1424,
-      "protocol": "Blister - Foot and Hand - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1424-clinicalReview",
-      "algorithmId": 1424,
-      "protocol": "Blister - Foot and Hand - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B19-1424-localization",
-      "algorithmId": 1424,
-      "protocol": "Blister - Foot and Hand - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"

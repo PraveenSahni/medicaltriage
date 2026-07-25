@@ -3,14 +3,14 @@
   "importBatch": "open-source-batch-16",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 5,
-  "protocolCount": 20,
+  "protocolCount": 10,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1345-1364",
   "applicabilityPolicy": {
     "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
-    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "pediatricSpecificProtocols": "Excluded from this adult-only UAT catalog.",
     "adultSpecificProtocols": "Adult-only; never generate Child variants.",
-    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "mixedAgeProtocols": "Generate Adult variants only; under-18 use is outside this UAT catalog.",
     "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
   },
   "excludedSourceFamilies": [
@@ -68,54 +68,6 @@
       }
     },
     {
-      "file": "json/warts-child-male.db.json",
-      "algorithmId": 1347,
-      "title": "Warts - Male (Child)",
-      "protocolFamily": "Warts",
-      "sourceProtocolId": "oscg-warts",
-      "canonicalSourceProtocolId": "oscg-warts",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch16-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "2906eff2fb8b7a38535960d45ffb6a3f916738b292634675034a8553e8a9b191",
-      "redirectTarget": "Skin Injury",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/warts-child-female.db.json",
-      "algorithmId": 1348,
-      "title": "Warts - Female (Child)",
-      "protocolFamily": "Warts",
-      "sourceProtocolId": "oscg-warts",
-      "canonicalSourceProtocolId": "oscg-warts",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch16-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "0d7fac1a47fe924284f26f957f0a3b861f43417c17a01cb9362a072a98902d9f",
-      "redirectTarget": "Skin Injury",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/falls-and-falling-adult-male.db.json",
       "algorithmId": 1349,
       "title": "Falls and Falling - Male (Adult)",
@@ -155,54 +107,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/falls-and-falling-child-male.db.json",
-      "algorithmId": 1351,
-      "title": "Falls and Falling - Male (Child)",
-      "protocolFamily": "Falls and Falling",
-      "sourceProtocolId": "oscg-falls-and-falling",
-      "canonicalSourceProtocolId": "oscg-falls-and-falling",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch16-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "d8f98226aa38e637a8c73d8854fb90e93c10af15e0162897ca9529a501b855ca",
-      "redirectTarget": "Fainting",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/falls-and-falling-child-female.db.json",
-      "algorithmId": 1352,
-      "title": "Falls and Falling - Female (Child)",
-      "protocolFamily": "Falls and Falling",
-      "sourceProtocolId": "oscg-falls-and-falling",
-      "canonicalSourceProtocolId": "oscg-falls-and-falling",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch16-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "313c5ae07b34109c007358677d7555b63ae9c9dcd86a3cc2720e74481edee183",
-      "redirectTarget": "Fainting",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -256,54 +160,6 @@
       }
     },
     {
-      "file": "json/tooth-extraction-child-male.db.json",
-      "algorithmId": 1355,
-      "title": "Tooth Extraction - Male (Child)",
-      "protocolFamily": "Tooth Extraction",
-      "sourceProtocolId": "oscg-tooth-extraction",
-      "canonicalSourceProtocolId": "oscg-tooth-extraction",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch16-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "4438719059f17d8ee3eab3103548dd1497d4e80f137dd6671f08cbb317523d31",
-      "redirectTarget": "Cuts and Lacerations",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/tooth-extraction-child-female.db.json",
-      "algorithmId": 1356,
-      "title": "Tooth Extraction - Female (Child)",
-      "protocolFamily": "Tooth Extraction",
-      "sourceProtocolId": "oscg-tooth-extraction",
-      "canonicalSourceProtocolId": "oscg-tooth-extraction",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch16-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3f92f4455ec4ea5a1a0c2af49e21fd8b1091fcd3cef598c50e2e914d22105a2d",
-      "redirectTarget": "Cuts and Lacerations",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/cough-chronic-adult-male.db.json",
       "algorithmId": 1357,
       "title": "Cough - Chronic - Male (Adult)",
@@ -350,54 +206,6 @@
       }
     },
     {
-      "file": "json/cough-chronic-child-male.db.json",
-      "algorithmId": 1359,
-      "title": "Cough - Chronic - Male (Child)",
-      "protocolFamily": "Cough - Chronic",
-      "sourceProtocolId": "oscg-cough-chronic",
-      "canonicalSourceProtocolId": "oscg-cough-chronic",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch16-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "662eda2bb97fc26b0d8b1ab76a49670e904ca5979391a949180e30466ff8d477",
-      "redirectTarget": "DIRECT_DISPOSITION_100 | DIRECT_DISPOSITION_70",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/cough-chronic-child-female.db.json",
-      "algorithmId": 1360,
-      "title": "Cough - Chronic - Female (Child)",
-      "protocolFamily": "Cough - Chronic",
-      "sourceProtocolId": "oscg-cough-chronic",
-      "canonicalSourceProtocolId": "oscg-cough-chronic",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch16-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "f4dd43279dfbc7a70021f3ccc64e74cbe7d420946731498f8718007f7667c68a",
-      "redirectTarget": "DIRECT_DISPOSITION_100 | DIRECT_DISPOSITION_70",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/alcohol-use-and-problems-adult-male.db.json",
       "algorithmId": 1361,
       "title": "Alcohol Use and Problems - Male (Adult)",
@@ -437,54 +245,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/alcohol-use-and-problems-child-male.db.json",
-      "algorithmId": 1363,
-      "title": "Alcohol Use and Problems - Male (Child)",
-      "protocolFamily": "Alcohol Use and Problems",
-      "sourceProtocolId": "oscg-alcohol-use-and-problems",
-      "canonicalSourceProtocolId": "oscg-alcohol-use-and-problems",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch16-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "1340b18e3f1425a9a5817bbd7fd37b846364fb81bc41b7b385036690d1f0b301",
-      "redirectTarget": "Poisoning",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/alcohol-use-and-problems-child-female.db.json",
-      "algorithmId": 1364,
-      "title": "Alcohol Use and Problems - Female (Child)",
-      "protocolFamily": "Alcohol Use and Problems",
-      "sourceProtocolId": "oscg-alcohol-use-and-problems",
-      "canonicalSourceProtocolId": "oscg-alcohol-use-and-problems",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch16-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "df784c0dcd25051eb8f1ce69aa2a56b3e2b3a3dec34b8bc635e30f9e4aeae4d0",
-      "redirectTarget": "Poisoning",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

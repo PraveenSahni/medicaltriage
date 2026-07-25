@@ -65,6 +65,7 @@ for (const protocol of selected) {
   ]) {
     for (const gender of ["Male", "Female"] as const) {
       const algorithmId = nextId++;
+      if (age.label === "Child") continue;
       const slug = `${slugify(protocol.titleEn)}-${age.label.toLowerCase()}-${gender.toLowerCase()}`;
       const adviceIds = new Map(
         protocol.careAdvice.map((advice, index) => [advice.id, algorithmId * 100 + index + 1]),

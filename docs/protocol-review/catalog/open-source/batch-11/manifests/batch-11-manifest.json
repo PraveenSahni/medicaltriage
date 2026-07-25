@@ -3,14 +3,14 @@
   "importBatch": "open-source-batch-11",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 5,
-  "protocolCount": 20,
+  "protocolCount": 10,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1245-1264",
   "applicabilityPolicy": {
     "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
-    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "pediatricSpecificProtocols": "Excluded from this adult-only UAT catalog.",
     "adultSpecificProtocols": "Adult-only; never generate Child variants.",
-    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "mixedAgeProtocols": "Generate Adult variants only; under-18 use is outside this UAT catalog.",
     "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
   },
   "excludedSourceFamilies": [
@@ -67,54 +67,6 @@
       }
     },
     {
-      "file": "json/chest-injury-child-male.db.json",
-      "algorithmId": 1247,
-      "title": "Chest Injury - Male (Child)",
-      "protocolFamily": "Chest Injury",
-      "sourceProtocolId": "oscg-chest-injury",
-      "canonicalSourceProtocolId": "oscg-chest-injury",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch11-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "f2801770a83478d2d3275696d95ed8f92cdccf85f39d1a178d45841790220468",
-      "redirectTarget": "Motor Vehicle Accident",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/chest-injury-child-female.db.json",
-      "algorithmId": 1248,
-      "title": "Chest Injury - Female (Child)",
-      "protocolFamily": "Chest Injury",
-      "sourceProtocolId": "oscg-chest-injury",
-      "canonicalSourceProtocolId": "oscg-chest-injury",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch11-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "207abaced9ecd062d90c484e9488d3a6da2b1fe02068479452801408fcf8229d",
-      "redirectTarget": "Motor Vehicle Accident",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/rash-or-redness-widespread-adult-male.db.json",
       "algorithmId": 1249,
       "title": "Rash or Redness - Widespread - Male (Adult)",
@@ -154,54 +106,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/rash-or-redness-widespread-child-male.db.json",
-      "algorithmId": 1251,
-      "title": "Rash or Redness - Widespread - Male (Child)",
-      "protocolFamily": "Rash or Redness - Widespread",
-      "sourceProtocolId": "oscg-rash-widespread",
-      "canonicalSourceProtocolId": "oscg-rash-widespread",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch11-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "0ce09ee9cbc224666c678b54ced39b5fea81ce2e2b40db3a72a82a22f2cc5e9d",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/rash-or-redness-widespread-child-female.db.json",
-      "algorithmId": 1252,
-      "title": "Rash or Redness - Widespread - Female (Child)",
-      "protocolFamily": "Rash or Redness - Widespread",
-      "sourceProtocolId": "oscg-rash-widespread",
-      "canonicalSourceProtocolId": "oscg-rash-widespread",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch11-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "cad8188788d00709460510ff4a23b74799898da1ed10d0d3d9f15c52fb3daeca",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -255,54 +159,6 @@
       }
     },
     {
-      "file": "json/scrapes-child-male.db.json",
-      "algorithmId": 1255,
-      "title": "Scrapes - Male (Child)",
-      "protocolFamily": "Scrapes",
-      "sourceProtocolId": "oscg-scrapes",
-      "canonicalSourceProtocolId": "oscg-scrapes",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch11-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "5d82b9fad397dd2486a7e560c924e657dae3d68ca14ebc392451139a061f4285",
-      "redirectTarget": "Cuts and Lacerations",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/scrapes-child-female.db.json",
-      "algorithmId": 1256,
-      "title": "Scrapes - Female (Child)",
-      "protocolFamily": "Scrapes",
-      "sourceProtocolId": "oscg-scrapes",
-      "canonicalSourceProtocolId": "oscg-scrapes",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch11-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "6704f7ebe74772258e1fb05c6d3da67f8a6fc2ed6afb03cfa1324561f466a2a0",
-      "redirectTarget": "Cuts and Lacerations",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/shingles-zoster-adult-male.db.json",
       "algorithmId": 1257,
       "title": "Shingles (Zoster) - Male (Adult)",
@@ -349,54 +205,6 @@
       }
     },
     {
-      "file": "json/shingles-zoster-child-male.db.json",
-      "algorithmId": 1259,
-      "title": "Shingles (Zoster) - Male (Child)",
-      "protocolFamily": "Shingles (Zoster)",
-      "sourceProtocolId": "oscg-shingles",
-      "canonicalSourceProtocolId": "oscg-shingles",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch11-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "565a7e34f30f29550b44c27a6c194fbfce5ea7f5b6edb70c5752acbda66d4567",
-      "redirectTarget": "Rash or Redness - Widespread",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/shingles-zoster-child-female.db.json",
-      "algorithmId": 1260,
-      "title": "Shingles (Zoster) - Female (Child)",
-      "protocolFamily": "Shingles (Zoster)",
-      "sourceProtocolId": "oscg-shingles",
-      "canonicalSourceProtocolId": "oscg-shingles",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch11-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "89f6ee0df20343354e5c518fec74191e0c7ac0249cfdd933e3c61dda60b8e748",
-      "redirectTarget": "Rash or Redness - Widespread",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/sinus-pain-or-congestion-adult-male.db.json",
       "algorithmId": 1261,
       "title": "Sinus Pain or Congestion - Male (Adult)",
@@ -436,54 +244,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/sinus-pain-or-congestion-child-male.db.json",
-      "algorithmId": 1263,
-      "title": "Sinus Pain or Congestion - Male (Child)",
-      "protocolFamily": "Sinus Pain or Congestion",
-      "sourceProtocolId": "oscg-sinus-pain-congestion",
-      "canonicalSourceProtocolId": "oscg-sinus-pain-congestion",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch11-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "77140c501f9443778ff70002add1183834fced25ed50d2967b57eed91d223c4d",
-      "redirectTarget": "Nasal Allergies",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/sinus-pain-or-congestion-child-female.db.json",
-      "algorithmId": 1264,
-      "title": "Sinus Pain or Congestion - Female (Child)",
-      "protocolFamily": "Sinus Pain or Congestion",
-      "sourceProtocolId": "oscg-sinus-pain-congestion",
-      "canonicalSourceProtocolId": "oscg-sinus-pain-congestion",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch11-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "15a16f2dff2d118d4998c7890d0fb51f76c8003c11b760347ecaf5e975454d28",
-      "redirectTarget": "Nasal Allergies",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

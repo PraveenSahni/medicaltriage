@@ -3,14 +3,14 @@
   "importBatch": "open-source-batch-20",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 10,
-  "protocolCount": 20,
+  "protocolCount": 10,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1425-1444",
   "applicabilityPolicy": {
     "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
-    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "pediatricSpecificProtocols": "Excluded from this adult-only UAT catalog.",
     "adultSpecificProtocols": "Adult-only; never generate Child variants.",
-    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "mixedAgeProtocols": "Generate Adult variants only; under-18 use is outside this UAT catalog.",
     "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
   },
   "excludedSourceFamilies": [
@@ -43,30 +43,6 @@
       }
     },
     {
-      "file": "json/postpartum-headache-child-female.db.json",
-      "algorithmId": 1426,
-      "title": "Postpartum - Headache - Female (Child)",
-      "protocolFamily": "Postpartum - Headache",
-      "sourceProtocolId": "oscg-postpartum-headache",
-      "canonicalSourceProtocolId": "oscg-postpartum-headache",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "ace00ac884903b2eb7c6ac9ab2a90647776c1c27ec0560cd9e414f0edcef335b",
-      "redirectTarget": "Headache",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/postpartum-high-blood-pressure-adult-female.db.json",
       "algorithmId": 1427,
       "title": "Postpartum - High Blood Pressure - Female (Adult)",
@@ -83,30 +59,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/postpartum-high-blood-pressure-child-female.db.json",
-      "algorithmId": 1428,
-      "title": "Postpartum - High Blood Pressure - Female (Child)",
-      "protocolFamily": "Postpartum - High Blood Pressure",
-      "sourceProtocolId": "oscg-postpartum-high-blood-pressure",
-      "canonicalSourceProtocolId": "oscg-postpartum-high-blood-pressure",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "e107b946b2424be1b8528c4693afb0f33762054020eaa07201e1df3087fbb715",
-      "redirectTarget": "DIRECT_DISPOSITION_70",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -137,30 +89,6 @@
       }
     },
     {
-      "file": "json/postpartum-vision-loss-or-change-child-female.db.json",
-      "algorithmId": 1430,
-      "title": "Postpartum - Vision Loss or Change - Female (Child)",
-      "protocolFamily": "Postpartum - Vision Loss or Change",
-      "sourceProtocolId": "oscg-postpartum-vision-loss-or-change",
-      "canonicalSourceProtocolId": "oscg-postpartum-vision-loss-or-change",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "fea75a71c4e76ed6eecd199f1e634ca95a71b2b6d29f1f75cce086460309d714",
-      "redirectTarget": "Vision Loss or Change",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/postpartum-c-section-symptoms-adult-female.db.json",
       "algorithmId": 1431,
       "title": "Postpartum - C-section Symptoms - Female (Adult)",
@@ -177,30 +105,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/postpartum-c-section-symptoms-child-female.db.json",
-      "algorithmId": 1432,
-      "title": "Postpartum - C-section Symptoms - Female (Child)",
-      "protocolFamily": "Postpartum - C-section Symptoms",
-      "sourceProtocolId": "oscg-postpartum-csection-symptoms",
-      "canonicalSourceProtocolId": "oscg-postpartum-csection-symptoms",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "fc2e8bcc51bd9c75f6f429302551ba604aa33cebd68164f075ac104bd0f8bd15",
-      "redirectTarget": "Skin Injury",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -231,30 +135,6 @@
       }
     },
     {
-      "file": "json/postpartum-leg-pain-child-female.db.json",
-      "algorithmId": 1434,
-      "title": "Postpartum - Leg Pain - Female (Child)",
-      "protocolFamily": "Postpartum - Leg Pain",
-      "sourceProtocolId": "oscg-postpartum-leg-pain",
-      "canonicalSourceProtocolId": "oscg-postpartum-leg-pain",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "752ddfd37a53573e9887ada65e56830715e4f3670f45cb66d187d5bdff306fd4",
-      "redirectTarget": "Neurologic Deficit",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/postpartum-leg-swelling-and-edema-adult-female.db.json",
       "algorithmId": 1435,
       "title": "Postpartum - Leg Swelling and Edema - Female (Adult)",
@@ -271,30 +151,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/postpartum-leg-swelling-and-edema-child-female.db.json",
-      "algorithmId": 1436,
-      "title": "Postpartum - Leg Swelling and Edema - Female (Child)",
-      "protocolFamily": "Postpartum - Leg Swelling and Edema",
-      "sourceProtocolId": "oscg-postpartum-leg-swelling-and-edema",
-      "canonicalSourceProtocolId": "oscg-postpartum-leg-swelling-and-edema",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "d5a5ad7f38f4e9b49b1f7b797338ecf6c570cc72dfd03e7638dbe2778bf9665f",
-      "redirectTarget": "DIRECT_DISPOSITION_100",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -325,30 +181,6 @@
       }
     },
     {
-      "file": "json/postpartum-urination-pain-child-female.db.json",
-      "algorithmId": 1438,
-      "title": "Postpartum - Urination Pain - Female (Child)",
-      "protocolFamily": "Postpartum - Urination Pain",
-      "sourceProtocolId": "oscg-postpartum-urination-pain",
-      "canonicalSourceProtocolId": "oscg-postpartum-urination-pain",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "b867a025eb432951ccdbbcf4a486d4348e4d6e416ef55a6beeb419c54252fe5e",
-      "redirectTarget": "Flank Pain",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/postpartum-fever-adult-female.db.json",
       "algorithmId": 1439,
       "title": "Postpartum - Fever - Female (Adult)",
@@ -365,30 +197,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/postpartum-fever-child-female.db.json",
-      "algorithmId": 1440,
-      "title": "Postpartum - Fever - Female (Child)",
-      "protocolFamily": "Postpartum - Fever",
-      "sourceProtocolId": "oscg-postpartum-fever",
-      "canonicalSourceProtocolId": "oscg-postpartum-fever",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "99f0445fd3563e3c8a1381cf4154ee32e9eaf2a1e68220ee82c1bf658807938a",
-      "redirectTarget": "COVID-19 - Diagnosed or Suspected",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -419,30 +227,6 @@
       }
     },
     {
-      "file": "json/postpartum-breast-pain-and-engorgement-child-female.db.json",
-      "algorithmId": 1442,
-      "title": "Postpartum - Breast Pain and Engorgement - Female (Child)",
-      "protocolFamily": "Postpartum - Breast Pain and Engorgement",
-      "sourceProtocolId": "oscg-postpartum-breast-pain-and-engorgement",
-      "canonicalSourceProtocolId": "oscg-postpartum-breast-pain-and-engorgement",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "34880092029017c99acad4ec139dab9513c5cb3d1dd99c047932c53d9cac6f49",
-      "redirectTarget": "Boil (Skin Abscess)",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/postpartum-vaginal-bleeding-and-lochia-adult-female.db.json",
       "algorithmId": 1443,
       "title": "Postpartum - Vaginal Bleeding and Lochia - Female (Adult)",
@@ -459,30 +243,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/postpartum-vaginal-bleeding-and-lochia-child-female.db.json",
-      "algorithmId": 1444,
-      "title": "Postpartum - Vaginal Bleeding and Lochia - Female (Child)",
-      "protocolFamily": "Postpartum - Vaginal Bleeding and Lochia",
-      "sourceProtocolId": "oscg-postpartum-vaginal-bleeding-and-lochia",
-      "canonicalSourceProtocolId": "oscg-postpartum-vaginal-bleeding-and-lochia",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "7c2d0232ddc20d8b5df378434da34b48cc5b756c75b02e69cc04ff67bfb07d08",
-      "redirectTarget": "Fainting",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

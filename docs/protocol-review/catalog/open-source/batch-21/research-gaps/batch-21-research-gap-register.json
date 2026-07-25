@@ -1,6 +1,6 @@
 {
   "batch": "21",
-  "count": 60,
+  "count": 54,
   "gaps": [
     {
       "gapId": "B21-1445-algorithm-LastRevised",
@@ -430,54 +430,6 @@
       "gapId": "B21-1462-localization",
       "algorithmId": 1462,
       "protocol": "Knee Swelling - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B21-1463-algorithm-LastRevised",
-      "algorithmId": 1463,
-      "protocol": "Ankle Pain - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B21-1463-clinicalReview",
-      "algorithmId": 1463,
-      "protocol": "Ankle Pain - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B21-1463-localization",
-      "algorithmId": 1463,
-      "protocol": "Ankle Pain - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B21-1464-algorithm-LastRevised",
-      "algorithmId": 1464,
-      "protocol": "Ankle Pain - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B21-1464-clinicalReview",
-      "algorithmId": 1464,
-      "protocol": "Ankle Pain - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B21-1464-localization",
-      "algorithmId": 1464,
-      "protocol": "Ankle Pain - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"

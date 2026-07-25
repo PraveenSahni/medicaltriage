@@ -141,6 +141,9 @@ export function generateDemographicBatch(config: Config) {
           display: selectedVariant?.ageDisplay,
         };
         const algorithmId = nextId++;
+        // The UAT catalog is intentionally adult-only. Reserve the historical
+        // child AlgorithmID so existing adult IDs never shift on regeneration.
+        if (age.label === "Child") continue;
         const context = { protocol, age: age.label, gender };
         const adapt = (value: string) =>
           config.adaptText
@@ -303,9 +306,9 @@ export function generateDemographicBatch(config: Config) {
     canonicalSourceFieldType: "string", algorithmIdRange: `${config.startId}-${config.endId}`,
     applicabilityPolicy: {
       pregnancySpecificProtocols: "Female-only; never generate Male variants.",
-      pediatricSpecificProtocols: "Child-only within source-supported ages; never generate Adult variants.",
+      pediatricSpecificProtocols: "Excluded from this adult-only UAT catalog.",
       adultSpecificProtocols: "Adult-only; never generate Child variants.",
-      mixedAgeProtocols: "Adult and Child variants only when the cited source supports both populations.",
+      mixedAgeProtocols: "Generate Adult variants only; under-18 use is outside this UAT catalog.",
       sexSpecificDifferences: "Only evidence-supported differences; never fabricate demographic content.",
     },
     excludedSourceFamilies: config.excludedNotes ?? [], entries,

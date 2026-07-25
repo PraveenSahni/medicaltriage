@@ -1,6 +1,6 @@
 {
   "batch": "03",
-  "count": 114,
+  "count": 60,
   "gaps": [
     {
       "gapId": "B03-1049-algorithm-LastRevised",
@@ -46,54 +46,6 @@
       "gapId": "B03-1050-localization",
       "algorithmId": 1050,
       "protocol": "Suicide Concerns - Female (Adult)",
-      "field": "localization",
-      "description": "Clinical governance must confirm the Qatar 999 emergency wording, HMC 16000 option 4 pathway, published service hours, and approved out-of-hours escalation.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1051-algorithm-LastRevised",
-      "algorithmId": 1051,
-      "protocol": "Suicide Concerns - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1051-clinicalReview",
-      "algorithmId": 1051,
-      "protocol": "Suicide Concerns - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1051-localization",
-      "algorithmId": 1051,
-      "protocol": "Suicide Concerns - Male (Child)",
-      "field": "localization",
-      "description": "Clinical governance must confirm the Qatar 999 emergency wording, HMC 16000 option 4 pathway, published service hours, and approved out-of-hours escalation.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1052-algorithm-LastRevised",
-      "algorithmId": 1052,
-      "protocol": "Suicide Concerns - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1052-clinicalReview",
-      "algorithmId": 1052,
-      "protocol": "Suicide Concerns - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1052-localization",
-      "algorithmId": 1052,
-      "protocol": "Suicide Concerns - Female (Child)",
       "field": "localization",
       "description": "Clinical governance must confirm the Qatar 999 emergency wording, HMC 16000 option 4 pathway, published service hours, and approved out-of-hours escalation.",
       "status": "OPEN"
@@ -147,54 +99,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B03-1055-algorithm-LastRevised",
-      "algorithmId": 1055,
-      "protocol": "Depression - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1055-clinicalReview",
-      "algorithmId": 1055,
-      "protocol": "Depression - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1055-localization",
-      "algorithmId": 1055,
-      "protocol": "Depression - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1056-algorithm-LastRevised",
-      "algorithmId": 1056,
-      "protocol": "Depression - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1056-clinicalReview",
-      "algorithmId": 1056,
-      "protocol": "Depression - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1056-localization",
-      "algorithmId": 1056,
-      "protocol": "Depression - Female (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B03-1057-algorithm-LastRevised",
       "algorithmId": 1057,
       "protocol": "Insomnia - Male (Adult)",
@@ -238,54 +142,6 @@
       "gapId": "B03-1058-localization",
       "algorithmId": 1058,
       "protocol": "Insomnia - Female (Adult)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1059-algorithm-LastRevised",
-      "algorithmId": 1059,
-      "protocol": "Insomnia - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1059-clinicalReview",
-      "algorithmId": 1059,
-      "protocol": "Insomnia - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1059-localization",
-      "algorithmId": 1059,
-      "protocol": "Insomnia - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1060-algorithm-LastRevised",
-      "algorithmId": 1060,
-      "protocol": "Insomnia - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1060-clinicalReview",
-      "algorithmId": 1060,
-      "protocol": "Insomnia - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1060-localization",
-      "algorithmId": 1060,
-      "protocol": "Insomnia - Female (Child)",
       "field": "localization",
       "description": "Local Qatar destination and callback instructions require approval.",
       "status": "OPEN"
@@ -339,54 +195,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B03-1063-algorithm-LastRevised",
-      "algorithmId": 1063,
-      "protocol": "Anxiety and Panic Attack - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1063-clinicalReview",
-      "algorithmId": 1063,
-      "protocol": "Anxiety and Panic Attack - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1063-localization",
-      "algorithmId": 1063,
-      "protocol": "Anxiety and Panic Attack - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1064-algorithm-LastRevised",
-      "algorithmId": 1064,
-      "protocol": "Anxiety and Panic Attack - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1064-clinicalReview",
-      "algorithmId": 1064,
-      "protocol": "Anxiety and Panic Attack - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1064-localization",
-      "algorithmId": 1064,
-      "protocol": "Anxiety and Panic Attack - Female (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B03-1065-algorithm-LastRevised",
       "algorithmId": 1065,
       "protocol": "Weakness (Generalized) and Fatigue - Male (Adult)",
@@ -430,54 +238,6 @@
       "gapId": "B03-1066-localization",
       "algorithmId": 1066,
       "protocol": "Weakness (Generalized) and Fatigue - Female (Adult)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1067-algorithm-LastRevised",
-      "algorithmId": 1067,
-      "protocol": "Weakness (Generalized) and Fatigue - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1067-clinicalReview",
-      "algorithmId": 1067,
-      "protocol": "Weakness (Generalized) and Fatigue - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1067-localization",
-      "algorithmId": 1067,
-      "protocol": "Weakness (Generalized) and Fatigue - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1068-algorithm-LastRevised",
-      "algorithmId": 1068,
-      "protocol": "Weakness (Generalized) and Fatigue - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1068-clinicalReview",
-      "algorithmId": 1068,
-      "protocol": "Weakness (Generalized) and Fatigue - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1068-localization",
-      "algorithmId": 1068,
-      "protocol": "Weakness (Generalized) and Fatigue - Female (Child)",
       "field": "localization",
       "description": "Local Qatar destination and callback instructions require approval.",
       "status": "OPEN"
@@ -579,54 +339,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B03-1073-algorithm-LastRevised",
-      "algorithmId": 1073,
-      "protocol": "Diabetes - Low Blood Sugar - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1073-clinicalReview",
-      "algorithmId": 1073,
-      "protocol": "Diabetes - Low Blood Sugar - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1073-localization",
-      "algorithmId": 1073,
-      "protocol": "Diabetes - Low Blood Sugar - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1074-algorithm-LastRevised",
-      "algorithmId": 1074,
-      "protocol": "Diabetes - Low Blood Sugar - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1074-clinicalReview",
-      "algorithmId": 1074,
-      "protocol": "Diabetes - Low Blood Sugar - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1074-localization",
-      "algorithmId": 1074,
-      "protocol": "Diabetes - Low Blood Sugar - Female (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B03-1075-algorithm-LastRevised",
       "algorithmId": 1075,
       "protocol": "Diabetes - High Blood Sugar - Male (Adult)",
@@ -670,54 +382,6 @@
       "gapId": "B03-1076-localization",
       "algorithmId": 1076,
       "protocol": "Diabetes - High Blood Sugar - Female (Adult)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1077-algorithm-LastRevised",
-      "algorithmId": 1077,
-      "protocol": "Diabetes - High Blood Sugar - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1077-clinicalReview",
-      "algorithmId": 1077,
-      "protocol": "Diabetes - High Blood Sugar - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1077-localization",
-      "algorithmId": 1077,
-      "protocol": "Diabetes - High Blood Sugar - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1078-algorithm-LastRevised",
-      "algorithmId": 1078,
-      "protocol": "Diabetes - High Blood Sugar - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1078-clinicalReview",
-      "algorithmId": 1078,
-      "protocol": "Diabetes - High Blood Sugar - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1078-localization",
-      "algorithmId": 1078,
-      "protocol": "Diabetes - High Blood Sugar - Female (Child)",
       "field": "localization",
       "description": "Local Qatar destination and callback instructions require approval.",
       "status": "OPEN"
@@ -771,54 +435,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B03-1081-algorithm-LastRevised",
-      "algorithmId": 1081,
-      "protocol": "Cuts and Lacerations - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1081-clinicalReview",
-      "algorithmId": 1081,
-      "protocol": "Cuts and Lacerations - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1081-localization",
-      "algorithmId": 1081,
-      "protocol": "Cuts and Lacerations - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1082-algorithm-LastRevised",
-      "algorithmId": 1082,
-      "protocol": "Cuts and Lacerations - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1082-clinicalReview",
-      "algorithmId": 1082,
-      "protocol": "Cuts and Lacerations - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1082-localization",
-      "algorithmId": 1082,
-      "protocol": "Cuts and Lacerations - Female (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B03-1083-algorithm-LastRevised",
       "algorithmId": 1083,
       "protocol": "Hearing Loss or Change - Male (Adult)",
@@ -862,54 +478,6 @@
       "gapId": "B03-1084-localization",
       "algorithmId": 1084,
       "protocol": "Hearing Loss or Change - Female (Adult)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1085-algorithm-LastRevised",
-      "algorithmId": 1085,
-      "protocol": "Hearing Loss or Change - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1085-clinicalReview",
-      "algorithmId": 1085,
-      "protocol": "Hearing Loss or Change - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1085-localization",
-      "algorithmId": 1085,
-      "protocol": "Hearing Loss or Change - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1086-algorithm-LastRevised",
-      "algorithmId": 1086,
-      "protocol": "Hearing Loss or Change - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1086-clinicalReview",
-      "algorithmId": 1086,
-      "protocol": "Hearing Loss or Change - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B03-1086-localization",
-      "algorithmId": 1086,
-      "protocol": "Hearing Loss or Change - Female (Child)",
       "field": "localization",
       "description": "Local Qatar destination and callback instructions require approval.",
       "status": "OPEN"

@@ -3,14 +3,14 @@
   "importBatch": "open-source-batch-10",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 5,
-  "protocolCount": 20,
+  "protocolCount": 10,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1225-1244",
   "applicabilityPolicy": {
     "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
-    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "pediatricSpecificProtocols": "Excluded from this adult-only UAT catalog.",
     "adultSpecificProtocols": "Adult-only; never generate Child variants.",
-    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "mixedAgeProtocols": "Generate Adult variants only; under-18 use is outside this UAT catalog.",
     "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
   },
   "excludedSourceFamilies": [
@@ -66,54 +66,6 @@
       }
     },
     {
-      "file": "json/nose-injury-child-male.db.json",
-      "algorithmId": 1227,
-      "title": "Nose Injury - Male (Child)",
-      "protocolFamily": "Nose Injury",
-      "sourceProtocolId": "oscg-nose-injury",
-      "canonicalSourceProtocolId": "oscg-nose-injury",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "90490b69c5c043131f194be92cb816549914228fd0bdfdaefa4802be389186c5",
-      "redirectTarget": "DIRECT_DISPOSITION_100 | DIRECT_DISPOSITION_70",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/nose-injury-child-female.db.json",
-      "algorithmId": 1228,
-      "title": "Nose Injury - Female (Child)",
-      "protocolFamily": "Nose Injury",
-      "sourceProtocolId": "oscg-nose-injury",
-      "canonicalSourceProtocolId": "oscg-nose-injury",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3e50ec3b0982a1bb4dc9350d06420b29b82cf9ca628e4fc89e8dd5e23b83e3c5",
-      "redirectTarget": "DIRECT_DISPOSITION_100 | DIRECT_DISPOSITION_70",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/neurologic-deficit-adult-male.db.json",
       "algorithmId": 1229,
       "title": "Neurologic Deficit - Male (Adult)",
@@ -153,54 +105,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/neurologic-deficit-child-male.db.json",
-      "algorithmId": 1231,
-      "title": "Neurologic Deficit - Male (Child)",
-      "protocolFamily": "Neurologic Deficit",
-      "sourceProtocolId": "oscg-neurologic-deficit",
-      "canonicalSourceProtocolId": "oscg-neurologic-deficit",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "a42312a3749cda66b95f89ba27a3ff1e54fb9514ffe774adba808596d2502e24",
-      "redirectTarget": "Fainting",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/neurologic-deficit-child-female.db.json",
-      "algorithmId": 1232,
-      "title": "Neurologic Deficit - Female (Child)",
-      "protocolFamily": "Neurologic Deficit",
-      "sourceProtocolId": "oscg-neurologic-deficit",
-      "canonicalSourceProtocolId": "oscg-neurologic-deficit",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "0b38ce6d52df8f44c5ead7597b9006954c669efde896d349ee21b20b3dc7ec6b",
-      "redirectTarget": "Fainting",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -254,54 +158,6 @@
       }
     },
     {
-      "file": "json/puncture-wound-child-male.db.json",
-      "algorithmId": 1235,
-      "title": "Puncture Wound - Male (Child)",
-      "protocolFamily": "Puncture Wound",
-      "sourceProtocolId": "oscg-puncture-wound",
-      "canonicalSourceProtocolId": "oscg-puncture-wound",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "9a46085f3d62ccdfaf5e3ad823f4ea5df29dfc03f0220855376b49038bd6d800",
-      "redirectTarget": "Cuts and Lacerations",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/puncture-wound-child-female.db.json",
-      "algorithmId": 1236,
-      "title": "Puncture Wound - Female (Child)",
-      "protocolFamily": "Puncture Wound",
-      "sourceProtocolId": "oscg-puncture-wound",
-      "canonicalSourceProtocolId": "oscg-puncture-wound",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "b575fa4cbad1abf404d4ab1a0a2ddb8424e883eba983da7273a3479d9649ea0a",
-      "redirectTarget": "Cuts and Lacerations",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/mosquito-bite-adult-male.db.json",
       "algorithmId": 1237,
       "title": "Mosquito Bite - Male (Adult)",
@@ -348,54 +204,6 @@
       }
     },
     {
-      "file": "json/mosquito-bite-child-male.db.json",
-      "algorithmId": 1239,
-      "title": "Mosquito Bite - Male (Child)",
-      "protocolFamily": "Mosquito Bite",
-      "sourceProtocolId": "oscg-mosquito-bite",
-      "canonicalSourceProtocolId": "oscg-mosquito-bite",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "cd7cdea21ddc887776dd5c90eb05ae0d203ff86fbfcf98f4d89cd7346ac149cd",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/mosquito-bite-child-female.db.json",
-      "algorithmId": 1240,
-      "title": "Mosquito Bite - Female (Child)",
-      "protocolFamily": "Mosquito Bite",
-      "sourceProtocolId": "oscg-mosquito-bite",
-      "canonicalSourceProtocolId": "oscg-mosquito-bite",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "51dec60adf503c6159e3642bb430e1a92587827f9ff44deba835268d54cb9238",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/poison-ivy-oak-sumac-adult-male.db.json",
       "algorithmId": 1241,
       "title": "Poison Ivy - Oak - Sumac - Male (Adult)",
@@ -435,54 +243,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/poison-ivy-oak-sumac-child-male.db.json",
-      "algorithmId": 1243,
-      "title": "Poison Ivy - Oak - Sumac - Male (Child)",
-      "protocolFamily": "Poison Ivy - Oak - Sumac",
-      "sourceProtocolId": "oscg-poison-ivy-oak-sumac",
-      "canonicalSourceProtocolId": "oscg-poison-ivy-oak-sumac",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "d64bfa5fc387770e890c3f1b6131a4d5c2692e405210e3092f6db757619c73f1",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/poison-ivy-oak-sumac-child-female.db.json",
-      "algorithmId": 1244,
-      "title": "Poison Ivy - Oak - Sumac - Female (Child)",
-      "protocolFamily": "Poison Ivy - Oak - Sumac",
-      "sourceProtocolId": "oscg-poison-ivy-oak-sumac",
-      "canonicalSourceProtocolId": "oscg-poison-ivy-oak-sumac",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "5fdc8b992d3d46cb45ddc6af060fe0783c8ed4ccd797521788aa001565d228f0",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

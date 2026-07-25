@@ -1,6 +1,6 @@
 {
   "batch": "04",
-  "count": 114,
+  "count": 54,
   "gaps": [
     {
       "gapId": "B04-1087-algorithm-LastRevised",
@@ -46,54 +46,6 @@
       "gapId": "B04-1088-localization",
       "algorithmId": 1088,
       "protocol": "Confusion - Delirium - Female (Adult)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1089-algorithm-LastRevised",
-      "algorithmId": 1089,
-      "protocol": "Confusion - Delirium - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1089-clinicalReview",
-      "algorithmId": 1089,
-      "protocol": "Confusion - Delirium - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1089-localization",
-      "algorithmId": 1089,
-      "protocol": "Confusion - Delirium - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1090-algorithm-LastRevised",
-      "algorithmId": 1090,
-      "protocol": "Confusion - Delirium - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1090-clinicalReview",
-      "algorithmId": 1090,
-      "protocol": "Confusion - Delirium - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1090-localization",
-      "algorithmId": 1090,
-      "protocol": "Confusion - Delirium - Female (Child)",
       "field": "localization",
       "description": "Local Qatar destination and callback instructions require approval.",
       "status": "OPEN"
@@ -147,54 +99,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B04-1093-algorithm-LastRevised",
-      "algorithmId": 1093,
-      "protocol": "Sexual Assault or Rape - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1093-clinicalReview",
-      "algorithmId": 1093,
-      "protocol": "Sexual Assault or Rape - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1093-localization",
-      "algorithmId": 1093,
-      "protocol": "Sexual Assault or Rape - Male (Child)",
-      "field": "localization",
-      "description": "Clinical and legal governance must confirm Qatar sexual-assault, forensic, child-reporting, consent, information-sharing, AMAN 919, safeguarding, and support pathways before clinical use.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1094-algorithm-LastRevised",
-      "algorithmId": 1094,
-      "protocol": "Sexual Assault or Rape - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1094-clinicalReview",
-      "algorithmId": 1094,
-      "protocol": "Sexual Assault or Rape - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1094-localization",
-      "algorithmId": 1094,
-      "protocol": "Sexual Assault or Rape - Female (Child)",
-      "field": "localization",
-      "description": "Clinical and legal governance must confirm Qatar sexual-assault, forensic, child-reporting, consent, information-sharing, AMAN 919, safeguarding, and support pathways before clinical use.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B04-1095-algorithm-LastRevised",
       "algorithmId": 1095,
       "protocol": "Bluish Skin or Body Part (Cyanosis) - Male (Adult)",
@@ -238,54 +142,6 @@
       "gapId": "B04-1096-localization",
       "algorithmId": 1096,
       "protocol": "Bluish Skin or Body Part (Cyanosis) - Female (Adult)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1097-algorithm-LastRevised",
-      "algorithmId": 1097,
-      "protocol": "Bluish Skin or Body Part (Cyanosis) - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1097-clinicalReview",
-      "algorithmId": 1097,
-      "protocol": "Bluish Skin or Body Part (Cyanosis) - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1097-localization",
-      "algorithmId": 1097,
-      "protocol": "Bluish Skin or Body Part (Cyanosis) - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1098-algorithm-LastRevised",
-      "algorithmId": 1098,
-      "protocol": "Bluish Skin or Body Part (Cyanosis) - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1098-clinicalReview",
-      "algorithmId": 1098,
-      "protocol": "Bluish Skin or Body Part (Cyanosis) - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1098-localization",
-      "algorithmId": 1098,
-      "protocol": "Bluish Skin or Body Part (Cyanosis) - Female (Child)",
       "field": "localization",
       "description": "Local Qatar destination and callback instructions require approval.",
       "status": "OPEN"
@@ -339,54 +195,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B04-1101-algorithm-LastRevised",
-      "algorithmId": 1101,
-      "protocol": "Hair Loss - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1101-clinicalReview",
-      "algorithmId": 1101,
-      "protocol": "Hair Loss - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1101-localization",
-      "algorithmId": 1101,
-      "protocol": "Hair Loss - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1102-algorithm-LastRevised",
-      "algorithmId": 1102,
-      "protocol": "Hair Loss - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1102-clinicalReview",
-      "algorithmId": 1102,
-      "protocol": "Hair Loss - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1102-localization",
-      "algorithmId": 1102,
-      "protocol": "Hair Loss - Female (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B04-1103-algorithm-LastRevised",
       "algorithmId": 1103,
       "protocol": "Hallucinations - Male (Adult)",
@@ -430,54 +238,6 @@
       "gapId": "B04-1104-localization",
       "algorithmId": 1104,
       "protocol": "Hallucinations - Female (Adult)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1105-algorithm-LastRevised",
-      "algorithmId": 1105,
-      "protocol": "Hallucinations - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1105-clinicalReview",
-      "algorithmId": 1105,
-      "protocol": "Hallucinations - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1105-localization",
-      "algorithmId": 1105,
-      "protocol": "Hallucinations - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1106-algorithm-LastRevised",
-      "algorithmId": 1106,
-      "protocol": "Hallucinations - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1106-clinicalReview",
-      "algorithmId": 1106,
-      "protocol": "Hallucinations - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1106-localization",
-      "algorithmId": 1106,
-      "protocol": "Hallucinations - Female (Child)",
       "field": "localization",
       "description": "Local Qatar destination and callback instructions require approval.",
       "status": "OPEN"
@@ -531,54 +291,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B04-1109-algorithm-LastRevised",
-      "algorithmId": 1109,
-      "protocol": "Muscle Jerks - Tics - Shudders - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1109-clinicalReview",
-      "algorithmId": 1109,
-      "protocol": "Muscle Jerks - Tics - Shudders - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1109-localization",
-      "algorithmId": 1109,
-      "protocol": "Muscle Jerks - Tics - Shudders - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1110-algorithm-LastRevised",
-      "algorithmId": 1110,
-      "protocol": "Muscle Jerks - Tics - Shudders - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1110-clinicalReview",
-      "algorithmId": 1110,
-      "protocol": "Muscle Jerks - Tics - Shudders - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1110-localization",
-      "algorithmId": 1110,
-      "protocol": "Muscle Jerks - Tics - Shudders - Female (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B04-1111-algorithm-LastRevised",
       "algorithmId": 1111,
       "protocol": "Pale Skin - Male (Adult)",
@@ -622,54 +334,6 @@
       "gapId": "B04-1112-localization",
       "algorithmId": 1112,
       "protocol": "Pale Skin - Female (Adult)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1113-algorithm-LastRevised",
-      "algorithmId": 1113,
-      "protocol": "Pale Skin - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1113-clinicalReview",
-      "algorithmId": 1113,
-      "protocol": "Pale Skin - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1113-localization",
-      "algorithmId": 1113,
-      "protocol": "Pale Skin - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1114-algorithm-LastRevised",
-      "algorithmId": 1114,
-      "protocol": "Pale Skin - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1114-clinicalReview",
-      "algorithmId": 1114,
-      "protocol": "Pale Skin - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1114-localization",
-      "algorithmId": 1114,
-      "protocol": "Pale Skin - Female (Child)",
       "field": "localization",
       "description": "Local Qatar destination and callback instructions require approval.",
       "status": "OPEN"
@@ -723,102 +387,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B04-1117-algorithm-LastRevised",
-      "algorithmId": 1117,
-      "protocol": "Poisoning - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1117-clinicalReview",
-      "algorithmId": 1117,
-      "protocol": "Poisoning - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1117-localization",
-      "algorithmId": 1117,
-      "protocol": "Poisoning - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1118-algorithm-LastRevised",
-      "algorithmId": 1118,
-      "protocol": "Poisoning - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1118-clinicalReview",
-      "algorithmId": 1118,
-      "protocol": "Poisoning - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1118-localization",
-      "algorithmId": 1118,
-      "protocol": "Poisoning - Female (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1119-algorithm-LastRevised",
-      "algorithmId": 1119,
-      "protocol": "Rash - Widespread On Drugs - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1119-clinicalReview",
-      "algorithmId": 1119,
-      "protocol": "Rash - Widespread On Drugs - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1119-localization",
-      "algorithmId": 1119,
-      "protocol": "Rash - Widespread On Drugs - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1120-algorithm-LastRevised",
-      "algorithmId": 1120,
-      "protocol": "Rash - Widespread On Drugs - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1120-clinicalReview",
-      "algorithmId": 1120,
-      "protocol": "Rash - Widespread On Drugs - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1120-localization",
-      "algorithmId": 1120,
-      "protocol": "Rash - Widespread On Drugs - Female (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B04-1121-algorithm-LastRevised",
       "algorithmId": 1121,
       "protocol": "Weight Loss - Unintended - Male (Adult)",
@@ -862,54 +430,6 @@
       "gapId": "B04-1122-localization",
       "algorithmId": 1122,
       "protocol": "Weight Loss - Unintended - Female (Adult)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1123-algorithm-LastRevised",
-      "algorithmId": 1123,
-      "protocol": "Weight Loss - Unintended - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1123-clinicalReview",
-      "algorithmId": 1123,
-      "protocol": "Weight Loss - Unintended - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1123-localization",
-      "algorithmId": 1123,
-      "protocol": "Weight Loss - Unintended - Male (Child)",
-      "field": "localization",
-      "description": "Local Qatar destination and callback instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1124-algorithm-LastRevised",
-      "algorithmId": 1124,
-      "protocol": "Weight Loss - Unintended - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1124-clinicalReview",
-      "algorithmId": 1124,
-      "protocol": "Weight Loss - Unintended - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B04-1124-localization",
-      "algorithmId": 1124,
-      "protocol": "Weight Loss - Unintended - Female (Child)",
       "field": "localization",
       "description": "Local Qatar destination and callback instructions require approval.",
       "status": "OPEN"

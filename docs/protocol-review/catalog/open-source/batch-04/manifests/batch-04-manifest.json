@@ -3,7 +3,7 @@
   "importBatch": "open-source-batch-04",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 10,
-  "protocolCount": 38,
+  "protocolCount": 18,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1087-1124",
   "applicabilityPolicy": {
@@ -62,50 +62,6 @@
       "canonicalSourceProtocolId": "oscg-confusion-delirium"
     },
     {
-      "file": "json/confusion-delirium-child-male.db.json",
-      "algorithmId": 1089,
-      "title": "Confusion - Delirium - Male (Child)",
-      "protocolFamily": "Confusion - Delirium",
-      "sourceProtocolId": "oscg-confusion-delirium",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "5be26b838392fb16fc2889192ed9e999609750fc6f9591da6f7c846a0a74ee9e",
-      "redirectTarget": null,
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-confusion-delirium"
-    },
-    {
-      "file": "json/confusion-delirium-child-female.db.json",
-      "algorithmId": 1090,
-      "title": "Confusion - Delirium - Female (Child)",
-      "protocolFamily": "Confusion - Delirium",
-      "sourceProtocolId": "oscg-confusion-delirium",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "9b61b6baa72949726d6c603c6beee9c556a5b678ab470298995f0bf813ba4695",
-      "redirectTarget": null,
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-confusion-delirium"
-    },
-    {
       "file": "json/sexual-assault-or-rape-adult-male.db.json",
       "algorithmId": 1091,
       "title": "Sexual Assault or Rape - Male (Adult)",
@@ -142,50 +98,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "Pregnancy, STI, injury, forensic, and support needs remain source-relevant."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-sexual-assault-rape"
-    },
-    {
-      "file": "json/sexual-assault-or-rape-child-male.db.json",
-      "algorithmId": 1093,
-      "title": "Sexual Assault or Rape - Male (Child)",
-      "protocolFamily": "Sexual Assault or Rape",
-      "sourceProtocolId": "oscg-sexual-assault-rape",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "8fc21389eecd610f63744d0b9c17b6d031cdc9a81543a977290260bd169f666d",
-      "redirectTarget": null,
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child pathway adds private safeguarding and immediate-safety assessment."
-        ],
-        "sexSpecificChanges": [
-          "Pregnancy-risk wording is excluded; injury, STI, forensic, and support needs remain."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-sexual-assault-rape"
-    },
-    {
-      "file": "json/sexual-assault-or-rape-child-female.db.json",
-      "algorithmId": 1094,
-      "title": "Sexual Assault or Rape - Female (Child)",
-      "protocolFamily": "Sexual Assault or Rape",
-      "sourceProtocolId": "oscg-sexual-assault-rape",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "934b97d59d2853019d2aa5dfd7f3d1c2d07daee2da91ea8a5ef2da25a64f75fb",
-      "redirectTarget": null,
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child pathway adds private safeguarding and immediate-safety assessment."
         ],
         "sexSpecificChanges": [
           "Pregnancy, STI, injury, forensic, and support needs remain source-relevant."
@@ -238,50 +150,6 @@
       "canonicalSourceProtocolId": "oscg-cyanosis"
     },
     {
-      "file": "json/bluish-skin-or-body-part-cyanosis-child-male.db.json",
-      "algorithmId": 1097,
-      "title": "Bluish Skin or Body Part (Cyanosis) - Male (Child)",
-      "protocolFamily": "Bluish Skin or Body Part (Cyanosis)",
-      "sourceProtocolId": "oscg-cyanosis",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "8b2cc946bd1a7fff466aa3dfa1dbf7fc1caf685372e84faf22ddc34ae94bbe60",
-      "redirectTarget": null,
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-cyanosis"
-    },
-    {
-      "file": "json/bluish-skin-or-body-part-cyanosis-child-female.db.json",
-      "algorithmId": 1098,
-      "title": "Bluish Skin or Body Part (Cyanosis) - Female (Child)",
-      "protocolFamily": "Bluish Skin or Body Part (Cyanosis)",
-      "sourceProtocolId": "oscg-cyanosis",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "7f67380b7cf21a6d931b75fbf7ad13c709f293ec6ebdca0c9761fb442d4d048c",
-      "redirectTarget": null,
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-cyanosis"
-    },
-    {
       "file": "json/hair-loss-adult-male.db.json",
       "algorithmId": 1099,
       "title": "Hair Loss - Male (Adult)",
@@ -318,50 +186,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-hair-loss"
-    },
-    {
-      "file": "json/hair-loss-child-male.db.json",
-      "algorithmId": 1101,
-      "title": "Hair Loss - Male (Child)",
-      "protocolFamily": "Hair Loss",
-      "sourceProtocolId": "oscg-hair-loss",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "571d02d6fb540cf258b5e07951ce236612a04fadfd9cebf38ceb2e6585918b2a",
-      "redirectTarget": null,
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-hair-loss"
-    },
-    {
-      "file": "json/hair-loss-child-female.db.json",
-      "algorithmId": 1102,
-      "title": "Hair Loss - Female (Child)",
-      "protocolFamily": "Hair Loss",
-      "sourceProtocolId": "oscg-hair-loss",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "b6c800d3aefa3b1be4ebb7ca2c87c252319411db77fc1fbfab448042203590a7",
-      "redirectTarget": null,
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12; safe-caregiver observation is captured."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -414,50 +238,6 @@
       "canonicalSourceProtocolId": "oscg-hallucinations"
     },
     {
-      "file": "json/hallucinations-child-male.db.json",
-      "algorithmId": 1105,
-      "title": "Hallucinations - Male (Child)",
-      "protocolFamily": "Hallucinations",
-      "sourceProtocolId": "oscg-hallucinations",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "02390e4b2a0b28b925bed8a1c5b784133483294d26932c569eac72aebb65ff9b",
-      "redirectTarget": "Poisoning",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-hallucinations"
-    },
-    {
-      "file": "json/hallucinations-child-female.db.json",
-      "algorithmId": 1106,
-      "title": "Hallucinations - Female (Child)",
-      "protocolFamily": "Hallucinations",
-      "sourceProtocolId": "oscg-hallucinations",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "2acbf2b4afb64423f5a0d97267570ebe64000c62e4b724d59290e4c4211784f9",
-      "redirectTarget": "Poisoning",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-hallucinations"
-    },
-    {
       "file": "json/muscle-jerks-tics-shudders-adult-male.db.json",
       "algorithmId": 1107,
       "title": "Muscle Jerks - Tics - Shudders - Male (Adult)",
@@ -494,50 +274,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-muscle-jerks-tics"
-    },
-    {
-      "file": "json/muscle-jerks-tics-shudders-child-male.db.json",
-      "algorithmId": 1109,
-      "title": "Muscle Jerks - Tics - Shudders - Male (Child)",
-      "protocolFamily": "Muscle Jerks - Tics - Shudders",
-      "sourceProtocolId": "oscg-muscle-jerks-tics",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 3,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "105b9d5e66308cc90de8e9315e7f0b6a75493a7d2dc336a888baa7fb97b6077b",
-      "redirectTarget": null,
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 3; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-muscle-jerks-tics"
-    },
-    {
-      "file": "json/muscle-jerks-tics-shudders-child-female.db.json",
-      "algorithmId": 1110,
-      "title": "Muscle Jerks - Tics - Shudders - Female (Child)",
-      "protocolFamily": "Muscle Jerks - Tics - Shudders",
-      "sourceProtocolId": "oscg-muscle-jerks-tics",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 3,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "d93b0f6299e4ea67bdfbf2be8a495cdcbddcc5d25c11d17e75243b77d7685dd2",
-      "redirectTarget": null,
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 3; safe-caregiver observation is captured."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -590,50 +326,6 @@
       "canonicalSourceProtocolId": "oscg-pale-skin"
     },
     {
-      "file": "json/pale-skin-child-male.db.json",
-      "algorithmId": 1113,
-      "title": "Pale Skin - Male (Child)",
-      "protocolFamily": "Pale Skin",
-      "sourceProtocolId": "oscg-pale-skin",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "6db7734e5dd0d9f9774212de9bf07ed3248205762c5e4ddea2f11ecfc2cacc26",
-      "redirectTarget": null,
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-pale-skin"
-    },
-    {
-      "file": "json/pale-skin-child-female.db.json",
-      "algorithmId": 1114,
-      "title": "Pale Skin - Female (Child)",
-      "protocolFamily": "Pale Skin",
-      "sourceProtocolId": "oscg-pale-skin",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "a6231a579728e9d0e7b66baec366ea6e0a13d56f54e21471f757429e74910e5c",
-      "redirectTarget": null,
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-pale-skin"
-    },
-    {
       "file": "json/poisoning-adult-male.db.json",
       "algorithmId": 1115,
       "title": "Poisoning - Male (Adult)",
@@ -678,94 +370,6 @@
       "canonicalSourceProtocolId": "oscg-poisoning"
     },
     {
-      "file": "json/poisoning-child-male.db.json",
-      "algorithmId": 1117,
-      "title": "Poisoning - Male (Child)",
-      "protocolFamily": "Poisoning",
-      "sourceProtocolId": "oscg-poisoning",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "6ced26b94ef19e3405b502f478920f46415e7a4894bf920fd0d17859f9094a98",
-      "redirectTarget": "Carbon Monoxide Exposure",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-poisoning"
-    },
-    {
-      "file": "json/poisoning-child-female.db.json",
-      "algorithmId": 1118,
-      "title": "Poisoning - Female (Child)",
-      "protocolFamily": "Poisoning",
-      "sourceProtocolId": "oscg-poisoning",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "ed1bb6039dc724d4badf23cf5ad42071bd38be0e3628127dce6608ec1048dff5",
-      "redirectTarget": "Carbon Monoxide Exposure",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-poisoning"
-    },
-    {
-      "file": "json/rash-widespread-on-drugs-child-male.db.json",
-      "algorithmId": 1119,
-      "title": "Rash - Widespread On Drugs - Male (Child)",
-      "protocolFamily": "Rash - Widespread On Drugs",
-      "sourceProtocolId": "oscg-rash-widespread-drugs",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3fe39490e15b299904dd58af013e1b426ce9ec487afadab44b90e829f3d008a3",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-rash-widespread-drugs"
-    },
-    {
-      "file": "json/rash-widespread-on-drugs-child-female.db.json",
-      "algorithmId": 1120,
-      "title": "Rash - Widespread On Drugs - Female (Child)",
-      "protocolFamily": "Rash - Widespread On Drugs",
-      "sourceProtocolId": "oscg-rash-widespread-drugs",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "da1ee61b4330343825b8d25963c7093bbbdff6d0dc7547e16fe5ebc2f797670e",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-rash-widespread-drugs"
-    },
-    {
       "file": "json/weight-loss-unintended-adult-male.db.json",
       "algorithmId": 1121,
       "title": "Weight Loss - Unintended - Male (Adult)",
@@ -802,50 +406,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-weight-loss-unintended"
-    },
-    {
-      "file": "json/weight-loss-unintended-child-male.db.json",
-      "algorithmId": 1123,
-      "title": "Weight Loss - Unintended - Male (Child)",
-      "protocolFamily": "Weight Loss - Unintended",
-      "sourceProtocolId": "oscg-weight-loss-unintended",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "c9911841fc7e01ae71a553bab40b2ef59ea8f8c896975b267895ac1f4ab20a8d",
-      "redirectTarget": "Eating Disorder Concerns",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12; safe-caregiver observation is captured."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-weight-loss-unintended"
-    },
-    {
-      "file": "json/weight-loss-unintended-child-female.db.json",
-      "algorithmId": 1124,
-      "title": "Weight Loss - Unintended - Female (Child)",
-      "protocolFamily": "Weight Loss - Unintended",
-      "sourceProtocolId": "oscg-weight-loss-unintended",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "dcb8deb979a5a7f54c21390a7a53834b037efe8d73e1e1c578c9e6f3db9d6aea",
-      "redirectTarget": "Eating Disorder Concerns",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12; safe-caregiver observation is captured."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

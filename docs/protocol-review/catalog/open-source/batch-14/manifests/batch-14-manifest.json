@@ -3,14 +3,14 @@
   "importBatch": "open-source-batch-14",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 5,
-  "protocolCount": 20,
+  "protocolCount": 10,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1305-1324",
   "applicabilityPolicy": {
     "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
-    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "pediatricSpecificProtocols": "Excluded from this adult-only UAT catalog.",
     "adultSpecificProtocols": "Adult-only; never generate Child variants.",
-    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "mixedAgeProtocols": "Generate Adult variants only; under-18 use is outside this UAT catalog.",
     "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
   },
   "excludedSourceFamilies": [
@@ -67,54 +67,6 @@
       }
     },
     {
-      "file": "json/wrist-injury-child-male.db.json",
-      "algorithmId": 1307,
-      "title": "Wrist Injury - Male (Child)",
-      "protocolFamily": "Wrist Injury",
-      "sourceProtocolId": "oscg-wrist-injury",
-      "canonicalSourceProtocolId": "oscg-wrist-injury",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch14-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3119898f3a11c5a265de4504524921733692271d27c489d2b6da756f813adaf6",
-      "redirectTarget": "Motor Vehicle Accident",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/wrist-injury-child-female.db.json",
-      "algorithmId": 1308,
-      "title": "Wrist Injury - Female (Child)",
-      "protocolFamily": "Wrist Injury",
-      "sourceProtocolId": "oscg-wrist-injury",
-      "canonicalSourceProtocolId": "oscg-wrist-injury",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch14-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "9daa55fe661cf8c213bef501d4e91ef172d5c51f8730328f00bd40c8055b7040",
-      "redirectTarget": "Motor Vehicle Accident",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/toothache-adult-male.db.json",
       "algorithmId": 1309,
       "title": "Toothache - Male (Adult)",
@@ -154,54 +106,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/toothache-child-male.db.json",
-      "algorithmId": 1311,
-      "title": "Toothache - Male (Child)",
-      "protocolFamily": "Toothache",
-      "sourceProtocolId": "oscg-toothache",
-      "canonicalSourceProtocolId": "oscg-toothache",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch14-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "73946eb455f9f8ea92494c1ff68a8b883bece06bc043c3ed0137cc0bbcdb0d4f",
-      "redirectTarget": "Mouth Ulcers",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/toothache-child-female.db.json",
-      "algorithmId": 1312,
-      "title": "Toothache - Female (Child)",
-      "protocolFamily": "Toothache",
-      "sourceProtocolId": "oscg-toothache",
-      "canonicalSourceProtocolId": "oscg-toothache",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch14-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3a87780add0223698570783dd9abc3477b790b272c0416aea8d13378e6891d0d",
-      "redirectTarget": "Mouth Ulcers",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -255,54 +159,6 @@
       }
     },
     {
-      "file": "json/vision-loss-or-change-child-male.db.json",
-      "algorithmId": 1315,
-      "title": "Vision Loss or Change - Male (Child)",
-      "protocolFamily": "Vision Loss or Change",
-      "sourceProtocolId": "oscg-vision-loss-or-change",
-      "canonicalSourceProtocolId": "oscg-vision-loss-or-change",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch14-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3066c91cea2768a2d1a9fade78bc3384db4b2be15a551fd382d0e7ec47db1f69",
-      "redirectTarget": "DIRECT_DISPOSITION_100",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/vision-loss-or-change-child-female.db.json",
-      "algorithmId": 1316,
-      "title": "Vision Loss or Change - Female (Child)",
-      "protocolFamily": "Vision Loss or Change",
-      "sourceProtocolId": "oscg-vision-loss-or-change",
-      "canonicalSourceProtocolId": "oscg-vision-loss-or-change",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch14-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "39a3faba8fc3d0b16d14f7379764cc7716009ec5ec8aed134d992e7583a36db6",
-      "redirectTarget": "DIRECT_DISPOSITION_100",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/vomiting-blood-adult-male.db.json",
       "algorithmId": 1317,
       "title": "Vomiting Blood - Male (Adult)",
@@ -349,54 +205,6 @@
       }
     },
     {
-      "file": "json/vomiting-blood-child-male.db.json",
-      "algorithmId": 1319,
-      "title": "Vomiting Blood - Male (Child)",
-      "protocolFamily": "Vomiting Blood",
-      "sourceProtocolId": "oscg-vomiting-blood",
-      "canonicalSourceProtocolId": "oscg-vomiting-blood",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch14-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "fde7bdefb14527573a124cbc85c66b4dbd766e34c28c3f6cfbbce0a5e5ab2cbf",
-      "redirectTarget": "Nausea",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/vomiting-blood-child-female.db.json",
-      "algorithmId": 1320,
-      "title": "Vomiting Blood - Female (Child)",
-      "protocolFamily": "Vomiting Blood",
-      "sourceProtocolId": "oscg-vomiting-blood",
-      "canonicalSourceProtocolId": "oscg-vomiting-blood",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch14-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "0b59da7d4fcdc2dabcb1ed72657e7c394ea174659e6caba84601d5d4ccb0dc73",
-      "redirectTarget": "Nausea",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/heat-exposure-heat-exhaustion-and-heat-stroke-adult-male.db.json",
       "algorithmId": 1321,
       "title": "Heat Exposure (Heat Exhaustion and Heat Stroke) - Male (Adult)",
@@ -436,54 +244,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/heat-exposure-heat-exhaustion-and-heat-stroke-child-male.db.json",
-      "algorithmId": 1323,
-      "title": "Heat Exposure (Heat Exhaustion and Heat Stroke) - Male (Child)",
-      "protocolFamily": "Heat Exposure (Heat Exhaustion and Heat Stroke)",
-      "sourceProtocolId": "oscg-heat-exposure",
-      "canonicalSourceProtocolId": "oscg-heat-exposure",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch14-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "30baa964bba6417e37e7546adcbf1132198b1d16d6a66ad8e17a6dfad35889c1",
-      "redirectTarget": "Cold Exposure (Hypothermia)",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/heat-exposure-heat-exhaustion-and-heat-stroke-child-female.db.json",
-      "algorithmId": 1324,
-      "title": "Heat Exposure (Heat Exhaustion and Heat Stroke) - Female (Child)",
-      "protocolFamily": "Heat Exposure (Heat Exhaustion and Heat Stroke)",
-      "sourceProtocolId": "oscg-heat-exposure",
-      "canonicalSourceProtocolId": "oscg-heat-exposure",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch14-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "e196c97ebd3fd85f60fc2cb582ce894e62aa7a34a2a6eb7f93af0c2bfcf3c4aa",
-      "redirectTarget": "Cold Exposure (Hypothermia)",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

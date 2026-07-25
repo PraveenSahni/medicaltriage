@@ -3,14 +3,14 @@
   "importBatch": "open-source-batch-22",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 7,
-  "protocolCount": 20,
+  "protocolCount": 10,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1465-1484",
   "applicabilityPolicy": {
     "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
-    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "pediatricSpecificProtocols": "Excluded from this adult-only UAT catalog.",
     "adultSpecificProtocols": "Adult-only; never generate Child variants.",
-    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "mixedAgeProtocols": "Generate Adult variants only; under-18 use is outside this UAT catalog.",
     "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
   },
   "excludedSourceFamilies": [
@@ -37,30 +37,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/pelvic-pain-female-child-female.db.json",
-      "algorithmId": 1466,
-      "title": "Pelvic Pain - Female - Female (Child)",
-      "protocolFamily": "Pelvic Pain - Female",
-      "sourceProtocolId": "oscg-pelvic-pain-female",
-      "canonicalSourceProtocolId": "oscg-pelvic-pain-female",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch22-source-supported-carry-forward-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "0aa2db41ab333a633125fcb379f9459cdd308a4e6b75a8e9c17f94164b3a6b31",
-      "redirectTarget": "Abdominal Pain - Upper",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -114,54 +90,6 @@
       }
     },
     {
-      "file": "json/abdominal-pain-upper-child-male.db.json",
-      "algorithmId": 1469,
-      "title": "Abdominal Pain - Upper - Male (Child)",
-      "protocolFamily": "Abdominal Pain - Upper",
-      "sourceProtocolId": "oscg-abdominal-pain-upper",
-      "canonicalSourceProtocolId": "oscg-abdominal-pain-upper",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch22-source-supported-carry-forward-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "dce8f63f8f02697c2625a841d95b2c49a2eb98356a023ffa0d2c57d7e7e2ea3a",
-      "redirectTarget": "Nausea",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/abdominal-pain-upper-child-female.db.json",
-      "algorithmId": 1470,
-      "title": "Abdominal Pain - Upper - Female (Child)",
-      "protocolFamily": "Abdominal Pain - Upper",
-      "sourceProtocolId": "oscg-abdominal-pain-upper",
-      "canonicalSourceProtocolId": "oscg-abdominal-pain-upper",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch22-source-supported-carry-forward-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "c18ffcc9f45763d723c04cfa3eeddb04f2971f2798d5e46f0ec5a61c42384ad6",
-      "redirectTarget": "Nausea",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/contraception-iud-symptoms-and-questions-adult-female.db.json",
       "algorithmId": 1471,
       "title": "Contraception - IUD Symptoms and Questions - Female (Adult)",
@@ -178,30 +106,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/contraception-iud-symptoms-and-questions-child-female.db.json",
-      "algorithmId": 1472,
-      "title": "Contraception - IUD Symptoms and Questions - Female (Child)",
-      "protocolFamily": "Contraception - IUD Symptoms and Questions",
-      "sourceProtocolId": "oscg-contraception-iud",
-      "canonicalSourceProtocolId": "oscg-contraception-iud",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch22-source-supported-carry-forward-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "d6586e2b9e28cace75430aaab2a277334f743a95db2690a6eb35b1f054378a6c",
-      "redirectTarget": "Pelvic Pain - Female",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -255,54 +159,6 @@
       }
     },
     {
-      "file": "json/measles-exposure-child-male.db.json",
-      "algorithmId": 1475,
-      "title": "Measles Exposure - Male (Child)",
-      "protocolFamily": "Measles Exposure",
-      "sourceProtocolId": "oscg-measles-exposure",
-      "canonicalSourceProtocolId": "oscg-measles-exposure",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch22-source-supported-carry-forward-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "b7d6c2a2576578370e8a8907e1161f281e53d03cd22df7fc9bd91d7e4a0065d4",
-      "redirectTarget": "Rash or Redness - Widespread",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/measles-exposure-child-female.db.json",
-      "algorithmId": 1476,
-      "title": "Measles Exposure - Female (Child)",
-      "protocolFamily": "Measles Exposure",
-      "sourceProtocolId": "oscg-measles-exposure",
-      "canonicalSourceProtocolId": "oscg-measles-exposure",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch22-source-supported-carry-forward-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "91bebc2efe9be5727463b1ca915cb44e9bc3a794b6428232783e28851a102657",
-      "redirectTarget": "Rash or Redness - Widespread",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/urine-blood-in-adult-male.db.json",
       "algorithmId": 1477,
       "title": "Urine - Blood In - Male (Adult)",
@@ -349,54 +205,6 @@
       }
     },
     {
-      "file": "json/urine-blood-in-child-male.db.json",
-      "algorithmId": 1479,
-      "title": "Urine - Blood In - Male (Child)",
-      "protocolFamily": "Urine - Blood In",
-      "sourceProtocolId": "oscg-blood-in-urine",
-      "canonicalSourceProtocolId": "oscg-blood-in-urine",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch22-source-supported-carry-forward-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "659c9da7dab8a2cdb321f4a1e5d8a9bc7d289a4302607a4db218bceb7dc843aa",
-      "redirectTarget": "Flank Pain",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/urine-blood-in-child-female.db.json",
-      "algorithmId": 1480,
-      "title": "Urine - Blood In - Female (Child)",
-      "protocolFamily": "Urine - Blood In",
-      "sourceProtocolId": "oscg-blood-in-urine",
-      "canonicalSourceProtocolId": "oscg-blood-in-urine",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch22-source-supported-carry-forward-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "596dd08380e72bdd1bfaa48b9249b772f1f5309f129624f33d76c8bfa801ba59",
-      "redirectTarget": "Flank Pain",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/urination-pain-female-adult-female.db.json",
       "algorithmId": 1481,
       "title": "Urination Pain - Female - Female (Adult)",
@@ -420,30 +228,6 @@
       }
     },
     {
-      "file": "json/urination-pain-female-child-female.db.json",
-      "algorithmId": 1482,
-      "title": "Urination Pain - Female - Female (Child)",
-      "protocolFamily": "Urination Pain - Female",
-      "sourceProtocolId": "oscg-urination-pain-female",
-      "canonicalSourceProtocolId": "oscg-urination-pain-female",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch22-source-supported-carry-forward-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "bd09028cb51c1d28138064c6f24b7a3e694dd69133d4f133d1839d914ea1e4d9",
-      "redirectTarget": "Flank Pain",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/urination-pain-male-adult-male.db.json",
       "algorithmId": 1483,
       "title": "Urination Pain - Male - Male (Adult)",
@@ -460,30 +244,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/urination-pain-male-child-male.db.json",
-      "algorithmId": 1484,
-      "title": "Urination Pain - Male - Male (Child)",
-      "protocolFamily": "Urination Pain - Male",
-      "sourceProtocolId": "oscg-urination-pain-male",
-      "canonicalSourceProtocolId": "oscg-urination-pain-male",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch22-source-supported-carry-forward-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "f0a4e383e905c8c27be2e4a1b53633df01bae7655a2f09e3d54b7ea2608fcb40",
-      "redirectTarget": "Flank Pain",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

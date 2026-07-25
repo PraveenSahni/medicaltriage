@@ -3,14 +3,14 @@
   "importBatch": "open-source-batch-15",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 5,
-  "protocolCount": 20,
+  "protocolCount": 10,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1325-1344",
   "applicabilityPolicy": {
     "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
-    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "pediatricSpecificProtocols": "Excluded from this adult-only UAT catalog.",
     "adultSpecificProtocols": "Adult-only; never generate Child variants.",
-    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "mixedAgeProtocols": "Generate Adult variants only; under-18 use is outside this UAT catalog.",
     "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
   },
   "excludedSourceFamilies": [
@@ -66,54 +66,6 @@
       }
     },
     {
-      "file": "json/tick-bite-child-male.db.json",
-      "algorithmId": 1327,
-      "title": "Tick Bite - Male (Child)",
-      "protocolFamily": "Tick Bite",
-      "sourceProtocolId": "oscg-tick-bite",
-      "canonicalSourceProtocolId": "oscg-tick-bite",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch15-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "cad7cd116ecf6c8c6ba9159c3b3950d0e25f00d470d02f9b24bf8656a53b24f8",
-      "redirectTarget": "Insect Bite",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/tick-bite-child-female.db.json",
-      "algorithmId": 1328,
-      "title": "Tick Bite - Female (Child)",
-      "protocolFamily": "Tick Bite",
-      "sourceProtocolId": "oscg-tick-bite",
-      "canonicalSourceProtocolId": "oscg-tick-bite",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch15-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "49f6acd553acc6607624958d8d120cff9a6d0be2e7c094b35ab251d00fc572e3",
-      "redirectTarget": "Insect Bite",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/sweating-adult-male.db.json",
       "algorithmId": 1329,
       "title": "Sweating - Male (Adult)",
@@ -153,54 +105,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/sweating-child-male.db.json",
-      "algorithmId": 1331,
-      "title": "Sweating - Male (Child)",
-      "protocolFamily": "Sweating",
-      "sourceProtocolId": "oscg-sweating",
-      "canonicalSourceProtocolId": "oscg-sweating",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch15-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "7bea37ec99a3d78899edf1009b05597d06607f8dbbb9eee6818c526f24f304d7",
-      "redirectTarget": "Carbon Monoxide Exposure",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/sweating-child-female.db.json",
-      "algorithmId": 1332,
-      "title": "Sweating - Female (Child)",
-      "protocolFamily": "Sweating",
-      "sourceProtocolId": "oscg-sweating",
-      "canonicalSourceProtocolId": "oscg-sweating",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch15-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "1ff90fae6ca669230e6ad94c930ea03aacaba5ff3c39bdbabe800cd3e472c3df",
-      "redirectTarget": "Carbon Monoxide Exposure",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -254,54 +158,6 @@
       }
     },
     {
-      "file": "json/swallowing-difficulty-child-male.db.json",
-      "algorithmId": 1335,
-      "title": "Swallowing Difficulty - Male (Child)",
-      "protocolFamily": "Swallowing Difficulty",
-      "sourceProtocolId": "oscg-swallowing-difficulty",
-      "canonicalSourceProtocolId": "oscg-swallowing-difficulty",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch15-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "bec0bdd3432b091f0214f0978e7eb95f4b6b53f5038db8b36a22007efab41982",
-      "redirectTarget": "Swallowed Foreign Body",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/swallowing-difficulty-child-female.db.json",
-      "algorithmId": 1336,
-      "title": "Swallowing Difficulty - Female (Child)",
-      "protocolFamily": "Swallowing Difficulty",
-      "sourceProtocolId": "oscg-swallowing-difficulty",
-      "canonicalSourceProtocolId": "oscg-swallowing-difficulty",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch15-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "191b50ace2a2f155899891118510d40ef90c6898221f27eb7734b1f0021ee88b",
-      "redirectTarget": "Swallowed Foreign Body",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/ringworm-adult-male.db.json",
       "algorithmId": 1337,
       "title": "Ringworm - Male (Adult)",
@@ -348,54 +204,6 @@
       }
     },
     {
-      "file": "json/ringworm-child-male.db.json",
-      "algorithmId": 1339,
-      "title": "Ringworm - Male (Child)",
-      "protocolFamily": "Ringworm",
-      "sourceProtocolId": "oscg-ringworm",
-      "canonicalSourceProtocolId": "oscg-ringworm",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch15-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "552b0d26350d909ea6a9b42fe453d117cebf066241ad1f1e4c12df411700f4e2",
-      "redirectTarget": "Impetigo (Infected Sore)",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/ringworm-child-female.db.json",
-      "algorithmId": 1340,
-      "title": "Ringworm - Female (Child)",
-      "protocolFamily": "Ringworm",
-      "sourceProtocolId": "oscg-ringworm",
-      "canonicalSourceProtocolId": "oscg-ringworm",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch15-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "844e046766604b8f444b0d01af66a4b4337753c47c506a178683775b079f409a",
-      "redirectTarget": "Impetigo (Infected Sore)",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/eye-pain-and-other-symptoms-adult-male.db.json",
       "algorithmId": 1341,
       "title": "Eye Pain and Other Symptoms - Male (Adult)",
@@ -435,54 +243,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/eye-pain-and-other-symptoms-child-male.db.json",
-      "algorithmId": 1343,
-      "title": "Eye Pain and Other Symptoms - Male (Child)",
-      "protocolFamily": "Eye Pain and Other Symptoms",
-      "sourceProtocolId": "oscg-eye-pain-and-other-symptoms",
-      "canonicalSourceProtocolId": "oscg-eye-pain-and-other-symptoms",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch15-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "bf509dffdedab33c328043335dae6ac11c4a9e2f933f0535628aef00b27f965c",
-      "redirectTarget": "Eye - Allergy",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/eye-pain-and-other-symptoms-child-female.db.json",
-      "algorithmId": 1344,
-      "title": "Eye Pain and Other Symptoms - Female (Child)",
-      "protocolFamily": "Eye Pain and Other Symptoms",
-      "sourceProtocolId": "oscg-eye-pain-and-other-symptoms",
-      "canonicalSourceProtocolId": "oscg-eye-pain-and-other-symptoms",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch15-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "778aa5a199fcc0564dc682138e92561c5ba161bc299283b98ce4888c3e844fde",
-      "redirectTarget": "Eye - Allergy",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

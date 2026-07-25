@@ -1,6 +1,6 @@
 {
   "batch": "01",
-  "count": 120,
+  "count": 60,
   "gaps": [
     {
       "gapId": "B01-1001-algorithm-LastRevised",
@@ -46,54 +46,6 @@
       "gapId": "B01-1002-localization",
       "algorithmId": 1002,
       "protocol": "Back Pain - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1003-algorithm-LastRevised",
-      "algorithmId": 1003,
-      "protocol": "Back Pain - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1003-clinicalReview",
-      "algorithmId": 1003,
-      "protocol": "Back Pain - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1003-localization",
-      "algorithmId": 1003,
-      "protocol": "Back Pain - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1004-algorithm-LastRevised",
-      "algorithmId": 1004,
-      "protocol": "Back Pain - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1004-clinicalReview",
-      "algorithmId": 1004,
-      "protocol": "Back Pain - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1004-localization",
-      "algorithmId": 1004,
-      "protocol": "Back Pain - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -147,54 +99,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B01-1007-algorithm-LastRevised",
-      "algorithmId": 1007,
-      "protocol": "Burns - Thermal - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1007-clinicalReview",
-      "algorithmId": 1007,
-      "protocol": "Burns - Thermal - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1007-localization",
-      "algorithmId": 1007,
-      "protocol": "Burns - Thermal - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1008-algorithm-LastRevised",
-      "algorithmId": 1008,
-      "protocol": "Burns - Thermal - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1008-clinicalReview",
-      "algorithmId": 1008,
-      "protocol": "Burns - Thermal - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1008-localization",
-      "algorithmId": 1008,
-      "protocol": "Burns - Thermal - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B01-1009-algorithm-LastRevised",
       "algorithmId": 1009,
       "protocol": "Animal Bite - Male (Adult)",
@@ -238,54 +142,6 @@
       "gapId": "B01-1010-localization",
       "algorithmId": 1010,
       "protocol": "Animal Bite - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1011-algorithm-LastRevised",
-      "algorithmId": 1011,
-      "protocol": "Animal Bite - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1011-clinicalReview",
-      "algorithmId": 1011,
-      "protocol": "Animal Bite - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1011-localization",
-      "algorithmId": 1011,
-      "protocol": "Animal Bite - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1012-algorithm-LastRevised",
-      "algorithmId": 1012,
-      "protocol": "Animal Bite - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1012-clinicalReview",
-      "algorithmId": 1012,
-      "protocol": "Animal Bite - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1012-localization",
-      "algorithmId": 1012,
-      "protocol": "Animal Bite - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -339,54 +195,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B01-1015-algorithm-LastRevised",
-      "algorithmId": 1015,
-      "protocol": "Bee or Yellow Jacket Sting - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1015-clinicalReview",
-      "algorithmId": 1015,
-      "protocol": "Bee or Yellow Jacket Sting - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1015-localization",
-      "algorithmId": 1015,
-      "protocol": "Bee or Yellow Jacket Sting - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1016-algorithm-LastRevised",
-      "algorithmId": 1016,
-      "protocol": "Bee or Yellow Jacket Sting - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1016-clinicalReview",
-      "algorithmId": 1016,
-      "protocol": "Bee or Yellow Jacket Sting - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1016-localization",
-      "algorithmId": 1016,
-      "protocol": "Bee or Yellow Jacket Sting - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B01-1017-algorithm-LastRevised",
       "algorithmId": 1017,
       "protocol": "Anaphylaxis - Male (Adult)",
@@ -430,54 +238,6 @@
       "gapId": "B01-1018-localization",
       "algorithmId": 1018,
       "protocol": "Anaphylaxis - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1019-algorithm-LastRevised",
-      "algorithmId": 1019,
-      "protocol": "Anaphylaxis - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1019-clinicalReview",
-      "algorithmId": 1019,
-      "protocol": "Anaphylaxis - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1019-localization",
-      "algorithmId": 1019,
-      "protocol": "Anaphylaxis - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1020-algorithm-LastRevised",
-      "algorithmId": 1020,
-      "protocol": "Anaphylaxis - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1020-clinicalReview",
-      "algorithmId": 1020,
-      "protocol": "Anaphylaxis - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1020-localization",
-      "algorithmId": 1020,
-      "protocol": "Anaphylaxis - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -531,54 +291,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B01-1023-algorithm-LastRevised",
-      "algorithmId": 1023,
-      "protocol": "Carbon Monoxide Exposure - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1023-clinicalReview",
-      "algorithmId": 1023,
-      "protocol": "Carbon Monoxide Exposure - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1023-localization",
-      "algorithmId": 1023,
-      "protocol": "Carbon Monoxide Exposure - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1024-algorithm-LastRevised",
-      "algorithmId": 1024,
-      "protocol": "Carbon Monoxide Exposure - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1024-clinicalReview",
-      "algorithmId": 1024,
-      "protocol": "Carbon Monoxide Exposure - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1024-localization",
-      "algorithmId": 1024,
-      "protocol": "Carbon Monoxide Exposure - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B01-1025-algorithm-LastRevised",
       "algorithmId": 1025,
       "protocol": "Nosebleed - Male (Adult)",
@@ -622,54 +334,6 @@
       "gapId": "B01-1026-localization",
       "algorithmId": 1026,
       "protocol": "Nosebleed - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1027-algorithm-LastRevised",
-      "algorithmId": 1027,
-      "protocol": "Nosebleed - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1027-clinicalReview",
-      "algorithmId": 1027,
-      "protocol": "Nosebleed - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1027-localization",
-      "algorithmId": 1027,
-      "protocol": "Nosebleed - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1028-algorithm-LastRevised",
-      "algorithmId": 1028,
-      "protocol": "Nosebleed - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1028-clinicalReview",
-      "algorithmId": 1028,
-      "protocol": "Nosebleed - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1028-localization",
-      "algorithmId": 1028,
-      "protocol": "Nosebleed - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -723,54 +387,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B01-1031-algorithm-LastRevised",
-      "algorithmId": 1031,
-      "protocol": "Headache - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1031-clinicalReview",
-      "algorithmId": 1031,
-      "protocol": "Headache - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1031-localization",
-      "algorithmId": 1031,
-      "protocol": "Headache - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1032-algorithm-LastRevised",
-      "algorithmId": 1032,
-      "protocol": "Headache - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1032-clinicalReview",
-      "algorithmId": 1032,
-      "protocol": "Headache - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1032-localization",
-      "algorithmId": 1032,
-      "protocol": "Headache - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B01-1033-algorithm-LastRevised",
       "algorithmId": 1033,
       "protocol": "Sunburn - Male (Adult)",
@@ -819,54 +435,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B01-1035-algorithm-LastRevised",
-      "algorithmId": 1035,
-      "protocol": "Sunburn - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1035-clinicalReview",
-      "algorithmId": 1035,
-      "protocol": "Sunburn - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1035-localization",
-      "algorithmId": 1035,
-      "protocol": "Sunburn - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1036-algorithm-LastRevised",
-      "algorithmId": 1036,
-      "protocol": "Sunburn - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1036-clinicalReview",
-      "algorithmId": 1036,
-      "protocol": "Sunburn - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1036-localization",
-      "algorithmId": 1036,
-      "protocol": "Sunburn - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B01-1037-algorithm-LastRevised",
       "algorithmId": 1037,
       "protocol": "Frostbite - Male (Adult)",
@@ -910,54 +478,6 @@
       "gapId": "B01-1038-localization",
       "algorithmId": 1038,
       "protocol": "Frostbite - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1039-algorithm-LastRevised",
-      "algorithmId": 1039,
-      "protocol": "Frostbite - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1039-clinicalReview",
-      "algorithmId": 1039,
-      "protocol": "Frostbite - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1039-localization",
-      "algorithmId": 1039,
-      "protocol": "Frostbite - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1040-algorithm-LastRevised",
-      "algorithmId": 1040,
-      "protocol": "Frostbite - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1040-clinicalReview",
-      "algorithmId": 1040,
-      "protocol": "Frostbite - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B01-1040-localization",
-      "algorithmId": 1040,
-      "protocol": "Frostbite - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
       "status": "OPEN"

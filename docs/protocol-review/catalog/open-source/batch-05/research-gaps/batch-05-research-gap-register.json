@@ -1,6 +1,6 @@
 {
   "batch": "05",
-  "count": 60,
+  "count": 30,
   "gaps": [
     {
       "gapId": "B05-1125-algorithm-LastRevised",
@@ -46,54 +46,6 @@
       "gapId": "B05-1126-localization",
       "algorithmId": 1126,
       "protocol": "Cold Exposure (Hypothermia) - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1127-algorithm-LastRevised",
-      "algorithmId": 1127,
-      "protocol": "Cold Exposure (Hypothermia) - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1127-clinicalReview",
-      "algorithmId": 1127,
-      "protocol": "Cold Exposure (Hypothermia) - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1127-localization",
-      "algorithmId": 1127,
-      "protocol": "Cold Exposure (Hypothermia) - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1128-algorithm-LastRevised",
-      "algorithmId": 1128,
-      "protocol": "Cold Exposure (Hypothermia) - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1128-clinicalReview",
-      "algorithmId": 1128,
-      "protocol": "Cold Exposure (Hypothermia) - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1128-localization",
-      "algorithmId": 1128,
-      "protocol": "Cold Exposure (Hypothermia) - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -147,54 +99,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B05-1131-algorithm-LastRevised",
-      "algorithmId": 1131,
-      "protocol": "Coma - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1131-clinicalReview",
-      "algorithmId": 1131,
-      "protocol": "Coma - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1131-localization",
-      "algorithmId": 1131,
-      "protocol": "Coma - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1132-algorithm-LastRevised",
-      "algorithmId": 1132,
-      "protocol": "Coma - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1132-clinicalReview",
-      "algorithmId": 1132,
-      "protocol": "Coma - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1132-localization",
-      "algorithmId": 1132,
-      "protocol": "Coma - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B05-1133-algorithm-LastRevised",
       "algorithmId": 1133,
       "protocol": "Burns - Chemical - Male (Adult)",
@@ -238,54 +142,6 @@
       "gapId": "B05-1134-localization",
       "algorithmId": 1134,
       "protocol": "Burns - Chemical - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1135-algorithm-LastRevised",
-      "algorithmId": 1135,
-      "protocol": "Burns - Chemical - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1135-clinicalReview",
-      "algorithmId": 1135,
-      "protocol": "Burns - Chemical - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1135-localization",
-      "algorithmId": 1135,
-      "protocol": "Burns - Chemical - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1136-algorithm-LastRevised",
-      "algorithmId": 1136,
-      "protocol": "Burns - Chemical - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1136-clinicalReview",
-      "algorithmId": 1136,
-      "protocol": "Burns - Chemical - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1136-localization",
-      "algorithmId": 1136,
-      "protocol": "Burns - Chemical - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, and safeguarding instructions require approval.",
       "status": "OPEN"
@@ -339,54 +195,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B05-1139-algorithm-LastRevised",
-      "algorithmId": 1139,
-      "protocol": "Boil (Skin Abscess) - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1139-clinicalReview",
-      "algorithmId": 1139,
-      "protocol": "Boil (Skin Abscess) - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1139-localization",
-      "algorithmId": 1139,
-      "protocol": "Boil (Skin Abscess) - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1140-algorithm-LastRevised",
-      "algorithmId": 1140,
-      "protocol": "Boil (Skin Abscess) - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1140-clinicalReview",
-      "algorithmId": 1140,
-      "protocol": "Boil (Skin Abscess) - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1140-localization",
-      "algorithmId": 1140,
-      "protocol": "Boil (Skin Abscess) - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B05-1141-algorithm-LastRevised",
       "algorithmId": 1141,
       "protocol": "COVID-19 - Diagnosed or Suspected - Male (Adult)",
@@ -430,54 +238,6 @@
       "gapId": "B05-1142-localization",
       "algorithmId": 1142,
       "protocol": "COVID-19 - Diagnosed or Suspected - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1143-algorithm-LastRevised",
-      "algorithmId": 1143,
-      "protocol": "COVID-19 - Diagnosed or Suspected - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1143-clinicalReview",
-      "algorithmId": 1143,
-      "protocol": "COVID-19 - Diagnosed or Suspected - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1143-localization",
-      "algorithmId": 1143,
-      "protocol": "COVID-19 - Diagnosed or Suspected - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, and safeguarding instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1144-algorithm-LastRevised",
-      "algorithmId": 1144,
-      "protocol": "COVID-19 - Diagnosed or Suspected - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1144-clinicalReview",
-      "algorithmId": 1144,
-      "protocol": "COVID-19 - Diagnosed or Suspected - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B05-1144-localization",
-      "algorithmId": 1144,
-      "protocol": "COVID-19 - Diagnosed or Suspected - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, and safeguarding instructions require approval.",
       "status": "OPEN"

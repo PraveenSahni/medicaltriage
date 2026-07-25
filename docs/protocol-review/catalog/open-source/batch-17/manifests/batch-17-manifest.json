@@ -3,14 +3,14 @@
   "importBatch": "open-source-batch-17",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 7,
-  "protocolCount": 20,
+  "protocolCount": 10,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1365-1384",
   "applicabilityPolicy": {
     "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
-    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "pediatricSpecificProtocols": "Excluded from this adult-only UAT catalog.",
     "adultSpecificProtocols": "Adult-only; never generate Child variants.",
-    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "mixedAgeProtocols": "Generate Adult variants only; under-18 use is outside this UAT catalog.",
     "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
   },
   "excludedSourceFamilies": [
@@ -43,30 +43,6 @@
       }
     },
     {
-      "file": "json/pregnancy-itching-child-female.db.json",
-      "algorithmId": 1366,
-      "title": "Pregnancy - Itching - Female (Child)",
-      "protocolFamily": "Pregnancy - Itching",
-      "sourceProtocolId": "oscg-pregnancy-itching",
-      "canonicalSourceProtocolId": "oscg-pregnancy-itching",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch17-applicability-aware-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "6a13935a02e6e5d38287c2e45d9a8e3353d89630bae7854e19305e44382e70bb",
-      "redirectTarget": "Rash or Redness - Widespread",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/pregnancy-urination-pain-adult-female.db.json",
       "algorithmId": 1367,
       "title": "Pregnancy - Urination Pain - Female (Adult)",
@@ -90,30 +66,6 @@
       }
     },
     {
-      "file": "json/pregnancy-urination-pain-child-female.db.json",
-      "algorithmId": 1368,
-      "title": "Pregnancy - Urination Pain - Female (Child)",
-      "protocolFamily": "Pregnancy - Urination Pain",
-      "sourceProtocolId": "oscg-pregnancy-urination-pain",
-      "canonicalSourceProtocolId": "oscg-pregnancy-urination-pain",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch17-applicability-aware-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "c130e8e53b5a4314ef77fdc98ac1b45a99ff897620063bd4d3fc23e8b773671e",
-      "redirectTarget": "Flank Pain",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/vaginal-discharge-adult-female.db.json",
       "algorithmId": 1369,
       "title": "Vaginal Discharge - Female (Adult)",
@@ -130,30 +82,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/vaginal-discharge-child-female.db.json",
-      "algorithmId": 1370,
-      "title": "Vaginal Discharge - Female (Child)",
-      "protocolFamily": "Vaginal Discharge",
-      "sourceProtocolId": "oscg-vaginal-discharge",
-      "canonicalSourceProtocolId": "oscg-vaginal-discharge",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch17-applicability-aware-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "2db2946a37afb7dbc3b330bbc85f1074917dfb89b8d7caa337fc632822f5885b",
-      "redirectTarget": "Sores",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -207,54 +135,6 @@
       }
     },
     {
-      "file": "json/pubic-lice-child-male.db.json",
-      "algorithmId": 1373,
-      "title": "Pubic Lice - Male (Child)",
-      "protocolFamily": "Pubic Lice",
-      "sourceProtocolId": "oscg-pubic-lice",
-      "canonicalSourceProtocolId": "oscg-pubic-lice",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch17-applicability-aware-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "bcca93a2fc228ec1905b4f0911d8e24ebaddd79c703225eff66965aab906f347",
-      "redirectTarget": "Head Lice",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/pubic-lice-child-female.db.json",
-      "algorithmId": 1374,
-      "title": "Pubic Lice - Female (Child)",
-      "protocolFamily": "Pubic Lice",
-      "sourceProtocolId": "oscg-pubic-lice",
-      "canonicalSourceProtocolId": "oscg-pubic-lice",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch17-applicability-aware-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "ecd652d9a9f69e1eca6b4a95f5b32df1db68feaa94a519ce139b430b5d90a2bf",
-      "redirectTarget": "Head Lice",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/postpartum-depression-adult-female.db.json",
       "algorithmId": 1375,
       "title": "Postpartum - Depression - Female (Adult)",
@@ -271,30 +151,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/postpartum-depression-child-female.db.json",
-      "algorithmId": 1376,
-      "title": "Postpartum - Depression - Female (Child)",
-      "protocolFamily": "Postpartum - Depression",
-      "sourceProtocolId": "oscg-postpartum-depression",
-      "canonicalSourceProtocolId": "oscg-postpartum-depression",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch17-applicability-aware-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "c25b9e0bb6027be8a5896fd7a436225be71a7806ca7abab6f7b63ee8e3eb5f16",
-      "redirectTarget": "Suicide Concerns",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -348,54 +204,6 @@
       }
     },
     {
-      "file": "json/heart-rate-and-heartbeat-questions-child-male.db.json",
-      "algorithmId": 1379,
-      "title": "Heart Rate and Heartbeat Questions - Male (Child)",
-      "protocolFamily": "Heart Rate and Heartbeat Questions",
-      "sourceProtocolId": "oscg-heart-rate-and-heartbeat-questions",
-      "canonicalSourceProtocolId": "oscg-heart-rate-and-heartbeat-questions",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch17-applicability-aware-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "60e25cf7212e81a2328383c15948ae96bacf46f0fefee1d4de91adb616ab06a3",
-      "redirectTarget": "Fainting",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/heart-rate-and-heartbeat-questions-child-female.db.json",
-      "algorithmId": 1380,
-      "title": "Heart Rate and Heartbeat Questions - Female (Child)",
-      "protocolFamily": "Heart Rate and Heartbeat Questions",
-      "sourceProtocolId": "oscg-heart-rate-and-heartbeat-questions",
-      "canonicalSourceProtocolId": "oscg-heart-rate-and-heartbeat-questions",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch17-applicability-aware-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "0211e1c043cb64f029f7e809ddbbcfdfb97d35adae1c10c9d1a1fd6639826f00",
-      "redirectTarget": "Fainting",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/abdomen-bloating-and-swelling-adult-male.db.json",
       "algorithmId": 1381,
       "title": "Abdomen Bloating and Swelling - Male (Adult)",
@@ -435,54 +243,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/abdomen-bloating-and-swelling-child-male.db.json",
-      "algorithmId": 1383,
-      "title": "Abdomen Bloating and Swelling - Male (Child)",
-      "protocolFamily": "Abdomen Bloating and Swelling",
-      "sourceProtocolId": "oscg-abdomen-bloating-and-swelling",
-      "canonicalSourceProtocolId": "oscg-abdomen-bloating-and-swelling",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch17-applicability-aware-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "a71746e419115dcd5e27359c03c5dc7b6d0ca0b0af306fc4847b3d4d7ae7a35c",
-      "redirectTarget": "Nausea",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/abdomen-bloating-and-swelling-child-female.db.json",
-      "algorithmId": 1384,
-      "title": "Abdomen Bloating and Swelling - Female (Child)",
-      "protocolFamily": "Abdomen Bloating and Swelling",
-      "sourceProtocolId": "oscg-abdomen-bloating-and-swelling",
-      "canonicalSourceProtocolId": "oscg-abdomen-bloating-and-swelling",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch17-applicability-aware-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "97ff8c4f695573789bd7a7153f3a3e01a20136fc9627bae41fab93387f229431",
-      "redirectTarget": "Nausea",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

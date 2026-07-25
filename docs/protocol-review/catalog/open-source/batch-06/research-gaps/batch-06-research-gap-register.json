@@ -1,6 +1,6 @@
 {
   "batch": "06",
-  "count": 60,
+  "count": 30,
   "gaps": [
     {
       "gapId": "B06-1145-algorithm-LastRevised",
@@ -46,54 +46,6 @@
       "gapId": "B06-1146-localization",
       "algorithmId": 1146,
       "protocol": "Diarrhea - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and infection-control instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1147-algorithm-LastRevised",
-      "algorithmId": 1147,
-      "protocol": "Diarrhea - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1147-clinicalReview",
-      "algorithmId": 1147,
-      "protocol": "Diarrhea - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1147-localization",
-      "algorithmId": 1147,
-      "protocol": "Diarrhea - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and infection-control instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1148-algorithm-LastRevised",
-      "algorithmId": 1148,
-      "protocol": "Diarrhea - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1148-clinicalReview",
-      "algorithmId": 1148,
-      "protocol": "Diarrhea - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1148-localization",
-      "algorithmId": 1148,
-      "protocol": "Diarrhea - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and infection-control instructions require approval.",
       "status": "OPEN"
@@ -147,54 +99,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B06-1151-algorithm-LastRevised",
-      "algorithmId": 1151,
-      "protocol": "Diarrhea on Antibiotics - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1151-clinicalReview",
-      "algorithmId": 1151,
-      "protocol": "Diarrhea on Antibiotics - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1151-localization",
-      "algorithmId": 1151,
-      "protocol": "Diarrhea on Antibiotics - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and infection-control instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1152-algorithm-LastRevised",
-      "algorithmId": 1152,
-      "protocol": "Diarrhea on Antibiotics - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1152-clinicalReview",
-      "algorithmId": 1152,
-      "protocol": "Diarrhea on Antibiotics - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1152-localization",
-      "algorithmId": 1152,
-      "protocol": "Diarrhea on Antibiotics - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and infection-control instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B06-1153-algorithm-LastRevised",
       "algorithmId": 1153,
       "protocol": "Earache - Male (Adult)",
@@ -238,54 +142,6 @@
       "gapId": "B06-1154-localization",
       "algorithmId": 1154,
       "protocol": "Earache - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and infection-control instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1155-algorithm-LastRevised",
-      "algorithmId": 1155,
-      "protocol": "Earache - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1155-clinicalReview",
-      "algorithmId": 1155,
-      "protocol": "Earache - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1155-localization",
-      "algorithmId": 1155,
-      "protocol": "Earache - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and infection-control instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1156-algorithm-LastRevised",
-      "algorithmId": 1156,
-      "protocol": "Earache - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1156-clinicalReview",
-      "algorithmId": 1156,
-      "protocol": "Earache - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1156-localization",
-      "algorithmId": 1156,
-      "protocol": "Earache - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and infection-control instructions require approval.",
       "status": "OPEN"
@@ -339,54 +195,6 @@
       "status": "OPEN"
     },
     {
-      "gapId": "B06-1159-algorithm-LastRevised",
-      "algorithmId": 1159,
-      "protocol": "Ear - Foreign Body - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1159-clinicalReview",
-      "algorithmId": 1159,
-      "protocol": "Ear - Foreign Body - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1159-localization",
-      "algorithmId": 1159,
-      "protocol": "Ear - Foreign Body - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and infection-control instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1160-algorithm-LastRevised",
-      "algorithmId": 1160,
-      "protocol": "Ear - Foreign Body - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1160-clinicalReview",
-      "algorithmId": 1160,
-      "protocol": "Ear - Foreign Body - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1160-localization",
-      "algorithmId": 1160,
-      "protocol": "Ear - Foreign Body - Female (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and infection-control instructions require approval.",
-      "status": "OPEN"
-    },
-    {
       "gapId": "B06-1161-algorithm-LastRevised",
       "algorithmId": 1161,
       "protocol": "Ear - Swimmer's - Male (Adult)",
@@ -430,54 +238,6 @@
       "gapId": "B06-1162-localization",
       "algorithmId": 1162,
       "protocol": "Ear - Swimmer's - Female (Adult)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and infection-control instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1163-algorithm-LastRevised",
-      "algorithmId": 1163,
-      "protocol": "Ear - Swimmer's - Male (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1163-clinicalReview",
-      "algorithmId": 1163,
-      "protocol": "Ear - Swimmer's - Male (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1163-localization",
-      "algorithmId": 1163,
-      "protocol": "Ear - Swimmer's - Male (Child)",
-      "field": "localization",
-      "description": "Qatar destination, medication, callback, emergency, and infection-control instructions require approval.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1164-algorithm-LastRevised",
-      "algorithmId": 1164,
-      "protocol": "Ear - Swimmer's - Female (Child)",
-      "field": "algorithm.LastRevised",
-      "description": "Internal IST clinical adaptation date is not recorded.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1164-clinicalReview",
-      "algorithmId": 1164,
-      "protocol": "Ear - Swimmer's - Female (Child)",
-      "field": "clinicalReview",
-      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
-      "status": "OPEN"
-    },
-    {
-      "gapId": "B06-1164-localization",
-      "algorithmId": 1164,
-      "protocol": "Ear - Swimmer's - Female (Child)",
       "field": "localization",
       "description": "Qatar destination, medication, callback, emergency, and infection-control instructions require approval.",
       "status": "OPEN"

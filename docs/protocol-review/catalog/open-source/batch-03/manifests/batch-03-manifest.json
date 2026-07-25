@@ -3,7 +3,7 @@
   "importBatch": "open-source-batch-03",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 10,
-  "protocolCount": 38,
+  "protocolCount": 20,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1049-1086",
   "entries": [
@@ -44,50 +44,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-suicide-concerns"
-    },
-    {
-      "file": "json/suicide-concerns-child-male.db.json",
-      "algorithmId": 1051,
-      "title": "Suicide Concerns - Male (Child)",
-      "protocolFamily": "Suicide Concerns",
-      "sourceProtocolId": "oscg-suicide-concerns",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 10,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3a1ecfede0372903a2a35c37b32ecb3d2ca2c29401d47733854259304a6cca31",
-      "redirectTarget": "Depression",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 10; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-suicide-concerns"
-    },
-    {
-      "file": "json/suicide-concerns-child-female.db.json",
-      "algorithmId": 1052,
-      "title": "Suicide Concerns - Female (Child)",
-      "protocolFamily": "Suicide Concerns",
-      "sourceProtocolId": "oscg-suicide-concerns",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 10,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "305334cdf4b156cea27eb4f1295dbe669cd468ea84748b555e568104b6bbc408",
-      "redirectTarget": "Depression",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 10; caregiver-observed function is captured."
         ],
         "sexSpecificChanges": [
           "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -140,50 +96,6 @@
       "canonicalSourceProtocolId": "oscg-depression"
     },
     {
-      "file": "json/depression-child-male.db.json",
-      "algorithmId": 1055,
-      "title": "Depression - Male (Child)",
-      "protocolFamily": "Depression",
-      "sourceProtocolId": "oscg-depression",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "1010d872583f5a5cd954d9ce747055b0c9c8a10e7e5894fb3f4044422b1b09ae",
-      "redirectTarget": "Suicide Concerns",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-depression"
-    },
-    {
-      "file": "json/depression-child-female.db.json",
-      "algorithmId": 1056,
-      "title": "Depression - Female (Child)",
-      "protocolFamily": "Depression",
-      "sourceProtocolId": "oscg-depression",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "914639030ca923eb60e2b96838e6d678f0738db57060f5d9b5b33af23473c137",
-      "redirectTarget": "Suicide Concerns",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-depression"
-    },
-    {
       "file": "json/insomnia-adult-male.db.json",
       "algorithmId": 1057,
       "title": "Insomnia - Male (Adult)",
@@ -220,50 +132,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-insomnia"
-    },
-    {
-      "file": "json/insomnia-child-male.db.json",
-      "algorithmId": 1059,
-      "title": "Insomnia - Male (Child)",
-      "protocolFamily": "Insomnia",
-      "sourceProtocolId": "oscg-insomnia",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "f3189c205a1300140f5d8fd43deea2d21e00e4817fdcffd72087a9c772b8b607",
-      "redirectTarget": "Anxiety and Panic Attack",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-insomnia"
-    },
-    {
-      "file": "json/insomnia-child-female.db.json",
-      "algorithmId": 1060,
-      "title": "Insomnia - Female (Child)",
-      "protocolFamily": "Insomnia",
-      "sourceProtocolId": "oscg-insomnia",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 12,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "6f0b624f230b6f8024c53dc4cfc37327a8ab350176fd9c2a750d24ba118cc2eb",
-      "redirectTarget": "Anxiety and Panic Attack",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 12; caregiver-observed function is captured."
         ],
         "sexSpecificChanges": [
           "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -316,50 +184,6 @@
       "canonicalSourceProtocolId": "oscg-anxiety-panic-attack"
     },
     {
-      "file": "json/anxiety-and-panic-attack-child-male.db.json",
-      "algorithmId": 1063,
-      "title": "Anxiety and Panic Attack - Male (Child)",
-      "protocolFamily": "Anxiety and Panic Attack",
-      "sourceProtocolId": "oscg-anxiety-panic-attack",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 10,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "ee7d2d6498d76f7f7b1ca8f0cdb73a30ecdc5989b1dd09fcd4c0cf35bf7165c3",
-      "redirectTarget": "Depression",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 10; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-anxiety-panic-attack"
-    },
-    {
-      "file": "json/anxiety-and-panic-attack-child-female.db.json",
-      "algorithmId": 1064,
-      "title": "Anxiety and Panic Attack - Female (Child)",
-      "protocolFamily": "Anxiety and Panic Attack",
-      "sourceProtocolId": "oscg-anxiety-panic-attack",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 10,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "ea853daa5fd2162333f2e419438d2bc0eb9d3f4b6f444e70b1efb82e25d4c12f",
-      "redirectTarget": "Depression",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 10; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-anxiety-panic-attack"
-    },
-    {
       "file": "json/weakness-generalized-and-fatigue-adult-male.db.json",
       "algorithmId": 1065,
       "title": "Weakness (Generalized) and Fatigue - Male (Adult)",
@@ -396,50 +220,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-weakness-fatigue"
-    },
-    {
-      "file": "json/weakness-generalized-and-fatigue-child-male.db.json",
-      "algorithmId": 1067,
-      "title": "Weakness (Generalized) and Fatigue - Male (Child)",
-      "protocolFamily": "Weakness (Generalized) and Fatigue",
-      "sourceProtocolId": "oscg-weakness-fatigue",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 5,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "152ae98c37e7347e95e26c65b924662360987887a21355c3e4b469f9b4ee15b8",
-      "redirectTarget": "Diabetes - Low Blood Sugar",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 5; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-weakness-fatigue"
-    },
-    {
-      "file": "json/weakness-generalized-and-fatigue-child-female.db.json",
-      "algorithmId": 1068,
-      "title": "Weakness (Generalized) and Fatigue - Female (Child)",
-      "protocolFamily": "Weakness (Generalized) and Fatigue",
-      "sourceProtocolId": "oscg-weakness-fatigue",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 5,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "8a248c49f7ef0fd535878aa912417ac8783f097d4b1d5ef81b32b77c25a52d19",
-      "redirectTarget": "Diabetes - Low Blood Sugar",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 5; caregiver-observed function is captured."
         ],
         "sexSpecificChanges": [
           "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -536,50 +316,6 @@
       "canonicalSourceProtocolId": "oscg-diabetes-low-blood-sugar"
     },
     {
-      "file": "json/diabetes-low-blood-sugar-child-male.db.json",
-      "algorithmId": 1073,
-      "title": "Diabetes - Low Blood Sugar - Male (Child)",
-      "protocolFamily": "Diabetes - Low Blood Sugar",
-      "sourceProtocolId": "oscg-diabetes-low-blood-sugar",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "563597128033a20a2015a091f8250370e1a964aa761bf756aecfd92b38aaa718",
-      "redirectTarget": "Diabetes - High Blood Sugar",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-diabetes-low-blood-sugar"
-    },
-    {
-      "file": "json/diabetes-low-blood-sugar-child-female.db.json",
-      "algorithmId": 1074,
-      "title": "Diabetes - Low Blood Sugar - Female (Child)",
-      "protocolFamily": "Diabetes - Low Blood Sugar",
-      "sourceProtocolId": "oscg-diabetes-low-blood-sugar",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "abf1e5c48425ddc7bbebb341c0c9e3f8ffc864f19be0665200f98b2c50706800",
-      "redirectTarget": "Diabetes - High Blood Sugar",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-diabetes-low-blood-sugar"
-    },
-    {
       "file": "json/diabetes-high-blood-sugar-adult-male.db.json",
       "algorithmId": 1075,
       "title": "Diabetes - High Blood Sugar - Male (Adult)",
@@ -619,50 +355,6 @@
         ],
         "sexSpecificChanges": [
           "Pregnancy status is captured for condition-specific care routing."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-diabetes-high-blood-sugar"
-    },
-    {
-      "file": "json/diabetes-high-blood-sugar-child-male.db.json",
-      "algorithmId": 1077,
-      "title": "Diabetes - High Blood Sugar - Male (Child)",
-      "protocolFamily": "Diabetes - High Blood Sugar",
-      "sourceProtocolId": "oscg-diabetes-high-blood-sugar",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "b5128d63c6f8cb4f2a838e69121d586520f2e1dae87a1910771204ae08bc3c63",
-      "redirectTarget": "Diabetes - Low Blood Sugar",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-diabetes-high-blood-sugar"
-    },
-    {
-      "file": "json/diabetes-high-blood-sugar-child-female.db.json",
-      "algorithmId": 1078,
-      "title": "Diabetes - High Blood Sugar - Female (Child)",
-      "protocolFamily": "Diabetes - High Blood Sugar",
-      "sourceProtocolId": "oscg-diabetes-high-blood-sugar",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "034c5b71327c0928af8f80b6c65693adbab274a3288303358a2c41698ac6cd36",
-      "redirectTarget": "Diabetes - Low Blood Sugar",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
         ]
       },
       "canonicalSourceProtocolId": "oscg-diabetes-high-blood-sugar"
@@ -712,50 +404,6 @@
       "canonicalSourceProtocolId": "oscg-cuts-lacerations"
     },
     {
-      "file": "json/cuts-and-lacerations-child-male.db.json",
-      "algorithmId": 1081,
-      "title": "Cuts and Lacerations - Male (Child)",
-      "protocolFamily": "Cuts and Lacerations",
-      "sourceProtocolId": "oscg-cuts-lacerations",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "dd2413f6c434b33e59dcfcf3a005b01a1b4728489d6d1918199b402acdecbfd0",
-      "redirectTarget": "Animal Bite",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-cuts-lacerations"
-    },
-    {
-      "file": "json/cuts-and-lacerations-child-female.db.json",
-      "algorithmId": 1082,
-      "title": "Cuts and Lacerations - Female (Child)",
-      "protocolFamily": "Cuts and Lacerations",
-      "sourceProtocolId": "oscg-cuts-lacerations",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "93488143afe344bcf6c596a893f38be646ab28b94863de230fd530c362b34f0e",
-      "redirectTarget": "Animal Bite",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-cuts-lacerations"
-    },
-    {
       "file": "json/hearing-loss-or-change-adult-male.db.json",
       "algorithmId": 1083,
       "title": "Hearing Loss or Change - Male (Adult)",
@@ -792,50 +440,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-hearing-loss"
-    },
-    {
-      "file": "json/hearing-loss-or-change-child-male.db.json",
-      "algorithmId": 1085,
-      "title": "Hearing Loss or Change - Male (Child)",
-      "protocolFamily": "Hearing Loss or Change",
-      "sourceProtocolId": "oscg-hearing-loss",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "18c3228bf86bab91bce9d5b55c2c8f52b2c191c71b6ac81ca853ea33753d6051",
-      "redirectTarget": "Earache",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; caregiver-observed function is captured."
-        ],
-        "sexSpecificChanges": [
-          "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      },
-      "canonicalSourceProtocolId": "oscg-hearing-loss"
-    },
-    {
-      "file": "json/hearing-loss-or-change-child-female.db.json",
-      "algorithmId": 1086,
-      "title": "Hearing Loss or Change - Female (Child)",
-      "protocolFamily": "Hearing Loss or Change",
-      "sourceProtocolId": "oscg-hearing-loss",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3daaf645a8eaa01b38675543f456e3292943a4749e809aef46ca93412267dc25",
-      "redirectTarget": "Earache",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0; caregiver-observed function is captured."
         ],
         "sexSpecificChanges": [
           "No additional sex-specific threshold is supported by the cited source; no difference was fabricated."

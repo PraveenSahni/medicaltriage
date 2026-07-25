@@ -3,14 +3,14 @@
   "importBatch": "open-source-batch-08",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 5,
-  "protocolCount": 20,
+  "protocolCount": 10,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1185-1204",
   "applicabilityPolicy": {
     "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
-    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "pediatricSpecificProtocols": "Excluded from this adult-only UAT catalog.",
     "adultSpecificProtocols": "Adult-only; never generate Child variants.",
-    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "mixedAgeProtocols": "Generate Adult variants only; under-18 use is outside this UAT catalog.",
     "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
   },
   "excludedSourceFamilies": [
@@ -65,54 +65,6 @@
       }
     },
     {
-      "file": "json/altitude-sickness-child-male.db.json",
-      "algorithmId": 1187,
-      "title": "Altitude Sickness - Male (Child)",
-      "protocolFamily": "Altitude Sickness",
-      "sourceProtocolId": "oscg-altitude-sickness",
-      "canonicalSourceProtocolId": "oscg-altitude-sickness",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch08-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "774482c9ffd6e3643dab7fe85fac2aa3d55669c0d6d71d81b7e5a90fa970b042",
-      "redirectTarget": "Carbon Monoxide Exposure",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/altitude-sickness-child-female.db.json",
-      "algorithmId": 1188,
-      "title": "Altitude Sickness - Female (Child)",
-      "protocolFamily": "Altitude Sickness",
-      "sourceProtocolId": "oscg-altitude-sickness",
-      "canonicalSourceProtocolId": "oscg-altitude-sickness",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch08-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "92391ceba05a605bcfd167aadf90cae81c9029b52d50df6089c2d3dfb63c2b74",
-      "redirectTarget": "Carbon Monoxide Exposure",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/hoarseness-adult-male.db.json",
       "algorithmId": 1189,
       "title": "Hoarseness - Male (Adult)",
@@ -152,54 +104,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/hoarseness-child-male.db.json",
-      "algorithmId": 1191,
-      "title": "Hoarseness - Male (Child)",
-      "protocolFamily": "Hoarseness",
-      "sourceProtocolId": "oscg-hoarseness",
-      "canonicalSourceProtocolId": "oscg-hoarseness",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch08-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "975ee0512beded507cf3643e7f1722e64a7b7c2d52026ec469eab60929dc7faa",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/hoarseness-child-female.db.json",
-      "algorithmId": 1192,
-      "title": "Hoarseness - Female (Child)",
-      "protocolFamily": "Hoarseness",
-      "sourceProtocolId": "oscg-hoarseness",
-      "canonicalSourceProtocolId": "oscg-hoarseness",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch08-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "13e12f68b2962a21c3451cf3a1cddac9c00497a0911be47ff1caf9aa18919447",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -253,54 +157,6 @@
       }
     },
     {
-      "file": "json/impetigo-infected-sore-child-male.db.json",
-      "algorithmId": 1195,
-      "title": "Impetigo (Infected Sore) - Male (Child)",
-      "protocolFamily": "Impetigo (Infected Sore)",
-      "sourceProtocolId": "oscg-impetigo",
-      "canonicalSourceProtocolId": "oscg-impetigo",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch08-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "a587a20493c37981b684eab3b5cf241b78e502832cc7622c7d3e00d2ae349fcc",
-      "redirectTarget": "DIRECT_DISPOSITION_50",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/impetigo-infected-sore-child-female.db.json",
-      "algorithmId": 1196,
-      "title": "Impetigo (Infected Sore) - Female (Child)",
-      "protocolFamily": "Impetigo (Infected Sore)",
-      "sourceProtocolId": "oscg-impetigo",
-      "canonicalSourceProtocolId": "oscg-impetigo",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch08-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "38d00663e113fe0a22a45b9c699d3afb0e6bc159e19d22373ad2bddd4eb15dfb",
-      "redirectTarget": "DIRECT_DISPOSITION_50",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/immunization-reactions-adult-male.db.json",
       "algorithmId": 1197,
       "title": "Immunization Reactions - Male (Adult)",
@@ -347,54 +203,6 @@
       }
     },
     {
-      "file": "json/immunization-reactions-child-male.db.json",
-      "algorithmId": 1199,
-      "title": "Immunization Reactions - Male (Child)",
-      "protocolFamily": "Immunization Reactions",
-      "sourceProtocolId": "oscg-immunization-reactions",
-      "canonicalSourceProtocolId": "oscg-immunization-reactions",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch08-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "21f1e15b86285c68db76089057e17927f2d8c2b8da3e2a6b4466af7062597734",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/immunization-reactions-child-female.db.json",
-      "algorithmId": 1200,
-      "title": "Immunization Reactions - Female (Child)",
-      "protocolFamily": "Immunization Reactions",
-      "sourceProtocolId": "oscg-immunization-reactions",
-      "canonicalSourceProtocolId": "oscg-immunization-reactions",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch08-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "984ad16bc70f04a731a10cb02006f1154169fa63c60eeec0aa418396880f96f4",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/insect-bite-adult-male.db.json",
       "algorithmId": 1201,
       "title": "Insect Bite - Male (Adult)",
@@ -434,54 +242,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/insect-bite-child-male.db.json",
-      "algorithmId": 1203,
-      "title": "Insect Bite - Male (Child)",
-      "protocolFamily": "Insect Bite",
-      "sourceProtocolId": "oscg-insect-bite-generic",
-      "canonicalSourceProtocolId": "oscg-insect-bite-generic",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch08-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "d16f05b1b5ffbc26435a4d10c0ee323e1363a2d1469d8bb2ba80e25ec1e33b2e",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/insect-bite-child-female.db.json",
-      "algorithmId": 1204,
-      "title": "Insect Bite - Female (Child)",
-      "protocolFamily": "Insect Bite",
-      "sourceProtocolId": "oscg-insect-bite-generic",
-      "canonicalSourceProtocolId": "oscg-insect-bite-generic",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch08-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "f63136a35df7b995b665f106ac1609b158417d365f72c5efd9edf0a248c92302",
-      "redirectTarget": "Anaphylaxis",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

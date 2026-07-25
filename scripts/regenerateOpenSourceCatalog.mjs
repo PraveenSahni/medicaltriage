@@ -4,8 +4,12 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { CATALOG_ROOT, REPO_ROOT, validateCatalog } from "./validateOpenSourceCatalog.mjs";
+import {
+  ADULT_ONLY_ALGORITHM_IDS,
+  ADULT_ONLY_CATALOG_COUNT,
+} from "./adultOnlyCatalogPolicy.mjs";
 
-const CONFIRMATION = "REGENERATE-UAT-CATALOG-504";
+const CONFIRMATION = "REGENERATE-ADULT-UAT-CATALOG-258";
 const execute = process.argv.includes("--execute");
 const confirmationIndex = process.argv.indexOf("--confirm");
 const confirmed = confirmationIndex >= 0 && process.argv[confirmationIndex + 1] === CONFIRMATION;
@@ -107,15 +111,15 @@ function assertBatch01CanonicalSet() {
     .filter((name) => allowedPatterns.json.test(name))
     .map((name) => JSON.parse(fs.readFileSync(path.join(jsonDir, name), "utf8")).algorithm.AlgorithmID)
     .sort((a, b) => a - b);
-  const expected = Array.from({ length: 40 }, (_, index) => 1001 + index);
+  const expected = ADULT_ONLY_ALGORITHM_IDS.filter((id) => id >= 1001 && id <= 1040);
   if (JSON.stringify(ids) !== JSON.stringify(expected)) {
     throw new Error(`Batch 01 canonical IDs must be exactly 1001-1040; received ${ids.join(",")}`);
   }
   const manifest = JSON.parse(
     fs.readFileSync(path.join(root, "manifests", "batch-01-manifest.json"), "utf8"),
   );
-  if (manifest.protocolCount !== 40 || manifest.entries?.length !== 40) {
-    throw new Error("Batch 01 canonical manifest must contain exactly 40 entries");
+  if (manifest.protocolCount !== 20 || manifest.entries?.length !== 20) {
+    throw new Error("Batch 01 adult-only manifest must contain exactly 20 entries");
   }
 }
 
@@ -174,7 +178,7 @@ function printPlan() {
     confirmationRequired: CONFIRMATION,
     canonicalApprovalRequired: true,
     batches: "01-23",
-    expectedRecords: 504,
+    expectedRecords: ADULT_ONLY_CATALOG_COUNT,
     sourceOnlyFamilies: "preserved by each generator's explicit selectedIds/excludedNotes",
     cleanupRoots: Array.from({ length: 23 }, (_, index) => generatedDirectories.map(
       (directory) => path.join(batchRoot(index + 1), directory),
@@ -255,7 +259,10 @@ try {
       "--batch-root", root,
       "--manifest", `batch-${pad(batch)}-manifest.json`,
     ]);
-    run("node", [`docs/protocol-review/catalog/open-source/scripts/validate-batch${pad(batch)}.mjs`]);
+    run("node", [
+      "docs/protocol-review/catalog/open-source/scripts/validate-adult-only-batch.mjs",
+      String(batch),
+    ]);
   }
   run("node", ["docs/protocol-review/catalog/open-source/scripts/validate-redirect-aliases.mjs"]);
   run("node", ["scripts/convertOpenSourceBatch01ToRuntime.mjs", "--batch", "all"]);

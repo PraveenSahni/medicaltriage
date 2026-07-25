@@ -3,14 +3,14 @@
   "importBatch": "open-source-batch-19",
   "generatedDate": "2026-07-25",
   "conditionFamilies": 5,
-  "protocolCount": 20,
+  "protocolCount": 10,
   "canonicalSourceFieldType": "string",
   "algorithmIdRange": "1405-1424",
   "applicabilityPolicy": {
     "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
-    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "pediatricSpecificProtocols": "Excluded from this adult-only UAT catalog.",
     "adultSpecificProtocols": "Adult-only; never generate Child variants.",
-    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "mixedAgeProtocols": "Generate Adult variants only; under-18 use is outside this UAT catalog.",
     "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
   },
   "excludedSourceFamilies": [
@@ -66,54 +66,6 @@
       }
     },
     {
-      "file": "json/eye-redness-child-male.db.json",
-      "algorithmId": 1407,
-      "title": "Eye - Redness - Male (Child)",
-      "protocolFamily": "Eye - Redness",
-      "sourceProtocolId": "oscg-eye-redness",
-      "canonicalSourceProtocolId": "oscg-eye-redness",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "013d8c3edb2c245b79b8d6e88609ac0e217e45d783fa7d89f08e16a42f80e330",
-      "redirectTarget": "Eye - Allergy",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/eye-redness-child-female.db.json",
-      "algorithmId": 1408,
-      "title": "Eye - Redness - Female (Child)",
-      "protocolFamily": "Eye - Redness",
-      "sourceProtocolId": "oscg-eye-redness",
-      "canonicalSourceProtocolId": "oscg-eye-redness",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "976874c1cb58898405b36a7544574f1e2a46bcc061e2719b41d7dc9df4b3df06",
-      "redirectTarget": "Eye - Allergy",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/blood-pressure-low-adult-male.db.json",
       "algorithmId": 1409,
       "title": "Blood Pressure - Low - Male (Adult)",
@@ -153,54 +105,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/blood-pressure-low-child-male.db.json",
-      "algorithmId": 1411,
-      "title": "Blood Pressure - Low - Male (Child)",
-      "protocolFamily": "Blood Pressure - Low",
-      "sourceProtocolId": "oscg-blood-pressure-low",
-      "canonicalSourceProtocolId": "oscg-blood-pressure-low",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "ad1ad8a25dc03ccda1865954b1810cee61cb28542899a55a5cfb287b963534a4",
-      "redirectTarget": "Fainting",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/blood-pressure-low-child-female.db.json",
-      "algorithmId": 1412,
-      "title": "Blood Pressure - Low - Female (Child)",
-      "protocolFamily": "Blood Pressure - Low",
-      "sourceProtocolId": "oscg-blood-pressure-low",
-      "canonicalSourceProtocolId": "oscg-blood-pressure-low",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "ced8ad6a77c7fec80c8be63ab500eebc273dce654a90c09b905b43d7bfc48ae2",
-      "redirectTarget": "Fainting",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."
@@ -254,54 +158,6 @@
       }
     },
     {
-      "file": "json/influenza-flu-suspected-child-male.db.json",
-      "algorithmId": 1415,
-      "title": "Influenza (Flu) Suspected - Male (Child)",
-      "protocolFamily": "Influenza (Flu) Suspected",
-      "sourceProtocolId": "oscg-influenza-suspected",
-      "canonicalSourceProtocolId": "oscg-influenza-suspected",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "cfa8a9411115cf0b14ffc2e016e226c8e905104bda8fe529fd72803d8371bfa6",
-      "redirectTarget": "COVID-19 - Diagnosed or Suspected",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/influenza-flu-suspected-child-female.db.json",
-      "algorithmId": 1416,
-      "title": "Influenza (Flu) Suspected - Female (Child)",
-      "protocolFamily": "Influenza (Flu) Suspected",
-      "sourceProtocolId": "oscg-influenza-suspected",
-      "canonicalSourceProtocolId": "oscg-influenza-suspected",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "7a62a6b90bae698330aa4458f0698c32c0fe6794c2916e43b67e7d2c7ddbc35a",
-      "redirectTarget": "COVID-19 - Diagnosed or Suspected",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/hernia-adult-male.db.json",
       "algorithmId": 1417,
       "title": "Hernia - Male (Adult)",
@@ -348,54 +204,6 @@
       }
     },
     {
-      "file": "json/hernia-child-male.db.json",
-      "algorithmId": 1419,
-      "title": "Hernia - Male (Child)",
-      "protocolFamily": "Hernia",
-      "sourceProtocolId": "oscg-hernia",
-      "canonicalSourceProtocolId": "oscg-hernia",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "d59faa70c757a6e3620a3766958c8164132be2b9e8a3fa2d86a3eb14efe76472",
-      "redirectTarget": "Nausea",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/hernia-child-female.db.json",
-      "algorithmId": 1420,
-      "title": "Hernia - Female (Child)",
-      "protocolFamily": "Hernia",
-      "sourceProtocolId": "oscg-hernia",
-      "canonicalSourceProtocolId": "oscg-hernia",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "278042ddfe2920b07618e3e0116d451013b063db984fbad0ca71b65fa4e97092",
-      "redirectTarget": "Nausea",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
       "file": "json/blister-foot-and-hand-adult-male.db.json",
       "algorithmId": 1421,
       "title": "Blister - Foot and Hand - Male (Adult)",
@@ -435,54 +243,6 @@
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/blister-foot-and-hand-child-male.db.json",
-      "algorithmId": 1423,
-      "title": "Blister - Foot and Hand - Male (Child)",
-      "protocolFamily": "Blister - Foot and Hand",
-      "sourceProtocolId": "oscg-blister-foot-hand",
-      "canonicalSourceProtocolId": "oscg-blister-foot-hand",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Male",
-      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "16448d2cadaeaf122d813dc4271ee4388fc27a7fd259a88fe71d170559cf34e2",
-      "redirectTarget": "Burns - Thermal",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
-        ],
-        "sexSpecificChanges": [
-          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
-        ]
-      }
-    },
-    {
-      "file": "json/blister-foot-and-hand-child-female.db.json",
-      "algorithmId": 1424,
-      "title": "Blister - Foot and Hand - Female (Child)",
-      "protocolFamily": "Blister - Foot and Hand",
-      "sourceProtocolId": "oscg-blister-foot-hand",
-      "canonicalSourceProtocolId": "oscg-blister-foot-hand",
-      "ageGroup": "Child",
-      "sourceMinimumAge": 0,
-      "genderAtBirth": "Female",
-      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
-      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "148e61ebe1fc7811489d5e79d35c978445ce864f27a16465331f0229a95ad37b",
-      "redirectTarget": "Burns - Thermal",
-      "demographicDifferentiation": {
-        "ageSpecificChanges": [
-          "Child applicability begins at source minimum age 0.",
-          "Safe-caregiver observations are added without changing source-derived thresholds."
         ],
         "sexSpecificChanges": [
           "No sex-specific threshold is supported by the cited source; no difference was fabricated."

@@ -1,6 +1,6 @@
 # Batch 21 - Learned-Safeguard Expansion
 
-- 9 public-source families produced as 20 demographically applicable protocols.
+- 9 public-source families produced as 18 demographically applicable protocols.
 - IDs: 1445-1464.
 - UK operational wording is localized.
 - All records remain BLOCKED_BY_RESEARCH_GAP.
@@ -25,5 +25,3 @@
 | 1460 | Hip Pain - Female (Adult) | Motor Vehicle Accident | BLOCKED_BY_RESEARCH_GAP |
 | 1461 | Knee Swelling - Male (Adult) | Motor Vehicle Accident | BLOCKED_BY_RESEARCH_GAP |
 | 1462 | Knee Swelling - Female (Adult) | Motor Vehicle Accident | BLOCKED_BY_RESEARCH_GAP |
-| 1463 | Ankle Pain - Male (Child) | Motor Vehicle Accident | BLOCKED_BY_RESEARCH_GAP |
-| 1464 | Ankle Pain - Female (Child) | Motor Vehicle Accident | BLOCKED_BY_RESEARCH_GAP |
