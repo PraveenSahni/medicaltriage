@@ -131,6 +131,9 @@ export function buildGuidelineProvenance(options: {
     sourceKind: "open-source-guideline-decomposition",
     sourceDocuments: options.sourceDocuments,
     contentNotice: options.contentNotice,
+    usageStatus: "UAT_ONLY",
+    productionEligible: false,
+    clinicalStatus: "READY_FOR_QATAR_CLINICAL_REVIEW",
     requiresClinicalValidation: true,
     licensedContentIncluded: false
   };

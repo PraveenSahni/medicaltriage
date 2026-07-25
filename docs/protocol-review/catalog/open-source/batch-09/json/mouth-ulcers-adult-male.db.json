@@ -1,0 +1,151 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1213,
+    "Title": "Mouth Ulcers - Male (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 1,
+    "Definition": [
+      "Mouth ulcer assessment decomposed from NHS.UK's published when-to-get-help guidance.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2024-03-11",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1213001,
+      "AlgorithmID": 1213,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Are fluid-filled blisters on or around the lips the main concern rather than ulcers inside the mouth?",
+      "Information": "The cold-sore family is not generated. Arrange in-person clinical assessment through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        121301
+      ]
+    },
+    {
+      "QuestionID": 1213002,
+      "AlgorithmID": 1213,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Has the ulcer lasted longer than 3 weeks, is it unusually large or near the throat, is it bleeding or becoming more painful and red, or are there ulcers elsewhere on the body with joint symptoms?",
+      "Information": "NHS.UK guidance recommends arranging clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or dentist for these features - prolonged ulcers can occasionally indicate a more serious condition.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        121301
+      ]
+    },
+    {
+      "QuestionID": 1213003,
+      "AlgorithmID": 1213,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this a typical, recent mouth ulcer with none of the features above?",
+      "Information": "NHS.UK guidance: mouth ulcers are common and should clear up on their own within 1-2 weeks.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        121302
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 121301,
+      "AlgorithmOrder": 1,
+      "Title": "Routine mouth ulcer follow-up",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Book a clinical or dental review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for these features.",
+        "Call Back If: ulcer grows or bleeds more."
+      ]
+    },
+    {
+      "AdviceID": 121302,
+      "AlgorithmOrder": 2,
+      "Title": "Governed care for a minor mouth ulcer",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Use a soft toothbrush, cool soft foods/fluids if swallowing safely, and avoid irritating spicy, salty, acidic, or rough foods. Mouthwash, analgesic gel/spray, steroid lozenge, and salt-rinse advice require exact age, pregnancy/breastfeeding, allergy, swallowing safety, medical conditions, and current-medicine checks under the approved Qatar pathway. Do not apply aspirin to the ulcer.",
+        "Call Back If: lasts longer than 3 weeks; becomes larger, more painful, recurrent, or associated with fever, dehydration, weight loss, eye/genital lesions, or immunocompromise."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Mouth ulcers\", https://www.nhs.uk/conditions/mouth-ulcers/ (page last reviewed 11 March 2024)"
+  ],
+  "searchwords": [
+    "mouth ulcer",
+    "canker sore",
+    "sore in my mouth",
+    "ulcer on my tongue",
+    "ulcer in my cheek",
+    "ulcer on my cheek",
+    "hurts to eat"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, are they pregnant or immunocompromised, how long has the lesion been present, and is there fever, dehydration, weight loss, trauma, tobacco/betel use, medicine exposure, eye/genital lesions, or safeguarding concern?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 09 source.",
+      "Source": "Mouth Ulcers"
+    },
+    {
+      "Order": 2,
+      "Category": "OPEN_TEXT",
+      "Question": "How large is it, and is it painful?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 09 source.",
+      "Source": "Mouth Ulcers"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Any ulcers elsewhere on the body or joint pain?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 09 source.",
+      "Source": "Mouth Ulcers"
+    }
+  ]
+}

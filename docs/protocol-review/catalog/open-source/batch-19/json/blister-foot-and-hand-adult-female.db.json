@@ -1,0 +1,146 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1422,
+    "Title": "Blister - Foot and Hand - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 1,
+    "Definition": [
+      "Foot and hand blister assessment decomposed from NHS.UK's published blister guidance.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-11-22",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1422001,
+      "AlgorithmID": 1422,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Did the blister form directly after a heat, hot-liquid, or flame burn?",
+      "Information": "A blister caused by thermal injury belongs in the Burns - Thermal pathway.",
+      "GotoGuideline": "Burns - Thermal",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1422002,
+      "AlgorithmID": 1422,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Is the blister severely painful or recurring, does the surrounding skin look hot and infected with green/yellow pus, is there spreading redness, is it in an unusual location (eyelid, mouth, genitals), are there multiple blisters without a clear cause, or did it result from a burn, scald, sunburn, or allergic reaction?",
+      "Information": "NHS.UK blister guidance lists these as reasons to seek prompt clinical review.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        142201
+      ]
+    },
+    {
+      "QuestionID": 1422003,
+      "AlgorithmID": 1422,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this a typical friction blister from new shoes or repeated rubbing, with none of the features above?",
+      "Information": "NHS.UK guidance describes typical friction blisters as manageable at home.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        142202
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 142201,
+      "AlgorithmOrder": 1,
+      "Title": "Urgent in-person blister review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange same-day in-person assessment through the Qatar route approved by governance for spreading redness, warmth, pus, fever, severe pain, a burn/chemical/electrical/frostbite cause, widespread or unexplained blistering, or any blister in a person with diabetes, poor circulation, neuropathy, or immunocompromise. Do not burst or peel it and do not apply unprescribed chemicals.",
+        "Call Back If: spreading redness, pus, or fever; rapidly increasing pain or blistering; high-risk cause or health condition."
+      ]
+    },
+    {
+      "AdviceID": 142202,
+      "AlgorithmOrder": 2,
+      "Title": "Home care for a typical blister",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Keep the blister clean, gently wash and pat dry, and cover with a soft plaster or padded dressing. Do not burst it yourself; if it bursts on its own, let the fluid drain before covering, and don't peel off the skin. Avoid the shoes or activity that caused it until healed.",
+        "Call Back If: signs of infection develop; pain worsens."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Blisters\", https://www.nhs.uk/conditions/blisters/ (page last reviewed 22 November 2023)"
+  ],
+  "searchwords": [
+    "blister on my foot",
+    "blister on my hand",
+    "got a blister from new shoes",
+    "blister from friction"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "LOCATION",
+      "Question": "Where is the blister?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 19 source.",
+      "Source": "Blister - Foot and Hand"
+    },
+    {
+      "Order": 2,
+      "Category": "OPEN_TEXT",
+      "Question": "What caused it?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 19 source.",
+      "Source": "Blister - Foot and Hand"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Any redness, pus, or increasing pain?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 19 source.",
+      "Source": "Blister - Foot and Hand"
+    }
+  ]
+}

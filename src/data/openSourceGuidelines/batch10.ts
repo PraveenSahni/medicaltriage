@@ -1,5 +1,6 @@
 import type { ClinicalContentPackageInput } from "../../types/clinicalContent.js";
 import { buildGuidelineProvenance } from "./shared/builders.js";
+import { addChildSafeguardingUatBranches } from "./batch09.js";
 
 type ProtocolInput = ClinicalContentPackageInput["protocols"][number];
 
@@ -16,14 +17,14 @@ type ProtocolInput = ClinicalContentPackageInput["protocols"][number];
  * dedicated NHS.UK post-operative page exists - documented as a synthesis,
  * not a single-source quote.
  */
-export const batch10Protocols: ProtocolInput[] = [
+const batch10ProtocolDefinitions: ProtocolInput[] = [
   // ------------------------------------------------------------------
   // 1. Nose Injury - https://www.nhs.uk/conditions/broken-nose/ (reviewed 2023-08-17)
   // ------------------------------------------------------------------
   {
     id: "oscg-nose-injury",
     titleEn: "Nose Injury",
-    clinicalDefinitionEn: "Nose injury assessment decomposed from NHS.UK's published broken nose guidance.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only adult and pediatric pathway for nasal trauma, screening for major bleeding, septal haematoma, head/neck/eye injury and safeguarding; not approved for production.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -39,7 +40,8 @@ export const batch10Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-noseinjury-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "How did the injury happen?" },
       { id: "oscg-noseinjury-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "When did it happen?" },
-      { id: "oscg-noseinjury-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any bleeding, and has it stopped?" }
+      { id: "oscg-noseinjury-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any bleeding, and has it stopped?" },
+      { id: "oscg-noseinjury-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; is the patient pregnant or anticoagulated; and are there loss of consciousness, vomiting, vision/neck symptoms, clear fluid, internal swelling, deliberate injury or inconsistent history?" }
     ],
     questions: [
       {
@@ -68,34 +70,34 @@ export const batch10Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["crooked nose after injury", "nose swelling not going down"],
         careAdviceIds: ["oscg-noseinjury-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
       {
         id: "oscg-noseinjury-q2-selfcare",
         acuityOrder: 3,
-        severity: "Self-care",
+        severity: "Urgent",
         questionTextEn: "Is this mild bruising or swelling with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "NHS.UK guidance provides first-aid steps for a mild nose injury.",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "A fracture, septal haematoma and safeguarding risk cannot be excluded remotely; this UAT pathway requires in-person assessment.",
         redFlag: false,
         keywords: ["mild nose bruising"],
         careAdviceIds: ["oscg-noseinjury-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-noseinjury-emergency-advice", titleEn: "Emergency nose injury precautions", instructionTextEn: "Keep the person upright and leaning forward, and arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["bleeding will not stop", "worsening confusion"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-noseinjury-emergency-advice", titleEn: "Emergency nose injury precautions", instructionTextEn: "Call Qatar 999 and do not drive. Keep the patient observed; if awake with isolated bleeding, sit forward and pinch the soft nose, but avoid unnecessary movement if head or neck injury is possible.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["bleeding will not stop", "vomiting, worsening confusion or breathing difficulty"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-noseinjury-urgent-advice", titleEn: "Urgent nose injury review", instructionTextEn: "Arrange same-day medical review, especially for a crooked nose or persistent swelling.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["breathing difficulty develops", "fever develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-noseinjury-selfcare-advice", titleEn: "Home care for a mild nose injury", instructionTextEn: "Apply ice wrapped in cloth for up to 15 minutes several times a day, take paracetamol for pain, and use extra pillows to keep the head elevated while resting. Avoid straightening the nose yourself, wearing glasses, or strenuous activity for 2 weeks.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["swelling not improving after 3 days", "nose appears crooked"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-noseinjury-selfcare-advice", titleEn: "In-person nasal injury assessment", instructionTextEn: "Do not straighten or manipulate the nose. Arrange prompt in-person review through the Qatar pathway approved for UAT; medication requires age, weight, pregnancy, bleeding and interaction checks.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["bleeding restarts", "blocked breathing, fever, worsening pain or deformity"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-08-17", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Broken nose\", https://www.nhs.uk/conditions/broken-nose/ (page last reviewed 17 August 2023)"],
-      contentNotice: "Decomposed from NHS.UK's published broken nose guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Qatar-localized adult/pediatric draft. Major bleeding, septal haematoma and head injury cannot be downgraded; ENT, imaging, medication and safeguarding rules remain GOVERNANCE_REQUIRED."
     })
   },
 
@@ -105,7 +107,7 @@ export const batch10Protocols: ProtocolInput[] = [
   {
     id: "oscg-pinworms",
     titleEn: "Pinworms",
-    clinicalDefinitionEn: "Pinworms (threadworms) assessment decomposed from NHS.UK's published when-to-get-help guidance.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only pathway for suspected pinworm infection, requiring age, pregnancy/breastfeeding, differential diagnosis and safeguarding review before treatment; not approved for production.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -119,7 +121,8 @@ export const batch10Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-pinworms-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "How was this noticed (visible worms, itching)?" },
       { id: "oscg-pinworms-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Is the patient under 2 years old, pregnant, or breastfeeding?" },
-      { id: "oscg-pinworms-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Have other household members also been affected?" }
+      { id: "oscg-pinworms-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Have other household members also been affected?" },
+      { id: "oscg-pinworms-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; are there abdominal pain, vomiting, fever, bleeding, weight loss, genital/urinary symptoms, immune suppression, uncertain worm identification, neglect or safeguarding concerns?" }
     ],
     questions: [
       {
@@ -132,33 +135,33 @@ export const batch10Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["threadworms under 2 years old", "pregnant with threadworms"],
         careAdviceIds: ["oscg-pinworms-routine-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 50,
         questionOrder: 1
       },
       {
         id: "oscg-pinworms-q1-selfcare",
         acuityOrder: 2,
-        severity: "Self-care",
+        severity: "Routine",
         questionTextEn: "Is this a straightforward case in someone over 2 years old, not pregnant or breastfeeding?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "NHS.UK guidance: a pharmacist can recommend medicine (mebendazole) - treat all household members over 2 regardless of symptoms. No need to stay off school, nursery, or work.",
+        dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
+        rationaleEn: "Diagnosis, household eligibility and medication require age-, pregnancy- and patient-specific review; this UAT pathway does not prescribe.",
         redFlag: false,
         keywords: ["straightforward threadworms"],
         careAdviceIds: ["oscg-pinworms-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 50,
         questionOrder: 1
       }
     ],
     careAdvice: [
       { id: "oscg-pinworms-routine-advice", titleEn: "Routine pinworms follow-up", instructionTextEn: "Get GP advice before treating a child under 2, or if pregnant or breastfeeding.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["symptoms worsen"], displayOrder: 1, adviceCategory: "NOTE_TO_TRIAGER" },
-      { id: "oscg-pinworms-selfcare-advice", titleEn: "Pharmacy self-care for pinworms", instructionTextEn: "A pharmacist can recommend mebendazole for everyone in the household over 2, regardless of symptoms. Wash hands and scrub under fingernails before eating, shower daily, keep nails short, wash sleepwear/sheets/towels daily at high temperature for 2 weeks, and everyone should wear underwear at night. There's no need to stay off school, nursery, or work.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["symptoms persist after treatment", "cannot tolerate medication"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-pinworms-selfcare-advice", titleEn: "Clinical or pharmacist pinworm review", instructionTextEn: "Arrange review through the Qatar pathway approved for UAT before medication or household treatment. Use careful hand and nail hygiene and launder sleepwear/bedding according to locally approved infection-control advice; do not share or empirically dose medicine.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["pain, vomiting, fever, bleeding or weight loss", "symptoms persist or diagnosis is uncertain"], displayOrder: 2, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-12-01", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Threadworms\", https://www.nhs.uk/conditions/threadworms/ (page last reviewed 01 December 2023)"],
-      contentNotice: "Decomposed from NHS.UK's published threadworms guidance (Crown copyright, reused under the Open Government Licence) - threadworms is the UK clinical term for pinworms, same organism (Enterobius vermicularis). Adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Source-only Qatar pathway with no generated IDs. Under-2, pregnancy/breastfeeding, household treatment, medication, diagnosis and safeguarding rules remain GOVERNANCE_REQUIRED."
     })
   },
 
@@ -168,7 +171,7 @@ export const batch10Protocols: ProtocolInput[] = [
   {
     id: "oscg-neurologic-deficit",
     titleEn: "Neurologic Deficit",
-    clinicalDefinitionEn: "Sudden neurologic deficit (possible stroke) assessment decomposed from NHS.UK's published FAST test guidance.",
+    clinicalDefinitionEn: "Safety-first assessment of a new or sudden focal neurologic deficit in a child or adult. This protocol does not diagnose stroke or a stroke mimic; emergency assessment is required.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -184,9 +187,11 @@ export const batch10Protocols: ProtocolInput[] = [
       { phrase: "slurring words", weight: 95 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-neuro-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "When did the symptoms start?" },
-      { id: "oscg-neuro-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Have the symptoms improved or stopped since they started?" },
-      { id: "oscg-neuro-iaq3", sequence: 3, responseType: "OPEN_TEXT", promptTextEn: "Describe exactly what is happening (face, arm, speech, vision)." }
+      { id: "oscg-neuro-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "What is the exact symptom-onset time and the last-known-well time? If symptoms were noticed on waking, when was the person last known normal before sleep?" },
+      { id: "oscg-neuro-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "Check for sudden face droop, one-sided arm or leg weakness or numbness, speech or understanding difficulty, new loss or double vision, severe dizziness, loss of balance or coordination, inability to walk, or a sudden severe headache." },
+      { id: "oscg-neuro-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the person difficult to wake, not breathing normally, or having a seizure now?" },
+      { id: "oscg-neuro-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "For a child, record age and any seizure, recent head injury, fever, possible ingestion, or known neurologic condition. These details must not delay the emergency call." },
+      { id: "oscg-neuro-iaq5", sequence: 5, responseType: "OPEN_TEXT", promptTextEn: "Does the person have diabetes, and is a glucose reading immediately available? Checking glucose must not delay calling 999." }
     ],
     questions: [
       {
@@ -194,12 +199,12 @@ export const batch10Protocols: ProtocolInput[] = [
         acuityOrder: 1,
         severity: "Emergency",
         questionTextEn:
-          "Is one side of the face drooping, is the person unable to fully lift both arms and keep them there, is speech slurred or not making sense, or is there sudden weakness/numbness on one side, vision problems, confusion, or a severe headache - even if symptoms have since improved or stopped?",
+          "Is there any sudden face droop, one-sided arm or leg weakness or numbness, abnormal speech or understanding, new loss or double vision, severe dizziness, loss of balance or coordination, inability to walk, sudden severe headache, reduced consciousness, or seizure - including in a child and even if the symptoms improved or stopped?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         rationaleEn:
-          "NHS.UK guidance: the FAST test (Face, Arms, Speech, Time) - call 999 now for any of these, including if signs of a stroke occurred within the last 24 hours even if they've now stopped. Do not drive to A&E.",
+          "FAST signs and sudden vision, balance, coordination, walking, or severe-headache symptoms can indicate stroke. Hypoglycaemia, seizure, migraine, head injury, infection, and other conditions may mimic stroke, particularly in children, but telephone triage cannot safely distinguish them and must not delay emergency assessment.",
         redFlag: true,
-        keywords: ["face drooping one side", "cant lift both arms", "sudden slurred speech", "stroke symptoms stopped"],
+        keywords: ["face drooping one side", "cant lift both arms", "sudden slurred speech", "stroke symptoms stopped", "sudden double vision", "sudden loss of balance", "child sudden weakness"],
         careAdviceIds: ["oscg-neuro-emergency-advice"],
         telemedicineEligible: false,
         dispositionLevel: 100,
@@ -210,7 +215,7 @@ export const batch10Protocols: ProtocolInput[] = [
       {
         id: "oscg-neuro-emergency-advice",
         titleEn: "Emergency stroke precautions",
-        instructionTextEn: "Note the exact time symptoms started. Do not let the person drive. Arrange emergency transport immediately, even if symptoms have improved or stopped - get medical help straight away regardless.",
+        instructionTextEn: "Call Qatar 999 for an ambulance now. Record the exact onset and last-known-well times, including the time last known normal before sleep for wake-up symptoms. Keep the person safe and at rest; do not allow self-driving and do not give food, drink, or medicines because swallowing may be unsafe. If unconscious but breathing normally, place in the recovery position if safe; if not breathing normally, follow the 999 call-handler's resuscitation instructions. A glucose check or possible alternative diagnosis must not delay the call.",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         warningSigns: ["symptoms worsen", "loss of consciousness"],
         displayOrder: 1,
@@ -219,8 +224,12 @@ export const batch10Protocols: ProtocolInput[] = [
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2024-09-12", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"Stroke - Symptoms\", https://www.nhs.uk/conditions/stroke/symptoms/ (page last reviewed 12 September 2024)"],
-      contentNotice: "Decomposed from NHS.UK's published FAST test stroke symptom guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Treated as an unconditional emergency per the source - no self-care or routine tier exists for a genuine neurologic deficit. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      sourceDocuments: [
+        "NHS.UK, \"Stroke - Symptoms\", https://www.nhs.uk/conditions/stroke/symptoms/ (page last reviewed 12 September 2024)",
+        "US CDC, \"Signs and Symptoms of Stroke\", https://www.cdc.gov/stroke/signs-symptoms/ (accessed 25 July 2026)",
+        "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (999 ambulance access; accessed 25 July 2026)"
+      ],
+      contentNotice: "UAT-only safety synthesis of published stroke warning signs and Qatar emergency access, adapted into IST Health's STCC-shaped triage format. It is not a diagnosis and includes pediatric and stroke-mimic prompts only to support emergency handover, never to downgrade or delay care. No non-emergency route is offered. Not licensed Schmitt-Thompson (STCC) content. Requires Qatar clinical governance validation before any production use."
     })
   },
 
@@ -231,7 +240,7 @@ export const batch10Protocols: ProtocolInput[] = [
   {
     id: "oscg-post-op-symptoms",
     titleEn: "Post-Op Symptoms and Questions",
-    clinicalDefinitionEn: "Post-operative wound and recovery concern assessment, synthesized from NHS.UK's general wound-infection guidance.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only adult and pediatric pathway for post-operative concerns, screening for bleeding, sepsis, thromboembolism, wound failure and procedure-specific complications; not approved for production.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -248,7 +257,8 @@ export const batch10Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-postop-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What surgery was performed, and when?" },
       { id: "oscg-postop-iaq2", sequence: 2, responseType: "TEMPERATURE", promptTextEn: "Has a temperature been measured?" },
-      { id: "oscg-postop-iaq3", sequence: 3, responseType: "OPEN_TEXT", promptTextEn: "Describe how the surgical site looks now." }
+      { id: "oscg-postop-iaq3", sequence: 3, responseType: "OPEN_TEXT", promptTextEn: "Describe how the surgical site looks now." },
+      { id: "oscg-postop-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; is the patient pregnant/recently postpartum; and are there chest pain, breathing difficulty, leg swelling, vomiting, reduced urine, wound opening, severe pain, immune suppression, anticoagulants or safeguarding concerns?" }
     ],
     questions: [
       {
@@ -275,29 +285,29 @@ export const batch10Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["infected surgical wound", "fever after surgery", "wound leaking pus"],
         careAdviceIds: ["oscg-postop-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
       {
         id: "oscg-postop-q2-selfcare",
         acuityOrder: 3,
-        severity: "Self-care",
+        severity: "Urgent",
         questionTextEn: "Is recovery progressing as expected with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "General post-operative wound care: keep the site clean and dry, and follow discharge instructions from the surgical team.",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "Expected recovery is procedure-specific and cannot be confirmed by this generic telephone pathway; the surgical team must review concerns.",
         redFlag: false,
         keywords: ["normal post op recovery"],
         careAdviceIds: ["oscg-postop-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-postop-emergency-advice", titleEn: "Emergency post-op precautions", instructionTextEn: "Apply pressure to any bleeding and arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening bleeding", "breathing difficulty increases"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-postop-emergency-advice", titleEn: "Emergency post-operative precautions", instructionTextEn: "Call Qatar 999 and do not drive. For external bleeding use firm pressure unless prohibited by the procedure; keep the patient resting and follow dispatcher instructions. Do not give food, drink or new medicine.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening bleeding or collapse", "breathing difficulty, chest pain or reduced responsiveness"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-postop-urgent-advice", titleEn: "Urgent post-op wound review", instructionTextEn: "Contact the surgical team or arrange same-day medical review for these infection signs.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fever worsens", "wound spreads"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-postop-selfcare-advice", titleEn: "Home care for normal post-op recovery", instructionTextEn: "Keep the surgical site clean and dry, follow the discharge instructions given by the surgical team, and take prescribed pain relief as directed.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["wound becomes red, hot, or leaks fluid", "fever develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-postop-selfcare-advice", titleEn: "Surgical-team review of recovery", instructionTextEn: "Follow only the procedure-specific discharge plan already supplied and contact the operating team or Qatar pathway approved for UAT today. Do not change dressings, drains, diet, activity or medication beyond that plan without clinical advice.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["wound opens, bleeds, becomes red/hot or leaks fluid", "fever, vomiting, reduced urine, leg swelling, chest pain or breathlessness"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
@@ -306,7 +316,7 @@ export const batch10Protocols: ProtocolInput[] = [
         "NHS.UK, \"Boils\", https://www.nhs.uk/conditions/boils/ (page last reviewed 20 June 2023)"
       ],
       contentNotice:
-        "No single dedicated NHS.UK page exists for general post-operative symptom triage (surgery-type-specific discharge instructions vary by hospital). This protocol synthesizes NHS.UK's general wound-infection red-flag criteria (already used for cuts/grazes and boils) applied to the post-surgical context - a documented synthesis, not a direct single-source quote. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use, and should defer to the specific surgical team's own discharge instructions where they conflict."
+        "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Source-only multi-source Qatar pathway with no generated IDs. Procedure-specific instructions take precedence; surgical-team access, thromboembolism, infection, medication and destination rules remain GOVERNANCE_REQUIRED."
     })
   },
 
@@ -316,7 +326,7 @@ export const batch10Protocols: ProtocolInput[] = [
   {
     id: "oscg-finger-injury",
     titleEn: "Finger Injury",
-    clinicalDefinitionEn: "Finger injury assessment decomposed from NHS.UK's published broken arm/wrist guidance, generalized to digits.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only adult and pediatric pathway for finger trauma, screening for neurovascular compromise, open fracture, tendon/nail injury, constricting rings and safeguarding; not approved for production.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -330,7 +340,8 @@ export const batch10Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-fingerinjury-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "How did the injury happen?" },
       { id: "oscg-fingerinjury-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "When did it happen?" },
-      { id: "oscg-fingerinjury-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Can the finger be moved and bent normally?" }
+      { id: "oscg-fingerinjury-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Can the finger be moved and bent normally?" },
+      { id: "oscg-fingerinjury-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; is the patient pregnant/anticoagulated; is a ring constricting; and are there cold/pale/blue colour, numbness, open wound, nail injury, bite, deliberate injury or inconsistent history?" }
     ],
     questions: [
       {
@@ -357,34 +368,34 @@ export const batch10Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["severe finger pain", "cannot use finger", "worsening finger swelling"],
         careAdviceIds: ["oscg-fingerinjury-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
       {
         id: "oscg-fingerinjury-q2-selfcare",
         acuityOrder: 3,
-        severity: "Self-care",
+        severity: "Urgent",
         questionTextEn: "Is this mild pain or bruising with the finger still movable and none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "NHS.UK guidance provides ice, elevation, and pain-relief first-aid steps for a mild extremity injury.",
         redFlag: false,
         keywords: ["mild finger pain"],
         careAdviceIds: ["oscg-fingerinjury-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-fingerinjury-emergency-advice", titleEn: "Emergency finger injury precautions", instructionTextEn: "Keep the hand still, do not attempt to realign a deformity, and arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening numbness", "increasing bleeding"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-fingerinjury-emergency-advice", titleEn: "Emergency finger injury precautions", instructionTextEn: "Call Qatar emergency services on 999 now. Do not allow self-driving; await ambulance transport or follow the 999 call-taker's transport instructions. Keep the hand still and do not attempt to realign a deformity.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening numbness", "increasing bleeding"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-fingerinjury-urgent-advice", titleEn: "Urgent finger injury review", instructionTextEn: "Buddy-tape the injured finger to an adjacent one for support, apply ice wrapped in cloth for up to 20 minutes every 2-3 hours, and arrange same-day medical review.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["pain worsens", "new numbness develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-fingerinjury-selfcare-advice", titleEn: "Home care for a mild finger injury", instructionTextEn: "Apply ice wrapped in cloth for up to 20 minutes every 2-3 hours, remove rings from the affected finger, and take paracetamol or ibuprofen for pain.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain worsens instead of improving", "new numbness or inability to move the finger"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-fingerinjury-selfcare-advice", titleEn: "In-person assessment for apparently mild finger injury", instructionTextEn: "Remove a ring only if it slides off easily, support the finger without forced straightening, and arrange in-person review through the Qatar UAT pathway. Medication requires age, weight, pregnancy, allergy, bleeding, kidney/liver and interaction checks.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["pain or swelling worsens", "new numbness, colour change or inability to move"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-05-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Broken arm or wrist\", https://www.nhs.uk/conditions/broken-arm-or-wrist/ (page last reviewed 26 May 2023) - generalized to finger/digit injuries using the same fracture red-flag criteria"],
-      contentNotice: "Decomposed from NHS.UK's published broken arm/wrist guidance, explicitly generalized to finger injuries since fracture red-flag criteria (deformity, numbness, open bone) are consistent across small and large bones (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Source-only indirect Qatar adult/pediatric pathway with no generated IDs. Neurovascular compromise and open injury cannot be downgraded; imaging, reduction, nail/tendon, medication and safeguarding rules remain GOVERNANCE_REQUIRED."
     })
   },
 
@@ -394,7 +405,7 @@ export const batch10Protocols: ProtocolInput[] = [
   {
     id: "oscg-puncture-wound",
     titleEn: "Puncture Wound",
-    clinicalDefinitionEn: "Puncture wound assessment decomposed from NHS.UK's published cuts and grazes guidance.",
+    clinicalDefinitionEn: "Safety-first assessment of a penetrating or puncture wound, including an embedded object, bite, needle or high-pressure injection injury, with anatomy, neurovascular status, age, and pregnancy considered.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -406,20 +417,23 @@ export const batch10Protocols: ProtocolInput[] = [
       { phrase: "something pierced my skin", weight: 85 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-puncture-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What caused the puncture?" },
-      { id: "oscg-puncture-iaq2", sequence: 2, responseType: "LOCATION", promptTextEn: "Where is the wound?" },
-      { id: "oscg-puncture-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the object still in the wound?" }
+      { id: "oscg-puncture-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What caused the wound, when did it happen, and was it a bite, used needle, injection injury, high-pressure tool, dirty object, or intentional injury?" },
+      { id: "oscg-puncture-iaq2", sequence: 2, responseType: "LOCATION", promptTextEn: "Where is the wound, how deep may it be, and is any object or debris still embedded?" },
+      { id: "oscg-puncture-iaq3", sequence: 3, responseType: "OPEN_TEXT", promptTextEn: "Is bleeding controlled, and beyond the wound is the limb warm and normally coloured with normal feeling, movement, and pulse if trained to check?" },
+      { id: "oscg-puncture-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "Does the wound involve the eye, head, neck, chest, abdomen, groin, genitals, hand, foot, or a joint?" },
+      { id: "oscg-puncture-iaq5", sequence: 5, responseType: "OPEN_TEXT", promptTextEn: "Record age, pregnancy, immune problems, diabetes, medicines affecting bleeding, tetanus vaccination history, and any increasing pain, redness, swelling, pus, fever, or illness." },
+      { id: "oscg-puncture-iaq6", sequence: 6, responseType: "OPEN_TEXT", promptTextEn: "For an animal exposure, what animal was involved, where did it occur, was skin broken or saliva introduced, and is the animal available for official assessment? Do not try to capture it." }
     ],
     questions: [
       {
         id: "oscg-puncture-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Is there something still stuck in the wound, cannot stop the bleeding, is there loss of feeling or trouble moving near the wound, or is the wound very large or deep?",
+        questionTextEn: "Is bleeding heavy, spurting, or not controlled with firm pressure; is the person faint, pale, confused, or short of breath; is there a penetrating injury to the eye, neck, chest, abdomen, or groin; is a large or deeply embedded object present; is the limb beyond the wound pale, cold, pulseless, numb, or unable to move; or was this a high-pressure injection or injection of an unknown substance?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
-        rationaleEn: "NHS.UK cuts and grazes guidance lists an embedded object, uncontrolled bleeding, or a large/deep wound as call-999/A&E criteria.",
+        rationaleEn: "Uncontrolled bleeding, shock, critical-site penetration, major impalement, neurovascular compromise, and high-pressure injection can be limb- or life-threatening and require immediate emergency response.",
         redFlag: true,
-        keywords: ["object stuck in wound", "deep puncture wound", "cant stop bleeding puncture"],
+        keywords: ["object stuck in wound", "deep puncture wound", "cant stop bleeding puncture", "eye puncture", "chest puncture", "cold numb limb", "high pressure injection"],
         careAdviceIds: ["oscg-puncture-emergency-advice"],
         telemedicineEligible: false,
         dispositionLevel: 100,
@@ -429,13 +443,13 @@ export const batch10Protocols: ProtocolInput[] = [
         id: "oscg-puncture-q1-urgent",
         acuityOrder: 2,
         severity: "Urgent",
-        questionTextEn: "Does the wound have soil, dirt, or debris still in it, was it caused by an animal or dirty object like a rusty nail, is it swollen/red/getting more painful or leaking pus, or does the caller feel generally unwell or feverish and not had a tetanus vaccine in the last 10 years?",
+        questionTextEn: "If no emergency feature is present, is this an animal or human bite, used-needle injury, dirty or deep puncture, retained debris, delayed presentation, wound to a hand, foot, joint, genitals, or near a tendon; are infection signs developing; or is the patient a young child, pregnant, immunocompromised, diabetic, or unsure of tetanus protection?",
         dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK guidance lists these as reasons to call 111 or see a GP - puncture wounds carry a higher infection and tetanus risk than surface cuts.",
+        rationaleEn: "These wounds need prompt in-person assessment for cleaning, structural injury, infection, blood-borne-virus exposure, and clinician-led tetanus or rabies risk management. The exact Qatar non-emergency service and timeframe are governance-required.",
         redFlag: false,
         keywords: ["dirty puncture wound", "rusty nail wound", "no tetanus vaccine"],
         careAdviceIds: ["oscg-puncture-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
@@ -443,26 +457,31 @@ export const batch10Protocols: ProtocolInput[] = [
         id: "oscg-puncture-q2-selfcare",
         acuityOrder: 3,
         severity: "Self-care",
-        questionTextEn: "Is this a small, shallow, clean puncture with none of the features above?",
+        questionTextEn: "Is this an adult with a small, shallow, clean, recent non-bite and non-injection puncture, normal feeling and movement, controlled bleeding, no retained material or high-risk condition, and tetanus status already confirmed current by an approved local pathway?",
         dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "NHS.UK guidance describes minor wounds as manageable at home with basic first aid.",
+        rationaleEn: "Only a narrowly defined low-risk wound may enter home care. If any criterion is uncertain, use the governance-approved in-person route rather than self-care.",
         redFlag: false,
         keywords: ["small clean puncture"],
         careAdviceIds: ["oscg-puncture-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-puncture-emergency-advice", titleEn: "Emergency wound precautions", instructionTextEn: "Do not remove anything embedded in the wound. Apply pressure around (not on) an embedded object if bleeding, and arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["bleeding will not stop", "signs of shock"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-puncture-urgent-advice", titleEn: "Urgent puncture wound review", instructionTextEn: "Arrange same-day medical review for cleaning, a tetanus check, and possible antibiotics.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["increasing redness, swelling, or pus", "fever develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-puncture-selfcare-advice", titleEn: "Home first aid for a minor puncture", instructionTextEn: "Wash hands, apply pressure with a clean cloth if bleeding, rinse the wound once bleeding stops, pat dry, and cover with a sterile dressing. Keep clean and dry and change as needed.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["signs of infection develop", "wound does not heal as expected"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-puncture-emergency-advice", titleEn: "Emergency penetrating-wound precautions", instructionTextEn: "Call Qatar 999 now. Do not remove or push on an embedded object; stabilize it with padding and apply firm pressure around it if bleeding. For bleeding without an object, use firm direct pressure with a clean dressing. Keep the person still and warm, give nothing by mouth, and do not allow self-driving. Follow the 999 call-handler's instructions.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["bleeding will not stop", "faintness, confusion, breathing difficulty, or a pale cold limb"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-puncture-urgent-advice", titleEn: "Prompt in-person puncture-wound review", instructionTextEn: "Use the Qatar governance-approved in-person service and timeframe; the exact non-emergency route is not defined by this UAT protocol. Gently rinse visible contamination with clean running water, but do not probe, scrub deeply, close, or remove an embedded object. A clinician must assess cleaning, structural injury, infection, blood-borne-virus exposure, and whether tetanus vaccination or immunoglobulin, rabies prevention, or antibiotics are indicated. Pregnancy and pediatric medication choices require clinician or pharmacist confirmation.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["increasing redness, swelling, pain, pus, fever, red streaking, numbness, or reduced movement", "bleeding, breathing difficulty, faintness, or limb colour/temperature change"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-puncture-selfcare-advice", titleEn: "Home first aid for a strictly low-risk puncture", instructionTextEn: "Wash hands, control minor bleeding with a clean dressing, rinse the shallow wound with clean running water, pat the surrounding skin dry, and apply a sterile non-adherent dressing. Do not use bleach, hydrogen peroxide, or deep probing. Keep it clean and reassess regularly; seek the governance-approved in-person service if any eligibility criterion becomes uncertain.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["increasing pain, redness, warmth, swelling, pus, fever, red streaking, numbness, or reduced movement", "the wound does not heal as expected"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-04-02", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"Cuts and grazes\", https://www.nhs.uk/conditions/cuts-and-grazes/ (page last reviewed 02 April 2026)"],
-      contentNotice: "Decomposed from NHS.UK's published cuts and grazes guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format for the puncture-wound presentation specifically (higher infection/tetanus risk than surface cuts noted explicitly). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      sourceDocuments: [
+        "NHS.UK, \"Cuts and grazes\", https://www.nhs.uk/conditions/cuts-and-grazes/ (page last reviewed 02 April 2026)",
+        "US CDC, \"Clinical Guidance for Wound Management to Prevent Tetanus\", https://www.cdc.gov/tetanus/hcp/clinical-guidance/ (accessed 25 July 2026)",
+        "WHO, \"Rabies\", https://www.who.int/news-room/fact-sheets/detail/rabies (accessed 25 July 2026)",
+        "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (999 ambulance access; accessed 25 July 2026)"
+      ],
+      contentNotice: "UAT-only safety synthesis for puncture and penetrating wounds, including major trauma, neurovascular compromise, bite, needle, injection, tetanus, and rabies considerations. Tetanus, rabies, antibiotic, blood-borne-virus, pediatric, pregnancy, and exact Qatar non-emergency routing decisions remain clinician and local-governance responsibilities. Not licensed Schmitt-Thompson (STCC) content. Requires Qatar clinical governance validation before any production use."
     })
   },
 
@@ -472,7 +491,7 @@ export const batch10Protocols: ProtocolInput[] = [
   {
     id: "oscg-mosquito-bite",
     titleEn: "Mosquito Bite",
-    clinicalDefinitionEn: "Mosquito bite assessment decomposed from NHS.UK's published insect bites and stings guidance.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only adult and pediatric pathway for mosquito bites, screening for anaphylaxis, infection and travel-related febrile disease; not approved for production.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -486,7 +505,8 @@ export const batch10Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-mosquito-iaq1", sequence: 1, responseType: "LOCATION", promptTextEn: "Where are the bites?" },
       { id: "oscg-mosquito-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "Any recent travel to an area with mosquito-borne disease risk?" },
-      { id: "oscg-mosquito-iaq3", sequence: 3, responseType: "TEMPERATURE", promptTextEn: "Any fever?" }
+      { id: "oscg-mosquito-iaq3", sequence: 3, responseType: "TEMPERATURE", promptTextEn: "Any fever?" },
+      { id: "oscg-mosquito-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; is the patient pregnant; and are there bleeding, severe headache, confusion, vomiting, dehydration, widespread rash, immune suppression or safeguarding concerns?" }
     ],
     questions: [
       {
@@ -513,7 +533,7 @@ export const batch10Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["fever after travel mosquito bite", "malaria risk"],
         careAdviceIds: ["oscg-mosquito-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
@@ -527,35 +547,35 @@ export const batch10Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["infected mosquito bite"],
         careAdviceIds: ["oscg-mosquito-routine-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 50,
         questionOrder: 1
       },
       {
         id: "oscg-mosquito-q3-selfcare",
         acuityOrder: 4,
-        severity: "Self-care",
+        severity: "Routine",
         questionTextEn: "Are these typical itchy mosquito bites with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
         rationaleEn: "NHS.UK guidance describes minor bites without infection or allergy signs as manageable at home.",
         redFlag: false,
         keywords: ["typical mosquito bites"],
         careAdviceIds: ["oscg-mosquito-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 50,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-mosquito-emergency-advice", titleEn: "Emergency allergic reaction precautions", instructionTextEn: "Use an adrenaline auto-injector immediately if available, then arrange emergency transport.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["no improvement after 5 minutes", "loss of consciousness"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-mosquito-emergency-advice", titleEn: "Emergency allergic reaction precautions", instructionTextEn: "Call Qatar 999 and do not drive. Use only the patient's own prescribed adrenaline auto-injector according to its plan and dispatcher instructions; keep the patient lying unless breathing is difficult.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["symptoms persist or recur", "loss of consciousness"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-mosquito-urgent-advice", titleEn: "Urgent travel-fever review", instructionTextEn: "Arrange prompt medical evaluation for fever following travel to a mosquito-borne disease risk area - mention the travel history clearly.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fever worsens", "new symptoms develop"], displayOrder: 2, adviceCategory: "DISPOSITION" },
       { id: "oscg-mosquito-routine-advice", titleEn: "Routine bite follow-up", instructionTextEn: "Keep the area clean and book a routine review for signs of infection.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["increasing redness or pain"], displayOrder: 3, adviceCategory: "NOTE_TO_TRIAGER" },
-      { id: "oscg-mosquito-selfcare-advice", titleEn: "Home care for mosquito bites", instructionTextEn: "Apply an ice pack, use over-the-counter antihistamines or hydrocortisone cream, and avoid scratching to prevent infection.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["signs of infection develop", "fever develops"], displayOrder: 4, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-mosquito-selfcare-advice", titleEn: "Review for presumed mosquito bites", instructionTextEn: "Avoid scratching, clean the area gently and arrange clinician/pharmacist review before medication selection. Record travel precisely and escalate any fever or systemic symptom.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["infection, bleeding or widespread rash", "fever, confusion, vomiting or dehydration"], displayOrder: 4, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-06-01", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Insect bites and stings\", https://www.nhs.uk/conditions/insect-bites-and-stings/ (page last reviewed 01 June 2023)"],
-      contentNotice: "Decomposed from NHS.UK's published insect bites and stings guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format for the mosquito-specific presentation, with an added travel-fever caution (standard travel-medicine practice, not part of the source page itself, relevant given IST Health's aviation/travel population). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Qatar-localized adult/pediatric draft. Anaphylaxis and travel fever cannot be downgraded; malaria/dengue testing, pregnancy, medication and destination rules remain GOVERNANCE_REQUIRED."
     })
   },
 
@@ -565,7 +585,7 @@ export const batch10Protocols: ProtocolInput[] = [
   {
     id: "oscg-leech-bite",
     titleEn: "Leech Bite",
-    clinicalDefinitionEn: "Leech bite assessment decomposed from NHS.UK's published insect bites and stings guidance, generalized to leeches.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only adult and pediatric pathway for leech attachment or bite, using indirect bite guidance and screening for bleeding, anaphylaxis, internal attachment and infection; not approved for production.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -579,7 +599,8 @@ export const batch10Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-leech-iaq1", sequence: 1, responseType: "YES_NO", promptTextEn: "Is the leech still attached?" },
       { id: "oscg-leech-iaq2", sequence: 2, responseType: "LOCATION", promptTextEn: "Where is the bite?" },
-      { id: "oscg-leech-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any excessive bleeding?" }
+      { id: "oscg-leech-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any excessive bleeding?" },
+      { id: "oscg-leech-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; is the patient pregnant or anticoagulated; is attachment inside the nose/mouth/genitals; and are there dizziness, pallor, immune suppression or safeguarding concerns?" }
     ],
     questions: [
       {
@@ -599,41 +620,41 @@ export const batch10Protocols: ProtocolInput[] = [
       {
         id: "oscg-leech-q1-routine",
         acuityOrder: 2,
-        severity: "Routine",
+        severity: "Urgent",
         questionTextEn: "Is bleeding from the bite site prolonged (leech saliva contains an anticoagulant), or is the skin around it hot, red, and painful (signs of infection)?",
-        dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
+        dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Leech bites bleed more and for longer than typical insect bites due to the anticoagulant in leech saliva - a documented characteristic of leech bites specifically, distinct from the general insect bite pattern, warranting review if bleeding is prolonged or infection signs develop.",
         redFlag: false,
         keywords: ["prolonged bleeding leech bite", "infected leech bite"],
         careAdviceIds: ["oscg-leech-routine-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 50,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       },
       {
         id: "oscg-leech-q2-selfcare",
         acuityOrder: 3,
-        severity: "Self-care",
+        severity: "Urgent",
         questionTextEn: "Is this a minor leech bite with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "NHS.UK guidance describes minor bites without infection or allergy signs as manageable at home.",
         redFlag: false,
         keywords: ["minor leech bite"],
         careAdviceIds: ["oscg-leech-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-leech-emergency-advice", titleEn: "Emergency allergic reaction precautions", instructionTextEn: "Use an adrenaline auto-injector immediately if available, then arrange emergency transport.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["no improvement after 5 minutes", "loss of consciousness"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-leech-emergency-advice", titleEn: "Emergency leech-bite precautions", instructionTextEn: "Call Qatar 999 and do not drive for airway symptoms, collapse or uncontrolled bleeding. Use only the patient's prescribed adrenaline auto-injector according to its plan; apply firm direct pressure to external bleeding.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["symptoms persist or recur", "loss of consciousness or continued bleeding"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-leech-routine-advice", titleEn: "Routine leech bite follow-up", instructionTextEn: "If bleeding is prolonged, apply firm direct pressure with a clean cloth. Book a routine review if bleeding continues or infection signs develop.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["bleeding does not stop with pressure", "signs of infection"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
-      { id: "oscg-leech-selfcare-advice", titleEn: "Home care for a leech bite", instructionTextEn: "Do not pull the leech off forcibly if still attached - use a fingernail or credit-card edge to slide it off at the head, then clean the wound with soap and water and apply gentle pressure if it bleeds. Apply an ice pack and antihistamine cream for itching.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["bleeding does not stop", "signs of infection develop"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-leech-selfcare-advice", titleEn: "Prompt leech-bite assessment", instructionTextEn: "Do not apply chemicals, heat or unverified remedies or forcibly pull an internal attachment. Apply firm pressure after external detachment and arrange prompt in-person assessment through the Qatar UAT pathway.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["bleeding does not stop", "dizziness, pallor or infection develops"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-06-01", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Insect bites and stings\", https://www.nhs.uk/conditions/insect-bites-and-stings/ (page last reviewed 01 June 2023)"],
-      contentNotice: "Decomposed from NHS.UK's published insect bites and stings guidance, generalized to leeches (Crown copyright, reused under the Open Government Licence) - leeches are not insects, but the same allergic-reaction and infection-risk framework applies, with the prolonged-bleeding characteristic (anticoagulant saliva) added as a documented leech-specific fact, not from the source page. Adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Source-only indirect Qatar pathway with no generated IDs. Bleeding, internal attachment and anaphylaxis cannot be downgraded; removal, infection and destination rules remain GOVERNANCE_REQUIRED."
     })
   },
 
@@ -643,7 +664,7 @@ export const batch10Protocols: ProtocolInput[] = [
   {
     id: "oscg-nose-foreign-body",
     titleEn: "Nose - Foreign Body",
-    clinicalDefinitionEn: "Object stuck in the nose assessment, decomposed from NHS.UK's published broken nose guidance plus standard foreign-body first-aid practice.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only adult and pediatric pathway for a suspected nasal foreign body, prioritizing airway compromise, batteries, magnets, bleeding and safeguarding; not approved for production.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -657,7 +678,8 @@ export const batch10Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-nosebody-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What is stuck in the nose?" },
       { id: "oscg-nosebody-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long has it been there?" },
-      { id: "oscg-nosebody-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any breathing difficulty or nosebleed?" }
+      { id: "oscg-nosebody-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any breathing difficulty or nosebleed?" },
+      { id: "oscg-nosebody-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; could this be a battery, magnet, sharp/expanding object or unknown item; have removal attempts occurred; and are there choking, discharge, fever, pain, deliberate insertion or safeguarding concerns?" }
     ],
     questions: [
       {
@@ -690,13 +712,13 @@ export const batch10Protocols: ProtocolInput[] = [
       }
     ],
     careAdvice: [
-      { id: "oscg-nosebody-emergency-advice", titleEn: "Emergency foreign body precautions", instructionTextEn: "Do not try to remove the object yourself. Arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["breathing worsens", "bleeding increases"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-nosebody-urgent-advice", titleEn: "Foreign body in nose - do not attempt removal with tools", instructionTextEn: "Encourage gentle blowing of the unaffected nostril while blocking it closed if the object might come out this way. Do not use cotton swabs, tweezers, or other tools, which can push it deeper. Arrange same-day medical review for professional removal.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["breathing difficulty develops", "bleeding starts"], displayOrder: 2, adviceCategory: "DISPOSITION", patientSendable: true }
+      { id: "oscg-nosebody-emergency-advice", titleEn: "Emergency nasal foreign body precautions", instructionTextEn: "Call Qatar 999 and do not drive for breathing difficulty or a battery/magnet. Do not attempt removal, induce sneezing, add liquid or food, or allow the patient to sniff forcefully.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["breathing worsens", "bleeding, drowsiness or choking develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-nosebody-urgent-advice", titleEn: "Controlled nasal foreign-body removal", instructionTextEn: "Arrange same-day in-person removal through the Qatar pathway approved for UAT. Do not use fingers, cotton buds, tweezers, suction, irrigation or repeated blowing attempts; keep the patient observed and discourage sniffing.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["breathing difficulty develops", "bleeding, pain, fever or foul discharge"], displayOrder: 2, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Broken nose\", https://www.nhs.uk/conditions/broken-nose/ (page last reviewed 17 August 2023) - breathing-difficulty criterion; standard first-aid practice for foreign-body removal (not a direct NHS.UK quote)"],
-      contentNotice: "No dedicated NHS.UK page exists for a nasal foreign body specifically. This protocol combines the Broken Nose page's breathing-difficulty emergency criterion with standard first-aid safety practice (do not attempt removal with tools; button battery/magnet ingestion is a recognized emergency) - documented as a synthesis, not a single-source quote. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Source-only Qatar adult/pediatric synthesis with no generated IDs. Airway compromise, batteries and magnets cannot be downgraded; ENT removal, destination and safeguarding rules remain GOVERNANCE_REQUIRED."
     })
   },
 
@@ -706,7 +728,7 @@ export const batch10Protocols: ProtocolInput[] = [
   {
     id: "oscg-poison-ivy-oak-sumac",
     titleEn: "Poison Ivy - Oak - Sumac",
-    clinicalDefinitionEn: "Plant contact dermatitis (poison ivy/oak/sumac) assessment decomposed from NHS.UK's published contact dermatitis guidance.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only adult and pediatric pathway for suspected plant contact dermatitis, screening for anaphylaxis, eye/mucosal exposure, widespread blistering, infection and immune risk; not approved for production.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -720,7 +742,8 @@ export const batch10Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-poisonivy-iaq1", sequence: 1, responseType: "LOCATION", promptTextEn: "Where is the rash?" },
       { id: "oscg-poisonivy-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long ago was the plant contact?" },
-      { id: "oscg-poisonivy-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any blistering or oozing?" }
+      { id: "oscg-poisonivy-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any blistering or oozing?" },
+      { id: "oscg-poisonivy-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; is the patient pregnant; are eyes, mouth, face or genitals involved; and are there breathing symptoms, fever, severe pain, widespread blistering, immune suppression, uncertain plant/chemical exposure or safeguarding concerns?" }
     ],
     questions: [
       {
@@ -747,34 +770,46 @@ export const batch10Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["severe contact dermatitis", "persistent plant rash"],
         careAdviceIds: ["oscg-poisonivy-routine-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 50,
         questionOrder: 1
       },
       {
         id: "oscg-poisonivy-q2-selfcare",
         acuityOrder: 3,
-        severity: "Self-care",
+        severity: "Routine",
         questionTextEn: "Is this a mild, typical case with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
         rationaleEn: "NHS.UK guidance: a pharmacist can recommend emollients (moisturisers) for mild contact dermatitis.",
         redFlag: false,
         keywords: ["mild plant rash"],
         careAdviceIds: ["oscg-poisonivy-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 50,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-poisonivy-emergency-advice", titleEn: "Emergency allergic reaction precautions", instructionTextEn: "Arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["breathing worsens", "swelling spreads"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-poisonivy-routine-advice", titleEn: "Routine contact dermatitis follow-up", instructionTextEn: "Book a GP appointment - they can help identify the cause and may refer to a dermatologist if the trigger can't be identified or treatment isn't working.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["symptoms worsen", "not improving with treatment"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
-      { id: "oscg-poisonivy-selfcare-advice", titleEn: "Home care for mild contact dermatitis", instructionTextEn: "Rinse affected skin promptly with warm water. Apply emollients (moisturisers) frequently in large amounts. Avoid further contact with the plant, wash any contaminated clothing, and use skin-friendly products.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["symptoms worsen or spread", "not improving with self-care"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-poisonivy-emergency-advice", titleEn: "Emergency allergic reaction precautions", instructionTextEn: "Call Qatar 999 and do not drive. Keep the patient lying unless breathing is difficult; use only their prescribed adrenaline auto-injector according to its plan and dispatcher instructions.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["breathing worsens", "swelling spreads or consciousness reduces"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-poisonivy-routine-advice", titleEn: "Contact dermatitis follow-up", instructionTextEn: "Arrange in-person primary-care review through the Qatar pathway approved for UAT to confirm the cause and assess whether dermatology input is needed.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["symptoms worsen", "not improving with treatment"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-poisonivy-selfcare-advice", titleEn: "Review for suspected plant dermatitis", instructionTextEn: "Avoid further exposure, gently wash exposed skin and contaminated clothing, and arrange clinician/pharmacist review before creams or medicines are selected. Do not burn suspected plants because smoke exposure may be hazardous.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["rash worsens, spreads, blisters or becomes infected", "eye, mouth, breathing or systemic symptoms"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-05-03", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Contact dermatitis\", https://www.nhs.uk/conditions/contact-dermatitis/ (page last reviewed 03 May 2023)"],
-      contentNotice: "Decomposed from NHS.UK's published contact dermatitis guidance (Crown copyright, reused under the Open Government Licence), applied to poison ivy/oak/sumac specifically (all cause contact dermatitis via urushiol oil) - not a UK-native plant exposure, so no dedicated NHS.UK page exists, but the underlying skin-reaction mechanism and management is the same as any contact dermatitis trigger. Adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Qatar-localized adult/pediatric indirect plant-dermatitis pathway. Anaphylaxis and mucosal involvement cannot be downgraded; plant identification, medication, decontamination and destination rules remain GOVERNANCE_REQUIRED."
     })
   }
 ];
+
+const batch10ChildSafeguardingProtocolIds = new Set([
+  "oscg-nose-injury",
+  "oscg-puncture-wound"
+]);
+
+export const batch10Protocols: ProtocolInput[] =
+  batch10ProtocolDefinitions.map((protocol) =>
+    batch10ChildSafeguardingProtocolIds.has(protocol.id)
+      ? addChildSafeguardingUatBranches(protocol)
+      : protocol
+  );

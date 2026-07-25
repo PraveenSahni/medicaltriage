@@ -1,0 +1,186 @@
+{
+  "manifestVersion": "1.0",
+  "importBatch": "open-source-batch-02-formal-rules",
+  "generatedDate": "2026-07-25",
+  "conditionFamilies": 4,
+  "protocolCount": 8,
+  "canonicalSourceFieldType": "string",
+  "pediatricVariantsGenerated": 0,
+  "pediatricExclusionReason": "The runtime Batch 2 rules are adult decision rules. Pediatric protocols require separate validated sources and are recorded as research gaps rather than fabricated by relabeling.",
+  "entries": [
+    {
+      "file": "json/chest-pain-heart-adult-male.db.json",
+      "algorithmId": 1041,
+      "title": "Chest Pain (HEART Score) - Male (Adult)",
+      "protocolFamily": "Chest Pain (HEART Score)",
+      "sourceProtocolId": "oscr-chest-pain-heart",
+      "ageGroup": "Adult",
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "9a8b66cd0654cce71d5960f0da546bd6f6c5a6402bee40ba24faf86122ee3934",
+      "redirectTarget": "Chest Injury",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult-only applicability retained from the runtime source; no pediatric relabeling was performed."
+        ],
+        "sexSpecificChanges": [
+          "No male-specific scoring criterion is present in the published rule; no clinical difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscr-chest-pain-heart"
+    },
+    {
+      "file": "json/chest-pain-heart-adult-female.db.json",
+      "algorithmId": 1042,
+      "title": "Chest Pain (HEART Score) - Female (Adult)",
+      "protocolFamily": "Chest Pain (HEART Score)",
+      "sourceProtocolId": "oscr-chest-pain-heart",
+      "ageGroup": "Adult",
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "ec5cf7b0c91139456924143473dff2c366415ba36c904c2a9413ba37712ecb66",
+      "redirectTarget": "Chest Injury",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult-only applicability retained from the runtime source; no pediatric relabeling was performed."
+        ],
+        "sexSpecificChanges": [
+          "Pregnancy status is captured for imaging and treatment planning but does not alter the decision-rule score."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscr-chest-pain-heart"
+    },
+    {
+      "file": "json/knee-injury-ottawa-adult-male.db.json",
+      "algorithmId": 1043,
+      "title": "Knee Injury (Ottawa Knee Rule) - Male (Adult)",
+      "protocolFamily": "Knee Injury (Ottawa Knee Rule)",
+      "sourceProtocolId": "oscr-knee-injury-ottawa",
+      "ageGroup": "Adult",
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "e934d782a003c5022fbe47e99ca41af8601e67d158971224fca959149e72ae0e",
+      "redirectTarget": null,
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult-only applicability retained from the runtime source; no pediatric relabeling was performed."
+        ],
+        "sexSpecificChanges": [
+          "No male-specific scoring criterion is present in the published rule; no clinical difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscr-knee-injury-ottawa"
+    },
+    {
+      "file": "json/knee-injury-ottawa-adult-female.db.json",
+      "algorithmId": 1044,
+      "title": "Knee Injury (Ottawa Knee Rule) - Female (Adult)",
+      "protocolFamily": "Knee Injury (Ottawa Knee Rule)",
+      "sourceProtocolId": "oscr-knee-injury-ottawa",
+      "ageGroup": "Adult",
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "faec1e6bc2dc5c8848f3783d38f908eb24e95612f95b416c2ed0e77ff63a364a",
+      "redirectTarget": null,
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult-only applicability retained from the runtime source; no pediatric relabeling was performed."
+        ],
+        "sexSpecificChanges": [
+          "Pregnancy status is captured for imaging and treatment planning but does not alter the decision-rule score."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscr-knee-injury-ottawa"
+    },
+    {
+      "file": "json/neck-injury-nexus-adult-male.db.json",
+      "algorithmId": 1045,
+      "title": "Neck Injury (NEXUS Criteria) - Male (Adult)",
+      "protocolFamily": "Neck Injury (NEXUS Criteria)",
+      "sourceProtocolId": "oscr-neck-injury-nexus",
+      "ageGroup": "Adult",
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "92832b676759b7b65e8a12d75840f23df08224d7ca9643fdb89e716dd66fe004",
+      "redirectTarget": null,
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult-only applicability retained from the runtime source; no pediatric relabeling was performed."
+        ],
+        "sexSpecificChanges": [
+          "No male-specific scoring criterion is present in the published rule; no clinical difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscr-neck-injury-nexus"
+    },
+    {
+      "file": "json/neck-injury-nexus-adult-female.db.json",
+      "algorithmId": 1046,
+      "title": "Neck Injury (NEXUS Criteria) - Female (Adult)",
+      "protocolFamily": "Neck Injury (NEXUS Criteria)",
+      "sourceProtocolId": "oscr-neck-injury-nexus",
+      "ageGroup": "Adult",
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "4fbb6ec393b5f89b612b7615b2d1fd39f47066f99434b0dfb736cd9ce5ebfe33",
+      "redirectTarget": null,
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult-only applicability retained from the runtime source; no pediatric relabeling was performed."
+        ],
+        "sexSpecificChanges": [
+          "Pregnancy status is captured for imaging and treatment planning but does not alter the decision-rule score."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscr-neck-injury-nexus"
+    },
+    {
+      "file": "json/head-injury-canadian-ct-adult-male.db.json",
+      "algorithmId": 1047,
+      "title": "Head Injury (Canadian CT Head Rule) - Male (Adult)",
+      "protocolFamily": "Head Injury (Canadian CT Head Rule)",
+      "sourceProtocolId": "oscr-head-injury-cch",
+      "ageGroup": "Adult",
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "1f490bc5cfad5e37ad61f9389c72cac714962c4d23d9c6c3c1f7328272077cda",
+      "redirectTarget": "Headache",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult-only applicability retained from the runtime source; no pediatric relabeling was performed."
+        ],
+        "sexSpecificChanges": [
+          "No male-specific scoring criterion is present in the published rule; no clinical difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscr-head-injury-cch"
+    },
+    {
+      "file": "json/head-injury-canadian-ct-adult-female.db.json",
+      "algorithmId": 1048,
+      "title": "Head Injury (Canadian CT Head Rule) - Female (Adult)",
+      "protocolFamily": "Head Injury (Canadian CT Head Rule)",
+      "sourceProtocolId": "oscr-head-injury-cch",
+      "ageGroup": "Adult",
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "06932fa9b054c860fc80b011bd5075fce2655d4f13f6edba9e32350b39c240d9",
+      "redirectTarget": "Headache",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult-only applicability retained from the runtime source; no pediatric relabeling was performed."
+        ],
+        "sexSpecificChanges": [
+          "Pregnancy status is captured for imaging and treatment planning but does not alter the decision-rule score."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscr-head-injury-cch"
+    }
+  ],
+  "safetyBoundary": {
+    "usageStatus": "UAT_ONLY",
+    "productionEligible": false,
+    "requiresClinicalValidation": true,
+    "importOrDeploymentPerformed": false
+  }
+}

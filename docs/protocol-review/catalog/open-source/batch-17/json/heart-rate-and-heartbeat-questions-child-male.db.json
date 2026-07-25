@@ -1,0 +1,190 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1379,
+    "Title": "Heart Rate and Heartbeat Questions - Male (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Male",
+    "Age": "Child (0-17 years)",
+    "GenderAtBirth": "Male",
+    "Acuity": 4,
+    "Definition": [
+      "UAT-only assessment of a fast, pounding, fluttering, slow, or irregular heartbeat across adult and pediatric patients; not approved for real-patient or production use.",
+      "Child patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "Pending qualified Qatar adult, pediatric, obstetric, cardiac, and pharmacy review"
+    },
+    "FirstAid": [
+      "Call Qatar 999 now. Do not drive or allow the patient to drive. Keep them at rest and follow dispatcher instructions; do not give food, drink, or an extra dose of heart medicine unless directed by an emergency clinician. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2026-07-25",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1379001,
+      "AlgorithmID": 1379,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Was a faint or temporary loss of consciousness the main event?",
+      "Information": "A faint or temporary loss of consciousness belongs in the Fainting pathway.",
+      "GotoGuideline": "Fainting",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1379002,
+      "AlgorithmID": 1379,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Are palpitations present now with chest pain, severe breathing difficulty, fainting or near-fainting, seizure, blue/grey color, severe weakness, confusion, or inability to wake normally?",
+      "Information": "NHS.UK heart palpitations guidance lists these as emergency-assessment criteria. Do not drive yourself to the emergency department.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        137901
+      ]
+    },
+    {
+      "QuestionID": 1379003,
+      "AlgorithmID": 1379,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Do palpitations keep recurring, last several minutes or longer, or occur in a child, during pregnancy or postpartum, with fever/dehydration/bleeding, known heart disease, family history of sudden cardiac death, stimulant exposure, or a new or changed medicine?",
+      "Information": "NHS.UK guidance recommends seeing a doctor for recurring or persistent palpitations, especially with cardiac risk factors.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        137902
+      ]
+    },
+    {
+      "QuestionID": 1379004,
+      "AlgorithmID": 1379,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "For an otherwise well adult who is not pregnant or recently postpartum, is this a brief, occasional episode with a clear benign trigger and none of the emergency, urgent, medicine, or cardiac-risk features above?",
+      "Information": "NHS.UK guidance describes palpitations from lifestyle triggers as often not needing treatment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        137903
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 137901,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency palpitations precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 now. Do not drive or allow the patient to drive. Keep them at rest and follow dispatcher instructions; do not give food, drink, or an extra dose of heart medicine unless directed by an emergency clinician. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening chest pain or breathing; loss of consciousness, seizure, or blue/grey color."
+      ]
+    },
+    {
+      "AdviceID": 137902,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent palpitations review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange prompt in-person assessment through the Qatar pathway approved for this UAT environment; an ECG and review of medicines and contributing illness may be required. Do not advise starting, stopping, or taking an extra dose of a cardiac, thyroid, stimulant, or other medicine by telephone.",
+        "Call Back If: episodes become more frequent, longer, or continuous; chest pain, breathing difficulty, faintness, or altered responsiveness develops."
+      ]
+    },
+    {
+      "AdviceID": 137903,
+      "AlgorithmOrder": 3,
+      "Title": "Managing lifestyle-related palpitations",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Avoid known triggers such as stress, caffeine, alcohol, smoking, recreational drugs, strenuous exercise, and sleep deprivation.",
+        "Call Back If: palpitations become more frequent or last longer; chest pain or fainting develops."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Heart palpitations\", https://www.nhs.uk/conditions/heart-palpitations/ (page last reviewed 17 March 2026)"
+  ],
+  "searchwords": [
+    "heart palpitations",
+    "heart racing",
+    "heartbeat feels irregular",
+    "my heart is pounding",
+    "heart has been racing and pounding",
+    "pounding out of nowhere"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the patient's age, sex, pregnancy or postpartum status where relevant, measured heart rate if available, duration, pattern, and whether symptoms are occurring now?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 17 source.",
+      "Source": "Heart Rate and Heartbeat Questions"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Is there chest pain, severe breathing difficulty, fainting, seizure, blue/grey color, confusion, severe weakness, or inability to wake normally?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 17 source.",
+      "Source": "Heart Rate and Heartbeat Questions"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "Is there congenital or other heart disease, prior arrhythmia, family history of sudden cardiac death, fever, dehydration, bleeding, thyroid disease, anemia, stimulant/recreational-drug use, or a new/recently changed medicine?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 17 source.",
+      "Source": "Heart Rate and Heartbeat Questions"
+    },
+    {
+      "Order": 4,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+      "Rationale": "Child assessment adds safe-caregiver observations without inventing a different clinical threshold.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1408,
+    "Title": "Eye - Redness - Female (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Female",
+    "Age": "Child (0-17 years)",
+    "GenderAtBirth": "Female",
+    "Acuity": 3,
+    "Definition": [
+      "Red eye assessment decomposed from NHS.UK's published red eye guidance.",
+      "Child patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 now for sudden vision loss, severe eye pain with headache or vomiting, penetrating injury, or serious chemical exposure, and follow the call-taker's instructions. Do not drive. Do not rub, press, patch, or put unprescribed drops in the eye, and remove contact lenses only if this is easy and they are not stuck. For chemical exposure, immediately irrigate continuously with clean lukewarm water while arranging emergency help; do not delay irrigation to complete this assessment. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2025-10-27",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1408001,
+      "AlgorithmID": 1408,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Are itching, watering, and allergy symptoms the main concern without significant pain, injury, chemical exposure, or vision change?",
+      "Information": "Eye symptoms dominated by an allergic pattern belong in the Eye - Allergy pathway.",
+      "GotoGuideline": "Eye - Allergy",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1408002,
+      "AlgorithmID": 1408,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Along with the red eye, is there vision change (wavy lines, flashing, loss of vision), severe light sensitivity, a severe headache with nausea, very dark redness, an eye injury or object in the eye, chemical exposure, or unequal pupil sizes?",
+      "Information": "NHS.UK red eye guidance lists these as emergency-assessment criteria.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        140801
+      ]
+    },
+    {
+      "QuestionID": 1408003,
+      "AlgorithmID": 1408,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Is a baby under 28 days old affected, is the eye very painful and red, or is there redness with contact lens wear?",
+      "Information": "NHS.UK guidance recommends urgent clinical or optician review for these situations - contact-lens-related redness can indicate a serious infection.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        140802
+      ]
+    },
+    {
+      "QuestionID": 1408004,
+      "AlgorithmID": 1408,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this mild redness with none of the features above?",
+      "Information": "NHS.UK guidance describes mild red eye as often resolving within a few days.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        140803
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 140801,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency red-eye precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 now for sudden vision loss, severe eye pain with headache or vomiting, penetrating injury, or serious chemical exposure, and follow the call-taker's instructions. Do not drive. Do not rub, press, patch, or put unprescribed drops in the eye, and remove contact lenses only if this is easy and they are not stuck. For chemical exposure, immediately irrigate continuously with clean lukewarm water while arranging emergency help; do not delay irrigation to complete this assessment. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening or lost vision; severe or worsening pain; chemical or penetrating injury."
+      ]
+    },
+    {
+      "AdviceID": 140802,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent red eye review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Stop wearing contact lenses and arrange same-day medical or eye-care review.",
+        "Call Back If: pain worsens; vision changes develop."
+      ]
+    },
+    {
+      "AdviceID": 140803,
+      "AlgorithmOrder": 3,
+      "Title": "Home care for mild eye redness",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Avoid touching or rubbing the eye and stop wearing contact lenses until it clears. It should improve within a few days.",
+        "Call Back If: persists beyond a few days; sticky discharge or pain develops."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Red eye\", https://www.nhs.uk/conditions/red-eye/ (page last reviewed 27 October 2025)"
+  ],
+  "searchwords": [
+    "red eye",
+    "eye is really red",
+    "bloodshot eye",
+    "whites of my eye are red"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "DURATION",
+      "Question": "How long has the eye been red?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 19 source.",
+      "Source": "Eye - Redness"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Any vision change, pain, or discharge?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 19 source.",
+      "Source": "Eye - Redness"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Does the person wear contact lenses?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 19 source.",
+      "Source": "Eye - Redness"
+    },
+    {
+      "Order": 4,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+      "Rationale": "Child assessment adds safe-caregiver observations without inventing a different clinical threshold.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

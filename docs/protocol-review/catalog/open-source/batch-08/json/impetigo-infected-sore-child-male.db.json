@@ -1,0 +1,190 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1195,
+    "Title": "Impetigo (Infected Sore) - Male (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Male",
+    "Age": "Child (0-17 years)",
+    "GenderAtBirth": "Male",
+    "Acuity": 2,
+    "Definition": [
+      "Impetigo assessment decomposed from NHS.UK's published when-to-get-help guidance.",
+      "Child patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar 999 now, do not allow self-driving, and do not squeeze, pierce, or apply caustic products. Follow the call-handler's instructions. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2024-06-06",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1195001,
+      "AlgorithmID": 1195,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Is this a localized rash or redness without honey-colored crusts, weeping sores, or suspected impetigo?",
+      "Information": "The localized-rash family is not generated. Arrange clinical review through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        119502
+      ]
+    },
+    {
+      "QuestionID": 1195002,
+      "AlgorithmID": 1195,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there confusion, collapse, abnormal breathing, pale/blue/mottled skin, rapidly spreading painful redness, blistering or skin loss, severe pain, swelling near the eye or airway, or a newborn or infant who is feverish or very unwell?",
+      "Information": "Universal emergency rule-out added ahead of the impetigo guidance itself - impetigo itself is rarely an emergency, but a severe, spreading skin infection with systemic illness needs urgent care.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        119501
+      ]
+    },
+    {
+      "QuestionID": 1195003,
+      "AlgorithmID": 1195,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Without an emergency feature, is the patient under 1 year, pregnant or breastfeeding with breast lesions, diabetic or immunocompromised, are lesions near the eye, widespread, recurrent, worsening, or not responding, or is there a safeguarding concern?",
+      "Information": "NHS.UK guidance lists these as reasons for clinical review rather than pharmacist self-care. Impetigo is very infectious; the Qatar attendance route must be approved by clinical governance before use (GOVERNANCE_REQUIRED).",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        119502
+      ]
+    },
+    {
+      "QuestionID": 1195004,
+      "AlgorithmID": 1195,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this a straightforward case (child 12+ months, no breastfeeding sores, no weakened immune system) with none of the features above?",
+      "Information": "NHS.UK guidance supports pharmacist assessment and treatment for straightforward impetigo; the applicable Qatar service route requires clinical-governance approval (GOVERNANCE_REQUIRED).",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        119503
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 119501,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency skin-infection precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 now, do not allow self-driving, and do not squeeze, pierce, or apply caustic products. Follow the call-handler's instructions. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: confusion, collapse, breathing change, severe pain, blistering, or rapidly spreading infection."
+      ]
+    },
+    {
+      "AdviceID": 119502,
+      "AlgorithmOrder": 2,
+      "Title": "Governance-approved impetigo review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Use the Qatar governance-approved in-person pathway and call ahead for infection-control advice. Infant, pregnancy, breastfeeding, immune, diabetes, eye-area, medicine, and safeguarding decisions require clinician review.",
+        "Call Back If: worsening symptoms, fever, eye swelling, pain, or rapid spread."
+      ]
+    },
+    {
+      "AdviceID": 119503,
+      "AlgorithmOrder": 3,
+      "Title": "Pharmacy self-care for impetigo",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "A pharmacist may assess and treat straightforward impetigo where permitted; the applicable Qatar service route requires clinical-governance approval (GOVERNANCE_REQUIRED). Wash affected areas with soap and water, wash hands frequently (especially before/after applying cream), and wash bedding/towels at high temperature. Do not touch or scratch sores. Stay away from work, school, or nursery until no longer contagious (48 hours after starting treatment, or once patches dry and crust over without treatment). Don't share towels or prepare food for others.",
+        "Call Back If: not improving with treatment; spreading or worsening."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Impetigo\", https://www.nhs.uk/conditions/impetigo/ (page last reviewed 06 June 2024)"
+  ],
+  "searchwords": [
+    "impetigo",
+    "crusty sores",
+    "infected sore skin",
+    "honey colored crust"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "LOCATION",
+      "Question": "Where are the sores?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 08 source.",
+      "Source": "Impetigo (Infected Sore)"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "How long have they been present?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 08 source.",
+      "Source": "Impetigo (Infected Sore)"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Has this happened before in the last year?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 08 source.",
+      "Source": "Impetigo (Infected Sore)"
+    },
+    {
+      "Order": 4,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+      "Rationale": "Child assessment adds safe-caregiver observations without inventing a different clinical threshold.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

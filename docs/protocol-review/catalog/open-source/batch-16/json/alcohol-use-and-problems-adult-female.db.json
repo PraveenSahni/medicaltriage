@@ -1,0 +1,287 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1362,
+    "Title": "Alcohol Use and Problems - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 5,
+    "Definition": [
+      "Safety-first alcohol intoxication, co-ingestion, dependence, and withdrawal assessment for adults and adolescents aged 12 years or older. It does not diagnose dependence or authorize unsupervised detoxification.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+      "Call Qatar emergency services on 999 now. Do not leave the person alone and do not let them drive. If unconscious but breathing, place them in the recovery position and monitor breathing. Do not give coffee, put them in a cold shower, make them vomit, or give more alcohol. Follow the 999 call handler's instructions and retain available substance containers for responders. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2022-12-16",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 78,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1362001,
+      "AlgorithmID": 1362,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is the immediate concern a suspected acute alcohol poisoning or overdose with reduced responsiveness rather than ongoing alcohol use?",
+      "Information": "Suspected acute alcohol poisoning belongs in the Poisoning pathway.",
+      "GotoGuideline": "Poisoning",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1362002,
+      "AlgorithmID": 1362,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "If the patient is under 18, is harm occurring now, is there immediate danger from an accompanying or suspected caregiver, could the child be returned now to an unsafe person or place, or did contact end while an immediate threat remained unresolved?",
+      "Information": "Immediate danger, ongoing harm, an imminent unsafe return, or loss of contact during an unresolved immediate threat requires emergency action. Qatar 999 is the verified emergency route. Exact child-protection reporting, consent, documentation, and information-sharing requirements are GOVERNANCE_REQUIRED.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        136201
+      ]
+    },
+    {
+      "QuestionID": 1362003,
+      "AlgorithmID": 1362,
+      "DispositionLevel": 78,
+      "QuestionOrder": 2,
+      "Question": "If the patient is under 18 and there is no confirmed immediate danger, are they unable to speak privately, is caregiver safety uncertain, or is there another safeguarding concern requiring trained assessment?",
+      "Information": "An inability to obtain a private history, uncertainty about caregiver safety, or another safeguarding concern needs prompt trained assessment without automatically treating it as a confirmed emergency. The exact Qatar safeguarding pathway is GOVERNANCE_REQUIRED.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        136202
+      ]
+    },
+    {
+      "QuestionID": 1362004,
+      "AlgorithmID": 1362,
+      "DispositionLevel": 100,
+      "QuestionOrder": 3,
+      "Question": "Is there loss of consciousness, inability to wake normally, stopped/slow/irregular breathing, blue or very pale skin, a seizure, repeated vomiting with reduced alertness, severe confusion or agitation, hallucinations, severe tremor, suspected poisoning or dangerous co-ingestion, serious injury, or immediate risk of suicide, violence, abuse, or unsafe supervision?",
+      "Information": "NHS.UK lists impaired consciousness, abnormal breathing, seizure and colour change as alcohol-poisoning emergencies. Severe withdrawal can cause seizures or delirium tremens, and immediate self-harm, violence, poisoning or safeguarding risk also requires emergency intervention.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        136203
+      ]
+    },
+    {
+      "QuestionID": 1362005,
+      "AlgorithmID": 1362,
+      "DispositionLevel": 70,
+      "QuestionOrder": 3,
+      "Question": "Is the person dependent on alcohol and planning or attempting to stop or reduce; having anxiety, insomnia, sweating, tremor, nausea, retching, vomiting, or a racing heart within hours or days of reduction; pregnant; aged under 18; lacking safe sober supervision; or at higher risk because of prior withdrawal seizure/delirium, epilepsy, major illness, or concurrent sedative dependence?",
+      "Information": "Withdrawal can begin within 6 to 12 hours and usually lasts 3 to 7 days. NICE advises against sudden reduction in dependent drinkers without medical support and uses a lower hospital-admission threshold for adolescents and other vulnerable people.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        136204
+      ]
+    },
+    {
+      "QuestionID": 1362006,
+      "AlgorithmID": 1362,
+      "DispositionLevel": 15,
+      "QuestionOrder": 3,
+      "Question": "Is this a request for help about alcohol use with no current intoxication, withdrawal, co-ingestion, pregnancy, immediate mental-health or safeguarding risk, and no plan to stop abruptly without clinical support?",
+      "Information": "A non-emergency concern still benefits from confidential clinical screening and support; this branch does not provide a self-detox plan.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        136205
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 136201,
+      "AlgorithmOrder": 1,
+      "Title": "Immediate child safeguarding danger",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: harm occurring now or immediate danger; imminent return to an unsafe person or place; contact lost while an immediate threat remains unresolved."
+      ]
+    },
+    {
+      "AdviceID": 136202,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent private child safeguarding assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Keep questions neutral and seek a private conversation only when it is safe. Do not disclose sensitive information to a caregiver whose safety is uncertain, do not confront or alert a suspected unsafe person, and do not promise confidentiality. Arrange prompt in-person assessment through the governance-approved Qatar child safeguarding pathway and record only an approved safe callback method. If immediate danger emerges or contact is lost during an unresolved immediate threat, use the emergency branch and call Qatar 999. Exact reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED.",
+        "Call Back If: private history cannot be obtained safely; caregiver safety remains uncertain; new immediate danger or loss of contact."
+      ]
+    },
+    {
+      "AdviceID": 136203,
+      "AlgorithmOrder": 3,
+      "Title": "Emergency alcohol-related precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 now. Do not leave the person alone and do not let them drive. If unconscious but breathing, place them in the recovery position and monitor breathing. Do not give coffee, put them in a cold shower, make them vomit, or give more alcohol. Follow the 999 call handler's instructions and retain available substance containers for responders. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: breathing slows or stops; reduced consciousness; another seizure; worsening confusion or violence."
+      ]
+    },
+    {
+      "AdviceID": 136204,
+      "AlgorithmOrder": 4,
+      "Title": "Urgent alcohol dependence or withdrawal assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange prompt in-person clinical assessment before any further reduction if dependence or withdrawal is possible. Do not advise abrupt self-detox or prescribe a drinking schedule. Ensure sober, safe supervision and transport. The exact Qatar withdrawal/addiction pathway remains GOVERNANCE_REQUIRED; for confidential substance-use screening during current operating hours, HMC publishes the National Mental Health Helpline at 16000, option 4. Call 999 if severe tremor, hallucinations, confusion, seizure, collapse, breathing abnormality, or immediate safety risk develops.",
+        "Call Back If: withdrawal symptoms worsen; severe tremor, hallucinations, confusion, or seizure develops."
+      ]
+    },
+    {
+      "AdviceID": 136205,
+      "AlgorithmOrder": 5,
+      "Title": "Confidential support for alcohol use",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Arrange confidential clinical screening rather than attempting unsupported detoxification. HMC publishes the National Mental Health Helpline at 16000, option 4, including substance-use screening and brief intervention; confirm current availability when calling. The long-term Qatar addiction-treatment destination remains GOVERNANCE_REQUIRED. If withdrawal symptoms occur after reducing alcohol, obtain urgent medical assessment.",
+        "Call Back If: withdrawal symptoms develop when cutting down; pregnancy, co-ingestion, self-harm thoughts, or unsafe supervision becomes apparent."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Alcohol-use disorder\" (withdrawal begins within 6 to 12 hours and usually lasts 3 to 7 days), https://www.nhs.uk/conditions/alcohol-use-disorder/",
+    "NHS.UK, \"Alcohol poisoning\", https://www.nhs.uk/conditions/alcohol-poisoning/",
+    "NICE CG100, \"Alcohol-use disorders: diagnosis and management of physical complications\", https://www.nice.org.uk/guidance/cg100/chapter/recommendations",
+    "NICE CG115, \"Alcohol-use disorders: diagnosis, assessment and management of harmful drinking and alcohol dependence\", https://www.nice.org.uk/guidance/cg115/chapter/Recommendations",
+    "Hamad Medical Corporation, National Mental Health Helpline and substance-use screening service, 16000 option 4, https://www.hamad.qa/EN/news/2026/April/Pages/National-Mental-Health-Helpline-marks-six-years-of-supporting-Qatar%E2%80%99s-population.aspx"
+  ],
+  "searchwords": [
+    "alcohol problem",
+    "drinking too much",
+    "alcohol withdrawal",
+    "trying to stop drinking",
+    "want to try to stop drinking",
+    "think i have a drinking problem"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What alcohol was consumed, approximately how much, over what period, and when was the last drink?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Alcohol Use and Problems"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Were any medicines, opioids, sedatives, stimulants, cannabis, chemicals, or other substances also taken?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Alcohol Use and Problems"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is the person awake and responding normally, breathing normally, and able to protect their airway without repeated vomiting?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Alcohol Use and Problems"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "After stopping or reducing alcohol, when did symptoms begin, and are there shaking, sweating, vomiting, agitation, confusion, hallucinations, or seizures?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Alcohol Use and Problems"
+    },
+    {
+      "Order": 5,
+      "Category": "YES_NO",
+      "Question": "Is there a history of withdrawal seizure, delirium tremens, epilepsy, severe withdrawal, significant liver or heart disease, pregnancy, or concurrent benzodiazepine dependence?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Alcohol Use and Problems"
+    },
+    {
+      "Order": 6,
+      "Category": "YES_NO",
+      "Question": "Are there thoughts or plans to harm self or others, recent violence, suspected assault or injury, or concern that a caregiver or companion is unsafe?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Alcohol Use and Problems"
+    },
+    {
+      "Order": 7,
+      "Category": "YES_NO",
+      "Question": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Alcohol Use and Problems"
+    },
+    {
+      "Order": 8,
+      "Category": "YES_NO",
+      "Question": "Is a sober, safe adult available to stay with the person and arrange transport without letting them drive?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Alcohol Use and Problems"
+    },
+    {
+      "Order": 9,
+      "Category": "YES_NO",
+      "Question": "If the patient is under 18, can they speak privately now, is the accompanying caregiver considered safe, and is there an approved safe callback method if contact is lost?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Alcohol Use and Problems"
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited NHS.UK pages under the Open Government Licence v3.0; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Local disposition mappings and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1073,
+    "Title": "Diabetes - Low Blood Sugar - Male (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Male",
+    "Age": "Child (0-17 years)",
+    "GenderAtBirth": "Male",
+    "Acuity": 4,
+    "Definition": [
+      "Hypoglycemia (low blood sugar) assessment decomposed from NHS.UK's published when-to-get-help guidance.",
+      "Child patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [
+        "Hypoglycaemia is usually a blood-glucose level below 4 mmol/L and should be treated promptly.",
+        "Symptoms can include hunger, sweating, shaking, dizziness, weakness, visual change, irritability, palpitations, and confusion.",
+        "An unconscious person must not be given food or drink by mouth; emergency escalation depends on recovery and glucagon availability."
+      ],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "PENDING: Qatar adult, pediatric, obstetric, diabetes, emergency, and nursing governance review"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 and do not drive for reduced consciousness, seizure, unsafe swallowing, severe confusion/aggression, injury, or failure to improve under the person's approved plan. Give prescribed glucagon only if it is available and the helper is trained, following the product/personal plan. Do not give anything by mouth to a drowsy, seizing, or unsafe-to-swallow person; use the recovery position if breathing. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "RESEARCH_REQUIRED - verify source review date during governance",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Crown copyright (NHS.UK content), reused under the Open Government Licence v3.0. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1073001,
+      "AlgorithmID": 1073,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is the measured glucose high rather than below 4 mmol/L, with thirst, frequent urination, or other hyperglycaemia symptoms?",
+      "Information": "NHS.UK distinguishes hyperglycaemia from hypoglycaemia; a high reading belongs in the high-blood-sugar pathway.",
+      "GotoGuideline": "Diabetes - High Blood Sugar",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1073002,
+      "AlgorithmID": 1073,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is the person unresponsive or unconscious, AND is a glucagon injection unavailable, or has one already been given without recovery within 10 minutes, or has the person been drinking alcohol?",
+      "Information": "NHS.UK low blood sugar guidance lists these as call-999 criteria for severe hypoglycemia.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        107301
+      ]
+    },
+    {
+      "QuestionID": 1073003,
+      "AlgorithmID": 1073,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is the person conscious and able to swallow safely, with none of the features above?",
+      "Information": "NHS.UK guidance provides the fast-acting sugar treatment steps for a conscious person with low blood sugar.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        107302
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 107301,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency low-blood-sugar response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and do not drive for reduced consciousness, seizure, unsafe swallowing, severe confusion/aggression, injury, or failure to improve under the person's approved plan. Give prescribed glucagon only if it is available and the helper is trained, following the product/personal plan. Do not give anything by mouth to a drowsy, seizing, or unsafe-to-swallow person; use the recovery position if breathing. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: no improvement under the prescribed rescue plan; worsening unresponsiveness; seizure or abnormal breathing."
+      ]
+    },
+    {
+      "AdviceID": 107302,
+      "AlgorithmOrder": 2,
+      "Title": "Governed fast-acting carbohydrate treatment",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Only if fully awake and swallowing safely, follow the person's clinician-approved diabetes plan for fast-acting carbohydrate and timed glucose recheck. Product, amount, repeat interval, follow-on food, insulin/pump adjustment, and pediatric/pregnancy actions require the approved Qatar protocol; do not improvise exact doses. Escalate to 999 for deterioration or failure to respond.",
+        "Call Back If: no improvement according to the personal plan; level of consciousness or swallowing worsens; seizure or recurrent episode."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Low blood sugar (hypoglycaemia)\", https://www.nhs.uk/conditions/low-blood-sugar-hypoglycaemia/ (page last reviewed 03 August 2023)"
+  ],
+  "searchwords": [
+    "low blood sugar",
+    "hypoglycemia",
+    "hypo",
+    "blood sugar dropped"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, are they pregnant, what glucose reading and units are shown, what symptoms are present, and what does their personal diabetes/hypoglycaemia plan say?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Diabetes - Low Blood Sugar"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Is a glucagon injection available and does someone know how to use it?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Diabetes - Low Blood Sugar"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Has the person been drinking alcohol?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Diabetes - Low Blood Sugar"
+    },
+    {
+      "Order": 4,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What change has the parent or caregiver observed in behaviour, alertness, eating or drinking, sleep, school or play, and normal activity?",
+      "Rationale": "Child assessment includes caregiver-observed functional change and cannot rely only on adult-style self-report.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

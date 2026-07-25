@@ -1,0 +1,182 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1413,
+    "Title": "Influenza (Flu) Suspected - Male (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 3,
+    "Definition": [
+      "Suspected influenza (flu) assessment decomposed from NHS.UK's published flu guidance.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 now for severe or abnormal breathing, blue or grey colour, severe chest pain, confusion, collapse, seizure, coughing blood, severe dehydration, or a baby or child who is floppy, difficult to wake, feeding poorly, or rapidly worsening. Follow 999 instructions and do not drive. If unresponsive and not breathing normally, start age-appropriate CPR as directed and use an AED if available. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2026-02-03",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1413001,
+      "AlgorithmID": 1413,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is confirmed or suspected COVID-19 the primary concern?",
+      "Information": "Confirmed or suspected COVID-19 belongs in the authored COVID-19 - Diagnosed or Suspected pathway.",
+      "GotoGuideline": "COVID-19 - Diagnosed or Suspected",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1413002,
+      "AlgorithmID": 1413,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there sudden chest pain, severe or abnormal breathing (gasping, choking, unable to speak or feed normally), coughing up blood, blue or grey colour, confusion, collapse, a seizure, severe dehydration, or is a baby or child unusually floppy, difficult to wake, feeding poorly, or rapidly worsening?",
+      "Information": "NHS.UK flu and emergency guidance treats severe breathing, chest pain, haemoptysis and rapid serious deterioration as emergency features; infant colour, responsiveness, feeding and hydration changes can be signs of serious illness.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        141301
+      ]
+    },
+    {
+      "QuestionID": 1413003,
+      "AlgorithmID": 1413,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "After emergency features are excluded, is the patient under 3 months with a measured temperature of 38 degrees Celsius or higher, age 3-6 months with a measured temperature of 39 degrees Celsius or higher, or is the person 65 or older, living with a long-term condition or weakened immune system, feeling very unwell or short of breath, or have symptoms not improved after 7 days?",
+      "Information": "NICE treats fever at these infant age thresholds as higher risk, and NHS.UK guidance recommends urgent clinical review for the other higher-risk groups or persistent symptoms.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        141302
+      ]
+    },
+    {
+      "QuestionID": 1413004,
+      "AlgorithmID": 1413,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Are these typical flu symptoms with none of the features above?",
+      "Information": "NHS.UK guidance describes rest and fluids as appropriate first-line self-care for flu.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        141303
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 141301,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency response for severe influenza-like illness",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 now for severe or abnormal breathing, blue or grey colour, severe chest pain, confusion, collapse, seizure, coughing blood, severe dehydration, or a baby or child who is floppy, difficult to wake, feeding poorly, or rapidly worsening. Follow 999 instructions and do not drive. If unresponsive and not breathing normally, start age-appropriate CPR as directed and use an AED if available. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening or abnormal breathing; blue or grey colour, confusion, collapse, or seizure; coughing blood or severe dehydration; rapid deterioration in a baby, child, pregnant person, older adult, or immunocompromised person."
+      ]
+    },
+    {
+      "AdviceID": 141302,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent flu review for higher-risk groups",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange same-day medical review given the higher-risk factors present.",
+        "Call Back If: symptoms worsen; breathing difficulty develops."
+      ]
+    },
+    {
+      "AdviceID": 141303,
+      "AlgorithmOrder": 3,
+      "Title": "Supportive care pending Qatar governance approval",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Rest, take frequent suitable fluids, and reduce contact with others while feverish or unwell. Medicine choice and dose require age, weight, allergy, kidney/liver disease, ulcer/bleeding risk, other medicines, and Qatar formulary checks; never give aspirin to a child or teenager with a viral illness, and do not combine products containing the same ingredient. This branch is UAT-only and requires an approved Qatar non-emergency route.",
+        "Call Back If: breathing difficulty, chest pain, confusion, or dehydration; symptoms worsen or fail to improve; concern in pregnancy, infancy, frailty, or immunocompromise."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Flu\", https://www.nhs.uk/conditions/flu/ (page last reviewed 03 February 2026)",
+    "NICE NG143, \"Fever in under 5s: assessment and initial management\", https://www.nice.org.uk/guidance/ng143"
+  ],
+  "searchwords": [
+    "think i have the flu",
+    "flu symptoms",
+    "body aches and fever flu",
+    "influenza symptoms"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "DURATION",
+      "Question": "How long have symptoms lasted?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 19 source.",
+      "Source": "Influenza (Flu) Suspected"
+    },
+    {
+      "Order": 2,
+      "Category": "TEMPERATURE",
+      "Question": "What is the temperature, if measured?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 19 source.",
+      "Source": "Influenza (Flu) Suspected"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "Any chronic conditions, or age 65+?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 19 source.",
+      "Source": "Influenza (Flu) Suspected"
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited public sources; it is not licensed STCC content. Question.DispositionLevel=null is the schema marker for a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1150,
+    "Title": "Diarrhea on Antibiotics - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 3,
+    "Definition": [
+      "Safety-first assessment of diarrhoea during or after antibiotic exposure, including possible Clostridioides difficile infection, dehydration, colitis, sepsis, and higher-risk patients. Antibiotic association does not confirm C. difficile.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar 999 now. Keep the person lying safely and warm, do not allow self-driving, and follow the call-handler's instructions. Do not force oral fluids if swallowing is unsafe or vomiting is persistent. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2025-07-24",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1150001,
+      "AlgorithmID": 1150,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is there no current or recent antibiotic exposure, with ordinary diarrhea now the main concern?",
+      "Information": "Diarrhea without antibiotic exposure belongs in the general Diarrhea pathway.",
+      "GotoGuideline": "Diarrhea",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1150002,
+      "AlgorithmID": 1150,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there collapse, confusion or reduced responsiveness, abnormal breathing, pale/blue/grey or cold mottled skin, almost no urine, severe weakness or inability to stand, severe constant abdominal pain, a rigid or markedly swollen abdomen, major blood or black stool, or signs of shock or sepsis?",
+      "Information": "C. difficile and other antibiotic-associated illness can progress to severe dehydration, sepsis, fulminant colitis, toxic megacolon, shock, or death. These features require immediate emergency assessment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        115001
+      ]
+    },
+    {
+      "QuestionID": 1150003,
+      "AlgorithmID": 1150,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Without an emergency feature, is there new unexplained diarrhoea during or after antibiotics, especially 3 or more unformed stools in 24 hours, fever, abdominal pain, blood, dehydration, recurrence after C. difficile treatment, recent healthcare exposure, or an infant, pregnant, older, immunocompromised, or seriously ill patient?",
+      "Information": "Antibiotic-associated diarrhoea needs prompt clinician review because C. difficile can be life-threatening but cannot be diagnosed from symptoms alone. The prescriber must decide whether the original antibiotic can safely be continued, changed, or stopped and whether stool testing or treatment is required.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        115002
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 115001,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency antibiotic-associated diarrhoea precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 now. Keep the person lying safely and warm, do not allow self-driving, and follow the call-handler's instructions. Do not force oral fluids if swallowing is unsafe or vomiting is persistent. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: reduced consciousness, abnormal breathing, collapse, or signs of shock; worsening abdominal swelling, severe pain, bleeding, or absent urine."
+      ]
+    },
+    {
+      "AdviceID": 115002,
+      "AlgorithmOrder": 2,
+      "Title": "Prompt in-person antibiotic-associated diarrhoea review",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Use the Qatar governance-approved in-person service and timeframe; this UAT protocol does not define the exact non-emergency route. Contact the antibiotic prescriber promptly. Do not independently stop, skip, switch, restart, or share antibiotics, and do not start loperamide or another antimotility drug unless the assessing clinician specifically approves it. Use soap-and-water handwashing after toilet use and before food; do not rely on alcohol hand gel alone for C. difficile spores. If awake and able to swallow, take small frequent amounts of correctly prepared oral rehydration solution.",
+        "Call Back If: less urine, inability to drink, fainting, confusion, or worsening weakness; fever, blood or black stool, severe pain, abdominal swelling, or recurrent symptoms."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Clostridium difficile (C. diff)\", https://www.nhs.uk/conditions/clostridium-difficile/ (page last reviewed 24 July 2025)",
+    "US CDC, \"About C. diff\", https://www.cdc.gov/c-diff/about/index.html (accessed 25 July 2026)",
+    "US CDC, \"C. diff: Facts for Clinicians\", https://www.cdc.gov/c-diff/hcp/clinical-overview/ (accessed 25 July 2026)",
+    "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (999 ambulance access; accessed 25 July 2026)"
+  ],
+  "searchwords": [
+    "diarrhea on antibiotics",
+    "diarrhea after antibiotics",
+    "c diff",
+    "antibiotic diarrhea"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What antibiotic is being taken or was recently completed, for what infection, when was the last dose, and was there a recent hospital or care-facility stay or previous C. difficile infection?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 6 source.",
+      "Source": "Diarrhea on Antibiotics"
+    },
+    {
+      "Order": 2,
+      "Category": "OPEN_TEXT",
+      "Question": "How many unformed stools occurred in the last 24 hours, for how long, and is there fever, blood or black stool, vomiting, abdominal tenderness, severe pain, or swelling?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 6 source.",
+      "Source": "Diarrhea on Antibiotics"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "Can fluids be kept down, when was urine last passed, and is there dizziness, marked weakness, confusion, fainting, or other dehydration?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 6 source.",
+      "Source": "Diarrhea on Antibiotics"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "Record age, pregnancy, immune suppression, inflammatory bowel disease, kidney or heart disease, diabetes, and any laxative, stool-softener, or antimotility medicine use.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 6 source.",
+      "Source": "Diarrhea on Antibiotics"
+    }
+  ]
+}

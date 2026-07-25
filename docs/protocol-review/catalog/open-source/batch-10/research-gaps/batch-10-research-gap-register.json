@@ -1,0 +1,486 @@
+{
+  "batch": "10",
+  "count": 60,
+  "gaps": [
+    {
+      "gapId": "B10-1225-algorithm-LastRevised",
+      "algorithmId": 1225,
+      "protocol": "Nose Injury - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1225-clinicalReview",
+      "algorithmId": 1225,
+      "protocol": "Nose Injury - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1225-localization",
+      "algorithmId": 1225,
+      "protocol": "Nose Injury - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1226-algorithm-LastRevised",
+      "algorithmId": 1226,
+      "protocol": "Nose Injury - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1226-clinicalReview",
+      "algorithmId": 1226,
+      "protocol": "Nose Injury - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1226-localization",
+      "algorithmId": 1226,
+      "protocol": "Nose Injury - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1227-algorithm-LastRevised",
+      "algorithmId": 1227,
+      "protocol": "Nose Injury - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1227-clinicalReview",
+      "algorithmId": 1227,
+      "protocol": "Nose Injury - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1227-localization",
+      "algorithmId": 1227,
+      "protocol": "Nose Injury - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1228-algorithm-LastRevised",
+      "algorithmId": 1228,
+      "protocol": "Nose Injury - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1228-clinicalReview",
+      "algorithmId": 1228,
+      "protocol": "Nose Injury - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1228-localization",
+      "algorithmId": 1228,
+      "protocol": "Nose Injury - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1229-algorithm-LastRevised",
+      "algorithmId": 1229,
+      "protocol": "Neurologic Deficit - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1229-clinicalReview",
+      "algorithmId": 1229,
+      "protocol": "Neurologic Deficit - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1229-localization",
+      "algorithmId": 1229,
+      "protocol": "Neurologic Deficit - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1230-algorithm-LastRevised",
+      "algorithmId": 1230,
+      "protocol": "Neurologic Deficit - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1230-clinicalReview",
+      "algorithmId": 1230,
+      "protocol": "Neurologic Deficit - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1230-localization",
+      "algorithmId": 1230,
+      "protocol": "Neurologic Deficit - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1231-algorithm-LastRevised",
+      "algorithmId": 1231,
+      "protocol": "Neurologic Deficit - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1231-clinicalReview",
+      "algorithmId": 1231,
+      "protocol": "Neurologic Deficit - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1231-localization",
+      "algorithmId": 1231,
+      "protocol": "Neurologic Deficit - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1232-algorithm-LastRevised",
+      "algorithmId": 1232,
+      "protocol": "Neurologic Deficit - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1232-clinicalReview",
+      "algorithmId": 1232,
+      "protocol": "Neurologic Deficit - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1232-localization",
+      "algorithmId": 1232,
+      "protocol": "Neurologic Deficit - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1233-algorithm-LastRevised",
+      "algorithmId": 1233,
+      "protocol": "Puncture Wound - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1233-clinicalReview",
+      "algorithmId": 1233,
+      "protocol": "Puncture Wound - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1233-localization",
+      "algorithmId": 1233,
+      "protocol": "Puncture Wound - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1234-algorithm-LastRevised",
+      "algorithmId": 1234,
+      "protocol": "Puncture Wound - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1234-clinicalReview",
+      "algorithmId": 1234,
+      "protocol": "Puncture Wound - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1234-localization",
+      "algorithmId": 1234,
+      "protocol": "Puncture Wound - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1235-algorithm-LastRevised",
+      "algorithmId": 1235,
+      "protocol": "Puncture Wound - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1235-clinicalReview",
+      "algorithmId": 1235,
+      "protocol": "Puncture Wound - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1235-localization",
+      "algorithmId": 1235,
+      "protocol": "Puncture Wound - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1236-algorithm-LastRevised",
+      "algorithmId": 1236,
+      "protocol": "Puncture Wound - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1236-clinicalReview",
+      "algorithmId": 1236,
+      "protocol": "Puncture Wound - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1236-localization",
+      "algorithmId": 1236,
+      "protocol": "Puncture Wound - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1237-algorithm-LastRevised",
+      "algorithmId": 1237,
+      "protocol": "Mosquito Bite - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1237-clinicalReview",
+      "algorithmId": 1237,
+      "protocol": "Mosquito Bite - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1237-localization",
+      "algorithmId": 1237,
+      "protocol": "Mosquito Bite - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1238-algorithm-LastRevised",
+      "algorithmId": 1238,
+      "protocol": "Mosquito Bite - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1238-clinicalReview",
+      "algorithmId": 1238,
+      "protocol": "Mosquito Bite - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1238-localization",
+      "algorithmId": 1238,
+      "protocol": "Mosquito Bite - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1239-algorithm-LastRevised",
+      "algorithmId": 1239,
+      "protocol": "Mosquito Bite - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1239-clinicalReview",
+      "algorithmId": 1239,
+      "protocol": "Mosquito Bite - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1239-localization",
+      "algorithmId": 1239,
+      "protocol": "Mosquito Bite - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1240-algorithm-LastRevised",
+      "algorithmId": 1240,
+      "protocol": "Mosquito Bite - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1240-clinicalReview",
+      "algorithmId": 1240,
+      "protocol": "Mosquito Bite - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1240-localization",
+      "algorithmId": 1240,
+      "protocol": "Mosquito Bite - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1241-algorithm-LastRevised",
+      "algorithmId": 1241,
+      "protocol": "Poison Ivy - Oak - Sumac - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1241-clinicalReview",
+      "algorithmId": 1241,
+      "protocol": "Poison Ivy - Oak - Sumac - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1241-localization",
+      "algorithmId": 1241,
+      "protocol": "Poison Ivy - Oak - Sumac - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1242-algorithm-LastRevised",
+      "algorithmId": 1242,
+      "protocol": "Poison Ivy - Oak - Sumac - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1242-clinicalReview",
+      "algorithmId": 1242,
+      "protocol": "Poison Ivy - Oak - Sumac - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1242-localization",
+      "algorithmId": 1242,
+      "protocol": "Poison Ivy - Oak - Sumac - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1243-algorithm-LastRevised",
+      "algorithmId": 1243,
+      "protocol": "Poison Ivy - Oak - Sumac - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1243-clinicalReview",
+      "algorithmId": 1243,
+      "protocol": "Poison Ivy - Oak - Sumac - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1243-localization",
+      "algorithmId": 1243,
+      "protocol": "Poison Ivy - Oak - Sumac - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1244-algorithm-LastRevised",
+      "algorithmId": 1244,
+      "protocol": "Poison Ivy - Oak - Sumac - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1244-clinicalReview",
+      "algorithmId": 1244,
+      "protocol": "Poison Ivy - Oak - Sumac - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B10-1244-localization",
+      "algorithmId": 1244,
+      "protocol": "Poison Ivy - Oak - Sumac - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    }
+  ]
+}

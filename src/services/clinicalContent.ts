@@ -15,6 +15,7 @@ import {
   type ProtocolSearchQuery,
   type ProtocolSearchResult
 } from "../types/clinicalContent.js";
+import { assertClinicalContentAllowedInEnvironment } from "./clinicalContentReleasePolicy.js";
 import type { DispositionCode, RuleTrace, Severity } from "../types/triage.js";
 import { severityMax, severityRank } from "../types/triage.js";
 
@@ -213,7 +214,7 @@ async function loadContentPackageFromDatabase(): Promise<ClinicalContentPackage>
     };
   });
 
-  return ClinicalContentPackageSchema.parse({
+  const parsedPackage = ClinicalContentPackageSchema.parse({
     release: {
       name: firstRelease?.name ?? "IST Health Database-Backed Clinical Content",
       version: firstRelease?.version ?? "database-live",
@@ -231,6 +232,8 @@ async function loadContentPackageFromDatabase(): Promise<ClinicalContentPackage>
       region: row.region
     }))
   });
+  assertClinicalContentAllowedInEnvironment(parsedPackage);
+  return parsedPackage;
 }
 
 function loadSynchronousContentPackage(): ClinicalContentPackage {
@@ -243,7 +246,7 @@ function loadSynchronousContentPackage(): ClinicalContentPackage {
   // 1 STCC protocol, zero overlap), and both packages share the same release
   // mode ("after-hours"), so a straight protocol-array concat is safe.
   if (process.env.CLINICAL_CONTENT_SOURCE === "stcc-licensed") {
-    return ClinicalContentPackageSchema.parse({
+    const mergedPackage = ClinicalContentPackageSchema.parse({
       release: stccLicensedContent.release,
       protocols: [...stccLicensedContent.protocols, ...openSourceGuidelinesContent.protocols],
       localizedDispositions: [
@@ -253,6 +256,8 @@ function loadSynchronousContentPackage(): ClinicalContentPackage {
         )
       ]
     });
+    assertClinicalContentAllowedInEnvironment(mergedPackage);
+    return mergedPackage;
   }
 
   const configuredPath = process.env.CLINICAL_CONTENT_PACKAGE_PATH?.trim();
@@ -261,7 +266,9 @@ function loadSynchronousContentPackage(): ClinicalContentPackage {
     if (!existsSync(absolutePath)) {
       throw new Error(`CLINICAL_CONTENT_PACKAGE_PATH does not exist: ${absolutePath}`);
     }
-    return ClinicalContentPackageSchema.parse(JSON.parse(readFileSync(absolutePath, "utf8")));
+    const filePackage = ClinicalContentPackageSchema.parse(JSON.parse(readFileSync(absolutePath, "utf8")));
+    assertClinicalContentAllowedInEnvironment(filePackage);
+    return filePackage;
   }
 
   if (process.env.CLINICAL_CONTENT_USE_GENERATED_STCC === "true") {
@@ -270,18 +277,24 @@ function loadSynchronousContentPackage(): ClinicalContentPackage {
         `Generated STCC-shaped clinical content package not found: ${DEFAULT_GENERATED_CONTENT_PACKAGE_PATH}. Run npm run synthetic:stcc-guidelines first.`
       );
     }
-    return ClinicalContentPackageSchema.parse(
+    const licensedPackage = ClinicalContentPackageSchema.parse(
       JSON.parse(readFileSync(DEFAULT_GENERATED_CONTENT_PACKAGE_PATH, "utf8"))
     );
+    assertClinicalContentAllowedInEnvironment(licensedPackage);
+    return licensedPackage;
   }
 
   if (process.env.CLINICAL_CONTENT_SOURCE === "open-source-rules") {
-    return ClinicalContentPackageSchema.parse(openSourceGuidelinesContent);
+    const openSourcePackage = ClinicalContentPackageSchema.parse(openSourceGuidelinesContent);
+    assertClinicalContentAllowedInEnvironment(openSourcePackage);
+    return openSourcePackage;
   }
 
   // Also the temporary placeholder for CLINICAL_CONTENT_SOURCE=database until
   // contentPackageReady resolves below - the DB query is unavoidably async.
-  return ClinicalContentPackageSchema.parse(samplePhase1ClinicalContent);
+  const samplePackage = ClinicalContentPackageSchema.parse(samplePhase1ClinicalContent);
+  assertClinicalContentAllowedInEnvironment(samplePackage);
+  return samplePackage;
 }
 
 let contentPackage: ClinicalContentPackage = loadSynchronousContentPackage();

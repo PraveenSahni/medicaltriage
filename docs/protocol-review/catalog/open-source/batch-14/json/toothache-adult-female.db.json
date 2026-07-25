@@ -1,0 +1,188 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1310,
+    "Title": "Toothache - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 2,
+    "Definition": [
+      "Toothache assessment decomposed from NHS.UK's published toothache guidance.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar 999 now for airway, swallowing, eye or neck swelling and do not allow self-driving. Sit upright if breathing is easier, give nothing by mouth if swallowing is unsafe, and do not squeeze or pierce swelling. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2024-07-01",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1310001,
+      "AlgorithmID": 1310,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Are shallow sores or ulcers inside the mouth the main concern rather than pain arising from a tooth?",
+      "Information": "Mouth sores without a primary tooth problem belong in the Mouth Ulcers pathway.",
+      "GotoGuideline": "Mouth Ulcers",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1310002,
+      "AlgorithmID": 1310,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is the area around the eye or neck swollen, or is swelling in the mouth or neck making it difficult to breathe, swallow, or speak?",
+      "Information": "NHS.UK toothache guidance lists spreading facial/neck swelling with airway or swallowing difficulty as an immediate emergency (a dental abscess can spread rapidly). Do not drive yourself to the emergency department.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        131001
+      ]
+    },
+    {
+      "QuestionID": 1310003,
+      "AlgorithmID": 1310,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Has the pain lasted more than 2 days, does it not go away with painkillers, or is there fever, biting pain, red gums, a bad taste, or cheek/jaw swelling?",
+      "Information": "NHS.UK guidance recommends contacting a dentist for these persistent or infection-suggestive symptoms.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        131002
+      ]
+    },
+    {
+      "QuestionID": 1310004,
+      "AlgorithmID": 1310,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this mild, recent tooth pain with none of the features above?",
+      "Information": "NHS.UK guidance describes mild, recent toothache as manageable at home while awaiting a routine dental appointment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        131003
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 131001,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency dental-infection precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 now for airway, swallowing, eye or neck swelling and do not allow self-driving. Sit upright if breathing is easier, give nothing by mouth if swallowing is unsafe, and do not squeeze or pierce swelling. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening swelling, drooling, breathing difficulty, confusion, or collapse."
+      ]
+    },
+    {
+      "AdviceID": 131002,
+      "AlgorithmOrder": 2,
+      "Title": "Prompt dental assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Use the Qatar governance-approved emergency-dental pathway. Do not use leftover antibiotics or place aspirin or caustic products on the gum. Medication requires age, pregnancy, allergy, kidney/liver disease, anticoagulant, and dose checks.",
+        "Call Back If: swelling, fever, trismus, poor intake, or worsening pain."
+      ]
+    },
+    {
+      "AdviceID": 131003,
+      "AlgorithmOrder": 3,
+      "Title": "Temporary low-risk toothache care",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Use soft foods, avoid temperature triggers, and rinse gently with warm salt water only if old enough to spit safely. Confirm all pain medicines and oral gels with a dentist or pharmacist; do not delay definitive dental care.",
+        "Call Back If: pain persists, fever, swelling, poor intake, swallowing or breathing difficulty."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Toothache\", https://www.nhs.uk/conditions/toothache/ (page last reviewed 01 July 2024)"
+  ],
+  "searchwords": [
+    "toothache",
+    "tooth pain",
+    "my tooth really hurts",
+    "tooth has been hurting"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "Which tooth, and how long has it hurt?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Toothache"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Any facial or neck swelling, or fever?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Toothache"
+    },
+    {
+      "Order": 3,
+      "Category": "PAIN_SCALE",
+      "Question": "How severe is the pain, 0-10?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Toothache"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "Record age, pregnancy, immune suppression, diabetes, anticoagulants, medicines and doses already taken, poor intake, trauma, and safeguarding concern.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Toothache"
+    }
+  ]
+}

@@ -29,14 +29,15 @@ export const batch05Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-choking-iaq1", sequence: 1, responseType: "YES_NO", promptTextEn: "Is the person coughing loudly right now?" },
       { id: "oscg-choking-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "What did they choke on?" },
-      { id: "oscg-choking-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Has back blows or abdominal/chest thrusts already been tried?" }
+      { id: "oscg-choking-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Has back blows or abdominal/chest thrusts already been tried?" },
+      { id: "oscg-choking-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "Record exact age, pregnancy or marked obesity, consciousness, colour, ability to speak or cry, and whether the object may be a battery, magnet, sharp item, or unknown substance." }
     ],
     questions: [
       {
         id: "oscg-choking-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Is the cough silent or ineffective, is the person unable to breathe in properly, or have they become unconscious?",
+        questionTextEn: "Is the cough silent or ineffective, is the person unable to speak, cry, or breathe normally, are they blue/grey, becoming exhausted, or unconscious, or has the object failed to clear?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         rationaleEn: "NHS.UK guidance: call 999 if the blockage doesn't come out after back blows and chest/abdominal thrusts, or immediately if the person becomes unconscious. Ineffective/silent coughing needs immediate back blows and thrusts, not watchful waiting.",
         redFlag: true,
@@ -66,7 +67,7 @@ export const batch05Protocols: ProtocolInput[] = [
         id: "oscg-choking-emergency-advice",
         titleEn: "Emergency choking first aid",
         instructionTextEn:
-          "Give up to 5 sharp back blows between the shoulder blades. If unsuccessful, give up to 5 abdominal thrusts (adults/children over 1: clenched fist pulled sharply inward and upward between navel and ribs; babies under 1: chest thrusts with two fingers below the nipple line instead of abdominal thrusts). Repeat cycles and call 999 if the blockage doesn't clear. Start CPR immediately if the person becomes unconscious.",
+          "Call Qatar 999 immediately on speakerphone, use emergency ambulance transport, and do not allow self-driving. Follow the call-handler's age-specific instructions. For a conscious patient with ineffective cough, give up to 5 back blows, checking after each; if not cleared, use up to 5 abdominal thrusts for adults and children over 1, but chest thrusts for infants under 1 and for pregnancy or when abdominal thrusts cannot be performed. Repeat as directed. If unresponsive and not breathing normally, begin CPR as instructed. Never perform a blind finger sweep, suspend an infant by the feet, or give food or drink. Medical assessment is required after thrusts or persistent symptoms, even if the object clears.",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         warningSigns: ["blockage does not clear", "person becomes unconscious"],
         displayOrder: 1,
@@ -86,17 +87,17 @@ export const batch05Protocols: ProtocolInput[] = [
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2024-10-28", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"How to stop a child from choking\", https://www.nhs.uk/conditions/baby/first-aid-and-safety/first-aid/how-to-stop-a-child-from-choking/ (page last reviewed 28 October 2024)"],
-      contentNotice: "Decomposed from NHS.UK's published child-choking first-aid guidance (Crown copyright, reused under the Open Government Licence), generalized to all ages (the core effective-cough vs ineffective-cough distinction and back-blow/thrust technique is standard first aid taught across age groups, with the infant-specific chest-thrust vs adult abdominal-thrust technique noted explicitly in the care advice), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "SOURCE-ONLY UAT generalization; no generated variant exists in the current 504-protocol catalog. Qatar 999 call-handler instructions are authoritative. Adult, infant, child, pregnancy, obesity, post-clearance, safeguarding, and hazardous-object pathways remain GOVERNANCE_REQUIRED. Not licensed Schmitt-Thompson content; prohibited from production use."
     })
   },
 
   // ------------------------------------------------------------------
-  // 2. Cold Exposure (Hypothermia) - https://www.nhs.uk/conditions/hypothermia/ (reviewed 2023-06-09)
+  // 2. Cold Exposure (Hypothermia) - Qatar-localized UAT-only draft; adult/child/infant clinical approval pending
   // ------------------------------------------------------------------
   {
     id: "oscg-hypothermia",
     titleEn: "Cold Exposure (Hypothermia)",
-    clinicalDefinitionEn: "Hypothermia assessment decomposed from NHS.UK's published emergency guidance.",
+    clinicalDefinitionEn: "UAT-only emergency recognition and first-aid pathway for suspected hypothermia after cold exposure in an adult, child, or infant; not approved for real-patient or production use.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -111,18 +112,20 @@ export const batch05Protocols: ProtocolInput[] = [
       { phrase: "cold exposure", weight: 85 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-hypothermia-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How long was the person exposed to the cold?" },
-      { id: "oscg-hypothermia-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Are they shivering, confused, or slurring words?" },
-      { id: "oscg-hypothermia-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Have they already been moved somewhere warm?" }
+      { id: "oscg-hypothermia-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What is the patient's exact age, what cold or wet exposure occurred, and for how long?" },
+      { id: "oscg-hypothermia-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Is the patient fully responsive and breathing normally, without slow, irregular, or gasping breaths?" },
+      { id: "oscg-hypothermia-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is there shivering, cold or pale skin, blue or grey colour, slurred speech, confusion, unusual drowsiness, poor coordination, or—if an infant—cold skin, unusual quietness, poor feeding, sleepiness, or floppiness?" },
+      { id: "oscg-hypothermia-iaq4", sequence: 4, responseType: "TEMPERATURE", promptTextEn: "What is the measured temperature, if a reliable reading is available? Do not delay Qatar 999 or first aid to obtain it." },
+      { id: "oscg-hypothermia-iaq5", sequence: 5, responseType: "YES_NO", promptTextEn: "Has the patient been moved safely out of wind, water, or cold and insulated from the ground?" }
     ],
     questions: [
       {
         id: "oscg-hypothermia-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Do you think this person has hypothermia (very cold, shivering, confused, slurred speech, or drowsy after cold exposure)?",
+        questionTextEn: "After cold or wet exposure, is hypothermia suspected because the patient is very cold or has shivering, cold or pale skin, blue or grey colour, slow breathing, slurred speech, confusion, unusual drowsiness, poor coordination, or—if an infant—cold skin, unusual quietness, poor feeding, sleepiness, or floppiness? If uncertain, keep the emergency disposition.",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
-        rationaleEn: "NHS.UK guidance: go to A&E or call 999 if you think you or your child have hypothermia - do not drive yourself, ask someone else to drive or call an ambulance.",
+        rationaleEn: "NHS.UK identifies suspected hypothermia in adults and children as a medical emergency requiring hospital care and describes infant-specific signs. Qatar HMC directs life-threatening emergencies to 999.",
         redFlag: true,
         keywords: ["suspected hypothermia", "confused after cold", "slurred speech cold"],
         careAdviceIds: ["oscg-hypothermia-emergency-advice"],
@@ -134,29 +137,33 @@ export const batch05Protocols: ProtocolInput[] = [
     careAdvice: [
       {
         id: "oscg-hypothermia-emergency-advice",
-        titleEn: "Emergency hypothermia first aid",
+        titleEn: "Suspected hypothermia — call Qatar 999",
         instructionTextEn:
-          "Move the person indoors or to shelter quickly. Remove wet clothing and wrap them in blankets, sleeping bags, or dry towels with the head covered. If fully conscious, give warm non-alcoholic drinks and sugary foods. Keep them awake with conversation and stay with them until help arrives. Do NOT use hot baths, hot water bottles, heat lamps, massage the limbs, or give alcohol.",
+          "Call Qatar 999 for an ambulance and follow the operator's instructions. If safe, move the patient gently into shelter, insulate them from the cold ground, remove wet clothing without unnecessary movement, and wrap the body and head in dry blankets, clothing, or towels. Stay with the patient and monitor breathing. A fully alert adult or older child who can swallow safely may have a warm non-alcoholic drink; give nothing by mouth to an infant or anyone drowsy, confused, vomiting, or unable to swallow safely. Do not rub or massage the skin or limbs and do not use a hot bath, direct heater, fire, heat lamp, hot water bottle, or heating device directly on the skin. Do not give alcohol. If unresponsive but breathing normally, follow the 999 operator's positioning instructions; if not breathing normally, start age-appropriate CPR as directed. Do not drive the patient to hospital.",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         warningSigns: ["worsening confusion or drowsiness", "loss of consciousness"],
         displayOrder: 1,
         adviceCategory: "DISPOSITION"
       }
     ],
-    authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-06-09", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
+    authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "Pending qualified Qatar adult, pediatric, emergency, and environmental-exposure review", lastReviewedIso: "2026-07-25", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Qatar | UAT ONLY | NOT FOR PRODUCTION" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"Hypothermia\", https://www.nhs.uk/conditions/hypothermia/ (page last reviewed 09 June 2023)"],
-      contentNotice: "Decomposed from NHS.UK's published hypothermia guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. NHS.UK treats suspected hypothermia as an unconditional emergency - this protocol has a single Emergency-tier question, matching that framing rather than inventing a false self-care pathway. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      sourceDocuments: [
+        "Hamad Medical Corporation, \"Life-Threatening Medical Emergency\", https://hamad.qa/EN/Emergency/Pages/Life-ThreateningMedicalEmergency.aspx (accessed 25 July 2026)",
+        "Resuscitation Council UK, \"First Aid Guidelines\", 2025, https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/first-aid-guidelines",
+        "NHS.UK, \"Hypothermia\", https://www.nhs.uk/conditions/hypothermia/ (page last reviewed 09 June 2023)"
+      ],
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION USE. Suspected hypothermia remains an unconditional emergency with no self-care or non-emergency branch. Adult and child generated variants share this canonical source but require separate Qatar adult, pediatric, and infant approval. Qatar 999 is the verified emergency route. Not licensed Schmitt-Thompson (STCC) content."
     })
   },
 
   // ------------------------------------------------------------------
-  // 3. Coma / Unconsciousness - https://www.nhs.uk/conditions/first-aid/recovery-position/ (reviewed 2022-03-15)
+  // 3. Coma / Unconsciousness - Qatar-localized UAT-only draft; adult/child/infant clinical approval pending
   // ------------------------------------------------------------------
   {
     id: "oscg-coma-unconscious",
     titleEn: "Coma",
-    clinicalDefinitionEn: "Unconsciousness/coma emergency assessment decomposed from NHS.UK's published first-aid guidance.",
+    clinicalDefinitionEn: "UAT-only emergency recognition and first-aid pathway for an unresponsive adult, child, or infant; not approved for real-patient or production use.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -168,18 +175,20 @@ export const batch05Protocols: ProtocolInput[] = [
       { phrase: "passed out and wont wake up", weight: 90 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-coma-iaq1", sequence: 1, responseType: "YES_NO", promptTextEn: "Is the person breathing?" },
-      { id: "oscg-coma-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long has the person been unresponsive?" },
-      { id: "oscg-coma-iaq3", sequence: 3, responseType: "OPEN_TEXT", promptTextEn: "What happened right before they became unresponsive?" }
+      { id: "oscg-coma-iaq1", sequence: 1, responseType: "YES_NO", promptTextEn: "Is the scene safe to approach, and is the patient unresponsive to voice and gentle touch?" },
+      { id: "oscg-coma-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Is the patient breathing normally? Gasping, panting, slow irregular breaths, or uncertainty do not count as normal breathing." },
+      { id: "oscg-coma-iaq3", sequence: 3, responseType: "OPEN_TEXT", promptTextEn: "What is the patient's exact age, how long have they been unresponsive, and what happened immediately beforehand?" },
+      { id: "oscg-coma-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "Was there trauma, a fall, seizure, choking, drowning, poisoning, overdose, diabetes, pregnancy, or another known medical cause?" },
+      { id: "oscg-coma-iaq5", sequence: 5, responseType: "YES_NO", promptTextEn: "Is an AED available, and is there another person who can call Qatar 999 and bring it?" }
     ],
     questions: [
       {
         id: "oscg-coma-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Is the person unresponsive to voice and touch?",
+        questionTextEn: "Is the adult, child, or infant unresponsive to voice and gentle touch, or not breathing normally? Treat gasping, panting, slow irregular breaths, and uncertainty about normal breathing as a possible cardiac arrest.",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
-        rationaleEn: "An unresponsive person is always a call-999 emergency. If breathing normally, use the recovery position per NHS.UK first-aid guidance; if not breathing, start CPR immediately.",
+        rationaleEn: "Resuscitation Council UK 2025 guidance requires an immediate emergency call for any unresponsive person and CPR when breathing is abnormal. Adults and children with reduced responsiveness who do not meet CPR criteria may be placed laterally, except in trauma or agonal breathing.",
         redFlag: true,
         keywords: ["unresponsive", "wont wake up"],
         careAdviceIds: ["oscg-coma-emergency-advice"],
@@ -191,29 +200,35 @@ export const batch05Protocols: ProtocolInput[] = [
     careAdvice: [
       {
         id: "oscg-coma-emergency-advice",
-        titleEn: "Emergency unconsciousness first aid",
+        titleEn: "Unresponsive patient — call Qatar 999",
         instructionTextEn:
-          "If breathing normally: place in the recovery position - extend the nearest arm at a right angle, fold the other arm with the back of the hand to their cheek, bend the far knee and roll them onto their side using it, tilt the head back and lift the chin to open the airway, then monitor until help arrives. Do not move them if a spinal injury is suspected - wait for emergency services. If not breathing normally, start CPR immediately.",
+          "Call Qatar 999 immediately, put the phone on speaker, and follow the operator's instructions. If the patient is unresponsive and not breathing normally, start age-appropriate CPR immediately and use an AED as soon as available, following its prompts. If breathing normally and there is no suspected trauma, place the patient in a lateral recovery position and continuously monitor breathing. If trauma or spinal injury is possible, avoid unnecessary movement but keep the airway open as directed by 999; airway and breathing take priority. Do not give food, drink, oral sugar, or medicine to an unresponsive patient and do not leave them alone. Use naloxone or another emergency medicine only if available, appropriate to the suspected cause, and directed by the patient's existing plan, product instructions, a trained responder, or the 999 operator. Do not drive the patient to hospital.",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         warningSigns: ["breathing stops or changes", "person starts to wake but remains confused"],
         displayOrder: 1,
         adviceCategory: "DISPOSITION"
       }
     ],
-    authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2022-03-15", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
+    authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "Pending qualified Qatar adult, pediatric, and resuscitation clinical review", lastReviewedIso: "2026-07-25", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Qatar | UAT ONLY | NOT FOR PRODUCTION" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"Recovery position\", https://www.nhs.uk/conditions/first-aid/recovery-position/ (page last reviewed 15 March 2022)"],
-      contentNotice: "Decomposed from NHS.UK's published recovery-position first-aid guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Unconsciousness is treated as an unconditional emergency - this protocol has a single Emergency-tier question. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      sourceDocuments: [
+        "Hamad Medical Corporation, \"Life-Threatening Medical Emergency\", https://hamad.qa/EN/Emergency/Pages/Life-ThreateningMedicalEmergency.aspx (accessed 25 July 2026)",
+        "Resuscitation Council UK, \"Adult Basic Life Support Guidelines\", 2025, https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/adult-basic-life-support-guidelines",
+        "Resuscitation Council UK, \"Paediatric Life Support\", 2025, https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/paediatric-basic-life-support-guidelines",
+        "Resuscitation Council UK, \"First Aid Guidelines — Recovery position\", 2025, https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/first-aid-guidelines",
+        "NHS.UK, \"Recovery position\", https://www.nhs.uk/tests-and-treatments/first-aid/recovery-position/"
+      ],
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION USE. Unresponsiveness remains an unconditional emergency with no lower-acuity branch. Adult and child generated variants require separate Qatar resuscitation approval, including infant CPR and trauma positioning. Qatar 999 is the verified emergency route. Not licensed Schmitt-Thompson (STCC) content."
     })
   },
 
   // ------------------------------------------------------------------
-  // 4. Burns - Chemical - https://www.nhs.uk/conditions/acid-and-chemical-burns/ (reviewed 2024-06-05)
+  // 4. Burns - Chemical - Qatar-localized UAT-only draft; adult/child/infant clinical approval pending
   // ------------------------------------------------------------------
   {
     id: "oscg-burns-chemical",
     titleEn: "Burns - Chemical",
-    clinicalDefinitionEn: "Chemical/acid burn assessment decomposed from NHS.UK's published emergency guidance.",
+    clinicalDefinitionEn: "UAT-only emergency recognition and decontamination pathway for suspected chemical exposure causing a skin or eye burn; not approved for real-patient or production use.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -229,18 +244,20 @@ export const batch05Protocols: ProtocolInput[] = [
       { phrase: "splashed chemical", weight: 90 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-chemburn-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What chemical was involved?" },
-      { id: "oscg-chemburn-iaq2", sequence: 2, responseType: "LOCATION", promptTextEn: "Where did it contact the body (skin, eyes, mouth)?" },
-      { id: "oscg-chemburn-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Has rinsing with water already started?" }
+      { id: "oscg-chemburn-iaq1", sequence: 1, responseType: "YES_NO", promptTextEn: "Is the scene safe to approach without exposing the caller or responder to fumes, liquid, powder, contaminated clothing, fire, or another hazard?" },
+      { id: "oscg-chemburn-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "What is the patient's exact age, what product or chemical was involved, and is the label or safety data sheet available without delaying first aid?" },
+      { id: "oscg-chemburn-iaq3", sequence: 3, responseType: "LOCATION", promptTextEn: "Did the chemical contact the skin, eyes, face, mouth, airway, or clothing, and how large is the affected area?" },
+      { id: "oscg-chemburn-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "Is there breathing difficulty, coughing, choking, collapse, reduced responsiveness, severe eye pain, or vision change?" },
+      { id: "oscg-chemburn-iaq5", sequence: 5, responseType: "YES_NO", promptTextEn: "Has contaminated clothing been removed safely, has any dry chemical been brushed away, and has appropriate irrigation started?" }
     ],
     questions: [
       {
         id: "oscg-chemburn-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Has an acid or chemical gotten on the skin or in the eyes?",
+        questionTextEn: "Has a harmful acid, alkali, cleaning product, industrial chemical, or unknown chemical contacted the skin or eyes, or caused pain, burning, visible injury, breathing symptoms, or reduced responsiveness? If the substance or exposure type is uncertain, keep this emergency disposition and do not redirect to a combined or lower-acuity burn pathway.",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
-        rationaleEn: "NHS.UK guidance: call 999 for any acid or chemical burn to the skin or eyes.",
+        rationaleEn: "NHS.UK treats acid or chemical exposure to skin or eyes as an emergency requiring immediate first aid and hospital assessment. Uncertainty must fail closed because chemical identity changes decontamination risks.",
         redFlag: true,
         keywords: ["acid on skin", "chemical in eyes"],
         careAdviceIds: ["oscg-chemburn-emergency-advice"],
@@ -252,19 +269,24 @@ export const batch05Protocols: ProtocolInput[] = [
     careAdvice: [
       {
         id: "oscg-chemburn-emergency-advice",
-        titleEn: "Emergency chemical burn first aid",
+        titleEn: "Chemical exposure — call Qatar 999",
         instructionTextEn:
-          "Call for emergency transport. Wear gloves if available. Carefully remove any clothing with the chemical on it and brush off any dry chemical from the skin. Put the affected area under cool or lukewarm running water, or pour water over it, for about 1 hour. Do not apply creams or anything else to the burn.",
+          "Call Qatar 999 immediately and follow the operator's instructions. Do not enter a contaminated area or touch the chemical without suitable protection. Move away from fumes only if this can be done safely. Using gloves or another protective barrier, carefully cut away contaminated clothing rather than pulling it over the head; do not remove material stuck to skin. Brush visible dry powder away without spreading it or exposing the responder. Unless the product label, safety data sheet, or 999 operator specifically warns that water is unsafe for that substance, immediately irrigate affected skin or eyes with copious cool or lukewarm running water for about 1 hour. Let runoff flow away from unaffected skin and the other eye. Remove contact lenses only if easy and continue irrigation. Do not scrub, rub, neutralize with another chemical, apply cream, ointment, ice, or medicine, or delay irrigation while identifying the product. Keep the container or a photograph available for emergency responders if safe. Do not drive the patient to hospital.",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         warningSigns: ["worsening pain", "vision changes if eyes affected"],
         displayOrder: 1,
         adviceCategory: "DISPOSITION"
       }
     ],
-    authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2024-06-05", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
+    authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "Pending qualified Qatar adult, pediatric, burns, ophthalmology, toxicology, and HazMat review", lastReviewedIso: "2026-07-25", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Qatar | UAT ONLY | NOT FOR PRODUCTION" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"Acid and chemical burns\", https://www.nhs.uk/conditions/acid-and-chemical-burns/ (page last reviewed 05 June 2024)"],
-      contentNotice: "Decomposed from NHS.UK's published acid and chemical burns guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Treated as an unconditional emergency per the source, distinct from the graduated tiers used for thermal burns (oscg-burns-thermal). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      sourceDocuments: [
+        "Hamad Medical Corporation, \"Life-Threatening Medical Emergency\", https://hamad.qa/EN/Emergency/Pages/Life-ThreateningMedicalEmergency.aspx (accessed 25 July 2026)",
+        "Hamad Medical Corporation, \"Al Wakra Hospital Emergency Quick Guide\", 2025, https://hamad.qa/EN/Hospitals-and-services/alwakra/Patients-and-Visitors/Documents/PF%20Materials/AWH-Quick-Guide_Emergency.pdf (Qatar Poison Center 4003 1111)",
+        "NHS.UK, \"Acid and chemical burns\", https://www.nhs.uk/conditions/acid-and-chemical-burns/ (page last reviewed 05 June 2024)",
+        "NHS England, \"Management of self-presenters from hazardous-material incidents\", 2026, https://www.england.nhs.uk/long-read/the-management-of-self-presenters-from-incidents-involving-hazardous-materials-or-chemical-biological-radiological-nuclear-cbrn-substances/"
+      ],
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION USE. Chemical skin or eye burns remain an unconditional emergency. Unknown or compound burn exposures must fail closed here and must not redirect to a lower-acuity thermal or combined burn pathway. Adult and child generated variants require separate Qatar pediatric, burns, ophthalmology, toxicology, and HazMat approval. Qatar 999 is the verified emergency route. Whether and when a nurse also contacts Qatar Poison Center 4003 1111 is GOVERNANCE_REQUIRED and must not delay 999 or decontamination. Not licensed Schmitt-Thompson (STCC) content."
     })
   },
 
@@ -292,22 +314,36 @@ export const batch05Protocols: ProtocolInput[] = [
     ],
     questions: [
       {
-        id: "oscg-boil-q0-urgent",
+        id: "oscg-boil-q0-emergency",
         acuityOrder: 1,
+        severity: "Emergency",
+        questionTextEn: "Is there confusion, collapse, abnormal breathing, pale/blue/mottled skin, rapidly spreading redness or swelling, severe pain out of proportion, black skin, or swelling around the eye, nose, jaw, or neck affecting vision, swallowing, or breathing?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+        rationaleEn: "Sepsis, necrotising infection, orbital spread, and airway involvement require immediate emergency assessment.",
+        redFlag: true,
+        keywords: ["sepsis boil", "black skin abscess", "face swelling breathing"],
+        careAdviceIds: ["oscg-boil-emergency-advice"],
+        telemedicineEligible: false,
+        dispositionLevel: 100,
+        questionOrder: 1
+      },
+      {
+        id: "oscg-boil-q0-urgent",
+        acuityOrder: 2,
         severity: "Urgent",
-        questionTextEn: "Is the boil on the face, is the skin around it hot/painful/swollen, does the caller feel hot/cold/shivery, or does the caller have a weakened immune system (diabetes, steroids, chemotherapy)?",
+        questionTextEn: "Without an emergency feature, is the boil on the face, near the eye, genitals, breast, spine, hand, or over a joint; is redness spreading or fever present; or is the patient an infant, pregnant, diabetic, immunocompromised, or otherwise seriously unwell?",
         dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "NHS.UK boils guidance lists these as reasons for an urgent GP appointment or 111 call.",
         redFlag: false,
         keywords: ["boil on face", "spreading boil infection", "fever with boil"],
         careAdviceIds: ["oscg-boil-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
       {
         id: "oscg-boil-q1-routine",
-        acuityOrder: 2,
+        acuityOrder: 3,
         severity: "Routine",
         questionTextEn: "Has the boil lasted 2 weeks without improving, does the caller keep getting boils, or is there a cluster of boils (carbuncle)?",
         dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
@@ -315,13 +351,13 @@ export const batch05Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["persistent boil", "recurring boils", "carbuncle"],
         careAdviceIds: ["oscg-boil-routine-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 50,
         questionOrder: 1
       },
       {
         id: "oscg-boil-q2-selfcare",
-        acuityOrder: 3,
+        acuityOrder: 4,
         severity: "Self-care",
         questionTextEn: "Is this a single, recent boil with none of the features above?",
         dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
@@ -329,20 +365,21 @@ export const batch05Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["single recent boil"],
         careAdviceIds: ["oscg-boil-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-boil-urgent-advice", titleEn: "Urgent boil review", instructionTextEn: "Arrange same-day medical review, especially for a facial boil or signs of spreading infection.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["spreading redness", "fever develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-boil-emergency-advice", titleEn: "Emergency skin-infection precautions", instructionTextEn: "Call Qatar 999 now. Do not squeeze, lance, cut, or apply caustic substances. Keep the patient still, do not allow self-driving, and follow the call-handler's instructions.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["confusion, collapse, breathing change, rapidly spreading swelling, black skin, or severe pain"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-boil-urgent-advice", titleEn: "Prompt in-person abscess review", instructionTextEn: "Use the Qatar governance-approved in-person service. Do not squeeze or pierce the lesion or use leftover antibiotics. Pregnancy, infant, diabetes, immune suppression, facial and genital lesions require clinician-led treatment.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["spreading redness, fever, severe pain, or swelling near eye or airway"], displayOrder: 2, adviceCategory: "DISPOSITION" },
       { id: "oscg-boil-routine-advice", titleEn: "Routine boil follow-up", instructionTextEn: "Book a routine GP appointment for a persistent, recurring, or clustered boil.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["boil worsens", "fever develops"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
-      { id: "oscg-boil-selfcare-advice", titleEn: "Home care for a boil", instructionTextEn: "Apply a warm cloth compress for 10 minutes, 4 times daily. If it bursts, clean with antibacterial soap and cover with a dressing. Take paracetamol or ibuprofen for pain. Do not pick, squeeze, or pierce the boil, and don't share towels until healed.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["boil lasts more than 2 weeks", "signs of spreading infection or fever"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-boil-selfcare-advice", titleEn: "Care for a localized boil pending Qatar review", instructionTextEn: "Use a clean warm compress for short periods and keep the area clean and covered if it drains. Do not pick, squeeze, pierce, or apply caustic products, and do not share towels. Medicine choice and dose require age, weight, pregnancy or breastfeeding status, allergies, kidney or liver disease, ulcer or bleeding risk, other medicines, and Qatar formulary approval. This UAT branch remains non-telemedicine pending clinical governance.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["boil lasts more than 2 weeks", "signs of spreading infection or fever", "pain or swelling rapidly worsens"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-06-20", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Boils\", https://www.nhs.uk/conditions/boils/ (page last reviewed 20 June 2023)"],
-      contentNotice: "Decomposed from NHS.UK's published boils guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT-only adaptation with sepsis, necrotising infection, facial/orbital/airway, age, pregnancy, diabetes, immunocompromise, anatomic-site, medication, and safeguarding controls. Exact Qatar drainage and antimicrobial routes remain GOVERNANCE_REQUIRED. Not licensed Schmitt-Thompson content; prohibited from production use."
     })
   },
 
@@ -372,7 +409,7 @@ export const batch05Protocols: ProtocolInput[] = [
         id: "oscg-coldsore-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Does this sound like a life-threatening emergency to the triager (e.g. severe facial swelling or difficulty swallowing)?",
+        questionTextEn: "Is there eye pain, redness or vision change, widespread painful blistering with fever or severe illness, breathing or swallowing difficulty, severe facial swelling, confusion, or a newborn or young infant with blisters or fever?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         rationaleEn: "Universal emergency rule-out added ahead of the cold sores guidance itself - cold sores themselves are never an emergency, but severe swelling or swallowing difficulty would suggest a different, more serious problem.",
         redFlag: true,
@@ -386,13 +423,13 @@ export const batch05Protocols: ProtocolInput[] = [
         id: "oscg-coldsore-q1-routine",
         acuityOrder: 2,
         severity: "Routine",
-        questionTextEn: "Has the cold sore not started healing within 10 days, is it very large or painful, does the caller have swollen painful gums and mouth sores, or a weakened immune system?",
+        questionTextEn: "Without an emergency feature, is the lesion near the eye, not healing within 10 days, very large or painful, widespread over eczema, associated with painful gums or poor intake, or present in pregnancy, an infant, or an immunocompromised patient?",
         dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
         rationaleEn: "NHS.UK guidance recommends a GP visit for these situations.",
         redFlag: false,
         keywords: ["cold sore not healing", "large painful cold sore", "mouth ulcers with cold sore"],
         careAdviceIds: ["oscg-coldsore-routine-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 50,
         questionOrder: 1
       },
@@ -406,20 +443,20 @@ export const batch05Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["typical cold sore"],
         careAdviceIds: ["oscg-coldsore-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-coldsore-emergency-advice", titleEn: "Emergency precautions", instructionTextEn: "Address the underlying emergency concern and arrange emergency transport if needed.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["swelling worsens", "difficulty swallowing"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-coldsore-emergency-advice", titleEn: "Emergency herpes-related precautions", instructionTextEn: "Call Qatar 999 now for airway, neurologic, severe systemic, or infant emergency features. Do not allow self-driving. Do not touch the eyes and wash hands after any lesion contact.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["vision change, confusion, worsening swelling, breathing or swallowing difficulty"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-coldsore-routine-advice", titleEn: "Routine cold sore follow-up", instructionTextEn: "Book a GP appointment - antiviral tablets may be prescribed for large, painful, or recurring cold sores.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["not healing after 10 days", "spreading or worsening"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
-      { id: "oscg-coldsore-selfcare-advice", titleEn: "Home care for a cold sore", instructionTextEn: "A pharmacist can recommend creams, antiviral treatments, and protective patches. Avoid touching the sore (except to apply cream, dabbed not rubbed), use sunblock lip balm outdoors, take paracetamol or ibuprofen as needed, and stay hydrated.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["not healing within 10 days", "becomes very large or painful"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-coldsore-selfcare-advice", titleEn: "Low-risk cold-sore care", instructionTextEn: "Avoid kissing, oral sex, sharing utensils, and contact with newborns or immunocompromised people until healed. Wash hands and avoid touching eyes. A pharmacist must confirm antiviral and pain medicine suitability for age, pregnancy, breastfeeding, kidney disease, and interactions.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["eye symptoms, fever, poor intake, spreading over eczema, or failure to heal"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2024-02-19", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Cold sores\", https://www.nhs.uk/conditions/cold-sores/ (page last reviewed 19 February 2024)"],
-      contentNotice: "Decomposed from NHS.UK's published cold sores guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "SOURCE-ONLY UAT adaptation; no generated variant exists in the current 504-protocol catalog. Ocular herpes, neonatal exposure, eczema herpeticum, pregnancy, immunocompromise, antiviral medication, and exact Qatar routes remain GOVERNANCE_REQUIRED. Not licensed Schmitt-Thompson content; prohibited from production use."
     })
   },
 
@@ -453,7 +490,7 @@ export const batch05Protocols: ProtocolInput[] = [
         id: "oscg-constipation-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Is there severe abdominal pain, vomiting, or a swollen/hard abdomen suggesting a possible bowel obstruction?",
+        questionTextEn: "Is there severe or constant abdominal pain, persistent or green vomiting, a markedly swollen or rigid abdomen, inability to pass gas, collapse, confusion, major rectal bleeding or black stool, or a very unwell infant?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         rationaleEn: "Universal emergency rule-out added ahead of the constipation guidance itself - severe pain, vomiting, or abdominal distension suggests bowel obstruction, which needs emergency evaluation.",
         redFlag: true,
@@ -467,13 +504,13 @@ export const batch05Protocols: ProtocolInput[] = [
         id: "oscg-constipation-q1-routine",
         acuityOrder: 2,
         severity: "Routine",
-        questionTextEn: "Is constipation not improving with treatment, is there blood in the stool, unexplained weight loss, a sudden change in bowel habits, or ongoing tummy pain?",
+        questionTextEn: "Without an emergency feature, is there blood, ongoing pain, fever, weight loss, sudden bowel-habit change, faecal soiling or urinary symptoms, or is the patient a newborn/infant, pregnant or postpartum, older/frail, immunocompromised, neurologically impaired, or taking constipating medicines?",
         dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
         rationaleEn: "NHS.UK guidance lists these as reasons to see a GP, though categorized as non-urgent rather than emergency.",
         redFlag: false,
         keywords: ["blood in stool", "constipation not improving", "weight loss with constipation"],
         careAdviceIds: ["oscg-constipation-routine-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 50,
         questionOrder: 1
       },
@@ -487,20 +524,20 @@ export const batch05Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["typical constipation"],
         careAdviceIds: ["oscg-constipation-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-constipation-emergency-advice", titleEn: "Emergency precautions", instructionTextEn: "Keep the caller comfortable and arrange emergency transport for possible bowel obstruction.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening pain", "persistent vomiting"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-constipation-emergency-advice", titleEn: "Emergency abdominal precautions", instructionTextEn: "Call Qatar 999 now, do not allow self-driving, and give no laxative, enema, food, or drink when obstruction, severe illness, or unsafe swallowing is possible. Follow the call-handler's instructions.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening pain, distension, vomiting, bleeding, collapse, or confusion"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-constipation-routine-advice", titleEn: "Routine constipation follow-up", instructionTextEn: "Book a GP appointment to investigate persistent constipation or associated symptoms.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["blood in stool increases", "pain worsens"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true },
-      { id: "oscg-constipation-selfcare-advice", titleEn: "Home care for constipation", instructionTextEn: "Eat a balanced diet with fruits containing sorbitol, drink plenty of fluids and avoid alcohol, gradually increase fibre, keep a regular toilet routine, and stay active with a daily walk. Ask a pharmacist about laxatives if these don't help - most work within 3 days.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["not improving with treatment", "blood in stool develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-constipation-selfcare-advice", titleEn: "Low-risk constipation care", instructionTextEn: "Maintain normal fluids, gradually increase fibre only if obstruction is not suspected, stay active, and use a regular unhurried toilet routine. A pharmacist or clinician must choose any laxative for age, pregnancy, breastfeeding, kidney or heart disease, interactions, and duration; do not use repeated enemas or adult products in children without instruction.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain, distension, vomiting, inability to pass gas, blood, fever, poor intake, or failure to improve"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-10-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Constipation\", https://www.nhs.uk/conditions/constipation/ (page last reviewed 26 October 2023)"],
-      contentNotice: "Decomposed from NHS.UK's published constipation guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. The source has no emergency criteria of its own - the emergency screen here (possible bowel obstruction) is added as a standard tele-triage safety practice, not part of the source. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "SOURCE-ONLY UAT adaptation; no generated variant exists in the current 504-protocol catalog. Obstruction criteria are a safety synthesis. Qatar neonatal, pediatric, pregnancy/postpartum, frailty, neurologic, medicine and bowel-cancer pathways remain GOVERNANCE_REQUIRED. Not licensed Schmitt-Thompson content; prohibited from production use."
     })
   },
 
@@ -531,7 +568,7 @@ export const batch05Protocols: ProtocolInput[] = [
         id: "oscg-acne-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Does this sound like a life-threatening emergency to the triager (e.g. signs of a severe skin infection with fever)?",
+        questionTextEn: "Is there severe facial or eye swelling affecting vision or breathing, rapidly spreading painful redness with fever or severe illness, blistering or skin peeling after medicine, or current suicidal intent, plan, or inability to stay safe?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         rationaleEn: "Universal emergency rule-out added ahead of the acne guidance itself - acne is never itself an emergency, but a severe secondary infection would need urgent care.",
         redFlag: true,
@@ -545,13 +582,13 @@ export const batch05Protocols: ProtocolInput[] = [
         id: "oscg-acne-q1-routine",
         acuityOrder: 2,
         severity: "Routine",
-        questionTextEn: "Have pharmacy treatments not controlled the acne, is it making the caller very unhappy, or is it moderate-to-severe with nodules or cysts?",
+        questionTextEn: "Have pharmacy treatments failed, is acne nodular, cystic, scarring, or significantly affecting mood, or is there pregnancy or pregnancy possibility, immune suppression, endocrine symptoms, or concern about prescribed isotretinoin or another medicine?",
         dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
         rationaleEn: "NHS.UK guidance: see a GP if pharmacy treatments aren't working, acne is affecting wellbeing, or it's moderate/severe - proper treatment for nodules/cysts avoids scarring.",
         redFlag: false,
         keywords: ["acne not improving", "severe acne", "acne affecting mood"],
         careAdviceIds: ["oscg-acne-routine-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 50,
         questionOrder: 1
       },
@@ -565,20 +602,20 @@ export const batch05Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["mild acne", "untreated acne"],
         careAdviceIds: ["oscg-acne-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-acne-emergency-advice", titleEn: "Emergency precautions", instructionTextEn: "Address the underlying emergency concern and arrange emergency transport if needed.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["fever develops", "spreading infection"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-acne-emergency-advice", titleEn: "Emergency skin or mental-health precautions", instructionTextEn: "Call Qatar 999 now for airway, severe skin-reaction, sepsis, or immediate suicide risk. Keep the patient with a safe trusted person and do not allow self-driving.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["breathing or vision change, spreading blistering or infection, confusion, or escalating self-harm risk"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-acne-routine-advice", titleEn: "Routine acne follow-up", instructionTextEn: "Book a GP appointment - moderate to severe acne needs proper treatment to avoid scarring.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["acne worsens", "significant impact on wellbeing"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
-      { id: "oscg-acne-selfcare-advice", titleEn: "Pharmacy self-care for mild acne", instructionTextEn: "Ask a pharmacist about creams, lotions, or gels for treating spots. Treatments can take several months to work - don't expect overnight results. Avoid picking or squeezing spots, which can cause permanent scarring.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["not improving after a few months", "becoming more severe"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-acne-selfcare-advice", titleEn: "Pharmacy care for mild acne", instructionTextEn: "Use gentle cleansing and do not pick or squeeze lesions. A pharmacist must confirm treatment for age, pregnancy or pregnancy possibility, breastfeeding, skin sensitivity, and other medicines. Do not use another person's antibiotics, retinoids, or isotretinoin.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["scarring, nodules, worsening infection, mood decline, or failure to improve"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-01-03", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Acne\", https://www.nhs.uk/conditions/acne/ (page last reviewed 03 January 2023)"],
-      contentNotice: "Decomposed from NHS.UK's published acne guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "SOURCE-ONLY UAT adaptation; no generated variant exists in the current 504-protocol catalog. Qatar dermatology, pregnancy-prevention, isotretinoin, adolescent confidentiality, mental-health, and safeguarding pathways remain GOVERNANCE_REQUIRED. Not licensed Schmitt-Thompson content; prohibited from production use."
     })
   },
 
@@ -609,13 +646,13 @@ export const batch05Protocols: ProtocolInput[] = [
         id: "oscg-athletesfoot-q0-urgent",
         acuityOrder: 1,
         severity: "Urgent",
-        questionTextEn: "Is the foot or leg hot, painful, and red, has the infection spread to other areas like the hands, does the caller have diabetes, or a weakened immune system?",
+        questionTextEn: "Is the foot or leg rapidly becoming hot, painful, swollen or red, is there fever, pus, ulceration, black skin, red streaking, severe pain, or is the patient diabetic, poorly perfused, pregnant, immunocompromised, or a young child?",
         dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "NHS.UK guidance lists these as reasons to see a doctor promptly - could indicate a serious infection, and foot problems are more serious with diabetes.",
         redFlag: false,
         keywords: ["hot painful red foot", "spreading fungal infection", "diabetes foot infection"],
         careAdviceIds: ["oscg-athletesfoot-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
@@ -629,7 +666,7 @@ export const batch05Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["pharmacy treatment not working"],
         careAdviceIds: ["oscg-athletesfoot-routine-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 50,
         questionOrder: 1
       },
@@ -643,20 +680,20 @@ export const batch05Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["typical athletes foot"],
         careAdviceIds: ["oscg-athletesfoot-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-athletesfoot-urgent-advice", titleEn: "Urgent foot infection review", instructionTextEn: "Arrange prompt medical review, especially with diabetes or a weakened immune system.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["spreading redness", "fever develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-athletesfoot-urgent-advice", titleEn: "Prompt in-person foot assessment", instructionTextEn: "Use the Qatar governance-approved in-person service, particularly for diabetes, poor circulation, immune suppression, pregnancy, children, ulcers, or bacterial infection signs. Do not use steroid-combination or leftover antifungal/antibiotic products without clinician or pharmacist confirmation.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["spreading redness, fever, ulcer, black skin, numbness, or severe pain"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-athletesfoot-routine-advice", titleEn: "Routine athlete's foot follow-up", instructionTextEn: "Book a GP appointment if pharmacy treatment hasn't worked.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["worsening pain or spreading"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
       { id: "oscg-athletesfoot-selfcare-advice", titleEn: "Pharmacy self-care for athlete's foot", instructionTextEn: "A pharmacist can recommend creams, sprays, or powders. Dry feet thoroughly (especially between toes), use separate towels, wear clean cotton socks daily, and avoid scratching, walking barefoot in public areas, or sharing footwear/towels.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["not improving with treatment", "spreading or worsening"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2024-04-29", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Athlete's foot\", https://www.nhs.uk/conditions/athletes-foot/ (page last reviewed 29 April 2024)"],
-      contentNotice: "Decomposed from NHS.UK's published athlete's foot guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "SOURCE-ONLY UAT adaptation; no generated variant exists in the current 504-protocol catalog. Qatar diabetic-foot, vascular, immunocompromise, pregnancy, pediatric, infection, and medicine pathways remain GOVERNANCE_REQUIRED. Not licensed Schmitt-Thompson content; prohibited from production use."
     })
   },
 
@@ -680,7 +717,8 @@ export const batch05Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-covid-iaq1", sequence: 1, responseType: "YES_NO", promptTextEn: "Has there been a positive COVID-19 test?" },
       { id: "oscg-covid-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long have symptoms lasted?" },
-      { id: "oscg-covid-iaq3", sequence: 3, responseType: "OPEN_TEXT", promptTextEn: "Describe the main symptoms." }
+      { id: "oscg-covid-iaq3", sequence: 3, responseType: "OPEN_TEXT", promptTextEn: "Describe breathing, chest pain, alertness, fluid intake and urine, fever, oxygen saturation if already measured, and the main symptoms." },
+      { id: "oscg-covid-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "Record age, pregnancy/postpartum, immune suppression, obesity, heart/lung/kidney disease, diabetes, vaccination, symptom-onset date, and safeguarding or safe-isolation limitations." }
     ],
     questions: [
       {
@@ -699,28 +737,43 @@ export const batch05Protocols: ProtocolInput[] = [
         questionOrder: 1
       },
       {
-        id: "oscg-covid-q1-selfcare",
+        id: "oscg-covid-q1-urgent",
         acuityOrder: 2,
+        severity: "Urgent",
+        questionTextEn: "Without an emergency feature, is there worsening breathlessness, persistent fever or dehydration, oxygen saturation below the locally approved threshold, or is the patient an infant, pregnant/postpartum, older/frail, immunocompromised, or living with significant chronic disease?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "Higher-risk patients and worsening respiratory or hydration symptoms need prompt assessment, including eligibility for time-sensitive treatment under current Qatar policy.",
+        redFlag: false,
+        keywords: ["high risk covid", "pregnant covid", "worsening covid breathing"],
+        careAdviceIds: ["oscg-covid-urgent-advice"],
+        telemedicineEligible: false,
+        dispositionLevel: 70,
+        questionOrder: 1
+      },
+      {
+        id: "oscg-covid-q2-selfcare",
+        acuityOrder: 3,
         severity: "Self-care",
-        questionTextEn: "Are symptoms mild, with none of the emergency features above?",
+        questionTextEn: "Are symptoms mild and improving in an otherwise low-risk older child or adult, with normal breathing, hydration and alertness, and none of the features above?",
         dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
         rationaleEn: "NHS.UK guidance recommends rest, fluids, and simple pain relief for mild COVID-19, with isolation guidance to protect others.",
         redFlag: false,
         keywords: ["mild covid symptoms"],
         careAdviceIds: ["oscg-covid-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-covid-emergency-advice", titleEn: "Emergency COVID-19 precautions", instructionTextEn: "Help the person sit upright if breathless, with shoulders relaxed and leaning forward with hand support. Arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening breathing difficulty", "loss of consciousness"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-covid-emergency-advice", titleEn: "Emergency respiratory precautions", instructionTextEn: "Call Qatar 999 now, help the person sit in the easiest breathing position, use a mask only if tolerated and it does not impede breathing, and do not allow self-driving. Follow the call-handler's instructions.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening breathing, blue/grey colour, collapse, confusion, or loss of consciousness"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-covid-urgent-advice", titleEn: "Prompt Qatar COVID-19 assessment", instructionTextEn: "Use the current Qatar governance-approved in-person or telehealth pathway. Confirm current testing, isolation, antiviral eligibility, oxygen thresholds, pregnancy, pediatric and immunocompromise policy; this UAT protocol must not hard-code changing public-health rules.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["breathing worsens, oxygen falls, chest pain, confusion, poor intake, reduced urine, or collapse"], displayOrder: 2, adviceCategory: "DISPOSITION" },
       { id: "oscg-covid-selfcare-advice", titleEn: "Home care for mild COVID-19", instructionTextEn: "Rest, drink plenty of water, take paracetamol or ibuprofen if uncomfortable, and try honey for cough (not for babies under 12 months). Stay away from others per local isolation guidance. Avoid lying flat while coughing.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["breathing difficulty develops", "symptoms significantly worsen"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-03-21", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"COVID-19 symptoms and what to do\", https://www.nhs.uk/conditions/covid-19/covid-19-symptoms-and-what-to-do/ (page last reviewed 21 March 2023)"],
-      contentNotice: "Decomposed from NHS.UK's published COVID-19 symptoms guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT-only adaptation with age, pregnancy/postpartum, immunocompromise, comorbidity, dehydration, oxygen, safeguarding, and time-sensitive treatment controls. Current Qatar testing, isolation, antiviral, mask, oxygen-threshold, and service-routing policy remains GOVERNANCE_REQUIRED because it changes over time. Not licensed Schmitt-Thompson content; prohibited from production use."
     })
   }
 ];

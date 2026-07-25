@@ -1,0 +1,505 @@
+{
+  "manifestVersion": "1.0",
+  "importBatch": "open-source-batch-23",
+  "generatedDate": "2026-07-25",
+  "conditionFamilies": 9,
+  "protocolCount": 20,
+  "canonicalSourceFieldType": "string",
+  "algorithmIdRange": "1485-1504",
+  "applicabilityPolicy": {
+    "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
+    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "adultSpecificProtocols": "Adult-only; never generate Child variants.",
+    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
+  },
+  "excludedSourceFamilies": [
+    "Breath-Holding Spell, marijuana, hallucinogenic mushrooms, general substance use, and increased fluid intake were excluded because their records lack a dedicated named source.",
+    "Crying - 3 Months and Older was excluded because it generalizes a source scoped to younger infant colic.",
+    "Ten remaining slots use source-supported pediatric joint-review variants carried forward from Batch 21; adult self-care was replaced with the source's explicit child clinical-review instruction."
+  ],
+  "entries": [
+    {
+      "file": "json/bedwetting-nocturnal-enuresis-child-male.db.json",
+      "algorithmId": 1485,
+      "title": "Bedwetting (Nocturnal Enuresis) - Male (Child)",
+      "protocolFamily": "Bedwetting (Nocturnal Enuresis)",
+      "sourceProtocolId": "oscg-bedwetting",
+      "canonicalSourceProtocolId": "oscg-bedwetting",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 5,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "344ef6c865b12c27d31e7ff74ea6851defdcb2d1c7e85776af9894c588ca1806",
+      "redirectTarget": "Urine - Blood In",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 5.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/bedwetting-nocturnal-enuresis-child-female.db.json",
+      "algorithmId": 1486,
+      "title": "Bedwetting (Nocturnal Enuresis) - Female (Child)",
+      "protocolFamily": "Bedwetting (Nocturnal Enuresis)",
+      "sourceProtocolId": "oscg-bedwetting",
+      "canonicalSourceProtocolId": "oscg-bedwetting",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 5,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "1e601ca2754d00421e790be85e66cae5c26c1fed2cee96fa2c5c37a3968d849d",
+      "redirectTarget": "Urine - Blood In",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 5.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/crying-before-3-months-old-child-male.db.json",
+      "algorithmId": 1487,
+      "title": "Crying - Before 3 Months Old - Male (Child)",
+      "protocolFamily": "Crying - Before 3 Months Old",
+      "sourceProtocolId": "oscg-crying-before-3-months",
+      "canonicalSourceProtocolId": "oscg-crying-before-3-months",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "36a30505ca18116688fe9da661b491d9e20c116899fa29f883c098a0612e72d4",
+      "redirectTarget": "Breathing Difficulty",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/crying-before-3-months-old-child-female.db.json",
+      "algorithmId": 1488,
+      "title": "Crying - Before 3 Months Old - Female (Child)",
+      "protocolFamily": "Crying - Before 3 Months Old",
+      "sourceProtocolId": "oscg-crying-before-3-months",
+      "canonicalSourceProtocolId": "oscg-crying-before-3-months",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "8ac41d36e4cd3a3685023ec61e44feef541146bc57603b1f9939f29cdee35ac2",
+      "redirectTarget": "Breathing Difficulty",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/eating-disorders-symptoms-and-questions-adult-male.db.json",
+      "algorithmId": 1489,
+      "title": "Eating Disorders Symptoms and Questions - Male (Adult)",
+      "protocolFamily": "Eating Disorders Symptoms and Questions",
+      "sourceProtocolId": "oscg-eating-disorders",
+      "canonicalSourceProtocolId": "oscg-eating-disorders",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "aa7edb4acd42d444a020089ca6743a05f40f132337176814d120a0d2f2f97892",
+      "redirectTarget": "Suicide Concerns",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/eating-disorders-symptoms-and-questions-adult-female.db.json",
+      "algorithmId": 1490,
+      "title": "Eating Disorders Symptoms and Questions - Female (Adult)",
+      "protocolFamily": "Eating Disorders Symptoms and Questions",
+      "sourceProtocolId": "oscg-eating-disorders",
+      "canonicalSourceProtocolId": "oscg-eating-disorders",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "18d6b7f8cfbf6e154740ab05313b017a2faecc39fc7a0982945a9c632c38b98e",
+      "redirectTarget": "Suicide Concerns",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/eating-disorders-symptoms-and-questions-child-male.db.json",
+      "algorithmId": 1491,
+      "title": "Eating Disorders Symptoms and Questions - Male (Child)",
+      "protocolFamily": "Eating Disorders Symptoms and Questions",
+      "sourceProtocolId": "oscg-eating-disorders",
+      "canonicalSourceProtocolId": "oscg-eating-disorders",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 10,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "f6f343c2e3f18d2322fca43b9ab15e33dd0e96d2a8e7c54c1fce6e46eed60473",
+      "redirectTarget": "Suicide Concerns",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 10.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/eating-disorders-symptoms-and-questions-child-female.db.json",
+      "algorithmId": 1492,
+      "title": "Eating Disorders Symptoms and Questions - Female (Child)",
+      "protocolFamily": "Eating Disorders Symptoms and Questions",
+      "sourceProtocolId": "oscg-eating-disorders",
+      "canonicalSourceProtocolId": "oscg-eating-disorders",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 10,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "f7d39254b34755de900618b929bf03e16b25d7d7cec06c1fe1b8099504f68050",
+      "redirectTarget": "Suicide Concerns",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 10.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/icd-and-pacemaker-symptoms-and-questions-adult-male.db.json",
+      "algorithmId": 1493,
+      "title": "ICD and Pacemaker Symptoms and Questions - Male (Adult)",
+      "protocolFamily": "ICD and Pacemaker Symptoms and Questions",
+      "sourceProtocolId": "oscg-icd-and-pacemaker-symptoms",
+      "canonicalSourceProtocolId": "oscg-icd-and-pacemaker-symptoms",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "edc6310b79ccd1dcddcb5bbeef1be9bf55a553885acf468c564656a7591f1374",
+      "redirectTarget": "Heart Rate and Heartbeat Questions",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/icd-and-pacemaker-symptoms-and-questions-adult-female.db.json",
+      "algorithmId": 1494,
+      "title": "ICD and Pacemaker Symptoms and Questions - Female (Adult)",
+      "protocolFamily": "ICD and Pacemaker Symptoms and Questions",
+      "sourceProtocolId": "oscg-icd-and-pacemaker-symptoms",
+      "canonicalSourceProtocolId": "oscg-icd-and-pacemaker-symptoms",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "af8e54e7483826ee0334bc8d1600ceb7ed85fa2d5fe630554387881c24623760",
+      "redirectTarget": "Heart Rate and Heartbeat Questions",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/elbow-pain-child-male.db.json",
+      "algorithmId": 1495,
+      "title": "Elbow Pain - Male (Child)",
+      "protocolFamily": "Elbow Pain",
+      "sourceProtocolId": "oscg-elbow-pain",
+      "canonicalSourceProtocolId": "oscg-elbow-pain",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "3e40ab876a67ecaee3b055cebf7ea79d4aa812dd9398fb8b01e9ea1863ad8a3a",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/elbow-pain-child-female.db.json",
+      "algorithmId": 1496,
+      "title": "Elbow Pain - Female (Child)",
+      "protocolFamily": "Elbow Pain",
+      "sourceProtocolId": "oscg-elbow-pain",
+      "canonicalSourceProtocolId": "oscg-elbow-pain",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "56c389e2c32a054d6c784efd741d545414ef0d4208076f739e159f9bfc2e5652",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/elbow-swelling-child-male.db.json",
+      "algorithmId": 1497,
+      "title": "Elbow Swelling - Male (Child)",
+      "protocolFamily": "Elbow Swelling",
+      "sourceProtocolId": "oscg-elbow-swelling",
+      "canonicalSourceProtocolId": "oscg-elbow-swelling",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "8ed267145f498657cb1324ee5e1b367dbdb66e0e88f0993073ab4534cdbe2e6c",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/elbow-swelling-child-female.db.json",
+      "algorithmId": 1498,
+      "title": "Elbow Swelling - Female (Child)",
+      "protocolFamily": "Elbow Swelling",
+      "sourceProtocolId": "oscg-elbow-swelling",
+      "canonicalSourceProtocolId": "oscg-elbow-swelling",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "16e6369e85a4b2aff589a83ac5037a9426e405791ca8c59854d4ea039555744c",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/finger-pain-child-male.db.json",
+      "algorithmId": 1499,
+      "title": "Finger Pain - Male (Child)",
+      "protocolFamily": "Finger Pain",
+      "sourceProtocolId": "oscg-finger-pain",
+      "canonicalSourceProtocolId": "oscg-finger-pain",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "2f9cd3647129f76e734f5067e5e7510bcbbf13d93f219b79de0dabf68ca7fc47",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/finger-pain-child-female.db.json",
+      "algorithmId": 1500,
+      "title": "Finger Pain - Female (Child)",
+      "protocolFamily": "Finger Pain",
+      "sourceProtocolId": "oscg-finger-pain",
+      "canonicalSourceProtocolId": "oscg-finger-pain",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "3bf6de049665d90f66c03190600b57130d34c841fe01735d4b863fc6dbafabfd",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/foot-pain-child-male.db.json",
+      "algorithmId": 1501,
+      "title": "Foot Pain - Male (Child)",
+      "protocolFamily": "Foot Pain",
+      "sourceProtocolId": "oscg-foot-pain",
+      "canonicalSourceProtocolId": "oscg-foot-pain",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "b1006808a68651bb668834720201b376d0ab6f4a339e62dbaf0f8fa2d8b6f881",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/foot-pain-child-female.db.json",
+      "algorithmId": 1502,
+      "title": "Foot Pain - Female (Child)",
+      "protocolFamily": "Foot Pain",
+      "sourceProtocolId": "oscg-foot-pain",
+      "canonicalSourceProtocolId": "oscg-foot-pain",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "980a7850241eb18df3dc3a3cdb5edaadad339f64788450b1cc072a4a30b3b2c9",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hand-swelling-child-male.db.json",
+      "algorithmId": 1503,
+      "title": "Hand Swelling - Male (Child)",
+      "protocolFamily": "Hand Swelling",
+      "sourceProtocolId": "oscg-hand-swelling",
+      "canonicalSourceProtocolId": "oscg-hand-swelling",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "4f65b1f1d2e7207fad873b9240585fed083979fcfea94e06eb616f0a42ec3ff7",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hand-swelling-child-female.db.json",
+      "algorithmId": 1504,
+      "title": "Hand Swelling - Female (Child)",
+      "protocolFamily": "Hand Swelling",
+      "sourceProtocolId": "oscg-hand-swelling",
+      "canonicalSourceProtocolId": "oscg-hand-swelling",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch23-source-supported-carry-forward-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "34cce215d861831f294e3cad6ccc5dd09704d60344c1068817910dadf6e81f5c",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    }
+  ],
+  "safetyBoundary": {
+    "usageStatus": "UAT_ONLY",
+    "productionEligible": false,
+    "requiresClinicalValidation": true,
+    "importOrDeploymentPerformed": false
+  }
+}

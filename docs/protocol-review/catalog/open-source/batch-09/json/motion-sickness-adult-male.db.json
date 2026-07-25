@@ -1,0 +1,151 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1209,
+    "Title": "Motion Sickness - Male (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 1,
+    "Definition": [
+      "Motion sickness assessment decomposed from NHS.UK's published guidance.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Stop travel safely and call Qatar emergency services on 999; do not drive when symptoms include reduced consciousness, seizure, stroke signs, severe headache, chest pain, abnormal breathing, severe dehydration, blood/green vomit, major injury, or suspected poisoning. Do not give oral medicine or fluids if drowsy or unsafe to swallow. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-06-19",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1209001,
+      "AlgorithmID": 1209,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is nausea occurring without travel, movement, or motion exposure?",
+      "Information": "Nausea not triggered by motion belongs in the general Nausea pathway.",
+      "GotoGuideline": "Nausea",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1209002,
+      "AlgorithmID": 1209,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Does this sound like a life-threatening emergency to the triager (e.g. severe dehydration or symptoms unrelated to travel)?",
+      "Information": "Universal emergency rule-out added ahead of the motion sickness guidance itself - motion sickness is not itself an emergency, but persistent vomiting could cause dehydration or mask another condition.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        120901
+      ]
+    },
+    {
+      "QuestionID": 1209003,
+      "AlgorithmID": 1209,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this typical motion sickness with none of the features above?",
+      "Information": "NHS.UK guidance provides prevention and self-care measures for typical motion sickness.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        120902
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 120901,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency vomiting/dizziness response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Stop travel safely and call Qatar emergency services on 999; do not drive when symptoms include reduced consciousness, seizure, stroke signs, severe headache, chest pain, abnormal breathing, severe dehydration, blood/green vomit, major injury, or suspected poisoning. Do not give oral medicine or fluids if drowsy or unsafe to swallow. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: confusion, seizure, neurological change, or collapse; severe dehydration or inability to keep fluids down; blood/green vomit or severe pain."
+      ]
+    },
+    {
+      "AdviceID": 120902,
+      "AlgorithmOrder": 2,
+      "Title": "Governed motion-sickness prevention",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "If safe, look toward the horizon, get fresh air, avoid reading/screens, and take breaks. Medicine, patches, and complementary products require age/weight, pregnancy/breastfeeding, glaucoma/urinary/cardiac conditions, sedation, driving/aviation duties, and current-medicine checks under the approved Qatar pathway; no age cutoff or product is authorized by this UAT content.",
+        "Call Back If: unable to keep fluids down; symptoms persist after travel or are unlike prior motion sickness."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Motion sickness\", https://www.nhs.uk/conditions/motion-sickness/ (page last reviewed 19 June 2023)"
+  ],
+  "searchwords": [
+    "motion sickness",
+    "travel sickness",
+    "car sick",
+    "sea sick",
+    "sick from the boat",
+    "dizzy from the boat",
+    "queasy on a boat"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, are they pregnant, what travel triggered symptoms, and are symptoms typical and limited to travel? Ask about medicines, neurological/ear symptoms, dehydration, poisoning, injury, and driving/aviation duties.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 09 source.",
+      "Source": "Motion Sickness"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "How long has this lasted?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 09 source.",
+      "Source": "Motion Sickness"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is the person able to keep fluids down?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 09 source.",
+      "Source": "Motion Sickness"
+    }
+  ]
+}

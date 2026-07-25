@@ -1,0 +1,499 @@
+{
+  "manifestVersion": "1.0",
+  "importBatch": "open-source-batch-19",
+  "generatedDate": "2026-07-25",
+  "conditionFamilies": 5,
+  "protocolCount": 20,
+  "canonicalSourceFieldType": "string",
+  "algorithmIdRange": "1405-1424",
+  "applicabilityPolicy": {
+    "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
+    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "adultSpecificProtocols": "Adult-only; never generate Child variants.",
+    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
+  },
+  "excludedSourceFamilies": [
+    "Bruises was excluded because its source is standard first-aid and unexplained-bruising knowledge rather than one dedicated cited public protocol.",
+    "Drowning and Submersion Event and Electric Shock or Lightning Injury were excluded because their source is generalized emergency-medicine knowledge rather than a dedicated cited public protocol.",
+    "Groin Injury and Strain and Eyelid Swelling were excluded because their sources explicitly generalize other injury or eye pathways."
+  ],
+  "entries": [
+    {
+      "file": "json/eye-redness-adult-male.db.json",
+      "algorithmId": 1405,
+      "title": "Eye - Redness - Male (Adult)",
+      "protocolFamily": "Eye - Redness",
+      "sourceProtocolId": "oscg-eye-redness",
+      "canonicalSourceProtocolId": "oscg-eye-redness",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "2b23f3ff6a603d2877168aaa69906f1737f77e40b8c210b4df94e14f65956fe5",
+      "redirectTarget": "Eye - Allergy",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/eye-redness-adult-female.db.json",
+      "algorithmId": 1406,
+      "title": "Eye - Redness - Female (Adult)",
+      "protocolFamily": "Eye - Redness",
+      "sourceProtocolId": "oscg-eye-redness",
+      "canonicalSourceProtocolId": "oscg-eye-redness",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "6ddd15f43f5e48dd5ebc9b81c7ea973f428764d737ba18374d3fd51ace41acb3",
+      "redirectTarget": "Eye - Allergy",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/eye-redness-child-male.db.json",
+      "algorithmId": 1407,
+      "title": "Eye - Redness - Male (Child)",
+      "protocolFamily": "Eye - Redness",
+      "sourceProtocolId": "oscg-eye-redness",
+      "canonicalSourceProtocolId": "oscg-eye-redness",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "013d8c3edb2c245b79b8d6e88609ac0e217e45d783fa7d89f08e16a42f80e330",
+      "redirectTarget": "Eye - Allergy",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/eye-redness-child-female.db.json",
+      "algorithmId": 1408,
+      "title": "Eye - Redness - Female (Child)",
+      "protocolFamily": "Eye - Redness",
+      "sourceProtocolId": "oscg-eye-redness",
+      "canonicalSourceProtocolId": "oscg-eye-redness",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "976874c1cb58898405b36a7544574f1e2a46bcc061e2719b41d7dc9df4b3df06",
+      "redirectTarget": "Eye - Allergy",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/blood-pressure-low-adult-male.db.json",
+      "algorithmId": 1409,
+      "title": "Blood Pressure - Low - Male (Adult)",
+      "protocolFamily": "Blood Pressure - Low",
+      "sourceProtocolId": "oscg-blood-pressure-low",
+      "canonicalSourceProtocolId": "oscg-blood-pressure-low",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "888885496ad13bc6983acf5812f442bc7acaa88c35c7b1bf1ab7695f061dd65b",
+      "redirectTarget": "Fainting",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/blood-pressure-low-adult-female.db.json",
+      "algorithmId": 1410,
+      "title": "Blood Pressure - Low - Female (Adult)",
+      "protocolFamily": "Blood Pressure - Low",
+      "sourceProtocolId": "oscg-blood-pressure-low",
+      "canonicalSourceProtocolId": "oscg-blood-pressure-low",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "1d18db4dbdc918f5bed3a5a4c16841884d2a60655ac343616bc87271ec38cf79",
+      "redirectTarget": "Fainting",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/blood-pressure-low-child-male.db.json",
+      "algorithmId": 1411,
+      "title": "Blood Pressure - Low - Male (Child)",
+      "protocolFamily": "Blood Pressure - Low",
+      "sourceProtocolId": "oscg-blood-pressure-low",
+      "canonicalSourceProtocolId": "oscg-blood-pressure-low",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "ad1ad8a25dc03ccda1865954b1810cee61cb28542899a55a5cfb287b963534a4",
+      "redirectTarget": "Fainting",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/blood-pressure-low-child-female.db.json",
+      "algorithmId": 1412,
+      "title": "Blood Pressure - Low - Female (Child)",
+      "protocolFamily": "Blood Pressure - Low",
+      "sourceProtocolId": "oscg-blood-pressure-low",
+      "canonicalSourceProtocolId": "oscg-blood-pressure-low",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "ced8ad6a77c7fec80c8be63ab500eebc273dce654a90c09b905b43d7bfc48ae2",
+      "redirectTarget": "Fainting",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/influenza-flu-suspected-adult-male.db.json",
+      "algorithmId": 1413,
+      "title": "Influenza (Flu) Suspected - Male (Adult)",
+      "protocolFamily": "Influenza (Flu) Suspected",
+      "sourceProtocolId": "oscg-influenza-suspected",
+      "canonicalSourceProtocolId": "oscg-influenza-suspected",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "49d9991a2006edd2b042ab0870963d3f9616bfa234fbe299a5fad2feb249c4c4",
+      "redirectTarget": "COVID-19 - Diagnosed or Suspected",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/influenza-flu-suspected-adult-female.db.json",
+      "algorithmId": 1414,
+      "title": "Influenza (Flu) Suspected - Female (Adult)",
+      "protocolFamily": "Influenza (Flu) Suspected",
+      "sourceProtocolId": "oscg-influenza-suspected",
+      "canonicalSourceProtocolId": "oscg-influenza-suspected",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "969b42a0c0acd1ceb82663678400323e80d5816b9527ce441f4a04c2b3eb9dce",
+      "redirectTarget": "COVID-19 - Diagnosed or Suspected",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/influenza-flu-suspected-child-male.db.json",
+      "algorithmId": 1415,
+      "title": "Influenza (Flu) Suspected - Male (Child)",
+      "protocolFamily": "Influenza (Flu) Suspected",
+      "sourceProtocolId": "oscg-influenza-suspected",
+      "canonicalSourceProtocolId": "oscg-influenza-suspected",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "cfa8a9411115cf0b14ffc2e016e226c8e905104bda8fe529fd72803d8371bfa6",
+      "redirectTarget": "COVID-19 - Diagnosed or Suspected",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/influenza-flu-suspected-child-female.db.json",
+      "algorithmId": 1416,
+      "title": "Influenza (Flu) Suspected - Female (Child)",
+      "protocolFamily": "Influenza (Flu) Suspected",
+      "sourceProtocolId": "oscg-influenza-suspected",
+      "canonicalSourceProtocolId": "oscg-influenza-suspected",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "7a62a6b90bae698330aa4458f0698c32c0fe6794c2916e43b67e7d2c7ddbc35a",
+      "redirectTarget": "COVID-19 - Diagnosed or Suspected",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hernia-adult-male.db.json",
+      "algorithmId": 1417,
+      "title": "Hernia - Male (Adult)",
+      "protocolFamily": "Hernia",
+      "sourceProtocolId": "oscg-hernia",
+      "canonicalSourceProtocolId": "oscg-hernia",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "553210b52a6eb1be76e78eb47a16d7e796630ff8a4bf8622177a909959234244",
+      "redirectTarget": "Nausea",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hernia-adult-female.db.json",
+      "algorithmId": 1418,
+      "title": "Hernia - Female (Adult)",
+      "protocolFamily": "Hernia",
+      "sourceProtocolId": "oscg-hernia",
+      "canonicalSourceProtocolId": "oscg-hernia",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "818381a2d61515959fd880594436d99844ea28a290842ed3ed4db8ca71efc173",
+      "redirectTarget": "Nausea",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hernia-child-male.db.json",
+      "algorithmId": 1419,
+      "title": "Hernia - Male (Child)",
+      "protocolFamily": "Hernia",
+      "sourceProtocolId": "oscg-hernia",
+      "canonicalSourceProtocolId": "oscg-hernia",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "d59faa70c757a6e3620a3766958c8164132be2b9e8a3fa2d86a3eb14efe76472",
+      "redirectTarget": "Nausea",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hernia-child-female.db.json",
+      "algorithmId": 1420,
+      "title": "Hernia - Female (Child)",
+      "protocolFamily": "Hernia",
+      "sourceProtocolId": "oscg-hernia",
+      "canonicalSourceProtocolId": "oscg-hernia",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "278042ddfe2920b07618e3e0116d451013b063db984fbad0ca71b65fa4e97092",
+      "redirectTarget": "Nausea",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/blister-foot-and-hand-adult-male.db.json",
+      "algorithmId": 1421,
+      "title": "Blister - Foot and Hand - Male (Adult)",
+      "protocolFamily": "Blister - Foot and Hand",
+      "sourceProtocolId": "oscg-blister-foot-hand",
+      "canonicalSourceProtocolId": "oscg-blister-foot-hand",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "8976d4f9d272f15f21afd04330ee294f3fe21ecd5ef7645beeeb3eda5ece3a64",
+      "redirectTarget": "Burns - Thermal",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/blister-foot-and-hand-adult-female.db.json",
+      "algorithmId": 1422,
+      "title": "Blister - Foot and Hand - Female (Adult)",
+      "protocolFamily": "Blister - Foot and Hand",
+      "sourceProtocolId": "oscg-blister-foot-hand",
+      "canonicalSourceProtocolId": "oscg-blister-foot-hand",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "5ccef6bf9d3610f9927d53e725cf5664960416e6b32cf7e6ffb8204e59bb0705",
+      "redirectTarget": "Burns - Thermal",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/blister-foot-and-hand-child-male.db.json",
+      "algorithmId": 1423,
+      "title": "Blister - Foot and Hand - Male (Child)",
+      "protocolFamily": "Blister - Foot and Hand",
+      "sourceProtocolId": "oscg-blister-foot-hand",
+      "canonicalSourceProtocolId": "oscg-blister-foot-hand",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "16448d2cadaeaf122d813dc4271ee4388fc27a7fd259a88fe71d170559cf34e2",
+      "redirectTarget": "Burns - Thermal",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/blister-foot-and-hand-child-female.db.json",
+      "algorithmId": 1424,
+      "title": "Blister - Foot and Hand - Female (Child)",
+      "protocolFamily": "Blister - Foot and Hand",
+      "sourceProtocolId": "oscg-blister-foot-hand",
+      "canonicalSourceProtocolId": "oscg-blister-foot-hand",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch19-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "148e61ebe1fc7811489d5e79d35c978445ce864f27a16465331f0229a95ad37b",
+      "redirectTarget": "Burns - Thermal",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    }
+  ],
+  "safetyBoundary": {
+    "usageStatus": "UAT_ONLY",
+    "productionEligible": false,
+    "requiresClinicalValidation": true,
+    "importOrDeploymentPerformed": false
+  }
+}

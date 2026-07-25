@@ -1,0 +1,185 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited NHS.UK pages under the Open Government Licence v3.0; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Local disposition mappings and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1084,
+    "Title": "Hearing Loss or Change - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 2,
+    "Definition": [
+      "Hearing loss/change assessment decomposed from NHS.UK's published when-to-get-help guidance.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [
+        "Hearing loss may be gradual or sudden, temporary or permanent, and can have treatable causes such as infection or earwax.",
+        "Sudden hearing loss or deterioration over days or weeks requires urgent assessment.",
+        "In children, hearing loss can affect speech development and school progress; caregiver observations are clinically important."
+      ],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "PENDING: Qatar adult, pediatric, obstetric, emergency, ENT, safeguarding, and nursing governance review"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 and do not drive when hearing change follows major head trauma or accompanies stroke signs, severe vertigo with inability to stand, seizure, reduced consciousness, severe headache/neck stiffness, or fluid/blood from the ear after injury. Keep the person still; do not insert drops, tools, or packing into the ear and do not remove an embedded object. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "RESEARCH_REQUIRED - verify source review date during governance",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Crown copyright (NHS.UK content), reused under the Open Government Licence v3.0. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1084001,
+      "AlgorithmID": 1084,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is ear pain the main concern without new hearing loss or hearing change?",
+      "Information": "Primary ear pain without hearing change belongs in the earache pathway.",
+      "GotoGuideline": "Earache",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1084002,
+      "AlgorithmID": 1084,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Does this sound like a life-threatening emergency to the triager (e.g. associated with a head injury or stroke symptoms)?",
+      "Information": "Universal emergency rule-out added ahead of the hearing loss guidance itself - hearing loss is rarely an emergency on its own, but must not mask trauma or a neurological event.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        108401
+      ]
+    },
+    {
+      "QuestionID": 1084003,
+      "AlgorithmID": 1084,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Did the hearing loss come on suddenly in one or both ears, has it worsened over just the last few days or weeks, or does it come with earache or discharge?",
+      "Information": "NHS.UK guidance recommends an urgent GP appointment or 111 call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        108402
+      ]
+    },
+    {
+      "QuestionID": 1084004,
+      "AlgorithmID": 1084,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Has the hearing been getting gradually worse over time, or did it not improve after treatment for an ear infection or earwax?",
+      "Information": "NHS.UK guidance recommends a routine GP visit for gradual hearing changes or hearing that hasn't improved after prior treatment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        108403
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 108401,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency hearing-loss response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and do not drive when hearing change follows major head trauma or accompanies stroke signs, severe vertigo with inability to stand, seizure, reduced consciousness, severe headache/neck stiffness, or fluid/blood from the ear after injury. Keep the person still; do not insert drops, tools, or packing into the ear and do not remove an embedded object. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: neurological change or reduced consciousness; severe vertigo or inability to stand; blood or clear fluid after head injury."
+      ]
+    },
+    {
+      "AdviceID": 108402,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent hearing review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange an urgent GP appointment or 111 assessment - sudden hearing changes may need quick treatment.",
+        "Call Back If: hearing worsens further; dizziness develops."
+      ]
+    },
+    {
+      "AdviceID": 108403,
+      "AlgorithmOrder": 3,
+      "Title": "Routine hearing follow-up",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Book a routine GP appointment; a free hearing test may also be available at some pharmacies and opticians.",
+        "Call Back If: sudden worsening; new ear pain or discharge."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Hearing loss\", https://www.nhs.uk/conditions/hearing-loss/ (page last reviewed 30 May 2025)"
+  ],
+  "searchwords": [
+    "hearing loss",
+    "cant hear well",
+    "sudden deafness",
+    "muffled hearing"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, are they pregnant, when did the hearing change start, was it sudden or gradual and one- or two-sided, and was there head injury, severe noise, foreign body, medicine exposure, neurological symptom, or safeguarding concern?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Hearing Loss or Change"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "One ear or both?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Hearing Loss or Change"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Any ear pain, discharge, or dizziness?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Hearing Loss or Change"
+    }
+  ]
+}

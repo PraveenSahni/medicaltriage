@@ -1,0 +1,193 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1394,
+    "Title": "Hives - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 3,
+    "Definition": [
+      "UAT-only assessment of suspected hives (urticaria), with an emergency safety screen for anaphylaxis; not approved for real-patient or production use.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "Pending qualified Qatar adult, pediatric, allergy, and emergency clinical review"
+    },
+    "FirstAid": [
+      "Call Qatar 999 for an ambulance immediately and follow the Anaphylaxis emergency pathway. If the patient has their prescribed adrenaline auto-injector, help them use it promptly according to the device instructions without delaying 999. Keep the patient lying flat with legs raised if tolerated; if breathing is difficult, allow sitting with legs extended. Do not let the patient stand or walk. If symptoms persist after 5 minutes and a second prescribed device is available, use it. Antihistamines do not treat the airway, breathing, or circulation features of anaphylaxis and must not delay adrenaline or 999. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2026-07-25",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1394001,
+      "AlgorithmID": 1394,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Are there breathing problems, throat tightness, collapse, or swelling of the lips, mouth, tongue, or throat?",
+      "Information": "Hives with airway, breathing, or circulation features belong in the Anaphylaxis pathway.",
+      "GotoGuideline": "Anaphylaxis",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1394002,
+      "AlgorithmID": 1394,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there sudden swelling of the lips, mouth, tongue or throat; tight throat, hoarse voice or difficulty swallowing; fast, noisy or difficult breathing or wheeze; blue, grey or very pale colour; cold or clammy skin; severe dizziness, confusion, collapse or reduced responsiveness; or unusual floppiness in an infant or child? Treat these features as suspected anaphylaxis even if the hives are mild or absent.",
+      "Information": "The corrected Anaphylaxis pathway and 2025 Resuscitation Council UK guidance recognize airway, breathing or circulation compromise as anaphylaxis with or without skin changes. HMC directs severe allergic reactions in Qatar to 999.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        139401
+      ]
+    },
+    {
+      "QuestionID": 1394003,
+      "AlgorithmID": 1394,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Only after anaphylaxis and other emergency rash features are excluded, have hives failed to improve after 2 days, spread or recurred, or occurred with fever, feeling unwell, caregiver concern about a child, or swelling beneath the skin?",
+      "Information": "NHS.UK guidance recommends urgent clinical review for these features; the local Qatar urgent-care pathway is used here.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        139402
+      ]
+    },
+    {
+      "QuestionID": 1394004,
+      "AlgorithmID": 1394,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Are these typical itchy, raised hives in a patient who is otherwise well, with all emergency and urgent features excluded and no concern about a young child?",
+      "Information": "NHS.UK guidance describes hives as typically resolving within days with self-treatment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        139403
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 139401,
+      "AlgorithmOrder": 1,
+      "Title": "Suspected anaphylaxis — call Qatar 999",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 for an ambulance immediately and follow the Anaphylaxis emergency pathway. If the patient has their prescribed adrenaline auto-injector, help them use it promptly according to the device instructions without delaying 999. Keep the patient lying flat with legs raised if tolerated; if breathing is difficult, allow sitting with legs extended. Do not let the patient stand or walk. If symptoms persist after 5 minutes and a second prescribed device is available, use it. Antihistamines do not treat the airway, breathing, or circulation features of anaphylaxis and must not delay adrenaline or 999. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: symptoms persist after the first auto-injector; breathing worsens; collapse or reduced responsiveness."
+      ]
+    },
+    {
+      "AdviceID": 139402,
+      "AlgorithmOrder": 2,
+      "Title": "Same-day hives assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange same-day clinical assessment through the Qatar urgent-care destination approved for this UAT environment. Keep the patient observed and escalate immediately to Qatar 999 if any airway, breathing, circulation, or reduced-responsiveness feature develops.",
+        "Call Back If: swelling of lips, mouth, tongue, or throat; breathing or swallowing difficulty; dizziness, collapse, or unusual floppiness."
+      ]
+    },
+    {
+      "AdviceID": 139403,
+      "AlgorithmOrder": 3,
+      "Title": "Isolated hives after emergency screening",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Avoid a suspected trigger when this can be done safely. A pharmacist or clinician should confirm whether an antihistamine is suitable and select the product, formulation, and dose using the patient's age, weight, pregnancy or breastfeeding status, other medicines, and health conditions. Do not give an adult product or dose to a child. Continue observation and use Qatar 999 immediately if anaphylaxis features develop.",
+        "Call Back If: swelling of the lips, mouth, tongue, or throat; breathing or swallowing difficulty; hives do not improve after 2 days or recur."
+      ]
+    }
+  ],
+  "references": [
+    "Hamad Medical Corporation, \"Life-Threatening Medical Emergency\", https://hamad.qa/EN/Emergency/Pages/Life-ThreateningMedicalEmergency.aspx (accessed 25 July 2026)",
+    "Resuscitation Council UK, \"First Aid Guidelines — Anaphylaxis\", 2025, https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/first-aid-guidelines",
+    "NHS.UK, \"Hives\", https://www.nhs.uk/conditions/hives/",
+    "NHS.UK, \"Antihistamines\", https://www.nhs.uk/medicines/antihistamines/"
+  ],
+  "searchwords": [
+    "hives",
+    "nettle rash",
+    "itchy welts on skin",
+    "raised itchy bumps all over",
+    "itchy welts all over my body",
+    "looks like hives"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the patient's exact age, when did the rash begin, and what does it look and feel like?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 18 source.",
+      "Source": "Hives"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Is there swelling of the lips, mouth, tongue or throat; difficult or noisy breathing; tight throat; difficulty swallowing; wheeze; dizziness; collapse; confusion; unusual drowsiness or floppiness?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 18 source.",
+      "Source": "Hives"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "Was there a possible trigger such as food, medicine, insect sting, heat, cold, pressure, or infection, and does the patient have a prescribed allergy action plan or adrenaline auto-injector?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 18 source.",
+      "Source": "Hives"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "Is there high fever or marked illness, painful or blistering skin, purple spots that do not fade with pressure, eye or mouth involvement, or swelling beneath the skin?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 18 source.",
+      "Source": "Hives"
+    }
+  ]
+}

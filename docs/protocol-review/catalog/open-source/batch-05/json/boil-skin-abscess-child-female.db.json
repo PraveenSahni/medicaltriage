@@ -1,0 +1,221 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Demographic variants contain only source-supported differences; identical thresholds are explicitly documented rather than fabricated. Local destination mappings and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1140,
+    "Title": "Boil (Skin Abscess) - Female (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Female",
+    "Age": "Child (0-17 years)",
+    "GenderAtBirth": "Female",
+    "Acuity": 2,
+    "Definition": [
+      "Boil/skin abscess assessment decomposed from NHS.UK's published when-to-get-help guidance.",
+      "Child patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar 999 now. Do not squeeze, lance, cut, or apply caustic substances. Keep the patient still, do not allow self-driving, and follow the call-handler's instructions. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-06-20",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1140001,
+      "AlgorithmID": 1140,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Is a widespread or flat localized rash the main concern, without a painful pus-filled lump or abscess?",
+      "Information": "The localized-rash family is not generated. Arrange in-person clinical assessment through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1140002,
+      "AlgorithmID": 1140,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there confusion, collapse, abnormal breathing, pale/blue/mottled skin, rapidly spreading redness or swelling, severe pain out of proportion, black skin, or swelling around the eye, nose, jaw, or neck affecting vision, swallowing, or breathing?",
+      "Information": "Sepsis, necrotising infection, orbital spread, and airway involvement require immediate emergency assessment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        114001
+      ]
+    },
+    {
+      "QuestionID": 1140003,
+      "AlgorithmID": 1140,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Without an emergency feature, is the boil on the face, near the eye, genitals, breast, spine, hand, or over a joint; is redness spreading or fever present; or is the patient an infant, pregnant, diabetic, immunocompromised, or otherwise seriously unwell?",
+      "Information": "NHS.UK boils guidance lists these as reasons for an urgent GP appointment or 111 call.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        114002
+      ]
+    },
+    {
+      "QuestionID": 1140004,
+      "AlgorithmID": 1140,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Has the boil lasted 2 weeks without improving, does the caller keep getting boils, or is there a cluster of boils (carbuncle)?",
+      "Information": "NHS.UK guidance recommends a routine GP visit for a persistent boil, recurring boils, or a carbuncle.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        114003
+      ]
+    },
+    {
+      "QuestionID": 1140005,
+      "AlgorithmID": 1140,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this a single, recent boil with none of the features above?",
+      "Information": "NHS.UK guidance provides self-care steps (warm compresses) for an uncomplicated boil.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        114004
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 114001,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency skin-infection precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 now. Do not squeeze, lance, cut, or apply caustic substances. Keep the patient still, do not allow self-driving, and follow the call-handler's instructions. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: confusion, collapse, breathing change, rapidly spreading swelling, black skin, or severe pain."
+      ]
+    },
+    {
+      "AdviceID": 114002,
+      "AlgorithmOrder": 2,
+      "Title": "Prompt in-person abscess review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Use the Qatar governance-approved in-person service. Do not squeeze or pierce the lesion or use leftover antibiotics. Pregnancy, infant, diabetes, immune suppression, facial and genital lesions require clinician-led treatment.",
+        "Call Back If: spreading redness, fever, severe pain, or swelling near eye or airway."
+      ]
+    },
+    {
+      "AdviceID": 114003,
+      "AlgorithmOrder": 2,
+      "Title": "Routine boil follow-up",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Book a routine GP appointment for a persistent, recurring, or clustered boil.",
+        "Call Back If: boil worsens; fever develops."
+      ]
+    },
+    {
+      "AdviceID": 114004,
+      "AlgorithmOrder": 3,
+      "Title": "Care for a localized boil pending Qatar review",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Use a clean warm compress for short periods and keep the area clean and covered if it drains. Do not pick, squeeze, pierce, or apply caustic products, and do not share towels. Medicine choice and dose require age, weight, pregnancy or breastfeeding status, allergies, kidney or liver disease, ulcer or bleeding risk, other medicines, and Qatar formulary approval. This UAT branch remains non-telemedicine pending clinical governance.",
+        "Call Back If: boil lasts more than 2 weeks; signs of spreading infection or fever; pain or swelling rapidly worsens."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Boils\", https://www.nhs.uk/conditions/boils/ (page last reviewed 20 June 2023)"
+  ],
+  "searchwords": [
+    "boil",
+    "skin abscess",
+    "carbuncle",
+    "painful lump under skin"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "LOCATION",
+      "Question": "Where is the boil?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 5 source protocol.",
+      "Source": "Boil (Skin Abscess)"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "How long has it been there?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 5 source protocol.",
+      "Source": "Boil (Skin Abscess)"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Does the caller have diabetes or a weakened immune system?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 5 source protocol.",
+      "Source": "Boil (Skin Abscess)"
+    },
+    {
+      "Order": 4,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What change has a safe parent or caregiver observed in alertness, breathing, eating or drinking, sleep, play, and normal activity?",
+      "Rationale": "Child assessment includes safe-caregiver observation; it does not create a different clinical threshold.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

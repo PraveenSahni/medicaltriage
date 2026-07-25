@@ -1,0 +1,190 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1224,
+    "Title": "Nausea - Female (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Female",
+    "Age": "Child (0-17 years)",
+    "GenderAtBirth": "Female",
+    "Acuity": 2,
+    "Definition": [
+      "Nausea assessment decomposed from NHS.UK's published diarrhoea and vomiting guidance.",
+      "Child patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 and do not drive for chest pain, severe abdominal/head pain, abnormal breathing, confusion, fainting, seizure, stroke signs, blood/coffee-ground or green vomit, major bleeding, poisoning, pregnancy emergency features, or severe dehydration. Do not give food, drink, or oral medicine if drowsy, repeatedly vomiting, or unsafe to swallow. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-12-21",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1224001,
+      "AlgorithmID": 1224,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Are frequent loose or watery stools the main concern rather than nausea itself?",
+      "Information": "A presentation dominated by loose or watery stools belongs in the Diarrhea pathway.",
+      "GotoGuideline": "Diarrhea",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1224002,
+      "AlgorithmID": 1224,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there vomit that looks like blood or ground coffee, green vomit, a stiff neck with light sensitivity, a sudden severe headache or tummy ache, blue/grey/pale skin, severe breathing difficulty, or confusion?",
+      "Information": "NHS.UK diarrhoea and vomiting guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        122401
+      ]
+    },
+    {
+      "QuestionID": 1224003,
+      "AlgorithmID": 1224,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Is the person unable to keep fluids down, or has vomiting lasted more than 2 days?",
+      "Information": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) for these features.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        122402
+      ]
+    },
+    {
+      "QuestionID": 1224004,
+      "AlgorithmID": 1224,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this mild nausea with none of the features above?",
+      "Information": "NHS.UK guidance: rest and small sips of fluid usually help mild nausea, which typically settles within a day or two.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        122403
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 122401,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency nausea-associated response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and do not drive for chest pain, severe abdominal/head pain, abnormal breathing, confusion, fainting, seizure, stroke signs, blood/coffee-ground or green vomit, major bleeding, poisoning, pregnancy emergency features, or severe dehydration. Do not give food, drink, or oral medicine if drowsy, repeatedly vomiting, or unsafe to swallow. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: confusion, collapse, seizure, or breathing difficulty; blood/green vomit or severe pain; very little urine, marked weakness, or inability to keep fluids down."
+      ]
+    },
+    {
+      "AdviceID": 122402,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent nausea review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange same-day medical review, especially if fluids cannot be kept down.",
+        "Call Back If: signs of dehydration worsen."
+      ]
+    },
+    {
+      "AdviceID": 122403,
+      "AlgorithmOrder": 3,
+      "Title": "Home care for mild nausea",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Rest, sip fluids slowly, avoid fatty or spicy food, and eat small, plain meals when able.",
+        "Call Back If: vomiting develops; unable to keep fluids down."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Diarrhoea and vomiting\", https://www.nhs.uk/conditions/diarrhoea/ (page last reviewed 21 December 2023)"
+  ],
+  "searchwords": [
+    "nausea",
+    "feel sick",
+    "feeling nauseous",
+    "queasy",
+    "really nauseous",
+    "nauseous since this morning"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, are they pregnant/recently postpartum, and when did nausea start? Ask about vomiting, pain, chest/neurological symptoms, hydration/urine, diabetes/ketones, medicines/substances, poisoning, infection, and child safeguarding.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 09 source.",
+      "Source": "Nausea"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Any vomiting?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 09 source.",
+      "Source": "Nausea"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Able to keep fluids down?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 09 source.",
+      "Source": "Nausea"
+    },
+    {
+      "Order": 4,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+      "Rationale": "Child assessment adds safe-caregiver observations without inventing a different clinical threshold.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

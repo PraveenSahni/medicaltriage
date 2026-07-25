@@ -1,0 +1,139 @@
+{
+  "_source": "UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation content generated deterministically from src/data/openSourceGuidelines/batch01.ts and cited public sources. It is not licensed STCC content. All disposition and redirect branches are non-telemedicine pending Qatar clinical and nursing governance approval. Generation does not import or deploy records. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1022,
+    "Title": "Carbon Monoxide Exposure - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 4,
+    "Definition": [
+      "Suspected carbon monoxide exposure assessment decomposed from NHS.UK's published emergency guidance.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "If safe, move everyone and pets into fresh air without re-entering or delaying to find the source. Call Qatar emergency services on 999 from outside and do not drive because deterioration or collapse can be sudden. Do not use flames, switches, or appliances at the suspected site. Tell 999 about all exposed people, including asymptomatic children, pregnant people, older adults, and anyone with heart/lung disease. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2025-12-16",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1022001,
+      "AlgorithmID": 1022,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Was there fire or smoke exposure with breathing difficulty, airway or facial burns, soot around the mouth or nose, hoarseness, severe coughing, confusion, weakness, chest or muscle pain, collapse, or loss of consciousness?",
+      "Information": "NHS.UK carbon monoxide poisoning guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for suspected exposure. Do not drive to hospital - call for an ambulance instead.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        102201
+      ]
+    },
+    {
+      "QuestionID": 1022002,
+      "AlgorithmID": 1022,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Does the caller suspect carbon monoxide, fire, or smoke exposure but have none of the emergency features above?",
+      "Information": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) for suspected carbon monoxide exposure when severe symptoms are not present.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        102202
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 102201,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency carbon-monoxide response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "If safe, move everyone and pets into fresh air without re-entering or delaying to find the source. Call Qatar emergency services on 999 from outside and do not drive because deterioration or collapse can be sudden. Do not use flames, switches, or appliances at the suspected site. Tell 999 about all exposed people, including asymptomatic children, pregnant people, older adults, and anyone with heart/lung disease. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: headache, dizziness, vomiting, chest pain, weakness, confusion, or breathlessness; pregnancy or child exposure; loss of consciousness or seizure."
+      ]
+    },
+    {
+      "AdviceID": 102202,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent carbon monoxide or smoke-exposure review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Leave the exposure area, go into fresh air, and do not re-enter a building or restart an appliance until emergency or safety authorities say it is safe. Use the Qatar governance-approved in-person assessment route without delay (GOVERNANCE_REQUIRED). Escalate to Qatar 999 for breathing difficulty, hoarseness, soot, airway/facial burns, severe coughing, confusion, weakness, chest pain, collapse, or worsening symptoms.",
+        "Call Back If: breathing difficulty, hoarseness, soot, airway or facial burns, or severe coughing; confusion, weakness, chest pain, collapse, or worsening symptoms."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Carbon monoxide poisoning\", https://www.nhs.uk/conditions/carbon-monoxide-poisoning/ (page last reviewed 16 December 2025)"
+  ],
+  "searchwords": [
+    "carbon monoxide",
+    "co poisoning",
+    "gas leak",
+    "smell gas",
+    "gas smell",
+    "carbon monoxide detector"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "Is everyone outside in fresh air now? Record exact age and sex of every exposed person, pregnancy, child/vulnerable-person status, symptoms, exposure duration/source, and whether others or pets are affected.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Carbon Monoxide Exposure"
+    },
+    {
+      "Order": 2,
+      "Category": "OPEN_TEXT",
+      "Question": "What appliance or source is suspected (boiler, heater, generator, fire)?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Carbon Monoxide Exposure"
+    },
+    {
+      "Order": 3,
+      "Category": "DURATION",
+      "Question": "How long has the caller been exposed?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Carbon Monoxide Exposure"
+    }
+  ]
+}

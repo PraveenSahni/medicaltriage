@@ -1,0 +1,214 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited public sources; it is not licensed STCC content. Question.DispositionLevel=null is the schema marker for a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1153,
+    "Title": "Earache - Male (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 2,
+    "Definition": [
+      "Qatar-localized UAT-only adult and pediatric ear-pain pathway screening for mastoid/invasive infection, sudden hearing loss, foreign body, trauma, high-risk hosts and safeguarding; not approved for production.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar 999 and do not drive. Keep the patient observed, do not insert anything or add drops to the ear, and follow dispatcher instructions. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2025-10-27",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1153001,
+      "AlgorithmID": 1153,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is an object, food, insect, battery, or other foreign material known or suspected to be inside the ear?",
+      "Information": "A suspected object in the ear requires the Ear - Foreign Body pathway rather than general earache assessment.",
+      "GotoGuideline": "Ear - Foreign Body",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1153002,
+      "AlgorithmID": 1153,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is the patient confused, difficult to wake or rapidly deteriorating, or is there severe headache/neck stiffness, facial weakness, swelling/redness behind the ear with the ear pushed outward, or a major head injury with clear/bloody ear discharge?",
+      "Information": "Sepsis, intracranial spread, facial nerve involvement, mastoid complications and skull-base injury require emergency assessment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        115301
+      ]
+    },
+    {
+      "QuestionID": 1153003,
+      "AlgorithmID": 1153,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Has the earache lasted more than 2-3 days, does the person feel generally unwell or have a high temperature, is there swelling around the ear, fluid coming from the ear, hearing loss or change, something stuck in the ear, or is this a child under 2 with earache in both ears?",
+      "Information": "NHS.UK earache guidance lists these as reasons for an urgent GP appointment or the Qatar urgent clinical review pathway call.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        115302
+      ]
+    },
+    {
+      "QuestionID": 1153004,
+      "AlgorithmID": 1153,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Does the caller keep getting earaches recurrently?",
+      "Information": "NHS.UK guidance recommends a routine GP visit for recurring earaches.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        115303
+      ]
+    },
+    {
+      "QuestionID": 1153005,
+      "AlgorithmID": 1153,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "After higher-risk features are excluded, is any new ear pain still present without an in-person diagnosis?",
+      "Information": "This UAT pathway requires direct ear examination before assuming a benign cause or advising medication.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        115304
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 115301,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency ear-pain precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 and do not drive. Keep the patient observed, do not insert anything or add drops to the ear, and follow dispatcher instructions. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: reduced responsiveness or seizure; worsening swelling, headache, neck stiffness or facial weakness."
+      ]
+    },
+    {
+      "AdviceID": 115302,
+      "AlgorithmOrder": 1,
+      "Title": "Urgent earache review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange same-day or next-day medical review for these symptoms.",
+        "Call Back If: fever worsens; hearing loss increases."
+      ]
+    },
+    {
+      "AdviceID": 115303,
+      "AlgorithmOrder": 2,
+      "Title": "Routine earache follow-up",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Book a routine GP appointment for recurring earaches.",
+        "Call Back If: earaches become more frequent."
+      ]
+    },
+    {
+      "AdviceID": 115304,
+      "AlgorithmOrder": 3,
+      "Title": "In-person assessment for new ear pain",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Keep the ear dry, do not insert objects, irrigate or use unverified drops, and arrange in-person assessment through the Qatar pathway approved for UAT. Medication requires age, weight, pregnancy, allergy, kidney/liver and interaction checks.",
+        "Call Back If: pain worsens; fever, swelling, discharge, dizziness or hearing change develops."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Earache\", https://www.nhs.uk/conditions/earache/ (page last reviewed 27 October 2025)"
+  ],
+  "searchwords": [
+    "earache",
+    "ear pain",
+    "ear hurts",
+    "ear hurting",
+    "ear is sore",
+    "sore inside ear"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "DURATION",
+      "Question": "How long has the earache lasted?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 6 source.",
+      "Source": "Earache"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "One ear or both?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 6 source.",
+      "Source": "Earache"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Any fever, discharge, or hearing changes?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 6 source.",
+      "Source": "Earache"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the exact age; is the patient pregnant; and are there swelling behind the ear, severe dizziness, facial weakness, head injury, foreign body, diabetes, immune suppression or safeguarding concerns?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 6 source.",
+      "Source": "Earache"
+    }
+  ]
+}

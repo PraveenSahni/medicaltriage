@@ -1,0 +1,156 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1433,
+    "Title": "Postpartum - Leg Pain - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 5,
+    "Definition": [
+      "Postpartum leg pain assessment, generalized from NHS.UK's C-section recovery blood-clot warning sign to all postpartum deliveries, given the same elevated clot risk applies.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-01-04",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1433001,
+      "AlgorithmID": 1433,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is new weakness, numbness, facial change, speech difficulty, or loss of coordination the primary concern?",
+      "Information": "A continuing focal neurologic deficit belongs in the Neurologic Deficit pathway.",
+      "GotoGuideline": "Neurologic Deficit",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1433002,
+      "AlgorithmID": 1433,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there swelling or pain in one leg (especially the calf), along with shortness of breath or chest pain?",
+      "Information": "NHS.UK C-section recovery guidance lists leg swelling/pain as a blood clot warning sign - the postpartum period carries an elevated clotting risk regardless of delivery method, and breathing/chest symptoms suggest the clot may have traveled to the lungs.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        143301
+      ]
+    },
+    {
+      "QuestionID": 1433003,
+      "AlgorithmID": 1433,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Is there leg pain or swelling without breathing or chest symptoms?",
+      "Information": "Any new leg swelling or pain in the postpartum period should be checked promptly given the elevated blood clot risk.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        143302
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 143301,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency postpartum blood clot precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening breathing difficulty; chest pain develops."
+      ]
+    },
+    {
+      "AdviceID": 143302,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent postpartum leg pain review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call 999 if chest pain, breathing difficulty, fainting, or coughing blood develops.",
+        "Call Back If: breathing difficulty or chest pain develops; swelling worsens."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Caesarean section - Recovery\" (blood clot warning sign), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023) - generalized to all postpartum deliveries"
+  ],
+  "searchwords": [
+    "leg pain after having the baby",
+    "leg hurts since giving birth",
+    "postpartum leg pain",
+    "calf pain after delivery",
+    "leg has really been hurting since giving birth"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "DURATION",
+      "Question": "How many days/weeks since delivery?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 20 source.",
+      "Source": "Postpartum - Leg Pain"
+    },
+    {
+      "Order": 2,
+      "Category": "LOCATION",
+      "Question": "Which leg, and where exactly?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 20 source.",
+      "Source": "Postpartum - Leg Pain"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Any shortness of breath or chest pain?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 20 source.",
+      "Source": "Postpartum - Leg Pain"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 20 source.",
+      "Source": "Postpartum - Leg Pain"
+    }
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1442,
+    "Title": "Postpartum - Breast Pain and Engorgement - Female (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Female",
+    "Age": "Child (12-17 years)",
+    "GenderAtBirth": "Female",
+    "Acuity": 2,
+    "Definition": [
+      "Breastfeeding-related breast pain/engorgement/mastitis assessment decomposed from NHS.UK's published mastitis guidance.",
+      "Child patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 now for confusion, reduced responsiveness, collapse, severe breathing difficulty, seizure or rapid critical deterioration. Tell the call handler that the patient gave birth recently and has breast symptoms. Follow emergency instructions and do not self-drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-03-17",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1442001,
+      "AlgorithmID": 1442,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is this a focal pus-filled skin lump or abscess rather than postpartum breast engorgement or mastitis symptoms?",
+      "Information": "A focal skin abscess belongs in the Boil (Skin Abscess) pathway.",
+      "GotoGuideline": "Boil (Skin Abscess)",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1442002,
+      "AlgorithmID": 1442,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is the postpartum patient confused, difficult to wake, fainting or collapsing, severely short of breath, blue or grey, having a seizure, unable to keep fluids down and rapidly worsening, or otherwise appearing critically unwell with the breast symptoms?",
+      "Information": "Altered responsiveness, collapse, severe breathing difficulty, seizure or rapid systemic deterioration can indicate sepsis or another life-threatening postpartum complication and require emergency assessment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        144201
+      ]
+    },
+    {
+      "QuestionID": 1442003,
+      "AlgorithmID": 1442,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "After emergency features are excluded, is the measured temperature 38 degrees Celsius or higher, is there shaking chills or feeling systemically unwell, is breast redness or swelling spreading rapidly, have symptoms not improved 12-24 hours after home treatment or 48 hours after starting antibiotics, or is this mastitis in someone not breastfeeding?",
+      "Information": "Postpartum fever and systemic illness require prompt clinical assessment, and NHS.UK mastitis guidance recommends clinical review when symptoms fail to improve or occur outside breastfeeding.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        144202
+      ]
+    },
+    {
+      "QuestionID": 1442004,
+      "AlgorithmID": 1442,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this early engorgement or mild mastitis with no fever, systemic illness, rapid spreading redness, or other features above?",
+      "Information": "NHS.UK guidance describes continued breastfeeding/expressing, cold compresses, and pain relief as effective first-line self-care.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        144203
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 144201,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency postpartum systemic illness response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 now for confusion, reduced responsiveness, collapse, severe breathing difficulty, seizure or rapid critical deterioration. Tell the call handler that the patient gave birth recently and has breast symptoms. Follow emergency instructions and do not self-drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: responsiveness or breathing worsens; collapse or seizure; rapid deterioration."
+      ]
+    },
+    {
+      "AdviceID": 144202,
+      "AlgorithmOrder": 1,
+      "Title": "Urgent mastitis review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange prompt clinical review; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Antibiotics or further treatment may be needed.",
+        "Call Back If: fever worsens; redness spreads."
+      ]
+    },
+    {
+      "AdviceID": 144203,
+      "AlgorithmOrder": 2,
+      "Title": "Home care for breast engorgement or mild mastitis",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Continue breastfeeding responsively if able, or hand express only enough for comfort if feeding is too painful. Check positioning and attachment, use a cold compress, rest, and avoid deep breast massage, tight clothing, over-expressing, and stopping breastfeeding abruptly. A clinician or pharmacist should confirm any pain medicine is suitable for this patient.",
+        "Call Back If: not improving after 12-24 hours; fever or spreading redness develops."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Mastitis\", https://www.nhs.uk/conditions/mastitis/ (page last reviewed 17 March 2023)",
+    "CDC HEAR HER, \"Urgent Maternal Warning Signs and Symptoms\", https://www.cdc.gov/hearher/maternal-warning-signs/index.html",
+    "NHS.UK, \"Sepsis\", https://www.nhs.uk/conditions/sepsis/"
+  ],
+  "searchwords": [
+    "breast pain breastfeeding",
+    "engorged breasts",
+    "think i have mastitis",
+    "sore red breast breastfeeding",
+    "think i might have mastitis",
+    "breasts are so engorged and painful"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "DURATION",
+      "Question": "How long has the breast pain/redness lasted?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 20 source.",
+      "Source": "Postpartum - Breast Pain and Engorgement"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Currently breastfeeding?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 20 source.",
+      "Source": "Postpartum - Breast Pain and Engorgement"
+    },
+    {
+      "Order": 3,
+      "Category": "TEMPERATURE",
+      "Question": "What is the temperature, if measured?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 20 source.",
+      "Source": "Postpartum - Breast Pain and Engorgement"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 20 source.",
+      "Source": "Postpartum - Breast Pain and Engorgement"
+    },
+    {
+      "Order": 5,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+      "Rationale": "Child assessment adds safe-caregiver observations without inventing a different clinical threshold.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

@@ -1,0 +1,486 @@
+{
+  "batch": "12",
+  "count": 60,
+  "gaps": [
+    {
+      "gapId": "B12-1265-algorithm-LastRevised",
+      "algorithmId": 1265,
+      "protocol": "Skin Foreign Body - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1265-clinicalReview",
+      "algorithmId": 1265,
+      "protocol": "Skin Foreign Body - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1265-localization",
+      "algorithmId": 1265,
+      "protocol": "Skin Foreign Body - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1266-algorithm-LastRevised",
+      "algorithmId": 1266,
+      "protocol": "Skin Foreign Body - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1266-clinicalReview",
+      "algorithmId": 1266,
+      "protocol": "Skin Foreign Body - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1266-localization",
+      "algorithmId": 1266,
+      "protocol": "Skin Foreign Body - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1267-algorithm-LastRevised",
+      "algorithmId": 1267,
+      "protocol": "Skin Foreign Body - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1267-clinicalReview",
+      "algorithmId": 1267,
+      "protocol": "Skin Foreign Body - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1267-localization",
+      "algorithmId": 1267,
+      "protocol": "Skin Foreign Body - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1268-algorithm-LastRevised",
+      "algorithmId": 1268,
+      "protocol": "Skin Foreign Body - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1268-clinicalReview",
+      "algorithmId": 1268,
+      "protocol": "Skin Foreign Body - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1268-localization",
+      "algorithmId": 1268,
+      "protocol": "Skin Foreign Body - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1269-algorithm-LastRevised",
+      "algorithmId": 1269,
+      "protocol": "Stools - Unusual Color - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1269-clinicalReview",
+      "algorithmId": 1269,
+      "protocol": "Stools - Unusual Color - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1269-localization",
+      "algorithmId": 1269,
+      "protocol": "Stools - Unusual Color - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1270-algorithm-LastRevised",
+      "algorithmId": 1270,
+      "protocol": "Stools - Unusual Color - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1270-clinicalReview",
+      "algorithmId": 1270,
+      "protocol": "Stools - Unusual Color - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1270-localization",
+      "algorithmId": 1270,
+      "protocol": "Stools - Unusual Color - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1271-algorithm-LastRevised",
+      "algorithmId": 1271,
+      "protocol": "Stools - Unusual Color - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1271-clinicalReview",
+      "algorithmId": 1271,
+      "protocol": "Stools - Unusual Color - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1271-localization",
+      "algorithmId": 1271,
+      "protocol": "Stools - Unusual Color - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1272-algorithm-LastRevised",
+      "algorithmId": 1272,
+      "protocol": "Stools - Unusual Color - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1272-clinicalReview",
+      "algorithmId": 1272,
+      "protocol": "Stools - Unusual Color - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1272-localization",
+      "algorithmId": 1272,
+      "protocol": "Stools - Unusual Color - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1273-algorithm-LastRevised",
+      "algorithmId": 1273,
+      "protocol": "Swallowed Foreign Body - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1273-clinicalReview",
+      "algorithmId": 1273,
+      "protocol": "Swallowed Foreign Body - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1273-localization",
+      "algorithmId": 1273,
+      "protocol": "Swallowed Foreign Body - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1274-algorithm-LastRevised",
+      "algorithmId": 1274,
+      "protocol": "Swallowed Foreign Body - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1274-clinicalReview",
+      "algorithmId": 1274,
+      "protocol": "Swallowed Foreign Body - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1274-localization",
+      "algorithmId": 1274,
+      "protocol": "Swallowed Foreign Body - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1275-algorithm-LastRevised",
+      "algorithmId": 1275,
+      "protocol": "Swallowed Foreign Body - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1275-clinicalReview",
+      "algorithmId": 1275,
+      "protocol": "Swallowed Foreign Body - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1275-localization",
+      "algorithmId": 1275,
+      "protocol": "Swallowed Foreign Body - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1276-algorithm-LastRevised",
+      "algorithmId": 1276,
+      "protocol": "Swallowed Foreign Body - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1276-clinicalReview",
+      "algorithmId": 1276,
+      "protocol": "Swallowed Foreign Body - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1276-localization",
+      "algorithmId": 1276,
+      "protocol": "Swallowed Foreign Body - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1277-algorithm-LastRevised",
+      "algorithmId": 1277,
+      "protocol": "Sores - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1277-clinicalReview",
+      "algorithmId": 1277,
+      "protocol": "Sores - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1277-localization",
+      "algorithmId": 1277,
+      "protocol": "Sores - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1278-algorithm-LastRevised",
+      "algorithmId": 1278,
+      "protocol": "Sores - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1278-clinicalReview",
+      "algorithmId": 1278,
+      "protocol": "Sores - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1278-localization",
+      "algorithmId": 1278,
+      "protocol": "Sores - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1279-algorithm-LastRevised",
+      "algorithmId": 1279,
+      "protocol": "Sores - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1279-clinicalReview",
+      "algorithmId": 1279,
+      "protocol": "Sores - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1279-localization",
+      "algorithmId": 1279,
+      "protocol": "Sores - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1280-algorithm-LastRevised",
+      "algorithmId": 1280,
+      "protocol": "Sores - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1280-clinicalReview",
+      "algorithmId": 1280,
+      "protocol": "Sores - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1280-localization",
+      "algorithmId": 1280,
+      "protocol": "Sores - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1281-algorithm-LastRevised",
+      "algorithmId": 1281,
+      "protocol": "Skin Injury - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1281-clinicalReview",
+      "algorithmId": 1281,
+      "protocol": "Skin Injury - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1281-localization",
+      "algorithmId": 1281,
+      "protocol": "Skin Injury - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1282-algorithm-LastRevised",
+      "algorithmId": 1282,
+      "protocol": "Skin Injury - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1282-clinicalReview",
+      "algorithmId": 1282,
+      "protocol": "Skin Injury - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1282-localization",
+      "algorithmId": 1282,
+      "protocol": "Skin Injury - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1283-algorithm-LastRevised",
+      "algorithmId": 1283,
+      "protocol": "Skin Injury - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1283-clinicalReview",
+      "algorithmId": 1283,
+      "protocol": "Skin Injury - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1283-localization",
+      "algorithmId": 1283,
+      "protocol": "Skin Injury - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1284-algorithm-LastRevised",
+      "algorithmId": 1284,
+      "protocol": "Skin Injury - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1284-clinicalReview",
+      "algorithmId": 1284,
+      "protocol": "Skin Injury - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B12-1284-localization",
+      "algorithmId": 1284,
+      "protocol": "Skin Injury - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    }
+  ]
+}

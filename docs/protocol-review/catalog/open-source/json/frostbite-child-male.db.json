@@ -1,0 +1,157 @@
+{
+  "_source": "UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation content generated deterministically from src/data/openSourceGuidelines/batch01.ts and cited public sources. It is not licensed STCC content. All disposition and redirect branches are non-telemedicine pending Qatar clinical and nursing governance approval. Generation does not import or deploy records. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1039,
+    "Title": "Frostbite - Male (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Male",
+    "Age": "Child (0-17 years)",
+    "GenderAtBirth": "Male",
+    "Acuity": 3,
+    "Definition": [
+      "Cold-exposure/frostbite assessment decomposed from NHS.UK's published when-to-get-help guidance.",
+      "Child patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 and do not drive for hard/frozen/numb/discoloured or blistered tissue, suspected hypothermia, confusion, drowsiness, slow/abnormal breathing, an unwell baby, or extensive injury. Move to shelter, remove wet clothing if practical, cover with dry layers, and handle gently. Do not rub, massage, walk on affected feet, use direct heat, or thaw tissue if refreezing is possible. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2025-06-09",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1039001,
+      "AlgorithmID": 1039,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is generalized cold exposure, shivering, confusion, drowsiness, or reduced consciousness the main concern?",
+      "Information": "Systemic cold illness requires the authored Cold Exposure (Hypothermia) pathway.",
+      "GotoGuideline": "Cold Exposure (Hypothermia)",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1039002,
+      "AlgorithmID": 1039,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is the skin hard and frozen, is there swelling and loss of feeling in the area, are there blisters filled with blood or milky fluid, or is the person shivering constantly with slurred speech, slow breathing, and confusion?",
+      "Information": "NHS.UK frostbite guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria, including hypothermia signs (constant shivering, slurred speech, slow breathing, confusion).",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        103901
+      ]
+    },
+    {
+      "QuestionID": 1039003,
+      "AlgorithmID": 1039,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this mild cold exposure with tingling or numbness only, already moved to a warm sheltered place, with none of the features above?",
+      "Information": "NHS.UK guidance describes safe rewarming at home for mild cold exposure without hard/frozen skin, blistering, or hypothermia signs.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        103902
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 103901,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency frostbite/hypothermia response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and do not drive for hard/frozen/numb/discoloured or blistered tissue, suspected hypothermia, confusion, drowsiness, slow/abnormal breathing, an unwell baby, or extensive injury. Move to shelter, remove wet clothing if practical, cover with dry layers, and handle gently. Do not rub, massage, walk on affected feet, use direct heat, or thaw tissue if refreezing is possible. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening confusion, drowsiness, or floppiness; slow or abnormal breathing; hard, numb, discoloured, or blistering tissue."
+      ]
+    },
+    {
+      "AdviceID": 103902,
+      "AlgorithmOrder": 2,
+      "Title": "Governed care for mild cold exposure without frostbite signs",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Move indoors, remove wet or restrictive clothing/jewellery, dry and wrap in loose warm layers, and protect the area from pressure. Do not rub, use direct heat, hot water, or alcohol. Active water rewarming, pain medicine, dressings, and oral fluids require confirmation that frostbite/hypothermia is absent plus age, pregnancy, comorbidity, swallowing safety, and Qatar pathway checks.",
+        "Call Back If: skin becomes hard, numb, pale, blue, grey, or blistered; confusion, slurred speech, drowsiness, floppiness, or abnormal breathing."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Frostbite\", https://www.nhs.uk/conditions/frostbite/ (page last reviewed 09 June 2025)"
+  ],
+  "searchwords": [
+    "frostbite",
+    "cold exposure",
+    "hypothermia",
+    "numb fingers",
+    "fingers are numb",
+    "freezing cold"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, are they pregnant, which parts are affected, how long/cold/wet was exposure, is refreezing possible, and are there hard/numb/discoloured/blistered areas or hypothermia signs? Include infant and safeguarding concerns.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Frostbite"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "How long was the caller exposed to the cold?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Frostbite"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Has the caller already moved somewhere warm and sheltered?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Frostbite"
+    },
+    {
+      "Order": 4,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+      "Rationale": "Child assessment adds safe-caregiver observations without inventing a different clinical threshold.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

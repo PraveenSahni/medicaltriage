@@ -1,0 +1,205 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1342,
+    "Title": "Eye Pain and Other Symptoms - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 3,
+    "Definition": [
+      "UAT-only adult and pediatric eye-pain pathway screening for sight-threatening disease, chemical exposure, trauma, acute glaucoma-pattern symptoms and contact-lens complications before urgent in-person ophthalmic assessment.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 and do not allow driving. For a chemical splash without suspected penetration, protect yourself, remove contact lenses only if easy, and immediately rinse with lots of clean room-temperature water for at least 20 minutes while help is arranged; do not neutralize the chemical and bring its container. For a penetrating/high-speed injury or suspected open globe, do not rinse, remove an object, rub, press, patch or apply drops/ointment; protect without pressure using a rigid shield or clean cup if available. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2025-08-28",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1342001,
+      "AlgorithmID": 1342,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is itching, watering, and allergy-type irritation the main concern without significant eye pain, light sensitivity, or vision change?",
+      "Information": "Allergy-type eye symptoms without pain or vision change belong in the Eye Allergy pathway.",
+      "GotoGuideline": "Eye - Allergy",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1342002,
+      "AlgorithmID": 1342,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is pain sudden or severe, or associated with any vision change, red eye plus severe headache/nausea/vomiting or halos, chemical exposure, penetrating/high-speed or major trauma, blood/fluid from the eye, inability to open/move the eye, serious neurological signs, or rapid deterioration after eye surgery/injection?",
+      "Information": "These may represent chemical injury, open globe/intraocular foreign body, acute angle-closure glaucoma, endophthalmitis, orbital or neurological emergency, or another sight-threatening condition. Telephone assessment cannot exclude them.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        134201
+      ]
+    },
+    {
+      "QuestionID": 1342003,
+      "AlgorithmID": 1342,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "With no emergency feature, is there any persistent eye pain, red or light-sensitive eye, pain with eye movement, discharge/cloudiness, eyelid swelling, foreign-body sensation, contact-lens use, or pain/abnormal visual behavior in a child?",
+      "Information": "A red painful or photophobic eye and any painful contact-lens presentation require same-day in-person examination because keratitis, uveitis and other sight-threatening disease cannot be excluded remotely. Children may not reliably report vision change.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        134202
+      ]
+    },
+    {
+      "QuestionID": 1342004,
+      "AlgorithmID": 1342,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Even if discomfort sounds mild, has true eye pain not yet been distinguished in person from surface irritation, abrasion, infection, inflammation or pressure-related disease?",
+      "Information": "This UAT pathway does not diagnose dry eye or authorize self-care from a telephone description of pain. An age-appropriate eye examination is required.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        134203
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 134201,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar sight-threatening eye response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and do not allow driving. For a chemical splash without suspected penetration, protect yourself, remove contact lenses only if easy, and immediately rinse with lots of clean room-temperature water for at least 20 minutes while help is arranged; do not neutralize the chemical and bring its container. For a penetrating/high-speed injury or suspected open globe, do not rinse, remove an object, rub, press, patch or apply drops/ointment; protect without pressure using a rigid shield or clean cup if available. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: vision change; worsening pain; vomiting; reduced responsiveness."
+      ]
+    },
+    {
+      "AdviceID": 134202,
+      "AlgorithmOrder": 2,
+      "Title": "Same-day in-person ophthalmic assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange same-day assessment through an approved Qatar adult or pediatric ophthalmology pathway. Remove contact lenses if easy and do not reinsert them; do not use another person's, leftover, steroid, antibiotic or anaesthetic eye drops. Do not drive while pain or vision is affected. Call 999 for sudden/severe pain, vision change, chemical or penetrating/high-speed trauma, red eye with headache/nausea/vomiting, neurological signs or rapid worsening.",
+        "Call Back If: vision changes; pain worsens; vomiting or severe headache; child stops opening or using the eye."
+      ]
+    },
+    {
+      "AdviceID": 134203,
+      "AlgorithmOrder": 3,
+      "Title": "Telephone assessment cannot diagnose mild eye pain",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Arrange an age-appropriate in-person eye examination. Avoid rubbing, contact lenses and unprescribed drops while awaiting review. The exact Qatar non-emergency destination, transport and medication pathway are GOVERNANCE_REQUIRED.",
+        "Call Back If: pain worsens; redness, photophobia or vision change develops."
+      ]
+    }
+  ],
+  "references": [
+    "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (accessed 2026-07-25)",
+    "NHS.UK, \"Eye injuries\", https://www.nhs.uk/conditions/eye-injuries/ (page reviewed 12 March 2026)",
+    "NHS.UK, \"Vision loss\", https://www.nhs.uk/conditions/vision-loss/ (page reviewed 28 August 2025)",
+    "Royal Devon University Healthcare, \"Emergency eye services\" (accessed 2026-07-25)"
+  ],
+  "searchwords": [
+    "eye pain",
+    "my eye hurts",
+    "eye is red and painful",
+    "eye pain in bright light",
+    "eye really hurts",
+    "sensitive to bright light"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "Which eye hurts, where is the pain, how severe is it, and is onset sudden, worsening, deep, surface-like, with eye movement, or associated with headache?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 15 source.",
+      "Source": "Eye Pain and Other Symptoms"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "What exact time did pain start, and is it constant, recurrent or rapidly worsening?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 15 source.",
+      "Source": "Eye Pain and Other Symptoms"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is there any blurred, reduced, double or lost vision, halos, flashes/floaters, curtain/shadow, unequal pupil, inability to open or move the eye, or abnormal visual behavior in a child?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 15 source.",
+      "Source": "Eye Pain and Other Symptoms"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "Is the eye red, very light-sensitive, discharging, swollen, cloudy, or accompanied by severe headache, nausea or vomiting?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 15 source.",
+      "Source": "Eye Pain and Other Symptoms"
+    },
+    {
+      "Order": 5,
+      "Category": "YES_NO",
+      "Question": "Was there chemical splash, sharp/high-speed object, grinding or power-tool exposure, blunt trauma, foreign body, blood/fluid from the eye, or recent eye surgery/injection?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 15 source.",
+      "Source": "Eye Pain and Other Symptoms"
+    },
+    {
+      "Order": 6,
+      "Category": "YES_NO",
+      "Question": "Does the person wear contact lenses, are lenses still in, or did they sleep/swim/shower in lenses?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 15 source.",
+      "Source": "Eye Pain and Other Symptoms"
+    },
+    {
+      "Order": 7,
+      "Category": "YES_NO",
+      "Question": "For a baby or child, is there marked distress, refusal to open/use the eye, new squint, abnormal eye movement, fever with eyelid swelling, or caregiver concern about sight?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 15 source.",
+      "Source": "Eye Pain and Other Symptoms"
+    }
+  ]
+}

@@ -1,0 +1,486 @@
+{
+  "batch": "21",
+  "count": 60,
+  "gaps": [
+    {
+      "gapId": "B21-1445-algorithm-LastRevised",
+      "algorithmId": 1445,
+      "protocol": "Ankle Pain - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1445-clinicalReview",
+      "algorithmId": 1445,
+      "protocol": "Ankle Pain - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1445-localization",
+      "algorithmId": 1445,
+      "protocol": "Ankle Pain - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1446-algorithm-LastRevised",
+      "algorithmId": 1446,
+      "protocol": "Ankle Pain - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1446-clinicalReview",
+      "algorithmId": 1446,
+      "protocol": "Ankle Pain - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1446-localization",
+      "algorithmId": 1446,
+      "protocol": "Ankle Pain - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1447-algorithm-LastRevised",
+      "algorithmId": 1447,
+      "protocol": "Ankle Swelling - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1447-clinicalReview",
+      "algorithmId": 1447,
+      "protocol": "Ankle Swelling - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1447-localization",
+      "algorithmId": 1447,
+      "protocol": "Ankle Swelling - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1448-algorithm-LastRevised",
+      "algorithmId": 1448,
+      "protocol": "Ankle Swelling - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1448-clinicalReview",
+      "algorithmId": 1448,
+      "protocol": "Ankle Swelling - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1448-localization",
+      "algorithmId": 1448,
+      "protocol": "Ankle Swelling - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1449-algorithm-LastRevised",
+      "algorithmId": 1449,
+      "protocol": "Elbow Pain - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1449-clinicalReview",
+      "algorithmId": 1449,
+      "protocol": "Elbow Pain - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1449-localization",
+      "algorithmId": 1449,
+      "protocol": "Elbow Pain - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1450-algorithm-LastRevised",
+      "algorithmId": 1450,
+      "protocol": "Elbow Pain - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1450-clinicalReview",
+      "algorithmId": 1450,
+      "protocol": "Elbow Pain - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1450-localization",
+      "algorithmId": 1450,
+      "protocol": "Elbow Pain - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1451-algorithm-LastRevised",
+      "algorithmId": 1451,
+      "protocol": "Elbow Swelling - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1451-clinicalReview",
+      "algorithmId": 1451,
+      "protocol": "Elbow Swelling - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1451-localization",
+      "algorithmId": 1451,
+      "protocol": "Elbow Swelling - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1452-algorithm-LastRevised",
+      "algorithmId": 1452,
+      "protocol": "Elbow Swelling - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1452-clinicalReview",
+      "algorithmId": 1452,
+      "protocol": "Elbow Swelling - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1452-localization",
+      "algorithmId": 1452,
+      "protocol": "Elbow Swelling - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1453-algorithm-LastRevised",
+      "algorithmId": 1453,
+      "protocol": "Finger Pain - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1453-clinicalReview",
+      "algorithmId": 1453,
+      "protocol": "Finger Pain - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1453-localization",
+      "algorithmId": 1453,
+      "protocol": "Finger Pain - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1454-algorithm-LastRevised",
+      "algorithmId": 1454,
+      "protocol": "Finger Pain - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1454-clinicalReview",
+      "algorithmId": 1454,
+      "protocol": "Finger Pain - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1454-localization",
+      "algorithmId": 1454,
+      "protocol": "Finger Pain - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1455-algorithm-LastRevised",
+      "algorithmId": 1455,
+      "protocol": "Foot Pain - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1455-clinicalReview",
+      "algorithmId": 1455,
+      "protocol": "Foot Pain - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1455-localization",
+      "algorithmId": 1455,
+      "protocol": "Foot Pain - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1456-algorithm-LastRevised",
+      "algorithmId": 1456,
+      "protocol": "Foot Pain - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1456-clinicalReview",
+      "algorithmId": 1456,
+      "protocol": "Foot Pain - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1456-localization",
+      "algorithmId": 1456,
+      "protocol": "Foot Pain - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1457-algorithm-LastRevised",
+      "algorithmId": 1457,
+      "protocol": "Hand Swelling - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1457-clinicalReview",
+      "algorithmId": 1457,
+      "protocol": "Hand Swelling - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1457-localization",
+      "algorithmId": 1457,
+      "protocol": "Hand Swelling - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1458-algorithm-LastRevised",
+      "algorithmId": 1458,
+      "protocol": "Hand Swelling - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1458-clinicalReview",
+      "algorithmId": 1458,
+      "protocol": "Hand Swelling - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1458-localization",
+      "algorithmId": 1458,
+      "protocol": "Hand Swelling - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1459-algorithm-LastRevised",
+      "algorithmId": 1459,
+      "protocol": "Hip Pain - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1459-clinicalReview",
+      "algorithmId": 1459,
+      "protocol": "Hip Pain - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1459-localization",
+      "algorithmId": 1459,
+      "protocol": "Hip Pain - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1460-algorithm-LastRevised",
+      "algorithmId": 1460,
+      "protocol": "Hip Pain - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1460-clinicalReview",
+      "algorithmId": 1460,
+      "protocol": "Hip Pain - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1460-localization",
+      "algorithmId": 1460,
+      "protocol": "Hip Pain - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1461-algorithm-LastRevised",
+      "algorithmId": 1461,
+      "protocol": "Knee Swelling - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1461-clinicalReview",
+      "algorithmId": 1461,
+      "protocol": "Knee Swelling - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1461-localization",
+      "algorithmId": 1461,
+      "protocol": "Knee Swelling - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1462-algorithm-LastRevised",
+      "algorithmId": 1462,
+      "protocol": "Knee Swelling - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1462-clinicalReview",
+      "algorithmId": 1462,
+      "protocol": "Knee Swelling - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1462-localization",
+      "algorithmId": 1462,
+      "protocol": "Knee Swelling - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1463-algorithm-LastRevised",
+      "algorithmId": 1463,
+      "protocol": "Ankle Pain - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1463-clinicalReview",
+      "algorithmId": 1463,
+      "protocol": "Ankle Pain - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1463-localization",
+      "algorithmId": 1463,
+      "protocol": "Ankle Pain - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1464-algorithm-LastRevised",
+      "algorithmId": 1464,
+      "protocol": "Ankle Pain - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1464-clinicalReview",
+      "algorithmId": 1464,
+      "protocol": "Ankle Pain - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B21-1464-localization",
+      "algorithmId": 1464,
+      "protocol": "Ankle Pain - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    }
+  ]
+}

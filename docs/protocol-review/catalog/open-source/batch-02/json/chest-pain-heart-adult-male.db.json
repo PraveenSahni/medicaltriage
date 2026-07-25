@@ -1,0 +1,209 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source clinical decision-rule content derived from the cited peer-reviewed publications; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Telephone adaptations, local disposition mappings, and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1041,
+    "Title": "Chest Pain (HEART Score) - Male (Adult)",
+    "ContentSet": "IST Open-Source Clinical Decision Rules | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 5,
+    "Definition": [
+      "UAT-only adult chest-pain pathway that sends active or suspected acute coronary syndrome symptoms directly to Qatar 999 without HEART scoring delay. HEART may be considered only after documented in-person clinician assessment, 12-lead ECG and troponin; it must never be calculated or implied by telephone or used as a standalone rule-out test.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [
+      "Mild (1-3): Does not interfere with normal activity, movement, concentration, or sleep.",
+      "Moderate (4-7): Interferes with normal activity, movement, concentration, or sleep.",
+      "Severe (8-10): Prevents normal activity or movement, or is described as excruciating."
+    ],
+    "Background": {
+      "KeyPoints": [
+        "HEART is an emergency-department risk-stratification aid for adults with chest pain being assessed for possible acute coronary syndrome. It combines clinician-assessed history, 12-lead ECG, age, risk factors and measured troponin. A telephone call cannot supply the ECG, troponin or complete clinician assessment, so individual component points and a total score must not be displayed or used for disposition. It is not a diagnostic test and is not validated for children or for screening people without a suspected acute coronary syndrome presentation."
+      ],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "Six AJ, Backus BE, Kelder JC"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 now. Keep the person resting, do not let them drive, and follow the emergency call-taker's instructions. Do not recommend aspirin, glyceryl trinitrate or other medicine unless specifically directed under an approved Qatar protocol or already prescribed for this exact situation. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Clinical Decision Rules",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "RESEARCH_REQUIRED - verify against current rule publication and local policy",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Clinical Decision Rules",
+    "Copyright": "Derived from cited peer-reviewed publications. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent in-person assessment",
+      "Video": false,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1041001,
+      "AlgorithmID": 1041,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Did the pain begin immediately after a direct blow, fall, or other chest injury, with the injury as the main concern and none of the cardiac emergency features below?",
+      "Information": "A clearly traumatic chest complaint belongs in the chest-injury pathway. Any pressure-like, radiating, exertional, breathless, sweaty, faint, or persistent pain stays in this pathway for cardiac assessment.",
+      "GotoGuideline": "Chest Injury",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1041002,
+      "AlgorithmID": 1041,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is chest pain or pressure present now, severe, recurring or worsening, or accompanied by shortness of breath, sweating, nausea, fainting/near-fainting, marked weakness, or pain spreading to the arm, shoulder, back, neck or jaw?",
+      "Information": "This is an emergency symptom screen, not part of HEART. Acute coronary syndrome can be atypical, including in women, older adults and people with diabetes; a reassuring telephone description cannot exclude it.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        104101
+      ]
+    },
+    {
+      "QuestionID": 1041003,
+      "AlgorithmID": 1041,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Even if the symptom description is atypical or incomplete, does the nurse suspect active or recent acute coronary syndrome, or remain unable to exclude it safely during this call?",
+      "Information": "Suspected acute coronary syndrome requires Qatar 999 emergency assessment without scoring delay. HEART applies only after in-person clinician assessment with a documented 12-lead ECG and measured troponin; it is not a telephone rule-out or standalone triage tool.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        104101
+      ]
+    },
+    {
+      "QuestionID": 1041004,
+      "AlgorithmID": 1041,
+      "DispositionLevel": 70,
+      "QuestionOrder": 2,
+      "Question": "Only after the emergency and suspected-acute-coronary-syndrome branches are negative: has the chest pain resolved, but this episode has not yet had an in-person clinician assessment with a documented ECG and troponin testing?",
+      "Information": "Resolved symptoms still need prompt in-person assessment, and any remaining suspicion of acute coronary syndrome belongs in the preceding Qatar 999 branch. Age is collected for the receiving clinician but is not scored by the telephone pathway.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        104102
+      ]
+    },
+    {
+      "QuestionID": 1041005,
+      "AlgorithmID": 1041,
+      "DispositionLevel": 70,
+      "QuestionOrder": 3,
+      "Question": "Is the patient under 18, pregnant/recently postpartum, or is another serious cause possible (for example aortic, pulmonary embolic, respiratory or traumatic chest pain)?",
+      "Information": "HEART is not a pediatric rule and must not substitute for evaluation of pregnancy-related or non-coronary emergencies. Route according to symptoms and in-person clinical assessment, never a telephone score.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        104102
+      ]
+    },
+    {
+      "QuestionID": 1041006,
+      "AlgorithmID": 1041,
+      "DispositionLevel": 70,
+      "QuestionOrder": 4,
+      "Question": "Regardless of age, risk factors or how non-cardiac the description seems, is a complete in-person assessment for this episode unavailable?",
+      "Information": "A HEART total cannot be calculated without all five components in the intended clinical setting. No telephone low-risk or self-care tier exists.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        104102
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 104101,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency chest pain precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 now. Keep the person resting, do not let them drive, and follow the emergency call-taker's instructions. Do not recommend aspirin, glyceryl trinitrate or other medicine unless specifically directed under an approved Qatar protocol or already prescribed for this exact situation. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening pain; loss of consciousness; difficulty breathing."
+      ]
+    },
+    {
+      "AdviceID": 104102,
+      "AlgorithmOrder": 2,
+      "Title": "Chest pain requires in-person evaluation",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Arrange prompt in-person assessment at a Qatar service capable of clinical examination, a documented 12-lead ECG and measured troponin. Do not calculate, display or interpret HEART before all required components are obtained in person, and do not use HEART alone to rule out acute coronary syndrome. Do not self-drive if symptoms recur or the person feels unwell; call 999 if any emergency feature appears or acute coronary syndrome is suspected. The exact non-emergency destination, troponin strategy and transport pathway are GOVERNANCE_REQUIRED.",
+        "Call Back If: pain worsens or spreads; shortness of breath develops; sweating or nausea develops."
+      ]
+    }
+  ],
+  "references": [
+    "Six AJ, Backus BE, Kelder JC. Chest pain in the emergency room: value of the HEART score. Neth Heart J. 2008;16(6):191-196.",
+    "Backus BE, Six AJ, Kelder JC, et al. A prospective validation of the HEART score for chest pain patients at the emergency department. Int J Cardiol. 2013;168(3):2153-2158.",
+    "Gulati M, Levy PD, Mukherjee D, et al. 2021 AHA/ACC Chest Pain Guideline. Circulation. 2021;144:e368-e454."
+  ],
+  "searchwords": [
+    "chest pain",
+    "chest tightness",
+    "chest pressure",
+    "heart attack"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "Describe the chest pain in your own words - what does it feel like, where is it, does it spread anywhere?",
+      "Rationale": "Source-protocol intake question retained from the runtime Batch 2 implementation.",
+      "Source": "Chest Pain (HEART Score)"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "When did the pain start, and how long has it lasted?",
+      "Rationale": "Source-protocol intake question retained from the runtime Batch 2 implementation.",
+      "Source": "Chest Pain (HEART Score)"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is the pain present now, recurring or worsening; accompanied by breathlessness, sweating, nausea, faintness, weakness, or pain in the arm, shoulder, back, neck or jaw; or otherwise suspected by the nurse to represent acute coronary syndrome? If yes, stop assessment and use the Qatar 999 emergency branch without calculating HEART.",
+      "Rationale": "Source-protocol intake question retained from the runtime Batch 2 implementation.",
+      "Source": "Chest Pain (HEART Score)"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "Is the patient under 18, pregnant or recently postpartum, or do they have known heart or vascular disease, diabetes, smoking, high blood pressure or cholesterol?",
+      "Rationale": "Source-protocol intake question retained from the runtime Batch 2 implementation.",
+      "Source": "Chest Pain (HEART Score)"
+    },
+    {
+      "Order": 5,
+      "Category": "PAIN_SEVERITY",
+      "Question": "What is the current pain severity from 0 to 10, and how is it affecting normal activity or movement?",
+      "Rationale": "Records pain intensity and functional impact without replacing the named decision rule.",
+      "Source": "IST telephone-triage adaptation"
+    }
+  ]
+}

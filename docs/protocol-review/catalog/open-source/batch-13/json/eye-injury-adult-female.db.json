@@ -1,0 +1,272 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1294,
+    "Title": "Eye Injury - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 4,
+    "Definition": [
+      "UAT-only adult and pediatric eye-trauma assessment covering blunt, sharp, high-velocity, foreign-body, and chemical mechanisms with vision-threatening injuries routed directly to emergency care.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+      "Call Qatar emergency services on 999 and do not allow the person to drive. For a chemical splash without suspected penetration, protect the rescuer, remove contact lenses only if easy, and immediately rinse the open eye with a gentle flow of clean, room-temperature water for at least 20 minutes; continue while help is arranged and take the product container without delaying irrigation. Do not try to neutralize the chemical. For any embedded object, cut, puncture, high-velocity injury, fluid leak, or suspected open globe: do not irrigate, remove the object, rub, press, patch, or put drops or ointment in the eye; loosely protect it with a rigid shield or clean cup without pressure. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "RESEARCH_REQUIRED - verify source review date during governance",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 78,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1294001,
+      "AlgorithmID": 1294,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Was the eye exposed to a chemical rather than injured by blunt or penetrating trauma?",
+      "Information": "The Eye - Chemical In family is source-only and has no generated target. Keep this as a direct emergency disposition: begin immediate irrigation for a splash without suspected penetration while Qatar 999 assessment and controlled transport are arranged.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        129403
+      ]
+    },
+    {
+      "QuestionID": 1294002,
+      "AlgorithmID": 1294,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "If the patient is under 18, is harm occurring now, is there immediate danger from an accompanying or suspected caregiver, could the child be returned now to an unsafe person or place, or did contact end while an immediate threat remained unresolved?",
+      "Information": "Immediate danger, ongoing harm, an imminent unsafe return, or loss of contact during an unresolved immediate threat requires emergency action. Qatar 999 is the verified emergency route. Exact child-protection reporting, consent, documentation, and information-sharing requirements are GOVERNANCE_REQUIRED.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        129401
+      ]
+    },
+    {
+      "QuestionID": 1294003,
+      "AlgorithmID": 1294,
+      "DispositionLevel": 78,
+      "QuestionOrder": 2,
+      "Question": "If the patient is under 18 and there is no confirmed immediate danger, are they unable to speak privately, is caregiver safety uncertain, or is there another safeguarding concern requiring trained assessment?",
+      "Information": "An inability to obtain a private history, uncertainty about caregiver safety, or another safeguarding concern needs prompt trained assessment without automatically treating it as a confirmed emergency. The exact Qatar safeguarding pathway is GOVERNANCE_REQUIRED.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        129402
+      ]
+    },
+    {
+      "QuestionID": 1294004,
+      "AlgorithmID": 1294,
+      "DispositionLevel": 100,
+      "QuestionOrder": 3,
+      "Question": "Is there any vision loss or change after injury, severe pain, chemical exposure, a sharp or high-velocity mechanism, a cut or suspected puncture of the eyeball, an embedded object, fluid leakage, blood inside the eye, irregular pupil, inability to move the eye, or associated serious head-injury features?",
+      "Information": "NHS.UK and MedlinePlus guidance treats chemical exposure, vision change, severe pain, penetrating injury, embedded objects, and blood in the eye as requiring immediate care. Chemical irrigation must begin immediately, while a possible open-globe injury must be protected from pressure and not irrigated. This is a direct Qatar 999 pathway, not a redirect to a missing Eye - Chemical Injury target.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        129403
+      ]
+    },
+    {
+      "QuestionID": 1294005,
+      "AlgorithmID": 1294,
+      "DispositionLevel": 70,
+      "QuestionOrder": 3,
+      "Question": "With no emergency feature above, is there persistent pain, redness, tearing, light sensitivity, swelling or bruising, a surface foreign-body sensation, or a child who cannot reliably report vision or use the eye normally?",
+      "Information": "Persistent ocular symptoms after trauma need prompt in-person assessment. NHS.UK advises seeking urgent advice when concerned about an eye injury, particularly in a child; telephone assessment cannot reliably exclude corneal or internal injury.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        129404
+      ]
+    },
+    {
+      "QuestionID": 1294006,
+      "AlgorithmID": 1294,
+      "DispositionLevel": 15,
+      "QuestionOrder": 3,
+      "Question": "Is this clearly a minor injury to the skin or bone around the eye, with normal vision and eye movement, no eye pain or redness, no concerning mechanism, and none of the features above?",
+      "Information": "NHS.UK guidance describes minor injuries around the eye without vision or structural involvement as manageable at home.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        129405
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 129401,
+      "AlgorithmOrder": 1,
+      "Title": "Immediate child safeguarding danger",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: harm occurring now or immediate danger; imminent return to an unsafe person or place; contact lost while an immediate threat remains unresolved."
+      ]
+    },
+    {
+      "AdviceID": 129402,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent private child safeguarding assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Keep questions neutral and seek a private conversation only when it is safe. Do not disclose sensitive information to a caregiver whose safety is uncertain, do not confront or alert a suspected unsafe person, and do not promise confidentiality. Arrange prompt in-person assessment through the governance-approved Qatar child safeguarding pathway and record only an approved safe callback method. If immediate danger emerges or contact is lost during an unresolved immediate threat, use the emergency branch and call Qatar 999. Exact reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED.",
+        "Call Back If: private history cannot be obtained safely; caregiver safety remains uncertain; new immediate danger or loss of contact."
+      ]
+    },
+    {
+      "AdviceID": 129403,
+      "AlgorithmOrder": 3,
+      "Title": "Qatar vision-threatening eye-injury response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and do not allow the person to drive. For a chemical splash without suspected penetration, protect the rescuer, remove contact lenses only if easy, and immediately rinse the open eye with a gentle flow of clean, room-temperature water for at least 20 minutes; continue while help is arranged and take the product container without delaying irrigation. Do not try to neutralize the chemical. For any embedded object, cut, puncture, high-velocity injury, fluid leak, or suspected open globe: do not irrigate, remove the object, rub, press, patch, or put drops or ointment in the eye; loosely protect it with a rigid shield or clean cup without pressure. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: any vision loss or change; increasing pain; chemical exposure; embedded object or leaking fluid; blood inside eye; reduced consciousness or vomiting."
+      ]
+    },
+    {
+      "AdviceID": 129404,
+      "AlgorithmOrder": 4,
+      "Title": "Urgent in-person eye assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange same-day in-person eye assessment through an approved Qatar adult or pediatric ophthalmology pathway. Do not rub the eye or attempt to remove a persistent object. A cool compress may be placed on the surrounding facial bone only when penetration is not suspected and without pressure on the eyeball. Do not use leftover anesthetic, antibiotic, steroid, or redness-relief drops. A clinician or pharmacist should confirm any age-appropriate pain medicine.",
+        "Call Back If: vision changes; pain or light sensitivity worsens; vomiting or severe headache; child stops using or opening the eye."
+      ]
+    },
+    {
+      "AdviceID": 129405,
+      "AlgorithmOrder": 5,
+      "Title": "Care for a clearly minor injury around the eye",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Use a wrapped cool compress on the surrounding area without pressing the eyeball. A clinician or pharmacist should confirm age-appropriate pain medicine when needed. Reassess urgently if eye pain, redness, light sensitivity, vomiting, abnormal eye movement, or any vision change develops.",
+        "Call Back If: vision changes; eye pain or redness; increasing swelling; vomiting or abnormal eye movement."
+      ]
+    }
+  ],
+  "references": [
+    "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (accessed 2026-07-25)",
+    "NHS.UK, \"Eye injuries\", https://www.nhs.uk/conditions/eye-injuries/ (page last reviewed 12 March 2026)",
+    "US National Library of Medicine MedlinePlus, \"Eye emergencies\", https://medlineplus.gov/ency/article/000054.htm (accessed 2026-07-25)"
+  ],
+  "searchwords": [
+    "eye injury",
+    "hit in the eye",
+    "punched in the eye",
+    "poked in the eye",
+    "something hit my eye"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What was the exact mechanism: blunt impact, sharp or high-velocity object, embedded object, chemical splash, hot material, explosion, or unknown injury?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 13 source.",
+      "Source": "Eye Injury"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "When did it happen, and for chemical exposure what product was involved and when did irrigation start?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 13 source.",
+      "Source": "Eye Injury"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "Compared with before the injury, is vision reduced, blurred, doubled, missing in part of the field, or absent in either eye?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 13 source.",
+      "Source": "Eye Injury"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "Is there severe pain, inability to open or move the eye, an irregular pupil, blood inside the eye, fluid leaking, a cut or puncture, or anything embedded?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 13 source.",
+      "Source": "Eye Injury"
+    },
+    {
+      "Order": 5,
+      "Category": "YES_NO",
+      "Question": "Was there head injury, loss of consciousness, vomiting, severe headache, confusion, seizure, or weakness?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 13 source.",
+      "Source": "Eye Injury"
+    },
+    {
+      "Order": 6,
+      "Category": "YES_NO",
+      "Question": "For a baby or child, is the mechanism uncertain, can they not reliably report vision, or are they unable or unwilling to open or use the affected eye normally?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 13 source.",
+      "Source": "Eye Injury"
+    },
+    {
+      "Order": 7,
+      "Category": "YES_NO",
+      "Question": "If the patient is under 18, can they speak privately now, is the accompanying caregiver considered safe, and is there an approved safe callback method if contact is lost?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 13 source.",
+      "Source": "Eye Injury"
+    }
+  ]
+}

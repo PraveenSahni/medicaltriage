@@ -1,0 +1,242 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited NHS.UK pages under the Open Government Licence v3.0; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Local disposition mappings and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1052,
+    "Title": "Suicide Concerns - Female (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Female",
+    "Age": "Child (10-17 years)",
+    "GenderAtBirth": "Female",
+    "Acuity": 5,
+    "Definition": [
+      "UAT-only suicide-concern screening and safety-routing draft for people aged 10 years and older; a positive screen requires assessment by an appropriately trained clinician and this protocol is not a substitute for a comprehensive suicide risk assessment.",
+      "Child patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [
+        "Immediate danger, an attempt in progress, or a current plan with access to means requires Qatar emergency services.",
+        "Urgent mental-health support without immediate danger requires a same-day local mental-health pathway and continued engagement until connected.",
+        "The caller should not be left alone when immediate safety is uncertain."
+      ],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call 999 for an ambulance immediately. Stay with the person, keep them in a safe location, remove access to means only when safe to do so, and follow the emergency operator's instructions. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "RESEARCH_REQUIRED - verify source review date during governance",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Crown copyright (NHS.UK content), reused under the Open Government Licence v3.0. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 78,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1052001,
+      "AlgorithmID": 1052,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is low mood the main concern, with no suicidal or self-harm thoughts, plan, means, or attempt?",
+      "Information": "Low mood without suicide or self-harm concern belongs in the depression pathway.",
+      "GotoGuideline": "Depression",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1052002,
+      "AlgorithmID": 1052,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is the caller thinking of suicide right now; has an attempt or preparatory act occurred; is there intent, a feasible plan, or access to means; are they unable to stay safe; is safe continuous supervision unavailable; has the caller disconnected or refused help while an immediate threat remains; or is there an immediate serious risk to another person, baby, child, vulnerable person, or dependent?",
+      "Information": "Qatar pathway: immediate danger, a suicide attempt, or a current plan with access to means requires calling 999 for an ambulance immediately.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        105201
+      ]
+    },
+    {
+      "QuestionID": 1052003,
+      "AlgorithmID": 1052,
+      "DispositionLevel": 78,
+      "QuestionOrder": 1,
+      "Question": "With no emergency feature above, has the caller had recent suicidal thoughts, escalating self-harm thoughts, or past suicidal behavior; are answers incomplete or unreliable; is privacy unsafe; or, for a child or adolescent, is a caregiver unsafe, obstructing private assessment, unable to supervise, or is there a possible abuse, exploitation, neglect, or safeguarding concern requiring an age-appropriate trained clinician and the approved Qatar safeguarding pathway?",
+      "Information": "Qatar pathway: when there is no immediate danger, arrange same-day mental-health support through HMC 16000, option 4, during published service hours. If safety deteriorates or the person cannot remain safe, call 999.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        105202
+      ]
+    },
+    {
+      "QuestionID": 1052004,
+      "AlgorithmID": 1052,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "After direct screening is negative for current or recent suicidal thoughts and suicidal behavior, does the caller have emotional distress or low mood and want non-emergency mental health support?",
+      "Information": "Qatar pathway: arrange prompt PHCC or approved local mental-health review and give clear escalation instructions if suicide risk increases.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        105203
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 105201,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency safety response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call 999 for an ambulance immediately. Stay with the person, keep them in a safe location, remove access to means only when safe to do so, and follow the emergency operator's instructions. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: caller becomes unreachable; current suicidal thoughts; attempt or preparation; access to means; cannot stay safe; unsafe caregiver or no safe supervision; immediate risk to another person, baby, child, vulnerable person, or dependent."
+      ]
+    },
+    {
+      "AdviceID": 105202,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent age-appropriate mental health and safeguarding assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call HMC on 16000 and select option 4 for Mental Health during the published service hours (08:00-18:00, Saturday-Thursday), and arrange same-day clinical review. Stay engaged until support is connected. Outside service hours, or if the person cannot remain safe, call 999.",
+        "Call Back If: current suicidal thoughts develop; a plan, preparation, intent, or access to means develops; privacy or supervision becomes unsafe; caller disconnects or refuses safe handover; risk to another person or child develops."
+      ]
+    },
+    {
+      "AdviceID": 105203,
+      "AlgorithmOrder": 3,
+      "Title": "Qatar non-emergency mental health support",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Arrange PHCC or an approved Qatar mental-health follow-up pathway. If suicidal thoughts intensify, a plan or access to means develops, or the person cannot remain safe, call 999.",
+        "Call Back If: suicidal thoughts appear or intensify; a plan or access to means develops; the caller cannot stay safe; privacy, supervision, or child safety becomes uncertain."
+      ]
+    }
+  ],
+  "references": [
+    "Hamad Medical Corporation, \"National Mental Health Helpline marks six years of supporting Qatar's population\", https://hamad.qa/EN/news/2026/April/Pages/National-Mental-Health-Helpline-marks-six-years-of-supporting-Qatar%E2%80%99s-population.aspx (accessed 2026-07-25)",
+    "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (accessed 2026-07-25)",
+    "National Institute of Mental Health, \"Ask Suicide-Screening Questions (ASQ) Toolkit\", https://www.nimh.nih.gov/research/research-conducted-at-nimh/asq-toolkit-materials (accessed 2026-07-25)",
+    "National Institute of Mental Health, \"Adult Outpatient Brief Suicide Safety Assessment Guide\", https://www.nimh.nih.gov/research/research-conducted-at-nimh/asq-toolkit-materials/adult-outpatient/adult-outpatient-brief-suicide-safety-assessment-guide (accessed 2026-07-25)",
+    "World Health Organization, \"Suicide: questions and answers\", https://www.who.int/news-room/questions-and-answers/item/suicide (accessed 2026-07-25)",
+    "NHS.UK, \"Every Mind Matters: Urgent support\", https://www.nhs.uk/every-mind-matters/urgent-support/",
+    "Hamad Medical Corporation, \"Life-Threatening Medical Emergency\", https://hamad.qa/EN/Emergency/Pages/Life-ThreateningMedicalEmergency.aspx (Qatar emergency ambulance: 999)",
+    "Hamad Medical Corporation, \"National Mental Health Helpline\", https://hamad.qa/EN/news/2026/April/Pages/National-Mental-Health-Helpline-marks-six-years-of-supporting-Qatar%E2%80%99s-population.aspx (16000, option 4; published hours 08:00-18:00 Saturday-Thursday)"
+  ],
+  "searchwords": [
+    "suicidal",
+    "want to end my life",
+    "suicide",
+    "self harm",
+    "dont want to be here anymore"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the caller's current location, callback number, and preferred language, and can emergency services reach that location if needed?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Suicide Concerns"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Can the caller speak privately and safely right now? For a child or adolescent, establish whether the accompanying caregiver is trusted and safe before discussing suicidal thoughts, offer a safe opportunity to speak without that caregiver when feasible, and explain that privacy cannot be promised when information must be shared to protect the caller or another person from serious harm.",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Suicide Concerns"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is the caller thinking about killing themselves right now?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Suicide Concerns"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "Has the caller made a plan, chosen a time or method, taken preparatory steps, or do they have access to medicines, weapons, ligatures, heights, traffic, or another possible means of harm?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Suicide Concerns"
+    },
+    {
+      "Order": 5,
+      "Category": "OPEN_TEXT",
+      "Question": "Has the caller ever attempted suicide or intentionally harmed themselves? If yes, what happened, when, and was medical or mental health care received?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Suicide Concerns"
+    },
+    {
+      "Order": 6,
+      "Category": "YES_NO",
+      "Question": "Does the caller feel able to stay safe while help is arranged?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Suicide Concerns"
+    },
+    {
+      "Order": 7,
+      "Category": "OPEN_TEXT",
+      "Question": "Is a trusted, responsible adult physically present and able to provide safe continuous supervision, without putting themselves or the caller at risk?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Suicide Concerns"
+    },
+    {
+      "Order": 8,
+      "Category": "YES_NO",
+      "Question": "Is there any immediate risk that the caller may seriously harm another person, or that a baby, child, vulnerable person, or other dependent in their care is unsafe?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Suicide Concerns"
+    },
+    {
+      "Order": 9,
+      "Category": "YES_NO",
+      "Question": "For a child or adolescent, is the caregiver unsafe, possibly involved in abuse or exploitation, unwilling or unable to supervise safely, preventing private assessment, or threatening to remove the child before a safe handover?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Suicide Concerns"
+    },
+    {
+      "Order": 10,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What change has the parent or caregiver observed in behaviour, alertness, eating or drinking, sleep, school or play, and normal activity?",
+      "Rationale": "Child assessment includes caregiver-observed functional change and cannot rely only on adult-style self-report.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1166,
+    "Title": "Fainting - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 4,
+    "Definition": [
+      "UAT-only assessment of a transient loss of consciousness or suspected faint in an adult or child, including pregnancy-related, cardiac, neurologic, bleeding, and injury risks; not approved for real-patient or production use.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "Pending qualified Qatar adult, pediatric, emergency, cardiology, neurology, and obstetric review"
+    },
+    "FirstAid": [
+      "Call Qatar 999 immediately and follow the operator's instructions. If unresponsive and not breathing normally, start age-appropriate CPR and use an AED as directed. If unresponsive but breathing normally and there is no suspected trauma, place the patient in a lateral recovery position and monitor breathing continuously; if pregnant, use a side-lying position. If trauma is possible, avoid unnecessary movement while maintaining the airway. If fully conscious, keep the patient lying safely and do not let them stand, walk, drive, or remain alone. Give no food, drink, or medicine until fully alert and swallowing safely. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2026-07-25",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1166001,
+      "AlgorithmID": 1166,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is the person still unconscious or unresponsive rather than awake after a brief faint?",
+      "Information": "A person who remains unresponsive belongs in the Coma emergency pathway.",
+      "GotoGuideline": "Coma",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1166002,
+      "AlgorithmID": 1166,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is the patient unresponsive or not breathing normally; not fully recovered; having new speech or movement difficulty, severe headache, chest pain, severe breathlessness, sustained palpitations, ongoing seizure, or major injury; showing heavy bleeding, vomiting blood, black stool, shock or collapse; or pregnant/possibly pregnant with abdominal or one-sided pelvic pain, vaginal bleeding, shoulder-tip pain, or collapse?",
+      "Information": "These features indicate possible cardiac arrest, stroke, seizure, major injury, significant blood loss, or ruptured ectopic pregnancy. HMC directs life-threatening emergencies to Qatar 999; RCOG notes that collapse may be the first sign of ectopic pregnancy.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        116601
+      ]
+    },
+    {
+      "QuestionID": 1166003,
+      "AlgorithmID": 1166,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "After immediate emergency features are excluded, did the faint occur during exertion or while lying down, without a warning, with chest symptoms or palpitations; or is there known heart disease, an implanted cardiac device, new unexplained breathlessness, or family history of sudden cardiac death before age 40 or an inherited cardiac condition?",
+      "Information": "NICE identifies exertional syncope, cardiac disease or breathlessness, abnormal ECG, and a family history of early sudden cardiac death or inherited cardiac disease as red flags requiring urgent cardiovascular assessment. Pediatric guidance applies similar cardiac red flags.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        116602
+      ]
+    },
+    {
+      "QuestionID": 1166004,
+      "AlgorithmID": 1166,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Has the patient completely recovered after any other fainting or blackout episode, with all emergency and cardiac red flags excluded?",
+      "Information": "A benign faint cannot be confirmed by telephone alone. Initial assessment may require witness history, vital signs, glucose when indicated, bleeding or pregnancy evaluation, and a 12-lead ECG; pediatric syncope requires age-specific assessment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        116603
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 116601,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency after fainting — call Qatar 999",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 immediately and follow the operator's instructions. If unresponsive and not breathing normally, start age-appropriate CPR and use an AED as directed. If unresponsive but breathing normally and there is no suspected trauma, place the patient in a lateral recovery position and monitor breathing continuously; if pregnant, use a side-lying position. If trauma is possible, avoid unnecessary movement while maintaining the airway. If fully conscious, keep the patient lying safely and do not let them stand, walk, drive, or remain alone. Give no food, drink, or medicine until fully alert and swallowing safely. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: not waking up; breathing stops."
+      ]
+    },
+    {
+      "AdviceID": 116602,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent cardiac-risk fainting assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange urgent same-day in-person assessment through the Qatar destination approved for this UAT environment. The assessment should include a 12-lead ECG and age- and presentation-appropriate cardiovascular evaluation. Until medically cleared, do not drive, exercise, swim alone, work at height, or operate machinery. Do not start, stop, or change medication based on this telephone pathway.",
+        "Call Back If: another faint; chest pain, palpitations, breathlessness, or reduced responsiveness."
+      ]
+    },
+    {
+      "AdviceID": 116603,
+      "AlgorithmOrder": 3,
+      "Title": "In-person assessment after a recovered faint",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange prompt in-person assessment using the Qatar route approved for this UAT environment. Record witness details and all medicines. The clinician may check vital signs lying and standing, glucose, pregnancy or bleeding indicators, and a 12-lead ECG. If presyncope returns before review, lie down safely; a pregnant patient should lie on their side. Do not drive or undertake hazardous activity until assessed.",
+        "Call Back If: fainting recurs; new pain, bleeding, neurologic, breathing, or cardiac symptoms."
+      ]
+    }
+  ],
+  "references": [
+    "Hamad Medical Corporation, \"Life-Threatening Medical Emergency\", https://hamad.qa/EN/Emergency/Pages/Life-ThreateningMedicalEmergency.aspx (accessed 25 July 2026)",
+    "NICE, \"Transient loss of consciousness ('blackouts') in over 16s\", CG109, updated November 2023, https://www.nice.org.uk/guidance/cg109/chapter/Recommendations",
+    "Royal Children's Hospital Melbourne, \"Clinical Practice Guideline: Syncope\", updated November 2023, https://www.rch.org.au/clinicalguide/guideline_index/Syncope/",
+    "Royal College of Obstetricians and Gynaecologists, \"Ectopic pregnancy\", https://www.rcog.org.uk/for-the-public/browse-our-patient-information/ectopic-pregnancy/",
+    "NHS.UK, \"Fainting\", https://www.nhs.uk/symptoms/fainting/"
+  ],
+  "searchwords": [
+    "fainted",
+    "fainting",
+    "passed out",
+    "blacked out"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "YES_NO",
+      "Question": "Is the patient fully responsive and breathing normally now? Gasping or irregular breathing is not normal.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 7 source.",
+      "Source": "Fainting"
+    },
+    {
+      "Order": 2,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the patient's exact age, when did the episode occur, how long did unresponsiveness last, and have they completely returned to their usual behavior, speech, and movement?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 7 source.",
+      "Source": "Fainting"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "What posture and activity preceded the episode, were there warning symptoms, and what did a witness observe during and after it?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 7 source.",
+      "Source": "Fainting"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "Is there chest pain, palpitations, breathlessness, severe headache, new weakness or speech change, significant bleeding, black stool, vomiting blood, seizure features, or serious injury?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 7 source.",
+      "Source": "Fainting"
+    },
+    {
+      "Order": 5,
+      "Category": "YES_NO",
+      "Question": "Is the patient pregnant or recently pregnant, or could pregnancy be possible; and is there abdominal or one-sided pelvic pain, vaginal bleeding, or shoulder-tip pain?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 7 source.",
+      "Source": "Fainting"
+    },
+    {
+      "Order": 6,
+      "Category": "YES_NO",
+      "Question": "Did fainting occur during exertion or while lying down, or is there known heart disease, an implanted cardiac device, or family history of sudden cardiac death before age 40 or an inherited cardiac condition?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 7 source.",
+      "Source": "Fainting"
+    }
+  ]
+}

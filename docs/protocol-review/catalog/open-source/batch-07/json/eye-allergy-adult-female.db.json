@@ -1,0 +1,193 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1170,
+    "Title": "Eye - Allergy - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 2,
+    "Definition": [
+      "Qatar-localized UAT-only adult and pediatric pathway for suspected allergic eye symptoms, screening for sight-threatening disease, trauma, chemical exposure, infection, contact-lens risk and neonatal illness; not approved for production.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar 999 for major trauma, collapse or severe systemic deterioration; otherwise proceed immediately to the locally approved emergency eye destination. Do not drive with impaired vision, rub the eye, remove an embedded object or apply drops after chemical exposure unless directed. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2024-04-23",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1170001,
+      "AlgorithmID": 1170,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Was the eye exposed to a chemical, acid, cleaning product, or unknown liquid?",
+      "Information": "Begin immediate continuous irrigation and obtain emergency in-person assessment; the source-only chemical-eye family is not generated.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        117001
+      ]
+    },
+    {
+      "QuestionID": 1170002,
+      "AlgorithmID": 1170,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there sudden or reduced vision, severe eye pain, chemical exposure, penetrating/embedded object, major injury, abnormal pupil, or eye symptoms with severe headache, vomiting, confusion or rapid deterioration?",
+      "Information": "NHS.UK conjunctivitis guidance lists these as signs of a more serious eye problem needing urgent clinical review or emergency assessment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        117001
+      ]
+    },
+    {
+      "QuestionID": 1170003,
+      "AlgorithmID": 1170,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Is this a baby with red, sticky eyes, does the caller wear contact lenses with eyelid spots, or have symptoms not cleared within 7 days?",
+      "Information": "NHS.UK guidance recommends a primary-care review for these situations.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        117002
+      ]
+    },
+    {
+      "QuestionID": 1170004,
+      "AlgorithmID": 1170,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "After emergency features are excluded, are itchy or watery eyes still presumed to be allergy without an in-person examination?",
+      "Information": "Remote assessment cannot safely confirm allergy or exclude infection, corneal disease, foreign body or contact-lens complications in this UAT pathway.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        117003
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 117001,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency eye precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 for major trauma, collapse or severe systemic deterioration; otherwise proceed immediately to the locally approved emergency eye destination. Do not drive with impaired vision, rub the eye, remove an embedded object or apply drops after chemical exposure unless directed. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: vision worsens; pain, vomiting or confusion increases."
+      ]
+    },
+    {
+      "AdviceID": 117002,
+      "AlgorithmOrder": 2,
+      "Title": "Priority eye assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange prompt in-person assessment through the Qatar pathway approved for UAT. Neonates, contact-lens wearers and immunocompromised patients need age/risk-specific review. Stop wearing contact lenses until clinically cleared.",
+        "Call Back If: symptoms worsen; pain, light sensitivity or vision change develops."
+      ]
+    },
+    {
+      "AdviceID": 117003,
+      "AlgorithmOrder": 3,
+      "Title": "In-person assessment of presumed eye allergy",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Avoid rubbing the eyes and stop contact-lens wear. Arrange in-person assessment before selecting drops or antihistamines; age, pregnancy, allergy, glaucoma and interactions must be checked.",
+        "Call Back If: pain, light sensitivity or vision change; swelling, fever or systemic allergy develops."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Conjunctivitis\", https://www.nhs.uk/conditions/conjunctivitis/ (page last reviewed 23 April 2024)"
+  ],
+  "searchwords": [
+    "eye allergy",
+    "itchy watery eyes",
+    "allergic conjunctivitis",
+    "red itchy eyes",
+    "itchy and watery",
+    "watery eyes",
+    "itchy eyes"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "DURATION",
+      "Question": "How long have symptoms lasted?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 7 source.",
+      "Source": "Eye - Allergy"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "One eye or both?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 7 source.",
+      "Source": "Eye - Allergy"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Any known allergy trigger (pollen, pet, new product)?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 7 source.",
+      "Source": "Eye - Allergy"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the exact age; is the patient pregnant; and are there chemical/foreign-body exposure, injury, contact-lens use, severe pain, light sensitivity, reduced vision, unequal pupils, fever, immune suppression or safeguarding concerns?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 7 source.",
+      "Source": "Eye - Allergy"
+    }
+  ]
+}

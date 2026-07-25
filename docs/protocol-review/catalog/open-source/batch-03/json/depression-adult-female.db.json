@@ -1,0 +1,244 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited NHS.UK pages under the Open Government Licence v3.0; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Local disposition mappings and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1054,
+    "Title": "Depression - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 3,
+    "Definition": [
+      "Depression assessment decomposed from NHS.UK's published when-to-get-help guidance.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [
+        "Depression can include persistent low mood, loss of interest, hopelessness, sleep or appetite change, and impaired daily function.",
+        "Symptoms present most of the day, nearly every day, for more than 2 weeks warrant clinical assessment.",
+        "Suicidal thoughts or self-harm require immediate dedicated safety assessment."
+      ],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "PENDING: Qatar adult, pediatric, obstetric, emergency, specialty, mental-health, and nursing governance review"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999, give the exact location, and do not ask the person to drive. Keep them engaged and continuously supervised by a trusted safe adult when possible. Reduce access to means only without confrontation or danger. For a child or vulnerable person, follow the approved safeguarding pathway. If contact is lost or help is refused despite immediate risk, use the approved welfare-check and emergency-handover procedure. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "RESEARCH_REQUIRED - verify source review date during governance",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Crown copyright (NHS.UK content), reused under the Open Government Licence v3.0. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1054001,
+      "AlgorithmID": 1054,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Are suicidal or self-harm thoughts, a plan, access to means, or an attempt the primary concern?",
+      "Information": "Any suicide or self-harm concern requires the dedicated safety pathway before routine depression assessment.",
+      "GotoGuideline": "Suicide Concerns",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1054002,
+      "AlgorithmID": 1054,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Are there thoughts of suicide with a plan or means, or has a self-harm attempt been made?",
+      "Information": "Universal emergency rule-out added ahead of the depression guidance itself - NHS.UK's depression page explicitly flags suicidal thoughts and self-harm as serious symptoms requiring dedicated urgent support.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        105401
+      ]
+    },
+    {
+      "QuestionID": 1054003,
+      "AlgorithmID": 1054,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "For a patient aged 12 to 17, is private assessment not currently safe or possible, might the caregiver be unsafe, or is there abuse, neglect, bullying, substance use, psychosis, risk to another person, inability to remain safe, or self-harm/suicidal thinking without the immediate plan-or-attempt features above?",
+      "Information": "NICE child-depression and self-harm guidance requires child-specific assessment of home/social context, abuse or bullying, substances, self-harm/suicide and safeguarding, with an opportunity for private assessment. Exact Qatar safeguarding, mental-health destination, confidentiality, reporting, and disconnect procedure remain GOVERNANCE_REQUIRED.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        105402
+      ]
+    },
+    {
+      "QuestionID": 1054004,
+      "AlgorithmID": 1054,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Have symptoms of low mood, loss of interest, or hopelessness been present for most of the day, nearly every day, for more than 2 weeks?",
+      "Information": "NHS.UK guidance: see a GP if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        105403
+      ]
+    },
+    {
+      "QuestionID": 1054005,
+      "AlgorithmID": 1054,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Is the patient aged 12 to 17 with low mood or loss of interest, with none of the emergency or safeguarding features above?",
+      "Information": "A child or adolescent requires age-appropriate clinical assessment and safeguarding review rather than the adult-derived brief-low-mood self-care branch. Exact Qatar pediatric mental-health destination and timing remain GOVERNANCE_REQUIRED.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        105404
+      ]
+    },
+    {
+      "QuestionID": 1054006,
+      "AlgorithmID": 1054,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "For an adult, is this a brief low mood of less than 2 weeks, with none of the features above?",
+      "Information": "NHS.UK guidance notes a low mood may improve after a short time without needing clinical intervention.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        105405
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 105401,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency mental-health response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999, give the exact location, and do not ask the person to drive. Keep them engaged and continuously supervised by a trusted safe adult when possible. Reduce access to means only without confrontation or danger. For a child or vulnerable person, follow the approved safeguarding pathway. If contact is lost or help is refused despite immediate risk, use the approved welfare-check and emergency-handover procedure. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: caller becomes unreachable; attempt, plan, intent, or access to means; unsafe supervision or risk to another person."
+      ]
+    },
+    {
+      "AdviceID": 105402,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent child mental-health and safeguarding response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Keep the young person engaged in a safe setting and arrange urgent assessment through the Qatar governance-approved child mental-health/safeguarding pathway. Offer a safe opportunity to speak privately; do not rely on a caregiver who may be unsafe and do not promise absolute confidentiality. If immediate danger, an attempt, plan/intent, access to means, severe agitation/psychosis, unsafe supervision, or loss of contact develops, call 999 and follow the approved emergency handover or welfare-check procedure. Exact service, reporting, consent, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED.",
+        "Call Back If: attempt, plan, intent, or access to means; psychosis, severe agitation, risk to another person, or inability to remain safe; unsafe caregiver, loss of contact, or no safe supervision."
+      ]
+    },
+    {
+      "AdviceID": 105403,
+      "AlgorithmOrder": 3,
+      "Title": "Depression clinical follow-up",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange clinical or mental-health assessment through the approved Qatar pathway.",
+        "Call Back If: thoughts of self-harm develop; symptoms worsen significantly."
+      ]
+    },
+    {
+      "AdviceID": 105404,
+      "AlgorithmOrder": 4,
+      "Title": "Child depression assessment required",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange age-appropriate child or adolescent mental-health assessment through the Qatar governance-approved pathway. Confirm a safe opportunity for private assessment and review home, school, bullying/abuse, substance use, self-harm, suicide, risk to others, safe supervision, and safeguarding. Exact destination, consent and reporting remain GOVERNANCE_REQUIRED.",
+        "Call Back If: self-harm or suicidal thinking; psychosis, severe agitation, or inability to remain safe; abuse, bullying, unsafe caregiver, or loss of safe supervision."
+      ]
+    },
+    {
+      "AdviceID": 105405,
+      "AlgorithmOrder": 5,
+      "Title": "Support for a brief adult low mood",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "For an adult with no emergency, urgent, pregnancy/postpartum, or safeguarding features, stay connected with trusted supports and maintain routine activity and sleep. Arrange assessment through the approved Qatar pathway if low mood persists beyond 2 weeks.",
+        "Call Back If: mood persists beyond 2 weeks; thoughts of self-harm develop."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Symptoms - Clinical depression\", https://www.nhs.uk/mental-health/conditions/clinical-depression/symptoms/ (page last reviewed 5 July 2023)",
+    "NICE, \"Depression in children and young people: identification and management\", https://www.nice.org.uk/guidance/ng134/chapter/recommendations",
+    "NICE, \"Self-harm: assessment, management and preventing recurrence\", https://www.nice.org.uk/guidance/ng225/chapter/recommendations"
+  ],
+  "searchwords": [
+    "depression",
+    "feeling depressed",
+    "low mood",
+    "no interest in anything"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, are they pregnant/recently postpartum, and how long has the low mood or functional change lasted? For a child/adolescent, confirm private safe assessment and approved safeguarding/caregiver involvement.",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Depression"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Any thoughts of self-harm or suicide?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Depression"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "How is this affecting daily life (work, sleep, appetite, relationships)?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Depression"
+    }
+  ]
+}

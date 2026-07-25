@@ -1,0 +1,166 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1375,
+    "Title": "Postpartum - Depression - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 4,
+    "Definition": [
+      "UAT-only mental-health assessment for a patient who gave birth within the previous 12 months, including emergency recognition of postpartum psychosis and immediate safety risk; not approved for real-patient or production use.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "Pending qualified Qatar adult and adolescent perinatal mental-health and safeguarding review"
+    },
+    "FirstAid": [
+      "Call Qatar 999 for an ambulance for immediate danger or suspected postpartum psychosis and follow the emergency operator's instructions. Keep the patient and baby with a safe, responsible adult; do not leave either unsupervised while risk is present. Remove access to immediate means of harm only when this can be done safely. Do not self-drive or rely on the patient to travel alone. If the patient cannot speak privately or the accompanying person may be unsafe, do not disclose sensitive information and follow the Qatar safeguarding escalation approved for this UAT environment. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2026-07-25",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1375001,
+      "AlgorithmID": 1375,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Are thoughts of suicide or immediate self-harm the primary concern?",
+      "Information": "Suicidal thoughts or immediate self-harm risk belong in the Suicide Concerns pathway.",
+      "GotoGuideline": "Suicide Concerns",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1375002,
+      "AlgorithmID": 1375,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there imminent danger; a current suicide or self-harm plan or action; thoughts, intent, or behavior suggesting harm to the baby or another person; severe confusion, hallucinations, delusions, mania, or extreme agitation; inability to care safely for self or baby; or no safe adult supervision when safety is uncertain?",
+      "Information": "NHS guidance identifies suicide, self-harm, harm to the baby, and postpartum psychosis as emergency concerns. Postpartum psychosis can worsen rapidly and may affect insight, so caregiver observations and immediate safety are material.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        137501
+      ]
+    },
+    {
+      "QuestionID": 1375003,
+      "AlgorithmID": 1375,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Within 12 months after giving birth, is low mood, loss of interest, hopelessness, guilt, persistent anxiety, irritability, inability to sleep even when able, difficulty bonding, or difficulty coping lasting more than 2 weeks, worsening, or substantially affecting daily care, with all emergency features excluded?",
+      "Information": "NHS.UK guidance recommends speaking promptly with a maternity, primary-care, or community health clinician if postnatal depression is suspected.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        137502
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 137501,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency postpartum mental-health precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 for an ambulance for immediate danger or suspected postpartum psychosis and follow the emergency operator's instructions. Keep the patient and baby with a safe, responsible adult; do not leave either unsupervised while risk is present. Remove access to immediate means of harm only when this can be done safely. Do not self-drive or rely on the patient to travel alone. If the patient cannot speak privately or the accompanying person may be unsafe, do not disclose sensitive information and follow the Qatar safeguarding escalation approved for this UAT environment. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: any immediate risk to the patient, baby, or another person; psychosis, severe confusion, mania, or rapidly changing behavior; safe supervision becomes unavailable."
+      ]
+    },
+    {
+      "AdviceID": 137502,
+      "AlgorithmOrder": 2,
+      "Title": "Prompt postpartum mental-health assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange prompt assessment through HMC Perinatal Psychiatry, the Virtual Women's Mental Health service, maternity or primary care using the exact Qatar referral route approved for this UAT environment. The published access route is HMC 16000, option 4; current operating hours and out-of-hours fallback must be confirmed operationally before nurse UAT. Treatment can include psychological support and clinician-prescribed medicine. Do not recommend starting, stopping, or changing psychiatric medicine by telephone; a qualified prescriber must assess the patient, including breastfeeding, other medicines, previous bipolar or psychotic illness, and individual risks. Ensure a safe support person knows the callback plan when the patient consents and it is safe.",
+        "Call Back If: mood or ability to cope worsens; thoughts of self-harm or harm to the baby develop; confusion, hallucinations, unusual beliefs, agitation, or markedly reduced need for sleep develops."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Post-natal depression\", https://www.nhs.uk/mental-health/conditions/post-natal-depression/ (page last reviewed 18 March 2026)",
+    "NHS.UK, \"Postpartum psychosis\", https://www.nhs.uk/mental-health/conditions/post-partum-psychosis/ (page last reviewed 18 October 2023)",
+    "Hamad Medical Corporation, \"Perinatal Psychiatry\", https://hamad.qa/EN/Hospitals-and-services/HMC-Mental-Health-Service/Our-Services/Pages/Perinatal-Psychiatry.aspx (accessed 25 July 2026)",
+    "Hamad Medical Corporation, \"Supporting Women's Mental Health Needs — Virtual Women's Mental Health Helpline Service\", 2026, https://hamad.qa/EN/Documents/2026/15062026/Supporting-Womens-Mental-Health-Needs_Virtual-Womens-Mental-Health-Helpline-Service.pdf",
+    "World Health Organization, \"Assessing and supporting adolescents' capacity for autonomous decision-making in health care settings\", 2021"
+  ],
+  "searchwords": [
+    "postpartum depression",
+    "postnatal depression",
+    "feeling really low since having the baby",
+    "struggling emotionally after birth"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "How old is the patient, when did they give birth, and is the baby currently with them?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 17 source.",
+      "Source": "Postpartum - Depression"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Can the patient speak privately and safely, away from anyone who may be controlling or unsafe? If under 18, apply the Qatar adolescent consent, safeguarding, and mandatory-reporting pathway approved for UAT.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 17 source.",
+      "Source": "Postpartum - Depression"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Are there thoughts, plans, or actions involving suicide, self-harm, harm to the baby, or harm to anyone else?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 17 source.",
+      "Source": "Postpartum - Depression"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "Is there severe confusion, extreme agitation, very little need for sleep with unusually high energy, hallucinations, fixed unusual beliefs, or behavior that is markedly unlike the patient's usual self?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 17 source.",
+      "Source": "Postpartum - Depression"
+    },
+    {
+      "Order": 5,
+      "Category": "YES_NO",
+      "Question": "Is a safe and reliable adult physically present and able to care for the patient and baby right now?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 17 source.",
+      "Source": "Postpartum - Depression"
+    }
+  ]
+}

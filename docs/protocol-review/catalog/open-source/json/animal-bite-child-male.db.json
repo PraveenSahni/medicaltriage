@@ -1,0 +1,199 @@
+{
+  "_source": "UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation content generated deterministically from src/data/openSourceGuidelines/batch01.ts and cited public sources. It is not licensed STCC content. All disposition and redirect branches are non-telemedicine pending Qatar clinical and nursing governance approval. Generation does not import or deploy records. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1011,
+    "Title": "Animal Bite - Male (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Male",
+    "Age": "Child (0-17 years)",
+    "GenderAtBirth": "Male",
+    "Acuity": 3,
+    "Definition": [
+      "Animal or human bite wound assessment decomposed from NHS.UK's published when-to-get-help guidance.",
+      "Child patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 and do not drive for uncontrolled bleeding, major tissue injury, face/neck airway threat, shock, reduced consciousness, or a dangerous animal/ongoing threat. Apply continuous direct pressure with a clean dressing unless an object is embedded. Move to safety without attempting to capture the animal. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2025-10-27",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1011001,
+      "AlgorithmID": 1011,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Was this an insect bite rather than a mammal or human bite or an insect sting?",
+      "Information": "A non-sting insect bite requires the authored Insect Bite pathway.",
+      "GotoGuideline": "Insect Bite",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1011002,
+      "AlgorithmID": 1011,
+      "DispositionLevel": null,
+      "QuestionOrder": 2,
+      "Question": "Was this a bee, wasp, or yellow-jacket sting rather than a mammal or human bite?",
+      "Information": "A bee, wasp, or yellow-jacket sting requires the authored Bee or Yellow Jacket Sting pathway.",
+      "GotoGuideline": "Bee or Yellow Jacket Sting",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1011003,
+      "AlgorithmID": 1011,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is the wound large or deep, or is bleeding not stopping with direct pressure?",
+      "Information": "NHS.UK animal and human bites guidance lists a large or deep wound, or bleeding that cannot be stopped, as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        101101
+      ]
+    },
+    {
+      "QuestionID": 1011004,
+      "AlgorithmID": 1011,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Might there be debris such as teeth, hair, or dirt in the wound; is it hot, swollen, or leaking fluid; is there fever or chills; does it smell unpleasant; is it on the hands, feet, face, or head; was it a human bite; or has the caller not had a tetanus vaccine in the last 10 years?",
+      "Information": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for same-day assessment rather than manage entirely at home.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        101102
+      ]
+    },
+    {
+      "QuestionID": 1011005,
+      "AlgorithmID": 1011,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this a minor, shallow bite with none of the features above?",
+      "Information": "NHS.UK guidance describes most bites as not serious and manageable at home with basic first aid.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        101103
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 101101,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency bite response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and do not drive for uncontrolled bleeding, major tissue injury, face/neck airway threat, shock, reduced consciousness, or a dangerous animal/ongoing threat. Apply continuous direct pressure with a clean dressing unless an object is embedded. Move to safety without attempting to capture the animal. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: bleeding will not stop; pale, cold, faint, confused, or unresponsive person; airway, face, hand, genital, tendon, nerve, or major-joint injury."
+      ]
+    },
+    {
+      "AdviceID": 101102,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent bite wound review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Clean the wound with soap and warm water, cover with a clean dressing, and arrange same-day medical review for possible antibiotics or tetanus assessment.",
+        "Call Back If: increasing redness or swelling; fever develops."
+      ]
+    },
+    {
+      "AdviceID": 101103,
+      "AlgorithmOrder": 3,
+      "Title": "First aid while arranging bite assessment",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Wash the wound thoroughly with soap and running water, pat dry, and cover with a clean dressing; do not squeeze or deliberately make it bleed. Human/animal species, location, depth, rabies exposure, tetanus status, antibiotic need, immunocompromise, pregnancy, and medication choice require prompt in-person assessment under the approved Qatar pathway.",
+        "Call Back If: increasing warmth, swelling, redness, pain, pus, red streaks, or fever; loss of movement/feeling or worsening general condition."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Animal and human bites\", https://www.nhs.uk/conditions/animal-and-human-bites/ (page last reviewed 27 October 2025)"
+  ],
+  "searchwords": [
+    "animal bite",
+    "dog bite",
+    "cat bite",
+    "human bite"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, are they pregnant, immunocompromised, diabetic, or anticoagulated, what animal/person caused the bite, where is it, and where/when did exposure occur? Include rabies/tetanus history and safeguarding concerns.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Animal Bite"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "When did the bite happen?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Animal Bite"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Has the caller had a tetanus vaccine within the last 10 years?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Animal Bite"
+    },
+    {
+      "Order": 4,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+      "Rationale": "Child assessment adds safe-caregiver observations without inventing a different clinical threshold.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

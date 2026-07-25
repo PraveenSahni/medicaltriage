@@ -25,10 +25,10 @@ export const batch20Protocols: ProtocolInput[] = [
   {
     id: "oscg-postpartum-headache",
     titleEn: "Postpartum - Headache",
-    clinicalDefinitionEn: "Postpartum headache assessment decomposed from NHS.UK's published pre-eclampsia guidance, which explicitly covers the days/weeks after birth.",
+    clinicalDefinitionEn: "Postpartum headache assessment for a person who has given birth within the last year. Pre-eclampsia is especially relevant in the first days or weeks after birth; other pregnancy-related complications can occur later.",
     ageMin: 12,
     mode: "after-hours",
-    patientGroup: "adult",
+    patientGroup: "mixed",
     acuity: 5,
     keywords: [
       { phrase: "headache after giving birth", weight: 100 },
@@ -39,7 +39,8 @@ export const batch20Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-postpartumheadache-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How many days/weeks since delivery?" },
       { id: "oscg-postpartumheadache-iaq2", sequence: 2, responseType: "PAIN_SCALE", promptTextEn: "How severe is the headache, 0-10?" },
-      { id: "oscg-postpartumheadache-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any vision changes, swelling, or pain below the ribs?" }
+      { id: "oscg-postpartumheadache-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any vision changes, swelling, or pain below the ribs?" },
+      { id: "oscg-postpartumheadache-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?" }
     ],
     questions: [
       {
@@ -57,27 +58,27 @@ export const batch20Protocols: ProtocolInput[] = [
         questionOrder: 1
       },
       {
-        id: "oscg-postpartumheadache-q1-selfcare",
+        id: "oscg-postpartumheadache-q1-urgent",
         acuityOrder: 2,
-        severity: "Self-care",
-        questionTextEn: "Is this a mild headache relieved by simple painkillers, with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "A mild headache responding to simple pain relief without other pre-eclampsia signs is less concerning, though any postpartum headache should still be monitored closely.",
+        severity: "Urgent",
+        questionTextEn: "Is there a new or persistent postpartum headache without the emergency features above?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "A new or persistent headache after birth requires clinical assessment because remote questioning alone cannot exclude a hypertensive, neurological, anaesthetic-related, or infectious cause.",
         redFlag: false,
-        keywords: ["mild postpartum headache relieved by painkillers"],
+        keywords: ["new postpartum headache", "persistent postpartum headache"],
         careAdviceIds: ["oscg-postpartumheadache-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-postpartumheadache-emergency-advice", titleEn: "Emergency postpartum pre-eclampsia precautions", instructionTextEn: "Call the maternity unit directly if the number is available; otherwise arrange emergency transport immediately. These symptoms can be serious and need checking right away.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening headache", "vision changes worsen"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-postpartumheadache-selfcare-advice", titleEn: "Home care for a mild postpartum headache", instructionTextEn: "Rest, stay hydrated, and take paracetamol as directed. Watch closely for any vision changes, swelling, or pain below the ribs over the next few days.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["headache becomes severe", "vision changes or swelling develop"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-postpartumheadache-emergency-advice", titleEn: "Emergency postpartum pre-eclampsia precautions", instructionTextEn: "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening headache", "vision changes worsen"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-postpartumheadache-selfcare-advice", titleEn: "Prompt postpartum headache review", instructionTextEn: "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Seek emergency help on 999 if the headache becomes severe or vision change, fainting, seizure, breathing difficulty, chest pain, severe upper abdominal pain, or marked swelling develops.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["headache becomes severe", "vision changes or swelling develop"], displayOrder: 2, adviceCategory: "DISPOSITION" }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-03-23", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Adult" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset"],
+      sourceDocuments: ["NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset", "CDC Hear Her, urgent maternal warning signs during pregnancy or within one year after pregnancy, https://www.cdc.gov/hearher/"],
       contentNotice: "Decomposed from NHS.UK's published pre-eclampsia guidance (Crown copyright, reused under the Open Government Licence), applied to the postpartum headache presentation specifically. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
     })
   },
@@ -88,10 +89,10 @@ export const batch20Protocols: ProtocolInput[] = [
   {
     id: "oscg-postpartum-high-blood-pressure",
     titleEn: "Postpartum - High Blood Pressure",
-    clinicalDefinitionEn: "Postpartum high blood pressure assessment decomposed from NHS.UK's published pre-eclampsia guidance.",
+    clinicalDefinitionEn: "Postpartum high blood pressure assessment after birth; a reported reading must be confirmed and interpreted by a clinician using an approved obstetric blood-pressure pathway.",
     ageMin: 12,
     mode: "after-hours",
-    patientGroup: "adult",
+    patientGroup: "mixed",
     acuity: 5,
     keywords: [
       { phrase: "high blood pressure after birth", weight: 100 },
@@ -102,7 +103,8 @@ export const batch20Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-postpartumhighbp-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What is the blood pressure reading, if measured?" },
       { id: "oscg-postpartumhighbp-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How many days/weeks since delivery?" },
-      { id: "oscg-postpartumhighbp-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any headache, vision changes, or swelling?" }
+      { id: "oscg-postpartumhighbp-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any headache, vision changes, or swelling?" },
+      { id: "oscg-postpartumhighbp-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?" }
     ],
     questions: [
       {
@@ -123,20 +125,20 @@ export const batch20Protocols: ProtocolInput[] = [
         id: "oscg-postpartumhighbp-q1-urgent",
         acuityOrder: 2,
         severity: "Urgent",
-        questionTextEn: "Is the blood pressure elevated without the emergency features above?",
+        questionTextEn: "Has a clinician said the postpartum blood pressure is high, or is there a new home reading above the patient's clinician-agreed range, without the emergency features above?",
         dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "Any elevated blood pressure reading after birth should be checked promptly given the pre-eclampsia risk window extends past delivery.",
+        rationaleEn: "The source confirms high blood pressure can be an early sign of postpartum pre-eclampsia but does not provide a complete telephone threshold or measurement protocol; the reading needs prompt confirmation under an approved obstetric pathway.",
         redFlag: false,
         keywords: ["mildly elevated blood pressure postpartum"],
         careAdviceIds: ["oscg-postpartumhighbp-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-postpartumhighbp-emergency-advice", titleEn: "Emergency postpartum pre-eclampsia precautions", instructionTextEn: "Call the maternity unit directly if the number is available; otherwise arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening headache or vision changes"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-postpartumhighbp-urgent-advice", titleEn: "Urgent postpartum blood pressure review", instructionTextEn: "Arrange prompt review with a midwife or GP to recheck the blood pressure.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["headache, vision changes, or swelling develop"], displayOrder: 2, adviceCategory: "DISPOSITION" }
+      { id: "oscg-postpartumhighbp-emergency-advice", titleEn: "Emergency postpartum pre-eclampsia precautions", instructionTextEn: "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening headache or vision changes"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-postpartumhighbp-urgent-advice", titleEn: "Urgent postpartum blood pressure review", instructionTextEn: "Arrange prompt blood-pressure confirmation through the locally approved Qatar maternity pathway; the exact non-emergency destination and measurement thresholds remain GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["headache, vision changes, or swelling develop"], displayOrder: 2, adviceCategory: "DISPOSITION" }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-03-23", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Adult" },
     provenance: buildGuidelineProvenance({
@@ -154,7 +156,7 @@ export const batch20Protocols: ProtocolInput[] = [
     clinicalDefinitionEn: "Postpartum vision change assessment decomposed from NHS.UK's published pre-eclampsia guidance, distinct from the general Vision Loss or Change protocol (batch14).",
     ageMin: 12,
     mode: "after-hours",
-    patientGroup: "adult",
+    patientGroup: "mixed",
     acuity: 5,
     keywords: [
       { phrase: "vision changes after giving birth", weight: 100 },
@@ -167,14 +169,15 @@ export const batch20Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-postpartumvision-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How many days/weeks since delivery?" },
       { id: "oscg-postpartumvision-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "Describe the vision change." },
-      { id: "oscg-postpartumvision-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any headache, swelling, or pain below the ribs?" }
+      { id: "oscg-postpartumvision-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any headache, swelling, or pain below the ribs?" },
+      { id: "oscg-postpartumvision-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?" }
     ],
     questions: [
       {
         id: "oscg-postpartumvision-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Is there blurred vision or flashing lights, along with a severe headache, pain below the ribs, sudden swelling, feeling very unwell, or vomiting?",
+        questionTextEn: "Is there a new postpartum vision change such as blurred vision, flashing lights, spots, or loss of vision, whether or not headache, upper abdominal pain, swelling, or vomiting is also present?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         rationaleEn: "NHS.UK pre-eclampsia guidance lists vision problems as a key warning sign that can appear in the days or weeks after birth, needing immediate evaluation.",
         redFlag: true,
@@ -186,7 +189,7 @@ export const batch20Protocols: ProtocolInput[] = [
       }
     ],
     careAdvice: [
-      { id: "oscg-postpartumvision-emergency-advice", titleEn: "Emergency postpartum vision change precautions", instructionTextEn: "Call the maternity unit directly if the number is available; otherwise arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["vision worsens", "headache worsens"], displayOrder: 1, adviceCategory: "DISPOSITION" }
+      { id: "oscg-postpartumvision-emergency-advice", titleEn: "Emergency postpartum vision change precautions", instructionTextEn: "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["vision worsens", "headache worsens"], displayOrder: 1, adviceCategory: "DISPOSITION" }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-03-23", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Adult" },
     provenance: buildGuidelineProvenance({
@@ -204,7 +207,7 @@ export const batch20Protocols: ProtocolInput[] = [
     clinicalDefinitionEn: "C-section recovery symptom assessment decomposed from NHS.UK's published C-section recovery guidance.",
     ageMin: 12,
     mode: "after-hours",
-    patientGroup: "adult",
+    patientGroup: "mixed",
     acuity: 3,
     keywords: [
       { phrase: "c section incision", weight: 100 },
@@ -217,16 +220,17 @@ export const batch20Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-csectionsymptoms-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How many days since the C-section?" },
       { id: "oscg-csectionsymptoms-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "Describe how the wound looks." },
-      { id: "oscg-csectionsymptoms-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any fever, heavy bleeding, or leg pain?" }
+      { id: "oscg-csectionsymptoms-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any fever, heavy bleeding, leg pain, chest pain, or breathing difficulty?" },
+      { id: "oscg-csectionsymptoms-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?" }
     ],
     questions: [
       {
         id: "oscg-csectionsymptoms-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Is the wound increasingly red, painful, and swollen with pus or foul-smelling discharge, is there severe pain at the incision, heavy vaginal bleeding, swelling or pain in the lower leg, or a cough/shortness of breath?",
+        questionTextEn: "Is there trouble breathing, chest pain, fainting, heavy or gushing vaginal bleeding, confusion, or rapidly worsening severe pain or illness?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
-        rationaleEn: "NHS.UK C-section recovery guidance lists these as reasons to contact a midwife or GP immediately - they can indicate wound infection, hemorrhage, or a blood clot.",
+        rationaleEn: "Breathing difficulty, chest pain, fainting, heavy bleeding, confusion, or rapidly worsening illness are urgent maternal warning signs requiring immediate emergency care.",
         redFlag: true,
         keywords: ["infected c section wound", "heavy bleeding after c section", "leg swelling after c section"],
         careAdviceIds: ["oscg-csectionsymptoms-emergency-advice"],
@@ -238,13 +242,13 @@ export const batch20Protocols: ProtocolInput[] = [
         id: "oscg-csectionsymptoms-q1-urgent",
         acuityOrder: 2,
         severity: "Urgent",
-        questionTextEn: "Is there leaking urine, pain when urinating, or mild wound discomfort without the emergency features above?",
+        questionTextEn: "Is the wound increasingly red, painful, swollen, opening, or draining pus or foul-smelling fluid; is there fever, persistent severe incision pain, painful urination, or leaking urine without the emergency features above?",
         dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK guidance lists urinary symptoms after a C-section as a reason for prompt review.",
+        rationaleEn: "NHS.UK guidance lists wound infection and urinary symptoms after a C-section as requiring prompt clinical review.",
         redFlag: false,
         keywords: ["pain peeing after c section", "leaking urine after c section"],
         careAdviceIds: ["oscg-csectionsymptoms-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
@@ -258,15 +262,15 @@ export const batch20Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["normal c section recovery"],
         careAdviceIds: ["oscg-csectionsymptoms-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-csectionsymptoms-emergency-advice", titleEn: "Emergency C-section complication precautions", instructionTextEn: "Contact your midwife or GP immediately, or arrange emergency transport - these are signs of infection, hemorrhage, or a blood clot.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening pain or bleeding", "breathing difficulty"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-csectionsymptoms-urgent-advice", titleEn: "Urgent C-section urinary symptom review", instructionTextEn: "Arrange same-day medical review for these urinary symptoms.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["symptoms worsen", "fever develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-csectionsymptoms-selfcare-advice", titleEn: "Home care for normal C-section recovery", instructionTextEn: "Gently clean and dry the wound daily, wear loose clothing and cotton underwear, and use period pads rather than tampons. Take paracetamol or ibuprofen for pain (avoid aspirin and codeine-containing products if breastfeeding). Stay mobile with gentle walking to help prevent blood clots, and avoid driving, heavy lifting, exercise, and sex for about 6 weeks.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["wound becomes red, painful, or swollen", "fever, heavy bleeding, or leg pain develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-csectionsymptoms-emergency-advice", titleEn: "Emergency C-section complication precautions", instructionTextEn: "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler about the recent C-section.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening pain or bleeding", "breathing difficulty"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-csectionsymptoms-urgent-advice", titleEn: "Urgent C-section complication review", instructionTextEn: "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["symptoms worsen", "fever develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-csectionsymptoms-selfcare-advice", titleEn: "Home care for normal C-section recovery", instructionTextEn: "Follow the discharge team's wound-care and activity instructions. Keep the wound clean and dry, use sanitary pads rather than tampons, and increase gentle activity gradually. A clinician or pharmacist should confirm any pain medicine is suitable for this patient, including during breastfeeding.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["wound becomes red, painful, swollen, opens, or drains fluid", "fever, heavy bleeding, chest pain, breathing difficulty, or one-sided leg pain develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-01-04", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Adult" },
     provenance: buildGuidelineProvenance({
@@ -284,7 +288,7 @@ export const batch20Protocols: ProtocolInput[] = [
     clinicalDefinitionEn: "Postpartum leg pain assessment, generalized from NHS.UK's C-section recovery blood-clot warning sign to all postpartum deliveries, given the same elevated clot risk applies.",
     ageMin: 12,
     mode: "after-hours",
-    patientGroup: "adult",
+    patientGroup: "mixed",
     acuity: 5,
     keywords: [
       { phrase: "leg pain after having the baby", weight: 100 },
@@ -296,7 +300,8 @@ export const batch20Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-postpartumlegpain-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How many days/weeks since delivery?" },
       { id: "oscg-postpartumlegpain-iaq2", sequence: 2, responseType: "LOCATION", promptTextEn: "Which leg, and where exactly?" },
-      { id: "oscg-postpartumlegpain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any shortness of breath or chest pain?" }
+      { id: "oscg-postpartumlegpain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any shortness of breath or chest pain?" },
+      { id: "oscg-postpartumlegpain-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?" }
     ],
     questions: [
       {
@@ -329,8 +334,8 @@ export const batch20Protocols: ProtocolInput[] = [
       }
     ],
     careAdvice: [
-      { id: "oscg-postpartumlegpain-emergency-advice", titleEn: "Emergency postpartum blood clot precautions", instructionTextEn: "Arrange emergency transport immediately - this combination can indicate a blood clot that has traveled to the lungs.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening breathing difficulty", "chest pain develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-postpartumlegpain-urgent-advice", titleEn: "Urgent postpartum leg pain review", instructionTextEn: "Arrange same-day medical review to rule out a blood clot given the elevated postpartum risk.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["breathing difficulty or chest pain develops", "swelling worsens"], displayOrder: 2, adviceCategory: "DISPOSITION" }
+      { id: "oscg-postpartumlegpain-emergency-advice", titleEn: "Emergency postpartum blood clot precautions", instructionTextEn: "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening breathing difficulty", "chest pain develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-postpartumlegpain-urgent-advice", titleEn: "Urgent postpartum leg pain review", instructionTextEn: "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call 999 if chest pain, breathing difficulty, fainting, or coughing blood develops.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["breathing difficulty or chest pain develops", "swelling worsens"], displayOrder: 2, adviceCategory: "DISPOSITION" }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-01-04", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Adult" },
     provenance: buildGuidelineProvenance({
@@ -348,7 +353,7 @@ export const batch20Protocols: ProtocolInput[] = [
     clinicalDefinitionEn: "Postpartum leg swelling assessment, generalized from the same NHS.UK C-section recovery blood-clot warning sign as Postpartum - Leg Pain.",
     ageMin: 12,
     mode: "after-hours",
-    patientGroup: "adult",
+    patientGroup: "mixed",
     acuity: 4,
     keywords: [
       { phrase: "leg swelling after having the baby", weight: 100 },
@@ -359,7 +364,8 @@ export const batch20Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-postpartumlegswelling-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How many days/weeks since delivery?" },
       { id: "oscg-postpartumlegswelling-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Is one leg more swollen than the other?" },
-      { id: "oscg-postpartumlegswelling-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any shortness of breath or chest pain?" }
+      { id: "oscg-postpartumlegswelling-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any shortness of breath or chest pain?" },
+      { id: "oscg-postpartumlegswelling-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?" }
     ],
     questions: [
       {
@@ -400,14 +406,14 @@ export const batch20Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["mild even leg swelling postpartum"],
         careAdviceIds: ["oscg-postpartumlegswelling-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-postpartumlegswelling-emergency-advice", titleEn: "Emergency postpartum blood clot precautions", instructionTextEn: "Arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening breathing difficulty", "chest pain develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-postpartumlegswelling-urgent-advice", titleEn: "Urgent postpartum leg swelling review", instructionTextEn: "Arrange same-day medical review to rule out a blood clot.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["breathing difficulty or chest pain develops", "swelling worsens"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-postpartumlegswelling-emergency-advice", titleEn: "Emergency postpartum blood clot precautions", instructionTextEn: "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening breathing difficulty", "chest pain develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-postpartumlegswelling-urgent-advice", titleEn: "Urgent postpartum leg swelling review", instructionTextEn: "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["breathing difficulty or chest pain develops", "swelling worsens"], displayOrder: 2, adviceCategory: "DISPOSITION" },
       { id: "oscg-postpartumlegswelling-selfcare-advice", titleEn: "Home care for mild postpartum leg swelling", instructionTextEn: "Elevate the legs when resting, stay mobile with gentle walking, and drink plenty of fluids.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["one leg becomes more swollen than the other", "breathing difficulty develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-01-04", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Adult" },
@@ -426,7 +432,7 @@ export const batch20Protocols: ProtocolInput[] = [
     clinicalDefinitionEn: "Postpartum painful urination assessment, combining NHS.UK's C-section recovery urinary-symptom warning with the cystitis guidance already used for Urination Pain - Female (batch14).",
     ageMin: 12,
     mode: "after-hours",
-    patientGroup: "adult",
+    patientGroup: "mixed",
     acuity: 3,
     keywords: [
       { phrase: "painful urination after giving birth", weight: 100 },
@@ -438,14 +444,15 @@ export const batch20Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-postpartumurinepain-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How many days/weeks since delivery?" },
       { id: "oscg-postpartumurinepain-iaq2", sequence: 2, responseType: "TEMPERATURE", promptTextEn: "What is the temperature, if measured?" },
-      { id: "oscg-postpartumurinepain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any back/flank pain or blood in the urine?" }
+      { id: "oscg-postpartumurinepain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any back/flank pain or blood in the urine?" },
+      { id: "oscg-postpartumurinepain-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?" }
     ],
     questions: [
       {
         id: "oscg-postpartumurinepain-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Along with urinary symptoms, is there confusion, a very high or low temperature, or fast breathing?",
+        questionTextEn: "Along with urinary symptoms, is there confusion, trouble breathing or very fast breathing, fainting, cold or clammy skin, or rapidly worsening severe illness?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         rationaleEn: "These are sepsis red flags, and postpartum infection can progress quickly - always treated as an emergency.",
         redFlag: true,
@@ -465,14 +472,14 @@ export const batch20Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["pain peeing after delivery", "leaking urine after delivery"],
         careAdviceIds: ["oscg-postpartumurinepain-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-postpartumurinepain-emergency-advice", titleEn: "Emergency postpartum infection precautions", instructionTextEn: "Arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening confusion", "worsening breathing"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-postpartumurinepain-urgent-advice", titleEn: "Urgent postpartum urinary symptom review", instructionTextEn: "Arrange same-day medical review - postpartum urinary symptoms and infections need prompt treatment.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fever develops", "back pain worsens"], displayOrder: 2, adviceCategory: "DISPOSITION" }
+      { id: "oscg-postpartumurinepain-emergency-advice", titleEn: "Emergency postpartum infection precautions", instructionTextEn: "Call Qatar emergency services on 999 now. Do not let the patient drive.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening confusion", "worsening breathing"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-postpartumurinepain-urgent-advice", titleEn: "Urgent postpartum urinary symptom review", instructionTextEn: "Arrange prompt clinical assessment; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Postpartum urinary symptoms may need examination and testing.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fever develops", "back pain worsens"], displayOrder: 2, adviceCategory: "DISPOSITION" }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-01-04", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Adult" },
     provenance: buildGuidelineProvenance({
@@ -490,10 +497,10 @@ export const batch20Protocols: ProtocolInput[] = [
   {
     id: "oscg-postpartum-fever",
     titleEn: "Postpartum - Fever",
-    clinicalDefinitionEn: "Postpartum fever assessment, combining NHS.UK's C-section recovery infection warnings with standard, widely-taught postpartum sepsis recognition knowledge.",
+    clinicalDefinitionEn: "Postpartum fever or suspected infection assessment using published urgent maternal warning signs and C-section wound-infection guidance.",
     ageMin: 12,
     mode: "after-hours",
-    patientGroup: "adult",
+    patientGroup: "mixed",
     acuity: 5,
     keywords: [
       { phrase: "fever after giving birth", weight: 100 },
@@ -504,16 +511,17 @@ export const batch20Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-postpartumfever-iaq1", sequence: 1, responseType: "TEMPERATURE", promptTextEn: "What is the temperature?" },
       { id: "oscg-postpartumfever-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How many days/weeks since delivery?" },
-      { id: "oscg-postpartumfever-iaq3", sequence: 3, responseType: "OPEN_TEXT", promptTextEn: "Any wound redness, foul-smelling discharge, or breast tenderness?" }
+      { id: "oscg-postpartumfever-iaq3", sequence: 3, responseType: "OPEN_TEXT", promptTextEn: "Any wound redness, foul-smelling discharge, urinary symptoms, or breast tenderness?" },
+      { id: "oscg-postpartumfever-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?" }
     ],
     questions: [
       {
         id: "oscg-postpartumfever-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Along with the fever, is there confusion, fast breathing, a fast heart rate, feeling extremely unwell, foul-smelling vaginal discharge, or a wound that is red, painful, swollen, or leaking pus?",
+        questionTextEn: "Along with fever or feeling feverish, is there confusion, trouble breathing or very fast breathing, fainting, cold or clammy skin, or rapidly worsening severe illness?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
-        rationaleEn: "Postpartum sepsis is a leading cause of maternal death worldwide and can progress rapidly - widely-taught obstetric emergency knowledge, consistent with NHS.UK's C-section wound-infection warning generalized to any postpartum fever.",
+        rationaleEn: "These are systemic urgent maternal warning signs compatible with severe infection or sepsis and require immediate emergency care.",
         redFlag: true,
         keywords: ["fever with foul smelling discharge postpartum", "fever with confusion postpartum", "high fever after delivery"],
         careAdviceIds: ["oscg-postpartumfever-emergency-advice"],
@@ -525,25 +533,25 @@ export const batch20Protocols: ProtocolInput[] = [
         id: "oscg-postpartumfever-q1-urgent",
         acuityOrder: 2,
         severity: "Urgent",
-        questionTextEn: "Is there a mild fever without the emergency features above?",
+        questionTextEn: "Is the measured temperature 38 C or higher, or is there feverishness with foul-smelling vaginal discharge, worsening lower abdominal pain, urinary symptoms, breast redness or pain, or a wound that is red, painful, swollen, opening, or draining fluid, without the emergency features above?",
         dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "Any fever in the postpartum period should be evaluated promptly given the elevated infection risk.",
+        rationaleEn: "CDC lists a temperature of 100.4 F (38 C) or higher as an urgent maternal warning sign; focal postpartum infection features also need prompt clinical assessment.",
         redFlag: false,
         keywords: ["mild fever postpartum"],
         careAdviceIds: ["oscg-postpartumfever-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-postpartumfever-emergency-advice", titleEn: "Emergency postpartum sepsis precautions", instructionTextEn: "Arrange emergency transport immediately - postpartum infection can progress quickly and needs urgent hospital treatment.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening confusion", "worsening breathing"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-postpartumfever-urgent-advice", titleEn: "Urgent postpartum fever review", instructionTextEn: "Arrange same-day medical review - any postpartum fever needs prompt evaluation.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fever worsens", "any new symptoms develop"], displayOrder: 2, adviceCategory: "DISPOSITION" }
+      { id: "oscg-postpartumfever-emergency-advice", titleEn: "Emergency postpartum sepsis precautions", instructionTextEn: "Call Qatar emergency services on 999 now. Do not let the patient drive. Tell the call handler that the patient gave birth recently.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening confusion", "worsening breathing"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-postpartumfever-urgent-advice", titleEn: "Urgent postpartum fever review", instructionTextEn: "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fever worsens", "any new symptoms develop"], displayOrder: 2, adviceCategory: "DISPOSITION" }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-01-04", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Adult" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"Caesarean section - Recovery\" (wound infection warning, generalized to any postpartum fever), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023); standard, widely-taught postpartum sepsis recognition knowledge"],
-      contentNotice: "Combines the NHS.UK C-section recovery page's infection warning (generalized to postpartum fever broadly) with standard, non-proprietary postpartum sepsis emergency knowledge - not a single-source quote. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      sourceDocuments: ["NHS.UK, \"Caesarean section - Recovery\" (wound infection warning), https://www.nhs.uk/conditions/caesarean-section/recovery/", "CDC Hear Her urgent maternal warning signs (temperature 100.4 F / 38 C or higher; severe systemic symptoms), https://www.cdc.gov/hearher/"],
+      contentNotice: "Combines published C-section wound-infection guidance with CDC urgent maternal warning signs. Exact non-emergency Qatar routing remains a governance decision. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
     })
   },
 
@@ -556,7 +564,7 @@ export const batch20Protocols: ProtocolInput[] = [
     clinicalDefinitionEn: "Breastfeeding-related breast pain/engorgement/mastitis assessment decomposed from NHS.UK's published mastitis guidance.",
     ageMin: 12,
     mode: "after-hours",
-    patientGroup: "adult",
+    patientGroup: "mixed",
     acuity: 2,
     keywords: [
       { phrase: "breast pain breastfeeding", weight: 100 },
@@ -569,45 +577,65 @@ export const batch20Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-postpartumbreastpain-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How long has the breast pain/redness lasted?" },
       { id: "oscg-postpartumbreastpain-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Currently breastfeeding?" },
-      { id: "oscg-postpartumbreastpain-iaq3", sequence: 3, responseType: "TEMPERATURE", promptTextEn: "What is the temperature, if measured?" }
+      { id: "oscg-postpartumbreastpain-iaq3", sequence: 3, responseType: "TEMPERATURE", promptTextEn: "What is the temperature, if measured?" },
+      { id: "oscg-postpartumbreastpain-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?" }
     ],
     questions: [
       {
-        id: "oscg-postpartumbreastpain-q0-urgent",
+        id: "oscg-postpartumbreastpain-q0-emergency",
         acuityOrder: 1,
+        severity: "Emergency",
+        questionTextEn: "Is the postpartum patient confused, difficult to wake, fainting or collapsing, severely short of breath, blue or grey, having a seizure, unable to keep fluids down and rapidly worsening, or otherwise appearing critically unwell with the breast symptoms?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+        rationaleEn: "Altered responsiveness, collapse, severe breathing difficulty, seizure or rapid systemic deterioration can indicate sepsis or another life-threatening postpartum complication and require emergency assessment.",
+        redFlag: true,
+        keywords: ["mastitis with sepsis", "collapse postpartum breast infection", "confusion with mastitis"],
+        careAdviceIds: ["oscg-postpartumbreastpain-emergency-advice"],
+        telemedicineEligible: false,
+        dispositionLevel: 100,
+        questionOrder: 1
+      },
+      {
+        id: "oscg-postpartumbreastpain-q0-urgent",
+        acuityOrder: 2,
         severity: "Urgent",
-        questionTextEn: "Have symptoms not improved 12-24 hours after home treatment, not improved 48 hours after starting antibiotics, or is this mastitis in someone not breastfeeding?",
+        questionTextEn: "After emergency features are excluded, is the measured temperature 38 degrees Celsius or higher, is there shaking chills or feeling systemically unwell, is breast redness or swelling spreading rapidly, have symptoms not improved 12-24 hours after home treatment or 48 hours after starting antibiotics, or is this mastitis in someone not breastfeeding?",
         dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK mastitis guidance recommends seeing a GP in these situations.",
+        rationaleEn: "Postpartum fever and systemic illness require prompt clinical assessment, and NHS.UK mastitis guidance recommends clinical review when symptoms fail to improve or occur outside breastfeeding.",
         redFlag: false,
-        keywords: ["mastitis not improving with treatment", "mastitis not breastfeeding"],
+        keywords: ["postpartum fever with mastitis", "mastitis not improving with treatment", "mastitis not breastfeeding"],
         careAdviceIds: ["oscg-postpartumbreastpain-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
       {
         id: "oscg-postpartumbreastpain-q1-selfcare",
-        acuityOrder: 2,
+        acuityOrder: 3,
         severity: "Self-care",
-        questionTextEn: "Is this early engorgement or mild mastitis with none of the features above?",
+        questionTextEn: "Is this early engorgement or mild mastitis with no fever, systemic illness, rapid spreading redness, or other features above?",
         dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
         rationaleEn: "NHS.UK guidance describes continued breastfeeding/expressing, cold compresses, and pain relief as effective first-line self-care.",
         redFlag: false,
         keywords: ["mild breast engorgement"],
         careAdviceIds: ["oscg-postpartumbreastpain-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-postpartumbreastpain-urgent-advice", titleEn: "Urgent mastitis review", instructionTextEn: "Arrange a GP appointment - antibiotics or further treatment may be needed.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fever worsens", "redness spreads"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-postpartumbreastpain-selfcare-advice", titleEn: "Home care for breast engorgement or mild mastitis", instructionTextEn: "Keep breastfeeding regularly, or hand express if feeding is too painful, making sure the baby is positioned and attached well. Apply a cold compress for 10 minutes each hour, take paracetamol or ibuprofen, rest, and wear a supportive bra. Avoid tight clothing, aspirin, over-expressing, firm pressure on the breast, and stopping breastfeeding abruptly.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["not improving after 12-24 hours", "fever or spreading redness develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-postpartumbreastpain-emergency-advice", titleEn: "Emergency postpartum systemic illness response", instructionTextEn: "Call Qatar emergency services on 999 now for confusion, reduced responsiveness, collapse, severe breathing difficulty, seizure or rapid critical deterioration. Tell the call handler that the patient gave birth recently and has breast symptoms. Follow emergency instructions and do not self-drive.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["responsiveness or breathing worsens", "collapse or seizure", "rapid deterioration"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-postpartumbreastpain-urgent-advice", titleEn: "Urgent mastitis review", instructionTextEn: "Arrange prompt clinical review; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Antibiotics or further treatment may be needed.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fever worsens", "redness spreads"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-postpartumbreastpain-selfcare-advice", titleEn: "Home care for breast engorgement or mild mastitis", instructionTextEn: "Continue breastfeeding responsively if able, or hand express only enough for comfort if feeding is too painful. Check positioning and attachment, use a cold compress, rest, and avoid deep breast massage, tight clothing, over-expressing, and stopping breastfeeding abruptly. A clinician or pharmacist should confirm any pain medicine is suitable for this patient.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["not improving after 12-24 hours", "fever or spreading redness develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-03-17", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Adult" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"Mastitis\", https://www.nhs.uk/conditions/mastitis/ (page last reviewed 17 March 2023)"],
+      sourceDocuments: [
+        "NHS.UK, \"Mastitis\", https://www.nhs.uk/conditions/mastitis/ (page last reviewed 17 March 2023)",
+        "CDC HEAR HER, \"Urgent Maternal Warning Signs and Symptoms\", https://www.cdc.gov/hearher/maternal-warning-signs/index.html",
+        "NHS.UK, \"Sepsis\", https://www.nhs.uk/conditions/sepsis/"
+      ],
       contentNotice: "Decomposed from NHS.UK's published mastitis guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
     })
   },
@@ -618,10 +646,10 @@ export const batch20Protocols: ProtocolInput[] = [
   {
     id: "oscg-postpartum-vaginal-bleeding-and-lochia",
     titleEn: "Postpartum - Vaginal Bleeding and Lochia",
-    clinicalDefinitionEn: "Postpartum vaginal bleeding (lochia) assessment based on standard, universally-taught obstetric knowledge for recognizing normal lochia versus postpartum hemorrhage.",
+    clinicalDefinitionEn: "Postpartum vaginal bleeding assessment using published urgent maternal warning signs and postpartum haemorrhage guidance; remote pad counts are supporting observations, not a stand-alone diagnostic threshold.",
     ageMin: 12,
     mode: "after-hours",
-    patientGroup: "adult",
+    patientGroup: "mixed",
     acuity: 5,
     keywords: [
       { phrase: "postpartum bleeding", weight: 100 },
@@ -632,16 +660,17 @@ export const batch20Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-postpartumbleeding-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How many days/weeks since delivery?" },
       { id: "oscg-postpartumbleeding-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "How many pads are being soaked per hour, and are there clots?" },
-      { id: "oscg-postpartumbleeding-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any dizziness, fainting, or feeling the heart racing?" }
+      { id: "oscg-postpartumbleeding-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any dizziness, fainting, weakness, confusion, clammy skin, or a fast-beating heart?" },
+      { id: "oscg-postpartumbleeding-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?" }
     ],
     questions: [
       {
         id: "oscg-postpartumbleeding-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Is a pad being soaked through in an hour or less, are there large clots (bigger than a golf ball), is there dizziness, fainting, a racing heart, or does the bleeding suddenly increase at any point after birth?",
+        questionTextEn: "Is there heavy or gushing vaginal bleeding, bleeding rapidly soaking pads, large clots, fainting or severe dizziness, weakness, confusion, pale or clammy skin, a fast-beating heart, or rapidly increasing bleeding?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
-        rationaleEn: "These are recognized postpartum hemorrhage warning signs - a time-critical obstetric emergency that can occur immediately after birth or, less commonly, in the weeks following (secondary postpartum hemorrhage), and needs immediate emergency care.",
+        rationaleEn: "These are published postpartum haemorrhage and urgent maternal warning signs. Postpartum haemorrhage usually occurs within 24 hours but can occur up to 12 weeks after birth.",
         redFlag: true,
         keywords: ["soaking a pad every hour postpartum", "large clots postpartum bleeding", "dizzy and bleeding heavily after birth"],
         careAdviceIds: ["oscg-postpartumbleeding-emergency-advice"],
@@ -659,7 +688,7 @@ export const batch20Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["foul smelling lochia", "bleeding gets heavier again postpartum"],
         careAdviceIds: ["oscg-postpartumbleeding-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
@@ -673,20 +702,20 @@ export const batch20Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["typical lochia gradually lightening"],
         careAdviceIds: ["oscg-postpartumbleeding-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-postpartumbleeding-emergency-advice", titleEn: "Emergency postpartum hemorrhage precautions", instructionTextEn: "Lie down and, if possible, elevate the legs while arranging emergency transport immediately - this can be a life-threatening emergency.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening dizziness", "worsening bleeding"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-postpartumbleeding-urgent-advice", titleEn: "Urgent postpartum bleeding review", instructionTextEn: "Arrange same-day medical review for these changes.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["bleeding increases", "fever develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-postpartumbleeding-emergency-advice", titleEn: "Emergency postpartum hemorrhage precautions", instructionTextEn: "Call Qatar emergency services on 999 now. Keep the patient lying down if safe, do not let them drive, and tell the call handler that they gave birth recently.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening dizziness", "worsening bleeding"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-postpartumbleeding-urgent-advice", titleEn: "Urgent postpartum bleeding review", instructionTextEn: "Arrange prompt clinical assessment; the exact non-emergency Qatar maternity destination remains GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["bleeding increases", "fever develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
       { id: "oscg-postpartumbleeding-selfcare-advice", titleEn: "Home monitoring for normal lochia", instructionTextEn: "Use sanitary pads (not tampons), and expect the discharge to gradually lighten in amount and change from red to pink/brown to white/yellow over about 4-6 weeks. Rest and stay hydrated.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["bleeding becomes heavier instead of lighter", "foul smell, fever, or dizziness develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Adult" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["Standard, universally-taught obstetric knowledge for postpartum hemorrhage recognition (pad-soaking rate, clot size, secondary postpartum hemorrhage) and normal lochia progression - the specific NHS.UK lochia page could not be retrieved during authoring"],
-      contentNotice: "The NHS.UK lochia/postpartum bleeding page could not be retrieved during authoring. This protocol is based on widely-taught, non-proprietary obstetric knowledge for recognizing postpartum hemorrhage versus normal lochia. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      sourceDocuments: ["ACOG, \"3 Conditions to Watch for After Childbirth\" (postpartum haemorrhage can occur up to 12 weeks after birth), https://www.acog.org/womens-health/experts-and-stories/the-latest/3-conditions-to-watch-for-after-childbirth", "CDC Hear Her urgent maternal warning signs, https://www.cdc.gov/hearher/"],
+      contentNotice: "Uses published ACOG postpartum haemorrhage information and CDC urgent maternal warning signs. The normal-lochia branch remains UAT-only and requires Qatar clinical-governance validation. Not licensed Schmitt-Thompson (STCC) content."
     })
   }
 ];

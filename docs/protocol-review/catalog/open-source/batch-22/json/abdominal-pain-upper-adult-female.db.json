@@ -1,0 +1,197 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1468,
+    "Title": "Abdominal Pain - Upper - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 5,
+    "Definition": [
+      "Upper abdominal or epigastric pain assessment. Indigestion is considered only after emergency cardiac, gastrointestinal bleeding, surgical, pregnancy-related, and pediatric causes are screened.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 now. Do not let the patient drive. Do not give food, drink, or medicine while awaiting instructions if they are vomiting blood, drowsy, or may need emergency procedures. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-05-05",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1468001,
+      "AlgorithmID": 1468,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is nausea or vomiting the main concern without upper abdominal pain, reflux, or indigestion?",
+      "Information": "Nausea or vomiting without upper abdominal pain belongs in the Nausea pathway.",
+      "GotoGuideline": "Nausea",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1468002,
+      "AlgorithmID": 1468,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there severe or rapidly worsening pain, a rigid or very tender abdomen, fainting or collapse, pale or clammy skin, vomiting blood or coffee-ground material, black tarry stool with weakness or dizziness, chest pressure or pain spreading to the arm/neck/jaw/back, severe breathing difficulty, confusion, or pregnancy/postpartum pain with severe headache, vision change, bleeding, or collapse?",
+      "Information": "These features can indicate major gastrointestinal bleeding, shock, perforation or peritonitis, acute cardiac disease, or a pregnancy-related emergency and require immediate assessment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        146801
+      ]
+    },
+    {
+      "QuestionID": 1468003,
+      "AlgorithmID": 1468,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Without emergency features, is the patient under 18, pregnant or postpartum, or is there persistent/recurrent pain, fever, repeated vomiting, pain through to the back or shoulder, difficulty swallowing, weight loss, jaundice, blood in vomit or stool without instability, a palpable lump, possible injury/ingestion, or concern about an unsafe caregiver?",
+      "Information": "These presentations need in-person examination and may need ECG, blood tests, imaging, pregnancy testing, toxicology or safeguarding assessment. Adult indigestion advice must not be copied to children.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        146803
+      ]
+    },
+    {
+      "QuestionID": 1468004,
+      "AlgorithmID": 1468,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is the patient an adult who is not pregnant or postpartum, with brief typical indigestion or heartburn, no significant comorbidity, and none of the emergency or urgent features above?",
+      "Information": "Limited lifestyle advice may be reasonable for an otherwise well adult with a familiar, brief indigestion pattern after red flags are excluded; this branch does not apply to children.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        146802
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 146801,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency upper abdominal pain precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 now. Do not let the patient drive. Do not give food, drink, or medicine while awaiting instructions if they are vomiting blood, drowsy, or may need emergency procedures. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: collapse; worsening pain; more blood in vomit or stool; breathing difficulty."
+      ]
+    },
+    {
+      "AdviceID": 146802,
+      "AlgorithmOrder": 2,
+      "Title": "Mandatory upper abdominal pain assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Children, pregnant/postpartum patients, and anyone with persistent or concerning features need in-person assessment; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED.",
+        "Call Back If: pain becomes severe or persistent; vomiting, fever, jaundice, chest symptoms, blood, black stool, fainting, or breathing difficulty develops."
+      ]
+    },
+    {
+      "AdviceID": 146803,
+      "AlgorithmOrder": 3,
+      "Title": "Limited adult indigestion care",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "For a well adult with a familiar brief indigestion pattern only, avoid known food or alcohol triggers and late meals. A clinician or pharmacist should confirm any antacid or pain medicine is suitable, especially with other medicines, kidney/liver disease, ulcers, or bleeding risk.",
+        "Call Back If: pain becomes severe or persistent; vomiting, fever, jaundice, chest symptoms, blood, black stool, fainting, or breathing difficulty develops."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Indigestion\", https://www.nhs.uk/conditions/indigestion/",
+    "NHS.UK, \"Heart attack\", https://www.nhs.uk/conditions/heart-attack/",
+    "University College London Hospitals, \"Abdominal pain\" emergency return criteria, https://www.uclh.nhs.uk/patients-and-visitors/patient-information-pages/abdominal-pain"
+  ],
+  "searchwords": [
+    "upper abdominal pain",
+    "indigestion",
+    "pain in my upper stomach",
+    "heartburn and stomach pain"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "LOCATION",
+      "Question": "Where exactly is the pain, does it spread to the chest, back, shoulder, arm, neck, or jaw, and is the abdomen rigid or very tender?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 22 source.",
+      "Source": "Abdominal Pain - Upper"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "When did it start, was onset sudden, and is it constant, worsening, or recurrent?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 22 source.",
+      "Source": "Abdominal Pain - Upper"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is there vomiting blood or coffee-ground material, black tarry stool, red blood in stool, fainting, sweating, breathing difficulty, persistent vomiting, fever, or yellow skin/eyes?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 22 source.",
+      "Source": "Abdominal Pain - Upper"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "Could the patient be pregnant, have they recently given birth, or is the patient under 18?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 22 source.",
+      "Source": "Abdominal Pain - Upper"
+    },
+    {
+      "Order": 5,
+      "Category": "YES_NO",
+      "Question": "If under 18, can the patient speak privately, do they feel safe with the caregiver, and is there any possible injury or ingestion?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 22 source.",
+      "Source": "Abdominal Pain - Upper"
+    }
+  ]
+}

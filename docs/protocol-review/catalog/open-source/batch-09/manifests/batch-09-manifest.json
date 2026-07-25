@@ -1,0 +1,498 @@
+{
+  "manifestVersion": "1.0",
+  "importBatch": "open-source-batch-09",
+  "generatedDate": "2026-07-25",
+  "conditionFamilies": 5,
+  "protocolCount": 20,
+  "canonicalSourceFieldType": "string",
+  "algorithmIdRange": "1205-1224",
+  "applicabilityPolicy": {
+    "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
+    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "adultSpecificProtocols": "Adult-only; never generate Child variants.",
+    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
+  },
+  "excludedSourceFamilies": [
+    "Menstrual Cramps and Menstrual Period - Missed or Late were excluded because Male variants are clinically inapplicable.",
+    "Meningitis Exposure was excluded because its source note identifies the exposure-management tier as an inference not directly covered by the cited page."
+  ],
+  "entries": [
+    {
+      "file": "json/motor-vehicle-accident-adult-male.db.json",
+      "algorithmId": 1205,
+      "title": "Motor Vehicle Accident - Male (Adult)",
+      "protocolFamily": "Motor Vehicle Accident",
+      "sourceProtocolId": "oscg-motor-vehicle-accident",
+      "canonicalSourceProtocolId": "oscg-motor-vehicle-accident",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "052cc345b7a3f6a75cb3f9151624c97d8b9137d65d915da629359b5e8700bfa4",
+      "redirectTarget": "Back Pain",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/motor-vehicle-accident-adult-female.db.json",
+      "algorithmId": 1206,
+      "title": "Motor Vehicle Accident - Female (Adult)",
+      "protocolFamily": "Motor Vehicle Accident",
+      "sourceProtocolId": "oscg-motor-vehicle-accident",
+      "canonicalSourceProtocolId": "oscg-motor-vehicle-accident",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "1558c8033408e5df5f120f52e906d9809b01135095fa5fd45e199ac304f2a1c6",
+      "redirectTarget": "Back Pain",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/motor-vehicle-accident-child-male.db.json",
+      "algorithmId": 1207,
+      "title": "Motor Vehicle Accident - Male (Child)",
+      "protocolFamily": "Motor Vehicle Accident",
+      "sourceProtocolId": "oscg-motor-vehicle-accident",
+      "canonicalSourceProtocolId": "oscg-motor-vehicle-accident",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "733d5457eaa3b17dd108e482b3a5ed7c61048ea874c5dc86f7faba99f30f1173",
+      "redirectTarget": "Back Pain",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/motor-vehicle-accident-child-female.db.json",
+      "algorithmId": 1208,
+      "title": "Motor Vehicle Accident - Female (Child)",
+      "protocolFamily": "Motor Vehicle Accident",
+      "sourceProtocolId": "oscg-motor-vehicle-accident",
+      "canonicalSourceProtocolId": "oscg-motor-vehicle-accident",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "9ae4d3d8eedb597c740565aeaa326e9c7966f62f457862464ce1090dc39d8fd4",
+      "redirectTarget": "Back Pain",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/motion-sickness-adult-male.db.json",
+      "algorithmId": 1209,
+      "title": "Motion Sickness - Male (Adult)",
+      "protocolFamily": "Motion Sickness",
+      "sourceProtocolId": "oscg-motion-sickness",
+      "canonicalSourceProtocolId": "oscg-motion-sickness",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "0325d4fea43d7f927821eef42e94326585f8e4b3a87ac1c4520894c8648b7775",
+      "redirectTarget": "Nausea",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/motion-sickness-adult-female.db.json",
+      "algorithmId": 1210,
+      "title": "Motion Sickness - Female (Adult)",
+      "protocolFamily": "Motion Sickness",
+      "sourceProtocolId": "oscg-motion-sickness",
+      "canonicalSourceProtocolId": "oscg-motion-sickness",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "0afde48db1a8b8ce9114762e3fbb8d2f7b83e92c85a890f2dbf65024b9a4bfa6",
+      "redirectTarget": "Nausea",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/motion-sickness-child-male.db.json",
+      "algorithmId": 1211,
+      "title": "Motion Sickness - Male (Child)",
+      "protocolFamily": "Motion Sickness",
+      "sourceProtocolId": "oscg-motion-sickness",
+      "canonicalSourceProtocolId": "oscg-motion-sickness",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "3186e6c7c9152a6de8c69161382a3ee23b07b3cb55492c2534b44318e81072eb",
+      "redirectTarget": "Nausea",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/motion-sickness-child-female.db.json",
+      "algorithmId": 1212,
+      "title": "Motion Sickness - Female (Child)",
+      "protocolFamily": "Motion Sickness",
+      "sourceProtocolId": "oscg-motion-sickness",
+      "canonicalSourceProtocolId": "oscg-motion-sickness",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "67a6bfbc5d7de82b65bbd9c20416fcd82a566963f5c102e1a4f82e18e13723ce",
+      "redirectTarget": "Nausea",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/mouth-ulcers-adult-male.db.json",
+      "algorithmId": 1213,
+      "title": "Mouth Ulcers - Male (Adult)",
+      "protocolFamily": "Mouth Ulcers",
+      "sourceProtocolId": "oscg-mouth-ulcers",
+      "canonicalSourceProtocolId": "oscg-mouth-ulcers",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "1853a855ebafec386e14a3a6baf4d23b14fc071c085f3556949bc4c2df622535",
+      "redirectTarget": "DIRECT_DISPOSITION_50",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/mouth-ulcers-adult-female.db.json",
+      "algorithmId": 1214,
+      "title": "Mouth Ulcers - Female (Adult)",
+      "protocolFamily": "Mouth Ulcers",
+      "sourceProtocolId": "oscg-mouth-ulcers",
+      "canonicalSourceProtocolId": "oscg-mouth-ulcers",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "b6fad1c2a8656f5495b2c13ad27b8ce7a32952625b4b0f61ac917012e396a55e",
+      "redirectTarget": "DIRECT_DISPOSITION_50",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/mouth-ulcers-child-male.db.json",
+      "algorithmId": 1215,
+      "title": "Mouth Ulcers - Male (Child)",
+      "protocolFamily": "Mouth Ulcers",
+      "sourceProtocolId": "oscg-mouth-ulcers",
+      "canonicalSourceProtocolId": "oscg-mouth-ulcers",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "9d884789e832987f1720fd36c9cfa5303016fcef7fb4778560a4a8dfd0afc449",
+      "redirectTarget": "DIRECT_DISPOSITION_50",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/mouth-ulcers-child-female.db.json",
+      "algorithmId": 1216,
+      "title": "Mouth Ulcers - Female (Child)",
+      "protocolFamily": "Mouth Ulcers",
+      "sourceProtocolId": "oscg-mouth-ulcers",
+      "canonicalSourceProtocolId": "oscg-mouth-ulcers",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "33d6d176be2c8dad607b37063d504d01429e73143f45919060eee0d2cfbb3fd4",
+      "redirectTarget": "DIRECT_DISPOSITION_50",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/nasal-allergies-hay-fever-adult-male.db.json",
+      "algorithmId": 1217,
+      "title": "Nasal Allergies (Hay Fever) - Male (Adult)",
+      "protocolFamily": "Nasal Allergies (Hay Fever)",
+      "sourceProtocolId": "oscg-hay-fever",
+      "canonicalSourceProtocolId": "oscg-hay-fever",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "3a620429e971ac4453fbc57f1b81247f20d78d59003127a7fe7af48317874192",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/nasal-allergies-hay-fever-adult-female.db.json",
+      "algorithmId": 1218,
+      "title": "Nasal Allergies (Hay Fever) - Female (Adult)",
+      "protocolFamily": "Nasal Allergies (Hay Fever)",
+      "sourceProtocolId": "oscg-hay-fever",
+      "canonicalSourceProtocolId": "oscg-hay-fever",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "ce1fc21519a7fcded389a778253d151f76a067471667de6e4c55a3f621cb5ef2",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/nasal-allergies-hay-fever-child-male.db.json",
+      "algorithmId": 1219,
+      "title": "Nasal Allergies (Hay Fever) - Male (Child)",
+      "protocolFamily": "Nasal Allergies (Hay Fever)",
+      "sourceProtocolId": "oscg-hay-fever",
+      "canonicalSourceProtocolId": "oscg-hay-fever",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "c37032790fc209ce6c44b4550dac6e639046a867a32cffb012922861b622b33d",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/nasal-allergies-hay-fever-child-female.db.json",
+      "algorithmId": 1220,
+      "title": "Nasal Allergies (Hay Fever) - Female (Child)",
+      "protocolFamily": "Nasal Allergies (Hay Fever)",
+      "sourceProtocolId": "oscg-hay-fever",
+      "canonicalSourceProtocolId": "oscg-hay-fever",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "f52ee8d44e0a13e16a059fefee6002120bebe030d812a971977e10192652c7e1",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/nausea-adult-male.db.json",
+      "algorithmId": 1221,
+      "title": "Nausea - Male (Adult)",
+      "protocolFamily": "Nausea",
+      "sourceProtocolId": "oscg-nausea",
+      "canonicalSourceProtocolId": "oscg-nausea",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "4ca02cedebbd58268b6efdf3b008cfaf04e9109fcecdc07610452b09a2fbfe2e",
+      "redirectTarget": "Diarrhea",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/nausea-adult-female.db.json",
+      "algorithmId": 1222,
+      "title": "Nausea - Female (Adult)",
+      "protocolFamily": "Nausea",
+      "sourceProtocolId": "oscg-nausea",
+      "canonicalSourceProtocolId": "oscg-nausea",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "f61631f7afe072d1cec09978fe2f6c1bc9e24015592492b1feb19caa92a30b10",
+      "redirectTarget": "Diarrhea",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/nausea-child-male.db.json",
+      "algorithmId": 1223,
+      "title": "Nausea - Male (Child)",
+      "protocolFamily": "Nausea",
+      "sourceProtocolId": "oscg-nausea",
+      "canonicalSourceProtocolId": "oscg-nausea",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "e477d5d38ef1eee0092f92c55e6290438cf9517101ab7a183251f4a970e42a92",
+      "redirectTarget": "Diarrhea",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/nausea-child-female.db.json",
+      "algorithmId": 1224,
+      "title": "Nausea - Female (Child)",
+      "protocolFamily": "Nausea",
+      "sourceProtocolId": "oscg-nausea",
+      "canonicalSourceProtocolId": "oscg-nausea",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch09-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "513008ed25ff0f7a5018b7addd23e278d51657a660475d6d04d3e686c20aa313",
+      "redirectTarget": "Diarrhea",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    }
+  ],
+  "safetyBoundary": {
+    "usageStatus": "UAT_ONLY",
+    "productionEligible": false,
+    "requiresClinicalValidation": true,
+    "importOrDeploymentPerformed": false
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1456,
+    "Title": "Foot Pain - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 2,
+    "Definition": [
+      "UAT-only adult and pediatric non-traumatic foot-pain pathway screening for infection, inability to bear weight, neurovascular compromise and diabetic or immune risk before in-person assessment.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 for systemic illness with hot swelling, inability to bear weight, severe rapidly worsening pain, or a cold/pale/blue/numb foot. Do not allow self-driving. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2026-02-26",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1456001,
+      "AlgorithmID": 1456,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Did this problem begin with a motor vehicle crash or as part of a multi-system crash injury?",
+      "Information": "A motor vehicle crash or multi-system crash injury belongs in the Motor Vehicle Accident pathway.",
+      "GotoGuideline": "Motor Vehicle Accident",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1456002,
+      "AlgorithmID": 1456,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is foot pain severe with inability to bear weight or a cold/pale/blue/numb foot, or is there a diabetic/other wound or hot swelling plus marked systemic illness or rapid deterioration?",
+      "Information": "NHS.UK joint pain guidance lists swelling/heat and feeling unwell as reasons for urgent review; diabetic foot problems specifically need prompt assessment given the higher risk of complications.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        145601
+      ]
+    },
+    {
+      "QuestionID": 1456003,
+      "AlgorithmID": 1456,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "With no emergency feature, is there any persistent or unexplained foot pain, wound, swelling, walking limitation, diabetes/immune risk, child concern or higher-risk context?",
+      "Information": "In-person assessment is required, particularly for diabetes/neuropathy, wounds, immune risk, children and impaired weight bearing.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        145602
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 145601,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency foot response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 for systemic illness with hot swelling, inability to bear weight, severe rapidly worsening pain, or a cold/pale/blue/numb foot. Do not allow self-driving. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: increasing swelling or redness; fever or neurovascular change."
+      ]
+    },
+    {
+      "AdviceID": 145602,
+      "AlgorithmOrder": 2,
+      "Title": "In-person foot assessment",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Arrange in-person assessment, especially for a child, pregnancy, diabetes, neuropathy, immune compromise or skin break. Protect from pressure and do not use fixed-dose analgesia until patient factors are checked.",
+        "Call Back If: pain persists or worsens; swelling, redness or fever."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Joint pain\", https://www.nhs.uk/conditions/joint-pain/ (page last reviewed 26 February 2026) - applied to non-traumatic foot pain"
+  ],
+  "searchwords": [
+    "foot pain",
+    "my foot hurts",
+    "foot has been aching",
+    "sore foot no injury",
+    "foot has just been aching for days",
+    "foot pain no injury or anything"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "LOCATION",
+      "Question": "Where exactly is the pain?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 21 source.",
+      "Source": "Foot Pain"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "How long has the pain lasted?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 21 source.",
+      "Source": "Foot Pain"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is the skin around the foot swollen and hot?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 21 source.",
+      "Source": "Foot Pain"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the age; is there diabetes/neuropathy, immune/vascular disease, wound/foreign body, inability to bear weight, pregnancy/postpartum status, hidden trauma, neurovascular change or child safeguarding concern?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 21 source.",
+      "Source": "Foot Pain"
+    }
+  ]
+}

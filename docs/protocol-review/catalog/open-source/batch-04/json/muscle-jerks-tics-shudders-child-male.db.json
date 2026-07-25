@@ -1,0 +1,234 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited NHS.UK pages under the Open Government Licence v3.0; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Local extensions, destination mappings, safeguarding workflows, and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1109,
+    "Title": "Muscle Jerks - Tics - Shudders - Male (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Male",
+    "Age": "Child (3-17 years)",
+    "GenderAtBirth": "Male",
+    "Acuity": 2,
+    "Definition": [
+      "UAT-only assessment of possible tics from age 3 years, with direct fail-closed seizure screening; events in younger children must not be classified as tics by this pathway.",
+      "Child patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999. Time the event, protect the person from nearby hazards, cushion the head, loosen tight neck clothing, and turn them onto their side after convulsions stop if breathing. Do not restrain them, put anything in their mouth, or give food, drink, or oral medicine until fully recovered. Follow a prescribed rescue-medicine plan only if trained and authorized. Stay until recovery or handover. This is a direct emergency disposition; do not redirect to the missing Seizure protocol. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-04-05",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Crown copyright (NHS.UK content), reused under the Open Government Licence v3.0. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 78,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1109001,
+      "AlgorithmID": 1109,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is this a first suspected seizure; is a seizure continuing for 5 minutes or longer or longer than usual; are seizures recurring without full recovery; is there failure to recover normally, breathing difficulty, serious injury, pregnancy, or an event in water; or is the person's approved emergency seizure plan ineffective or unavailable?",
+      "Information": "NHS.UK seizure first aid requires emergency help for a first seizure, prolonged seizure, repeated seizures without recovery, serious injury, or breathing difficulty. These features require direct Qatar 999 care; the missing Seizure protocol must not be used as a redirect.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        110901
+      ]
+    },
+    {
+      "QuestionID": 1109002,
+      "AlgorithmID": 1109,
+      "DispositionLevel": 78,
+      "QuestionOrder": 1,
+      "Question": "With no emergency feature above, is there a possible first seizure that has fully stopped, recurrence after a long remission, diagnostic uncertainty between a tic and seizure, a new movement beginning before age 3 years, developmental regression, or suspected infantile spasms in a child under 2 years?",
+      "Information": "NICE recommends urgent specialist assessment after a first suspected seizure or recurrence after remission and specialist guidance within 24 hours for suspected infantile spasms. A child under 3 years or a person with developmental regression or loss of awareness should not be assigned to a benign tic pathway.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        110902
+      ]
+    },
+    {
+      "QuestionID": 1109003,
+      "AlgorithmID": 1109,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Do the tics occur very regularly or are becoming more frequent/severe, cause social or emotional problems, cause pain or accidental injury, interfere with daily activities, or come with anger, depression, or self-harm?",
+      "Information": "NHS.UK guidance lists these as reasons to see a GP about tics.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        110903
+      ]
+    },
+    {
+      "QuestionID": 1109004,
+      "AlgorithmID": 1109,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Are the tics mild and not causing problems, with none of the features above?",
+      "Information": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need GP evaluation.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        110904
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 110901,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar seizure first aid and emergency response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999. Time the event, protect the person from nearby hazards, cushion the head, loosen tight neck clothing, and turn them onto their side after convulsions stop if breathing. Do not restrain them, put anything in their mouth, or give food, drink, or oral medicine until fully recovered. Follow a prescribed rescue-medicine plan only if trained and authorized. Stay until recovery or handover. This is a direct emergency disposition; do not redirect to the missing Seizure protocol. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: first suspected seizure; seizure lasts 5 minutes or longer; repeated seizure without recovery; difficulty breathing; serious injury; failure to recover normally."
+      ]
+    },
+    {
+      "AdviceID": 110902,
+      "AlgorithmOrder": 2,
+      "Title": "Fail-closed seizure or infantile-spasm assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Do not label the event as a tic. Arrange age-appropriate urgent clinical assessment. Suspected infantile spasms in a child under 2 years require specialist pediatric neurology guidance and referral within 24 hours; a first suspected seizure requires urgent specialist follow-up even when fully resolved. Call 999 if another event begins, recovery is incomplete, breathing is abnormal, or any emergency criterion develops. The exact Qatar pediatric neurology and first-seizure destination is GOVERNANCE_REQUIRED.",
+        "Call Back If: another seizure; reduced responsiveness; breathing change; developmental regression; clusters of infant spasms."
+      ]
+    },
+    {
+      "AdviceID": 110903,
+      "AlgorithmOrder": 3,
+      "Title": "Age-appropriate tic follow-up",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange PHCC or pediatric assessment to discuss the tics and their impact. Do not reprimand the person or repeatedly draw attention to the tic. Reassess urgently if awareness changes, development regresses, or the movement pattern is no longer typical.",
+        "Call Back If: tics worsen; loss of awareness; developmental regression; new neurological symptoms."
+      ]
+    },
+    {
+      "AdviceID": 110904,
+      "AlgorithmOrder": 4,
+      "Title": "Reassurance for clearly identified mild tics",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "When seizure features and other red flags have been excluded, mild tics are usually not serious. Avoid repeatedly focusing on or criticizing the tic. Arrange clinical review if movements become more frequent or severe or cause pain, injury, distress, bullying, or interference with school, work, or daily life.",
+        "Call Back If: loss of awareness or responsiveness; tics become more frequent or severe; pain, injury, distress, or developmental change."
+      ]
+    }
+  ],
+  "references": [
+    "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (accessed 2026-07-25)",
+    "NICE, \"Epilepsies in children, young people and adults\", NG217, https://www.nice.org.uk/guidance/ng217 (updated 30 January 2025)",
+    "NHS.UK, \"What to do if someone has a seizure (fit)\", https://www.nhs.uk/symptoms/what-to-do-if-someone-has-a-seizure-fit/ (accessed 2026-07-25)",
+    "NHS.UK, \"Tics\", https://www.nhs.uk/conditions/tics/ (page last reviewed 05 April 2023)"
+  ],
+  "searchwords": [
+    "tics",
+    "muscle jerks",
+    "twitching",
+    "shuddering"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "How old is the person, when did the episodes start, and what exactly happens before, during, and after each event?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Muscle Jerks - Tics - Shudders"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Is this the first suspected seizure, is an episode happening now, or is there loss of awareness, unresponsiveness, collapse, stiffening, rhythmic jerking, eye deviation, color change, or confusion or unusual sleepiness afterward?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Muscle Jerks - Tics - Shudders"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "How long does each event last, do events repeat without full recovery, and is breathing normal afterward?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Muscle Jerks - Tics - Shudders"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "Is there fever, recent head injury, possible poisoning, pregnancy, diabetes, serious injury, or a known seizure plan with prescribed rescue medicine?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Muscle Jerks - Tics - Shudders"
+    },
+    {
+      "Order": 5,
+      "Category": "YES_NO",
+      "Question": "If this is a child under 2 years with repeated brief clusters of sudden bending, stiffening, or head drops, especially around waking, has infantile spasm been considered?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Muscle Jerks - Tics - Shudders"
+    },
+    {
+      "Order": 6,
+      "Category": "OPEN_TEXT",
+      "Question": "If the person remains fully aware, is there an urge before the movement, brief voluntary suppression, or a repeated movement or sound typical of a tic? Do not delay care to obtain a video, but record one safely if diagnostic uncertainty remains.",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Muscle Jerks - Tics - Shudders"
+    },
+    {
+      "Order": 7,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What change has a safe parent or caregiver observed in behaviour, alertness, eating or drinking, sleep, school or play, and normal activity?",
+      "Rationale": "Child assessment includes safe-caregiver observation and functional change.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

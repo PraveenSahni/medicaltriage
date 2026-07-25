@@ -1,0 +1,473 @@
+{
+  "manifestVersion": "1.0",
+  "importBatch": "open-source-batch-05",
+  "generatedDate": "2026-07-25",
+  "conditionFamilies": 5,
+  "protocolCount": 20,
+  "canonicalSourceFieldType": "string",
+  "algorithmIdRange": "1125-1144",
+  "applicabilityPolicy": {
+    "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
+    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "adultSpecificProtocols": "Adult-only; never generate Child variants.",
+    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content.",
+    "excludedSourceFamilies": [
+      "Choking - Inhaled Foreign Body was not selected because its cited page is child-specific and its source note generalized beyond that page."
+    ]
+  },
+  "entries": [
+    {
+      "file": "json/cold-exposure-hypothermia-adult-male.db.json",
+      "algorithmId": 1125,
+      "title": "Cold Exposure (Hypothermia) - Male (Adult)",
+      "protocolFamily": "Cold Exposure (Hypothermia)",
+      "sourceProtocolId": "oscg-hypothermia",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "9cd5bd584e5f806af85a3680d1c60de7855a3370916f680f963559bd7b2a4586",
+      "redirectTarget": "Frostbite",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-hypothermia"
+    },
+    {
+      "file": "json/cold-exposure-hypothermia-adult-female.db.json",
+      "algorithmId": 1126,
+      "title": "Cold Exposure (Hypothermia) - Female (Adult)",
+      "protocolFamily": "Cold Exposure (Hypothermia)",
+      "sourceProtocolId": "oscg-hypothermia",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "1a549535666bd03db71d86c664dc5f88438e6f0fc3ea888c3dda1185a4261d5e",
+      "redirectTarget": "Frostbite",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-hypothermia"
+    },
+    {
+      "file": "json/cold-exposure-hypothermia-child-male.db.json",
+      "algorithmId": 1127,
+      "title": "Cold Exposure (Hypothermia) - Male (Child)",
+      "protocolFamily": "Cold Exposure (Hypothermia)",
+      "sourceProtocolId": "oscg-hypothermia",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "cbbd725cbcd8a381adff119e5b7f35561f505ad7b9ee3f0608d461c835926328",
+      "redirectTarget": "Frostbite",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "A safe-caregiver observation question is added without changing source-derived clinical thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-hypothermia"
+    },
+    {
+      "file": "json/cold-exposure-hypothermia-child-female.db.json",
+      "algorithmId": 1128,
+      "title": "Cold Exposure (Hypothermia) - Female (Child)",
+      "protocolFamily": "Cold Exposure (Hypothermia)",
+      "sourceProtocolId": "oscg-hypothermia",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "8a78077b0c9803d27fed5c24ffae798ed0866380749b38d697fc562ad6eede59",
+      "redirectTarget": "Frostbite",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "A safe-caregiver observation question is added without changing source-derived clinical thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-hypothermia"
+    },
+    {
+      "file": "json/coma-adult-male.db.json",
+      "algorithmId": 1129,
+      "title": "Coma - Male (Adult)",
+      "protocolFamily": "Coma",
+      "sourceProtocolId": "oscg-coma-unconscious",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "734918d2b22854f4b1f6d44040e43511b50cb2c31f55016960f1d5d10ba99ccf",
+      "redirectTarget": "Confusion - Delirium",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-coma-unconscious"
+    },
+    {
+      "file": "json/coma-adult-female.db.json",
+      "algorithmId": 1130,
+      "title": "Coma - Female (Adult)",
+      "protocolFamily": "Coma",
+      "sourceProtocolId": "oscg-coma-unconscious",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "3142eb006278e95f539d785ecb80c63d43b8e75d1211e8baae523c48a779420b",
+      "redirectTarget": "Confusion - Delirium",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-coma-unconscious"
+    },
+    {
+      "file": "json/coma-child-male.db.json",
+      "algorithmId": 1131,
+      "title": "Coma - Male (Child)",
+      "protocolFamily": "Coma",
+      "sourceProtocolId": "oscg-coma-unconscious",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "46e09e68d6350c523e8e19a4ee50dd1527409c81cc8dba33061f2c6da8c973e9",
+      "redirectTarget": "Confusion - Delirium",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "A safe-caregiver observation question is added without changing source-derived clinical thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-coma-unconscious"
+    },
+    {
+      "file": "json/coma-child-female.db.json",
+      "algorithmId": 1132,
+      "title": "Coma - Female (Child)",
+      "protocolFamily": "Coma",
+      "sourceProtocolId": "oscg-coma-unconscious",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "ac031ef25e7564ccef4bb9a9cabce55947714d8fd3befd052eb91c4918e9d419",
+      "redirectTarget": "Confusion - Delirium",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "A safe-caregiver observation question is added without changing source-derived clinical thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-coma-unconscious"
+    },
+    {
+      "file": "json/burns-chemical-adult-male.db.json",
+      "algorithmId": 1133,
+      "title": "Burns - Chemical - Male (Adult)",
+      "protocolFamily": "Burns - Chemical",
+      "sourceProtocolId": "oscg-burns-chemical",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "dcedb70e52240cd5deea12e69f98b12eb6319315c7d8ad346c94cfaffe51baa6",
+      "redirectTarget": "Burns - Thermal",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-burns-chemical"
+    },
+    {
+      "file": "json/burns-chemical-adult-female.db.json",
+      "algorithmId": 1134,
+      "title": "Burns - Chemical - Female (Adult)",
+      "protocolFamily": "Burns - Chemical",
+      "sourceProtocolId": "oscg-burns-chemical",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "c7470e20aef2e5ba5131cbde444f76f963aa4c6beed2dfc4693108b27c2cf2b0",
+      "redirectTarget": "Burns - Thermal",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-burns-chemical"
+    },
+    {
+      "file": "json/burns-chemical-child-male.db.json",
+      "algorithmId": 1135,
+      "title": "Burns - Chemical - Male (Child)",
+      "protocolFamily": "Burns - Chemical",
+      "sourceProtocolId": "oscg-burns-chemical",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "80e8ab3b161f540586a594e7588011d7d4a557a299d8cb53de019e0515da3bd8",
+      "redirectTarget": "Burns - Thermal",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "A safe-caregiver observation question is added without changing source-derived clinical thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-burns-chemical"
+    },
+    {
+      "file": "json/burns-chemical-child-female.db.json",
+      "algorithmId": 1136,
+      "title": "Burns - Chemical - Female (Child)",
+      "protocolFamily": "Burns - Chemical",
+      "sourceProtocolId": "oscg-burns-chemical",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "9c1bc4c03f86ba9b489afa17a8335bffe47c11631c7c3004fe859478de554958",
+      "redirectTarget": "Burns - Thermal",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "A safe-caregiver observation question is added without changing source-derived clinical thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-burns-chemical"
+    },
+    {
+      "file": "json/boil-skin-abscess-adult-male.db.json",
+      "algorithmId": 1137,
+      "title": "Boil (Skin Abscess) - Male (Adult)",
+      "protocolFamily": "Boil (Skin Abscess)",
+      "sourceProtocolId": "oscg-boil-skin-abscess",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "04a0be178e6d7364b029174889d4ad229d3a40e65aafc48f8a5c81796a7169a1",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-boil-skin-abscess"
+    },
+    {
+      "file": "json/boil-skin-abscess-adult-female.db.json",
+      "algorithmId": 1138,
+      "title": "Boil (Skin Abscess) - Female (Adult)",
+      "protocolFamily": "Boil (Skin Abscess)",
+      "sourceProtocolId": "oscg-boil-skin-abscess",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "f317b39894146ef38ae46b073b0c7aa87c90addf322f9320bd4e7e1946309a04",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-boil-skin-abscess"
+    },
+    {
+      "file": "json/boil-skin-abscess-child-male.db.json",
+      "algorithmId": 1139,
+      "title": "Boil (Skin Abscess) - Male (Child)",
+      "protocolFamily": "Boil (Skin Abscess)",
+      "sourceProtocolId": "oscg-boil-skin-abscess",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "26f71e771aa74b57e29a2a464e0f05e7815d37e724adfa03e00df02e01015b1e",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "A safe-caregiver observation question is added without changing source-derived clinical thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-boil-skin-abscess"
+    },
+    {
+      "file": "json/boil-skin-abscess-child-female.db.json",
+      "algorithmId": 1140,
+      "title": "Boil (Skin Abscess) - Female (Child)",
+      "protocolFamily": "Boil (Skin Abscess)",
+      "sourceProtocolId": "oscg-boil-skin-abscess",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "f9e6e65e91dd5688760bf73a2b6e93b89ec48727f0b531bdee9c69f141b5b2df",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "A safe-caregiver observation question is added without changing source-derived clinical thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-boil-skin-abscess"
+    },
+    {
+      "file": "json/covid-19-diagnosed-or-suspected-adult-male.db.json",
+      "algorithmId": 1141,
+      "title": "COVID-19 - Diagnosed or Suspected - Male (Adult)",
+      "protocolFamily": "COVID-19 - Diagnosed or Suspected",
+      "sourceProtocolId": "oscg-covid19",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "e550e88943178fb80f72174369a56e05b262278ba189337d6747fbdffe650d1c",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-covid19"
+    },
+    {
+      "file": "json/covid-19-diagnosed-or-suspected-adult-female.db.json",
+      "algorithmId": 1142,
+      "title": "COVID-19 - Diagnosed or Suspected - Female (Adult)",
+      "protocolFamily": "COVID-19 - Diagnosed or Suspected",
+      "sourceProtocolId": "oscg-covid19",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "e4fb194d7f3995af1025a1d7e4d6ab51821daaa1f8352bd56e763a5e4a6ecf80",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-covid19"
+    },
+    {
+      "file": "json/covid-19-diagnosed-or-suspected-child-male.db.json",
+      "algorithmId": 1143,
+      "title": "COVID-19 - Diagnosed or Suspected - Male (Child)",
+      "protocolFamily": "COVID-19 - Diagnosed or Suspected",
+      "sourceProtocolId": "oscg-covid19",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "fe9cb4156cc8f94f9408e06b57a1f5dbc312f9a8cc6469df8a5d33230c434036",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "A safe-caregiver observation question is added without changing source-derived clinical thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-covid19"
+    },
+    {
+      "file": "json/covid-19-diagnosed-or-suspected-child-female.db.json",
+      "algorithmId": 1144,
+      "title": "COVID-19 - Diagnosed or Suspected - Female (Child)",
+      "protocolFamily": "COVID-19 - Diagnosed or Suspected",
+      "sourceProtocolId": "oscg-covid19",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "59c5cca64470fac362c057457fd7982bde2b369bb691929b59138855320523e0",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "A safe-caregiver observation question is added without changing source-derived clinical thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-covid19"
+    }
+  ],
+  "safetyBoundary": {
+    "usageStatus": "UAT_ONLY",
+    "productionEligible": false,
+    "requiresClinicalValidation": true,
+    "importOrDeploymentPerformed": false
+  }
+}

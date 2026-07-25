@@ -21,7 +21,7 @@ export const batch21Protocols: ProtocolInput[] = [
   {
     id: "oscg-ankle-pain",
     titleEn: "Ankle Pain",
-    clinicalDefinitionEn: "Non-traumatic ankle pain assessment decomposed from NHS.UK's published joint pain guidance.",
+    clinicalDefinitionEn: "UAT-only adult and pediatric non-traumatic ankle-pain pathway screening for joint infection, systemic illness, inability to bear weight and neurovascular compromise before in-person assessment.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -37,46 +37,47 @@ export const batch21Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-anklepain-iaq1", sequence: 1, responseType: "LOCATION", promptTextEn: "Where exactly is the pain?" },
       { id: "oscg-anklepain-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long has the pain lasted?" },
-      { id: "oscg-anklepain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the skin around the ankle swollen and hot?" }
+      { id: "oscg-anklepain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the skin around the ankle swollen and hot?" },
+      { id: "oscg-anklepain-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the age; is there pregnancy/postpartum status, inability to bear weight, systemic illness, diabetes/immune risk, hidden injury, neurovascular change, or—in a child—refusal to use the limb or safeguarding concern?" }
     ],
     questions: [
       {
         id: "oscg-anklepain-q0-urgent",
         acuityOrder: 1,
-        severity: "Urgent",
-        questionTextEn: "Is the skin around the ankle swollen and hot, or does the person feel generally unwell with a high temperature or feeling hot, cold, or shivery?",
-        dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK joint pain guidance lists these as reasons for an urgent GP appointment or NHS 111 call.",
-        redFlag: false,
+        severity: "Emergency",
+        questionTextEn: "Is ankle pain severe with inability to bear weight, neurovascular change, or a hot swollen joint plus marked systemic illness, confusion, breathing change, collapse or rapid deterioration?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+        rationaleEn: "Severe functional loss, neurovascular compromise, or marked systemic deterioration requires emergency assessment through the Qatar pathway.",
+        redFlag: true,
         keywords: ["ankle swollen and hot", "unwell with ankle pain"],
         careAdviceIds: ["oscg-anklepain-urgent-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 70,
+        telemedicineEligible: false,
+        dispositionLevel: 100,
         questionOrder: 1
       },
       {
         id: "oscg-anklepain-q1-selfcare",
         acuityOrder: 2,
-        severity: "Self-care",
-        questionTextEn: "Is this mild ankle pain without the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "NHS.UK guidance describes mild joint pain as manageable at home with rest, ice, and gentle movement.",
+        severity: "Urgent",
+        questionTextEn: "With no emergency feature, is there any persistent or unexplained ankle pain, hot swelling, functional limitation, child joint concern or higher-risk context?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "This UAT pathway requires in-person assessment and does not authorize remote diagnosis, fixed medication advice or pediatric self-care.",
         redFlag: false,
         keywords: ["mild ankle pain"],
         careAdviceIds: ["oscg-anklepain-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-anklepain-urgent-advice", titleEn: "Urgent ankle pain review", instructionTextEn: "Arrange same-day medical review for these signs of possible infection.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["increasing swelling or redness", "fever develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-anklepain-selfcare-advice", titleEn: "Home care for mild ankle pain", instructionTextEn: "Rest the ankle when possible, apply an ice pack wrapped in a towel for up to 20 minutes every 2-3 hours, keep gently moving rather than fully immobilizing it, and take a suitable over-the-counter pain reliever.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain lasts more than 2 weeks", "swelling, redness, or fever develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-anklepain-urgent-advice", titleEn: "Qatar emergency ankle-joint response", instructionTextEn: "Call Qatar emergency services on 999 for a hot swollen joint with systemic illness, severe pain, inability to bear weight, deformity, a cold/pale/blue/numb foot, or rapid deterioration. Do not allow self-driving or force movement.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["increasing swelling or redness", "fever or systemic illness", "cannot bear weight"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-anklepain-selfcare-advice", titleEn: "In-person ankle assessment", instructionTextEn: "Arrange in-person assessment through an approved Qatar adult or pediatric pathway. Protect the joint and use wrapped cold briefly if comfortable. Do not provide fixed-dose analgesia until age, weight, pregnancy, allergies, kidney/liver disease and interactions are checked under an approved pathway.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["pain or swelling worsens", "redness, fever or inability to bear weight"], displayOrder: 2, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-02-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Joint pain\" (non-injury pain guidance), https://www.nhs.uk/conditions/joint-pain/ (page last reviewed 26 February 2026) - applied to non-traumatic ankle pain"],
-      contentNotice: "Decomposed from the same NHS.UK joint pain guidance already used for Arm Pain and Leg Pain (batch15), applied to the ankle. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult and pediatric ankle-pain draft. Systemic illness with hot swelling, inability to bear weight or neurovascular compromise routes to 999; all other unexplained pain requires in-person assessment. GOVERNANCE_REQUIRED for Qatar adult/pediatric musculoskeletal, infection, imaging, pregnancy, safeguarding, analgesia and transport pathways. Not production-approved."
     })
   },
 
@@ -86,7 +87,7 @@ export const batch21Protocols: ProtocolInput[] = [
   {
     id: "oscg-ankle-swelling",
     titleEn: "Ankle Swelling",
-    clinicalDefinitionEn: "Non-traumatic ankle swelling assessment decomposed from NHS.UK's published joint pain guidance and shortness-of-breath guidance's swollen-ankle criterion (batch18).",
+    clinicalDefinitionEn: "UAT-only adult and pediatric ankle-swelling pathway screening for pulmonary embolism, thrombosis, infection, pregnancy complications and systemic oedema before in-person assessment.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -102,7 +103,8 @@ export const batch21Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-ankleswelling-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How long has the swelling lasted?" },
       { id: "oscg-ankleswelling-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Is one ankle more swollen than the other?" },
-      { id: "oscg-ankleswelling-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any shortness of breath or chest pain?" }
+      { id: "oscg-ankleswelling-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any shortness of breath or chest pain?" },
+      { id: "oscg-ankleswelling-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the age; is there pregnancy/recent birth, clot history, cancer, surgery/immobility/travel, heart/kidney/liver disease, medicines, fever, injury, or child safeguarding concern?" }
     ],
     questions: [
       {
@@ -136,22 +138,22 @@ export const batch21Protocols: ProtocolInput[] = [
       {
         id: "oscg-ankleswelling-q2-selfcare",
         acuityOrder: 3,
-        severity: "Self-care",
-        questionTextEn: "Is this mild, even swelling in both ankles with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "Mild, symmetric ankle swelling (e.g. from long periods of standing or heat) is often manageable at home.",
+        severity: "Urgent",
+        questionTextEn: "With no emergency feature, is ankle swelling persistent, unexplained, unilateral, painful/hot, associated with breathlessness, pregnancy/postpartum status, systemic disease or childhood?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "Telephone assessment cannot safely determine benign oedema or exclude vascular, cardiac, renal, hepatic, pregnancy-related or inflammatory causes.",
         redFlag: false,
         keywords: ["mild even ankle swelling"],
         careAdviceIds: ["oscg-ankleswelling-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-ankleswelling-emergency-advice", titleEn: "Emergency ankle swelling precautions", instructionTextEn: "Arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening breathing difficulty", "chest pain develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-ankleswelling-urgent-advice", titleEn: "Urgent ankle swelling review", instructionTextEn: "Arrange same-day medical review to check for a heart, circulation, or infection cause.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["breathlessness worsens", "swelling spreads"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-ankleswelling-selfcare-advice", titleEn: "Home care for mild ankle swelling", instructionTextEn: "Elevate the legs when resting, stay active with regular movement, reduce salt intake, and avoid standing for long periods.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["one ankle becomes more swollen than the other", "breathlessness develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-ankleswelling-emergency-advice", titleEn: "Qatar emergency swelling response", instructionTextEn: "Call Qatar emergency services on 999 for breathlessness, chest pain/tightness, coughing blood, faintness/confusion/clamminess or severe rapid swelling. Do not allow self-driving or massage the swollen limb.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening breathing difficulty", "chest pain develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-ankleswelling-urgent-advice", titleEn: "Same-day ankle-swelling assessment", instructionTextEn: "Arrange same-day in-person assessment for unilateral, sudden, painful, red/hot or unexplained swelling, fever, diabetes, pregnancy/postpartum status, or kidney/heart/liver disease. Exact Qatar vascular, maternity and medical destinations are GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["breathlessness", "swelling spreads", "pain or fever"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-ankleswelling-selfcare-advice", titleEn: "Unexplained swelling needs clinical review", instructionTextEn: "Arrange in-person review before assuming benign oedema or changing salt, fluid, diuretic or other medicine. Elevate gently if comfortable; do not massage unilateral swelling.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["one ankle becomes more swollen", "breathlessness develops"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-02-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
@@ -159,7 +161,7 @@ export const batch21Protocols: ProtocolInput[] = [
         "NHS.UK, \"Joint pain\", https://www.nhs.uk/conditions/joint-pain/ (page last reviewed 26 February 2026)",
         "NHS.UK, \"Shortness of breath\" (swollen-ankle criterion, already cited for Breathing Difficulty, batch18), https://www.nhs.uk/conditions/shortness-of-breath/"
       ],
-      contentNotice: "Combines the joint pain guidance already used for Arm/Leg/Ankle Pain with the swollen-ankle-plus-breathlessness criterion already cited for Breathing Difficulty. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult and pediatric ankle-swelling draft. Pulmonary-embolism symptoms route to 999; unilateral, severe, painful, hot, pregnancy/postpartum or systemic swelling requires in-person assessment. GOVERNANCE_REQUIRED for Qatar vascular, medical, pediatric, maternity, medicine and transport pathways. Not production-approved."
     })
   },
 
@@ -169,7 +171,7 @@ export const batch21Protocols: ProtocolInput[] = [
   {
     id: "oscg-elbow-pain",
     titleEn: "Elbow Pain",
-    clinicalDefinitionEn: "Non-traumatic elbow pain assessment decomposed from NHS.UK's published joint pain guidance.",
+    clinicalDefinitionEn: "UAT-only adult and pediatric non-traumatic elbow-pain pathway screening for joint infection, systemic illness and neurovascular compromise before in-person assessment.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -185,46 +187,47 @@ export const batch21Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-elbowpain-iaq1", sequence: 1, responseType: "LOCATION", promptTextEn: "Where exactly is the pain?" },
       { id: "oscg-elbowpain-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long has the pain lasted?" },
-      { id: "oscg-elbowpain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the skin around the elbow swollen and hot?" }
+      { id: "oscg-elbowpain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the skin around the elbow swollen and hot?" },
+      { id: "oscg-elbowpain-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the age; is there pregnancy/postpartum status, systemic illness, immune risk, recent infection/procedure, hidden trauma, neurovascular change, or child safeguarding concern?" }
     ],
     questions: [
       {
         id: "oscg-elbowpain-q0-urgent",
         acuityOrder: 1,
-        severity: "Urgent",
-        questionTextEn: "Is the skin around the elbow swollen and hot, or does the person feel generally unwell with a high temperature or feeling hot, cold, or shivery?",
-        dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK joint pain guidance lists these as reasons for an urgent GP appointment or NHS 111 call.",
-        redFlag: false,
+        severity: "Emergency",
+        questionTextEn: "Is elbow pain severe with neurovascular change, or is there a hot swollen joint plus marked systemic illness, confusion, breathing change, collapse or rapid deterioration?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+        rationaleEn: "Neurovascular compromise or a hot joint with marked systemic deterioration requires emergency assessment through the Qatar pathway.",
+        redFlag: true,
         keywords: ["elbow swollen and hot", "unwell with elbow pain"],
         careAdviceIds: ["oscg-elbowpain-urgent-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 70,
+        telemedicineEligible: false,
+        dispositionLevel: 100,
         questionOrder: 1
       },
       {
         id: "oscg-elbowpain-q1-selfcare",
         acuityOrder: 2,
-        severity: "Self-care",
-        questionTextEn: "Is this mild elbow pain without the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "NHS.UK guidance describes mild joint pain as manageable at home with rest, ice, and gentle movement.",
+        severity: "Urgent",
+        questionTextEn: "With no emergency feature, is there any persistent or unexplained elbow pain, hot swelling, functional limitation, child joint concern or higher-risk context?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "This UAT pathway requires in-person assessment and does not authorize remote diagnosis or fixed medication advice.",
         redFlag: false,
         keywords: ["mild elbow pain"],
         careAdviceIds: ["oscg-elbowpain-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-elbowpain-urgent-advice", titleEn: "Urgent elbow pain review", instructionTextEn: "Arrange same-day medical review for these signs of possible infection.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["increasing swelling or redness", "fever develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-elbowpain-selfcare-advice", titleEn: "Home care for mild elbow pain", instructionTextEn: "Rest the elbow when possible, apply an ice pack wrapped in a towel for up to 20 minutes every 2-3 hours, keep gently moving rather than fully immobilizing it, and take a suitable over-the-counter pain reliever.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain lasts more than 2 weeks", "swelling, redness, or fever develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-elbowpain-urgent-advice", titleEn: "Qatar emergency elbow-joint response", instructionTextEn: "Call Qatar emergency services on 999 for a hot swollen joint with systemic illness, severe pain, neurovascular change, or rapid deterioration. Do not allow self-driving or force movement.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["increasing swelling or redness", "fever or systemic illness"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-elbowpain-selfcare-advice", titleEn: "In-person elbow assessment", instructionTextEn: "Arrange in-person assessment through an approved Qatar adult or pediatric pathway. Use wrapped cold briefly if comfortable; avoid fixed-dose medication advice until patient factors are checked.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["pain worsens", "swelling, redness or fever"], displayOrder: 2, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-02-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Joint pain\" (non-injury pain guidance), https://www.nhs.uk/conditions/joint-pain/ (page last reviewed 26 February 2026) - applied to non-traumatic elbow pain"],
-      contentNotice: "Decomposed from the same NHS.UK joint pain guidance already used for Arm Pain and Leg Pain (batch15), applied to the elbow, distinct from the traumatic Elbow Injury protocol (batch13). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult and pediatric elbow-pain draft. Hot swelling with systemic illness or neurovascular compromise routes to 999; otherwise in-person assessment is required. GOVERNANCE_REQUIRED for Qatar infection, trauma, pediatric, pregnancy, safeguarding, analgesia and transport pathways. Not production-approved."
     })
   },
 
@@ -234,7 +237,7 @@ export const batch21Protocols: ProtocolInput[] = [
   {
     id: "oscg-elbow-swelling",
     titleEn: "Elbow Swelling",
-    clinicalDefinitionEn: "Non-traumatic elbow swelling assessment decomposed from NHS.UK's published joint pain guidance.",
+    clinicalDefinitionEn: "UAT-only adult and pediatric elbow-swelling pathway screening for septic joint or bursa, systemic illness, vascular compromise and occult trauma before in-person assessment.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -250,17 +253,18 @@ export const batch21Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-elbowswelling-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How long has the swelling lasted?" },
       { id: "oscg-elbowswelling-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Is the skin red, hot, or painful to touch?" },
-      { id: "oscg-elbowswelling-iaq3", sequence: 3, responseType: "TEMPERATURE", promptTextEn: "What is the temperature, if measured?" }
+      { id: "oscg-elbowswelling-iaq3", sequence: 3, responseType: "TEMPERATURE", promptTextEn: "What is the temperature, if measured?" },
+      { id: "oscg-elbowswelling-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the age; is there systemic illness, immune risk, skin wound/bite, recent infection/procedure, pregnancy/postpartum status, hidden trauma or child safeguarding concern?" }
     ],
     questions: [
       {
         id: "oscg-elbowswelling-q0-urgent",
         acuityOrder: 1,
-        severity: "Urgent",
-        questionTextEn: "Is the skin around the elbow swollen and hot, or does the person feel generally unwell with a fever or feeling hot, cold, or shivery?",
-        dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK joint pain guidance lists these as reasons for an urgent GP appointment or NHS 111 call - a swollen, hot joint can indicate infection (septic bursitis/arthritis) needing prompt treatment.",
-        redFlag: false,
+        severity: "Emergency",
+        questionTextEn: "Is elbow swelling severe with neurovascular change, or is it hot/painful with marked systemic illness, confusion, breathing change, collapse or rapid deterioration?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+        rationaleEn: "NHS.UK joint pain guidance identifies these as reasons for urgent clinical review - a swollen, hot joint can indicate infection (septic bursitis/arthritis) needing prompt treatment; the local Qatar urgent-care pathway is used here.",
+        redFlag: true,
         keywords: ["hot swollen elbow", "elbow swelling with fever"],
         careAdviceIds: ["oscg-elbowswelling-urgent-advice"],
         telemedicineEligible: false,
@@ -270,26 +274,26 @@ export const batch21Protocols: ProtocolInput[] = [
       {
         id: "oscg-elbowswelling-q1-selfcare",
         acuityOrder: 2,
-        severity: "Self-care",
-        questionTextEn: "Is this mild swelling without redness, heat, or fever?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "Mild elbow swelling without infection signs is often manageable at home.",
+        severity: "Urgent",
+        questionTextEn: "With no emergency feature, is there any persistent or unexplained elbow swelling, redness/heat, movement restriction, child concern or higher-risk context?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "In-person examination is required to distinguish septic joint/bursa, inflammatory disease, occult trauma and other causes.",
         redFlag: false,
         keywords: ["mild elbow swelling no redness"],
         careAdviceIds: ["oscg-elbowswelling-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-elbowswelling-urgent-advice", titleEn: "Urgent elbow swelling review", instructionTextEn: "Arrange same-day medical review for possible joint infection.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fever worsens", "redness spreads"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-elbowswelling-selfcare-advice", titleEn: "Home care for mild elbow swelling", instructionTextEn: "Rest the elbow, apply a cold compress, and take an over-the-counter pain reliever if needed.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["redness, warmth, or fever develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-elbowswelling-urgent-advice", titleEn: "Qatar emergency hot-joint response", instructionTextEn: "Call Qatar emergency services on 999 for an ambulance for hot swollen elbow with systemic illness, severe pain, neurovascular change or rapid deterioration; do not self-drive. Do not squeeze, drain or force movement.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["fever worsens", "redness spreads"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-elbowswelling-selfcare-advice", titleEn: "In-person elbow-swelling assessment", instructionTextEn: "Arrange in-person assessment; telephone review cannot exclude septic arthritis/bursitis, inflammatory disease or occult trauma. Medication and exact Qatar destination are GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["redness, warmth or fever", "movement worsens"], displayOrder: 2, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-02-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Joint pain\", https://www.nhs.uk/conditions/joint-pain/ (page last reviewed 26 February 2026) - applied to elbow swelling"],
-      contentNotice: "Decomposed from the same NHS.UK joint pain guidance already used elsewhere in this content set, applied to elbow swelling. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult and pediatric elbow-swelling draft. Possible septic joint/bursa or systemic deterioration routes to 999; otherwise in-person assessment is required. GOVERNANCE_REQUIRED for Qatar infection, orthopaedic, pediatric, pregnancy, medication and transport pathways. Not production-approved."
     })
   },
 
@@ -299,7 +303,7 @@ export const batch21Protocols: ProtocolInput[] = [
   {
     id: "oscg-finger-pain",
     titleEn: "Finger Pain",
-    clinicalDefinitionEn: "Non-traumatic finger pain assessment decomposed from NHS.UK's published joint pain guidance.",
+    clinicalDefinitionEn: "UAT-only adult and pediatric non-traumatic finger-pain pathway screening for infection, constriction and neurovascular compromise before in-person assessment.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -315,46 +319,47 @@ export const batch21Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-fingerpain-iaq1", sequence: 1, responseType: "LOCATION", promptTextEn: "Which finger, and where exactly?" },
       { id: "oscg-fingerpain-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long has the pain lasted?" },
-      { id: "oscg-fingerpain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the skin around the finger swollen and hot?" }
+      { id: "oscg-fingerpain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the skin around the finger swollen and hot?" },
+      { id: "oscg-fingerpain-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the age; are rings constricting, is there systemic illness, wound/bite/nail infection, immune risk, hidden trauma, neurovascular change, pregnancy or child safeguarding concern?" }
     ],
     questions: [
       {
         id: "oscg-fingerpain-q0-urgent",
         acuityOrder: 1,
-        severity: "Urgent",
-        questionTextEn: "Is the skin around the finger swollen and hot, or does the person feel generally unwell with a high temperature?",
-        dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK joint pain guidance lists these as reasons for an urgent GP appointment or NHS 111 call.",
-        redFlag: false,
+        severity: "Emergency",
+        questionTextEn: "Is finger pain severe with a cold/pale/blue/numb digit or constricting ring, or is there rapidly spreading redness/swelling plus marked systemic illness or deterioration?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+        rationaleEn: "Threatened digit circulation, a constricting ring, or spreading infection with marked systemic deterioration requires emergency assessment.",
+        redFlag: true,
         keywords: ["finger swollen and hot", "unwell with finger pain"],
         careAdviceIds: ["oscg-fingerpain-urgent-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 70,
+        telemedicineEligible: false,
+        dispositionLevel: 100,
         questionOrder: 1
       },
       {
         id: "oscg-fingerpain-q1-selfcare",
         acuityOrder: 2,
-        severity: "Self-care",
-        questionTextEn: "Is this mild finger pain without the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "NHS.UK guidance describes mild joint pain as manageable at home with rest and gentle movement.",
+        severity: "Urgent",
+        questionTextEn: "With no emergency feature, is there any persistent or unexplained finger pain, swelling, wound/bite, movement limitation, child concern or higher-risk context?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "In-person assessment is required to exclude infection, tendon-sheath disease, occult trauma, constriction and neurovascular problems.",
         redFlag: false,
         keywords: ["mild finger pain"],
         careAdviceIds: ["oscg-fingerpain-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-fingerpain-urgent-advice", titleEn: "Urgent finger pain review", instructionTextEn: "Arrange same-day medical review for these signs of possible infection.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["increasing swelling or redness", "fever develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-fingerpain-selfcare-advice", titleEn: "Home care for mild finger pain", instructionTextEn: "Rest the finger, apply a cold compress if swollen, keep gently moving rather than fully immobilizing it, and take a suitable over-the-counter pain reliever.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain lasts more than 2 weeks", "swelling, redness, or fever develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-fingerpain-urgent-advice", titleEn: "Qatar emergency finger/hand response", instructionTextEn: "Call Qatar emergency services on 999 for an ambulance for rapidly spreading infection with systemic illness, severe pain, a cold/pale/blue/numb finger, or rapid deterioration; do not self-drive. Remove rings if easy before swelling worsens; do not force them off.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["increasing swelling or redness", "fever or colour/sensation change"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-fingerpain-selfcare-advice", titleEn: "In-person finger assessment", instructionTextEn: "Arrange in-person assessment for unexplained pain. Protect the finger and use wrapped cold briefly if comfortable; do not squeeze, puncture or use unapproved medication.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["pain, swelling or redness worsens", "fever develops"], displayOrder: 2, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-02-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Joint pain\", https://www.nhs.uk/conditions/joint-pain/ (page last reviewed 26 February 2026) - applied to non-traumatic finger pain"],
-      contentNotice: "Decomposed from the same NHS.UK joint pain guidance already used elsewhere in this content set, applied to the finger, distinct from the traumatic Finger Injury protocol (batch10). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult and pediatric finger-pain draft. Systemic infection, constriction or neurovascular compromise routes to 999; otherwise in-person assessment is required. GOVERNANCE_REQUIRED for Qatar hand, infection, pediatric, safeguarding, medication and transport pathways. Not production-approved."
     })
   },
 
@@ -364,7 +369,7 @@ export const batch21Protocols: ProtocolInput[] = [
   {
     id: "oscg-foot-pain",
     titleEn: "Foot Pain",
-    clinicalDefinitionEn: "Non-traumatic foot pain assessment decomposed from NHS.UK's published joint pain guidance.",
+    clinicalDefinitionEn: "UAT-only adult and pediatric non-traumatic foot-pain pathway screening for infection, inability to bear weight, neurovascular compromise and diabetic or immune risk before in-person assessment.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -380,46 +385,47 @@ export const batch21Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-footpain-iaq1", sequence: 1, responseType: "LOCATION", promptTextEn: "Where exactly is the pain?" },
       { id: "oscg-footpain-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long has the pain lasted?" },
-      { id: "oscg-footpain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the skin around the foot swollen and hot?" }
+      { id: "oscg-footpain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the skin around the foot swollen and hot?" },
+      { id: "oscg-footpain-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the age; is there diabetes/neuropathy, immune/vascular disease, wound/foreign body, inability to bear weight, pregnancy/postpartum status, hidden trauma, neurovascular change or child safeguarding concern?" }
     ],
     questions: [
       {
         id: "oscg-footpain-q0-urgent",
         acuityOrder: 1,
-        severity: "Urgent",
-        questionTextEn: "Is the skin around the foot swollen and hot, does the person have diabetes with a foot wound, or does the person feel generally unwell with a fever?",
-        dispositionCode: "HMC_URGENT_REVIEW",
+        severity: "Emergency",
+        questionTextEn: "Is foot pain severe with inability to bear weight or a cold/pale/blue/numb foot, or is there a diabetic/other wound or hot swelling plus marked systemic illness or rapid deterioration?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         rationaleEn: "NHS.UK joint pain guidance lists swelling/heat and feeling unwell as reasons for urgent review; diabetic foot problems specifically need prompt assessment given the higher risk of complications.",
-        redFlag: false,
+        redFlag: true,
         keywords: ["foot swollen and hot", "diabetic foot pain"],
         careAdviceIds: ["oscg-footpain-urgent-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 70,
+        telemedicineEligible: false,
+        dispositionLevel: 100,
         questionOrder: 1
       },
       {
         id: "oscg-footpain-q1-selfcare",
         acuityOrder: 2,
-        severity: "Self-care",
-        questionTextEn: "Is this mild foot pain without the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "NHS.UK guidance describes mild joint/foot pain as manageable at home with rest, ice, and supportive footwear.",
+        severity: "Urgent",
+        questionTextEn: "With no emergency feature, is there any persistent or unexplained foot pain, wound, swelling, walking limitation, diabetes/immune risk, child concern or higher-risk context?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "In-person assessment is required, particularly for diabetes/neuropathy, wounds, immune risk, children and impaired weight bearing.",
         redFlag: false,
         keywords: ["mild foot pain"],
         careAdviceIds: ["oscg-footpain-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-footpain-urgent-advice", titleEn: "Urgent foot pain review", instructionTextEn: "Arrange same-day medical review, especially given diabetes or signs of infection.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["increasing swelling or redness", "fever develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-footpain-selfcare-advice", titleEn: "Home care for mild foot pain", instructionTextEn: "Rest the foot, apply an ice pack wrapped in a towel, wear supportive well-fitting footwear, and take a suitable over-the-counter pain reliever.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain lasts more than 2 weeks", "swelling, redness, or fever develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-footpain-urgent-advice", titleEn: "Qatar emergency foot response", instructionTextEn: "Call Qatar emergency services on 999 for systemic illness with hot swelling, inability to bear weight, severe rapidly worsening pain, or a cold/pale/blue/numb foot. Do not allow self-driving.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["increasing swelling or redness", "fever or neurovascular change"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-footpain-selfcare-advice", titleEn: "In-person foot assessment", instructionTextEn: "Arrange in-person assessment, especially for a child, pregnancy, diabetes, neuropathy, immune compromise or skin break. Protect from pressure and do not use fixed-dose analgesia until patient factors are checked.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["pain persists or worsens", "swelling, redness or fever"], displayOrder: 2, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-02-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Joint pain\", https://www.nhs.uk/conditions/joint-pain/ (page last reviewed 26 February 2026) - applied to non-traumatic foot pain"],
-      contentNotice: "Decomposed from the same NHS.UK joint pain guidance already used elsewhere in this content set, applied to the foot. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult and pediatric foot-pain draft. Systemic infection, inability to bear weight or neurovascular compromise routes to 999; diabetes and immune risk require in-person assessment. GOVERNANCE_REQUIRED for Qatar foot, diabetic-foot, pediatric, pregnancy, medication and transport pathways. Not production-approved."
     })
   },
 
@@ -429,7 +435,7 @@ export const batch21Protocols: ProtocolInput[] = [
   {
     id: "oscg-hand-swelling",
     titleEn: "Hand Swelling",
-    clinicalDefinitionEn: "Non-traumatic hand swelling assessment decomposed from NHS.UK's published joint pain guidance.",
+    clinicalDefinitionEn: "UAT-only adult and pediatric hand-swelling pathway screening for infection, allergy, vascular obstruction, constriction and occult trauma before in-person assessment.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -445,17 +451,18 @@ export const batch21Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-handswelling-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How long has the swelling lasted?" },
       { id: "oscg-handswelling-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Is the skin red, hot, or painful to touch?" },
-      { id: "oscg-handswelling-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is one hand more swollen than the other?" }
+      { id: "oscg-handswelling-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is one hand more swollen than the other?" },
+      { id: "oscg-handswelling-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the age; are rings constricting, is there fever, allergy, wound/bite, line/procedure, pregnancy/postpartum status, neurovascular change, hidden injury or child safeguarding concern?" }
     ],
     questions: [
       {
         id: "oscg-handswelling-q0-urgent",
         acuityOrder: 1,
-        severity: "Urgent",
-        questionTextEn: "Is the skin around the hand swollen and hot, or does the person feel generally unwell with a fever?",
-        dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK joint pain guidance lists these as reasons for an urgent GP appointment or NHS 111 call.",
-        redFlag: false,
+        severity: "Emergency",
+        questionTextEn: "Is hand swelling severe with a cold/pale/blue/numb hand or constricting ring, or is there rapidly spreading redness/swelling plus marked systemic illness or deterioration?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+        rationaleEn: "Inability to stand or bear weight, or marked systemic deterioration including in a child, requires emergency assessment through the Qatar pathway.",
+        redFlag: true,
         keywords: ["hot swollen hand", "hand swelling with fever"],
         careAdviceIds: ["oscg-handswelling-urgent-advice"],
         telemedicineEligible: false,
@@ -465,26 +472,26 @@ export const batch21Protocols: ProtocolInput[] = [
       {
         id: "oscg-handswelling-q1-selfcare",
         acuityOrder: 2,
-        severity: "Self-care",
-        questionTextEn: "Is this mild, even swelling without redness, heat, or fever?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "Mild hand swelling without infection signs is often manageable at home.",
+        severity: "Urgent",
+        questionTextEn: "With no emergency feature, is there any persistent or unexplained hand swelling, asymmetry, redness/heat, wound, child concern or higher-risk context?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "In-person assessment is required to exclude infection, allergy, vascular/lymphatic obstruction, inflammatory disease and occult trauma.",
         redFlag: false,
         keywords: ["mild hand swelling"],
         careAdviceIds: ["oscg-handswelling-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-handswelling-urgent-advice", titleEn: "Urgent hand swelling review", instructionTextEn: "Arrange same-day medical review for possible infection.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fever worsens", "redness spreads"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-handswelling-selfcare-advice", titleEn: "Home care for mild hand swelling", instructionTextEn: "Elevate the hand when resting, apply a cold compress, and take an over-the-counter pain reliever if needed.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["redness, warmth, or fever develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-handswelling-urgent-advice", titleEn: "Qatar emergency hand-swelling response", instructionTextEn: "Call Qatar emergency services on 999 for an ambulance for rapidly spreading swelling/infection with systemic illness, severe pain, or a cold/pale/blue/numb hand; do not self-drive. Remove rings if easy; do not squeeze or drain.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["fever worsens", "redness spreads", "colour or sensation changes"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-handswelling-selfcare-advice", titleEn: "In-person hand-swelling assessment", instructionTextEn: "Arrange in-person assessment; unexplained swelling may reflect infection, inflammatory disease, allergy, vascular obstruction or occult injury. Medication and exact Qatar destination are GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["redness, warmth or fever", "swelling progresses"], displayOrder: 2, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-02-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Joint pain\", https://www.nhs.uk/conditions/joint-pain/ (page last reviewed 26 February 2026) - applied to hand swelling"],
-      contentNotice: "Decomposed from the same NHS.UK joint pain guidance already used elsewhere in this content set, applied to hand swelling. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult and pediatric hand-swelling draft. Systemic infection or neurovascular compromise routes to 999; unexplained swelling requires in-person assessment. GOVERNANCE_REQUIRED for Qatar infection, allergy, vascular, pediatric, safeguarding, medication and transport pathways. Not production-approved."
     })
   },
 
@@ -494,7 +501,7 @@ export const batch21Protocols: ProtocolInput[] = [
   {
     id: "oscg-hip-pain",
     titleEn: "Hip Pain",
-    clinicalDefinitionEn: "Non-traumatic hip pain assessment decomposed from NHS.UK's published joint pain guidance.",
+    clinicalDefinitionEn: "UAT-only adult and pediatric non-traumatic hip-pain pathway screening for septic arthritis, systemic illness and inability to stand or bear weight before in-person assessment.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -510,46 +517,47 @@ export const batch21Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-hippain-iaq1", sequence: 1, responseType: "LOCATION", promptTextEn: "Where exactly is the pain?" },
       { id: "oscg-hippain-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long has the pain lasted?" },
-      { id: "oscg-hippain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the person able to bear weight normally?" }
+      { id: "oscg-hippain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the person able to bear weight normally?" },
+      { id: "oscg-hippain-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the age; is there systemic illness, pregnancy/recent birth, recent infection/procedure, night pain, immune risk, hidden trauma, or—in a child—refusal to walk/use the limb or safeguarding concern?" }
     ],
     questions: [
       {
         id: "oscg-hippain-q0-urgent",
         acuityOrder: 1,
-        severity: "Urgent",
-        questionTextEn: "Is the skin around the hip swollen and hot, does the person feel generally unwell with a fever, or has walking become difficult?",
-        dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK joint pain guidance lists these as reasons for an urgent GP appointment or NHS 111 call.",
-        redFlag: false,
+        severity: "Emergency",
+        questionTextEn: "Is hip pain severe with inability to stand or bear weight, or accompanied by marked systemic illness, confusion, breathing change, collapse or rapid deterioration, including a seriously unwell child?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+        rationaleEn: "NHS.UK joint pain guidance identifies these as reasons for urgent clinical review; the local Qatar urgent-care pathway is used here.",
+        redFlag: true,
         keywords: ["hip swollen and hot", "hip pain limiting walking no injury"],
         careAdviceIds: ["oscg-hippain-urgent-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 70,
+        telemedicineEligible: false,
+        dispositionLevel: 100,
         questionOrder: 1
       },
       {
         id: "oscg-hippain-q1-selfcare",
         acuityOrder: 2,
-        severity: "Self-care",
-        questionTextEn: "Is this mild hip pain without the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "NHS.UK guidance describes mild joint pain as manageable at home with rest, ice, and gentle movement.",
+        severity: "Urgent",
+        questionTextEn: "With no emergency feature, is there any persistent or unexplained hip pain, limp/functional limitation, pregnancy/postpartum state, night pain, child concern or higher-risk context?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "In-person assessment is required; every child joint problem needs clinical review and telephone triage cannot exclude serious hip pathology.",
         redFlag: false,
         keywords: ["mild hip pain"],
         careAdviceIds: ["oscg-hippain-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-hippain-urgent-advice", titleEn: "Urgent hip pain review", instructionTextEn: "Arrange same-day medical review for these signs of possible infection or a more significant cause.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["increasing swelling or redness", "difficulty walking worsens"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-hippain-selfcare-advice", titleEn: "Home care for mild hip pain", instructionTextEn: "Rest the hip when possible, apply an ice pack wrapped in a towel for up to 20 minutes every 2-3 hours, keep gently moving rather than fully immobilizing it, and take a suitable over-the-counter pain reliever.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain lasts more than 2 weeks", "swelling, redness, or fever develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-hippain-urgent-advice", titleEn: "Qatar emergency hip response", instructionTextEn: "Call Qatar emergency services on 999 for a hot painful joint with systemic illness, inability to stand or bear weight, severe rapidly worsening pain, or a seriously unwell child. Do not allow self-driving or force walking.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["fever/systemic illness", "cannot walk or bear weight"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-hippain-selfcare-advice", titleEn: "In-person hip assessment", instructionTextEn: "Arrange in-person assessment. Any child hip/joint problem, pregnancy/postpartum pain, night pain, functional loss or unexplained persistent pain requires an age-appropriate pathway. Medication and exact Qatar destination are GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["pain worsens", "walking difficulty", "swelling, redness or fever"], displayOrder: 2, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-02-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Joint pain\", https://www.nhs.uk/conditions/joint-pain/ (page last reviewed 26 February 2026) - applied to non-traumatic hip pain"],
-      contentNotice: "Decomposed from the same NHS.UK joint pain guidance already used elsewhere in this content set, applied to the hip, distinct from the traumatic Hip Injury protocol (batch13). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult and pediatric hip-pain draft. Systemic illness with joint pain, inability to stand/bear weight or a seriously unwell child routes to 999; otherwise in-person assessment is required. GOVERNANCE_REQUIRED for Qatar septic-joint, pediatric, pregnancy/postpartum, safeguarding, imaging, medication and transport pathways. Not production-approved."
     })
   },
 
@@ -559,7 +567,7 @@ export const batch21Protocols: ProtocolInput[] = [
   {
     id: "oscg-knee-swelling",
     titleEn: "Knee Swelling",
-    clinicalDefinitionEn: "Non-traumatic knee swelling assessment decomposed from NHS.UK's published joint pain guidance.",
+    clinicalDefinitionEn: "UAT-only adult and pediatric non-traumatic knee-swelling pathway screening for septic arthritis, systemic illness, vascular compromise and inability to bear weight before in-person assessment.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -575,17 +583,18 @@ export const batch21Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-kneeswelling-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How long has the swelling lasted?" },
       { id: "oscg-kneeswelling-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Is the skin red, hot, or painful to touch?" },
-      { id: "oscg-kneeswelling-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the person able to bear weight normally?" }
+      { id: "oscg-kneeswelling-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the person able to bear weight normally?" },
+      { id: "oscg-kneeswelling-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the age; is there systemic illness, recent infection/procedure, immune risk, pregnancy/postpartum status, calf swelling, hidden trauma or child safeguarding concern?" }
     ],
     questions: [
       {
         id: "oscg-kneeswelling-q0-urgent",
         acuityOrder: 1,
-        severity: "Urgent",
-        questionTextEn: "Is the skin around the knee swollen and hot, does the person feel generally unwell with a fever, or is walking difficult?",
-        dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK joint pain guidance lists these as reasons for an urgent GP appointment or NHS 111 call - a swollen, hot knee can indicate joint infection needing prompt treatment.",
-        redFlag: false,
+        severity: "Emergency",
+        questionTextEn: "Is knee swelling severely painful with inability to bear weight or neurovascular change, or is it hot with marked systemic illness, confusion, breathing change, collapse or rapid deterioration?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+        rationaleEn: "NHS.UK joint pain guidance identifies these as reasons for urgent clinical review - a swollen, hot knee can indicate joint infection needing prompt treatment; the local Qatar urgent-care pathway is used here.",
+        redFlag: true,
         keywords: ["hot swollen knee", "knee swelling with fever"],
         careAdviceIds: ["oscg-kneeswelling-urgent-advice"],
         telemedicineEligible: false,
@@ -595,26 +604,26 @@ export const batch21Protocols: ProtocolInput[] = [
       {
         id: "oscg-kneeswelling-q1-selfcare",
         acuityOrder: 2,
-        severity: "Self-care",
-        questionTextEn: "Is this mild swelling without redness, heat, or fever?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "Mild knee swelling without infection signs is often manageable at home.",
+        severity: "Urgent",
+        questionTextEn: "With no emergency feature, is there any persistent or unexplained knee swelling, redness/heat, walking limitation, calf symptoms, child concern or higher-risk context?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "In-person examination is required to distinguish infection, inflammatory/crystal disease, vascular causes and occult trauma.",
         redFlag: false,
         keywords: ["mild knee swelling no redness"],
         careAdviceIds: ["oscg-kneeswelling-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-kneeswelling-urgent-advice", titleEn: "Urgent knee swelling review", instructionTextEn: "Arrange same-day medical review for possible joint infection.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fever worsens", "unable to bear weight"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-kneeswelling-selfcare-advice", titleEn: "Home care for mild knee swelling", instructionTextEn: "Rest the knee, apply a cold compress, elevate when resting, and take an over-the-counter pain reliever if needed.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["redness, warmth, or fever develops", "unable to bear weight"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-kneeswelling-urgent-advice", titleEn: "Qatar emergency knee-joint response", instructionTextEn: "Call Qatar emergency services on 999 for an ambulance for hot swollen knee with systemic illness, severe pain, inability to bear weight, neurovascular change or rapid deterioration; do not self-drive. Do not force walking.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["fever worsens", "unable to bear weight"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-kneeswelling-selfcare-advice", titleEn: "In-person knee-swelling assessment", instructionTextEn: "Arrange in-person assessment; telephone review cannot exclude joint infection, inflammatory disease, crystal arthritis, vascular causes or occult trauma. Medication and exact Qatar destination are GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["redness, warmth or fever", "unable to bear weight"], displayOrder: 2, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-02-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Joint pain\", https://www.nhs.uk/conditions/joint-pain/ (page last reviewed 26 February 2026) - applied to knee swelling"],
-      contentNotice: "Decomposed from the same NHS.UK joint pain guidance already used elsewhere in this content set, applied to knee swelling, distinct from the Ottawa Knee Rule protocol (batch02, traumatic injury). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult and pediatric knee-swelling draft. Possible septic joint, inability to bear weight or neurovascular compromise routes to 999; otherwise in-person assessment is required. GOVERNANCE_REQUIRED for Qatar infection, orthopaedic, pediatric, pregnancy, imaging, medication and transport pathways. Not production-approved."
     })
   },
 
@@ -624,7 +633,7 @@ export const batch21Protocols: ProtocolInput[] = [
   {
     id: "oscg-arm-swelling-and-edema",
     titleEn: "Arm Swelling and Edema",
-    clinicalDefinitionEn: "Non-traumatic arm swelling assessment decomposed from NHS.UK's published joint pain guidance and standard DVT/lymphedema red-flag knowledge.",
+    clinicalDefinitionEn: "UAT-only adult and pediatric non-traumatic arm-swelling pathway screening for upper-extremity thrombosis or pulmonary embolism, infection, vascular compromise and systemic oedema before in-person assessment.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -640,7 +649,8 @@ export const batch21Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-armswelling-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How long has the swelling lasted?" },
       { id: "oscg-armswelling-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Is one arm more swollen than the other?" },
-      { id: "oscg-armswelling-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any shortness of breath or chest pain?" }
+      { id: "oscg-armswelling-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any shortness of breath or chest pain?" },
+      { id: "oscg-armswelling-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the age; is there a central line, cancer, clot history, surgery/immobility, pregnancy/recent birth, fever, allergy, systemic disease, medicines, injury or child safeguarding concern?" }
     ],
     questions: [
       {
@@ -674,27 +684,27 @@ export const batch21Protocols: ProtocolInput[] = [
       {
         id: "oscg-armswelling-q2-selfcare",
         acuityOrder: 3,
-        severity: "Self-care",
-        questionTextEn: "Is this mild, even swelling in both arms with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "Mild, symmetric arm swelling without infection or clot signs is often manageable at home.",
+        severity: "Urgent",
+        questionTextEn: "With no emergency feature, is arm swelling persistent, unexplained, unilateral, painful/hot, associated with a central line/clot risk, pregnancy/postpartum status, systemic disease or childhood?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "Telephone assessment cannot safely determine benign oedema or exclude upper-extremity thrombosis, infection, systemic disease or vascular/lymphatic obstruction.",
         redFlag: false,
         keywords: ["mild even arm swelling"],
         careAdviceIds: ["oscg-armswelling-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-armswelling-emergency-advice", titleEn: "Emergency arm swelling precautions", instructionTextEn: "Arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening breathing difficulty", "chest pain develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-armswelling-urgent-advice", titleEn: "Urgent arm swelling review", instructionTextEn: "Arrange same-day medical review to check for infection or a blood clot.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["swelling worsens", "breathing difficulty develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-armswelling-selfcare-advice", titleEn: "Home care for mild arm swelling", instructionTextEn: "Elevate the arm when resting and stay gently active.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["one arm becomes more swollen than the other", "breathing difficulty develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-armswelling-emergency-advice", titleEn: "Qatar emergency arm-swelling response", instructionTextEn: "Call Qatar emergency services on 999 for arm swelling with breathlessness, chest pain, coughing blood, faintness, confusion or clamminess. Do not allow self-driving or massage the arm.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening breathing difficulty", "chest pain develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-armswelling-urgent-advice", titleEn: "Same-day arm-swelling assessment", instructionTextEn: "Arrange same-day in-person assessment for unilateral, sudden, painful, red/hot or unexplained swelling, fever, central line, cancer, pregnancy/postpartum state, recent surgery/immobility or previous clot. Exact Qatar vascular, maternity and medical destinations are GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["swelling worsens", "breathing difficulty develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-armswelling-selfcare-advice", titleEn: "Unexplained arm swelling needs review", instructionTextEn: "Arrange in-person assessment before assuming benign oedema. Elevate gently if comfortable; do not massage unilateral swelling or change diuretics/other medicines without clinician direction.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["one arm becomes more swollen", "breathing difficulty develops"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-02-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Joint pain\", https://www.nhs.uk/conditions/joint-pain/ (page last reviewed 26 February 2026); DVT-risk concept already used for Leg Pain (batch15) and Postpartum - Leg Pain/Leg Swelling (batch20), generalized to the arm"],
-      contentNotice: "Combines the joint pain guidance already used elsewhere in this content set with the DVT-risk red-flag pattern already established for leg swelling protocols, applied to the arm (e.g. relevant for callers with central venous catheters or after prolonged immobility). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult and pediatric arm-swelling draft. Pulmonary-embolism symptoms route to 999; unilateral swelling, central-line, cancer, pregnancy/postpartum, infection and thrombosis risks require same-day in-person assessment. This source-only family needs dedicated Qatar evidence review before generation. GOVERNANCE_REQUIRED for Qatar vascular, line, oncology, pediatric, maternity, medication and transport pathways. Not production-approved."
     })
   }
 ];

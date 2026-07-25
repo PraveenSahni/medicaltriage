@@ -13,6 +13,7 @@ import {
   type ProtocolMode
 } from "../types/clinicalContent.js";
 import type { Severity } from "../types/triage.js";
+import { assertClinicalContentAllowedInEnvironment } from "../services/clinicalContentReleasePolicy.js";
 
 type ImportSummary = {
   sourceUri: string;
@@ -326,6 +327,8 @@ async function importIntoDatabase(contentPackage: ClinicalContentPackage, summar
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL is required for import. Use --dry-run to validate without writing to Cloud SQL/PostgreSQL.");
   }
+
+  assertClinicalContentAllowedInEnvironment(contentPackage);
 
   const prisma = new PrismaClient();
   let importJob: { id: string } | undefined;

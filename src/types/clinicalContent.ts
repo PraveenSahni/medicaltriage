@@ -122,6 +122,16 @@ export const ClinicalContentProvenanceSchema = z.object({
   sourceKind: z.string().min(1).max(100).default("synthetic-public-topic"),
   sourceDocuments: z.array(z.string().min(1).max(1000)).default([]),
   contentNotice: z.string().min(1).max(2000),
+  usageStatus: z.enum(["UAT_ONLY", "PRODUCTION"]).optional(),
+  productionEligible: z.boolean().optional(),
+  clinicalStatus: z
+    .enum([
+      "CLINICAL_CORRECTION_REQUIRED",
+      "READY_FOR_QATAR_CLINICAL_REVIEW",
+      "CLINICALLY_REVIEWED_FOR_UAT",
+      "PRODUCTION_APPROVED"
+    ])
+    .optional(),
   requiresClinicalValidation: z.boolean().default(true),
   licensedContentIncluded: z.literal(false).default(false)
 });

@@ -1,0 +1,197 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited NHS.UK pages under the Open Government Licence v3.0; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Local extensions, destination mappings, safeguarding workflows, and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1114,
+    "Title": "Pale Skin - Female (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Female",
+    "Age": "Child (0-17 years)",
+    "GenderAtBirth": "Female",
+    "Acuity": 3,
+    "Definition": [
+      "UAT-only assessment of pallor that first excludes shock and active bleeding, then separates adult possible anaemia from pediatric pallor requiring age-appropriate investigation.",
+      "Child patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 and use emergency ambulance transport; do not allow self-driving. If there is visible external bleeding, apply firm direct pressure with a clean dressing unless an object is embedded; do not remove an embedded object. Keep the person warm and still. If injuries and breathing allow, lie them down; do not give food or drink. Do not use the missing Bleeding protocol as a redirect. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2024-01-26",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Crown copyright (NHS.UK content), reused under the Open Government Licence v3.0. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 78,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1114001,
+      "AlgorithmID": 1114,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there active heavy bleeding or suspected internal bleeding, or pallor with collapse, confusion, reduced responsiveness, cold clammy skin, severe weakness, rapid or difficult breathing, or a rapid weak pulse suggesting shock?",
+      "Information": "NHS first-aid guidance identifies pale cold clammy skin, rapid shallow breathing, weakness and dizziness as shock features requiring immediate emergency help. Active bleeding or suspected internal bleeding must be managed directly and must not redirect to the missing Bleeding protocol.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        111401
+      ]
+    },
+    {
+      "QuestionID": 1114002,
+      "AlgorithmID": 1114,
+      "DispositionLevel": 78,
+      "QuestionOrder": 1,
+      "Question": "With no shock or active bleeding, is this a baby, child, or young person with persistent unexplained pallor, or is any person significantly breathless, tachycardic, faint, rapidly worsening, pregnant or recently postpartum, or known to have a haemoglobin disorder?",
+      "Information": "Pallor in children has a broader differential than dietary iron deficiency and requires age-appropriate assessment; NICE advises very urgent full blood count for unexplained pallor in children and young people. Significant symptoms, pregnancy/postpartum status, or a known haemoglobin disorder also require prompt clinical review.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        111402
+      ]
+    },
+    {
+      "QuestionID": 1114003,
+      "AlgorithmID": 1114,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "For an adult with all emergency and urgent features excluded, is there gradual pallor with tiredness, mild breathlessness, headache, or palpitations suggesting possible anaemia?",
+      "Information": "NHS.UK lists pallor, tiredness, breathlessness, headache and palpitations as possible iron-deficiency anaemia symptoms, but diagnosis requires blood testing and evaluation of the cause rather than assumed iron treatment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        111403
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 111401,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar shock or bleeding emergency response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and use emergency ambulance transport; do not allow self-driving. If there is visible external bleeding, apply firm direct pressure with a clean dressing unless an object is embedded; do not remove an embedded object. Keep the person warm and still. If injuries and breathing allow, lie them down; do not give food or drink. Do not use the missing Bleeding protocol as a redirect. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: continued or hidden bleeding; worsening weakness; collapse or loss of consciousness; confusion; rapid or difficult breathing."
+      ]
+    },
+    {
+      "AdviceID": 111402,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent age-appropriate pallor assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange prompt in-person assessment and blood testing through an approved Qatar adult, maternity, or pediatric pathway. Unexplained pallor in a child must not be treated as presumed dietary iron deficiency without assessment. Do not start iron solely from this protocol; iron can be harmful when unnecessary or overdosed. Call 999 if bleeding, collapse, reduced responsiveness, or breathing difficulty develops.",
+        "Call Back If: active bleeding; fainting or collapse; increasing breathlessness; reduced responsiveness; rapid deterioration."
+      ]
+    },
+    {
+      "AdviceID": 111403,
+      "AlgorithmOrder": 3,
+      "Title": "Adult possible-anaemia follow-up",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Arrange a PHCC assessment and blood test for possible anaemia and its cause. Do not assume iron deficiency or start iron solely because skin appears pale. Seek urgent reassessment if breathlessness, palpitations, dizziness, bleeding, or weakness increases.",
+        "Call Back If: symptoms worsen; shortness of breath increases; bleeding develops; fainting."
+      ]
+    }
+  ],
+  "references": [
+    "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (accessed 2026-07-25)",
+    "NHS.UK, \"First aid: shock and severe bleeding\", https://www.nhs.uk/tests-and-treatments/first-aid/ (accessed 2026-07-25)",
+    "NICE, \"Suspected cancer: recognition and referral\", NG12, https://www.nice.org.uk/guidance/ng12 (pallor in children and young people)",
+    "Great Ormond Street Hospital, \"Anaemia\", https://www.gosh.nhs.uk/conditions-and-treatments/general-medical-conditions/anaemia/",
+    "NHS.UK, \"Iron deficiency anaemia\", https://www.nhs.uk/conditions/iron-deficiency-anaemia/ (page last reviewed 26 January 2024)"
+  ],
+  "searchwords": [
+    "pale skin",
+    "looking pale",
+    "skin looking",
+    "very pale",
+    "anemia",
+    "washed out"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "DURATION",
+      "Question": "Did the pallor appear suddenly or gradually, and how different is it from the person's usual skin, lips, palms, nail beds, or inside the lower eyelid?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Pale Skin"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Is there active heavy bleeding, vomiting or coughing blood, black or bloody stool, bleeding in pregnancy or after birth, recent trauma or surgery, or possible internal bleeding?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Pale Skin"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is the person cold or clammy, faint or confused, very weak, difficult to wake, breathing rapidly or with difficulty, or showing a rapid weak pulse or collapse?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Pale Skin"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "Is there tiredness, breathlessness, palpitations, dizziness, headache, fever, bruising, repeated infections, poor appetite, poor growth, jaundice, heavy periods, pregnancy, or known anaemia or blood disorder?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Pale Skin"
+    },
+    {
+      "Order": 5,
+      "Category": "YES_NO",
+      "Question": "For a baby or child, is there reduced feeding, reduced activity, abnormal sleepiness, breathing difficulty, poor growth, unexplained bruising or bleeding, persistent fever, or caregiver concern that the child is significantly unwell?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Pale Skin"
+    },
+    {
+      "Order": 6,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What change has a safe parent or caregiver observed in behaviour, alertness, eating or drinking, sleep, school or play, and normal activity?",
+      "Rationale": "Child assessment includes safe-caregiver observation and functional change.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

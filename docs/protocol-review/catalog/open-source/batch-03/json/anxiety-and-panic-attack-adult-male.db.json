@@ -1,0 +1,185 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited NHS.UK pages under the Open Government Licence v3.0; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Local disposition mappings and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1061,
+    "Title": "Anxiety and Panic Attack - Male (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 3,
+    "Definition": [
+      "Panic attack/anxiety assessment decomposed from NHS.UK's published panic disorder guidance.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [
+        "Panic attacks can cause sudden intense fear with physical symptoms, but emergency cardiac or breathing presentations must be excluded first.",
+        "Repeated unexpected panic attacks followed by persistent worry may indicate panic disorder.",
+        "A single settling episode without emergency features still requires safety-net advice."
+      ],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "PENDING: Qatar adult, pediatric, obstetric, emergency, specialty, mental-health, and nursing governance review"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 and do not drive for first/severe chest pain, abnormal breathing, fainting, stroke signs, seizure, anaphylaxis, pregnancy/postpartum danger signs, poisoning, or immediate risk of harm. Keep the person with you, allow the position that makes breathing easiest, and do not assume a prior panic diagnosis explains new or different symptoms. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "RESEARCH_REQUIRED - verify source review date during governance",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Crown copyright (NHS.UK content), reused under the Open Government Licence v3.0. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1061001,
+      "AlgorithmID": 1061,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is persistent low mood or loss of interest the main concern, without a current panic episode?",
+      "Information": "Persistent depressive symptoms belong in the depression pathway; suicide risk must still be screened immediately.",
+      "GotoGuideline": "Depression",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1061002,
+      "AlgorithmID": 1061,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there crushing or pressure-like chest pain, pain spreading to the arm/jaw, fainting, or severe difficulty breathing that does not fit a typical panic attack pattern?",
+      "Information": "Universal emergency rule-out added ahead of the panic disorder guidance itself (NHS.UK's page notes it does not give 999 criteria) - panic attack symptoms can closely mimic cardiac or respiratory emergencies, which must be ruled out first, not assumed to be anxiety.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        106101
+      ]
+    },
+    {
+      "QuestionID": 1061003,
+      "AlgorithmID": 1061,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Has the caller had regular, unexpected panic attacks followed by at least a month of ongoing worry about having more?",
+      "Information": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a GP visit for assessment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        106102
+      ]
+    },
+    {
+      "QuestionID": 1061004,
+      "AlgorithmID": 1061,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this a single, isolated panic episode now settling, with none of the features above?",
+      "Information": "NHS.UK guidance provides in-the-moment coping techniques for an isolated panic episode.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        106103
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 106101,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency response for symptoms not safely attributable to panic",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and do not drive for first/severe chest pain, abnormal breathing, fainting, stroke signs, seizure, anaphylaxis, pregnancy/postpartum danger signs, poisoning, or immediate risk of harm. Keep the person with you, allow the position that makes breathing easiest, and do not assume a prior panic diagnosis explains new or different symptoms. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening chest pain or breathing; fainting, seizure, or neurological change; risk of self-harm or harm to others."
+      ]
+    },
+    {
+      "AdviceID": 106102,
+      "AlgorithmOrder": 2,
+      "Title": "Routine panic disorder follow-up",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Book a routine GP appointment to discuss recurring panic attacks and treatment options.",
+        "Call Back If: attacks become more frequent or severe."
+      ]
+    },
+    {
+      "AdviceID": 106103,
+      "AlgorithmOrder": 3,
+      "Title": "Coping with a panic attack",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Stay where you are if possible, breathe slowly and deeply, remind yourself the attack will pass and is not life-threatening, and focus on calm, positive images.",
+        "Call Back If: symptoms do not settle; chest pain or breathing difficulty develops."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Panic disorder\", https://www.nhs.uk/mental-health/conditions/panic-disorder/ (page last reviewed 22 August 2023)"
+  ],
+  "searchwords": [
+    "panic attack",
+    "anxiety attack",
+    "cant breathe anxious",
+    "feeling panicked"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, are they pregnant/recently postpartum, when did this episode start, and is it first, different, or more severe than prior clinician-diagnosed panic episodes?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Anxiety and Panic Attack"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Has this happened before?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Anxiety and Panic Attack"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "Describe what the caller is feeling right now.",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Anxiety and Panic Attack"
+    }
+  ]
+}

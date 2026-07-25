@@ -1,0 +1,213 @@
+{
+  "_source": "UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation content generated deterministically from src/data/openSourceGuidelines/batch01.ts and cited public sources. It is not licensed STCC content. All disposition and redirect branches are non-telemedicine pending Qatar clinical and nursing governance approval. Generation does not import or deploy records. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1025,
+    "Title": "Nosebleed - Male (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 2,
+    "Definition": [
+      "Nosebleed assessment decomposed from NHS.UK's published when-to-get-help guidance.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 and do not drive for severe/uncontrolled bleeding, breathing compromise, faintness/shock, major facial/head trauma, or reduced consciousness. Sit forward if alert, spit blood out, and pinch the soft nose continuously. Do not tilt the head back, lie flat, pack the nose deeply, or repeatedly release pressure to check. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-12-05",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1025001,
+      "AlgorithmID": 1025,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Did bleeding begin after a significant facial or nasal injury?",
+      "Information": "A traumatic nosebleed requires the Nose Injury pathway.",
+      "GotoGuideline": "Nose Injury",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1025002,
+      "AlgorithmID": 1025,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there difficulty breathing, reduced consciousness, collapse, faintness or shock, major facial/head trauma, or severe uncontrolled bleeding that is rapidly worsening?",
+      "Information": "Immediate life-threatening features require Qatar 999. This separates ambulance need from other NHS.UK an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria that may be stable enough for governed non-ambulance transport.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        102501
+      ]
+    },
+    {
+      "QuestionID": 1025003,
+      "AlgorithmID": 1025,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "After uninterrupted pinching of the soft nose, has bleeding continued longer than 10-15 minutes, does it still seem excessive, is the person swallowing a lot of blood and vomiting, or did it begin after a blow to the head without the immediate life-threatening features above?",
+      "Information": "NHS.UK directs these features to an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) and says not to self-drive, while allowing either another driver or an ambulance. Exact Qatar destination and transport choice remain GOVERNANCE_REQUIRED.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        102502
+      ]
+    },
+    {
+      "QuestionID": 1025004,
+      "AlgorithmID": 1025,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Is the patient a child under 2, does the caller have regular nosebleeds, anaemia symptoms, take blood-thinning medication, or have a clotting disorder such as haemophilia?",
+      "Information": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for these situations even when the bleed itself has stopped.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        102503
+      ]
+    },
+    {
+      "QuestionID": 1025005,
+      "AlgorithmID": 1025,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this a single, brief nosebleed with none of the features above?",
+      "Information": "NHS.UK guidance describes standard first aid as sufficient for an uncomplicated nosebleed.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        102504
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 102501,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency nosebleed response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and do not drive for severe/uncontrolled bleeding, breathing compromise, faintness/shock, major facial/head trauma, or reduced consciousness. Sit forward if alert, spit blood out, and pinch the soft nose continuously. Do not tilt the head back, lie flat, pack the nose deeply, or repeatedly release pressure to check. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: bleeding remains uncontrolled; difficulty breathing, swallowing large amounts of blood, faintness, or shock; major trauma or reduced consciousness."
+      ]
+    },
+    {
+      "AdviceID": 102502,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent in-person nosebleed assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Continue sitting forward and pinching the soft nose while arranging prompt in-person emergency assessment through the Qatar governance-approved pathway. Do not self-drive. A safe adult may transport a stable patient only if the approved local pathway permits; call 999 for breathing difficulty, reduced consciousness, collapse, shock, major trauma, or rapidly worsening/uncontrolled bleeding. Exact destination and transport remain GOVERNANCE_REQUIRED.",
+        "Call Back If: difficulty breathing, faintness, collapse, or reduced consciousness; bleeding becomes rapidly worse or remains uncontrolled; major trauma."
+      ]
+    },
+    {
+      "AdviceID": 102503,
+      "AlgorithmOrder": 3,
+      "Title": "Routine nosebleed follow-up",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange primary-care review through the approved Qatar pathway for recurrent nosebleeds or bleeding-risk factors.",
+        "Call Back If: nosebleeds becoming more frequent or heavier."
+      ]
+    },
+    {
+      "AdviceID": 102504,
+      "AlgorithmOrder": 4,
+      "Title": "Home first aid for a nosebleed",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Sit down, lean forward with the head tilted forward, pinch the soft part of the nose just above the nostrils for 10-15 minutes, and breathe through the mouth. An ice pack may help.",
+        "Call Back If: bleeding continues past 10-15 minutes of pinching; feeling weak or dizzy."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Nosebleed\", https://www.nhs.uk/conditions/nosebleed/ (page last reviewed 05 December 2023)"
+  ],
+  "searchwords": [
+    "nosebleed",
+    "bleeding nose",
+    "nose bleeding"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, are they pregnant, anticoagulated, or known to have a bleeding disorder, how long/severely has bleeding continued despite uninterrupted pressure, and was there trauma, surgery, foreign body, or safeguarding concern?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Nosebleed"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Did the bleeding start after a blow to the head?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Nosebleed"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is the caller taking blood-thinning medication such as warfarin?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Nosebleed"
+    }
+  ]
+}

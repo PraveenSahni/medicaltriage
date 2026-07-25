@@ -1,0 +1,198 @@
+{
+  "batch": "02",
+  "count": 24,
+  "gaps": [
+    {
+      "gapId": "B02-1041-algorithm-LastRevised",
+      "algorithmId": 1041,
+      "protocol": "Chest Pain (HEART Score) - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1041-clinicalReview",
+      "algorithmId": 1041,
+      "protocol": "Chest Pain (HEART Score) - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for rule fidelity and telephone adaptation.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1041-pediatricApplicability",
+      "algorithmId": 1041,
+      "protocol": "Chest Pain (HEART Score) - Male (Adult)",
+      "field": "pediatricApplicability",
+      "description": "A separately sourced pediatric rule or guideline is required; this adult rule was not copied into a child protocol.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1042-algorithm-LastRevised",
+      "algorithmId": 1042,
+      "protocol": "Chest Pain (HEART Score) - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1042-clinicalReview",
+      "algorithmId": 1042,
+      "protocol": "Chest Pain (HEART Score) - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for rule fidelity and telephone adaptation.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1042-pediatricApplicability",
+      "algorithmId": 1042,
+      "protocol": "Chest Pain (HEART Score) - Female (Adult)",
+      "field": "pediatricApplicability",
+      "description": "A separately sourced pediatric rule or guideline is required; this adult rule was not copied into a child protocol.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1043-algorithm-LastRevised",
+      "algorithmId": 1043,
+      "protocol": "Knee Injury (Ottawa Knee Rule) - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1043-clinicalReview",
+      "algorithmId": 1043,
+      "protocol": "Knee Injury (Ottawa Knee Rule) - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for rule fidelity and telephone adaptation.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1043-pediatricApplicability",
+      "algorithmId": 1043,
+      "protocol": "Knee Injury (Ottawa Knee Rule) - Male (Adult)",
+      "field": "pediatricApplicability",
+      "description": "A separately sourced pediatric rule or guideline is required; this adult rule was not copied into a child protocol.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1044-algorithm-LastRevised",
+      "algorithmId": 1044,
+      "protocol": "Knee Injury (Ottawa Knee Rule) - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1044-clinicalReview",
+      "algorithmId": 1044,
+      "protocol": "Knee Injury (Ottawa Knee Rule) - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for rule fidelity and telephone adaptation.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1044-pediatricApplicability",
+      "algorithmId": 1044,
+      "protocol": "Knee Injury (Ottawa Knee Rule) - Female (Adult)",
+      "field": "pediatricApplicability",
+      "description": "A separately sourced pediatric rule or guideline is required; this adult rule was not copied into a child protocol.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1045-algorithm-LastRevised",
+      "algorithmId": 1045,
+      "protocol": "Neck Injury (NEXUS Criteria) - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1045-clinicalReview",
+      "algorithmId": 1045,
+      "protocol": "Neck Injury (NEXUS Criteria) - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for rule fidelity and telephone adaptation.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1045-pediatricApplicability",
+      "algorithmId": 1045,
+      "protocol": "Neck Injury (NEXUS Criteria) - Male (Adult)",
+      "field": "pediatricApplicability",
+      "description": "A separately sourced pediatric rule or guideline is required; this adult rule was not copied into a child protocol.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1046-algorithm-LastRevised",
+      "algorithmId": 1046,
+      "protocol": "Neck Injury (NEXUS Criteria) - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1046-clinicalReview",
+      "algorithmId": 1046,
+      "protocol": "Neck Injury (NEXUS Criteria) - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for rule fidelity and telephone adaptation.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1046-pediatricApplicability",
+      "algorithmId": 1046,
+      "protocol": "Neck Injury (NEXUS Criteria) - Female (Adult)",
+      "field": "pediatricApplicability",
+      "description": "A separately sourced pediatric rule or guideline is required; this adult rule was not copied into a child protocol.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1047-algorithm-LastRevised",
+      "algorithmId": 1047,
+      "protocol": "Head Injury (Canadian CT Head Rule) - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1047-clinicalReview",
+      "algorithmId": 1047,
+      "protocol": "Head Injury (Canadian CT Head Rule) - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for rule fidelity and telephone adaptation.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1047-pediatricApplicability",
+      "algorithmId": 1047,
+      "protocol": "Head Injury (Canadian CT Head Rule) - Male (Adult)",
+      "field": "pediatricApplicability",
+      "description": "A separately sourced pediatric rule or guideline is required; this adult rule was not copied into a child protocol.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1048-algorithm-LastRevised",
+      "algorithmId": 1048,
+      "protocol": "Head Injury (Canadian CT Head Rule) - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1048-clinicalReview",
+      "algorithmId": 1048,
+      "protocol": "Head Injury (Canadian CT Head Rule) - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for rule fidelity and telephone adaptation.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B02-1048-pediatricApplicability",
+      "algorithmId": 1048,
+      "protocol": "Head Injury (Canadian CT Head Rule) - Female (Adult)",
+      "field": "pediatricApplicability",
+      "description": "A separately sourced pediatric rule or guideline is required; this adult rule was not copied into a child protocol.",
+      "status": "OPEN"
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited public sources; it is not licensed STCC content. Question.DispositionLevel=null is the schema marker for a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1147,
+    "Title": "Diarrhea - Male (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Male",
+    "Age": "Child (0-17 years)",
+    "GenderAtBirth": "Male",
+    "Acuity": 3,
+    "Definition": [
+      "Safety-first assessment of acute diarrhoea in infants, children, adults, and pregnancy, focused on dehydration, bleeding, sepsis, exposure history, and higher-risk patients. This protocol does not determine the infectious cause.",
+      "Child patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar 999 now. Keep the person lying safely and warm, do not allow self-driving, and follow the call-handler's instructions. Do not force oral fluid if the person is drowsy, repeatedly vomiting, or unable to swallow safely. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-12-21",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1147001,
+      "AlgorithmID": 1147,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Did the diarrhea begin while taking, or shortly after taking, an antibiotic?",
+      "Information": "Antibiotic-associated diarrhea requires its dedicated pathway because C. difficile infection may need prompt assessment.",
+      "GotoGuideline": "Diarrhea on Antibiotics",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1147002,
+      "AlgorithmID": 1147,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is the person unresponsive or difficult to wake, confused, collapsed, unable to stand, not breathing normally, pale/blue/grey or cold and mottled, passing almost no urine, having a seizure, vomiting blood, passing a large amount of blood or black stool, or experiencing severe constant abdominal pain, a rigid or swollen abdomen, or signs of shock or sepsis?",
+      "Information": "Shock, severe dehydration, major gastrointestinal bleeding, altered consciousness, severe abdominal disease, and sepsis can be life-threatening and require immediate emergency assessment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        114701
+      ]
+    },
+    {
+      "QuestionID": 1147003,
+      "AlgorithmID": 1147,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Without an emergency feature, is there blood in the stool, repeated vomiting or inability to maintain fluids, reduced urine or other dehydration signs, fever with worsening illness, significant abdominal pain, recent foreign travel, diarrhoea after antibiotics or healthcare exposure, symptoms lasting 7 days, or an infant, pregnant patient, older adult, immunocompromised patient, or person with serious chronic disease whose symptoms are not clearly mild and improving?",
+      "Information": "Blood, dehydration, persistent symptoms, travel or healthcare exposure, and vulnerable physiology require prompt clinical assessment. Infants can deteriorate quickly, and pregnancy, immunocompromise, older age, and serious comorbidity lower the threshold for review. The exact Qatar non-emergency service and timeframe are governance-required.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        114702
+      ]
+    },
+    {
+      "QuestionID": 1147004,
+      "AlgorithmID": 1147,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this a non-pregnant older child or generally healthy adult with mild diarrhoea for less than 7 days, normal alertness and urine output, able to drink, no blood, significant fever or pain, no recent antibiotics or high-risk travel, and none of the risk factors above?",
+      "Information": "Home care is limited to a clearly low-risk presentation with preserved hydration and explicit escalation precautions.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        114703
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 114701,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency diarrhoea precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 now. Keep the person lying safely and warm, do not allow self-driving, and follow the call-handler's instructions. Do not force oral fluid if the person is drowsy, repeatedly vomiting, or unable to swallow safely. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: reduced consciousness, seizure, abnormal breathing, or signs of shock; worsening bleeding, severe pain, or absent urine."
+      ]
+    },
+    {
+      "AdviceID": 114702,
+      "AlgorithmOrder": 2,
+      "Title": "Prompt in-person diarrhoea assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Use the Qatar governance-approved in-person service and timeframe; this UAT protocol does not define the exact non-emergency route. Continue breastfeeding. If awake and able to swallow, offer small frequent amounts of correctly prepared oral rehydration solution; do not substitute concentrated juice, fizzy drinks, energy drinks, or homemade mixtures. Medication, pregnancy, infant, and chronic-disease advice requires a clinician or pharmacist.",
+        "Call Back If: less urine, increasing drowsiness, inability to drink, persistent vomiting, or fainting; blood or black stool, worsening fever, severe pain, or breathing change."
+      ]
+    },
+    {
+      "AdviceID": 114703,
+      "AlgorithmOrder": 3,
+      "Title": "Home hydration for strictly low-risk diarrhoea",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Rest, continue normal tolerated food, and take small frequent fluids; use correctly prepared oral rehydration solution if losses continue. Maintain careful hand and toilet hygiene and do not prepare food for others while symptomatic. Do not use antimotility medicines when blood, fever, severe pain, or antibiotic-associated diarrhoea is present, and confirm any medicine with a pharmacist.",
+        "Call Back If: reduced urine, dizziness, unusual sleepiness, inability to drink, or repeated vomiting; blood or black stool, fever, worsening pain, or symptoms reaching 7 days."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Diarrhoea and vomiting\", https://www.nhs.uk/conditions/diarrhoea/ (page last reviewed 21 December 2023)",
+    "WHO, \"Diarrhoea\", https://www.who.int/health-topics/diarrhoea (accessed 25 July 2026)",
+    "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (999 ambulance access; accessed 25 July 2026)"
+  ],
+  "searchwords": [
+    "diarrhea",
+    "diarrhoea",
+    "loose stools",
+    "watery poop"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "Record age, duration, number and appearance of stools, vomiting, fever, abdominal pain, blood or black stool, and whether fluids stay down.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 6 source.",
+      "Source": "Diarrhea"
+    },
+    {
+      "Order": 2,
+      "Category": "OPEN_TEXT",
+      "Question": "When was urine last passed, is urine reduced or dark, and are there dry mouth, no tears, sunken eyes or fontanelle, marked thirst, dizziness, unusual sleepiness, weakness, or inability to stand?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 6 source.",
+      "Source": "Diarrhea"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "Is the patient an infant, pregnant or recently postpartum, age 65 or older, immunocompromised, diabetic, or living with kidney, heart, bowel, or other serious disease?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 6 source.",
+      "Source": "Diarrhea"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "Any recent antibiotics, hospital stay, travel, unsafe food or water, sick contacts, outbreak exposure, or medicines such as laxatives?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 6 source.",
+      "Source": "Diarrhea"
+    },
+    {
+      "Order": 5,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What has a safe parent or caregiver observed about alertness, fluid intake, urine output, pain, fever, sleep, play, and normal activity?",
+      "Rationale": "Child assessment adds safe-caregiver observations without inventing a different clinical threshold.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

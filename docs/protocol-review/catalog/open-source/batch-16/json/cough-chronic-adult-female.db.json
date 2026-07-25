@@ -1,0 +1,236 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1358,
+    "Title": "Cough - Chronic - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 2,
+    "Definition": [
+      "Chronic/persistent cough (3+ weeks) assessment decomposed from NHS.UK's published cough guidance.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar 999 now, keep the patient in the easiest breathing position, and do not allow self-driving. For suspected choking, follow the call-handler's age-appropriate first-aid instructions; do not perform a blind finger sweep. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-12-08",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1358001,
+      "AlgorithmID": 1358,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there major coughing of blood, breathing difficulty, blue or grey colour, collapse, confusion, or crushing chest pain?",
+      "Information": "Major haemoptysis or cardiopulmonary compromise remains a direct Qatar 999 emergency and must not redirect a young child into the age-12-and-older Coughing Up Blood protocol.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        135801
+      ]
+    },
+    {
+      "QuestionID": 1358002,
+      "AlgorithmID": 1358,
+      "DispositionLevel": 70,
+      "QuestionOrder": 2,
+      "Question": "Without an emergency feature, is any blood present in the sputum?",
+      "Information": "Any haemoptysis requires governed prompt in-person assessment. This direct disposition preserves support for children younger than 12 without a permissive age-incompatible redirect.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        135802
+      ]
+    },
+    {
+      "QuestionID": 1358003,
+      "AlgorithmID": 1358,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there severe breathing difficulty, blue/grey colour, collapse, confusion, inability to speak or drink, major coughing of blood, crushing chest pain, stridor, or sudden cough after choking or suspected inhaled foreign body, especially in a child?",
+      "Information": "Airway obstruction, respiratory failure, major haemoptysis, and serious cardiopulmonary symptoms require immediate emergency assessment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        135801
+      ]
+    },
+    {
+      "QuestionID": 1358004,
+      "AlgorithmID": 1358,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Without an emergency feature, is the cough rapidly worsening, is the person very unwell, or is there breathlessness, chest pain, any blood in sputum, high fever, dehydration, immune suppression, pregnancy, an infant or young child, or tuberculosis exposure or concern?",
+      "Information": "NHS.UK cough guidance lists these as reasons to seek urgent clinical review immediately.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        135802
+      ]
+    },
+    {
+      "QuestionID": 1358005,
+      "AlgorithmID": 1358,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Has the cough lasted 3 weeks or more, or is it recurrent or associated with unexplained weight loss, night sweats, persistent hoarseness, a neck lump, smoking or vaping, occupational exposure, or a medicine that may cause cough?",
+      "Information": "NHS.UK guidance recommends routine primary-care review for a cough persisting beyond 3 weeks, or with weight loss or immune compromise.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        135803
+      ]
+    },
+    {
+      "QuestionID": 1358006,
+      "AlgorithmID": 1358,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this a mild cough under 3 weeks in an otherwise well older child or adult, with normal breathing and intake and none of the features or higher-risk states above?",
+      "Information": "NHS.UK guidance describes most coughs under 3 weeks as manageable at home.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        135804
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 135801,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency cough and breathing precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 now, keep the patient in the easiest breathing position, and do not allow self-driving. For suspected choking, follow the call-handler's age-appropriate first-aid instructions; do not perform a blind finger sweep. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening breathing, blue/grey colour, collapse, or reduced responsiveness."
+      ]
+    },
+    {
+      "AdviceID": 135802,
+      "AlgorithmOrder": 2,
+      "Title": "Prompt in-person cough review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Use the Qatar governance-approved in-person service and timeframe. Mention immune suppression, pregnancy, child age, blood, tuberculosis exposure, travel, and breathing symptoms before arrival so infection-control precautions can be arranged.",
+        "Call Back If: worsening breathing difficulty, chest pain, increasing blood, confusion, or poor intake."
+      ]
+    },
+    {
+      "AdviceID": 135803,
+      "AlgorithmOrder": 3,
+      "Title": "Persistent-cough investigation",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Use the governance-approved Qatar primary-care or respiratory pathway for examination and investigation. Do not stop a prescribed medicine such as an ACE inhibitor without the prescriber's advice, and do not assume a persistent cough is benign.",
+        "Call Back If: blood, weight loss, night sweats, chest pain, fever, or breathing difficulty."
+      ]
+    },
+    {
+      "AdviceID": 135804,
+      "AlgorithmOrder": 4,
+      "Title": "Low-risk cough care",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Rest, take normal fluids, avoid smoke and vaping, and use honey only for patients aged 1 year or older. Confirm all medicines with a pharmacist for age, pregnancy, chronic disease, interactions, and doses already taken.",
+        "Call Back If: cough reaches 3 weeks or becomes recurrent; blood, weight loss, fever, chest pain, poor intake, or breathing difficulty."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Cough\", https://www.nhs.uk/conditions/cough/ (page last reviewed 08 December 2023)"
+  ],
+  "searchwords": [
+    "chronic cough",
+    "cough for weeks",
+    "persistent cough",
+    "cough wont go away"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "DURATION",
+      "Question": "How long has the cough lasted?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Cough - Chronic"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Any weight loss, blood in the phlegm, or chest pain?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Cough - Chronic"
+    },
+    {
+      "Order": 3,
+      "Category": "TEMPERATURE",
+      "Question": "What is the temperature, if measured?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Cough - Chronic"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "Record age, pregnancy, immune suppression, tuberculosis contact or travel, smoking or vaping, occupational exposure, reflux or asthma history, medicines such as ACE inhibitors, and whether a child is choking or may have inhaled an object.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Cough - Chronic"
+    }
+  ]
+}

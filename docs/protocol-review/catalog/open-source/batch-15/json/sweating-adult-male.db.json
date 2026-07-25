@@ -1,0 +1,183 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1329,
+    "Title": "Sweating - Male (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 2,
+    "Definition": [
+      "Excessive sweating (hyperhidrosis) assessment decomposed from NHS.UK's published excessive sweating guidance.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 and do not drive for sweating with chest pain, abnormal breathing, fainting, confusion, seizure, stroke signs, severe weakness, suspected hypoglycaemia, heat illness, poisoning/carbon monoxide, sepsis, or pregnancy/postpartum danger signs. Move from heat or a suspected exposure only if safe and do not give food, drink, or medicine if consciousness/swallowing is impaired. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-11-07",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1329001,
+      "AlgorithmID": 1329,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Did the sweating begin during or after possible exposure to a faulty heater, generator, fire, charcoal, gas appliance, or enclosed-space fumes?",
+      "Information": "Symptoms associated with possible carbon monoxide exposure belong in the Carbon Monoxide Exposure pathway.",
+      "GotoGuideline": "Carbon Monoxide Exposure",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1329002,
+      "AlgorithmID": 1329,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Along with the sweating, is there chest pain, difficulty breathing, confusion, or fainting?",
+      "Information": "Sudden profuse sweating combined with chest pain, breathing difficulty, confusion, or fainting is a recognized red flag for a serious underlying cause (such as a heart attack or severe infection) and needs immediate emergency care.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        132901
+      ]
+    },
+    {
+      "QuestionID": 1329003,
+      "AlgorithmID": 1329,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Has the sweating lasted at least 6 months, does it happen at least weekly or interfere with daily activities, does it happen at night, is there a family history, or is it not helped by things tried so far?",
+      "Information": "NHS.UK guidance recommends clinical review for these persistent, functionally-limiting, or unexplained sweating patterns.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        132902
+      ]
+    },
+    {
+      "QuestionID": 1329004,
+      "AlgorithmID": 1329,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this mild, occasional sweating with none of the features above?",
+      "Information": "NHS.UK guidance describes mild sweating as manageable at home with clothing and antiperspirant measures.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        132903
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 132901,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency sweating-associated response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and do not drive for sweating with chest pain, abnormal breathing, fainting, confusion, seizure, stroke signs, severe weakness, suspected hypoglycaemia, heat illness, poisoning/carbon monoxide, sepsis, or pregnancy/postpartum danger signs. Move from heat or a suspected exposure only if safe and do not give food, drink, or medicine if consciousness/swallowing is impaired. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening chest pain or breathing; confusion, fainting, seizure, or weakness; heat, poisoning, infection, or glucose emergency."
+      ]
+    },
+    {
+      "AdviceID": 132902,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent sweating review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange a primary-care appointment to investigate the cause and discuss treatment options.",
+        "Call Back If: new symptoms develop; sweating worsens."
+      ]
+    },
+    {
+      "AdviceID": 132903,
+      "AlgorithmOrder": 3,
+      "Title": "Governed care for non-urgent sweating",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Use loose breathable clothing, change damp clothing/socks, maintain usual fluids if not restricted, and avoid known triggers. Antiperspirant or medicine advice requires age, pregnancy/breastfeeding, skin integrity, endocrine/cardiac conditions, interactions, and approved Qatar pharmacy guidance. New night sweats, weight loss, fever, medicine/substance change, or a child with unexplained sweating needs in-person assessment.",
+        "Call Back If: persistent or worsening sweating; night sweats, fever, weight loss, palpitations, or functional impact."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Excessive sweating (hyperhidrosis)\", https://www.nhs.uk/conditions/excessive-sweating-hyperhidrosis/ (page last reviewed 07 November 2023)"
+  ],
+  "searchwords": [
+    "sweating too much",
+    "excessive sweating",
+    "sweat a lot for no reason",
+    "night sweats",
+    "sweating way more than usual",
+    "sweating more than usual for months"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, are they pregnant/recently postpartum, when did sweating begin, is it generalized/night-time or localized, and are there fever, weight loss, chest/breathing symptoms, fainting, glucose/heat/poisoning exposure, medicine/substance change, or child safeguarding concerns?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 15 source.",
+      "Source": "Sweating"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Does it happen at night?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 15 source.",
+      "Source": "Sweating"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "Any other symptoms, like fever, weight loss, or chest pain?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 15 source.",
+      "Source": "Sweating"
+    }
+  ]
+}

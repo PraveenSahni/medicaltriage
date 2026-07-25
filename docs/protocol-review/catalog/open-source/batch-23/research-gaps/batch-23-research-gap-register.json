@@ -1,0 +1,486 @@
+{
+  "batch": "23",
+  "count": 60,
+  "gaps": [
+    {
+      "gapId": "B23-1485-algorithm-LastRevised",
+      "algorithmId": 1485,
+      "protocol": "Bedwetting (Nocturnal Enuresis) - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1485-clinicalReview",
+      "algorithmId": 1485,
+      "protocol": "Bedwetting (Nocturnal Enuresis) - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1485-localization",
+      "algorithmId": 1485,
+      "protocol": "Bedwetting (Nocturnal Enuresis) - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1486-algorithm-LastRevised",
+      "algorithmId": 1486,
+      "protocol": "Bedwetting (Nocturnal Enuresis) - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1486-clinicalReview",
+      "algorithmId": 1486,
+      "protocol": "Bedwetting (Nocturnal Enuresis) - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1486-localization",
+      "algorithmId": 1486,
+      "protocol": "Bedwetting (Nocturnal Enuresis) - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1487-algorithm-LastRevised",
+      "algorithmId": 1487,
+      "protocol": "Crying - Before 3 Months Old - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1487-clinicalReview",
+      "algorithmId": 1487,
+      "protocol": "Crying - Before 3 Months Old - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1487-localization",
+      "algorithmId": 1487,
+      "protocol": "Crying - Before 3 Months Old - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1488-algorithm-LastRevised",
+      "algorithmId": 1488,
+      "protocol": "Crying - Before 3 Months Old - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1488-clinicalReview",
+      "algorithmId": 1488,
+      "protocol": "Crying - Before 3 Months Old - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1488-localization",
+      "algorithmId": 1488,
+      "protocol": "Crying - Before 3 Months Old - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1489-algorithm-LastRevised",
+      "algorithmId": 1489,
+      "protocol": "Eating Disorders Symptoms and Questions - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1489-clinicalReview",
+      "algorithmId": 1489,
+      "protocol": "Eating Disorders Symptoms and Questions - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1489-localization",
+      "algorithmId": 1489,
+      "protocol": "Eating Disorders Symptoms and Questions - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1490-algorithm-LastRevised",
+      "algorithmId": 1490,
+      "protocol": "Eating Disorders Symptoms and Questions - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1490-clinicalReview",
+      "algorithmId": 1490,
+      "protocol": "Eating Disorders Symptoms and Questions - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1490-localization",
+      "algorithmId": 1490,
+      "protocol": "Eating Disorders Symptoms and Questions - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1491-algorithm-LastRevised",
+      "algorithmId": 1491,
+      "protocol": "Eating Disorders Symptoms and Questions - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1491-clinicalReview",
+      "algorithmId": 1491,
+      "protocol": "Eating Disorders Symptoms and Questions - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1491-localization",
+      "algorithmId": 1491,
+      "protocol": "Eating Disorders Symptoms and Questions - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1492-algorithm-LastRevised",
+      "algorithmId": 1492,
+      "protocol": "Eating Disorders Symptoms and Questions - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1492-clinicalReview",
+      "algorithmId": 1492,
+      "protocol": "Eating Disorders Symptoms and Questions - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1492-localization",
+      "algorithmId": 1492,
+      "protocol": "Eating Disorders Symptoms and Questions - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1493-algorithm-LastRevised",
+      "algorithmId": 1493,
+      "protocol": "ICD and Pacemaker Symptoms and Questions - Male (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1493-clinicalReview",
+      "algorithmId": 1493,
+      "protocol": "ICD and Pacemaker Symptoms and Questions - Male (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1493-localization",
+      "algorithmId": 1493,
+      "protocol": "ICD and Pacemaker Symptoms and Questions - Male (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1494-algorithm-LastRevised",
+      "algorithmId": 1494,
+      "protocol": "ICD and Pacemaker Symptoms and Questions - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1494-clinicalReview",
+      "algorithmId": 1494,
+      "protocol": "ICD and Pacemaker Symptoms and Questions - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1494-localization",
+      "algorithmId": 1494,
+      "protocol": "ICD and Pacemaker Symptoms and Questions - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1495-algorithm-LastRevised",
+      "algorithmId": 1495,
+      "protocol": "Elbow Pain - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1495-clinicalReview",
+      "algorithmId": 1495,
+      "protocol": "Elbow Pain - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1495-localization",
+      "algorithmId": 1495,
+      "protocol": "Elbow Pain - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1496-algorithm-LastRevised",
+      "algorithmId": 1496,
+      "protocol": "Elbow Pain - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1496-clinicalReview",
+      "algorithmId": 1496,
+      "protocol": "Elbow Pain - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1496-localization",
+      "algorithmId": 1496,
+      "protocol": "Elbow Pain - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1497-algorithm-LastRevised",
+      "algorithmId": 1497,
+      "protocol": "Elbow Swelling - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1497-clinicalReview",
+      "algorithmId": 1497,
+      "protocol": "Elbow Swelling - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1497-localization",
+      "algorithmId": 1497,
+      "protocol": "Elbow Swelling - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1498-algorithm-LastRevised",
+      "algorithmId": 1498,
+      "protocol": "Elbow Swelling - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1498-clinicalReview",
+      "algorithmId": 1498,
+      "protocol": "Elbow Swelling - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1498-localization",
+      "algorithmId": 1498,
+      "protocol": "Elbow Swelling - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1499-algorithm-LastRevised",
+      "algorithmId": 1499,
+      "protocol": "Finger Pain - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1499-clinicalReview",
+      "algorithmId": 1499,
+      "protocol": "Finger Pain - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1499-localization",
+      "algorithmId": 1499,
+      "protocol": "Finger Pain - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1500-algorithm-LastRevised",
+      "algorithmId": 1500,
+      "protocol": "Finger Pain - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1500-clinicalReview",
+      "algorithmId": 1500,
+      "protocol": "Finger Pain - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1500-localization",
+      "algorithmId": 1500,
+      "protocol": "Finger Pain - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1501-algorithm-LastRevised",
+      "algorithmId": 1501,
+      "protocol": "Foot Pain - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1501-clinicalReview",
+      "algorithmId": 1501,
+      "protocol": "Foot Pain - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1501-localization",
+      "algorithmId": 1501,
+      "protocol": "Foot Pain - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1502-algorithm-LastRevised",
+      "algorithmId": 1502,
+      "protocol": "Foot Pain - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1502-clinicalReview",
+      "algorithmId": 1502,
+      "protocol": "Foot Pain - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1502-localization",
+      "algorithmId": 1502,
+      "protocol": "Foot Pain - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1503-algorithm-LastRevised",
+      "algorithmId": 1503,
+      "protocol": "Hand Swelling - Male (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1503-clinicalReview",
+      "algorithmId": 1503,
+      "protocol": "Hand Swelling - Male (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1503-localization",
+      "algorithmId": 1503,
+      "protocol": "Hand Swelling - Male (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1504-algorithm-LastRevised",
+      "algorithmId": 1504,
+      "protocol": "Hand Swelling - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1504-clinicalReview",
+      "algorithmId": 1504,
+      "protocol": "Hand Swelling - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B23-1504-localization",
+      "algorithmId": 1504,
+      "protocol": "Hand Swelling - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    }
+  ]
+}

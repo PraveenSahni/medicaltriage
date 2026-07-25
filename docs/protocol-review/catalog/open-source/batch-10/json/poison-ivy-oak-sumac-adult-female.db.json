@@ -1,0 +1,179 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1242,
+    "Title": "Poison Ivy - Oak - Sumac - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 2,
+    "Definition": [
+      "Qatar-localized UAT-only adult and pediatric pathway for suspected plant contact dermatitis, screening for anaphylaxis, eye/mucosal exposure, widespread blistering, infection and immune risk; not approved for production.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar 999 and do not drive. Keep the patient lying unless breathing is difficult; use only their prescribed adrenaline auto-injector according to its plan and dispatcher instructions. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-05-03",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1242001,
+      "AlgorithmID": 1242,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Are throat or tongue swelling, breathing difficulty, faintness, confusion, or collapse the main concern?",
+      "Information": "Systemic allergic-reaction features require the Anaphylaxis pathway.",
+      "GotoGuideline": "Anaphylaxis",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1242002,
+      "AlgorithmID": 1242,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there sudden swelling of the lips, mouth, throat, or tongue, or difficulty breathing along with the rash?",
+      "Information": "Universal emergency rule-out added ahead of the contact dermatitis guidance itself - severe allergic swelling or breathing difficulty requires immediate care, distinct from typical contact dermatitis.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        124201
+      ]
+    },
+    {
+      "QuestionID": 1242003,
+      "AlgorithmID": 1242,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Are symptoms persistent, recurrent, or severe, or has the triggering substance not responded to treatment?",
+      "Information": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for persistent, recurrent, or severe contact dermatitis symptoms.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        124202
+      ]
+    },
+    {
+      "QuestionID": 1242004,
+      "AlgorithmID": 1242,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Is this a mild, typical case with none of the features above?",
+      "Information": "NHS.UK guidance: a pharmacist can recommend emollients (moisturisers) for mild contact dermatitis.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        124203
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 124201,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency allergic reaction precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 and do not drive. Keep the patient lying unless breathing is difficult; use only their prescribed adrenaline auto-injector according to its plan and dispatcher instructions. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: breathing worsens; swelling spreads or consciousness reduces."
+      ]
+    },
+    {
+      "AdviceID": 124202,
+      "AlgorithmOrder": 2,
+      "Title": "Contact dermatitis follow-up",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange in-person primary-care review through the Qatar pathway approved for UAT to confirm the cause and assess whether dermatology input is needed.",
+        "Call Back If: symptoms worsen; not improving with treatment."
+      ]
+    },
+    {
+      "AdviceID": 124203,
+      "AlgorithmOrder": 3,
+      "Title": "Review for suspected plant dermatitis",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Avoid further exposure, gently wash exposed skin and contaminated clothing, and arrange clinician/pharmacist review before creams or medicines are selected. Do not burn suspected plants because smoke exposure may be hazardous.",
+        "Call Back If: rash worsens, spreads, blisters or becomes infected; eye, mouth, breathing or systemic symptoms."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Contact dermatitis\", https://www.nhs.uk/conditions/contact-dermatitis/ (page last reviewed 03 May 2023)"
+  ],
+  "searchwords": [
+    "poison ivy",
+    "poison oak",
+    "poison sumac",
+    "itchy rash from plant"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "LOCATION",
+      "Question": "Where is the rash?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 10 source.",
+      "Source": "Poison Ivy - Oak - Sumac"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "How long ago was the plant contact?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 10 source.",
+      "Source": "Poison Ivy - Oak - Sumac"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Any blistering or oozing?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 10 source.",
+      "Source": "Poison Ivy - Oak - Sumac"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the exact age; is the patient pregnant; are eyes, mouth, face or genitals involved; and are there breathing symptoms, fever, severe pain, widespread blistering, immune suppression, uncertain plant/chemical exposure or safeguarding concerns?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 10 source.",
+      "Source": "Poison Ivy - Oak - Sumac"
+    }
+  ]
+}

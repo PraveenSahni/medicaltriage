@@ -1,0 +1,198 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1385,
+    "Title": "Breathing Difficulty - Male (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 5,
+    "Definition": [
+      "UAT-only recognition and routing pathway for breathing difficulty in adults, children, and infants; not approved for real-patient or production use.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "Pending qualified Qatar adult, pediatric, and respiratory clinical review"
+    },
+    "FirstAid": [
+      "Call Qatar 999 for an ambulance immediately and follow the operator's instructions. Keep the patient in the position in which they breathe most comfortably and do not force them to lie flat. If suspected anaphylaxis is present, follow the Anaphylaxis emergency pathway and use the patient's prescribed adrenaline auto-injector without delaying 999. Use only rescue medicine or a device already prescribed for this patient and follow their clinician-issued emergency plan; do not improvise a dose. If the patient becomes unresponsive and is not breathing normally, start age-appropriate CPR as directed by the 999 operator. Do not drive the patient to hospital. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2026-07-25",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1385001,
+      "AlgorithmID": 1385,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Did the breathing difficulty begin with swelling of the lips, mouth, tongue, or throat after a possible allergen exposure?",
+      "Information": "Breathing difficulty with airway swelling after a possible allergen exposure belongs in the Anaphylaxis pathway.",
+      "GotoGuideline": "Anaphylaxis",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1385002,
+      "AlgorithmID": 1385,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there severe or rapidly worsening breathing difficulty; gasping, choking, pauses or irregular breathing; inability to speak, cry, feed, or drink because of breathlessness; grunting, nasal flaring, or marked pulling-in between or under the ribs; blue, grey or very pale colour; collapse, sudden confusion, unusual drowsiness or floppiness; or, in an adult or older adolescent, a tight or heavy chest or pain spreading to the arm, back, neck or jaw?",
+      "Information": "HMC identifies difficulty breathing as life-threatening and directs Qatar callers to 999. NHS and 2025 Resuscitation Council UK guidance add age-specific pediatric danger signs including grunting, indrawing, abnormal respiratory rate or pauses, inability to feed or speak, altered behaviour, and abnormal colour.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        138501
+      ]
+    },
+    {
+      "QuestionID": 1385003,
+      "AlgorithmID": 1385,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Only after all emergency features are excluded, is breathlessness worse than usual or persistent, or accompanied by coughing blood, palpitations, vomiting, one-sided leg pain or swelling, reduced feeding or urine in a child, or caregiver concern that a child is worsening?",
+      "Information": "NHS.UK guidance recommends urgent clinical review for these accompanying symptoms; the local Qatar urgent-care pathway is used here.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        138502
+      ]
+    },
+    {
+      "QuestionID": 1385004,
+      "AlgorithmID": 1385,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "For an adult or older adolescent only, is stable breathlessness worse with activity or lying down, associated with swollen ankles, or accompanied by a cough lasting 3 weeks or more, with all emergency and urgent features excluded?",
+      "Information": "NHS.UK guidance recommends routine primary-care review for these patterns, and states shortness of breath should never be self-diagnosed.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        138503
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 138501,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency breathing difficulty — call Qatar 999",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 for an ambulance immediately and follow the operator's instructions. Keep the patient in the position in which they breathe most comfortably and do not force them to lie flat. If suspected anaphylaxis is present, follow the Anaphylaxis emergency pathway and use the patient's prescribed adrenaline auto-injector without delaying 999. Use only rescue medicine or a device already prescribed for this patient and follow their clinician-issued emergency plan; do not improvise a dose. If the patient becomes unresponsive and is not breathing normally, start age-appropriate CPR as directed by the 999 operator. Do not drive the patient to hospital. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: breathing worsens or pauses; blue, grey, or very pale colour; reduced responsiveness or collapse."
+      ]
+    },
+    {
+      "AdviceID": 138502,
+      "AlgorithmOrder": 2,
+      "Title": "Same-day breathing assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange same-day in-person assessment through the Qatar urgent-care destination approved for this UAT environment. Keep the patient observed and resting in the position in which they breathe most comfortably. Use only medicines already prescribed for this patient according to their clinician-issued plan. Escalate immediately to Qatar 999 if any emergency feature appears.",
+        "Call Back If: breathing becomes harder or faster; chest pain, abnormal colour, confusion, floppiness, or reduced feeding develops."
+      ]
+    },
+    {
+      "AdviceID": 138503,
+      "AlgorithmOrder": 3,
+      "Title": "Stable adult breathlessness follow-up",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange an in-person primary-care assessment using the Qatar route approved for this UAT environment; breathlessness should not be self-diagnosed. This routine tier is not approved for infants or young children and must never override an earlier emergency or urgent finding.",
+        "Call Back If: symptoms worsen or occur at rest; any emergency or urgent feature develops."
+      ]
+    }
+  ],
+  "references": [
+    "Hamad Medical Corporation, \"Life-Threatening Medical Emergency\", https://hamad.qa/EN/Emergency/Pages/Life-ThreateningMedicalEmergency.aspx (accessed 25 July 2026)",
+    "Resuscitation Council UK, \"Paediatric Life Support\", 2025, https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/paediatric-basic-life-support-guidelines",
+    "NHS.UK, \"Shortness of breath\", https://www.nhs.uk/conditions/shortness-of-breath/",
+    "NHS.UK, \"Bronchiolitis\", https://www.nhs.uk/conditions/bronchiolitis/"
+  ],
+  "searchwords": [
+    "breathing difficulty",
+    "cant catch my breath",
+    "gasping for air",
+    "short of breath"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the patient's exact age, and did the breathing difficulty start suddenly or gradually?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 18 source.",
+      "Source": "Breathing Difficulty"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Is the patient fully responsive and breathing continuously without gasping, pauses, grunting, severe chest or rib indrawing, or inability to speak, cry, feed, or drink because of breathlessness?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 18 source.",
+      "Source": "Breathing Difficulty"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is there blue, grey or very pale colour, chest pain, collapse, or sudden confusion or unusual floppiness?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 18 source.",
+      "Source": "Breathing Difficulty"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "Did symptoms begin after a possible allergen with hives, swelling of the lips, mouth, tongue or throat, tight throat, wheeze, dizziness, or collapse?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 18 source.",
+      "Source": "Breathing Difficulty"
+    },
+    {
+      "Order": 5,
+      "Category": "OPEN_TEXT",
+      "Question": "Does the patient have a clinician-issued asthma, allergy, cardiac, respiratory, tracheostomy, or other emergency plan, and are the prescribed rescue devices available?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 18 source.",
+      "Source": "Breathing Difficulty"
+    }
+  ]
+}

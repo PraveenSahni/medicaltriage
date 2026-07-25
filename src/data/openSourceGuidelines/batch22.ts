@@ -24,10 +24,10 @@ export const batch22Protocols: ProtocolInput[] = [
   {
     id: "oscg-pelvic-pain-female",
     titleEn: "Pelvic Pain - Female",
-    clinicalDefinitionEn: "Pelvic pain assessment decomposed from NHS.UK's published pelvic pain guidance.",
+    clinicalDefinitionEn: "Pelvic or lower abdominal pain assessment for a patient with female reproductive anatomy. Pregnancy, postpartum status, age, sexual-health and safeguarding context must be assessed; unexplained pain is not diagnosed remotely.",
     ageMin: 12,
     mode: "after-hours",
-    patientGroup: "adult",
+    patientGroup: "mixed",
     acuity: 4,
     keywords: [
       { phrase: "pelvic pain", weight: 100 },
@@ -36,18 +36,20 @@ export const batch22Protocols: ProtocolInput[] = [
       { phrase: "lower belly pain female", weight: 85 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-pelvicpainf-iaq1", sequence: 1, responseType: "PAIN_SCALE", promptTextEn: "How severe is the pain, 0-10?" },
-      { id: "oscg-pelvicpainf-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long has it lasted?" },
-      { id: "oscg-pelvicpainf-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Could the person be pregnant?" }
+      { id: "oscg-pelvicpainf-iaq1", sequence: 1, responseType: "PAIN_SCALE", promptTextEn: "Where is the pain, did it start suddenly, is it one-sided, and how severe is it from 0 to 10?" },
+      { id: "oscg-pelvicpainf-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "When did it begin, and is it constant, worsening, or coming and going?" },
+      { id: "oscg-pelvicpainf-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Could the patient be pregnant, have they recently given birth, or is a period late? Do not exclude pregnancy because contraception is used." },
+      { id: "oscg-pelvicpainf-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "Is there vaginal bleeding or discharge, fever, vomiting, faintness, shoulder-tip pain, urinary difficulty, or blood in urine or stool?" },
+      { id: "oscg-pelvicpainf-iaq5", sequence: 5, responseType: "YES_NO", promptTextEn: "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult and in sexual relationships?" }
     ],
     questions: [
       {
         id: "oscg-pelvicpainf-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Is the pain severe, worsening, or worse with movement/touch, is there faintness, dizziness, or loss of consciousness, pain in the tip of the shoulder, breathing difficulty, heavy vaginal bleeding, or sudden confusion?",
+        questionTextEn: "Is there collapse or fainting, marked dizziness, pale or clammy skin, confusion, breathing difficulty, heavy vaginal bleeding, severe or rapidly worsening pain, a rigid or very tender abdomen, or sudden severe one-sided pelvic pain with vomiting? If pregnancy is possible, is there pain with bleeding or shoulder-tip pain?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
-        rationaleEn: "NHS.UK pelvic pain guidance lists these as call-999/A&E criteria - shoulder-tip pain with pelvic pain and possible pregnancy can indicate a ruptured ectopic pregnancy.",
+        rationaleEn: "These features can indicate ruptured ectopic pregnancy, ovarian torsion, major bleeding, peritonitis, or shock. NICE notes ectopic pregnancy can be atypical and may occur without known risk factors.",
         redFlag: true,
         keywords: ["severe pelvic pain with dizziness", "shoulder tip pain with pelvic pain", "heavy vaginal bleeding with pelvic pain"],
         careAdviceIds: ["oscg-pelvicpainf-emergency-advice"],
@@ -59,9 +61,9 @@ export const batch22Protocols: ProtocolInput[] = [
         id: "oscg-pelvicpainf-q1-urgent",
         acuityOrder: 2,
         severity: "Urgent",
-        questionTextEn: "Is there difficulty with urination or bowel movements, blood in urine or stool, unusual vaginal discharge or bleeding, pain or frequency with urination, a very high temperature with chills, vomiting and diarrhea, or a known/suspected pregnancy?",
+        questionTextEn: "Without the emergency features above, is pregnancy possible, is the patient postpartum, under 18, or is there persistent or one-sided pain, fever or chills, vomiting, abnormal vaginal discharge or bleeding, urinary pain/frequency/retention, blood in urine or stool, rectal pressure, pain during sex, or concern about sexual assault or an unsafe caregiver?",
         dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK guidance recommends urgent NHS 111 contact for these features - if 20+ weeks pregnant, contact the midwife directly.",
+        rationaleEn: "These features require in-person examination, pregnancy testing where applicable, and possible urine, infection, ultrasound, or safeguarding assessment; tele-triage cannot exclude ectopic pregnancy, torsion, pelvic infection, appendicitis, urinary obstruction, or abuse.",
         redFlag: false,
         keywords: ["pelvic pain with fever", "pelvic pain with vaginal discharge", "pregnant with pelvic pain"],
         careAdviceIds: ["oscg-pelvicpainf-urgent-advice"],
@@ -70,29 +72,29 @@ export const batch22Protocols: ProtocolInput[] = [
         questionOrder: 1
       },
       {
-        id: "oscg-pelvicpainf-q2-selfcare",
+        id: "oscg-pelvicpainf-q2-routine",
         acuityOrder: 3,
-        severity: "Self-care",
-        questionTextEn: "Is this mild pelvic pain with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "NHS.UK guidance recommends a GP visit for persistent mild pelvic pain to determine the cause.",
+        severity: "Routine",
+        questionTextEn: "Is this mild pelvic pain with pregnancy excluded and none of the emergency, urgent, pediatric, postpartum, or safeguarding features above?",
+        dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
+        rationaleEn: "Unexplained pelvic pain still requires clinical follow-up to determine the cause; this is not a diagnosis or medication branch.",
         redFlag: false,
         keywords: ["mild pelvic pain"],
         careAdviceIds: ["oscg-pelvicpainf-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 40,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-pelvicpainf-emergency-advice", titleEn: "Emergency pelvic pain precautions", instructionTextEn: "Arrange emergency transport immediately - this combination can indicate a serious emergency such as a ruptured ectopic pregnancy.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening pain", "worsening dizziness or bleeding"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-pelvicpainf-urgent-advice", titleEn: "Urgent pelvic pain review", instructionTextEn: "Arrange same-day medical review (or contact the midwife directly if 20+ weeks pregnant) for these accompanying symptoms.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["pain worsens", "fever develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-pelvicpainf-selfcare-advice", titleEn: "Routine pelvic pain follow-up", instructionTextEn: "Book a GP appointment if the pain persists, especially with unexplained weight loss or digestive changes, to determine the underlying cause.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain worsens", "new symptoms develop"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-pelvicpainf-emergency-advice", titleEn: "Emergency pelvic pain precautions", instructionTextEn: "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Tell the call handler if pregnancy or recent birth is possible.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening pain", "worsening dizziness or bleeding"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-pelvicpainf-urgent-advice", titleEn: "Urgent in-person pelvic pain review", instructionTextEn: "Arrange urgent in-person gynecology, early-pregnancy, maternity, pediatric, or safeguarding assessment as applicable; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["pain worsens", "fever, faintness, vomiting, shoulder pain, or bleeding develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-pelvicpainf-selfcare-advice", titleEn: "Pelvic pain clinical follow-up", instructionTextEn: "Arrange in-person clinical review to determine the cause; the exact Qatar destination remains GOVERNANCE_REQUIRED. A clinician or pharmacist should confirm any medicine is suitable, especially for a child, pregnancy, postpartum patient, or patient with bleeding or kidney disease.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["pain worsens", "fever, faintness, vomiting, shoulder pain, or bleeding develops"], displayOrder: 3, adviceCategory: "NOTE_TO_TRIAGER" }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2025-11-24", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Adult" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"Pelvic pain\", https://www.nhs.uk/conditions/pelvic-pain/ (page last reviewed 24 November 2025)"],
-      contentNotice: "Decomposed from NHS.UK's published pelvic pain guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      sourceDocuments: ["NHS.UK, \"Pelvic pain\", https://www.nhs.uk/symptoms/pelvic-pain/", "NICE NG126, \"Ectopic pregnancy and miscarriage: symptoms, signs and initial assessment\", https://www.nice.org.uk/guidance/ng126/chapter/symptoms-and-signs-of-ectopic-pregnancy-and-initial-assessment"],
+      contentNotice: "Safety-first UAT adaptation for patients with female reproductive anatomy, including pregnancy, postpartum, pediatric and safeguarding distinctions. Exact Qatar non-emergency gynecology, early-pregnancy, pediatric and safeguarding routes remain GOVERNANCE_REQUIRED. Not licensed Schmitt-Thompson content. Requires Qatar clinical-governance validation before nurse UAT and is prohibited from production use."
     })
   },
 
@@ -102,11 +104,11 @@ export const batch22Protocols: ProtocolInput[] = [
   {
     id: "oscg-abdominal-pain-upper",
     titleEn: "Abdominal Pain - Upper",
-    clinicalDefinitionEn: "Upper abdominal pain / indigestion assessment decomposed from NHS.UK's published indigestion guidance.",
+    clinicalDefinitionEn: "Upper abdominal or epigastric pain assessment. Indigestion is considered only after emergency cardiac, gastrointestinal bleeding, surgical, pregnancy-related, and pediatric causes are screened.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
-    acuity: 3,
+    acuity: 5,
     keywords: [
       { phrase: "upper abdominal pain", weight: 100 },
       { phrase: "indigestion", weight: 100 },
@@ -114,48 +116,65 @@ export const batch22Protocols: ProtocolInput[] = [
       { phrase: "heartburn and stomach pain", weight: 85 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-upperabdopain-iaq1", sequence: 1, responseType: "LOCATION", promptTextEn: "Where exactly is the pain?" },
-      { id: "oscg-upperabdopain-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long has it lasted?" },
-      { id: "oscg-upperabdopain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any difficulty swallowing, vomiting blood, or black stool?" }
+      { id: "oscg-upperabdopain-iaq1", sequence: 1, responseType: "LOCATION", promptTextEn: "Where exactly is the pain, does it spread to the chest, back, shoulder, arm, neck, or jaw, and is the abdomen rigid or very tender?" },
+      { id: "oscg-upperabdopain-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "When did it start, was onset sudden, and is it constant, worsening, or recurrent?" },
+      { id: "oscg-upperabdopain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is there vomiting blood or coffee-ground material, black tarry stool, red blood in stool, fainting, sweating, breathing difficulty, persistent vomiting, fever, or yellow skin/eyes?" },
+      { id: "oscg-upperabdopain-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "Could the patient be pregnant, have they recently given birth, or is the patient under 18?" },
+      { id: "oscg-upperabdopain-iaq5", sequence: 5, responseType: "YES_NO", promptTextEn: "If under 18, can the patient speak privately, do they feel safe with the caregiver, and is there any possible injury or ingestion?" }
     ],
     questions: [
       {
-        id: "oscg-upperabdopain-q0-urgent",
+        id: "oscg-upperabdopain-q0-emergency",
         acuityOrder: 1,
-        severity: "Urgent",
-        questionTextEn: "Are episodes recurring, is the pain severe, is there unexplained weight loss, difficulty swallowing, persistent vomiting, a lump felt in the abdomen, or blood in vomit or stool?",
-        dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK indigestion guidance lists these as reasons to see a GP - they can be a sign of something more serious.",
-        redFlag: false,
-        keywords: ["indigestion with weight loss", "difficulty swallowing with stomach pain", "blood in vomit with stomach pain"],
+        severity: "Emergency",
+        questionTextEn: "Is there severe or rapidly worsening pain, a rigid or very tender abdomen, fainting or collapse, pale or clammy skin, vomiting blood or coffee-ground material, black tarry stool with weakness or dizziness, chest pressure or pain spreading to the arm/neck/jaw/back, severe breathing difficulty, confusion, or pregnancy/postpartum pain with severe headache, vision change, bleeding, or collapse?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+        rationaleEn: "These features can indicate major gastrointestinal bleeding, shock, perforation or peritonitis, acute cardiac disease, or a pregnancy-related emergency and require immediate assessment.",
+        redFlag: true,
+        keywords: ["vomiting blood upper abdominal pain", "black stool fainting", "upper abdominal pain chest pressure", "rigid tender abdomen"],
         careAdviceIds: ["oscg-upperabdopain-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
+        dispositionLevel: 100,
+        questionOrder: 1
+      },
+      {
+        id: "oscg-upperabdopain-q1-urgent",
+        acuityOrder: 2,
+        severity: "Urgent",
+        questionTextEn: "Without emergency features, is the patient under 18, pregnant or postpartum, or is there persistent/recurrent pain, fever, repeated vomiting, pain through to the back or shoulder, difficulty swallowing, weight loss, jaundice, blood in vomit or stool without instability, a palpable lump, possible injury/ingestion, or concern about an unsafe caregiver?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "These presentations need in-person examination and may need ECG, blood tests, imaging, pregnancy testing, toxicology or safeguarding assessment. Adult indigestion advice must not be copied to children.",
+        redFlag: false,
+        keywords: ["child upper abdominal pain", "persistent upper abdominal pain", "difficulty swallowing weight loss", "jaundice abdominal pain"],
+        careAdviceIds: ["oscg-upperabdopain-adult-selfcare-advice"],
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
       {
-        id: "oscg-upperabdopain-q1-selfcare",
-        acuityOrder: 2,
+        id: "oscg-upperabdopain-q2-selfcare-adult",
+        acuityOrder: 3,
         severity: "Self-care",
-        questionTextEn: "Is this typical indigestion/heartburn with none of the features above?",
+        questionTextEn: "Is the patient an adult who is not pregnant or postpartum, with brief typical indigestion or heartburn, no significant comorbidity, and none of the emergency or urgent features above?",
         dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "NHS.UK guidance describes dietary and lifestyle measures plus pharmacy antacids as effective first-line self-care.",
+        rationaleEn: "Limited lifestyle advice may be reasonable for an otherwise well adult with a familiar, brief indigestion pattern after red flags are excluded; this branch does not apply to children.",
         redFlag: false,
-        keywords: ["typical indigestion heartburn"],
+        keywords: ["brief typical adult indigestion"],
         careAdviceIds: ["oscg-upperabdopain-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-upperabdopain-urgent-advice", titleEn: "Urgent upper abdominal pain review", instructionTextEn: "Arrange a GP appointment for these concerning symptoms.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["symptoms worsen", "blood in vomit or stool develops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-upperabdopain-selfcare-advice", titleEn: "Home care for indigestion/heartburn", instructionTextEn: "Reduce caffeine, alcohol, and cola, avoid eating within 3-4 hours of bedtime, avoid rich, spicy, or fatty foods, raise the head of the bed slightly, and lose weight if overweight. A pharmacist can recommend an antacid, alginate, or acid-reducing medicine. Avoid ibuprofen or aspirin without medical advice, and don't smoke.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["symptoms recur often or worsen", "weight loss or swallowing difficulty develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-upperabdopain-urgent-advice", titleEn: "Emergency upper abdominal pain precautions", instructionTextEn: "Call Qatar emergency services on 999 now. Do not let the patient drive. Do not give food, drink, or medicine while awaiting instructions if they are vomiting blood, drowsy, or may need emergency procedures.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["collapse", "worsening pain", "more blood in vomit or stool", "breathing difficulty"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-upperabdopain-selfcare-advice", titleEn: "Mandatory upper abdominal pain assessment", instructionTextEn: "Children, pregnant/postpartum patients, and anyone with persistent or concerning features need in-person assessment; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["pain becomes severe or persistent", "vomiting, fever, jaundice, chest symptoms, blood, black stool, fainting, or breathing difficulty develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-upperabdopain-adult-selfcare-advice", titleEn: "Limited adult indigestion care", instructionTextEn: "For a well adult with a familiar brief indigestion pattern only, avoid known food or alcohol triggers and late meals. A clinician or pharmacist should confirm any antacid or pain medicine is suitable, especially with other medicines, kidney/liver disease, ulcers, or bleeding risk.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain becomes severe or persistent", "vomiting, fever, jaundice, chest symptoms, blood, black stool, fainting, or breathing difficulty develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-05-05", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"Indigestion\", https://www.nhs.uk/conditions/indigestion/ (page last reviewed 05 May 2023)"],
-      contentNotice: "Decomposed from NHS.UK's published indigestion guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format for upper abdominal pain. Distinct from the excluded Abdominal Pain - Female/Male and Abdominal Injury topics (permanently out of scope for this content set due to an unrelated reference-file contamination concern). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      sourceDocuments: ["NHS.UK, \"Indigestion\", https://www.nhs.uk/conditions/indigestion/", "NHS.UK, \"Heart attack\", https://www.nhs.uk/conditions/heart-attack/", "University College London Hospitals, \"Abdominal pain\" emergency return criteria, https://www.uclh.nhs.uk/patients-and-visitors/patient-information-pages/abdominal-pain"],
+      contentNotice: "Safety-first UAT adaptation separating emergency, mandatory in-person pediatric/pregnancy assessment, and a narrow adult-only indigestion branch. Exact Qatar non-emergency pediatric, obstetric and abdominal-pain destinations remain GOVERNANCE_REQUIRED. Not licensed Schmitt-Thompson content. Requires Qatar clinical-governance validation before nurse UAT and is prohibited from production use."
     })
   },
 
@@ -165,11 +184,11 @@ export const batch22Protocols: ProtocolInput[] = [
   {
     id: "oscg-contraception-iud",
     titleEn: "Contraception - IUD Symptoms and Questions",
-    clinicalDefinitionEn: "IUD (coil) symptom assessment decomposed from NHS.UK's published IUD side-effects guidance.",
+    clinicalDefinitionEn: "IUD symptom assessment for a patient with a uterus and an IUD in place. Pregnancy, ectopic pregnancy, infection, perforation or displacement must be excluded before expected side effects are assumed.",
     ageMin: 12,
     mode: "after-hours",
-    patientGroup: "adult",
-    acuity: 3,
+    patientGroup: "mixed",
+    acuity: 5,
     keywords: [
       { phrase: "iud symptoms", weight: 100 },
       { phrase: "coil side effects", weight: 100 },
@@ -179,53 +198,69 @@ export const batch22Protocols: ProtocolInput[] = [
       { phrase: "cant feel the strings anymore", weight: 100 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-iudsymptoms-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "When was the IUD fitted?" },
-      { id: "oscg-iudsymptoms-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "What symptoms are present?" },
-      { id: "oscg-iudsymptoms-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Can the IUD threads be felt as usual?" }
+      { id: "oscg-iudsymptoms-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "When was the IUD fitted, and when were the threads last felt normally?" },
+      { id: "oscg-iudsymptoms-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "Describe pain, bleeding, discharge, fever, faintness, vomiting, missed period, positive pregnancy test, and whether the device or threads feel different." },
+      { id: "oscg-iudsymptoms-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Could the patient be pregnant, have they recently given birth, or was there unprotected sex after the threads changed or could not be felt?" },
+      { id: "oscg-iudsymptoms-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "If the patient is under 18, can they speak privately now, do they feel safe with the accompanying adult and sexual partner, and is there any concern about coercion or assault?" }
     ],
     questions: [
       {
-        id: "oscg-iudsymptoms-q0-urgent",
+        id: "oscg-iudsymptoms-q0-emergency",
         acuityOrder: 1,
-        severity: "Urgent",
-        questionTextEn: "Is there lower tummy pain that painkillers don't help, sudden pain that's worsening or won't go away, a high temperature or abnormal/smelly discharge, very heavy vaginal bleeding, a suspected pregnancy, or can the IUD threads not be felt or do they feel different?",
-        dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK IUD side-effects guidance lists these as reasons to seek urgent medical attention - missing threads can mean reduced pregnancy protection or a shifted device.",
-        redFlag: false,
-        keywords: ["cant feel my iud threads", "severe pain after iud", "smelly discharge with iud"],
+        severity: "Emergency",
+        questionTextEn: "Is there collapse, fainting or marked dizziness, pale or clammy skin, heavy bleeding, severe or rapidly worsening lower abdominal/pelvic pain, sudden one-sided pain with vomiting, a rigid or very tender abdomen, confusion or severe illness? If pregnancy is possible, is there pain, bleeding, or shoulder-tip pain?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+        rationaleEn: "These features can indicate ruptured ectopic pregnancy, ovarian torsion, major bleeding, perforation, peritonitis, or sepsis. Pregnancy with an IUD has an increased relative risk of being ectopic.",
+        redFlag: true,
+        keywords: ["pregnant with iud pain bleeding", "collapse pelvic pain iud", "sudden one sided pain vomiting"],
         careAdviceIds: ["oscg-iudsymptoms-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
+        dispositionLevel: 100,
+        questionOrder: 1
+      },
+      {
+        id: "oscg-iudsymptoms-q1-urgent",
+        acuityOrder: 2,
+        severity: "Urgent",
+        questionTextEn: "Without emergency features, is pregnancy suspected, can the threads not be felt or do they feel different, can the device be felt, is there persistent pain, fever, abnormal or smelly discharge, very heavy bleeding, pain during sex, recent postpartum insertion, or is the patient under 18 or reporting coercion or an unsafe caregiver?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "These findings require in-person pregnancy testing, pelvic assessment and possible ultrasound, infection testing, device-position check, emergency-contraception discussion, or safeguarding assessment.",
+        redFlag: false,
+        keywords: ["cant feel iud threads", "possible pregnancy with iud", "fever discharge iud", "iud coercion"],
+        careAdviceIds: ["oscg-iudsymptoms-selfcare-advice"],
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
       {
-        id: "oscg-iudsymptoms-q1-selfcare",
-        acuityOrder: 2,
+        id: "oscg-iudsymptoms-q2-selfcare",
+        acuityOrder: 3,
         severity: "Self-care",
-        questionTextEn: "Are these common expected side effects (period-like pain after fitting, bleeding between periods, heavier/longer periods) with none of the features above?",
+        questionTextEn: "Are these mild expected cramps or bleeding changes soon after fitting, with pregnancy excluded, threads unchanged, and none of the emergency, urgent, adolescent, postpartum, or safeguarding features above?",
         dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "NHS.UK guidance describes these as common IUD side effects that often improve over the first few months.",
+        rationaleEn: "NHS.UK describes mild period-like pain and bleeding changes as common after fitting, but this branch requires all higher-risk features to be absent.",
         redFlag: false,
-        keywords: ["common iud side effects"],
-        careAdviceIds: ["oscg-iudsymptoms-selfcare-advice"],
-        telemedicineEligible: true,
+        keywords: ["mild expected iud cramps"],
+        careAdviceIds: ["oscg-iudsymptoms-expected-advice"],
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-iudsymptoms-urgent-advice", titleEn: "Urgent IUD symptom review", instructionTextEn: "Arrange same-day review to check the IUD position and rule out infection or pregnancy. Use a backup contraception method (such as condoms) until checked if the threads can't be felt.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["pain worsens", "bleeding increases"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-iudsymptoms-selfcare-advice", titleEn: "Home monitoring for common IUD side effects", instructionTextEn: "Mild period-like pain and bleeding changes are common in the first few months and often settle. Take paracetamol or ibuprofen for cramping as directed.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain worsens or is not relieved by painkillers", "cannot feel the threads or they feel different"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-iudsymptoms-urgent-advice", titleEn: "Emergency IUD complication precautions", instructionTextEn: "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Tell the call handler about the IUD and any possible pregnancy or recent birth.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["collapse or fainting", "pain or bleeding worsens"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-iudsymptoms-selfcare-advice", titleEn: "Urgent in-person IUD assessment", instructionTextEn: "Arrange urgent in-person gynecology, early-pregnancy, pediatric or safeguarding assessment as applicable; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. If threads cannot be felt or have changed, do not rely on the IUD for contraception until checked; a clinician must assess whether emergency contraception and pregnancy testing are needed.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["pain, faintness, fever, discharge, or bleeding worsens"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-iudsymptoms-expected-advice", titleEn: "Monitoring expected IUD effects", instructionTextEn: "Mild cramps and bleeding changes can occur after fitting. A clinician or pharmacist should confirm any pain medicine is suitable, especially for a patient under 18, pregnant/postpartum, taking other medicines, or with kidney disease, ulcers, asthma triggered by anti-inflammatory medicines, or bleeding risk.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain becomes severe or persistent", "fever, abnormal discharge, heavy bleeding, pregnancy concern, or changed threads develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2024-02-15", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Adult" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"IUD (coil) - Side effects\", https://www.nhs.uk/contraception/methods-of-contraception/iud-coil/side-effects/ (page last reviewed 15 February 2024)"],
-      contentNotice: "Decomposed from NHS.UK's published IUD side-effects guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      sourceDocuments: ["NHS.UK, \"IUD (coil) - Side effects\", https://www.nhs.uk/contraception/methods-of-contraception/iud-coil/side-effects/", "NICE NG126, \"Ectopic pregnancy and miscarriage: symptoms, signs and initial assessment\", https://www.nice.org.uk/guidance/ng126/chapter/symptoms-and-signs-of-ectopic-pregnancy-and-initial-assessment"],
+      contentNotice: "Safety-first UAT adaptation for a patient with a uterus and IUD, including ectopic pregnancy, torsion, infection, perforation, pediatric, postpartum and safeguarding distinctions. Exact Qatar non-emergency gynecology, early-pregnancy, pediatric and safeguarding routes remain GOVERNANCE_REQUIRED. Not licensed Schmitt-Thompson content. Requires Qatar clinical-governance validation before nurse UAT and is prohibited from production use."
     })
   },
 
   // ------------------------------------------------------------------
-  // 4. Contraception - Birth Control Pills Combined - standard reproductive health knowledge (ACHES mnemonic)
+  // 4. Contraception - Birth Control Pills Combined - SOURCE ONLY; no generated batch-22 catalog variant
   // ------------------------------------------------------------------
   {
     id: "oscg-contraception-birth-control-pills-combined",
@@ -244,9 +279,9 @@ export const batch22Protocols: ProtocolInput[] = [
       { phrase: "bad headache and my vision is blurry", weight: 100 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-combinedpill-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How long has the pill been taken?" },
-      { id: "oscg-combinedpill-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "What symptoms are present?" },
-      { id: "oscg-combinedpill-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any smoking history or personal/family history of blood clots?" }
+      { id: "oscg-combinedpill-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What is the patient's age, when was the last pill taken, were any pills missed, and is pregnancy possible or confirmed or has there been a recent delivery?" },
+      { id: "oscg-combinedpill-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "What symptoms are present, including chest or abdominal pain, breathing difficulty, one-sided leg swelling, severe headache, weakness, speech difficulty, or vision change?" },
+      { id: "oscg-combinedpill-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Can the patient speak privately and safely, and is there smoking, migraine with aura, high blood pressure, immobility/surgery, clot history, liver disease, breastfeeding, or a new interacting medicine?" }
     ],
     questions: [
       {
@@ -267,30 +302,30 @@ export const batch22Protocols: ProtocolInput[] = [
         id: "oscg-combinedpill-q1-selfcare",
         acuityOrder: 2,
         severity: "Self-care",
-        questionTextEn: "Are these mild, common side effects (breast tenderness, mood changes, breakthrough bleeding, headache relieved by simple painkillers) with none of the ACHES features above?",
+        questionTextEn: "For an adult already assessed as eligible for this prescribed pill, are these mild expected effects with no emergency feature, pregnancy concern, missed-pill uncertainty, severe bleeding, safeguarding concern, or medicine interaction?",
         dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
         rationaleEn: "Mild side effects are common when starting or continuing the combined pill and often settle within a few months.",
         redFlag: false,
         keywords: ["mild combined pill side effects"],
         careAdviceIds: ["oscg-combinedpill-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-combinedpill-emergency-advice", titleEn: "Emergency combined-pill blood clot precautions", instructionTextEn: "Arrange emergency transport immediately - these are recognized warning signs of a serious blood clot and need urgent evaluation.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening pain", "worsening breathing difficulty"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-combinedpill-selfcare-advice", titleEn: "Home monitoring for mild combined-pill side effects", instructionTextEn: "Mild breast tenderness, mood changes, or breakthrough bleeding are common, especially in the first few months, and often settle on their own.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["any ACHES symptom (abdominal pain, chest pain, severe headache, eye problems, severe leg pain/swelling) develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-combinedpill-emergency-advice", titleEn: "Emergency combined-pill blood clot precautions", instructionTextEn: "Call Qatar 999 now and do not self-drive. Do not take an extra pill or another person's medicine while awaiting emergency assessment.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening pain or breathing difficulty", "weakness, speech difficulty, collapse, or vision loss"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-combinedpill-selfcare-advice", titleEn: "Monitoring mild combined-pill effects", instructionTextEn: "Follow the prescriber's instructions and arrange pharmacist or clinician review if symptoms persist. Missed-pill actions, emergency contraception, pregnancy testing, and whether to continue or stop the pill depend on timing, product, pregnancy risk, and interactions and must use the Qatar-approved protocol rather than telephone improvisation.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["any clot or stroke warning sign develops", "heavy bleeding, pregnancy concern, or significant mood change develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Adult" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["Standard, globally-recognized reproductive-health knowledge - the \"ACHES\" combined-hormonal-contraceptive blood clot warning mnemonic - the specific NHS.UK combined pill side-effects subpage could not be retrieved during authoring"],
-      contentNotice: "The NHS.UK combined pill side-effects subpage could not be retrieved during authoring. This protocol is based on the widely-taught ACHES mnemonic, standard reproductive-health education used internationally. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "SOURCE-ONLY UAT DATA — no generated variant exists in the current 504-protocol catalog. NOT FOR REAL-PATIENT CARE OR PRODUCTION USE. Qatar prescribing eligibility, adolescent consent/privacy/safeguarding, postpartum and breastfeeding timing, missed-pill and emergency-contraception rules, interactions, and exact non-emergency routing remain GOVERNANCE_REQUIRED. Not licensed Schmitt-Thompson (STCC) content."
     })
   },
 
   // ------------------------------------------------------------------
-  // 5. Face Pain - generalized from Sinus Pain/Congestion (batch11) and Toothache (batch14)
+  // 5. Face Pain - SOURCE ONLY; no generated batch-22 catalog variant
   // ------------------------------------------------------------------
   {
     id: "oscg-face-pain",
@@ -309,9 +344,9 @@ export const batch22Protocols: ProtocolInput[] = [
       { phrase: "whole face has been hurting", weight: 100 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-facepain-iaq1", sequence: 1, responseType: "LOCATION", promptTextEn: "Where exactly is the pain?" },
-      { id: "oscg-facepain-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long has it lasted?" },
-      { id: "oscg-facepain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any facial swelling, fever, or vision change?" }
+      { id: "oscg-facepain-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What is the patient's age, where exactly is the pain, when did it start, and was there injury, dental treatment, a rash, or a new medicine?" },
+      { id: "oscg-facepain-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Is there facial droop, arm weakness, speech change, sudden severe headache, eye pain or vision loss, swelling around the eye, or difficulty breathing or swallowing?" },
+      { id: "oscg-facepain-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is there fever, spreading redness/swelling, pregnancy, immunocompromise, a very young child, inability to drink, or possible safeguarding concern?" }
     ],
     questions: [
       {
@@ -338,7 +373,7 @@ export const batch22Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["face pain with swelling", "face pain lasting days"],
         careAdviceIds: ["oscg-facepain-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
@@ -352,25 +387,25 @@ export const batch22Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["mild face pain"],
         careAdviceIds: ["oscg-facepain-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-facepain-emergency-advice", titleEn: "Emergency face pain precautions", instructionTextEn: "Arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["breathing difficulty", "vision worsens"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-facepain-emergency-advice", titleEn: "Emergency face pain precautions", instructionTextEn: "Call Qatar 999 and do not self-drive for airway difficulty, stroke signs, severe eye symptoms, collapse, or rapidly spreading swelling.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["breathing or swallowing difficulty", "vision loss, weakness, speech change, or worsening swelling"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-facepain-urgent-advice", titleEn: "Urgent face pain review", instructionTextEn: "Arrange same-day medical review for these symptoms.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["swelling develops", "fever develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-facepain-selfcare-advice", titleEn: "Home care for mild face pain", instructionTextEn: "Take a suitable over-the-counter pain reliever, apply a warm compress if sinus-related, and rest.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain worsens or lasts more than a few days", "swelling or fever develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-facepain-selfcare-advice", titleEn: "Home care for mild face pain", instructionTextEn: "Rest and use simple comfort measures. A pharmacist or clinician must confirm any pain medicine is suitable for age, weight, pregnancy, allergies, comorbidity, and current medicines.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain worsens or lasts more than a few days", "swelling, fever, eye symptoms, weakness, or speech change develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["Generalized from the Sinus Pain or Congestion (batch11) and Toothache (batch14) emergency/urgent criteria already established in this system - no single dedicated NHS.UK general facial-pain page was found"],
-      contentNotice: "This protocol generalizes the emergency/urgent facial-swelling criteria already used for Toothache and Sinus Pain to general facial pain, distinct from the traumatic Face Injury protocol (batch13). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "SOURCE-ONLY UAT DATA — no generated variant exists in the current 504-protocol catalog. NOT FOR REAL-PATIENT CARE OR PRODUCTION USE. Stroke, orbital infection, airway, dental infection, pediatric, pregnancy, immunocompromise, safeguarding, analgesic, and exact Qatar routing rules require local approval. Not licensed Schmitt-Thompson (STCC) content."
     })
   },
 
   // ------------------------------------------------------------------
-  // 6. Mouth Pain - generalized from Toothache (batch14) and Mouth Injury (batch13)
+  // 6. Mouth Pain - SOURCE ONLY; no generated batch-22 catalog variant
   // ------------------------------------------------------------------
   {
     id: "oscg-mouth-pain",
@@ -418,7 +453,7 @@ export const batch22Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["mouth pain lasting days", "mouth pain with swelling"],
         careAdviceIds: ["oscg-mouthpain-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
@@ -432,25 +467,25 @@ export const batch22Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["mild mouth pain"],
         careAdviceIds: ["oscg-mouthpain-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-mouthpain-emergency-advice", titleEn: "Emergency mouth pain precautions", instructionTextEn: "Do not drive to A&E - ask someone to drive you or call 999 for an ambulance.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening swelling", "breathing difficulty"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-mouthpain-emergency-advice", titleEn: "Emergency mouth pain precautions", instructionTextEn: "Do not drive yourself to the emergency department - ask someone to drive you or call Qatar 999 for an ambulance.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening swelling", "breathing difficulty"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-mouthpain-urgent-advice", titleEn: "Urgent mouth pain review", instructionTextEn: "Arrange a prompt dental or medical appointment for these symptoms.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["swelling develops", "fever develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-mouthpain-selfcare-advice", titleEn: "Home care for mild mouth pain", instructionTextEn: "Rinse with warm salt water, take a suitable over-the-counter pain reliever, and use a mouth pain-relief gel from a pharmacy if needed.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain lasts more than 2 days", "swelling or fever develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-mouthpain-selfcare-advice", titleEn: "Home care for mild mouth pain", instructionTextEn: "Use gentle oral hygiene and simple comfort measures. Do not use aspirin on oral tissue. A pharmacist or clinician must confirm any analgesic or oral gel is suitable for age, weight, pregnancy, allergies, comorbidity, and current medicines.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain lasts more than 2 days or prevents drinking", "swelling, fever, breathing, swallowing, or drooling difficulty develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["Generalized from the Toothache (batch14) and Mouth Injury (batch13) criteria already established in this system - no single dedicated NHS.UK general mouth-pain page was found"],
-      contentNotice: "This protocol generalizes the emergency/urgent criteria already used for Toothache to general (non-dental, non-traumatic) mouth pain. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "SOURCE-ONLY UAT DATA — no generated variant exists in the current 504-protocol catalog. NOT FOR REAL-PATIENT CARE OR PRODUCTION USE. Airway infection, dehydration, dental, pediatric, pregnancy, immunocompromise, safeguarding, analgesic/oral-gel, and exact Qatar routing rules remain GOVERNANCE_REQUIRED. Qatar 999 applies to airway compromise and no self-driving. Not licensed Schmitt-Thompson (STCC) content."
     })
   },
 
   // ------------------------------------------------------------------
-  // 7. Muscle Aches and Body Pain - generalized from Flu (batch19)
+  // 7. Muscle Aches and Body Pain - SOURCE ONLY; no generated batch-22 catalog variant
   // ------------------------------------------------------------------
   {
     id: "oscg-muscle-aches-and-body-pain",
@@ -484,7 +519,7 @@ export const batch22Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["severe muscle pain and dark urine", "body aches with high fever"],
         careAdviceIds: ["oscg-muscleaches-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
@@ -498,24 +533,24 @@ export const batch22Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["mild typical body aches"],
         careAdviceIds: ["oscg-muscleaches-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
       { id: "oscg-muscleaches-urgent-advice", titleEn: "Urgent body aches review", instructionTextEn: "Arrange same-day medical review for these symptoms.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["weakness worsens", "urine gets darker"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-muscleaches-selfcare-advice", titleEn: "Home care for mild body aches", instructionTextEn: "Rest, stay hydrated, and take paracetamol or ibuprofen for pain and fever as directed.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["symptoms worsen or don't improve after a week", "weakness or dark urine develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-muscleaches-selfcare-advice", titleEn: "Home care for mild body aches", instructionTextEn: "Rest and maintain fluids if safe. A pharmacist or clinician must confirm any pain or fever medicine using age, weight, pregnancy, allergies, kidney/liver disease, dehydration, and current medicines; do not combine products containing the same ingredient.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["symptoms worsen or do not improve", "weakness, dark urine, reduced urine, breathing difficulty, stiff neck, rash, or confusion develops"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Flu\" (already cited for Influenza (Flu) Suspected, batch19), https://www.nhs.uk/conditions/flu/ - generalized to muscle aches/body pain as the primary presenting complaint"],
-      contentNotice: "Generalized from the flu guidance already used elsewhere in this content set, for callers presenting primarily with body aches (with or without other flu symptoms). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "SOURCE-ONLY UAT DATA — no generated variant exists in the current 504-protocol catalog. NOT FOR REAL-PATIENT CARE OR PRODUCTION USE. Sepsis, meningitis, rhabdomyolysis, pediatric, pregnancy/postpartum, immunocompromise, dehydration, medication, and exact Qatar routing rules remain GOVERNANCE_REQUIRED. Not licensed Schmitt-Thompson (STCC) content."
     })
   },
 
   // ------------------------------------------------------------------
-  // 8. Bullying - standard child/adolescent mental health support knowledge
+  // 8. Bullying - SOURCE ONLY; no generated batch-22 catalog variant
   // ------------------------------------------------------------------
   {
     id: "oscg-bullying",
@@ -534,9 +569,9 @@ export const batch22Protocols: ProtocolInput[] = [
       { phrase: "getting bullied and its affecting them", weight: 100 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-bullying-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What has been happening, and for how long?" },
-      { id: "oscg-bullying-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Any thoughts of self-harm or not wanting to be alive?" },
-      { id: "oscg-bullying-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Has a trusted adult (parent, teacher, counselor) been told?" }
+      { id: "oscg-bullying-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What is the child's age, what has happened, for how long, and can the child speak privately without the alleged perpetrator or an unsafe adult present?" },
+      { id: "oscg-bullying-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Is there immediate physical danger, injury, sexual exploitation, threats, blackmail, sharing of sexual images, self-harm, suicidal thoughts, or risk to another person?" },
+      { id: "oscg-bullying-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is there a safe trusted adult available now, and has the Qatar-approved school and child-safeguarding pathway been activated without confronting a suspected unsafe person?" }
     ],
     questions: [
       {
@@ -563,7 +598,7 @@ export const batch22Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["bullying affecting school", "bullying affecting sleep or mood"],
         careAdviceIds: ["oscg-bullying-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
@@ -577,25 +612,25 @@ export const batch22Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["isolated bullying incident being addressed"],
         careAdviceIds: ["oscg-bullying-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-bullying-emergency-advice", titleEn: "Emergency bullying-related mental health precautions", instructionTextEn: "Connect the caller with your organization's local emergency mental health crisis line or emergency services immediately - do not leave the child unsupervised if there is any immediate risk.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["any immediate risk to the child"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-bullying-emergency-advice", titleEn: "Emergency bullying-related safety precautions", instructionTextEn: "Call Qatar 999 for an ambulance for immediate danger, serious injury, or imminent self-harm or harm to another person. Keep the child with a safe responsible adult, do not leave them alone, do not self-drive, and do not alert or confront a suspected perpetrator if doing so could increase risk. Preserve messages or images without forwarding them and follow the approved safeguarding escalation.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["any immediate risk to the child or another person", "safe supervision becomes unavailable"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-bullying-urgent-advice", titleEn: "Getting help for ongoing bullying", instructionTextEn: "Report the bullying to the school and keep a written record of incidents. Encourage the child to stay connected with trusted friends and adults, and consider involving a school counselor or mental health professional if it's affecting mood, sleep, or school attendance.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["mood or behavior worsens", "any talk of self-harm develops"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
       { id: "oscg-bullying-selfcare-advice", titleEn: "Supporting a child dealing with bullying", instructionTextEn: "Listen without judgment, reassure the child it isn't their fault, report the incident to school staff, and keep checking in regularly.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["bullying continues or worsens", "mood or behavior changes develop"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Pediatric" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["Standard, non-proprietary child and adolescent mental health support knowledge about bullying/cyberbullying - the specific NHS.UK bullying page could not be retrieved during authoring"],
-      contentNotice: "The NHS.UK bullying guidance page could not be retrieved during authoring. This protocol is based on widely-taught, non-proprietary child/adolescent mental health support knowledge, and the emergency tier is consistent with the Suicide Concerns protocol already in this system. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use, and the host organization should insert local school-safeguarding and crisis-support resources."
+      contentNotice: "SOURCE-ONLY UAT DATA — no generated variant exists in the current 504-protocol catalog. NOT FOR REAL-PATIENT CARE OR PRODUCTION USE. Qatar school escalation, privacy, consent, cyber-evidence handling, sexual-image/exploitation response, mandatory reporting, mental-health referral, and exact non-emergency contacts remain GOVERNANCE_REQUIRED. Not licensed Schmitt-Thompson (STCC) content."
     })
   },
 
   // ------------------------------------------------------------------
-  // 9. Child Abuse Suspected - standard child-safeguarding knowledge, sensitive-topic handling
+  // 9. Child Abuse Suspected - SOURCE ONLY; no generated batch-22 catalog variant
   // ------------------------------------------------------------------
   {
     id: "oscg-child-abuse-suspected",
@@ -613,8 +648,8 @@ export const batch22Protocols: ProtocolInput[] = [
     ],
     initialAssessmentQuestions: [
       { id: "oscg-childabuse-iaq1", sequence: 1, responseType: "YES_NO", promptTextEn: "Is the child in immediate danger right now?" },
-      { id: "oscg-childabuse-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "What has been observed or disclosed?" },
-      { id: "oscg-childabuse-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the child currently safe and away from the suspected person?" }
+      { id: "oscg-childabuse-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "What was directly observed or spontaneously disclosed? Record the child's words accurately; do not conduct repeated, leading, or investigative questioning." },
+      { id: "oscg-childabuse-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Can the child speak privately, are they currently with a safe adult away from the suspected person, and is urgent medical/forensic care needed without washing, changing clothes, or discarding possible evidence?" }
     ],
     questions: [
       {
@@ -647,18 +682,18 @@ export const batch22Protocols: ProtocolInput[] = [
       }
     ],
     careAdvice: [
-      { id: "oscg-childabuse-emergency-advice", titleEn: "Emergency child safety precautions", instructionTextEn: "If the child is in immediate danger, connect the caller with emergency services right away. Arrange emergency medical evaluation for any suspicious injury.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["immediate danger continues"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-childabuse-urgent-advice", titleEn: "Reporting suspected child abuse", instructionTextEn: "Follow your organization's mandated-reporting protocol and connect the caller with local child-protection services promptly. Do not confront the suspected abuser directly - let child-protection professionals lead the investigation.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["the child's situation changes or new concerns arise"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" }
+      { id: "oscg-childabuse-emergency-advice", titleEn: "Emergency child safety precautions", instructionTextEn: "Call Qatar 999 for immediate danger or life-threatening injury and follow dispatcher instructions. Keep the child with a safe responsible adult and away from the suspected person when this can be done without increasing danger. Do not confront or notify the suspected person, and do not allow self-driving.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["immediate danger continues", "the safe adult or safe location becomes unavailable"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-childabuse-urgent-advice", titleEn: "Reporting suspected child abuse", instructionTextEn: "Follow the Qatar legal and organizational mandatory-reporting pathway approved for this UAT environment immediately. Arrange appropriate medical and, when indicated, forensic assessment. Document objective observations and the child's exact spontaneous words; do not promise secrecy, investigate, repeatedly question, confront the suspected person, or disclose information beyond the safeguarding team.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["the child's situation changes or new concerns arise"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Pediatric" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["Standard, non-proprietary child-safeguarding knowledge (injury-pattern recognition, mandated-reporting practice) - not a single-source quote"],
-      contentNotice: "Consistent with the sensitive-topic handling already established for Domestic Violence (batch16), this protocol does not name specific hotlines or agencies - care advice directs the triager to the host organization's own mandated-reporting protocol and local child-protection services, which MUST be configured before production use. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance and legal/safeguarding validation before production use."
+      contentNotice: "SOURCE-ONLY UAT DATA — no generated variant exists in the current 504-protocol catalog. NOT FOR REAL-PATIENT CARE OR PRODUCTION USE. Qatar mandatory reporting, consent, confidentiality, safe-contact, forensic evidence, documentation, police/child-protection and medical destination rules remain GOVERNANCE_REQUIRED and must be configured before nurse UAT. Not licensed Schmitt-Thompson (STCC) content."
     })
   },
 
   // ------------------------------------------------------------------
-  // 10. Child Neglect Suspected - standard child-safeguarding knowledge, sensitive-topic handling
+  // 10. Child Neglect Suspected - SOURCE ONLY; no generated batch-22 catalog variant
   // ------------------------------------------------------------------
   {
     id: "oscg-child-neglect-suspected",
@@ -710,13 +745,13 @@ export const batch22Protocols: ProtocolInput[] = [
       }
     ],
     careAdvice: [
-      { id: "oscg-childneglect-emergency-advice", titleEn: "Emergency child safety precautions", instructionTextEn: "Connect the caller with emergency services immediately for an unsafe unsupervised situation or unmet urgent medical need.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["immediate danger continues"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-childneglect-urgent-advice", titleEn: "Reporting suspected child neglect", instructionTextEn: "Follow your organization's mandated-reporting protocol and connect the caller with local child-protection/social services promptly.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["the child's situation worsens", "new concerns arise"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" }
+      { id: "oscg-childneglect-emergency-advice", titleEn: "Emergency child safety precautions", instructionTextEn: "Call Qatar 999 for an ambulance for immediate danger or an urgent unmet medical need; do not self-drive or use a potentially unsafe caregiver for transport. Keep the child with a safe responsible adult when possible, do not leave them alone, and do not confront or notify a potentially unsafe caregiver if this could increase risk.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["immediate danger continues", "safe supervision, food, shelter, or necessary medicine becomes unavailable"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-childneglect-urgent-advice", titleEn: "Reporting suspected child neglect", instructionTextEn: "Follow the Qatar legal and organizational mandatory-reporting pathway approved for this UAT environment immediately. Document objective observations and unmet health, medication, nutrition, supervision, education, or shelter needs. Do not investigate, promise secrecy, confront the caregiver, or delay reporting while trying to prove neglect.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["the child's situation worsens", "new concerns or urgent unmet needs arise"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Pediatric" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["Standard, non-proprietary child-safeguarding knowledge (neglect pattern recognition, mandated-reporting practice) - not a single-source quote"],
-      contentNotice: "Consistent with the sensitive-topic handling already established for Child Abuse Suspected and Domestic Violence, this protocol does not name specific hotlines or agencies - care advice directs the triager to the host organization's own mandated-reporting protocol and local child-protection services, which MUST be configured before production use. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance and legal/safeguarding validation before production use."
+      contentNotice: "SOURCE-ONLY UAT DATA — no generated variant exists in the current 504-protocol catalog. NOT FOR REAL-PATIENT CARE OR PRODUCTION USE. Qatar mandatory reporting, confidentiality, safe-contact, medical/nutrition/medication assessment, social-support, police/child-protection and exact destination rules remain GOVERNANCE_REQUIRED and must be configured before nurse UAT. Not licensed Schmitt-Thompson (STCC) content."
     })
   }
 ];

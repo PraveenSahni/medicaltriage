@@ -375,7 +375,17 @@ function routeFor(card: Card, score?: ApiScoreResult): { code: string; destinati
 }
 
 function selectedAssessmentQuestion(card: Card, responses: AssessmentResponseState): QueueProtocolQuestionPreview | undefined {
+  const mandatoryQuestion = mandatoryAssessmentQuestion(card);
+  if (mandatoryQuestion) return mandatoryQuestion;
   return assessmentQuestionsFor(card).find((question) => responses[question.id] === true);
+}
+
+function mandatoryAssessmentQuestion(card: Card): QueueProtocolQuestionPreview | undefined {
+  const prepared = preparedProtocolFor(card);
+  if (card.age >= 18 || !prepared?.primaryProtocolTitle?.startsWith("Shingles (Zoster)")) return undefined;
+  return assessmentQuestionsFor(card).find(
+    (question) => question.severity === "Urgent" && question.dispositionCode === "HMC_URGENT_REVIEW"
+  );
 }
 
 function routeForDispositionCode(
@@ -2897,7 +2907,9 @@ function AssessmentQuestionsStage({
   const answeredCount = flow.filter((question) => responses[question.id] !== undefined).length;
   const firstYesIndex = flow.findIndex((question) => responses[question.id] === true);
   const firstPendingIndex = flow.findIndex((question) => responses[question.id] === undefined);
-  const allAnsweredNo = flow.length > 0 && flow.every((question) => responses[question.id] === false);
+  const mandatoryQuestion = mandatoryAssessmentQuestion(card);
+  const allAnsweredNo =
+    !mandatoryQuestion && flow.length > 0 && flow.every((question) => responses[question.id] === false);
   const activeIndex =
     firstYesIndex >= 0
       ? firstYesIndex
@@ -2905,7 +2917,7 @@ function AssessmentQuestionsStage({
         ? firstPendingIndex
         : Math.max(flow.length - 1, 0);
   const activeQuestion = flow[activeIndex];
-  const selectedQuestion = firstYesIndex >= 0 ? flow[firstYesIndex] : undefined;
+  const selectedQuestion = mandatoryQuestion ?? (firstYesIndex >= 0 ? flow[firstYesIndex] : undefined);
   const progress =
     flow.length === 0
       ? 0

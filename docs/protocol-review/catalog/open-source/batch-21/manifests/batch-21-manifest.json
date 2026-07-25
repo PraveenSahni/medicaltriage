@@ -1,0 +1,491 @@
+{
+  "manifestVersion": "1.0",
+  "importBatch": "open-source-batch-21",
+  "generatedDate": "2026-07-25",
+  "conditionFamilies": 9,
+  "protocolCount": 20,
+  "canonicalSourceFieldType": "string",
+  "algorithmIdRange": "1445-1464",
+  "applicabilityPolicy": {
+    "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
+    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "adultSpecificProtocols": "Adult-only; never generate Child variants.",
+    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
+  },
+  "excludedSourceFamilies": [
+    "Arm Swelling and Edema was excluded because its upper-extremity thrombosis pathway generalizes a leg-specific DVT pattern without a dedicated named source.",
+    "Child variants were excluded for all families except Ankle Pain because the source gives one general child-joint-problem instruction rather than body-part-specific pediatric thresholds.",
+    "The two Ankle Pain child variants use the source's explicit instruction that any child joint problem receives clinical review; adult self-care disposition was not copied into them."
+  ],
+  "entries": [
+    {
+      "file": "json/ankle-pain-adult-male.db.json",
+      "algorithmId": 1445,
+      "title": "Ankle Pain - Male (Adult)",
+      "protocolFamily": "Ankle Pain",
+      "sourceProtocolId": "oscg-ankle-pain",
+      "canonicalSourceProtocolId": "oscg-ankle-pain",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "aec2d06da0f77f3a39af2b89454beb832db58b4a84554fdb370b5a3b313bd78f",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/ankle-pain-adult-female.db.json",
+      "algorithmId": 1446,
+      "title": "Ankle Pain - Female (Adult)",
+      "protocolFamily": "Ankle Pain",
+      "sourceProtocolId": "oscg-ankle-pain",
+      "canonicalSourceProtocolId": "oscg-ankle-pain",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "f7bbf243502964f9178e6cbe152376e7cc749db08ae85c8859c91d86e09e31fb",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/ankle-swelling-adult-male.db.json",
+      "algorithmId": 1447,
+      "title": "Ankle Swelling - Male (Adult)",
+      "protocolFamily": "Ankle Swelling",
+      "sourceProtocolId": "oscg-ankle-swelling",
+      "canonicalSourceProtocolId": "oscg-ankle-swelling",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "f285613d513b410e1e22e75d89af74b789fd43269864d90affe2a17118166686",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/ankle-swelling-adult-female.db.json",
+      "algorithmId": 1448,
+      "title": "Ankle Swelling - Female (Adult)",
+      "protocolFamily": "Ankle Swelling",
+      "sourceProtocolId": "oscg-ankle-swelling",
+      "canonicalSourceProtocolId": "oscg-ankle-swelling",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "fb015b7d9c8a166bd65a82d98e43f6f4978081f30eae4c7638b40f264981a231",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/elbow-pain-adult-male.db.json",
+      "algorithmId": 1449,
+      "title": "Elbow Pain - Male (Adult)",
+      "protocolFamily": "Elbow Pain",
+      "sourceProtocolId": "oscg-elbow-pain",
+      "canonicalSourceProtocolId": "oscg-elbow-pain",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "a7366d501f663353bc995f7edd00f247ba11bb372438e292fd8f6cf2abbbc411",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/elbow-pain-adult-female.db.json",
+      "algorithmId": 1450,
+      "title": "Elbow Pain - Female (Adult)",
+      "protocolFamily": "Elbow Pain",
+      "sourceProtocolId": "oscg-elbow-pain",
+      "canonicalSourceProtocolId": "oscg-elbow-pain",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "5275c2bc447a5940e03384a9ce276a14f8b3fea7544b784e40420c1e83dda9fa",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/elbow-swelling-adult-male.db.json",
+      "algorithmId": 1451,
+      "title": "Elbow Swelling - Male (Adult)",
+      "protocolFamily": "Elbow Swelling",
+      "sourceProtocolId": "oscg-elbow-swelling",
+      "canonicalSourceProtocolId": "oscg-elbow-swelling",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "5073f8c2f939991c43ceea8809a1883dac11e1a8f7d2ac2abaea13790ccae98e",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/elbow-swelling-adult-female.db.json",
+      "algorithmId": 1452,
+      "title": "Elbow Swelling - Female (Adult)",
+      "protocolFamily": "Elbow Swelling",
+      "sourceProtocolId": "oscg-elbow-swelling",
+      "canonicalSourceProtocolId": "oscg-elbow-swelling",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "e5eba6319a1982680df561f110a9afbc568451d634f5839323410d4324878496",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/finger-pain-adult-male.db.json",
+      "algorithmId": 1453,
+      "title": "Finger Pain - Male (Adult)",
+      "protocolFamily": "Finger Pain",
+      "sourceProtocolId": "oscg-finger-pain",
+      "canonicalSourceProtocolId": "oscg-finger-pain",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "3da7d8e042ec713682b4d6e772b9b5f2003ac8eb9b9282c7b64e182441c95728",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/finger-pain-adult-female.db.json",
+      "algorithmId": 1454,
+      "title": "Finger Pain - Female (Adult)",
+      "protocolFamily": "Finger Pain",
+      "sourceProtocolId": "oscg-finger-pain",
+      "canonicalSourceProtocolId": "oscg-finger-pain",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "e3731e5ace8a7aff4c96fd9855c4d7ef177ec02ce730b486249bb59106cf76c4",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/foot-pain-adult-male.db.json",
+      "algorithmId": 1455,
+      "title": "Foot Pain - Male (Adult)",
+      "protocolFamily": "Foot Pain",
+      "sourceProtocolId": "oscg-foot-pain",
+      "canonicalSourceProtocolId": "oscg-foot-pain",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "d7677b86966f2e33586179692bfedc63dc96967135be29865ec061ee5b2dfc14",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/foot-pain-adult-female.db.json",
+      "algorithmId": 1456,
+      "title": "Foot Pain - Female (Adult)",
+      "protocolFamily": "Foot Pain",
+      "sourceProtocolId": "oscg-foot-pain",
+      "canonicalSourceProtocolId": "oscg-foot-pain",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "40b513ba9fadb36381303c11fc8292547e08582fb522ee872e78998f7a5867ba",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hand-swelling-adult-male.db.json",
+      "algorithmId": 1457,
+      "title": "Hand Swelling - Male (Adult)",
+      "protocolFamily": "Hand Swelling",
+      "sourceProtocolId": "oscg-hand-swelling",
+      "canonicalSourceProtocolId": "oscg-hand-swelling",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "09c87d5871108b0cccac8a11a0b8ace4bb9817bb15ed9deec161c0d5e195cc52",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hand-swelling-adult-female.db.json",
+      "algorithmId": 1458,
+      "title": "Hand Swelling - Female (Adult)",
+      "protocolFamily": "Hand Swelling",
+      "sourceProtocolId": "oscg-hand-swelling",
+      "canonicalSourceProtocolId": "oscg-hand-swelling",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "63a37c49d7960bd315083275aad6346a6526f72b5775fbb895a0f545a2fc9feb",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hip-pain-adult-male.db.json",
+      "algorithmId": 1459,
+      "title": "Hip Pain - Male (Adult)",
+      "protocolFamily": "Hip Pain",
+      "sourceProtocolId": "oscg-hip-pain",
+      "canonicalSourceProtocolId": "oscg-hip-pain",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "c4612305ddd85934d4d32e30947306d9de4255991be08ac23c74118f48438c71",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hip-pain-adult-female.db.json",
+      "algorithmId": 1460,
+      "title": "Hip Pain - Female (Adult)",
+      "protocolFamily": "Hip Pain",
+      "sourceProtocolId": "oscg-hip-pain",
+      "canonicalSourceProtocolId": "oscg-hip-pain",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "e29bde4cb0748e8acd4ac218e1c257d0429279e0db35b40fe410a0dc240f56c6",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/knee-swelling-adult-male.db.json",
+      "algorithmId": 1461,
+      "title": "Knee Swelling - Male (Adult)",
+      "protocolFamily": "Knee Swelling",
+      "sourceProtocolId": "oscg-knee-swelling",
+      "canonicalSourceProtocolId": "oscg-knee-swelling",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "8049fc568e2a82648401162f32b7349378a652702c6b2701ea33d5d6fae94db0",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/knee-swelling-adult-female.db.json",
+      "algorithmId": 1462,
+      "title": "Knee Swelling - Female (Adult)",
+      "protocolFamily": "Knee Swelling",
+      "sourceProtocolId": "oscg-knee-swelling",
+      "canonicalSourceProtocolId": "oscg-knee-swelling",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "0346bdae2201ac9480f87c5ff1bd44cdbaa5c6483fcaea734e5d7bd127fcbd64",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/ankle-pain-child-male.db.json",
+      "algorithmId": 1463,
+      "title": "Ankle Pain - Male (Child)",
+      "protocolFamily": "Ankle Pain",
+      "sourceProtocolId": "oscg-ankle-pain",
+      "canonicalSourceProtocolId": "oscg-ankle-pain",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "a7caba4c319034908a8e14aaf5545c171f7e011de6ad271a3bc6ba5339eb1c6e",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/ankle-pain-child-female.db.json",
+      "algorithmId": 1464,
+      "title": "Ankle Pain - Female (Child)",
+      "protocolFamily": "Ankle Pain",
+      "sourceProtocolId": "oscg-ankle-pain",
+      "canonicalSourceProtocolId": "oscg-ankle-pain",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch21-applicability-governed-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "f2428d187f9e5ad0d3cb9edcd42c93550d3a0fc80f4617a0ece0b68abeddb937",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    }
+  ],
+  "safetyBoundary": {
+    "usageStatus": "UAT_ONLY",
+    "productionEligible": false,
+    "requiresClinicalValidation": true,
+    "importOrDeploymentPerformed": false
+  }
+}

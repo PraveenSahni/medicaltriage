@@ -1,0 +1,178 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1320,
+    "Title": "Vomiting Blood - Female (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Female",
+    "Age": "Child (0-17 years)",
+    "GenderAtBirth": "Female",
+    "Acuity": 5,
+    "Definition": [
+      "UAT-only adult and pediatric assessment of suspected haematemesis, distinguishing active gastrointestinal bleeding and shock from a resolved small episode that still requires urgent in-person assessment.",
+      "Child patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999. Do not allow the person to drive, eat, drink, or take non-prescribed medicine. Keep them still and warm; if drowsy or vomiting, position them on their side while maintaining the airway unless injury prevents it. Gather medicines and relevant records without delaying care. Do not stop prescribed anticoagulants or other essential medicines unless the emergency clinician directs this, but report all recent doses. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2025-08-18",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1320001,
+      "AlgorithmID": 1320,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is nausea or vomiting present without red, brown, or coffee-ground material and without suspected blood?",
+      "Information": "Vomiting without suspected blood belongs in the Nausea pathway.",
+      "GotoGuideline": "Nausea",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1320002,
+      "AlgorithmID": 1320,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is blood being vomited now or repeatedly, is there more than a small streak or coffee-ground vomit, or is there confusion, faintness, collapse, rapid or difficult breathing, cold clammy pallor, severe weakness, abdominal pain or swelling, black or bloody stool, reduced responsiveness, or a significantly unwell baby or child?",
+      "Information": "NHS.UK requires emergency assessment when an adult or child has haematemesis with systemic illness, confusion, faintness, abnormal breathing, cold clammy pallor, abdominal pain, or black stool. Ongoing or substantial bleeding and pediatric deterioration fail closed to Qatar 999.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        132001
+      ]
+    },
+    {
+      "QuestionID": 1320003,
+      "AlgorithmID": 1320,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Has a small episode stopped completely, with none of the emergency features above and the person currently alert, breathing normally, and clinically stable?",
+      "Information": "NHS.UK requires urgent clinical review even after haematemesis stops and no other symptoms remain. A child requires an age-appropriate in-person assessment; swallowed blood is a possible explanation but must not be assumed remotely.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        132002
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 132001,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar gastrointestinal-bleeding emergency response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999. Do not allow the person to drive, eat, drink, or take non-prescribed medicine. Keep them still and warm; if drowsy or vomiting, position them on their side while maintaining the airway unless injury prevents it. Gather medicines and relevant records without delaying care. Do not stop prescribed anticoagulants or other essential medicines unless the emergency clinician directs this, but report all recent doses. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: more blood or coffee-ground vomit; fainting or collapse; cold clammy pallor; black or bloody stool; increasing abdominal pain; reduced responsiveness."
+      ]
+    },
+    {
+      "AdviceID": 132002,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent in-person haematemesis assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange urgent same-day in-person assessment through an approved Qatar adult or pediatric pathway even though bleeding stopped. Do not take additional aspirin, ibuprofen, or another non-prescribed anti-inflammatory medicine while awaiting advice. Do not stop prescribed anticoagulants or other essential medicines unless a clinician directs it. Call 999 if bleeding recurs or faintness, pallor, breathing change, black stool, abdominal pain, weakness, or reduced responsiveness develops.",
+        "Call Back If: vomiting blood recurs; black or bloody stool; faintness or pallor; breathing change; child becomes sleepy or feeds poorly."
+      ]
+    }
+  ],
+  "references": [
+    "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (accessed 2026-07-25)",
+    "NHS.UK, \"Vomiting blood\", https://www.nhs.uk/symptoms/vomiting-blood/ (page last reviewed 18 August 2025)",
+    "NHS.UK, \"First aid: shock\", https://www.nhs.uk/tests-and-treatments/first-aid/ (accessed 2026-07-25)"
+  ],
+  "searchwords": [
+    "vomiting blood",
+    "threw up blood",
+    "blood in my vomit",
+    "coughing up blood while vomiting"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "Was blood definitely vomited rather than coughed up or spat out, and was it bright red, dark, brown or black, coffee-ground-like, streaked, clotted, or mixed with food?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Vomiting Blood"
+    },
+    {
+      "Order": 2,
+      "Category": "OPEN_TEXT",
+      "Question": "When did it start, how many episodes occurred, what is the estimated maximum amount, and is bleeding continuing?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Vomiting Blood"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is there black or bloody stool, abdominal pain or swelling, repeated retching, nosebleed or mouth bleeding, recent injury or procedure, or possible swallowed blood?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Vomiting Blood"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "Is the person faint, dizzy, confused, cold or clammy, pale, very weak, breathing rapidly, difficult to wake, or collapsed?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Vomiting Blood"
+    },
+    {
+      "Order": 5,
+      "Category": "OPEN_TEXT",
+      "Question": "Is there known liver disease, ulcer, bleeding disorder, pregnancy or recent birth, or use of anticoagulants, aspirin, ibuprofen or another anti-inflammatory medicine?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Vomiting Blood"
+    },
+    {
+      "Order": 6,
+      "Category": "YES_NO",
+      "Question": "For a baby or child, is there poor feeding, reduced wet nappies or urine, abnormal sleepiness, inconsolability, breathing change, bruising, or a caregiver concern that the child is significantly unwell?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Vomiting Blood"
+    },
+    {
+      "Order": 7,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+      "Rationale": "Child assessment adds safe-caregiver observations without inventing a different clinical threshold.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

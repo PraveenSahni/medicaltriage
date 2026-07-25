@@ -1,0 +1,215 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1323,
+    "Title": "Heat Exposure (Heat Exhaustion and Heat Stroke) - Male (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Male",
+    "Age": "Child (0-17 years)",
+    "GenderAtBirth": "Male",
+    "Acuity": 5,
+    "Definition": [
+      "UAT-only Qatar adult and pediatric assessment separating heatstroke or other severe heat illness from heat exhaustion; sweating does not exclude heatstroke.",
+      "Child patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 and do not allow the person to drive. Move them to shade or air conditioning, remove excess outer clothing and equipment, wet the skin with cool water, apply cool wet cloths, and fan continuously while awaiting help. Follow 999 instructions about more intensive cooling. Do not give anything by mouth if confused, drowsy, seizing, vomiting repeatedly, or unable to swallow safely. If unconscious but breathing, use the recovery position; if not breathing normally, start CPR if trained. Do not give fever medicine such as paracetamol or ibuprofen to treat heatstroke. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2026-05-28",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1323001,
+      "AlgorithmID": 1323,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is cold exposure, shivering, or suspected low body temperature the main concern rather than heat exposure?",
+      "Information": "Cold exposure belongs in the Cold Exposure (Hypothermia) pathway.",
+      "GotoGuideline": "Cold Exposure (Hypothermia)",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1323002,
+      "AlgorithmID": 1323,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "After heat exposure, is there confusion, altered behavior, slurred speech, poor coordination, seizure, collapse or reduced consciousness, very high temperature, hot skin whether dry or still sweating, severe breathing difficulty, inability to drink safely, or no clear improvement after 30 minutes of active cooling?",
+      "Information": "Heatstroke is a time-critical emergency defined clinically by central nervous system dysfunction after heat exposure; sweating may continue and must not be used to rule it out. NHS.UK and CDC guidance require immediate emergency help and rapid cooling. A measured temperature is supportive but emergency action must not wait for it.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        132301
+      ]
+    },
+    {
+      "QuestionID": 1323003,
+      "AlgorithmID": 1323,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "With no heatstroke feature, is there vomiting, inability to maintain oral fluids, worsening symptoms, significant dehydration, persistent symptoms despite cooling, or increased vulnerability such as infancy, pregnancy, older age, chronic heart or kidney disease, or medicines that impair heat tolerance?",
+      "Information": "Heat exhaustion that worsens, prevents safe hydration, or does not improve promptly can progress to heatstroke. Babies, children, pregnant people, older adults, and people with relevant chronic illness or medicines require a lower threshold for age-appropriate clinical assessment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        132302
+      ]
+    },
+    {
+      "QuestionID": 1323004,
+      "AlgorithmID": 1323,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is the person fully alert, improving promptly in a cool place, able to drink without vomiting, and experiencing only mild heat-exhaustion symptoms such as heavy sweating, thirst, headache, dizziness, weakness, nausea, or cramps, with none of the emergency or urgent features above?",
+      "Information": "NHS.UK guidance describes early heat exhaustion as manageable at home with cooling measures and usually resolves within 30 minutes.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        132303
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 132301,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar heatstroke emergency cooling",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and do not allow the person to drive. Move them to shade or air conditioning, remove excess outer clothing and equipment, wet the skin with cool water, apply cool wet cloths, and fan continuously while awaiting help. Follow 999 instructions about more intensive cooling. Do not give anything by mouth if confused, drowsy, seizing, vomiting repeatedly, or unable to swallow safely. If unconscious but breathing, use the recovery position; if not breathing normally, start CPR if trained. Do not give fever medicine such as paracetamol or ibuprofen to treat heatstroke. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: confusion or abnormal behavior; seizure; loss of consciousness; very high temperature; breathing difficulty; no improvement with cooling."
+      ]
+    },
+    {
+      "AdviceID": 132302,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent heat-exhaustion assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Continue active cooling in shade or air conditioning and arrange prompt age-appropriate in-person assessment through an approved Qatar route. Give small frequent sips of cool water or an appropriate oral rehydration drink only when fully alert and swallowing normally. Do not use salt tablets or give an infant sports drinks. Call 999 if confusion, reduced consciousness, seizure, severe breathing difficulty, inability to drink, or failure to improve within 30 minutes develops.",
+        "Call Back If: confusion develops; vomiting prevents drinking; reduced urine; symptoms worsen; not improving within 30 minutes."
+      ]
+    },
+    {
+      "AdviceID": 132303,
+      "AlgorithmOrder": 3,
+      "Title": "Closely monitored cooling for mild heat exhaustion",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Move to shade or air conditioning, stop activity, remove excess clothing, cool the skin with cool water and fanning, and give small frequent sips of cool water or an age-appropriate oral rehydration drink while fully alert. A responsible adult should monitor a child continuously. Do not return to heat or strenuous activity that day. Call 999 for any altered behavior, collapse, seizure, severe breathing difficulty, or failure to improve within 30 minutes.",
+        "Call Back If: not improving within 30 minutes; confusion or unusual behavior; vomiting or inability to drink; reduced responsiveness; reduced urine."
+      ]
+    }
+  ],
+  "references": [
+    "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (accessed 2026-07-25)",
+    "NHS.UK, \"Heat exhaustion and heatstroke\", https://www.nhs.uk/conditions/heat-exhaustion-heatstroke/ (page last reviewed 28 May 2026)",
+    "US CDC/NIOSH, \"Heat-related illnesses\", https://www.cdc.gov/niosh/heat-stress/about/illnesses.html (accessed 2026-07-25)"
+  ],
+  "searchwords": [
+    "heat exhaustion",
+    "heat stroke",
+    "heatstroke",
+    "overheated outside",
+    "too much sun and heat",
+    "out in the heat all day",
+    "sweating heavily with a headache",
+    "dizzy from the heat"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's age, exact location, activity, clothing or protective equipment, medical conditions, pregnancy status, medicines, and access to air conditioning or shade?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Heat Exposure (Heat Exhaustion and Heat Stroke)"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "How long was the heat exposure, when did symptoms begin, and how long have active cooling measures been used?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Heat Exposure (Heat Exhaustion and Heat Stroke)"
+    },
+    {
+      "Order": 3,
+      "Category": "TEMPERATURE",
+      "Question": "What is the measured temperature, by which method? Do not delay emergency action to obtain a temperature.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Heat Exposure (Heat Exhaustion and Heat Stroke)"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "Is there confusion, unusual behavior, slurred speech, poor coordination, collapse, seizure, reduced consciousness, severe breathing difficulty, or inability to drink safely?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Heat Exposure (Heat Exhaustion and Heat Stroke)"
+    },
+    {
+      "Order": 5,
+      "Category": "OPEN_TEXT",
+      "Question": "Is the skin hot, dry or sweaty, and are there headache, dizziness, nausea, vomiting, cramps, heavy sweating, weakness, thirst, fast breathing, or a rapid pulse?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Heat Exposure (Heat Exhaustion and Heat Stroke)"
+    },
+    {
+      "Order": 6,
+      "Category": "YES_NO",
+      "Question": "For a baby or child, is there reduced feeding, fewer wet nappies or less urine, no tears, sunken eyes or fontanelle, unusual sleepiness, irritability, or reduced responsiveness?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 14 source.",
+      "Source": "Heat Exposure (Heat Exhaustion and Heat Stroke)"
+    },
+    {
+      "Order": 7,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+      "Rationale": "Child assessment adds safe-caregiver observations without inventing a different clinical threshold.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

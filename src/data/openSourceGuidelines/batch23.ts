@@ -24,8 +24,8 @@ export const batch23Protocols: ProtocolInput[] = [
   {
     id: "oscg-bedwetting",
     titleEn: "Bedwetting (Nocturnal Enuresis)",
-    clinicalDefinitionEn: "Bedwetting assessment decomposed from NHS.UK's published bedwetting guidance.",
-    ageMin: 0,
+    clinicalDefinitionEn: "Qatar-localized UAT-only pediatric bedwetting pathway screening for diabetes, urinary disease, constipation, neurologic symptoms and safeguarding; not approved for production.",
+    ageMin: 5,
     mode: "after-hours",
     patientGroup: "pediatric",
     acuity: 1,
@@ -38,46 +38,77 @@ export const batch23Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-bedwetting-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "How old is the child?" },
       { id: "oscg-bedwetting-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Was the child previously dry at night for 6+ months?" },
-      { id: "oscg-bedwetting-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Have home strategies already been tried?" }
+      { id: "oscg-bedwetting-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Have home strategies already been tried?" },
+      { id: "oscg-bedwetting-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; was the child previously dry; and are there excessive thirst/urination, weight loss, pain, fever, constipation, weakness, gait change, genital symptoms, stress, punishment, abuse or safeguarding concerns?" }
     ],
     questions: [
       {
-        id: "oscg-bedwetting-q0-routine",
+        id: "oscg-bedwetting-q0-emergency",
         acuityOrder: 1,
+        severity: "Emergency",
+        questionTextEn: "Along with the wetting, is the child confused, difficult to wake, fainting or collapsing, having a seizure, severely short of breath, unable to keep fluids down and rapidly worsening, in immediate danger, or disclosing abuse while the suspected unsafe person is present?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
+        rationaleEn: "Severe systemic illness, neurological deterioration or immediate safeguarding danger requires emergency assessment rather than a routine bedwetting pathway.",
+        redFlag: true,
+        keywords: ["child bedwetting critically unwell", "bedwetting with seizure", "bedwetting immediate safeguarding danger"],
+        careAdviceIds: ["oscg-bedwetting-emergency-advice"],
+        telemedicineEligible: false,
+        dispositionLevel: 100,
+        questionOrder: 1
+      },
+      {
+        id: "oscg-bedwetting-q1-urgent",
+        acuityOrder: 2,
+        severity: "Urgent",
+        questionTextEn: "After emergency features are excluded, is the child under 5, or is there excessive thirst or urination, weight loss, pain or fever, new daytime wetting, constipation with significant symptoms, weakness or gait change, genital symptoms, punishment, suspected abuse, or another safeguarding concern?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "Children under 5 require an age-appropriate pathway, while diabetes, urinary, neurological, genital and safeguarding features require prompt pediatric assessment rather than routine enuresis advice.",
+        redFlag: false,
+        keywords: ["bedwetting child under five", "bedwetting with excessive thirst", "bedwetting with weakness", "bedwetting safeguarding concern"],
+        careAdviceIds: ["oscg-bedwetting-urgent-advice"],
+        telemedicineEligible: false,
+        dispositionLevel: 70,
+        questionOrder: 1
+      },
+      {
+        id: "oscg-bedwetting-q0-routine",
+        acuityOrder: 3,
         severity: "Routine",
         questionTextEn: "Has the child kept wetting the bed despite trying home strategies, or started wetting the bed again after being dry for more than 6 months?",
         dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
-        rationaleEn: "NHS.UK bedwetting guidance recommends a GP visit for these situations - a return of bedwetting after a dry period can occasionally indicate an underlying medical or emotional cause.",
+        rationaleEn: "NHS.UK bedwetting guidance recommends primary-care review for these situations - a return of bedwetting after a dry period can occasionally indicate an underlying medical or emotional cause.",
         redFlag: false,
         keywords: ["bedwetting after being dry for months", "home strategies not working bedwetting"],
         careAdviceIds: ["oscg-bedwetting-routine-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 50,
         questionOrder: 1
       },
       {
         id: "oscg-bedwetting-q1-selfcare",
-        acuityOrder: 2,
-        severity: "Self-care",
-        questionTextEn: "Is this typical bedwetting in a young child with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        acuityOrder: 4,
+        severity: "Routine",
+        questionTextEn: "Is the child age 5 or older with typical bedwetting and none of the features above?",
+        dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
         rationaleEn: "NHS.UK guidance states bedwetting in young children is normal, and many children under 5 experience it.",
         redFlag: false,
         keywords: ["typical bedwetting young child"],
         careAdviceIds: ["oscg-bedwetting-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 50,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-bedwetting-routine-advice", titleEn: "Routine bedwetting follow-up", instructionTextEn: "Book a GP appointment - a bedwetting alarm or medication may help if home strategies haven't worked.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["daytime wetting also develops", "pain with urination develops"], displayOrder: 1, adviceCategory: "NOTE_TO_TRIAGER" },
-      { id: "oscg-bedwetting-selfcare-advice", titleEn: "Home strategies for bedwetting", instructionTextEn: "Encourage plenty of fluids during the day, establish regular toilet visits (4-7 times a day including before bed), use a reward system for positive behaviors (not for staying dry itself), use a waterproof mattress protector, and make the toilet easy to reach at night. Avoid caffeinated drinks and never punish for wetting the bed - it can make things worse.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["bedwetting continues despite these steps", "bedwetting returns after a dry period"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-bedwetting-emergency-advice", titleEn: "Emergency pediatric or safeguarding response", instructionTextEn: "For critical illness or immediate danger, call Qatar emergency services on 999 now and follow the call-taker's instructions. Keep the child with a safe adult where possible. Do not confront a suspected unsafe person or disclose the child's account to them. The exact Qatar child-protection reporting and safe-callback workflow remains GOVERNANCE_REQUIRED for UAT.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["reduced responsiveness, collapse or seizure", "breathing difficulty or rapid deterioration", "immediate safeguarding danger"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-bedwetting-urgent-advice", titleEn: "Prompt pediatric assessment", instructionTextEn: "Arrange prompt pediatric clinical review through the Qatar pathway approved for this UAT environment. A child under 5 must use a separately approved age-appropriate pathway. Excessive thirst or urination, weight loss, fever, pain, weakness, gait change, genital symptoms or safeguarding concerns must not be managed as routine bedwetting. The exact non-emergency destination, safeguarding report and safe-callback process remain GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["the child becomes drowsy, weak or rapidly worse", "vomiting or inability to drink develops", "immediate safety concern develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-bedwetting-routine-advice", titleEn: "Routine bedwetting follow-up", instructionTextEn: "Arrange a primary-care appointment - a bedwetting alarm or medication may help if home strategies haven't worked.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["daytime wetting also develops", "pain with urination develops"], displayOrder: 1, adviceCategory: "NOTE_TO_TRIAGER" },
+      { id: "oscg-bedwetting-selfcare-advice", titleEn: "Supportive bedwetting review", instructionTextEn: "Never punish or shame the child. Arrange pediatric primary-care review through the Qatar UAT pathway before alarms or medicine; assess daytime symptoms, constipation, diabetes risk and safeguarding. Maintain normal daytime hydration and regular toilet access without forced fluid restriction.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["excessive thirst, weight loss, pain, fever or weakness", "new daytime wetting or safeguarding concern"], displayOrder: 2, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-04-11", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Pediatric" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Bedwetting\", https://www.nhs.uk/conditions/bedwetting/ (page last reviewed 11 April 2023)"],
-      contentNotice: "Decomposed from NHS.UK's published bedwetting guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Child-only Qatar pathway. Diabetes, neurologic and safeguarding concerns cannot be downgraded; age thresholds, alarms, medication and destination rules remain GOVERNANCE_REQUIRED."
     })
   },
 
@@ -87,7 +118,7 @@ export const batch23Protocols: ProtocolInput[] = [
   {
     id: "oscg-breath-holding-spell",
     titleEn: "Breath-Holding Spell",
-    clinicalDefinitionEn: "Breath-holding spell assessment in young children, based on standard, universally-taught pediatric knowledge.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only pediatric pathway for a possible breath-holding spell; diagnosis requires exclusion of seizure, cardiac, respiratory, metabolic, injury and safeguarding causes.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "pediatric",
@@ -105,7 +136,8 @@ export const batch23Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-breathholding-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What happened right before the episode (crying, fright, anger)?" },
       { id: "oscg-breathholding-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long did the episode last?" },
-      { id: "oscg-breathholding-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Did the child recover fully and quickly on their own?" }
+      { id: "oscg-breathholding-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Did the child recover fully and quickly on their own?" },
+      { id: "oscg-breathholding-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; was there a trigger; and are there exercise/sleep onset, prolonged unresponsiveness, seizure signs, injury, family sudden death, heart disease, ingestion or safeguarding concerns?" }
     ],
     questions: [
       {
@@ -132,34 +164,34 @@ export const batch23Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["first breath holding spell", "breath holding spells more frequent"],
         careAdviceIds: ["oscg-breathholding-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
       {
         id: "oscg-breathholding-q2-selfcare",
         acuityOrder: 3,
-        severity: "Self-care",
+        severity: "Urgent",
         questionTextEn: "Is this a typical, brief, previously-diagnosed breath-holding spell with quick full recovery?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Breath-holding spells are a well-recognized, benign, involuntary reflex in young children that typically resolve by school age and don't need emergency treatment once diagnosed.",
         redFlag: false,
         keywords: ["typical previously diagnosed breath holding spell"],
         careAdviceIds: ["oscg-breathholding-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-breathholding-emergency-advice", titleEn: "Emergency precautions for a prolonged episode", instructionTextEn: "Keep the child safe from injury (lay them on a soft surface, turn to the side) and arrange emergency transport immediately if the episode doesn't resolve quickly or seizure-like movements continue.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["episode continues", "child doesn't wake up normally"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-breathholding-urgent-advice", titleEn: "Urgent first-episode evaluation", instructionTextEn: "Arrange a prompt GP appointment to confirm the diagnosis, especially for a first episode.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["episodes become more frequent or last longer"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-breathholding-selfcare-advice", titleEn: "Managing a breath-holding spell at home", instructionTextEn: "Stay calm - these episodes are involuntary and not the child's fault. Keep the child safe from falling during the episode. They almost always resolve on their own within a minute with full recovery.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["an episode lasts longer than usual", "the child doesn't fully recover"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-breathholding-emergency-advice", titleEn: "Emergency precautions for a prolonged episode", instructionTextEn: "Call Qatar 999 for an ambulance now if the episode does not resolve quickly, seizure-like movements continue, breathing is abnormal, or the child does not wake normally. Do not self-drive. Protect the child from injury, place them on a safe flat surface, and follow the call handler's instructions; do not put anything in the mouth.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["episode continues", "child doesn't wake up normally"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-breathholding-urgent-advice", titleEn: "Urgent first-episode evaluation", instructionTextEn: "Arrange prompt clinical review to confirm the diagnosis, especially for a first episode.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["episodes become more frequent or last longer"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-breathholding-selfcare-advice", titleEn: "Clinical assessment after a possible spell", instructionTextEn: "Keep the child safe on a flat surface, do not shake, restrain or put anything in the mouth, and arrange prompt pediatric assessment through the Qatar UAT pathway. Call 999 if breathing or recovery is abnormal.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["episode continues or breathing is abnormal", "child does not recover fully"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Pediatric" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["Standard, universally-taught pediatric knowledge about breath-holding spells - the specific NHS.UK page could not be retrieved during authoring"],
-      contentNotice: "The NHS.UK breath-holding page could not be retrieved during authoring. This protocol is based on widely-taught, non-proprietary pediatric knowledge. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Source-only pediatric synthesis with no generated IDs and no dedicated named source. Cardiac, seizure, ingestion and safeguarding exclusions and exact Qatar routing remain GOVERNANCE_REQUIRED."
     })
   },
 
@@ -169,11 +201,11 @@ export const batch23Protocols: ProtocolInput[] = [
   {
     id: "oscg-crying-before-3-months",
     titleEn: "Crying - Before 3 Months Old",
-    clinicalDefinitionEn: "Excessive crying/colic assessment in babies under 3 months, decomposed from NHS.UK's published colic guidance.",
+    clinicalDefinitionEn: "Safety-first unexplained crying assessment only for babies younger than 12 weeks. Crying with illness or another symptom requires assessment through the relevant symptom pathway; colic is considered only after serious illness, injury, feeding problems, and caregiver-safety concerns are excluded.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "pediatric",
-    acuity: 2,
+    acuity: 5,
     keywords: [
       { phrase: "baby wont stop crying", weight: 100 },
       { phrase: "newborn crying a lot", weight: 95 },
@@ -183,20 +215,23 @@ export const batch23Protocols: ProtocolInput[] = [
       { phrase: "think she has colic", weight: 100 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-cryingunder3m-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "How old is the baby?" },
-      { id: "oscg-cryingunder3m-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long and how often does the crying last?" },
-      { id: "oscg-cryingunder3m-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Does the cry sound different from normal - weak or high-pitched?" }
+      { id: "oscg-cryingunder3m-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What is the baby's date of birth and exact age in weeks? This protocol applies only before 12 weeks of age." },
+      { id: "oscg-cryingunder3m-iaq2", sequence: 2, responseType: "TEMPERATURE", promptTextEn: "What is the baby's measured temperature, how was it measured, and when?" },
+      { id: "oscg-cryingunder3m-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is breathing normal, is colour normal, and is the baby alert and responding normally when awake?" },
+      { id: "oscg-cryingunder3m-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "When did the baby last feed, how much compared with usual, and how many wet nappies have there been in the last 12 hours?" },
+      { id: "oscg-cryingunder3m-iaq5", sequence: 5, responseType: "YES_NO", promptTextEn: "Is there vomiting, a new rash, a swollen soft spot, pain when touched or moved, or any possibility of injury?" },
+      { id: "oscg-cryingunder3m-iaq6", sequence: 6, responseType: "YES_NO", promptTextEn: "Is the caregiver overwhelmed, angry, or afraid that they or someone else may shake or hurt the baby?" }
     ],
     questions: [
       {
         id: "oscg-cryingunder3m-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Does the baby have a weak or high-pitched cry, or does the cry sound different from their normal cry?",
+        questionTextEn: "Is the baby not moving, very weak or floppy, difficult to wake, having a seizure, struggling to breathe, blue or grey, or is there immediate concern that anyone may shake or hurt the baby?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
-        rationaleEn: "NHS.UK colic guidance lists a weak or high-pitched cry as a call-999/A&E criterion - it can indicate a serious underlying illness.",
+        rationaleEn: "Reduced responsiveness, weakness, abnormal colour, breathing compromise, seizure, or immediate risk of inflicted injury can be life-threatening and requires emergency help.",
         redFlag: true,
-        keywords: ["weak cry baby", "high pitched cry baby"],
+        keywords: ["floppy unresponsive crying baby", "blue baby breathing difficulty", "may shake or hurt baby"],
         careAdviceIds: ["oscg-cryingunder3m-emergency-advice"],
         telemedicineEligible: false,
         dispositionLevel: 100,
@@ -206,13 +241,13 @@ export const batch23Protocols: ProtocolInput[] = [
         id: "oscg-cryingunder3m-q1-urgent",
         acuityOrder: 2,
         severity: "Urgent",
-        questionTextEn: "Are you worried about the baby's crying, has nothing seemed to help, are you struggling to cope, or is the baby not growing/gaining weight as expected?",
+        questionTextEn: "Is the baby under 12 weeks with a temperature of 38 C or higher; a weak, high-pitched, or different cry; poor feeding; markedly fewer wet nappies or none for 12 hours; repeated or forceful vomiting; green vomit; a non-blanching rash; a swollen soft spot; pain when touched or moved; possible injury; abnormal behaviour; or nonstop inconsolable crying for 2 hours?",
         dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK guidance recommends contacting NHS 111 or a GP for these concerns - caregiver coping and baby's growth both matter.",
+        rationaleEn: "NICE classifies temperature 38 C or higher before 3 months as high risk. Feeding reduction, reduced urine, abnormal responsiveness, abnormal cry, vomiting, rash, bulging fontanelle, pain or injury concern also require urgent in-person pediatric assessment.",
         redFlag: false,
-        keywords: ["nothing helps baby crying", "struggling to cope with crying baby", "worried about baby weight and crying"],
+        keywords: ["fever 38 baby under 3 months", "poor feeding fewer wet nappies", "weak high pitched cry", "inconsolable crying 2 hours"],
         careAdviceIds: ["oscg-cryingunder3m-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
@@ -220,26 +255,26 @@ export const batch23Protocols: ProtocolInput[] = [
         id: "oscg-cryingunder3m-q2-selfcare",
         acuityOrder: 3,
         severity: "Self-care",
-        questionTextEn: "Is this typical colic-pattern crying (more than 3 hours a day, 3+ days a week) in an otherwise healthy, well-growing baby, with none of the features above?",
+        questionTextEn: "Is the baby definitely younger than 12 weeks, previously assessed as having uncomplicated colic, consolable, alert and content between episodes, feeding and urinating normally, with measured temperature below 38 C and none of the emergency or urgent features above?",
         dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "NHS.UK guidance describes colic as common, starting at a few weeks old and usually resolving by 3-4 months.",
+        rationaleEn: "Home comfort measures are appropriate only for a previously assessed, otherwise well, consolable baby with normal feeding, urine output, temperature, breathing, colour, and behaviour.",
         redFlag: false,
         keywords: ["typical colic crying pattern"],
         careAdviceIds: ["oscg-cryingunder3m-selfcare-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-cryingunder3m-emergency-advice", titleEn: "Emergency precautions for an abnormal cry", instructionTextEn: "Arrange emergency transport immediately - a weak or high-pitched cry can be a sign of serious illness in a young baby.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["baby becomes floppy or unresponsive", "breathing changes"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-cryingunder3m-urgent-advice", titleEn: "Urgent review for persistent crying", instructionTextEn: "Arrange a prompt GP or NHS 111-equivalent review, especially if coping is difficult - support is available and asking for help is important.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["weight gain concerns", "crying pattern changes"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-cryingunder3m-selfcare-advice", titleEn: "Home comfort measures for colic", instructionTextEn: "Hold and cuddle the baby during crying spells, keep them upright during feeds to reduce swallowed air, burp them afterward, try gentle rocking, a warm bath, or soft background noise. Colic isn't harmful and usually resolves by 3-4 months. If feeling overwhelmed, it's okay to put the baby down safely and take a short break.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["the cry changes character", "weight gain slows or stops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-cryingunder3m-emergency-advice", titleEn: "Emergency precautions for a critically unwell or unsafe infant", instructionTextEn: "Call Qatar emergency services on 999 for an ambulance now; do not self-drive with an unstable infant. Follow the call handler's instructions. If there is a risk someone may hurt or shake the baby, place the baby on their back in a safe empty cot, move the unsafe person away, and have a safe adult take over if available. Never shake the baby.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["baby becomes floppy or unresponsive", "breathing or colour changes", "risk that someone may hurt the baby"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-cryingunder3m-urgent-advice", titleEn: "Urgent in-person assessment for a young infant", instructionTextEn: "Arrange urgent in-person pediatric assessment now; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Do not give fever medicine to delay assessment. Call 999 if the baby becomes difficult to wake, floppy, blue or grey, has breathing difficulty or a seizure, or cannot be transported safely.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["feeding or urine output falls", "crying or behaviour changes", "temperature reaches 38 C"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-cryingunder3m-selfcare-advice", titleEn: "Controlled comfort measures for previously assessed colic", instructionTextEn: "Use the baby's established feeding plan and try holding, gentle rocking, a warm bath, or quiet background sound. Always place the baby on their back in a safe empty cot for sleep. If overwhelmed, put the baby safely in the cot, step away briefly, and ask a safe adult to take over. Never shake the baby. Re-enter urgent assessment if the baby becomes difficult to console, feeds less, has fewer wet nappies, develops vomiting, fever, abnormal breathing or colour, becomes unusually sleepy, or the cry changes.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["temperature reaches 38 C", "feeding or wet nappies decrease", "cry, breathing, colour, or alertness changes", "caregiver feels at risk of losing control"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2022-04-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Pediatric" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"Colic\", https://www.nhs.uk/conditions/colic/ (page last reviewed 26 April 2022)"],
-      contentNotice: "Decomposed from NHS.UK's published colic guidance (Crown copyright, reused under the Open Government Licence), adapted into IST Health's STCC-shaped triage format for babies under 3 months, the age range the source itself associates with colic. The source's UK-specific Cry-sis helpline number is deliberately not included, consistent with the sensitive-topic handling used elsewhere in this content set. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      sourceDocuments: ["NHS.UK, \"Colic\", https://www.nhs.uk/conditions/colic/", "NICE NG143, \"Fever in under 5s: assessment and initial management\", https://www.nice.org.uk/guidance/ng143/chapter/recommendations", "NICE NG194, \"Postnatal care\" - signs and symptoms of serious illness in babies, https://www.nice.org.uk/guidance/ng194/chapter/recommendations", "American Academy of Pediatrics HealthyChildren.org, \"Crying Baby - Before 3 Months Old\", https://www.healthychildren.org/English/tips-tools/Symptom-Checker/Pages/symptomviewer.aspx?symptom=Crying+Baby+-+Before+3+Months+Old"],
+      contentNotice: "Safety-first UAT adaptation for infants younger than 12 weeks. It combines published colic advice with NICE infant fever/serious-illness red flags and AAP caregiver-safety guidance. The source's UK-specific service routes are excluded; the exact non-emergency Qatar pediatric destination and safeguarding workflow remain GOVERNANCE_REQUIRED. Not licensed Schmitt-Thompson (STCC) content. Requires Qatar clinical-governance validation before any nurse UAT and is prohibited from production use."
     })
   },
 
@@ -249,7 +284,7 @@ export const batch23Protocols: ProtocolInput[] = [
   {
     id: "oscg-crying-3-months-and-older",
     titleEn: "Crying - 3 Months and Older",
-    clinicalDefinitionEn: "Persistent excessive crying assessment in infants past the typical colic age, decomposed from NHS.UK's published colic guidance.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only assessment for unexplained crying from 3 months onward; the cited colic source does not establish this age range, so illness, injury and safeguarding must be assessed in person.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "pediatric",
@@ -265,7 +300,8 @@ export const batch23Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-crying3mplus-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "How old is the child?" },
       { id: "oscg-crying3mplus-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long has the crying pattern lasted?" },
-      { id: "oscg-crying3mplus-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any fever, pulling at ears, arching the back, or other new symptoms?" }
+      { id: "oscg-crying3mplus-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any fever, pulling at ears, arching the back, or other new symptoms?" },
+      { id: "oscg-crying3mplus-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; are feeding, urine, breathing, colour and alertness normal; and is there vomiting, rash, pain, injury, caregiver overwhelm or risk anyone may hurt the child?" }
     ],
     questions: [
       {
@@ -292,34 +328,34 @@ export const batch23Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["still crying a lot past colic age", "crying with fever or ear pulling"],
         careAdviceIds: ["oscg-crying3mplus-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
       {
         id: "oscg-crying3mplus-q2-selfcare",
         acuityOrder: 3,
-        severity: "Self-care",
+        severity: "Urgent",
         questionTextEn: "Is this a brief, mild fussy period in an otherwise well child with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Brief, mild fussiness without other symptoms in an older infant is often manageable at home.",
         redFlag: false,
         keywords: ["brief mild fussiness older baby"],
         careAdviceIds: ["oscg-crying3mplus-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-crying3mplus-emergency-advice", titleEn: "Emergency precautions for an abnormal cry", instructionTextEn: "Arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["lethargy worsens", "feeding stops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-crying3mplus-urgent-advice", titleEn: "Urgent review for persistent crying past colic age", instructionTextEn: "Arrange a prompt GP or NHS 111-equivalent review to look for another cause, since colic typically resolves by 3-4 months.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fever develops", "new symptoms appear"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-crying3mplus-selfcare-advice", titleEn: "Home comfort measures for a fussy older infant", instructionTextEn: "Hold and comfort the child, check for common causes like hunger, a wet diaper, or tiredness, and try gentle rocking or soft background noise.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["crying pattern changes or worsens", "fever or other symptoms develop"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-crying3mplus-emergency-advice", titleEn: "Emergency precautions for an abnormal cry", instructionTextEn: "Call Qatar 999 for an ambulance now and do not self-drive. Keep the child with a safe responsible adult and follow the call handler's instructions; do not give medicine, food, or drink to a child with reduced responsiveness or breathing difficulty.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["lethargy worsens", "feeding stops"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-crying3mplus-urgent-advice", titleEn: "Urgent review for persistent crying past colic age", instructionTextEn: "Arrange prompt clinical review to look for another cause, since colic typically resolves by 3-4 months.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fever develops", "new symptoms appear"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-crying3mplus-selfcare-advice", titleEn: "Pediatric assessment for unexplained crying", instructionTextEn: "Arrange prompt in-person pediatric assessment. If overwhelmed, place the child safely in an age-appropriate cot, step away briefly and ask a safe adult for help. Never shake or hurt the child; call Qatar 999 for immediate danger or severe illness.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["crying or behaviour changes", "fever, feeding, urine, breathing, colour or alertness changes"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2022-04-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Pediatric" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["NHS.UK, \"Colic\" (cry-quality red flag, generalized past the typical colic age), https://www.nhs.uk/conditions/colic/ (page last reviewed 26 April 2022)"],
-      contentNotice: "Generalizes the same NHS.UK colic guidance already used for Crying - Before 3 Months Old, applied to persistent/new crying past the age when colic typically resolves - a documented generalization since the source's own scope is colic specifically. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Source-only age-generalization with no generated IDs. Exact age-specific pediatric, injury and safeguarding pathways remain GOVERNANCE_REQUIRED."
     })
   },
 
@@ -329,8 +365,8 @@ export const batch23Protocols: ProtocolInput[] = [
   {
     id: "oscg-eating-disorders",
     titleEn: "Eating Disorders Symptoms and Questions",
-    clinicalDefinitionEn: "Eating disorder symptom assessment decomposed from NHS.UK's published eating disorders guidance.",
-    ageMin: 0,
+    clinicalDefinitionEn: "Safety-first assessment of possible eating-disorder symptoms in adolescents and adults, including acute medical instability, suicide or self-harm risk, pregnancy, safeguarding, and need for confidential in-person assessment. This protocol does not diagnose an eating disorder.",
+    ageMin: 10,
     mode: "after-hours",
     patientGroup: "mixed",
     acuity: 4,
@@ -341,20 +377,22 @@ export const batch23Protocols: ProtocolInput[] = [
       { phrase: "making myself sick after eating", weight: 100 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-eatingdisorders-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What eating patterns or behaviors are of concern?" },
-      { id: "oscg-eatingdisorders-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "How long has this been happening?" },
-      { id: "oscg-eatingdisorders-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any fainting, chest symptoms, or extreme weight change?" }
+      { id: "oscg-eatingdisorders-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "When safe and appropriate, speak privately with the patient. What restriction, binge eating, vomiting, laxative or diuretic use, water loading, excessive exercise, weight change, or reduced intake is occurring, and for how long?" },
+      { id: "oscg-eatingdisorders-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Is there fainting, inability to stand, chest pain, severe or irregular palpitations, breathing difficulty, confusion, seizure, severe weakness, very little urine, inability to keep fluids down, blood in vomit, or severe abdominal pain?" },
+      { id: "oscg-eatingdisorders-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is there current suicidal intent, a suicide plan, recent self-harm, inability to stay safe, or an immediate threat from another person?" },
+      { id: "oscg-eatingdisorders-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "Record age, pregnancy or possible pregnancy, diabetes or other illness, medicines, recent purging, fluid intake and urine output, and any known abnormal pulse, blood pressure, glucose, or electrolytes." },
+      { id: "oscg-eatingdisorders-iaq5", sequence: 5, responseType: "YES_NO", promptTextEn: "Does the patient feel safe with the caregiver or person present, and can they speak freely? Consider coercion, forced eating or restriction, abuse, neglect, and safeguarding without confronting a suspected unsafe person." }
     ],
     questions: [
       {
         id: "oscg-eatingdisorders-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Is there fainting or feeling faint, a racing heart, severe dizziness, tingling/numbness or poor circulation in the limbs, or an extremely high or low weight for age/height?",
+        questionTextEn: "Is there collapse or fainting, inability to stand, chest pain, severe or irregular palpitations, breathing difficulty, confusion, seizure, severe weakness, severe dehydration or minimal urine, inability to keep fluids down, blood in vomit, severe abdominal pain, known severe electrolyte or glucose abnormality, current suicidal intent or plan, recent serious self-harm, inability to stay safe, or immediate danger from another person?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
-        rationaleEn: "NHS.UK eating disorders guidance identifies these as concerning physical warning signs that need immediate medical attention - severe eating disorders can cause life-threatening cardiac and electrolyte complications.",
+        rationaleEn: "Eating disorders can cause life-threatening dehydration, electrolyte disturbance, hypoglycaemia, cardiac instability, organ failure, and psychiatric crisis. NICE recommends acute medical care for severe dehydration, electrolyte imbalance, malnutrition, or incipient organ failure; immediate suicide, self-harm, or safeguarding danger also requires emergency action.",
         redFlag: true,
-        keywords: ["fainting with eating disorder", "heart racing with eating disorder", "extreme weight loss"],
+        keywords: ["fainting with eating disorder", "irregular heartbeat with eating disorder", "severe dehydration", "vomiting blood", "suicidal with eating disorder", "unsafe caregiver"],
         careAdviceIds: ["oscg-eatingdisorders-emergency-advice"],
         telemedicineEligible: false,
         dispositionLevel: 100,
@@ -364,25 +402,29 @@ export const batch23Protocols: ProtocolInput[] = [
         id: "oscg-eatingdisorders-q1-urgent",
         acuityOrder: 2,
         severity: "Urgent",
-        questionTextEn: "Is there a pattern of restrictive eating, making oneself sick after eating, laxative misuse, excessive exercise, or withdrawing from social situations involving food, without the emergency features above?",
+        questionTextEn: "Without an emergency feature, is there suspected restriction, binge eating, self-induced vomiting, laxative or diuretic misuse, water loading, excessive exercise, rapid or concerning weight change, growth or puberty concern, pregnancy, or coercion or safeguarding concern?",
         dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK guidance recommends contacting a GP as soon as possible for these behavioral patterns.",
+        rationaleEn: "A suspected eating disorder requires prompt in-person medical and mental-health assessment; BMI, weight, or duration alone must not determine access to treatment. Adolescents need developmentally appropriate privacy and safeguarding, and pregnancy requires coordinated obstetric and eating-disorder care. The exact Qatar service and timeframe are governance-required.",
         redFlag: false,
         keywords: ["restrictive eating pattern", "making myself sick after eating", "excessive exercise and eating concerns"],
         careAdviceIds: ["oscg-eatingdisorders-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-eatingdisorders-emergency-advice", titleEn: "Emergency eating-disorder complication precautions", instructionTextEn: "Arrange emergency transport immediately - these physical symptoms can indicate a serious, life-threatening complication.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening dizziness or fainting", "chest symptoms develop"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-eatingdisorders-urgent-advice", titleEn: "Getting help for a suspected eating disorder", instructionTextEn: "Contact a GP as soon as possible - they will assess eating habits, feelings, and overall health, and can refer to specialist support. With treatment, most people recover from an eating disorder. If supporting someone else, encourage them to see a GP and offer to go with them.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["physical symptoms develop", "the behavior pattern worsens"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" }
+      { id: "oscg-eatingdisorders-emergency-advice", titleEn: "Emergency eating-disorder or safety crisis", instructionTextEn: "Call Qatar 999 now for collapse, serious physical symptoms, or immediate suicide, self-harm, or violence risk. Do not allow self-driving. Keep the patient with a safe, trusted person, remove immediate means of harm only if safe, and follow the 999 call-handler's instructions. Do not attempt rapid feeding, forced feeding, electrolyte replacement, or large fluid intake outside a clinician-supervised plan because refeeding and electrolyte shifts can be dangerous.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["collapse, confusion, seizure, chest pain, severe palpitations, breathing difficulty, or reduced urine", "suicidal action, escalating self-harm, or immediate danger"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-eatingdisorders-urgent-advice", titleEn: "Confidential in-person eating-disorder assessment", instructionTextEn: "Use the Qatar governance-approved in-person medical and mental-health pathway; the exact non-emergency service and timeframe are not defined by this UAT protocol. Arrange physical observations, hydration and electrolyte assessment, glucose when indicated, ECG risk assessment, mental-health and suicide screening, pregnancy care where relevant, and safeguarding review. Offer the adolescent or adult a private conversation while observing local consent and safeguarding policy. Do not prescribe a home refeeding, purging-withdrawal, fluid, electrolyte, or weight-restoration plan by telephone.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["fainting, chest pain, palpitations, confusion, severe weakness, vomiting blood, inability to drink, or reduced urine", "suicidal thoughts, self-harm, coercion, abuse, or inability to remain safe"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2024-01-23", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"Eating disorders\", https://www.nhs.uk/conditions/eating-disorders/ (page last reviewed 23 January 2024)"],
-      contentNotice: "Decomposed from NHS.UK's published eating disorders guidance (Crown copyright, reused under the Open Government Licence). The source's UK-specific Beat helpline number is deliberately NOT included, consistent with the sensitive-topic handling already used for Suicide Concerns/Domestic Violence/Bullying - the host organization should connect callers to its own local eating-disorder support service. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      sourceDocuments: [
+        "NHS.UK, \"Eating disorders\", https://www.nhs.uk/conditions/eating-disorders/ (page last reviewed 23 January 2024)",
+        "NICE NG69, \"Eating disorders: recognition and treatment\", https://www.nice.org.uk/guidance/ng69/chapter/recommendations (accessed 25 July 2026)",
+        "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (999 ambulance access; accessed 25 July 2026)"
+      ],
+      contentNotice: "UAT-only safety synthesis for adolescent and adult eating-disorder presentations. It adds medical-instability, suicide/self-harm, pregnancy, privacy, coercion, and safeguarding controls and deliberately provides no telephone refeeding plan. Qatar non-emergency medical, mental-health, consent, confidentiality, and safeguarding routes require local governance approval. Not licensed Schmitt-Thompson (STCC) content. Requires Qatar clinical governance validation before any production use."
     })
   },
 
@@ -392,10 +434,10 @@ export const batch23Protocols: ProtocolInput[] = [
   {
     id: "oscg-icd-and-pacemaker-symptoms",
     titleEn: "ICD and Pacemaker Symptoms and Questions",
-    clinicalDefinitionEn: "Pacemaker/ICD (implantable cardioverter-defibrillator) symptom assessment decomposed from NHS.UK's published pacemaker implantation guidance.",
-    ageMin: 0,
+    clinicalDefinitionEn: "Adult safety assessment for symptoms associated with an implanted pacemaker or implantable cardioverter-defibrillator (ICD), including shock events, arrhythmia symptoms, and implant-site complications.",
+    ageMin: 18,
     mode: "after-hours",
-    patientGroup: "mixed",
+    patientGroup: "adult",
     acuity: 4,
     keywords: [
       { phrase: "pacemaker symptoms", weight: 100 },
@@ -406,18 +448,20 @@ export const batch23Protocols: ProtocolInput[] = [
       { phrase: "shocked me a couple times", weight: 100 }
     ],
     initialAssessmentQuestions: [
-      { id: "oscg-icdpacemaker-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "When was the device implanted or last checked?" },
-      { id: "oscg-icdpacemaker-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "What symptoms are present?" },
-      { id: "oscg-icdpacemaker-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Did the ICD deliver a shock?" }
+      { id: "oscg-icdpacemaker-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "Is this a pacemaker, ICD, or other implanted cardiac device, and when and where was it implanted or last checked? Use the device card if available without delaying care." },
+      { id: "oscg-icdpacemaker-iaq2", sequence: 2, responseType: "OPEN_TEXT", promptTextEn: "Did the device deliver a shock? Record how many shocks, when they occurred, whether shocks are continuing, and symptoms before and after each shock." },
+      { id: "oscg-icdpacemaker-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is there collapse or near-collapse, chest pain, breathing difficulty, palpitations, severe dizziness, confusion, or persistent weakness now?" },
+      { id: "oscg-icdpacemaker-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "Is the implant site newly red, hot, swollen, open, draining blood, pus, or clear fluid, or associated with fever or chills?" },
+      { id: "oscg-icdpacemaker-iaq5", sequence: 5, responseType: "YES_NO", promptTextEn: "Has anyone placed a magnet over the device, attempted to reprogram it, or manipulated the generator or leads? Do not do so." }
     ],
     questions: [
       {
         id: "oscg-icdpacemaker-q0-emergency",
         acuityOrder: 1,
         severity: "Emergency",
-        questionTextEn: "Is there severe difficulty breathing, chest tightness or heaviness, pain spreading to the arms/back/neck/jaw, severe pale/blue/grey skin, sudden confusion, or did the ICD deliver a shock (especially more than one)?",
+        questionTextEn: "Is there collapse or near-collapse, chest pain, severe breathing difficulty, sustained or distressing palpitations, severe dizziness, confusion, pale/blue/grey skin, a shock with ongoing symptoms, more than one ICD shock, or continuing shocks?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
-        rationaleEn: "NHS.UK pacemaker guidance lists these as call-999/A&E criteria; an ICD shock (especially repeated shocks) always needs emergency evaluation to check the heart rhythm and device function.",
+        rationaleEn: "These features may represent an unstable arrhythmia, cardiac event, device problem, or electrical storm. Repeated ICD shocks or any shock with ongoing symptoms require immediate emergency assessment.",
         redFlag: true,
         keywords: ["icd shocked me multiple times", "chest tightness with pacemaker", "difficulty breathing with pacemaker"],
         careAdviceIds: ["oscg-icdpacemaker-emergency-advice"],
@@ -429,13 +473,13 @@ export const batch23Protocols: ProtocolInput[] = [
         id: "oscg-icdpacemaker-q1-urgent",
         acuityOrder: 2,
         severity: "Urgent",
-        questionTextEn: "Is the wound more swollen, painful, or red, is there blood, pus, or clear fluid leaking from the wound, is there a fever or chills, or have prior symptoms returned or worsened?",
+        questionTextEn: "If no emergency feature is present, was there one ICD shock followed by full recovery, are palpitations, dizziness, breathlessness, or prior symptoms recurring, or is the implant site red, hot, swollen, painful, open, or draining, with or without fever or chills?",
         dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK guidance recommends contacting the pacemaker clinic or NHS 111 for these wound or symptom-recurrence concerns.",
+        rationaleEn: "A single ICD shock still requires prompt device-team review, and recurrent symptoms or implant-site infection may require device interrogation, rhythm assessment, or treatment. The exact Qatar device-clinic route and timeframe are governance-required.",
         redFlag: false,
         keywords: ["pacemaker wound infected", "pacemaker site leaking fluid"],
         careAdviceIds: ["oscg-icdpacemaker-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
@@ -443,26 +487,31 @@ export const batch23Protocols: ProtocolInput[] = [
         id: "oscg-icdpacemaker-q2-selfcare",
         acuityOrder: 3,
         severity: "Self-care",
-        questionTextEn: "Is this normal, expected post-implant recovery (mild soreness, fatigue) with none of the features above?",
+        questionTextEn: "Is this only a non-urgent device question with no shock, cardiac symptom, wound change, fever, or other feature above?",
         dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "NHS.UK guidance describes initial fatigue and chest soreness as expected, with full recovery over weeks to months.",
+        rationaleEn: "Device-specific restrictions and expected recovery depend on device type, indication, implant date, manufacturer, and implanting team's instructions; telephone triage should defer to the governance-approved device service.",
         redFlag: false,
         keywords: ["normal pacemaker recovery"],
-        careAdviceIds: ["oscg-icdpacemaker-selfcare-advice"],
-        telemedicineEligible: true,
+        careAdviceIds: ["oscg-icdpacemaker-routine-advice"],
+        telemedicineEligible: false,
         dispositionLevel: 15,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-icdpacemaker-emergency-advice", titleEn: "Emergency pacemaker/ICD precautions", instructionTextEn: "Arrange emergency transport immediately - do not drive yourself.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["another shock occurs", "worsening breathing"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-icdpacemaker-urgent-advice", titleEn: "Urgent pacemaker wound/symptom review", instructionTextEn: "Contact the pacemaker clinic or arrange same-day medical review for these signs.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["wound worsens", "fever develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-icdpacemaker-selfcare-advice", titleEn: "Home care during normal pacemaker recovery", instructionTextEn: "Keep the wound area clean and dry, do gentle shoulder exercises as directed by the care team, avoid driving for at least a week, and avoid heavy lifting, strenuous activity, or raising the elbow above shoulder height for 4-6 weeks.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["wound changes", "new symptoms develop"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-icdpacemaker-emergency-advice", titleEn: "Emergency ICD or pacemaker precautions", instructionTextEn: "Call Qatar 999 now. Sit or lie in a safe place, keep another person nearby if possible, and do not drive. Do not place a magnet over the device, attempt programming, manipulate the generator or leads, or touch the patient during an active shock. Follow the 999 call-handler's instructions; begin resuscitation if directed if the patient becomes unresponsive and is not breathing normally.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["another shock, collapse, chest pain, severe palpitations, or worsening breathing", "unresponsiveness or abnormal breathing"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-icdpacemaker-urgent-advice", titleEn: "Prompt device-clinic or in-person review", instructionTextEn: "Use the Qatar governance-approved device-clinic or in-person pathway; the exact service and timeframe are not defined by this UAT protocol. Keep the device identification card and shock details available. Do not drive after a shock or while symptomatic, and do not apply magnets or manipulate the device. Keep an affected implant wound clean and dry without squeezing or probing it.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["another shock, fainting, chest pain, breathing difficulty, sustained palpitations, or severe dizziness", "spreading redness, wound opening or drainage, fever, or chills"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscg-icdpacemaker-routine-advice", titleEn: "Governance-approved device advice", instructionTextEn: "Use the Qatar governance-approved device service for individualized advice. Follow the implanting team's written instructions for activity, wound care, driving, medicines, electromagnetic exposure, and follow-up; this UAT protocol does not set universal time limits.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["shock, fainting, chest pain, breathing difficulty, palpitations, fever, or wound change"], displayOrder: 3, adviceCategory: "NOTE_TO_TRIAGER" }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2026-03-30", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["NHS.UK, \"Pacemaker implantation\", https://www.nhs.uk/conditions/pacemaker-implantation/ (page last reviewed 30 March 2026)"],
-      contentNotice: "Decomposed from NHS.UK's published pacemaker implantation guidance (Crown copyright, reused under the Open Government Licence), extended to cover ICD-specific shock events using standard cardiology knowledge (an ICD shock always warrants evaluation). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      sourceDocuments: [
+        "NHS.UK, \"Pacemaker implantation\", https://www.nhs.uk/conditions/pacemaker-implantation/ (page last reviewed 30 March 2026)",
+        "Mid and South Essex NHS Foundation Trust, \"Pacemaker and ICD patients\", https://www.mse.nhs.uk/pacemaker-and-icd-patients/ (accessed 25 July 2026)",
+        "American Heart Association, \"Living With Your Implantable Cardioverter Defibrillator (ICD)\", https://www.heart.org/en/health-topics/arrhythmia/prevention--treatment-of-arrhythmia/living-with-your-implantable-cardioverter-defibrillator-icd (accessed 25 July 2026)",
+        "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (999 ambulance access; accessed 25 July 2026)"
+      ],
+      contentNotice: "UAT-only adult safety synthesis for pacemaker and ICD symptoms. Repeated shocks, a shock with ongoing symptoms, unstable cardiac features, and device-site infection are distinguished, while magnets, device manipulation, self-driving, and universal recovery restrictions are avoided. The exact Qatar device-clinic route and non-emergency timeframe require local governance approval. Not licensed Schmitt-Thompson (STCC) content. Requires Qatar clinical governance validation before any production use."
     })
   },
 
@@ -472,7 +521,7 @@ export const batch23Protocols: ProtocolInput[] = [
   {
     id: "oscg-marijuana-use-and-problems",
     titleEn: "Marijuana Use and Problems",
-    clinicalDefinitionEn: "Marijuana (cannabis) use assessment based on standard, non-proprietary substance-use knowledge.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only toxicology and safety pathway for suspected cannabis exposure, including children, pregnancy, co-ingestion, mental-health crisis and safeguarding.",
     ageMin: 12,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -488,7 +537,8 @@ export const batch23Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-marijuanause-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What was used, how much, and when?" },
       { id: "oscg-marijuanause-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Any chest pain, severe anxiety/panic, or confusion?" },
-      { id: "oscg-marijuanause-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Was anything else taken (alcohol, other drugs)?" }
+      { id: "oscg-marijuanause-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Was anything else taken (alcohol, other drugs)?" },
+      { id: "oscg-marijuanause-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; is the patient pregnant; what product/amount/time/route; and are there chest symptoms, severe anxiety/psychosis, vomiting, drowsiness, injury, self-harm or safeguarding concerns?" }
     ],
     questions: [
       {
@@ -515,34 +565,34 @@ export const batch23Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["anxious and paranoid from marijuana", "worried about marijuana use pattern"],
         careAdviceIds: ["oscg-marijuanause-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
       {
         id: "oscg-marijuanause-q2-selfcare",
         acuityOrder: 3,
-        severity: "Self-care",
+        severity: "Urgent",
         questionTextEn: "Is this a mild, self-limiting reaction (drowsiness, mild dizziness) with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Mild intoxication effects typically resolve with rest and time.",
         redFlag: false,
         keywords: ["mild marijuana intoxication"],
         careAdviceIds: ["oscg-marijuanause-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-marijuanause-emergency-advice", titleEn: "Emergency precautions", instructionTextEn: "Arrange emergency transport immediately, especially if other substances may be involved.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening confusion", "worsening chest symptoms"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-marijuanause-emergency-advice", titleEn: "Emergency precautions", instructionTextEn: "Call Qatar 999 for an ambulance now, especially if other substances may be involved, and do not self-drive. Do not induce vomiting or give food, drink, or medicine unless directed by the emergency team.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening confusion", "worsening chest symptoms"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-marijuanause-urgent-advice", titleEn: "Support for anxiety reaction or concerning use pattern", instructionTextEn: "Move to a calm, quiet, familiar space with reassurance until symptoms settle. Connect the caller with a substance-use support service if use is becoming frequent or problematic.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["symptoms worsen", "physical symptoms develop"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
-      { id: "oscg-marijuanause-selfcare-advice", titleEn: "Home monitoring for mild intoxication", instructionTextEn: "Rest in a safe place, stay hydrated, and avoid driving or operating machinery until fully clear-headed.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["symptoms worsen", "vomiting or chest symptoms develop"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-marijuanause-selfcare-advice", titleEn: "In-person toxicology assessment", instructionTextEn: "Keep the patient with a safe sober adult, do not drive, induce vomiting or give unverified remedies, and arrange prompt in-person Qatar assessment. Preserve packaging if safe; do not delay emergency care.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["drowsiness, agitation, psychosis, vomiting or chest symptoms", "self-harm or immediate safety concern"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["Standard, non-proprietary substance-use knowledge (acute cannabis intoxication/panic reaction management, cannabinoid hyperemesis recognition) - not a single-source quote"],
-      contentNotice: "This protocol is based on widely-taught, non-proprietary substance-use knowledge. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use, and awareness that cannabis legal status varies by jurisdiction (illegal in Qatar) - this content addresses medical triage only, not legal guidance."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Source-only toxicology synthesis with no generated IDs. Qatar poison-service, pediatric, pregnancy, mental-health, confidentiality and safeguarding routes remain GOVERNANCE_REQUIRED; no legal advice is provided."
     })
   },
 
@@ -552,7 +602,7 @@ export const batch23Protocols: ProtocolInput[] = [
   {
     id: "oscg-hallucinogenic-mushrooms-use-and-problems",
     titleEn: "Hallucinogenic Mushrooms - Use and Problems",
-    clinicalDefinitionEn: "Hallucinogenic mushroom ('magic mushroom') use assessment based on standard, non-proprietary toxicology/substance-use knowledge.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only toxicology pathway for known or suspected mushroom ingestion; wild mushroom toxicity cannot be distinguished from hallucinogenic exposure remotely.",
     ageMin: 12,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -566,7 +616,8 @@ export const batch23Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-hallucmushrooms-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What was taken, how much, and when?" },
       { id: "oscg-hallucmushrooms-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Could this have been a wild-foraged (unidentified) mushroom rather than a known hallucinogenic type?" },
-      { id: "oscg-hallucmushrooms-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any severe panic, injury risk, or physical symptoms (vomiting, chest pain)?" }
+      { id: "oscg-hallucmushrooms-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any severe panic, injury risk, or physical symptoms (vomiting, chest pain)?" },
+      { id: "oscg-hallucmushrooms-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; is the patient pregnant; was the mushroom wild/unknown; what amount/time; what co-ingestants; and are there confusion, drowsiness, seizures, self-harm or safeguarding concerns?" }
     ],
     questions: [
       {
@@ -593,34 +644,34 @@ export const batch23Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["bad trip from mushrooms", "severe panic from mushrooms"],
         careAdviceIds: ["oscg-hallucmushrooms-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
       {
         id: "oscg-hallucmushrooms-q2-selfcare",
         acuityOrder: 3,
-        severity: "Self-care",
+        severity: "Urgent",
         questionTextEn: "Is this a mild, manageable reaction to a known hallucinogenic mushroom with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Mild hallucinogenic effects in a safe environment often resolve on their own over hours.",
         redFlag: false,
         keywords: ["mild reaction to mushrooms"],
         careAdviceIds: ["oscg-hallucmushrooms-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-hallucmushrooms-emergency-advice", titleEn: "Emergency mushroom poisoning/complication precautions", instructionTextEn: "Arrange emergency transport immediately. If possible, keep a sample or photo of the mushroom for identification - this can be critical if it was wild-foraged.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening vomiting", "seizure or unresponsiveness"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-hallucmushrooms-emergency-advice", titleEn: "Emergency mushroom poisoning/complication precautions", instructionTextEn: "Call Qatar 999 for an ambulance now and do not self-drive. Do not induce vomiting or give food, drink, or medicine unless directed by the emergency team. If safe, retain a sample or photo for identification without delaying emergency care.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening vomiting", "seizure or unresponsiveness"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-hallucmushrooms-urgent-advice", titleEn: "Support for a severe psychological reaction", instructionTextEn: "Stay with the person in a calm, quiet, safe space away from hazards, and reassure them the effects will pass. Seek professional support if panic doesn't settle.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["injury risk increases", "physical symptoms develop"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-hallucmushrooms-selfcare-advice", titleEn: "Home monitoring for a mild reaction", instructionTextEn: "Stay in a calm, safe environment with someone present until the effects wear off, usually within several hours.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["panic or physical symptoms develop"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-hallucmushrooms-selfcare-advice", titleEn: "Urgent mushroom-exposure assessment", instructionTextEn: "Keep the patient with a safe sober adult, do not induce vomiting or give food, drink or remedies unless directed, and arrange prompt in-person toxicology assessment. Preserve a sample/photo and packaging only if safe.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["vomiting, pain, confusion, drowsiness or seizure", "panic, unsafe behaviour or self-harm risk"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["Standard, non-proprietary toxicology/substance-use knowledge (wild mushroom poisoning risk, acute hallucinogen reaction management) - not a single-source quote"],
-      contentNotice: "This protocol is based on widely-taught, non-proprietary toxicology and substance-use knowledge. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Source-only toxicology synthesis with no generated IDs. Qatar poison-service, species identification, pediatric, pregnancy, psychiatric and safeguarding rules remain GOVERNANCE_REQUIRED."
     })
   },
 
@@ -630,7 +681,7 @@ export const batch23Protocols: ProtocolInput[] = [
   {
     id: "oscg-substance-use-and-problems",
     titleEn: "Substance Use and Problems",
-    clinicalDefinitionEn: "General substance use concern assessment (not otherwise covered by a specific substance protocol), based on standard, non-proprietary substance-use knowledge.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only catch-all pathway for an unknown or mixed substance exposure, prioritizing airway, overdose, withdrawal, mental-health and safeguarding emergencies.",
     ageMin: 12,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -644,7 +695,8 @@ export const batch23Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-substanceuse-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "What substance was used, how much, and when?" },
       { id: "oscg-substanceuse-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Is the person conscious, breathing normally, and responsive?" },
-      { id: "oscg-substanceuse-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Were multiple substances combined (including alcohol)?" }
+      { id: "oscg-substanceuse-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Were multiple substances combined (including alcohol)?" },
+      { id: "oscg-substanceuse-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; is the patient pregnant; what substance/amount/time/route; and are there abnormal breathing, drowsiness, agitation, seizure, chest symptoms, self-harm, coercion or safeguarding concerns?" }
     ],
     questions: [
       {
@@ -671,19 +723,19 @@ export const batch23Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["pattern of substance use concern", "trying to stop using drugs"],
         careAdviceIds: ["oscg-substanceuse-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-substanceuse-emergency-advice", titleEn: "Emergency overdose/severe reaction precautions", instructionTextEn: "Call for emergency help immediately. If trained, place in the recovery position if breathing, and be ready to perform CPR if not. Try to identify what was taken to inform emergency responders.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["breathing worsens or stops", "no response to stimulation"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-substanceuse-emergency-advice", titleEn: "Emergency overdose/severe reaction precautions", instructionTextEn: "Call Qatar 999 for an ambulance now and do not self-drive. Follow the call handler's instructions for recovery position or CPR. Do not induce vomiting or give food, drink, or medicine. Identify containers or substances for responders only when safe and without delaying care.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["breathing worsens or stops", "no response to stimulation"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-substanceuse-urgent-advice", titleEn: "Support for a substance use concern", instructionTextEn: "Arrange prompt medical review - do not stop some substances abruptly without medical guidance, since withdrawal can be dangerous for certain substances. Connect the caller with your organization's substance use support service.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["withdrawal symptoms develop", "any signs of overdose develop"], displayOrder: 2, adviceCategory: "DISPOSITION" }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["Standard, non-proprietary emergency toxicology and substance-use support knowledge - not a single-source quote"],
-      contentNotice: "This is a general catch-all protocol for substance-use concerns not covered by a more specific protocol (e.g. Alcohol Use and Problems, Opioid Use and Problems, Marijuana Use and Problems, all already in this content set). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Source-only catch-all synthesis with no generated IDs. It must defer to substance-specific pathways when known; Qatar poison-service, withdrawal, mental-health, pregnancy, confidentiality and safeguarding rules remain GOVERNANCE_REQUIRED."
     })
   },
 
@@ -693,7 +745,7 @@ export const batch23Protocols: ProtocolInput[] = [
   {
     id: "oscg-fluid-intake-increased",
     titleEn: "Fluid Intake Increased",
-    clinicalDefinitionEn: "Increased thirst/fluid intake (polydipsia) assessment based on standard, widely-taught medical knowledge linking excessive thirst to diabetes and other underlying conditions.",
+    clinicalDefinitionEn: "Qatar-localized UAT-only adult and pediatric pathway for increased thirst/fluid intake, screening for diabetes/DKA, dehydration, electrolyte disturbance, pregnancy and safeguarding.",
     ageMin: 0,
     mode: "after-hours",
     patientGroup: "mixed",
@@ -707,7 +759,8 @@ export const batch23Protocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscg-fluidintake-iaq1", sequence: 1, responseType: "DURATION", promptTextEn: "How long has the increased thirst lasted?" },
       { id: "oscg-fluidintake-iaq2", sequence: 2, responseType: "YES_NO", promptTextEn: "Any increased urination, weight loss, fatigue, or blurred vision?" },
-      { id: "oscg-fluidintake-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any confusion, rapid breathing, or fruity-smelling breath?" }
+      { id: "oscg-fluidintake-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any confusion, rapid breathing, or fruity-smelling breath?" },
+      { id: "oscg-fluidintake-iaq4", sequence: 4, responseType: "OPEN_TEXT", promptTextEn: "What is the exact age; is the patient pregnant; and are there frequent urination, weight loss, vomiting, abdominal pain, weakness, reduced responsiveness, diabetes, kidney disease, medication change, forced drinking or safeguarding concerns?" }
     ],
     questions: [
       {
@@ -734,34 +787,34 @@ export const batch23Protocols: ProtocolInput[] = [
         redFlag: false,
         keywords: ["increased thirst and urination and weight loss", "new thirst with blurred vision"],
         careAdviceIds: ["oscg-fluidintake-urgent-advice"],
-        telemedicineEligible: true,
+        telemedicineEligible: false,
         dispositionLevel: 70,
         questionOrder: 1
       },
       {
         id: "oscg-fluidintake-q2-selfcare",
         acuityOrder: 3,
-        severity: "Self-care",
+        severity: "Urgent",
         questionTextEn: "Is this mild, explainable increased thirst (hot weather, exercise, salty food) with none of the features above?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+        dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Thirst with an obvious explanation and no other symptoms is usually not concerning.",
         redFlag: false,
         keywords: ["mild explainable thirst"],
         careAdviceIds: ["oscg-fluidintake-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscg-fluidintake-emergency-advice", titleEn: "Emergency diabetic emergency precautions", instructionTextEn: "Arrange emergency transport immediately - these are signs of a serious, potentially life-threatening blood sugar emergency.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening confusion", "worsening breathing"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscg-fluidintake-emergency-advice", titleEn: "Emergency diabetic emergency precautions", instructionTextEn: "Call Qatar 999 for an ambulance now and do not self-drive. Follow the patient's written diabetes emergency plan only if applicable and the patient can safely swallow; do not force fluids, food, insulin, or other medicine while awaiting emergency guidance.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening confusion", "worsening breathing"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-fluidintake-urgent-advice", titleEn: "Urgent review for new increased thirst", instructionTextEn: "Arrange prompt medical review and blood sugar testing - this pattern needs evaluation for diabetes.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["symptoms worsen", "confusion or rapid breathing develops"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-fluidintake-selfcare-advice", titleEn: "Home monitoring for mild, explainable thirst", instructionTextEn: "Stay hydrated as needed; this is usually not concerning if there's an obvious cause and no other symptoms.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["thirst becomes excessive or unexplained", "other symptoms develop"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscg-fluidintake-selfcare-advice", titleEn: "In-person assessment of increased thirst", instructionTextEn: "Arrange prompt in-person assessment through the Qatar UAT pathway. Do not force excessive water intake or restrict fluids without clinical advice; glucose, ketones, hydration, electrolytes, pregnancy and medication causes may need checking.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["vomiting, abdominal pain, rapid breathing, confusion or drowsiness", "increasing thirst, urination, weakness or weight loss"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
     provenance: buildGuidelineProvenance({
       sourceDocuments: ["Standard, widely-taught endocrinology knowledge linking polydipsia to diabetes/diabetic ketoacidosis - not a single-source quote; no single dedicated NHS.UK page covers increased fluid intake as its own presentation"],
-      contentNotice: "This protocol is based on widely-taught, non-proprietary endocrinology knowledge (increased thirst as a diabetes/DKA warning sign). Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+      contentNotice: "UAT DATA ONLY — NOT FOR REAL-PATIENT CARE OR PRODUCTION. Source-only synthesis with no generated IDs. Diabetes/DKA cannot be downgraded; pediatric, pregnancy, electrolyte, medication and safeguarding rules remain GOVERNANCE_REQUIRED."
     })
   }
 ];

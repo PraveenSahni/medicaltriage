@@ -1,0 +1,134 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Demographic variants contain only source-supported differences; identical thresholds are explicitly documented rather than fabricated. Local destination mappings and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1125,
+    "Title": "Cold Exposure (Hypothermia) - Male (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 5,
+    "Definition": [
+      "UAT-only emergency recognition and first-aid pathway for suspected hypothermia after cold exposure in an adult, child, or infant; not approved for real-patient or production use.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "Pending qualified Qatar adult, pediatric, emergency, and environmental-exposure review"
+    },
+    "FirstAid": [
+      "Call Qatar 999 for an ambulance and follow the operator's instructions. If safe, move the patient gently into shelter, insulate them from the cold ground, remove wet clothing without unnecessary movement, and wrap the body and head in dry blankets, clothing, or towels. Stay with the patient and monitor breathing. A fully alert adult or older child who can swallow safely may have a warm non-alcoholic drink; give nothing by mouth to an infant or anyone drowsy, confused, vomiting, or unable to swallow safely. Do not rub or massage the skin or limbs and do not use a hot bath, direct heater, fire, heat lamp, hot water bottle, or heating device directly on the skin. Do not give alcohol. If unresponsive but breathing normally, follow the 999 operator's positioning instructions; if not breathing normally, start age-appropriate CPR as directed. Do not drive the patient to hospital. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2026-07-25",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1125001,
+      "AlgorithmID": 1125,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is the concern limited to one cold, numb, pale, white, or blistered body part without whole-body cold exposure symptoms, confusion, slurred speech, or drowsiness?",
+      "Information": "A localized freezing injury without systemic hypothermia features belongs in the Frostbite pathway.",
+      "GotoGuideline": "Frostbite",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1125002,
+      "AlgorithmID": 1125,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "After cold or wet exposure, is hypothermia suspected because the patient is very cold or has shivering, cold or pale skin, blue or grey colour, slow breathing, slurred speech, confusion, unusual drowsiness, poor coordination, or—if an infant—cold skin, unusual quietness, poor feeding, sleepiness, or floppiness? If uncertain, keep the emergency disposition.",
+      "Information": "NHS.UK identifies suspected hypothermia in adults and children as a medical emergency requiring hospital care and describes infant-specific signs. Qatar HMC directs life-threatening emergencies to 999.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        112501
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 112501,
+      "AlgorithmOrder": 1,
+      "Title": "Suspected hypothermia — call Qatar 999",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 for an ambulance and follow the operator's instructions. If safe, move the patient gently into shelter, insulate them from the cold ground, remove wet clothing without unnecessary movement, and wrap the body and head in dry blankets, clothing, or towels. Stay with the patient and monitor breathing. A fully alert adult or older child who can swallow safely may have a warm non-alcoholic drink; give nothing by mouth to an infant or anyone drowsy, confused, vomiting, or unable to swallow safely. Do not rub or massage the skin or limbs and do not use a hot bath, direct heater, fire, heat lamp, hot water bottle, or heating device directly on the skin. Do not give alcohol. If unresponsive but breathing normally, follow the 999 operator's positioning instructions; if not breathing normally, start age-appropriate CPR as directed. Do not drive the patient to hospital. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening confusion or drowsiness; loss of consciousness."
+      ]
+    }
+  ],
+  "references": [
+    "Hamad Medical Corporation, \"Life-Threatening Medical Emergency\", https://hamad.qa/EN/Emergency/Pages/Life-ThreateningMedicalEmergency.aspx (accessed 25 July 2026)",
+    "Resuscitation Council UK, \"First Aid Guidelines\", 2025, https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/first-aid-guidelines",
+    "NHS.UK, \"Hypothermia\", https://www.nhs.uk/conditions/hypothermia/ (page last reviewed 09 June 2023)"
+  ],
+  "searchwords": [
+    "hypothermia",
+    "very cold body temperature",
+    "shivering uncontrollably",
+    "shivering and confused",
+    "freezing weather",
+    "stuck in the cold",
+    "cold exposure"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the patient's exact age, what cold or wet exposure occurred, and for how long?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 5 source protocol.",
+      "Source": "Cold Exposure (Hypothermia)"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Is the patient fully responsive and breathing normally, without slow, irregular, or gasping breaths?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 5 source protocol.",
+      "Source": "Cold Exposure (Hypothermia)"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is there shivering, cold or pale skin, blue or grey colour, slurred speech, confusion, unusual drowsiness, poor coordination, or—if an infant—cold skin, unusual quietness, poor feeding, sleepiness, or floppiness?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 5 source protocol.",
+      "Source": "Cold Exposure (Hypothermia)"
+    },
+    {
+      "Order": 4,
+      "Category": "TEMPERATURE",
+      "Question": "What is the measured temperature, if a reliable reading is available? Do not delay Qatar 999 or first aid to obtain it.",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 5 source protocol.",
+      "Source": "Cold Exposure (Hypothermia)"
+    },
+    {
+      "Order": 5,
+      "Category": "YES_NO",
+      "Question": "Has the patient been moved safely out of wind, water, or cold and insulated from the ground?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 5 source protocol.",
+      "Source": "Cold Exposure (Hypothermia)"
+    }
+  ]
+}

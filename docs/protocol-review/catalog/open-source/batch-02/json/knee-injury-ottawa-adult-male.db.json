@@ -1,0 +1,240 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source clinical decision-rule content derived from the cited peer-reviewed publications; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Telephone adaptations, local disposition mappings, and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1043,
+    "Title": "Knee Injury (Ottawa Knee Rule) - Male (Adult)",
+    "ContentSet": "IST Open-Source Clinical Decision Rules | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 3,
+    "Definition": [
+      "UAT-only adult acute-knee-trauma pathway describing the Ottawa Knee Rule and routing for an in-person examination; it must not declare the rule negative by telephone.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [
+      "Mild (1-3): Does not interfere with normal activity, movement, concentration, or sleep.",
+      "Moderate (4-7): Interferes with normal activity, movement, concentration, or sleep.",
+      "Severe (8-10): Prevents normal activity or movement, or is described as excruciating."
+    ],
+    "Background": {
+      "KeyPoints": [
+        "The Ottawa Knee Rule guides plain radiography after acute knee trauma in the population in which it was studied. Any one of five findings supports radiography: age 55 years or older, isolated patellar tenderness, fibular-head tenderness, inability to flex to 90 degrees, or inability to bear weight for four steps both immediately after injury and at assessment. Palpation, flexion and observed gait are clinical examinations and cannot be declared negative by telephone. The rule addresses fracture radiography only; it does not exclude ligament, tendon, meniscal, vascular or other injury and is not a pediatric rule."
+      ],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "Stiell IG, Wells GA, Vandemheen K, et al"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 for major deformity, open injury, uncontrolled bleeding, or a cold, pale/blue, numb or weak foot. Keep the limb still, do not straighten or realign it, and do not allow self-driving. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Clinical Decision Rules",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "RESEARCH_REQUIRED - verify against current rule publication and local policy",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Clinical Decision Rules",
+    "Copyright": "Derived from cited peer-reviewed publications. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent in-person assessment",
+      "Video": false,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1043001,
+      "AlgorithmID": 1043,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Is the knee pain or swelling non-traumatic, with no recent twist, blow, fall, or other acute injury?",
+      "Information": "The Ottawa Knee Rule applies to acute knee trauma and must not be applied to non-traumatic knee symptoms.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        104302
+      ]
+    },
+    {
+      "QuestionID": 1043002,
+      "AlgorithmID": 1043,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there an obvious deformity, visible bone, open wound, uncontrolled bleeding, or is the foot/lower leg cold, pale, blue, or numb?",
+      "Information": "Universal emergency rule-out added ahead of the Ottawa Knee Rule itself (not part of the published rule) - signs of neurovascular compromise or open fracture/dislocation require immediate emergency care.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        104301
+      ]
+    },
+    {
+      "QuestionID": 1043003,
+      "AlgorithmID": 1043,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "For the in-person clinician: is the adult patient 55 years or older?",
+      "Information": "Published Ottawa Knee Rule age criterion (Stiell et al., 1995/1996). A positive answer to ANY criterion means imaging is indicated.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        104302
+      ]
+    },
+    {
+      "QuestionID": 1043004,
+      "AlgorithmID": 1043,
+      "DispositionLevel": 70,
+      "QuestionOrder": 2,
+      "Question": "On in-person palpation, is there isolated patellar tenderness with no other bony knee tenderness?",
+      "Information": "Published Ottawa Knee Rule isolated patellar tenderness criterion.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        104302
+      ]
+    },
+    {
+      "QuestionID": 1043005,
+      "AlgorithmID": 1043,
+      "DispositionLevel": 70,
+      "QuestionOrder": 3,
+      "Question": "On in-person palpation, is there fibular-head tenderness?",
+      "Information": "Published Ottawa Knee Rule fibular head tenderness criterion.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        104302
+      ]
+    },
+    {
+      "QuestionID": 1043006,
+      "AlgorithmID": 1043,
+      "DispositionLevel": 70,
+      "QuestionOrder": 4,
+      "Question": "On an in-person examination, is the patient unable to flex the knee to 90 degrees?",
+      "Information": "Published Ottawa Knee Rule flexion criterion.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        104302
+      ]
+    },
+    {
+      "QuestionID": 1043007,
+      "AlgorithmID": 1043,
+      "DispositionLevel": 70,
+      "QuestionOrder": 5,
+      "Question": "Can the patient not bear weight for four steps both immediately after injury and during the in-person assessment, regardless of limping?",
+      "Information": "Published Ottawa Knee Rule weight-bearing criterion.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        104302
+      ]
+    },
+    {
+      "QuestionID": 1043008,
+      "AlgorithmID": 1043,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "If no criterion is reported remotely, has the patient still not had the required in-person palpation, flexion and four-step assessment?",
+      "Information": "A telephone interview cannot complete a validated Ottawa Knee Rule examination or exclude important non-fracture injury. This UAT pathway therefore makes no rule-negative/self-care determination.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        104303
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 104301,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency knee injury precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 for major deformity, open injury, uncontrolled bleeding, or a cold, pale/blue, numb or weak foot. Keep the limb still, do not straighten or realign it, and do not allow self-driving. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening pain; foot turning pale or blue."
+      ]
+    },
+    {
+      "AdviceID": 104302,
+      "AlgorithmOrder": 2,
+      "Title": "Positive or incomplete rule - in-person assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange an in-person examination at a Qatar service able to assess the limb and obtain radiography when indicated. Until assessed, protect the limb, avoid forced movement and use wrapped ice briefly if comfortable. Pregnancy does not change the rule criteria but must be disclosed so the imaging clinician can individualize radiation protection and risk-benefit decisions.",
+        "Call Back If: increasing pain; new numbness; color change."
+      ]
+    },
+    {
+      "AdviceID": 104303,
+      "AlgorithmOrder": 3,
+      "Title": "Telephone assessment cannot make the rule negative",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Arrange in-person palpation, knee flexion and observed four-step weight bearing. A negative fracture rule does not diagnose a sprain or exclude ligament, tendon or meniscal injury. The exact non-emergency Qatar destination and analgesia advice are GOVERNANCE_REQUIRED.",
+        "Call Back If: pain worsens; new inability to bear weight; numbness or color change develops."
+      ]
+    }
+  ],
+  "references": [
+    "Stiell IG, Wells GA, Vandemheen K, et al. Derivation of a decision rule for the use of radiography in acute knee injuries. Ann Emerg Med. 1995;26(4):405-413.",
+    "Stiell IG, Greenberg GH, Wells GA, et al. Prospective validation of a decision rule for the use of radiography in acute knee injuries. JAMA. 1996;275(8):611-615."
+  ],
+  "searchwords": [
+    "knee injury",
+    "twisted knee",
+    "knee pain after injury",
+    "hurt my knee"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "DURATION",
+      "Question": "When did the injury happen?",
+      "Rationale": "Source-protocol intake question retained from the runtime Batch 2 implementation.",
+      "Source": "Knee Injury (Ottawa Knee Rule)"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Did you hear or feel a pop or snap at the time of injury?",
+      "Rationale": "Source-protocol intake question retained from the runtime Batch 2 implementation.",
+      "Source": "Knee Injury (Ottawa Knee Rule)"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "How did the injury happen?",
+      "Rationale": "Source-protocol intake question retained from the runtime Batch 2 implementation.",
+      "Source": "Knee Injury (Ottawa Knee Rule)"
+    },
+    {
+      "Order": 4,
+      "Category": "PAIN_SEVERITY",
+      "Question": "What is the current pain severity from 0 to 10, and how is it affecting normal activity or movement?",
+      "Rationale": "Records pain intensity and functional impact without replacing the named decision rule.",
+      "Source": "IST telephone-triage adaptation"
+    }
+  ]
+}

@@ -1,0 +1,3835 @@
+{
+  "release": {
+    "name": "IST Open-Source Guideline Content - Batch 20 (UAT)",
+    "version": "batch20-applicability-aware-expansion-2026-07-25",
+    "sourceType": "open-source-guideline",
+    "region": "QA",
+    "mode": "after-hours"
+  },
+  "protocols": [
+    {
+      "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female",
+      "titleEn": "Postpartum - Breast Pain and Engorgement - Female (Adult)",
+      "clinicalDefinitionEn": "Breastfeeding-related breast pain/engorgement/mastitis assessment decomposed from NHS.UK's published mastitis guidance. Adult patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 18,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "adult",
+      "acuity": 2,
+      "keywords": [
+        {
+          "phrase": "breast pain breastfeeding",
+          "weight": 100
+        },
+        {
+          "phrase": "engorged breasts",
+          "weight": 90
+        },
+        {
+          "phrase": "think i have mastitis",
+          "weight": 80
+        },
+        {
+          "phrase": "sore red breast breastfeeding",
+          "weight": 70
+        },
+        {
+          "phrase": "think i might have mastitis",
+          "weight": 60
+        },
+        {
+          "phrase": "breasts are so engorged and painful",
+          "weight": 50
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How long has the breast pain/redness lasted?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-iaq-2",
+          "sequence": 2,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Currently breastfeeding?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-iaq-3",
+          "sequence": 3,
+          "responseType": "TEMPERATURE",
+          "promptTextEn": "What is the temperature, if measured?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-q1441002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is the postpartum patient confused, difficult to wake, fainting or collapsing, severely short of breath, blue or grey, having a seizure, unable to keep fluids down and rapidly worsening, or otherwise appearing critically unwell with the breast symptoms?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "Altered responsiveness, collapse, severe breathing difficulty, seizure or rapid systemic deterioration can indicate sepsis or another life-threatening postpartum complication and require emergency assessment.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-breast-pain-and-engorgement-adult-female-advice-144101"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-q1441003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "After emergency features are excluded, is the measured temperature 38 degrees Celsius or higher, is there shaking chills or feeling systemically unwell, is breast redness or swelling spreading rapidly, have symptoms not improved 12-24 hours after home treatment or 48 hours after starting antibiotics, or is this mastitis in someone not breastfeeding?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "Postpartum fever and systemic illness require prompt clinical assessment, and NHS.UK mastitis guidance recommends clinical review when symptoms fail to improve or occur outside breastfeeding.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-breast-pain-and-engorgement-adult-female-advice-144102"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-q1441004",
+          "acuityOrder": 3,
+          "severity": "Self-care",
+          "questionTextEn": "Is this early engorgement or mild mastitis with no fever, systemic illness, rapid spreading redness, or other features above?",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "rationaleEn": "NHS.UK guidance describes continued breastfeeding/expressing, cold compresses, and pain relief as effective first-line self-care.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-breast-pain-and-engorgement-adult-female-advice-144103"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 15,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-advice-144101",
+          "titleEn": "Emergency postpartum systemic illness response",
+          "instructionTextEn": "Call Qatar emergency services on 999 now for confusion, reduced responsiveness, collapse, severe breathing difficulty, seizure or rapid critical deterioration. Tell the call handler that the patient gave birth recently and has breast symptoms. Follow emergency instructions and do not self-drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: responsiveness or breathing worsens; collapse or seizure; rapid deterioration.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-advice-144102",
+          "titleEn": "Urgent mastitis review",
+          "instructionTextEn": "Arrange prompt clinical review; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Antibiotics or further treatment may be needed. Call Back If: fever worsens; redness spreads.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-advice-144103",
+          "titleEn": "Home care for breast engorgement or mild mastitis",
+          "instructionTextEn": "Continue breastfeeding responsively if able, or hand express only enough for comfort if feeding is too painful. Check positioning and attachment, use a cold compress, rest, and avoid deep breast massage, tight clothing, over-expressing, and stopping breastfeeding abruptly. A clinician or pharmacist should confirm any pain medicine is suitable for this patient. Call Back If: not improving after 12-24 hours; fever or spreading redness develops.",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": true
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-redirect-1441001",
+          "questionOrder": 1,
+          "promptTextEn": "Is this a focal pus-filled skin lump or abscess rather than postpartum breast engorgement or mastitis symptoms?",
+          "targetProtocolTitleEn": "Boil (Skin Abscess)",
+          "hintEn": "Resolved from alias: Boil (Skin Abscess)"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now for confusion, reduced responsiveness, collapse, severe breathing difficulty, seizure or rapid critical deterioration. Tell the call handler that the patient gave birth recently and has breast symptoms. Follow emergency instructions and do not self-drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-ref-1",
+          "title": "NHS.UK, \"Mastitis\", https://www.nhs.uk/conditions/mastitis/ (page last reviewed 17 March 2023)",
+          "citationText": "NHS.UK, \"Mastitis\", https://www.nhs.uk/conditions/mastitis/ (page last reviewed 17 March 2023)",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-ref-2",
+          "title": "CDC HEAR HER, \"Urgent Maternal Warning Signs and Symptoms\", https://www.cdc.gov/hearher/maternal-warning-signs/index.html",
+          "citationText": "CDC HEAR HER, \"Urgent Maternal Warning Signs and Symptoms\", https://www.cdc.gov/hearher/maternal-warning-signs/index.html",
+          "referenceType": "public-source",
+          "displayOrder": 2
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-ref-3",
+          "title": "NHS.UK, \"Sepsis\", https://www.nhs.uk/conditions/sepsis/",
+          "citationText": "NHS.UK, \"Sepsis\", https://www.nhs.uk/conditions/sepsis/",
+          "referenceType": "public-source",
+          "displayOrder": 3
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2023-03-17",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Adult | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Breast Pain and Engorgement - Female (Adult), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-breast-pain-and-engorgement-child-female",
+      "titleEn": "Postpartum - Breast Pain and Engorgement - Female (Child)",
+      "clinicalDefinitionEn": "Breastfeeding-related breast pain/engorgement/mastitis assessment decomposed from NHS.UK's published mastitis guidance. Child patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 0,
+      "ageMax": 17,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "pediatric",
+      "acuity": 2,
+      "keywords": [
+        {
+          "phrase": "breast pain breastfeeding",
+          "weight": 100
+        },
+        {
+          "phrase": "engorged breasts",
+          "weight": 90
+        },
+        {
+          "phrase": "think i have mastitis",
+          "weight": 80
+        },
+        {
+          "phrase": "sore red breast breastfeeding",
+          "weight": 70
+        },
+        {
+          "phrase": "think i might have mastitis",
+          "weight": 60
+        },
+        {
+          "phrase": "breasts are so engorged and painful",
+          "weight": 50
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How long has the breast pain/redness lasted?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-iaq-2",
+          "sequence": 2,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Currently breastfeeding?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-iaq-3",
+          "sequence": 3,
+          "responseType": "TEMPERATURE",
+          "promptTextEn": "What is the temperature, if measured?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-iaq-5",
+          "sequence": 5,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-q1442002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is the postpartum patient confused, difficult to wake, fainting or collapsing, severely short of breath, blue or grey, having a seizure, unable to keep fluids down and rapidly worsening, or otherwise appearing critically unwell with the breast symptoms?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "Altered responsiveness, collapse, severe breathing difficulty, seizure or rapid systemic deterioration can indicate sepsis or another life-threatening postpartum complication and require emergency assessment.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-breast-pain-and-engorgement-child-female-advice-144201"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-q1442003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "After emergency features are excluded, is the measured temperature 38 degrees Celsius or higher, is there shaking chills or feeling systemically unwell, is breast redness or swelling spreading rapidly, have symptoms not improved 12-24 hours after home treatment or 48 hours after starting antibiotics, or is this mastitis in someone not breastfeeding?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "Postpartum fever and systemic illness require prompt clinical assessment, and NHS.UK mastitis guidance recommends clinical review when symptoms fail to improve or occur outside breastfeeding.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-breast-pain-and-engorgement-child-female-advice-144202"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-q1442004",
+          "acuityOrder": 3,
+          "severity": "Self-care",
+          "questionTextEn": "Is this early engorgement or mild mastitis with no fever, systemic illness, rapid spreading redness, or other features above?",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "rationaleEn": "NHS.UK guidance describes continued breastfeeding/expressing, cold compresses, and pain relief as effective first-line self-care.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-breast-pain-and-engorgement-child-female-advice-144203"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 15,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-advice-144201",
+          "titleEn": "Emergency postpartum systemic illness response",
+          "instructionTextEn": "Call Qatar emergency services on 999 now for confusion, reduced responsiveness, collapse, severe breathing difficulty, seizure or rapid critical deterioration. Tell the call handler that the patient gave birth recently and has breast symptoms. Follow emergency instructions and do not self-drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: responsiveness or breathing worsens; collapse or seizure; rapid deterioration.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-advice-144202",
+          "titleEn": "Urgent mastitis review",
+          "instructionTextEn": "Arrange prompt clinical review; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Antibiotics or further treatment may be needed. Call Back If: fever worsens; redness spreads.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-advice-144203",
+          "titleEn": "Home care for breast engorgement or mild mastitis",
+          "instructionTextEn": "Continue breastfeeding responsively if able, or hand express only enough for comfort if feeding is too painful. Check positioning and attachment, use a cold compress, rest, and avoid deep breast massage, tight clothing, over-expressing, and stopping breastfeeding abruptly. A clinician or pharmacist should confirm any pain medicine is suitable for this patient. Call Back If: not improving after 12-24 hours; fever or spreading redness develops.",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": true
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-redirect-1442001",
+          "questionOrder": 1,
+          "promptTextEn": "Is this a focal pus-filled skin lump or abscess rather than postpartum breast engorgement or mastitis symptoms?",
+          "targetProtocolTitleEn": "Boil (Skin Abscess)",
+          "hintEn": "Resolved from alias: Boil (Skin Abscess)"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now for confusion, reduced responsiveness, collapse, severe breathing difficulty, seizure or rapid critical deterioration. Tell the call handler that the patient gave birth recently and has breast symptoms. Follow emergency instructions and do not self-drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-ref-1",
+          "title": "NHS.UK, \"Mastitis\", https://www.nhs.uk/conditions/mastitis/ (page last reviewed 17 March 2023)",
+          "citationText": "NHS.UK, \"Mastitis\", https://www.nhs.uk/conditions/mastitis/ (page last reviewed 17 March 2023)",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-ref-2",
+          "title": "CDC HEAR HER, \"Urgent Maternal Warning Signs and Symptoms\", https://www.cdc.gov/hearher/maternal-warning-signs/index.html",
+          "citationText": "CDC HEAR HER, \"Urgent Maternal Warning Signs and Symptoms\", https://www.cdc.gov/hearher/maternal-warning-signs/index.html",
+          "referenceType": "public-source",
+          "displayOrder": 2
+        },
+        {
+          "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-ref-3",
+          "title": "NHS.UK, \"Sepsis\", https://www.nhs.uk/conditions/sepsis/",
+          "citationText": "NHS.UK, \"Sepsis\", https://www.nhs.uk/conditions/sepsis/",
+          "referenceType": "public-source",
+          "displayOrder": 3
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2023-03-17",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Child | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Breast Pain and Engorgement - Female (Child), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-c-section-symptoms-adult-female",
+      "titleEn": "Postpartum - C-section Symptoms - Female (Adult)",
+      "clinicalDefinitionEn": "C-section recovery symptom assessment decomposed from NHS.UK's published C-section recovery guidance. Adult patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 18,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "adult",
+      "acuity": 3,
+      "keywords": [
+        {
+          "phrase": "c section incision",
+          "weight": 100
+        },
+        {
+          "phrase": "csection wound looks infected",
+          "weight": 90
+        },
+        {
+          "phrase": "cesarean scar symptoms",
+          "weight": 80
+        },
+        {
+          "phrase": "c section pain and questions",
+          "weight": 70
+        },
+        {
+          "phrase": "c section incision looks infected",
+          "weight": 60
+        },
+        {
+          "phrase": "incision oozing fluid",
+          "weight": 50
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-c-section-symptoms-adult-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days since the C-section?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-adult-female-iaq-2",
+          "sequence": 2,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Describe how the wound looks.",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-adult-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any fever, heavy bleeding, leg pain, chest pain, or breathing difficulty?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-adult-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-c-section-symptoms-adult-female-q1431002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is there trouble breathing, chest pain, fainting, heavy or gushing vaginal bleeding, confusion, or rapidly worsening severe pain or illness?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "Breathing difficulty, chest pain, fainting, heavy bleeding, confusion, or rapidly worsening illness are urgent maternal warning signs requiring immediate emergency care.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-c-section-symptoms-adult-female-advice-143101"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-adult-female-q1431003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Is the wound increasingly red, painful, swollen, opening, or draining pus or foul-smelling fluid; is there fever, persistent severe incision pain, painful urination, or leaking urine without the emergency features above?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "NHS.UK guidance lists wound infection and urinary symptoms after a C-section as requiring prompt clinical review.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-c-section-symptoms-adult-female-advice-143102"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-adult-female-q1431004",
+          "acuityOrder": 3,
+          "severity": "Self-care",
+          "questionTextEn": "Is this normal, expected C-section recovery with none of the features above?",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "rationaleEn": "NHS.UK guidance describes routine wound care and gradual activity increase as the expected recovery path.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-c-section-symptoms-adult-female-advice-143103"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 15,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-c-section-symptoms-adult-female-advice-143101",
+          "titleEn": "Emergency C-section complication precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler about the recent C-section. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening pain or bleeding; breathing difficulty.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-adult-female-advice-143102",
+          "titleEn": "Urgent C-section complication review",
+          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Call Back If: symptoms worsen; fever develops.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-adult-female-advice-143103",
+          "titleEn": "Home care for normal C-section recovery",
+          "instructionTextEn": "Follow the discharge team's wound-care and activity instructions. Keep the wound clean and dry, use sanitary pads rather than tampons, and increase gentle activity gradually. A clinician or pharmacist should confirm any pain medicine is suitable for this patient, including during breastfeeding. Call Back If: wound becomes red, painful, swollen, opens, or drains fluid; fever, heavy bleeding, chest pain, breathing difficulty, or one-sided leg pain develops.",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "warningSigns": [],
+          "displayOrder": 3,
+          "patientSendable": true
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-c-section-symptoms-adult-female-redirect-1431001",
+          "questionOrder": 1,
+          "promptTextEn": "Is this a skin wound or injury unrelated to a recent C-section?",
+          "targetProtocolTitleEn": "Skin Injury",
+          "hintEn": "Resolved from alias: Skin Injury"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler about the recent C-section. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-c-section-symptoms-adult-female-ref-1",
+          "title": "NHS.UK, \"Caesarean section - Recovery\", https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023)",
+          "citationText": "NHS.UK, \"Caesarean section - Recovery\", https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023)",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2023-01-04",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Adult | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - C-section Symptoms - Female (Adult), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-c-section-symptoms-child-female",
+      "titleEn": "Postpartum - C-section Symptoms - Female (Child)",
+      "clinicalDefinitionEn": "C-section recovery symptom assessment decomposed from NHS.UK's published C-section recovery guidance. Child patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 0,
+      "ageMax": 17,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "pediatric",
+      "acuity": 3,
+      "keywords": [
+        {
+          "phrase": "c section incision",
+          "weight": 100
+        },
+        {
+          "phrase": "csection wound looks infected",
+          "weight": 90
+        },
+        {
+          "phrase": "cesarean scar symptoms",
+          "weight": 80
+        },
+        {
+          "phrase": "c section pain and questions",
+          "weight": 70
+        },
+        {
+          "phrase": "c section incision looks infected",
+          "weight": 60
+        },
+        {
+          "phrase": "incision oozing fluid",
+          "weight": 50
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-c-section-symptoms-child-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days since the C-section?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-child-female-iaq-2",
+          "sequence": 2,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Describe how the wound looks.",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-child-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any fever, heavy bleeding, leg pain, chest pain, or breathing difficulty?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-child-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-child-female-iaq-5",
+          "sequence": 5,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-c-section-symptoms-child-female-q1432002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is there trouble breathing, chest pain, fainting, heavy or gushing vaginal bleeding, confusion, or rapidly worsening severe pain or illness?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "Breathing difficulty, chest pain, fainting, heavy bleeding, confusion, or rapidly worsening illness are urgent maternal warning signs requiring immediate emergency care.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-c-section-symptoms-child-female-advice-143201"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-child-female-q1432003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Is the wound increasingly red, painful, swollen, opening, or draining pus or foul-smelling fluid; is there fever, persistent severe incision pain, painful urination, or leaking urine without the emergency features above?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "NHS.UK guidance lists wound infection and urinary symptoms after a C-section as requiring prompt clinical review.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-c-section-symptoms-child-female-advice-143202"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-child-female-q1432004",
+          "acuityOrder": 3,
+          "severity": "Self-care",
+          "questionTextEn": "Is this normal, expected C-section recovery with none of the features above?",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "rationaleEn": "NHS.UK guidance describes routine wound care and gradual activity increase as the expected recovery path.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-c-section-symptoms-child-female-advice-143203"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 15,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-c-section-symptoms-child-female-advice-143201",
+          "titleEn": "Emergency C-section complication precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler about the recent C-section. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening pain or bleeding; breathing difficulty.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-child-female-advice-143202",
+          "titleEn": "Urgent C-section complication review",
+          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Call Back If: symptoms worsen; fever develops.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-c-section-symptoms-child-female-advice-143203",
+          "titleEn": "Home care for normal C-section recovery",
+          "instructionTextEn": "Follow the discharge team's wound-care and activity instructions. Keep the wound clean and dry, use sanitary pads rather than tampons, and increase gentle activity gradually. A clinician or pharmacist should confirm any pain medicine is suitable for this patient, including during breastfeeding. Call Back If: wound becomes red, painful, swollen, opens, or drains fluid; fever, heavy bleeding, chest pain, breathing difficulty, or one-sided leg pain develops.",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "warningSigns": [],
+          "displayOrder": 3,
+          "patientSendable": true
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-c-section-symptoms-child-female-redirect-1432001",
+          "questionOrder": 1,
+          "promptTextEn": "Is this a skin wound or injury unrelated to a recent C-section?",
+          "targetProtocolTitleEn": "Skin Injury",
+          "hintEn": "Resolved from alias: Skin Injury"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler about the recent C-section. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-c-section-symptoms-child-female-ref-1",
+          "title": "NHS.UK, \"Caesarean section - Recovery\", https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023)",
+          "citationText": "NHS.UK, \"Caesarean section - Recovery\", https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023)",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2023-01-04",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Child | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - C-section Symptoms - Female (Child), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-fever-adult-female",
+      "titleEn": "Postpartum - Fever - Female (Adult)",
+      "clinicalDefinitionEn": "Postpartum fever or suspected infection assessment using published urgent maternal warning signs and C-section wound-infection guidance. Adult patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 18,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "adult",
+      "acuity": 5,
+      "keywords": [
+        {
+          "phrase": "fever after giving birth",
+          "weight": 100
+        },
+        {
+          "phrase": "postpartum fever",
+          "weight": 90
+        },
+        {
+          "phrase": "temperature since having the baby",
+          "weight": 80
+        },
+        {
+          "phrase": "feel feverish after delivery",
+          "weight": 70
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-fever-adult-female-iaq-1",
+          "sequence": 1,
+          "responseType": "TEMPERATURE",
+          "promptTextEn": "What is the temperature?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-fever-adult-female-iaq-2",
+          "sequence": 2,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-fever-adult-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any wound redness, foul-smelling discharge, urinary symptoms, or breast tenderness?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-fever-adult-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-fever-adult-female-q1439002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Along with fever or feeling feverish, is there confusion, trouble breathing or very fast breathing, fainting, cold or clammy skin, or rapidly worsening severe illness?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "These are systemic urgent maternal warning signs compatible with severe infection or sepsis and require immediate emergency care.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-fever-adult-female-advice-143901"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-fever-adult-female-q1439003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Is the measured temperature 38 C or higher, or is there feverishness with foul-smelling vaginal discharge, worsening lower abdominal pain, urinary symptoms, breast redness or pain, or a wound that is red, painful, swollen, opening, or draining fluid, without the emergency features above?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "CDC lists a temperature of 100.4 F (38 C) or higher as an urgent maternal warning sign; focal postpartum infection features also need prompt clinical assessment.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-fever-adult-female-advice-143902"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-fever-adult-female-advice-143901",
+          "titleEn": "Emergency postpartum sepsis precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not let the patient drive. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening confusion; worsening breathing.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-fever-adult-female-advice-143902",
+          "titleEn": "Urgent postpartum fever review",
+          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Call Back If: fever worsens; any new symptoms develop.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-fever-adult-female-redirect-1439001",
+          "questionOrder": 1,
+          "promptTextEn": "Are cough, breathing symptoms, or a positive COVID-19 test the primary concern?",
+          "targetProtocolTitleEn": "COVID-19 - Diagnosed or Suspected",
+          "hintEn": "Resolved from alias: COVID-19 - Diagnosed or Suspected"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not let the patient drive. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-fever-adult-female-ref-1",
+          "title": "NHS.UK, \"Caesarean section - Recovery\" (wound infection warning), https://www.nhs.uk/conditions/caesarean-section/recovery/",
+          "citationText": "NHS.UK, \"Caesarean section - Recovery\" (wound infection warning), https://www.nhs.uk/conditions/caesarean-section/recovery/",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-fever-adult-female-ref-2",
+          "title": "CDC Hear Her urgent maternal warning signs (temperature 100.4 F / 38 C or higher; severe systemic symptoms), https://www.cdc.gov/hearher/",
+          "citationText": "CDC Hear Her urgent maternal warning signs (temperature 100.4 F / 38 C or higher; severe systemic symptoms), https://www.cdc.gov/hearher/",
+          "referenceType": "public-source",
+          "displayOrder": 2
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2023-01-04",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Adult | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Fever - Female (Adult), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-fever-child-female",
+      "titleEn": "Postpartum - Fever - Female (Child)",
+      "clinicalDefinitionEn": "Postpartum fever or suspected infection assessment using published urgent maternal warning signs and C-section wound-infection guidance. Child patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 0,
+      "ageMax": 17,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "pediatric",
+      "acuity": 5,
+      "keywords": [
+        {
+          "phrase": "fever after giving birth",
+          "weight": 100
+        },
+        {
+          "phrase": "postpartum fever",
+          "weight": 90
+        },
+        {
+          "phrase": "temperature since having the baby",
+          "weight": 80
+        },
+        {
+          "phrase": "feel feverish after delivery",
+          "weight": 70
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-fever-child-female-iaq-1",
+          "sequence": 1,
+          "responseType": "TEMPERATURE",
+          "promptTextEn": "What is the temperature?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-fever-child-female-iaq-2",
+          "sequence": 2,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-fever-child-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any wound redness, foul-smelling discharge, urinary symptoms, or breast tenderness?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-fever-child-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-fever-child-female-iaq-5",
+          "sequence": 5,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-fever-child-female-q1440002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Along with fever or feeling feverish, is there confusion, trouble breathing or very fast breathing, fainting, cold or clammy skin, or rapidly worsening severe illness?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "These are systemic urgent maternal warning signs compatible with severe infection or sepsis and require immediate emergency care.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-fever-child-female-advice-144001"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-fever-child-female-q1440003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Is the measured temperature 38 C or higher, or is there feverishness with foul-smelling vaginal discharge, worsening lower abdominal pain, urinary symptoms, breast redness or pain, or a wound that is red, painful, swollen, opening, or draining fluid, without the emergency features above?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "CDC lists a temperature of 100.4 F (38 C) or higher as an urgent maternal warning sign; focal postpartum infection features also need prompt clinical assessment.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-fever-child-female-advice-144002"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-fever-child-female-advice-144001",
+          "titleEn": "Emergency postpartum sepsis precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not let the patient drive. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening confusion; worsening breathing.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-fever-child-female-advice-144002",
+          "titleEn": "Urgent postpartum fever review",
+          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Call Back If: fever worsens; any new symptoms develop.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-fever-child-female-redirect-1440001",
+          "questionOrder": 1,
+          "promptTextEn": "Are cough, breathing symptoms, or a positive COVID-19 test the primary concern?",
+          "targetProtocolTitleEn": "COVID-19 - Diagnosed or Suspected",
+          "hintEn": "Resolved from alias: COVID-19 - Diagnosed or Suspected"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not let the patient drive. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-fever-child-female-ref-1",
+          "title": "NHS.UK, \"Caesarean section - Recovery\" (wound infection warning), https://www.nhs.uk/conditions/caesarean-section/recovery/",
+          "citationText": "NHS.UK, \"Caesarean section - Recovery\" (wound infection warning), https://www.nhs.uk/conditions/caesarean-section/recovery/",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-fever-child-female-ref-2",
+          "title": "CDC Hear Her urgent maternal warning signs (temperature 100.4 F / 38 C or higher; severe systemic symptoms), https://www.cdc.gov/hearher/",
+          "citationText": "CDC Hear Her urgent maternal warning signs (temperature 100.4 F / 38 C or higher; severe systemic symptoms), https://www.cdc.gov/hearher/",
+          "referenceType": "public-source",
+          "displayOrder": 2
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2023-01-04",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Child | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Fever - Female (Child), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-headache-adult-female",
+      "titleEn": "Postpartum - Headache - Female (Adult)",
+      "clinicalDefinitionEn": "Postpartum headache assessment for a person who has given birth within the last year. Pre-eclampsia is especially relevant in the first days or weeks after birth; other pregnancy-related complications can occur later. Adult patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 18,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "adult",
+      "acuity": 5,
+      "keywords": [
+        {
+          "phrase": "headache after giving birth",
+          "weight": 100
+        },
+        {
+          "phrase": "postpartum headache",
+          "weight": 90
+        },
+        {
+          "phrase": "bad headache since having the baby",
+          "weight": 80
+        },
+        {
+          "phrase": "severe headache after delivery",
+          "weight": 70
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-headache-adult-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-headache-adult-female-iaq-2",
+          "sequence": 2,
+          "responseType": "PAIN_SCALE",
+          "promptTextEn": "How severe is the headache, 0-10?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-headache-adult-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any vision changes, swelling, or pain below the ribs?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-headache-adult-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-headache-adult-female-q1425002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is there a severe headache that doesn't go away with simple painkillers, vision problems (blurred vision or flashing lights), pain below the ribs, sudden swelling of the face/hands/feet, feeling very unwell, persistent heartburn unresponsive to medication, or vomiting?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "NHS.UK guidance lists these as pre-eclampsia warning signs that can appear in the days or weeks after birth and always need immediate evaluation.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-headache-adult-female-advice-142501"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-headache-adult-female-q1425003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Is there a new or persistent postpartum headache without the emergency features above?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "A new or persistent headache after birth requires clinical assessment because remote questioning alone cannot exclude a hypertensive, neurological, anaesthetic-related, or infectious cause.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-headache-adult-female-advice-142502"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-headache-adult-female-advice-142501",
+          "titleEn": "Emergency postpartum pre-eclampsia precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening headache; vision changes worsen.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-headache-adult-female-advice-142502",
+          "titleEn": "Prompt postpartum headache review",
+          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Seek emergency help on 999 if the headache becomes severe or vision change, fainting, seizure, breathing difficulty, chest pain, severe upper abdominal pain, or marked swelling develops. Call Back If: headache becomes severe; vision changes or swelling develop.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-headache-adult-female-redirect-1425001",
+          "questionOrder": 1,
+          "promptTextEn": "Is this a non-postpartum headache presentation without recent childbirth?",
+          "targetProtocolTitleEn": "Headache",
+          "hintEn": "Resolved from alias: Headache"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-headache-adult-female-ref-1",
+          "title": "NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset",
+          "citationText": "NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-headache-adult-female-ref-2",
+          "title": "CDC Hear Her, urgent maternal warning signs during pregnancy or within one year after pregnancy, https://www.cdc.gov/hearher/",
+          "citationText": "CDC Hear Her, urgent maternal warning signs during pregnancy or within one year after pregnancy, https://www.cdc.gov/hearher/",
+          "referenceType": "public-source",
+          "displayOrder": 2
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2026-03-23",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Adult | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Headache - Female (Adult), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-headache-child-female",
+      "titleEn": "Postpartum - Headache - Female (Child)",
+      "clinicalDefinitionEn": "Postpartum headache assessment for a person who has given birth within the last year. Pre-eclampsia is especially relevant in the first days or weeks after birth; other pregnancy-related complications can occur later. Child patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 0,
+      "ageMax": 17,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "pediatric",
+      "acuity": 5,
+      "keywords": [
+        {
+          "phrase": "headache after giving birth",
+          "weight": 100
+        },
+        {
+          "phrase": "postpartum headache",
+          "weight": 90
+        },
+        {
+          "phrase": "bad headache since having the baby",
+          "weight": 80
+        },
+        {
+          "phrase": "severe headache after delivery",
+          "weight": 70
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-headache-child-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-headache-child-female-iaq-2",
+          "sequence": 2,
+          "responseType": "PAIN_SCALE",
+          "promptTextEn": "How severe is the headache, 0-10?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-headache-child-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any vision changes, swelling, or pain below the ribs?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-headache-child-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-headache-child-female-iaq-5",
+          "sequence": 5,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-headache-child-female-q1426002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is there a severe headache that doesn't go away with simple painkillers, vision problems (blurred vision or flashing lights), pain below the ribs, sudden swelling of the face/hands/feet, feeling very unwell, persistent heartburn unresponsive to medication, or vomiting?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "NHS.UK guidance lists these as pre-eclampsia warning signs that can appear in the days or weeks after birth and always need immediate evaluation.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-headache-child-female-advice-142601"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-headache-child-female-q1426003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Is there a new or persistent postpartum headache without the emergency features above?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "A new or persistent headache after birth requires clinical assessment because remote questioning alone cannot exclude a hypertensive, neurological, anaesthetic-related, or infectious cause.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-headache-child-female-advice-142602"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-headache-child-female-advice-142601",
+          "titleEn": "Emergency postpartum pre-eclampsia precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening headache; vision changes worsen.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-headache-child-female-advice-142602",
+          "titleEn": "Prompt postpartum headache review",
+          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Seek emergency help on 999 if the headache becomes severe or vision change, fainting, seizure, breathing difficulty, chest pain, severe upper abdominal pain, or marked swelling develops. Call Back If: headache becomes severe; vision changes or swelling develop.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-headache-child-female-redirect-1426001",
+          "questionOrder": 1,
+          "promptTextEn": "Is this a non-postpartum headache presentation without recent childbirth?",
+          "targetProtocolTitleEn": "Headache",
+          "hintEn": "Resolved from alias: Headache"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-headache-child-female-ref-1",
+          "title": "NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset",
+          "citationText": "NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-headache-child-female-ref-2",
+          "title": "CDC Hear Her, urgent maternal warning signs during pregnancy or within one year after pregnancy, https://www.cdc.gov/hearher/",
+          "citationText": "CDC Hear Her, urgent maternal warning signs during pregnancy or within one year after pregnancy, https://www.cdc.gov/hearher/",
+          "referenceType": "public-source",
+          "displayOrder": 2
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2026-03-23",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Child | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Headache - Female (Child), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-high-blood-pressure-adult-female",
+      "titleEn": "Postpartum - High Blood Pressure - Female (Adult)",
+      "clinicalDefinitionEn": "Postpartum high blood pressure assessment after birth; a reported reading must be confirmed and interpreted by a clinician using an approved obstetric blood-pressure pathway. Adult patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 18,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "adult",
+      "acuity": 5,
+      "keywords": [
+        {
+          "phrase": "high blood pressure after birth",
+          "weight": 100
+        },
+        {
+          "phrase": "postpartum high blood pressure",
+          "weight": 90
+        },
+        {
+          "phrase": "blood pressure high since having the baby",
+          "weight": 80
+        },
+        {
+          "phrase": "worried about pre-eclampsia after delivery",
+          "weight": 70
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-high-blood-pressure-adult-female-iaq-1",
+          "sequence": 1,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "What is the blood pressure reading, if measured?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-high-blood-pressure-adult-female-iaq-2",
+          "sequence": 2,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-high-blood-pressure-adult-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any headache, vision changes, or swelling?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-high-blood-pressure-adult-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-high-blood-pressure-adult-female-q1427002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Along with high blood pressure, is there a severe headache, vision problems, pain below the ribs, sudden swelling of the face/hands/feet, feeling very unwell, or vomiting?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "NHS.UK pre-eclampsia guidance lists these as warning signs requiring immediate evaluation, which can develop in the days or weeks after birth.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-high-blood-pressure-adult-female-advice-142701"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-high-blood-pressure-adult-female-q1427001",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Is high blood pressure the primary concern without recent childbirth?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "The authored Blood Pressure - High protocol is adult-only and cannot receive an adolescent redirect. Arrange governed in-person clinical review without applying a permissive alias.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-high-blood-pressure-adult-female-advice-142702"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-high-blood-pressure-adult-female-q1427003",
+          "acuityOrder": 3,
+          "severity": "Urgent",
+          "questionTextEn": "Has a clinician said the postpartum blood pressure is high, or is there a new home reading above the patient's clinician-agreed range, without the emergency features above?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "The source confirms high blood pressure can be an early sign of postpartum pre-eclampsia but does not provide a complete telephone threshold or measurement protocol; the reading needs prompt confirmation under an approved obstetric pathway.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-high-blood-pressure-adult-female-advice-142702"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-high-blood-pressure-adult-female-advice-142701",
+          "titleEn": "Emergency postpartum pre-eclampsia precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening headache or vision changes.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-high-blood-pressure-adult-female-advice-142702",
+          "titleEn": "Urgent postpartum blood pressure review",
+          "instructionTextEn": "Arrange prompt blood-pressure confirmation through the locally approved Qatar maternity pathway; the exact non-emergency destination and measurement thresholds remain GOVERNANCE_REQUIRED. Call Back If: headache, vision changes, or swelling develop.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        }
+      ],
+      "guidelineRedirects": [],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-high-blood-pressure-adult-female-ref-1",
+          "title": "NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset",
+          "citationText": "NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2026-03-23",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Adult | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - High Blood Pressure - Female (Adult), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-high-blood-pressure-child-female",
+      "titleEn": "Postpartum - High Blood Pressure - Female (Child)",
+      "clinicalDefinitionEn": "Postpartum high blood pressure assessment after birth; a reported reading must be confirmed and interpreted by a clinician using an approved obstetric blood-pressure pathway. Child patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 0,
+      "ageMax": 17,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "pediatric",
+      "acuity": 5,
+      "keywords": [
+        {
+          "phrase": "high blood pressure after birth",
+          "weight": 100
+        },
+        {
+          "phrase": "postpartum high blood pressure",
+          "weight": 90
+        },
+        {
+          "phrase": "blood pressure high since having the baby",
+          "weight": 80
+        },
+        {
+          "phrase": "worried about pre-eclampsia after delivery",
+          "weight": 70
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-high-blood-pressure-child-female-iaq-1",
+          "sequence": 1,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "What is the blood pressure reading, if measured?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-high-blood-pressure-child-female-iaq-2",
+          "sequence": 2,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-high-blood-pressure-child-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any headache, vision changes, or swelling?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-high-blood-pressure-child-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-high-blood-pressure-child-female-iaq-5",
+          "sequence": 5,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-high-blood-pressure-child-female-q1428002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Along with high blood pressure, is there a severe headache, vision problems, pain below the ribs, sudden swelling of the face/hands/feet, feeling very unwell, or vomiting?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "NHS.UK pre-eclampsia guidance lists these as warning signs requiring immediate evaluation, which can develop in the days or weeks after birth.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-high-blood-pressure-child-female-advice-142801"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-high-blood-pressure-child-female-q1428001",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Is high blood pressure the primary concern without recent childbirth?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "The authored Blood Pressure - High protocol is adult-only and cannot receive an adolescent redirect. Arrange governed in-person clinical review without applying a permissive alias.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-high-blood-pressure-child-female-advice-142802"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-high-blood-pressure-child-female-q1428003",
+          "acuityOrder": 3,
+          "severity": "Urgent",
+          "questionTextEn": "Has a clinician said the postpartum blood pressure is high, or is there a new home reading above the patient's clinician-agreed range, without the emergency features above?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "The source confirms high blood pressure can be an early sign of postpartum pre-eclampsia but does not provide a complete telephone threshold or measurement protocol; the reading needs prompt confirmation under an approved obstetric pathway.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-high-blood-pressure-child-female-advice-142802"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-high-blood-pressure-child-female-advice-142801",
+          "titleEn": "Emergency postpartum pre-eclampsia precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening headache or vision changes.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-high-blood-pressure-child-female-advice-142802",
+          "titleEn": "Urgent postpartum blood pressure review",
+          "instructionTextEn": "Arrange prompt blood-pressure confirmation through the locally approved Qatar maternity pathway; the exact non-emergency destination and measurement thresholds remain GOVERNANCE_REQUIRED. Call Back If: headache, vision changes, or swelling develop.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        }
+      ],
+      "guidelineRedirects": [],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-high-blood-pressure-child-female-ref-1",
+          "title": "NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset",
+          "citationText": "NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2026-03-23",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Child | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - High Blood Pressure - Female (Child), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-leg-pain-adult-female",
+      "titleEn": "Postpartum - Leg Pain - Female (Adult)",
+      "clinicalDefinitionEn": "Postpartum leg pain assessment, generalized from NHS.UK's C-section recovery blood-clot warning sign to all postpartum deliveries, given the same elevated clot risk applies. Adult patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 18,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "adult",
+      "acuity": 5,
+      "keywords": [
+        {
+          "phrase": "leg pain after having the baby",
+          "weight": 100
+        },
+        {
+          "phrase": "leg hurts since giving birth",
+          "weight": 90
+        },
+        {
+          "phrase": "postpartum leg pain",
+          "weight": 80
+        },
+        {
+          "phrase": "calf pain after delivery",
+          "weight": 70
+        },
+        {
+          "phrase": "leg has really been hurting since giving birth",
+          "weight": 60
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-leg-pain-adult-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-pain-adult-female-iaq-2",
+          "sequence": 2,
+          "responseType": "LOCATION",
+          "promptTextEn": "Which leg, and where exactly?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-pain-adult-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any shortness of breath or chest pain?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-pain-adult-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-leg-pain-adult-female-q1433002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is there swelling or pain in one leg (especially the calf), along with shortness of breath or chest pain?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "NHS.UK C-section recovery guidance lists leg swelling/pain as a blood clot warning sign - the postpartum period carries an elevated clotting risk regardless of delivery method, and breathing/chest symptoms suggest the clot may have traveled to the lungs.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-leg-pain-adult-female-advice-143301"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-leg-pain-adult-female-q1433003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Is there leg pain or swelling without breathing or chest symptoms?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "Any new leg swelling or pain in the postpartum period should be checked promptly given the elevated blood clot risk.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-leg-pain-adult-female-advice-143302"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-leg-pain-adult-female-advice-143301",
+          "titleEn": "Emergency postpartum blood clot precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening breathing difficulty; chest pain develops.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-leg-pain-adult-female-advice-143302",
+          "titleEn": "Urgent postpartum leg pain review",
+          "instructionTextEn": "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call 999 if chest pain, breathing difficulty, fainting, or coughing blood develops. Call Back If: breathing difficulty or chest pain develops; swelling worsens.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-leg-pain-adult-female-redirect-1433001",
+          "questionOrder": 1,
+          "promptTextEn": "Is new weakness, numbness, facial change, speech difficulty, or loss of coordination the primary concern?",
+          "targetProtocolTitleEn": "Neurologic Deficit",
+          "hintEn": "Resolved from alias: Neurologic Deficit"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-leg-pain-adult-female-ref-1",
+          "title": "NHS.UK, \"Caesarean section - Recovery\" (blood clot warning sign), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023) - generalized to all postpartum deliveries",
+          "citationText": "NHS.UK, \"Caesarean section - Recovery\" (blood clot warning sign), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023) - generalized to all postpartum deliveries",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2023-01-04",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Adult | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Leg Pain - Female (Adult), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-leg-pain-child-female",
+      "titleEn": "Postpartum - Leg Pain - Female (Child)",
+      "clinicalDefinitionEn": "Postpartum leg pain assessment, generalized from NHS.UK's C-section recovery blood-clot warning sign to all postpartum deliveries, given the same elevated clot risk applies. Child patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 0,
+      "ageMax": 17,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "pediatric",
+      "acuity": 5,
+      "keywords": [
+        {
+          "phrase": "leg pain after having the baby",
+          "weight": 100
+        },
+        {
+          "phrase": "leg hurts since giving birth",
+          "weight": 90
+        },
+        {
+          "phrase": "postpartum leg pain",
+          "weight": 80
+        },
+        {
+          "phrase": "calf pain after delivery",
+          "weight": 70
+        },
+        {
+          "phrase": "leg has really been hurting since giving birth",
+          "weight": 60
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-leg-pain-child-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-pain-child-female-iaq-2",
+          "sequence": 2,
+          "responseType": "LOCATION",
+          "promptTextEn": "Which leg, and where exactly?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-pain-child-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any shortness of breath or chest pain?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-pain-child-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-pain-child-female-iaq-5",
+          "sequence": 5,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-leg-pain-child-female-q1434002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is there swelling or pain in one leg (especially the calf), along with shortness of breath or chest pain?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "NHS.UK C-section recovery guidance lists leg swelling/pain as a blood clot warning sign - the postpartum period carries an elevated clotting risk regardless of delivery method, and breathing/chest symptoms suggest the clot may have traveled to the lungs.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-leg-pain-child-female-advice-143401"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-leg-pain-child-female-q1434003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Is there leg pain or swelling without breathing or chest symptoms?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "Any new leg swelling or pain in the postpartum period should be checked promptly given the elevated blood clot risk.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-leg-pain-child-female-advice-143402"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-leg-pain-child-female-advice-143401",
+          "titleEn": "Emergency postpartum blood clot precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening breathing difficulty; chest pain develops.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-leg-pain-child-female-advice-143402",
+          "titleEn": "Urgent postpartum leg pain review",
+          "instructionTextEn": "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call 999 if chest pain, breathing difficulty, fainting, or coughing blood develops. Call Back If: breathing difficulty or chest pain develops; swelling worsens.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-leg-pain-child-female-redirect-1434001",
+          "questionOrder": 1,
+          "promptTextEn": "Is new weakness, numbness, facial change, speech difficulty, or loss of coordination the primary concern?",
+          "targetProtocolTitleEn": "Neurologic Deficit",
+          "hintEn": "Resolved from alias: Neurologic Deficit"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-leg-pain-child-female-ref-1",
+          "title": "NHS.UK, \"Caesarean section - Recovery\" (blood clot warning sign), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023) - generalized to all postpartum deliveries",
+          "citationText": "NHS.UK, \"Caesarean section - Recovery\" (blood clot warning sign), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023) - generalized to all postpartum deliveries",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2023-01-04",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Child | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Leg Pain - Female (Child), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-leg-swelling-and-edema-adult-female",
+      "titleEn": "Postpartum - Leg Swelling and Edema - Female (Adult)",
+      "clinicalDefinitionEn": "Postpartum leg swelling assessment, generalized from the same NHS.UK C-section recovery blood-clot warning sign as Postpartum - Leg Pain. Adult patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 18,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "adult",
+      "acuity": 4,
+      "keywords": [
+        {
+          "phrase": "leg swelling after having the baby",
+          "weight": 100
+        },
+        {
+          "phrase": "legs are swollen since giving birth",
+          "weight": 90
+        },
+        {
+          "phrase": "postpartum leg swelling",
+          "weight": 80
+        },
+        {
+          "phrase": "one leg more swollen than the other after birth",
+          "weight": 70
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-adult-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-adult-female-iaq-2",
+          "sequence": 2,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Is one leg more swollen than the other?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-adult-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any shortness of breath or chest pain?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-adult-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-adult-female-q1435001",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is a high blood-pressure reading with headache or vision change the primary concern?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "Postpartum high blood pressure with headache or vision change remains a direct Qatar 999 emergency and must not redirect to an adult-only general blood-pressure protocol.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-leg-swelling-and-edema-adult-female-advice-143501"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-adult-female-q1435002",
+          "acuityOrder": 2,
+          "severity": "Emergency",
+          "questionTextEn": "Is one leg more swollen or painful than the other, along with shortness of breath or chest pain?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "One-sided leg swelling with breathing/chest symptoms is a recognized blood clot red flag, and the postpartum period carries an elevated clotting risk regardless of delivery method.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-leg-swelling-and-edema-adult-female-advice-143501"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-adult-female-q1435003",
+          "acuityOrder": 3,
+          "severity": "Urgent",
+          "questionTextEn": "Is one leg noticeably more swollen than the other, without breathing or chest symptoms?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "Asymmetric leg swelling should be checked promptly to rule out a blood clot, given the elevated postpartum risk.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-leg-swelling-and-edema-adult-female-advice-143502"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-adult-female-q1435004",
+          "acuityOrder": 4,
+          "severity": "Self-care",
+          "questionTextEn": "Is this mild, even swelling in both legs/ankles with none of the features above?",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "rationaleEn": "Mild, symmetric ankle/leg swelling is common after birth from fluid shifts and is usually not a clot concern.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-leg-swelling-and-edema-adult-female-advice-143503"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 15,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-adult-female-advice-143501",
+          "titleEn": "Emergency postpartum blood clot precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening breathing difficulty; chest pain develops.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-adult-female-advice-143502",
+          "titleEn": "Urgent postpartum leg swelling review",
+          "instructionTextEn": "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: breathing difficulty or chest pain develops; swelling worsens.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-adult-female-advice-143503",
+          "titleEn": "Home care for mild postpartum leg swelling",
+          "instructionTextEn": "Elevate the legs when resting, stay mobile with gentle walking, and drink plenty of fluids. Call Back If: one leg becomes more swollen than the other; breathing difficulty develops.",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "warningSigns": [],
+          "displayOrder": 3,
+          "patientSendable": true
+        }
+      ],
+      "guidelineRedirects": [],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-adult-female-ref-1",
+          "title": "NHS.UK, \"Caesarean section - Recovery\" (blood clot warning sign), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023) - generalized to all postpartum deliveries",
+          "citationText": "NHS.UK, \"Caesarean section - Recovery\" (blood clot warning sign), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023) - generalized to all postpartum deliveries",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2023-01-04",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Adult | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Leg Swelling and Edema - Female (Adult), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-leg-swelling-and-edema-child-female",
+      "titleEn": "Postpartum - Leg Swelling and Edema - Female (Child)",
+      "clinicalDefinitionEn": "Postpartum leg swelling assessment, generalized from the same NHS.UK C-section recovery blood-clot warning sign as Postpartum - Leg Pain. Child patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 0,
+      "ageMax": 17,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "pediatric",
+      "acuity": 4,
+      "keywords": [
+        {
+          "phrase": "leg swelling after having the baby",
+          "weight": 100
+        },
+        {
+          "phrase": "legs are swollen since giving birth",
+          "weight": 90
+        },
+        {
+          "phrase": "postpartum leg swelling",
+          "weight": 80
+        },
+        {
+          "phrase": "one leg more swollen than the other after birth",
+          "weight": 70
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-child-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-child-female-iaq-2",
+          "sequence": 2,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Is one leg more swollen than the other?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-child-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any shortness of breath or chest pain?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-child-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-child-female-iaq-5",
+          "sequence": 5,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-child-female-q1436001",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is a high blood-pressure reading with headache or vision change the primary concern?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "Postpartum high blood pressure with headache or vision change remains a direct Qatar 999 emergency and must not redirect to an adult-only general blood-pressure protocol.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-leg-swelling-and-edema-child-female-advice-143601"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-child-female-q1436002",
+          "acuityOrder": 2,
+          "severity": "Emergency",
+          "questionTextEn": "Is one leg more swollen or painful than the other, along with shortness of breath or chest pain?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "One-sided leg swelling with breathing/chest symptoms is a recognized blood clot red flag, and the postpartum period carries an elevated clotting risk regardless of delivery method.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-leg-swelling-and-edema-child-female-advice-143601"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-child-female-q1436003",
+          "acuityOrder": 3,
+          "severity": "Urgent",
+          "questionTextEn": "Is one leg noticeably more swollen than the other, without breathing or chest symptoms?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "Asymmetric leg swelling should be checked promptly to rule out a blood clot, given the elevated postpartum risk.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-leg-swelling-and-edema-child-female-advice-143602"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-child-female-q1436004",
+          "acuityOrder": 4,
+          "severity": "Self-care",
+          "questionTextEn": "Is this mild, even swelling in both legs/ankles with none of the features above?",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "rationaleEn": "Mild, symmetric ankle/leg swelling is common after birth from fluid shifts and is usually not a clot concern.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-leg-swelling-and-edema-child-female-advice-143603"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 15,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-child-female-advice-143601",
+          "titleEn": "Emergency postpartum blood clot precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening breathing difficulty; chest pain develops.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-child-female-advice-143602",
+          "titleEn": "Urgent postpartum leg swelling review",
+          "instructionTextEn": "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: breathing difficulty or chest pain develops; swelling worsens.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-child-female-advice-143603",
+          "titleEn": "Home care for mild postpartum leg swelling",
+          "instructionTextEn": "Elevate the legs when resting, stay mobile with gentle walking, and drink plenty of fluids. Call Back If: one leg becomes more swollen than the other; breathing difficulty develops.",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "warningSigns": [],
+          "displayOrder": 3,
+          "patientSendable": true
+        }
+      ],
+      "guidelineRedirects": [],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-leg-swelling-and-edema-child-female-ref-1",
+          "title": "NHS.UK, \"Caesarean section - Recovery\" (blood clot warning sign), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023) - generalized to all postpartum deliveries",
+          "citationText": "NHS.UK, \"Caesarean section - Recovery\" (blood clot warning sign), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023) - generalized to all postpartum deliveries",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2023-01-04",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Child | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Leg Swelling and Edema - Female (Child), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-urination-pain-adult-female",
+      "titleEn": "Postpartum - Urination Pain - Female (Adult)",
+      "clinicalDefinitionEn": "Postpartum painful urination assessment, combining NHS.UK's C-section recovery urinary-symptom warning with the cystitis guidance already used for Urination Pain - Female (batch14). Adult patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 18,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "adult",
+      "acuity": 3,
+      "keywords": [
+        {
+          "phrase": "painful urination after giving birth",
+          "weight": 100
+        },
+        {
+          "phrase": "hurts to pee since having the baby",
+          "weight": 90
+        },
+        {
+          "phrase": "postpartum urination pain",
+          "weight": 80
+        },
+        {
+          "phrase": "leaking urine after delivery",
+          "weight": 70
+        },
+        {
+          "phrase": "hurts so bad to pee since having the baby",
+          "weight": 60
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-urination-pain-adult-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-urination-pain-adult-female-iaq-2",
+          "sequence": 2,
+          "responseType": "TEMPERATURE",
+          "promptTextEn": "What is the temperature, if measured?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-urination-pain-adult-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any back/flank pain or blood in the urine?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-urination-pain-adult-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-urination-pain-adult-female-q1437002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Along with urinary symptoms, is there confusion, trouble breathing or very fast breathing, fainting, cold or clammy skin, or rapidly worsening severe illness?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "These are sepsis red flags, and postpartum infection can progress quickly - always treated as an emergency.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-urination-pain-adult-female-advice-143701"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-urination-pain-adult-female-q1437003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Is there pain when urinating, leaking urine, back or flank pain, fever, or blood in the urine?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "NHS.UK guidance lists painful or leaking urination after a C-section as needing prompt review, and the same applies to any postpartum delivery given the shared infection risk.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-urination-pain-adult-female-advice-143702"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-urination-pain-adult-female-advice-143701",
+          "titleEn": "Emergency postpartum infection precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not let the patient drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening confusion; worsening breathing.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-urination-pain-adult-female-advice-143702",
+          "titleEn": "Urgent postpartum urinary symptom review",
+          "instructionTextEn": "Arrange prompt clinical assessment; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Postpartum urinary symptoms may need examination and testing. Call Back If: fever develops; back pain worsens.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-urination-pain-adult-female-redirect-1437001",
+          "questionOrder": 1,
+          "promptTextEn": "Is pain in the side or back below the ribs the primary concern rather than pain during urination?",
+          "targetProtocolTitleEn": "Flank Pain",
+          "hintEn": "Resolved from alias: Flank Pain"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not let the patient drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-urination-pain-adult-female-ref-1",
+          "title": "NHS.UK, \"Caesarean section - Recovery\" (urinary symptom warning), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023)",
+          "citationText": "NHS.UK, \"Caesarean section - Recovery\" (urinary symptom warning), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023)",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-urination-pain-adult-female-ref-2",
+          "title": "NHS.UK, \"Cystitis\" (already cited for Urination Pain - Female, batch14), https://www.nhs.uk/conditions/cystitis/",
+          "citationText": "NHS.UK, \"Cystitis\" (already cited for Urination Pain - Female, batch14), https://www.nhs.uk/conditions/cystitis/",
+          "referenceType": "public-source",
+          "displayOrder": 2
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2023-01-04",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Adult | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Urination Pain - Female (Adult), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-urination-pain-child-female",
+      "titleEn": "Postpartum - Urination Pain - Female (Child)",
+      "clinicalDefinitionEn": "Postpartum painful urination assessment, combining NHS.UK's C-section recovery urinary-symptom warning with the cystitis guidance already used for Urination Pain - Female (batch14). Child patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 0,
+      "ageMax": 17,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "pediatric",
+      "acuity": 3,
+      "keywords": [
+        {
+          "phrase": "painful urination after giving birth",
+          "weight": 100
+        },
+        {
+          "phrase": "hurts to pee since having the baby",
+          "weight": 90
+        },
+        {
+          "phrase": "postpartum urination pain",
+          "weight": 80
+        },
+        {
+          "phrase": "leaking urine after delivery",
+          "weight": 70
+        },
+        {
+          "phrase": "hurts so bad to pee since having the baby",
+          "weight": 60
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-urination-pain-child-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-urination-pain-child-female-iaq-2",
+          "sequence": 2,
+          "responseType": "TEMPERATURE",
+          "promptTextEn": "What is the temperature, if measured?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-urination-pain-child-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any back/flank pain or blood in the urine?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-urination-pain-child-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-urination-pain-child-female-iaq-5",
+          "sequence": 5,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-urination-pain-child-female-q1438002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Along with urinary symptoms, is there confusion, trouble breathing or very fast breathing, fainting, cold or clammy skin, or rapidly worsening severe illness?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "These are sepsis red flags, and postpartum infection can progress quickly - always treated as an emergency.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-urination-pain-child-female-advice-143801"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-urination-pain-child-female-q1438003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Is there pain when urinating, leaking urine, back or flank pain, fever, or blood in the urine?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "NHS.UK guidance lists painful or leaking urination after a C-section as needing prompt review, and the same applies to any postpartum delivery given the shared infection risk.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-urination-pain-child-female-advice-143802"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-urination-pain-child-female-advice-143801",
+          "titleEn": "Emergency postpartum infection precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not let the patient drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening confusion; worsening breathing.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-urination-pain-child-female-advice-143802",
+          "titleEn": "Urgent postpartum urinary symptom review",
+          "instructionTextEn": "Arrange prompt clinical assessment; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Postpartum urinary symptoms may need examination and testing. Call Back If: fever develops; back pain worsens.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-urination-pain-child-female-redirect-1438001",
+          "questionOrder": 1,
+          "promptTextEn": "Is pain in the side or back below the ribs the primary concern rather than pain during urination?",
+          "targetProtocolTitleEn": "Flank Pain",
+          "hintEn": "Resolved from alias: Flank Pain"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not let the patient drive. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-urination-pain-child-female-ref-1",
+          "title": "NHS.UK, \"Caesarean section - Recovery\" (urinary symptom warning), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023)",
+          "citationText": "NHS.UK, \"Caesarean section - Recovery\" (urinary symptom warning), https://www.nhs.uk/conditions/caesarean-section/recovery/ (page last reviewed 04 January 2023)",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-urination-pain-child-female-ref-2",
+          "title": "NHS.UK, \"Cystitis\" (already cited for Urination Pain - Female, batch14), https://www.nhs.uk/conditions/cystitis/",
+          "citationText": "NHS.UK, \"Cystitis\" (already cited for Urination Pain - Female, batch14), https://www.nhs.uk/conditions/cystitis/",
+          "referenceType": "public-source",
+          "displayOrder": 2
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2023-01-04",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Child | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Urination Pain - Female (Child), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female",
+      "titleEn": "Postpartum - Vaginal Bleeding and Lochia - Female (Adult)",
+      "clinicalDefinitionEn": "Postpartum vaginal bleeding assessment using published urgent maternal warning signs and postpartum haemorrhage guidance; remote pad counts are supporting observations, not a stand-alone diagnostic threshold. Adult patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 18,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "adult",
+      "acuity": 5,
+      "keywords": [
+        {
+          "phrase": "postpartum bleeding",
+          "weight": 100
+        },
+        {
+          "phrase": "lochia",
+          "weight": 90
+        },
+        {
+          "phrase": "bleeding heavily after birth",
+          "weight": 80
+        },
+        {
+          "phrase": "soaking through pads after delivery",
+          "weight": 70
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-iaq-2",
+          "sequence": 2,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "How many pads are being soaked per hour, and are there clots?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any dizziness, fainting, weakness, confusion, clammy skin, or a fast-beating heart?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-q1443002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is there heavy or gushing vaginal bleeding, bleeding rapidly soaking pads, large clots, fainting or severe dizziness, weakness, confusion, pale or clammy skin, a fast-beating heart, or rapidly increasing bleeding?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "These are published postpartum haemorrhage and urgent maternal warning signs. Postpartum haemorrhage usually occurs within 24 hours but can occur up to 12 weeks after birth.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-advice-144301"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-q1443003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Does the vaginal discharge have a foul smell, or has bleeding that was decreasing suddenly become heavier again?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "A foul smell can indicate infection, and bleeding becoming heavier after decreasing needs prompt evaluation.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-advice-144302"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-q1443004",
+          "acuityOrder": 3,
+          "severity": "Self-care",
+          "questionTextEn": "Is this typical lochia - gradually lightening and changing from red to pink/brown to white/yellow over several weeks - with none of the features above?",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "rationaleEn": "Normal lochia gradually decreases in amount and changes color over about 4-6 weeks after birth.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-advice-144303"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 15,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-advice-144301",
+          "titleEn": "Emergency postpartum hemorrhage precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Keep the patient lying down if safe, do not let them drive, and tell the call handler that they gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening dizziness; worsening bleeding.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-advice-144302",
+          "titleEn": "Urgent postpartum bleeding review",
+          "instructionTextEn": "Arrange prompt clinical assessment; the exact non-emergency Qatar maternity destination remains GOVERNANCE_REQUIRED. Call Back If: bleeding increases; fever develops.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-advice-144303",
+          "titleEn": "Home monitoring for normal lochia",
+          "instructionTextEn": "Use sanitary pads (not tampons), and expect the discharge to gradually lighten in amount and change from red to pink/brown to white/yellow over about 4-6 weeks. Rest and stay hydrated. Call Back If: bleeding becomes heavier instead of lighter; foul smell, fever, or dizziness develops.",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "warningSigns": [],
+          "displayOrder": 3,
+          "patientSendable": true
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-redirect-1443001",
+          "questionOrder": 1,
+          "promptTextEn": "Was there a brief faint with full recovery, and is fainting now the primary concern?",
+          "targetProtocolTitleEn": "Fainting",
+          "hintEn": "Resolved from alias: Fainting"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Keep the patient lying down if safe, do not let them drive, and tell the call handler that they gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-ref-1",
+          "title": "ACOG, \"3 Conditions to Watch for After Childbirth\" (postpartum haemorrhage can occur up to 12 weeks after birth), https://www.acog.org/womens-health/experts-and-stories/the-latest/3-conditions-to-watch-for-after-childbirth",
+          "citationText": "ACOG, \"3 Conditions to Watch for After Childbirth\" (postpartum haemorrhage can occur up to 12 weeks after birth), https://www.acog.org/womens-health/experts-and-stories/the-latest/3-conditions-to-watch-for-after-childbirth",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-ref-2",
+          "title": "CDC Hear Her urgent maternal warning signs, https://www.cdc.gov/hearher/",
+          "citationText": "CDC Hear Her urgent maternal warning signs, https://www.cdc.gov/hearher/",
+          "referenceType": "public-source",
+          "displayOrder": 2
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "Public-source clinical editorial review (source publisher)",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Adult | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Vaginal Bleeding and Lochia - Female (Adult), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female",
+      "titleEn": "Postpartum - Vaginal Bleeding and Lochia - Female (Child)",
+      "clinicalDefinitionEn": "Postpartum vaginal bleeding assessment using published urgent maternal warning signs and postpartum haemorrhage guidance; remote pad counts are supporting observations, not a stand-alone diagnostic threshold. Child patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 0,
+      "ageMax": 17,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "pediatric",
+      "acuity": 5,
+      "keywords": [
+        {
+          "phrase": "postpartum bleeding",
+          "weight": 100
+        },
+        {
+          "phrase": "lochia",
+          "weight": 90
+        },
+        {
+          "phrase": "bleeding heavily after birth",
+          "weight": 80
+        },
+        {
+          "phrase": "soaking through pads after delivery",
+          "weight": 70
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-iaq-2",
+          "sequence": 2,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "How many pads are being soaked per hour, and are there clots?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any dizziness, fainting, weakness, confusion, clammy skin, or a fast-beating heart?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-iaq-5",
+          "sequence": 5,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-q1444002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is there heavy or gushing vaginal bleeding, bleeding rapidly soaking pads, large clots, fainting or severe dizziness, weakness, confusion, pale or clammy skin, a fast-beating heart, or rapidly increasing bleeding?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "These are published postpartum haemorrhage and urgent maternal warning signs. Postpartum haemorrhage usually occurs within 24 hours but can occur up to 12 weeks after birth.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-advice-144401"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-q1444003",
+          "acuityOrder": 2,
+          "severity": "Urgent",
+          "questionTextEn": "Does the vaginal discharge have a foul smell, or has bleeding that was decreasing suddenly become heavier again?",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "rationaleEn": "A foul smell can indicate infection, and bleeding becoming heavier after decreasing needs prompt evaluation.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-advice-144402"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 70,
+          "questionOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-q1444004",
+          "acuityOrder": 3,
+          "severity": "Self-care",
+          "questionTextEn": "Is this typical lochia - gradually lightening and changing from red to pink/brown to white/yellow over several weeks - with none of the features above?",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "rationaleEn": "Normal lochia gradually decreases in amount and changes color over about 4-6 weeks after birth.",
+          "redFlag": false,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-advice-144403"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 15,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-advice-144401",
+          "titleEn": "Emergency postpartum hemorrhage precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Keep the patient lying down if safe, do not let them drive, and tell the call handler that they gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: worsening dizziness; worsening bleeding.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-advice-144402",
+          "titleEn": "Urgent postpartum bleeding review",
+          "instructionTextEn": "Arrange prompt clinical assessment; the exact non-emergency Qatar maternity destination remains GOVERNANCE_REQUIRED. Call Back If: bleeding increases; fever develops.",
+          "dispositionCode": "HMC_URGENT_REVIEW",
+          "warningSigns": [],
+          "displayOrder": 2,
+          "patientSendable": false
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-advice-144403",
+          "titleEn": "Home monitoring for normal lochia",
+          "instructionTextEn": "Use sanitary pads (not tampons), and expect the discharge to gradually lighten in amount and change from red to pink/brown to white/yellow over about 4-6 weeks. Rest and stay hydrated. Call Back If: bleeding becomes heavier instead of lighter; foul smell, fever, or dizziness develops.",
+          "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "warningSigns": [],
+          "displayOrder": 3,
+          "patientSendable": true
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-redirect-1444001",
+          "questionOrder": 1,
+          "promptTextEn": "Was there a brief faint with full recovery, and is fainting now the primary concern?",
+          "targetProtocolTitleEn": "Fainting",
+          "hintEn": "Resolved from alias: Fainting"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Keep the patient lying down if safe, do not let them drive, and tell the call handler that they gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-ref-1",
+          "title": "ACOG, \"3 Conditions to Watch for After Childbirth\" (postpartum haemorrhage can occur up to 12 weeks after birth), https://www.acog.org/womens-health/experts-and-stories/the-latest/3-conditions-to-watch-for-after-childbirth",
+          "citationText": "ACOG, \"3 Conditions to Watch for After Childbirth\" (postpartum haemorrhage can occur up to 12 weeks after birth), https://www.acog.org/womens-health/experts-and-stories/the-latest/3-conditions-to-watch-for-after-childbirth",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        },
+        {
+          "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-ref-2",
+          "title": "CDC Hear Her urgent maternal warning signs, https://www.cdc.gov/hearher/",
+          "citationText": "CDC Hear Her urgent maternal warning signs, https://www.cdc.gov/hearher/",
+          "referenceType": "public-source",
+          "displayOrder": 2
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "Public-source clinical editorial review (source publisher)",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Child | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Vaginal Bleeding and Lochia - Female (Child), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-vision-loss-or-change-adult-female",
+      "titleEn": "Postpartum - Vision Loss or Change - Female (Adult)",
+      "clinicalDefinitionEn": "Postpartum vision change assessment decomposed from NHS.UK's published pre-eclampsia guidance, distinct from the general Vision Loss or Change protocol (batch14). Adult patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 18,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "adult",
+      "acuity": 5,
+      "keywords": [
+        {
+          "phrase": "vision changes after giving birth",
+          "weight": 100
+        },
+        {
+          "phrase": "blurred vision since having the baby",
+          "weight": 90
+        },
+        {
+          "phrase": "seeing flashing lights postpartum",
+          "weight": 80
+        },
+        {
+          "phrase": "vision problems after delivery",
+          "weight": 70
+        },
+        {
+          "phrase": "seeing flashing lights and blurry vision",
+          "weight": 60
+        },
+        {
+          "phrase": "flashing lights since having the baby",
+          "weight": 50
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-adult-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-adult-female-iaq-2",
+          "sequence": 2,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Describe the vision change.",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-adult-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any headache, swelling, or pain below the ribs?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-adult-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-adult-female-q1429002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is there a new postpartum vision change such as blurred vision, flashing lights, spots, or loss of vision, whether or not headache, upper abdominal pain, swelling, or vomiting is also present?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "NHS.UK pre-eclampsia guidance lists vision problems as a key warning sign that can appear in the days or weeks after birth, needing immediate evaluation.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-vision-loss-or-change-adult-female-advice-142901"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-adult-female-advice-142901",
+          "titleEn": "Emergency postpartum vision change precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: vision worsens; headache worsens.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-adult-female-redirect-1429001",
+          "questionOrder": 1,
+          "promptTextEn": "Is vision loss or change the primary concern without recent childbirth?",
+          "targetProtocolTitleEn": "Vision Loss or Change",
+          "hintEn": "Resolved from alias: Vision Loss or Change"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-adult-female-ref-1",
+          "title": "NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset",
+          "citationText": "NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2026-03-23",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Adult | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Vision Loss or Change - Female (Adult), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    },
+    {
+      "id": "oscg-postpartum-vision-loss-or-change-child-female",
+      "titleEn": "Postpartum - Vision Loss or Change - Female (Child)",
+      "clinicalDefinitionEn": "Postpartum vision change assessment decomposed from NHS.UK's published pre-eclampsia guidance, distinct from the general Vision Loss or Change protocol (batch14). Child patient. Female.",
+      "backgroundInfoEn": "",
+      "ageMin": 0,
+      "ageMax": 17,
+      "genderRestriction": "female",
+      "mode": "after-hours",
+      "patientGroup": "pediatric",
+      "acuity": 5,
+      "keywords": [
+        {
+          "phrase": "vision changes after giving birth",
+          "weight": 100
+        },
+        {
+          "phrase": "blurred vision since having the baby",
+          "weight": 90
+        },
+        {
+          "phrase": "seeing flashing lights postpartum",
+          "weight": 80
+        },
+        {
+          "phrase": "vision problems after delivery",
+          "weight": 70
+        },
+        {
+          "phrase": "seeing flashing lights and blurry vision",
+          "weight": 60
+        },
+        {
+          "phrase": "flashing lights since having the baby",
+          "weight": 50
+        }
+      ],
+      "initialAssessmentQuestions": [
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-child-female-iaq-1",
+          "sequence": 1,
+          "responseType": "DURATION",
+          "promptTextEn": "How many days/weeks since delivery?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-child-female-iaq-2",
+          "sequence": 2,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Describe the vision change.",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-child-female-iaq-3",
+          "sequence": 3,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "Any headache, swelling, or pain below the ribs?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-child-female-iaq-4",
+          "sequence": 4,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+          "required": true,
+          "emergencyKeywords": []
+        },
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-child-female-iaq-5",
+          "sequence": 5,
+          "responseType": "OPEN_TEXT",
+          "promptTextEn": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+          "required": true,
+          "emergencyKeywords": []
+        }
+      ],
+      "questions": [
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-child-female-q1430002",
+          "acuityOrder": 1,
+          "severity": "Emergency",
+          "questionTextEn": "Is there a new postpartum vision change such as blurred vision, flashing lights, spots, or loss of vision, whether or not headache, upper abdominal pain, swelling, or vomiting is also present?",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "rationaleEn": "NHS.UK pre-eclampsia guidance lists vision problems as a key warning sign that can appear in the days or weeks after birth, needing immediate evaluation.",
+          "redFlag": true,
+          "keywords": [],
+          "careAdviceIds": [
+            "oscg-postpartum-vision-loss-or-change-child-female-advice-143001"
+          ],
+          "telemedicineEligible": false,
+          "dispositionLevel": 100,
+          "questionOrder": 1
+        }
+      ],
+      "careAdvice": [
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-child-female-advice-143001",
+          "titleEn": "Emergency postpartum vision change precautions",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: vision worsens; headache worsens.",
+          "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
+          "warningSigns": [],
+          "displayOrder": 1,
+          "patientSendable": false
+        }
+      ],
+      "guidelineRedirects": [
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-child-female-redirect-1430001",
+          "questionOrder": 1,
+          "promptTextEn": "Is vision loss or change the primary concern without recent childbirth?",
+          "targetProtocolTitleEn": "Vision Loss or Change",
+          "hintEn": "Resolved from alias: Vision Loss or Change"
+        }
+      ],
+      "painSeverity": [],
+      "backgroundDetail": {
+        "keyPointsEn": [],
+        "causesUnder50En": [],
+        "causesOver50En": [],
+        "locationTable": []
+      },
+      "firstAid": [
+        {
+          "titleEn": "First Aid",
+          "instructionTextEn": "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "displayOrder": 1
+        }
+      ],
+      "references": [
+        {
+          "id": "oscg-postpartum-vision-loss-or-change-child-female-ref-1",
+          "title": "NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset",
+          "citationText": "NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset",
+          "referenceType": "public-source",
+          "displayOrder": 1
+        }
+      ],
+      "authorship": {
+        "authorEn": "IST Health Open-Source Guideline Content",
+        "expertReviewerEn": "NHS.UK clinical editorial review (source publisher)",
+        "lastReviewedIso": "2026-03-23",
+        "versionYear": 2026,
+        "contentSet": "IST Open-Source Guideline Content | Child | Female"
+      },
+      "provenance": {
+        "generated": false,
+        "sourceKind": "open-source-guideline-batch-20",
+        "sourceDocuments": [
+          "IST Health Open-Source Guideline Content - Postpartum - Vision Loss or Change - Female (Child), Public-source content reused under its stated licence. This is not licensed STCC content."
+        ],
+        "contentNotice": "IST open-source guideline content (Batch 20). Not licensed STCC content. Blocked pending clinical governance approval; import is permitted only for isolated structural/pipeline testing until localization and governance checks pass.",
+        "usageStatus": "UAT_ONLY",
+        "productionEligible": false,
+        "clinicalStatus": "READY_FOR_QATAR_CLINICAL_REVIEW",
+        "requiresClinicalValidation": true,
+        "licensedContentIncluded": false
+      }
+    }
+  ],
+  "localizedDispositions": [
+    {
+      "code": "HMC_EMERGENCY_DEPARTMENT",
+      "destinationNameEn": "Nearest Hamad Medical Corporation Emergency Department",
+      "routingNotesEn": "Use for emergency presentations.",
+      "region": "QA"
+    },
+    {
+      "code": "HMC_URGENT_REVIEW",
+      "destinationNameEn": "HMC urgent review pathway",
+      "routingNotesEn": "Use for urgent but not immediately life-threatening presentations.",
+      "region": "QA"
+    },
+    {
+      "code": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "destinationNameEn": "PHCC urgent care or IST teleconsult",
+      "routingNotesEn": "Use for lower-acuity review after emergency and urgent red flags are ruled out.",
+      "region": "QA"
+    },
+    {
+      "code": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "destinationNameEn": "Self-care with callback precautions",
+      "routingNotesEn": "Use only when higher-acuity questions are negative and nurse review agrees.",
+      "region": "QA"
+    }
+  ]
+}

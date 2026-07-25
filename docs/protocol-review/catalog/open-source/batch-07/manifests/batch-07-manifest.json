@@ -1,0 +1,474 @@
+{
+  "manifestVersion": "1.0",
+  "importBatch": "open-source-batch-07",
+  "generatedDate": "2026-07-25",
+  "conditionFamilies": 5,
+  "protocolCount": 20,
+  "canonicalSourceFieldType": "string",
+  "algorithmIdRange": "1165-1184",
+  "applicabilityPolicy": {
+    "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
+    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "adultSpecificProtocols": "Adult-only; never generate Child variants.",
+    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
+  },
+  "excludedSourceFamilies": [
+    "Emergency Contraception was excluded because it is not a Male protocol.",
+    "Hiccups was excluded because its safest redirect target, Seizure, is not yet authored."
+  ],
+  "entries": [
+    {
+      "file": "json/fainting-adult-male.db.json",
+      "algorithmId": 1165,
+      "title": "Fainting - Male (Adult)",
+      "protocolFamily": "Fainting",
+      "sourceProtocolId": "oscg-fainting",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "2437838fb2405cbb2c0c26b3ca4a61da94ac2a71f0c98fd7bca9a6b3609d1675",
+      "redirectTarget": "Coma",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "Pregnancy positioning advice is excluded as not applicable to this demographic variant."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-fainting"
+    },
+    {
+      "file": "json/fainting-adult-female.db.json",
+      "algorithmId": 1166,
+      "title": "Fainting - Female (Adult)",
+      "protocolFamily": "Fainting",
+      "sourceProtocolId": "oscg-fainting",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "97c7f4efaaeb3b872e7f0446f946df9aa13309a8346241433116f690f6c70542",
+      "redirectTarget": "Coma",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "Source-supported pregnancy positioning advice is retained for Adult Female."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-fainting"
+    },
+    {
+      "file": "json/fainting-child-male.db.json",
+      "algorithmId": 1167,
+      "title": "Fainting - Male (Child)",
+      "protocolFamily": "Fainting",
+      "sourceProtocolId": "oscg-fainting",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "c1a6add3103c793d097f585e2910958c0c8b26c7c0572a7b1195469334cf3df4",
+      "redirectTarget": "Coma",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "Pregnancy positioning advice is excluded as not applicable to this demographic variant."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-fainting"
+    },
+    {
+      "file": "json/fainting-child-female.db.json",
+      "algorithmId": 1168,
+      "title": "Fainting - Female (Child)",
+      "protocolFamily": "Fainting",
+      "sourceProtocolId": "oscg-fainting",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "41ff1fbf240a7b94b4e81f44cfa601f90980b42efeca4c33d57cc7671002b1c6",
+      "redirectTarget": "Coma",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "Pregnancy positioning advice is excluded as not applicable to this demographic variant."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-fainting"
+    },
+    {
+      "file": "json/eye-allergy-adult-male.db.json",
+      "algorithmId": 1169,
+      "title": "Eye - Allergy - Male (Adult)",
+      "protocolFamily": "Eye - Allergy",
+      "sourceProtocolId": "oscg-eye-allergy",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "da7a39d515808eee1f7bbc9999f65516347c01a55f2c2a7d6ab7d05a1b30e0e0",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-eye-allergy"
+    },
+    {
+      "file": "json/eye-allergy-adult-female.db.json",
+      "algorithmId": 1170,
+      "title": "Eye - Allergy - Female (Adult)",
+      "protocolFamily": "Eye - Allergy",
+      "sourceProtocolId": "oscg-eye-allergy",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "13acf6d72d89bcff578daf034b48166ca8bf2d8688492581a7a3704d7d4917aa",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-eye-allergy"
+    },
+    {
+      "file": "json/eye-allergy-child-male.db.json",
+      "algorithmId": 1171,
+      "title": "Eye - Allergy - Male (Child)",
+      "protocolFamily": "Eye - Allergy",
+      "sourceProtocolId": "oscg-eye-allergy",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "f09333ed62845409b83d652a19f888ee73fd6bbda7d70b17aed423e878531d4d",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-eye-allergy"
+    },
+    {
+      "file": "json/eye-allergy-child-female.db.json",
+      "algorithmId": 1172,
+      "title": "Eye - Allergy - Female (Child)",
+      "protocolFamily": "Eye - Allergy",
+      "sourceProtocolId": "oscg-eye-allergy",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "be1cc199232052ee179b30b42eb7c0fa644f44f8063496b864ed2d45d2a82c8d",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-eye-allergy"
+    },
+    {
+      "file": "json/flank-pain-adult-male.db.json",
+      "algorithmId": 1173,
+      "title": "Flank Pain - Male (Adult)",
+      "protocolFamily": "Flank Pain",
+      "sourceProtocolId": "oscg-flank-pain",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 12,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "34b785425cea0352beb2a9a46164829a65dde605dd526a58e4b701867110a6b1",
+      "redirectTarget": "Back Pain",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-flank-pain"
+    },
+    {
+      "file": "json/flank-pain-adult-female.db.json",
+      "algorithmId": 1174,
+      "title": "Flank Pain - Female (Adult)",
+      "protocolFamily": "Flank Pain",
+      "sourceProtocolId": "oscg-flank-pain",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 12,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "910770eff6668774930294ebed37dcede6cdb31ae078e5f4e590dfa4936e13fe",
+      "redirectTarget": "Back Pain",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-flank-pain"
+    },
+    {
+      "file": "json/flank-pain-child-male.db.json",
+      "algorithmId": 1175,
+      "title": "Flank Pain - Male (Child)",
+      "protocolFamily": "Flank Pain",
+      "sourceProtocolId": "oscg-flank-pain",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 12,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "b8b8c13642b50cf7cd2b737413def24e076a44b1b42c10f80b0349042e8bd50a",
+      "redirectTarget": "Back Pain",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 12.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-flank-pain"
+    },
+    {
+      "file": "json/flank-pain-child-female.db.json",
+      "algorithmId": 1176,
+      "title": "Flank Pain - Female (Child)",
+      "protocolFamily": "Flank Pain",
+      "sourceProtocolId": "oscg-flank-pain",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 12,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "f32c4fbe66b21fc18d9488721d73205a19fb73467b52b092fa6ca6165619840a",
+      "redirectTarget": "Back Pain",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 12.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-flank-pain"
+    },
+    {
+      "file": "json/bed-bug-bite-adult-male.db.json",
+      "algorithmId": 1177,
+      "title": "Bed Bug Bite - Male (Adult)",
+      "protocolFamily": "Bed Bug Bite",
+      "sourceProtocolId": "oscg-bed-bug-bite",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "4f527e86191bac9e6b31e689631c1143c2d899b79359ea4de248cc616962f44d",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-bed-bug-bite"
+    },
+    {
+      "file": "json/bed-bug-bite-adult-female.db.json",
+      "algorithmId": 1178,
+      "title": "Bed Bug Bite - Female (Adult)",
+      "protocolFamily": "Bed Bug Bite",
+      "sourceProtocolId": "oscg-bed-bug-bite",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "9cbfd3ea279ddbd3bc76c7610d37a3bf8c903ca370e3cc70ac9afde2e78cbc1b",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-bed-bug-bite"
+    },
+    {
+      "file": "json/bed-bug-bite-child-male.db.json",
+      "algorithmId": 1179,
+      "title": "Bed Bug Bite - Male (Child)",
+      "protocolFamily": "Bed Bug Bite",
+      "sourceProtocolId": "oscg-bed-bug-bite",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "2bf6adf56cf44019c46197879f40c5b63b51ad4a649b3fcb49c4609b857fd44c",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-bed-bug-bite"
+    },
+    {
+      "file": "json/bed-bug-bite-child-female.db.json",
+      "algorithmId": 1180,
+      "title": "Bed Bug Bite - Female (Child)",
+      "protocolFamily": "Bed Bug Bite",
+      "sourceProtocolId": "oscg-bed-bug-bite",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "13627e002f3f092b3b09563a8fc0a0b8649d6cd597a83ee8c4fe8bf99f129317",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-bed-bug-bite"
+    },
+    {
+      "file": "json/fire-ant-sting-adult-male.db.json",
+      "algorithmId": 1181,
+      "title": "Fire Ant Sting - Male (Adult)",
+      "protocolFamily": "Fire Ant Sting",
+      "sourceProtocolId": "oscg-fire-ant-sting",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "f4df6897eb17036a4de66b41f8112ad28d91a29f8f984a2af0cf565de646e9e6",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-fire-ant-sting"
+    },
+    {
+      "file": "json/fire-ant-sting-adult-female.db.json",
+      "algorithmId": 1182,
+      "title": "Fire Ant Sting - Female (Adult)",
+      "protocolFamily": "Fire Ant Sting",
+      "sourceProtocolId": "oscg-fire-ant-sting",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "4761c549e3c7b1d0dce1ef640b90b7adaafb4f0cc40273d2a7d4de2139f44b5f",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-fire-ant-sting"
+    },
+    {
+      "file": "json/fire-ant-sting-child-male.db.json",
+      "algorithmId": 1183,
+      "title": "Fire Ant Sting - Male (Child)",
+      "protocolFamily": "Fire Ant Sting",
+      "sourceProtocolId": "oscg-fire-ant-sting",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "37bbbd3d8c24487c10bfcca0c729814267361566ced710fb0a0ea020dcc2f9c0",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-fire-ant-sting"
+    },
+    {
+      "file": "json/fire-ant-sting-child-female.db.json",
+      "algorithmId": 1184,
+      "title": "Fire Ant Sting - Female (Child)",
+      "protocolFamily": "Fire Ant Sting",
+      "sourceProtocolId": "oscg-fire-ant-sting",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "0a8df4dcb184d5151d0167109ce6d8e012e5f7606b0c6732ec9f01f5f70cea0e",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      },
+      "canonicalSourceProtocolId": "oscg-fire-ant-sting"
+    }
+  ],
+  "safetyBoundary": {
+    "usageStatus": "UAT_ONLY",
+    "productionEligible": false,
+    "requiresClinicalValidation": true,
+    "importOrDeploymentPerformed": false
+  }
+}

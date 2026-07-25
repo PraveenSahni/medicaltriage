@@ -1,0 +1,146 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1258,
+    "Title": "Shingles (Zoster) - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 3,
+    "Definition": [
+      "Shingles assessment decomposed from NHS.UK's published when-to-get-help guidance.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "PENDING: Qatar adult, pediatric, obstetric, emergency, specialty, and nursing governance review"
+    },
+    "FirstAid": [],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2026-07-25",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1258001,
+      "AlgorithmID": 1258,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is the main concern a widespread rash without the typical painful, one-sided stripe of blisters?",
+      "Information": "A widespread rash without the typical shingles pattern belongs in the Rash or Redness - Widespread pathway.",
+      "GotoGuideline": "Rash or Redness - Widespread",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1258002,
+      "AlgorithmID": 1258,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Using the recorded demographics rather than asking the caller to choose: is the patient age 17 or younger? Also route urgently if pregnant, breastfeeding with the rash on the breasts, the rash is on the eye or nose, there are vision changes, or the patient has a severely weakened immune system.",
+      "Information": "NHS.UK shingles guidance recommends urgent clinical review for these groups. In a generated Child variant, age 17 or younger is already established and this branch must be treated as true without asking the caller to validate age eligibility. Exact Qatar destination remains GOVERNANCE_REQUIRED.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        125801
+      ]
+    },
+    {
+      "QuestionID": 1258003,
+      "AlgorithmID": 1258,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is the caller 18 or older with none of the features above, within 3 days of the rash appearing?",
+      "Information": "NHS.UK guidance: see a pharmacist within 3 days - they can provide the same antiviral medicines as a primary-care clinician.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        125802
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 125801,
+      "AlgorithmOrder": 1,
+      "Title": "Urgent Qatar shingles assessment",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "For every generated Child variant, route directly to prompt same-day in-person assessment based on the recorded age; do not ask the caller to decide whether the age rule applies. Also arrange urgent assessment for eye/nose/ear involvement, vision or hearing change, facial weakness, severe headache/confusion, pregnancy, breastfeeding breast lesions, immunocompromise, or disseminated rash. Antiviral selection, dose, timing, pregnancy/breastfeeding use, renal adjustment, and pediatric use require the approved Qatar prescriber pathway. Call 999 for reduced consciousness, seizure, severe breathing difficulty, collapse, or rapidly severe illness. Exact Qatar destination remains GOVERNANCE_REQUIRED.",
+        "Call Back If: eye pain, red eye, or vision change; ear rash, hearing change, or facial weakness; confusion, severe headache, weakness, or widespread rash; fever or rapid deterioration."
+      ]
+    },
+    {
+      "AdviceID": 125802,
+      "AlgorithmOrder": 2,
+      "Title": "Governed supportive care while awaiting shingles review",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Keep the rash clean and dry, use loose clothing and a cool clean compress, and avoid adhesive dressings. Keep lesions covered where practical, wash hands, and avoid direct contact with pregnant people who have never had chickenpox, immunocompromised people, and newborn babies until lesions have crusted. Pain medicine and antiviral access require age, pregnancy/breastfeeding, allergy, kidney/liver disease, and current-medicine checks under the approved Qatar pathway.",
+        "Call Back If: rash approaches the eye, nose, or ear; vision, hearing, facial movement, or neurological change; rash becomes widespread or patient becomes unwell."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Shingles\", https://www.nhs.uk/conditions/shingles/ (page last reviewed 23 November 2023)"
+  ],
+  "searchwords": [
+    "shingles",
+    "zoster",
+    "painful blistering rash band",
+    "shingles rash"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "LOCATION",
+      "Question": "Where is the rash?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 11 source.",
+      "Source": "Shingles (Zoster)"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "When did the rash appear?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 11 source.",
+      "Source": "Shingles (Zoster)"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, and are they pregnant, breastfeeding, immunocompromised, a newborn contact, or experiencing eye/ear symptoms, facial weakness, confusion, weakness, or a widespread rash?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 11 source.",
+      "Source": "Shingles (Zoster)"
+    }
+  ]
+}

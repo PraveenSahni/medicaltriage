@@ -1,0 +1,214 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1488,
+    "Title": "Crying - Before 3 Months Old - Female (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Female",
+    "Age": "Infant (younger than 3 months)",
+    "GenderAtBirth": "Female",
+    "Acuity": 5,
+    "Definition": [
+      "Safety-first unexplained crying assessment only for babies younger than 12 weeks. Crying with illness or another symptom requires assessment through the relevant symptom pathway; colic is considered only after serious illness, injury, feeding problems, and caregiver-safety concerns are excluded.",
+      "Child patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 for an ambulance now; do not self-drive with an unstable infant. Follow the call handler's instructions. If there is a risk someone may hurt or shake the baby, place the baby on their back in a safe empty cot, move the unsafe person away, and have a safe adult take over if available. Never shake the baby. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2022-04-26",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1488001,
+      "AlgorithmID": 1488,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is breathing difficulty the main concern rather than crying or suspected colic?",
+      "Information": "Breathing difficulty belongs in the Breathing Difficulty pathway.",
+      "GotoGuideline": "Breathing Difficulty",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1488002,
+      "AlgorithmID": 1488,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is the baby not moving, very weak or floppy, difficult to wake, having a seizure, struggling to breathe, blue or grey, or is there immediate concern that anyone may shake or hurt the baby?",
+      "Information": "Reduced responsiveness, weakness, abnormal colour, breathing compromise, seizure, or immediate risk of inflicted injury can be life-threatening and requires emergency help.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        148801
+      ]
+    },
+    {
+      "QuestionID": 1488003,
+      "AlgorithmID": 1488,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Is the baby under 12 weeks with a temperature of 38 C or higher; a weak, high-pitched, or different cry; poor feeding; markedly fewer wet nappies or none for 12 hours; repeated or forceful vomiting; green vomit; a non-blanching rash; a swollen soft spot; pain when touched or moved; possible injury; abnormal behaviour; or nonstop inconsolable crying for 2 hours?",
+      "Information": "NICE classifies temperature 38 C or higher before 3 months as high risk. Feeding reduction, reduced urine, abnormal responsiveness, abnormal cry, vomiting, rash, bulging fontanelle, pain or injury concern also require urgent in-person pediatric assessment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        148802
+      ]
+    },
+    {
+      "QuestionID": 1488004,
+      "AlgorithmID": 1488,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is the baby definitely younger than 12 weeks, previously assessed as having uncomplicated colic, consolable, alert and content between episodes, feeding and urinating normally, with measured temperature below 38 C and none of the emergency or urgent features above?",
+      "Information": "Home comfort measures are appropriate only for a previously assessed, otherwise well, consolable baby with normal feeding, urine output, temperature, breathing, colour, and behaviour.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        148803
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 148801,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency precautions for a critically unwell or unsafe infant",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 for an ambulance now; do not self-drive with an unstable infant. Follow the call handler's instructions. If there is a risk someone may hurt or shake the baby, place the baby on their back in a safe empty cot, move the unsafe person away, and have a safe adult take over if available. Never shake the baby. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: baby becomes floppy or unresponsive; breathing or colour changes; risk that someone may hurt the baby."
+      ]
+    },
+    {
+      "AdviceID": 148802,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent in-person assessment for a young infant",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange urgent in-person pediatric assessment now; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Do not give fever medicine to delay assessment. Call 999 if the baby becomes difficult to wake, floppy, blue or grey, has breathing difficulty or a seizure, or cannot be transported safely.",
+        "Call Back If: feeding or urine output falls; crying or behaviour changes; temperature reaches 38 C."
+      ]
+    },
+    {
+      "AdviceID": 148803,
+      "AlgorithmOrder": 3,
+      "Title": "Controlled comfort measures for previously assessed colic",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Use the baby's established feeding plan and try holding, gentle rocking, a warm bath, or quiet background sound. Always place the baby on their back in a safe empty cot for sleep. If overwhelmed, put the baby safely in the cot, step away briefly, and ask a safe adult to take over. Never shake the baby. Re-enter urgent assessment if the baby becomes difficult to console, feeds less, has fewer wet nappies, develops vomiting, fever, abnormal breathing or colour, becomes unusually sleepy, or the cry changes.",
+        "Call Back If: temperature reaches 38 C; feeding or wet nappies decrease; cry, breathing, colour, or alertness changes; caregiver feels at risk of losing control."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Colic\", https://www.nhs.uk/conditions/colic/",
+    "NICE NG143, \"Fever in under 5s: assessment and initial management\", https://www.nice.org.uk/guidance/ng143/chapter/recommendations",
+    "NICE NG194, \"Postnatal care\" - signs and symptoms of serious illness in babies, https://www.nice.org.uk/guidance/ng194/chapter/recommendations",
+    "American Academy of Pediatrics HealthyChildren.org, \"Crying Baby - Before 3 Months Old\", https://www.healthychildren.org/English/tips-tools/Symptom-Checker/Pages/symptomviewer.aspx?symptom=Crying+Baby+-+Before+3+Months+Old"
+  ],
+  "searchwords": [
+    "baby wont stop crying",
+    "newborn crying a lot",
+    "think my baby has colic",
+    "baby cries for hours",
+    "wont stop crying no matter what i try",
+    "think she has colic"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the baby's date of birth and exact age in weeks? This protocol applies only before 12 weeks of age.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 23 source.",
+      "Source": "Crying - Before 3 Months Old"
+    },
+    {
+      "Order": 2,
+      "Category": "TEMPERATURE",
+      "Question": "What is the baby's measured temperature, how was it measured, and when?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 23 source.",
+      "Source": "Crying - Before 3 Months Old"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is breathing normal, is colour normal, and is the baby alert and responding normally when awake?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 23 source.",
+      "Source": "Crying - Before 3 Months Old"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "When did the baby last feed, how much compared with usual, and how many wet nappies have there been in the last 12 hours?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 23 source.",
+      "Source": "Crying - Before 3 Months Old"
+    },
+    {
+      "Order": 5,
+      "Category": "YES_NO",
+      "Question": "Is there vomiting, a new rash, a swollen soft spot, pain when touched or moved, or any possibility of injury?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 23 source.",
+      "Source": "Crying - Before 3 Months Old"
+    },
+    {
+      "Order": 6,
+      "Category": "YES_NO",
+      "Question": "Is the caregiver overwhelmed, angry, or afraid that they or someone else may shake or hurt the baby?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 23 source.",
+      "Source": "Crying - Before 3 Months Old"
+    },
+    {
+      "Order": 7,
+      "Category": "CAREGIVER_OBSERVATION",
+      "Question": "What has a safe parent or caregiver observed about alertness, breathing, pain, swelling, fever, eating or drinking, sleep, play, and normal activity?",
+      "Rationale": "Child assessment adds safe-caregiver observations without inventing a different clinical threshold.",
+      "Source": "IST pediatric telephone-assessment adaptation; governance review required"
+    }
+  ]
+}

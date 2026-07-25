@@ -1,0 +1,155 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1398,
+    "Title": "Head Lice - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 1,
+    "Definition": [
+      "Qatar-localized UAT-only adult and pediatric pathway for suspected head lice, requiring confirmation, age/pregnancy review, safe product selection and safeguarding assessment.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2024-04-22",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1398001,
+      "AlgorithmID": 1398,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Have no live lice been found, and is a widespread rash or redness the main concern?",
+      "Information": "A widespread rash without confirmed live lice belongs in the Rash or Redness - Widespread pathway.",
+      "GotoGuideline": "Rash or Redness - Widespread",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1398002,
+      "AlgorithmID": 1398,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Have medicated treatments already been tried without success?",
+      "Information": "NHS.UK guidance recommends speaking to a pharmacist about alternative treatments if the first attempt hasn't worked.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        139801
+      ]
+    },
+    {
+      "QuestionID": 1398003,
+      "AlgorithmID": 1398,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Is this a new case of suspected or confirmed head lice with none of the features above?",
+      "Information": "NHS.UK guidance states head lice can be treated without primary-care review, using wet combing or pharmacy treatments.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        139802
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 139801,
+      "AlgorithmOrder": 1,
+      "Title": "Head lice treatment not working",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Ask a pharmacist about alternative treatment options.",
+        "Call Back If: lice persist after a second treatment."
+      ]
+    },
+    {
+      "AdviceID": 139802,
+      "AlgorithmOrder": 2,
+      "Title": "Confirmed head-lice management review",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Confirm live lice with appropriate combing and obtain pharmacist/clinician advice before selecting treatment for age, pregnancy, breastfeeding, allergies and prior exposure. Do not use pesticides, veterinary products, essential oils, heat or flammable remedies.",
+        "Call Back If: scalp infection or chemical injury; lice persist despite correctly supervised treatment."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Head lice\", https://www.nhs.uk/conditions/head-lice/ (page last reviewed 22 April 2024)"
+  ],
+  "searchwords": [
+    "head lice",
+    "found lice in hair",
+    "nits in my kids hair",
+    "itchy scalp lice",
+    "lice crawling in my kids hair",
+    "lice in hair after school"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "YES_NO",
+      "Question": "Have live lice actually been seen (not just nits/eggs)?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 18 source.",
+      "Source": "Head Lice"
+    },
+    {
+      "Order": 2,
+      "Category": "OPEN_TEXT",
+      "Question": "Has any treatment already been tried?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 18 source.",
+      "Source": "Head Lice"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Are other close contacts also affected?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 18 source.",
+      "Source": "Head Lice"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the exact age; is the patient pregnant/breastfeeding; and are there scalp infection, chemical exposure, failed treatments, immune suppression, neglect or safeguarding concerns?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 18 source.",
+      "Source": "Head Lice"
+    }
+  ]
+}

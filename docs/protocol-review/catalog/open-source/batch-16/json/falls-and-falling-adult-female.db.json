@@ -1,0 +1,188 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1350,
+    "Title": "Falls and Falling - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 4,
+    "Definition": [
+      "Safety-first assessment after a fall in children and adults, including trauma, medical causes, anticoagulation, pregnancy, frailty, and safeguarding.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar 999 now. Do not move the person unless needed to escape immediate danger or directed by the call-handler; support the head and neck, keep them warm, control external bleeding without pressing on a deformity, give nothing by mouth, and do not allow self-driving. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2025-03-06",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1350001,
+      "AlgorithmID": 1350,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Did fainting or a temporary loss of consciousness occur before the fall?",
+      "Information": "A collapse caused by fainting belongs in the Fainting pathway.",
+      "GotoGuideline": "Fainting",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1350002,
+      "AlgorithmID": 1350,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is the person unresponsive, not breathing normally, unable to get up, or is there suspected head, neck, back, hip, abdominal, or major limb injury; uncontrolled bleeding; severe pain or deformity; repeated vomiting, seizure, confusion, new weakness or numbness; or a fall associated with chest pain, collapse, or pregnancy trauma?",
+      "Information": "NHS.UK falls guidance lists possible head/back/neck/hip injury and inability to get up as emergency-assessment criteria.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        135001
+      ]
+    },
+    {
+      "QuestionID": 1350003,
+      "AlgorithmID": 1350,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Without an emergency feature, is there pain, swelling, a wound, dizziness, new unsteadiness, suspected medical cause, anticoagulant use, pregnancy, frailty, recurrent falls, or any child, older-adult, abuse, neglect, or unsafe-caregiver concern?",
+      "Information": "Injury may be occult and a fall may be caused by acute illness or medication. Higher-risk patients and safeguarding concerns need prompt assessment; exact Qatar routing is governance-required.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        135002
+      ]
+    },
+    {
+      "QuestionID": 1350004,
+      "AlgorithmID": 1350,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Was this a low-level accidental fall in a generally healthy adult who is now completely well, walking normally, with no pain, injury, head strike, medical trigger, high-risk medicine or condition, recurrence, or safeguarding concern?",
+      "Information": "NHS.UK guidance recommends routine primary-care review to discuss balance/mobility for repeated minor falls, and general fall-prevention self-care otherwise.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        135003
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 135001,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency fall precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar 999 now. Do not move the person unless needed to escape immediate danger or directed by the call-handler; support the head and neck, keep them warm, control external bleeding without pressing on a deformity, give nothing by mouth, and do not allow self-driving. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: reduced consciousness, abnormal breathing, seizure, vomiting, weakness, or numbness; worsening pain, bleeding, or shock."
+      ]
+    },
+    {
+      "AdviceID": 135002,
+      "AlgorithmOrder": 2,
+      "Title": "Prompt in-person fall review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Use the Qatar governance-approved in-person service and timeframe to assess injury and the cause of the fall. Do not stop anticoagulants or other medicines unless instructed by the treating clinician. Address privacy and safeguarding without confronting a suspected unsafe caregiver.",
+        "Call Back If: new headache, vomiting, confusion, weakness, numbness, chest pain, fainting, or inability to walk; pain, swelling, bleeding, or breathing difficulty worsens."
+      ]
+    },
+    {
+      "AdviceID": 135003,
+      "AlgorithmOrder": 3,
+      "Title": "Fall prevention at home",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Stay physically active with regular strength and balance exercises, wear well-fitting shoes with good grip, keep a phone or alarm nearby, remove trip hazards and loose wires, use non-slip bath mats, and review medications with a primary-care clinician or pharmacist if balance is a concern. Arrange primary-care review if falls keep happening.",
+        "Call Back If: falls become more frequent; pain or injury is noticed later."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Falls\", https://www.nhs.uk/conditions/falls/ (page last reviewed 06 March 2025)"
+  ],
+  "searchwords": [
+    "had a fall",
+    "fell down at home",
+    "keeps falling",
+    "cant get up after falling"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "How, when, and from what height did the fall occur, and was there collapse, fainting, seizure, chest pain, palpitations, or weakness before it?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Falls and Falling"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Is the person awake, breathing normally, able to move all limbs, and safely able to get up without severe pain?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Falls and Falling"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Was there head, neck, back, hip, abdominal, or major limb injury, loss of consciousness, vomiting, confusion, memory loss, seizure, bleeding, or new weakness or numbness?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Falls and Falling"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "Record age, pregnancy, anticoagulant or antiplatelet use, bleeding disorder, frailty, osteoporosis, intoxication, and whether the history or caregiver situation raises abuse, neglect, or safeguarding concern.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 16 source.",
+      "Source": "Falls and Falling"
+    }
+  ]
+}

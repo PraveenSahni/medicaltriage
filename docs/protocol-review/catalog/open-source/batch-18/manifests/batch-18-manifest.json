@@ -1,0 +1,500 @@
+{
+  "manifestVersion": "1.0",
+  "importBatch": "open-source-batch-18",
+  "generatedDate": "2026-07-25",
+  "conditionFamilies": 5,
+  "protocolCount": 20,
+  "canonicalSourceFieldType": "string",
+  "algorithmIdRange": "1385-1404",
+  "applicabilityPolicy": {
+    "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
+    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "adultSpecificProtocols": "Adult-only; never generate Child variants.",
+    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
+  },
+  "excludedSourceFamilies": [
+    "Asthma Attack was deferred because medication and inhaler instructions require age-specific and local formulary governance.",
+    "Fever was excluded because its cited source is explicitly adult-only and does not support child variants.",
+    "Dizziness - Lightheadedness and Dizziness - Vertigo were deferred because pediatric applicability is not established by the cited source.",
+    "Jaundice was excluded because its cited source is newborn-specific and cannot support four Adult/Child demographic variants."
+  ],
+  "entries": [
+    {
+      "file": "json/breathing-difficulty-adult-male.db.json",
+      "algorithmId": 1385,
+      "title": "Breathing Difficulty - Male (Adult)",
+      "protocolFamily": "Breathing Difficulty",
+      "sourceProtocolId": "oscg-breathing-difficulty",
+      "canonicalSourceProtocolId": "oscg-breathing-difficulty",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "096c62b8975f64636fc017568b0c2ceb86a253b98aa38e6970982f0867c1b24a",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/breathing-difficulty-adult-female.db.json",
+      "algorithmId": 1386,
+      "title": "Breathing Difficulty - Female (Adult)",
+      "protocolFamily": "Breathing Difficulty",
+      "sourceProtocolId": "oscg-breathing-difficulty",
+      "canonicalSourceProtocolId": "oscg-breathing-difficulty",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "05c81cb50c26b5067741f05446dc04f45e84fc942d4f79ab9a5c8b52b5636724",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/breathing-difficulty-child-male.db.json",
+      "algorithmId": 1387,
+      "title": "Breathing Difficulty - Male (Child)",
+      "protocolFamily": "Breathing Difficulty",
+      "sourceProtocolId": "oscg-breathing-difficulty",
+      "canonicalSourceProtocolId": "oscg-breathing-difficulty",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "36d7c8a9b9c364c19bd7791d1fc9567a83ea93b2ac7c8db2686961a964c94e75",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/breathing-difficulty-child-female.db.json",
+      "algorithmId": 1388,
+      "title": "Breathing Difficulty - Female (Child)",
+      "protocolFamily": "Breathing Difficulty",
+      "sourceProtocolId": "oscg-breathing-difficulty",
+      "canonicalSourceProtocolId": "oscg-breathing-difficulty",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "3a02c7cdca96a24a01fb64d1240f2a882df7009f149ba55e879fc6b4e0680ae9",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/common-cold-adult-male.db.json",
+      "algorithmId": 1389,
+      "title": "Common Cold - Male (Adult)",
+      "protocolFamily": "Common Cold",
+      "sourceProtocolId": "oscg-common-cold",
+      "canonicalSourceProtocolId": "oscg-common-cold",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "948ee9faac72814fbe7d9b0d4020ee6e5bd49f126610d0e6420d12886d953fbc",
+      "redirectTarget": "Nasal Allergies (Hay Fever)",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/common-cold-adult-female.db.json",
+      "algorithmId": 1390,
+      "title": "Common Cold - Female (Adult)",
+      "protocolFamily": "Common Cold",
+      "sourceProtocolId": "oscg-common-cold",
+      "canonicalSourceProtocolId": "oscg-common-cold",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "fdaca650fe6da7d8a52baede8ccb7f0861e76ad38b77e8f61eb484186500d50e",
+      "redirectTarget": "Nasal Allergies (Hay Fever)",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/common-cold-child-male.db.json",
+      "algorithmId": 1391,
+      "title": "Common Cold - Male (Child)",
+      "protocolFamily": "Common Cold",
+      "sourceProtocolId": "oscg-common-cold",
+      "canonicalSourceProtocolId": "oscg-common-cold",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "49eed96b87e592ee9358b211d7ff44d92d93df3aca5680d663423422a37e91e0",
+      "redirectTarget": "Nasal Allergies (Hay Fever)",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/common-cold-child-female.db.json",
+      "algorithmId": 1392,
+      "title": "Common Cold - Female (Child)",
+      "protocolFamily": "Common Cold",
+      "sourceProtocolId": "oscg-common-cold",
+      "canonicalSourceProtocolId": "oscg-common-cold",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "a6c801156008af3abddd0c999a007827f8ef35b69b3993466feac8c4f0ac6c49",
+      "redirectTarget": "Nasal Allergies (Hay Fever)",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hives-adult-male.db.json",
+      "algorithmId": 1393,
+      "title": "Hives - Male (Adult)",
+      "protocolFamily": "Hives",
+      "sourceProtocolId": "oscg-hives",
+      "canonicalSourceProtocolId": "oscg-hives",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "69cc478ed4e652ca07fcd287263afe8bdbe8a809682d403ed038949498d31fcd",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hives-adult-female.db.json",
+      "algorithmId": 1394,
+      "title": "Hives - Female (Adult)",
+      "protocolFamily": "Hives",
+      "sourceProtocolId": "oscg-hives",
+      "canonicalSourceProtocolId": "oscg-hives",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "56cc9470890396c7598515adfe6e6984295e898a408d4a6dcd175e4121701859",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hives-child-male.db.json",
+      "algorithmId": 1395,
+      "title": "Hives - Male (Child)",
+      "protocolFamily": "Hives",
+      "sourceProtocolId": "oscg-hives",
+      "canonicalSourceProtocolId": "oscg-hives",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "da888b5960778074f118971d6eff2aacb56f7f3b7d7305f354a367ed5ecd133a",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hives-child-female.db.json",
+      "algorithmId": 1396,
+      "title": "Hives - Female (Child)",
+      "protocolFamily": "Hives",
+      "sourceProtocolId": "oscg-hives",
+      "canonicalSourceProtocolId": "oscg-hives",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "21537c27414eff0583ed866f147fe3a4f27aeeb971f67d0d42684e0bea0e6564",
+      "redirectTarget": "Anaphylaxis",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/head-lice-adult-male.db.json",
+      "algorithmId": 1397,
+      "title": "Head Lice - Male (Adult)",
+      "protocolFamily": "Head Lice",
+      "sourceProtocolId": "oscg-head-lice",
+      "canonicalSourceProtocolId": "oscg-head-lice",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "4da1041861131039ff704484bf091aa2f7ecf3894fe1b2ae1e942379918aeb8f",
+      "redirectTarget": "Rash or Redness - Widespread",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/head-lice-adult-female.db.json",
+      "algorithmId": 1398,
+      "title": "Head Lice - Female (Adult)",
+      "protocolFamily": "Head Lice",
+      "sourceProtocolId": "oscg-head-lice",
+      "canonicalSourceProtocolId": "oscg-head-lice",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "394de7c863e5edd422a15dbbfde8c8700a699b54be2981bcee0d4b2a22e91129",
+      "redirectTarget": "Rash or Redness - Widespread",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/head-lice-child-male.db.json",
+      "algorithmId": 1399,
+      "title": "Head Lice - Male (Child)",
+      "protocolFamily": "Head Lice",
+      "sourceProtocolId": "oscg-head-lice",
+      "canonicalSourceProtocolId": "oscg-head-lice",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "25cc5e23e422a3bfad374101055bc8c003c564ecf53996df024f12a4047bf0b3",
+      "redirectTarget": "Rash or Redness - Widespread",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/head-lice-child-female.db.json",
+      "algorithmId": 1400,
+      "title": "Head Lice - Female (Child)",
+      "protocolFamily": "Head Lice",
+      "sourceProtocolId": "oscg-head-lice",
+      "canonicalSourceProtocolId": "oscg-head-lice",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "5a29e6f4732a259aa75cdbc8a4b7f2dc3db0deb94fde2e482d974f5ae0e73c35",
+      "redirectTarget": "Rash or Redness - Widespread",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/earwax-adult-male.db.json",
+      "algorithmId": 1401,
+      "title": "Earwax - Male (Adult)",
+      "protocolFamily": "Earwax",
+      "sourceProtocolId": "oscg-earwax",
+      "canonicalSourceProtocolId": "oscg-earwax",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "1692a6be66bff8ca7b40f6822ceeb6ed3cb4464d4434d0cc7b3aeb09152f7c70",
+      "redirectTarget": "Earache",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/earwax-adult-female.db.json",
+      "algorithmId": 1402,
+      "title": "Earwax - Female (Adult)",
+      "protocolFamily": "Earwax",
+      "sourceProtocolId": "oscg-earwax",
+      "canonicalSourceProtocolId": "oscg-earwax",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "1628be95b5564544f261cb53b801c9a4ef13380fac236be3448549d69baecc64",
+      "redirectTarget": "Earache",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/earwax-child-male.db.json",
+      "algorithmId": 1403,
+      "title": "Earwax - Male (Child)",
+      "protocolFamily": "Earwax",
+      "sourceProtocolId": "oscg-earwax",
+      "canonicalSourceProtocolId": "oscg-earwax",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "4aad39d28cc25feeb2f0495fb07cc95e3decd5f2945f135df7f9ce241e2e232c",
+      "redirectTarget": "Earache",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/earwax-child-female.db.json",
+      "algorithmId": 1404,
+      "title": "Earwax - Female (Child)",
+      "protocolFamily": "Earwax",
+      "sourceProtocolId": "oscg-earwax",
+      "canonicalSourceProtocolId": "oscg-earwax",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch18-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "f67a438936a6155c6f79894e69038a0093d09439547bca3fbd5cc1ca26ea63df",
+      "redirectTarget": "Earache",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    }
+  ],
+  "safetyBoundary": {
+    "usageStatus": "UAT_ONLY",
+    "productionEligible": false,
+    "requiresClinicalValidation": true,
+    "importOrDeploymentPerformed": false
+  }
+}

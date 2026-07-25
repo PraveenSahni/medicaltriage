@@ -1,0 +1,168 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited NHS.UK pages under the Open Government Licence v3.0; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Local extensions, destination mappings, safeguarding workflows, and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1087,
+    "Title": "Confusion - Delirium - Male (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 5,
+    "Definition": [
+      "UAT-only assessment of new confusion or an acute change from developmental or cognitive baseline; sudden confusion is an emergency and this pathway must not redirect children into an adult head-injury decision rule.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999. Stay with the person, use simple words and short sentences, reassure them, and avoid repeated questioning or restraint unless needed to prevent immediate injury. Do not allow them to drive. Gather their medicines and relevant exposure information if safe. Do not redirect to the adult Canadian CT Head Rule: acute confusion after head injury requires direct emergency assessment, and that rule is not validated for children. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2024-05-28",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Crown copyright (NHS.UK content), reused under the Open Government Licence v3.0. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1087001,
+      "AlgorithmID": 1087,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Did the confusion begin after a recent head injury, with the injury as the main concern?",
+      "Information": "Sudden confusion after head injury requires direct emergency assessment. The generated head-injury rule is adult-only and has narrower entry criteria, so no redirect is used.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        108701
+      ]
+    },
+    {
+      "QuestionID": 1087002,
+      "AlgorithmID": 1087,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Has the person suddenly become confused or acutely changed from their usual cognitive or developmental baseline, including a child who is newly disoriented, abnormally drowsy, not recognizing or engaging with caregivers, or not responding normally?",
+      "Information": "NHS.UK guidance requires immediate medical help for sudden confusion because causes such as infection, stroke, hypoglycaemia, head injury, medicines, poisoning, carbon monoxide, cardiopulmonary illness, or seizure may be life-threatening. In a young child, assess an acute change from developmental baseline rather than relying on adult orientation questions. This is a direct Qatar 999 disposition, not a Head Injury redirect.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        108701
+      ]
+    },
+    {
+      "QuestionID": 1087003,
+      "AlgorithmID": 1087,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "With no acute change or emergency feature, has an adult gradually become more forgetful or confused, or has a child shown a persistent developmental, learning, behavioral, or cognitive change that needs clinical assessment?",
+      "Information": "NHS.UK recommends clinical assessment for gradually progressive adult forgetfulness or confusion. A persistent cognitive or developmental change in a child requires a pediatric assessment and must not be treated as possible adult dementia.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        108702
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 108701,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency response for acute confusion",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999. Stay with the person, use simple words and short sentences, reassure them, and avoid repeated questioning or restraint unless needed to prevent immediate injury. Do not allow them to drive. Gather their medicines and relevant exposure information if safe. Do not redirect to the adult Canadian CT Head Rule: acute confusion after head injury requires direct emergency assessment, and that rule is not validated for children. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening confusion or abnormal responsiveness; loss of consciousness; seizure; stroke signs; breathing difficulty; recent head injury; possible poisoning or carbon monoxide exposure."
+      ]
+    },
+    {
+      "AdviceID": 108702,
+      "AlgorithmOrder": 2,
+      "Title": "Age-appropriate cognitive follow-up",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange an approved PHCC assessment for gradual adult memory or cognitive change. For a child, arrange an age-appropriate pediatric assessment rather than an adult memory pathway. Call 999 if a sudden change, reduced responsiveness, seizure, new neurological sign, or serious illness develops.",
+        "Call Back If: sudden worsening; new inability to recognize caregivers or places; reduced responsiveness; new neurological symptom."
+      ]
+    }
+  ],
+  "references": [
+    "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (accessed 2026-07-25)",
+    "NHS.UK, \"Sudden confusion (delirium)\", https://www.nhs.uk/symptoms/confusion/ (page last reviewed 28 May 2024)"
+  ],
+  "searchwords": [
+    "sudden confusion",
+    "delirium",
+    "acting confused",
+    "became confused",
+    "very confused",
+    "doesn t know where he is",
+    "disoriented"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "DURATION",
+      "Question": "When was the person last at their usual cognitive or developmental baseline, and was the change sudden or gradual?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Confusion - Delirium"
+    },
+    {
+      "Order": 2,
+      "Category": "OPEN_TEXT",
+      "Question": "Can the person state their name, age, and current place or date as developmentally appropriate? For a child, are they recognizing caregivers, interacting, and responding as usual?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Confusion - Delirium"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is there reduced consciousness, a seizure, new one-sided weakness, facial droop, speech difficulty, severe headache, stiff neck, breathing difficulty, or recent head injury?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Confusion - Delirium"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "Is there fever or recent illness, diabetes or possible low glucose, a new or changed medicine, alcohol or drug exposure, possible poisoning, or possible carbon monoxide exposure affecting anyone else nearby?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Confusion - Delirium"
+    },
+    {
+      "Order": 5,
+      "Category": "YES_NO",
+      "Question": "For a baby or a child too young to assess orientation, is there new abnormal responsiveness, failure to recognize or engage with a caregiver, marked drowsiness, or another acute change from usual behavior?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Confusion - Delirium"
+    }
+  ]
+}

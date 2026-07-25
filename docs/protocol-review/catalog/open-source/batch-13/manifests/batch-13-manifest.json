@@ -1,0 +1,500 @@
+{
+  "manifestVersion": "1.0",
+  "importBatch": "open-source-batch-13",
+  "generatedDate": "2026-07-25",
+  "conditionFamilies": 5,
+  "protocolCount": 20,
+  "canonicalSourceFieldType": "string",
+  "algorithmIdRange": "1285-1304",
+  "applicabilityPolicy": {
+    "pregnancySpecificProtocols": "Female-only; never generate Male variants.",
+    "pediatricSpecificProtocols": "Child-only within source-supported ages; never generate Adult variants.",
+    "adultSpecificProtocols": "Adult-only; never generate Child variants.",
+    "mixedAgeProtocols": "Adult and Child variants only when the cited source supports both populations.",
+    "sexSpecificDifferences": "Only evidence-supported differences; never fabricate demographic content."
+  },
+  "excludedSourceFamilies": [
+    "Face Injury was deferred because its source is a documented multi-source generalization that needs focused governance review.",
+    "Mouth Injury and Tooth Injury were deferred because their emergency-dentistry content is not anchored to one dedicated public guideline.",
+    "Tailbone Injury was deferred because it generalizes a back-injury screen without a dedicated source.",
+    "Toe Injury was deferred because it generalizes upper-limb fracture guidance to a different anatomical site."
+  ],
+  "entries": [
+    {
+      "file": "json/ear-injury-adult-male.db.json",
+      "algorithmId": 1285,
+      "title": "Ear Injury - Male (Adult)",
+      "protocolFamily": "Ear Injury",
+      "sourceProtocolId": "oscg-ear-injury",
+      "canonicalSourceProtocolId": "oscg-ear-injury",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "26344207b01aea609409ba96056a35ffe9c7b9ca387f870a9a151feb0b169431",
+      "redirectTarget": "Ear - Foreign Body",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/ear-injury-adult-female.db.json",
+      "algorithmId": 1286,
+      "title": "Ear Injury - Female (Adult)",
+      "protocolFamily": "Ear Injury",
+      "sourceProtocolId": "oscg-ear-injury",
+      "canonicalSourceProtocolId": "oscg-ear-injury",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "d29185291d8ad114fde01d946680d46ba4e91d8828f1f01a162573c9c25a270a",
+      "redirectTarget": "Ear - Foreign Body",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/ear-injury-child-male.db.json",
+      "algorithmId": 1287,
+      "title": "Ear Injury - Male (Child)",
+      "protocolFamily": "Ear Injury",
+      "sourceProtocolId": "oscg-ear-injury",
+      "canonicalSourceProtocolId": "oscg-ear-injury",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "211e6f741cabd1f37f33c0a7f9b69b12e6412ecac350c2a0c9acecd1a5e3bd53",
+      "redirectTarget": "Ear - Foreign Body",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/ear-injury-child-female.db.json",
+      "algorithmId": 1288,
+      "title": "Ear Injury - Female (Child)",
+      "protocolFamily": "Ear Injury",
+      "sourceProtocolId": "oscg-ear-injury",
+      "canonicalSourceProtocolId": "oscg-ear-injury",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "87b54641a871bceedb470bccda3a0c1b906ad81ece48a36c3586fadf9aedc219",
+      "redirectTarget": "Ear - Foreign Body",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/elbow-injury-adult-male.db.json",
+      "algorithmId": 1289,
+      "title": "Elbow Injury - Male (Adult)",
+      "protocolFamily": "Elbow Injury",
+      "sourceProtocolId": "oscg-elbow-injury",
+      "canonicalSourceProtocolId": "oscg-elbow-injury",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "35140491a16856f611a0146a51dcf2dedc14a85f83274e42298441acc60f9827",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/elbow-injury-adult-female.db.json",
+      "algorithmId": 1290,
+      "title": "Elbow Injury - Female (Adult)",
+      "protocolFamily": "Elbow Injury",
+      "sourceProtocolId": "oscg-elbow-injury",
+      "canonicalSourceProtocolId": "oscg-elbow-injury",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "c642bc934ba7e783f92299052c062eea0448bf4cde6bc37dd04f3ae43fb7a642",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/elbow-injury-child-male.db.json",
+      "algorithmId": 1291,
+      "title": "Elbow Injury - Male (Child)",
+      "protocolFamily": "Elbow Injury",
+      "sourceProtocolId": "oscg-elbow-injury",
+      "canonicalSourceProtocolId": "oscg-elbow-injury",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "759248b674b15cfd4b502c8e4673405cbeab5801833b663199c62eb2dca7c156",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/elbow-injury-child-female.db.json",
+      "algorithmId": 1292,
+      "title": "Elbow Injury - Female (Child)",
+      "protocolFamily": "Elbow Injury",
+      "sourceProtocolId": "oscg-elbow-injury",
+      "canonicalSourceProtocolId": "oscg-elbow-injury",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "437d00c4bf2c8ea782ada25fb9b0406fdd444f5f1b579b55eae3b85a2a2dab7e",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/eye-injury-adult-male.db.json",
+      "algorithmId": 1293,
+      "title": "Eye Injury - Male (Adult)",
+      "protocolFamily": "Eye Injury",
+      "sourceProtocolId": "oscg-eye-injury",
+      "canonicalSourceProtocolId": "oscg-eye-injury",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "173d009b9a64120cfe2eea2f1e66a597daa3b5df6511177ede44787640b6058a",
+      "redirectTarget": "DIRECT_DISPOSITION_100",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/eye-injury-adult-female.db.json",
+      "algorithmId": 1294,
+      "title": "Eye Injury - Female (Adult)",
+      "protocolFamily": "Eye Injury",
+      "sourceProtocolId": "oscg-eye-injury",
+      "canonicalSourceProtocolId": "oscg-eye-injury",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "56b5a4812373a2f786cbccc5c076f5b3f231030841ede0ebb026cc1c8d422dc7",
+      "redirectTarget": "DIRECT_DISPOSITION_100",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/eye-injury-child-male.db.json",
+      "algorithmId": 1295,
+      "title": "Eye Injury - Male (Child)",
+      "protocolFamily": "Eye Injury",
+      "sourceProtocolId": "oscg-eye-injury",
+      "canonicalSourceProtocolId": "oscg-eye-injury",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "294c92781d8fdda7536c939e2930469fb615cea5cef8c05e80ccb369d50534ef",
+      "redirectTarget": "DIRECT_DISPOSITION_100",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/eye-injury-child-female.db.json",
+      "algorithmId": 1296,
+      "title": "Eye Injury - Female (Child)",
+      "protocolFamily": "Eye Injury",
+      "sourceProtocolId": "oscg-eye-injury",
+      "canonicalSourceProtocolId": "oscg-eye-injury",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "ee3a53bd3e65ac9d4a097c71d666ddf077d22339051029206a92508c21b1b182",
+      "redirectTarget": "DIRECT_DISPOSITION_100",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hip-injury-adult-male.db.json",
+      "algorithmId": 1297,
+      "title": "Hip Injury - Male (Adult)",
+      "protocolFamily": "Hip Injury",
+      "sourceProtocolId": "oscg-hip-injury",
+      "canonicalSourceProtocolId": "oscg-hip-injury",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "b6edab04ab3e6b97f3356f4dae097c31b74eb332dcc13772c75f79db455c5a3c",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hip-injury-adult-female.db.json",
+      "algorithmId": 1298,
+      "title": "Hip Injury - Female (Adult)",
+      "protocolFamily": "Hip Injury",
+      "sourceProtocolId": "oscg-hip-injury",
+      "canonicalSourceProtocolId": "oscg-hip-injury",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "efc1f5ee120c72b54cc75d3c68f92405a4e1e3f3706e11f3115048b897b6f802",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hip-injury-child-male.db.json",
+      "algorithmId": 1299,
+      "title": "Hip Injury - Male (Child)",
+      "protocolFamily": "Hip Injury",
+      "sourceProtocolId": "oscg-hip-injury",
+      "canonicalSourceProtocolId": "oscg-hip-injury",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "32820b1d51964b1cf9a7b915516bec8491b3163dbc025d63f0679ac08da9c66a",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/hip-injury-child-female.db.json",
+      "algorithmId": 1300,
+      "title": "Hip Injury - Female (Child)",
+      "protocolFamily": "Hip Injury",
+      "sourceProtocolId": "oscg-hip-injury",
+      "canonicalSourceProtocolId": "oscg-hip-injury",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "2b2561c4157acb12511eaaa6779696b18febf6eb7d905cf736006520c6316c99",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/leg-injury-adult-male.db.json",
+      "algorithmId": 1301,
+      "title": "Leg Injury - Male (Adult)",
+      "protocolFamily": "Leg Injury",
+      "sourceProtocolId": "oscg-leg-injury",
+      "canonicalSourceProtocolId": "oscg-leg-injury",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "74b1340810eb49a475aab8c5ff0cb2f75da855199ed3c02a36c03c2978ec74f8",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/leg-injury-adult-female.db.json",
+      "algorithmId": 1302,
+      "title": "Leg Injury - Female (Adult)",
+      "protocolFamily": "Leg Injury",
+      "sourceProtocolId": "oscg-leg-injury",
+      "canonicalSourceProtocolId": "oscg-leg-injury",
+      "ageGroup": "Adult",
+      "sourceMinimumAge": 18,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "355c7a50d59afb066d4370605fcab67ef2ba84d5daadd2ec9185d8c96b771721",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Adult pathway uses direct symptom, safety, and functional-impact assessment."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/leg-injury-child-male.db.json",
+      "algorithmId": 1303,
+      "title": "Leg Injury - Male (Child)",
+      "protocolFamily": "Leg Injury",
+      "sourceProtocolId": "oscg-leg-injury",
+      "canonicalSourceProtocolId": "oscg-leg-injury",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Male",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "9e60ff5afeb21681425f1cc7a889225f7bf40e85ac3e3242c6ed27c014656883",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    },
+    {
+      "file": "json/leg-injury-child-female.db.json",
+      "algorithmId": 1304,
+      "title": "Leg Injury - Female (Child)",
+      "protocolFamily": "Leg Injury",
+      "sourceProtocolId": "oscg-leg-injury",
+      "canonicalSourceProtocolId": "oscg-leg-injury",
+      "ageGroup": "Child",
+      "sourceMinimumAge": 0,
+      "genderAtBirth": "Female",
+      "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
+      "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
+      "canonicalContentHash": "49abba04c8739102ebd2e7d6a6781449f7fd2a2674e76c48364a856ff8f2e3ad",
+      "redirectTarget": "Motor Vehicle Accident",
+      "demographicDifferentiation": {
+        "ageSpecificChanges": [
+          "Child applicability begins at source minimum age 0.",
+          "Safe-caregiver observations are added without changing source-derived thresholds."
+        ],
+        "sexSpecificChanges": [
+          "No sex-specific threshold is supported by the cited source; no difference was fabricated."
+        ]
+      }
+    }
+  ],
+  "safetyBoundary": {
+    "usageStatus": "UAT_ONLY",
+    "productionEligible": false,
+    "requiresClinicalValidation": true,
+    "importOrDeploymentPerformed": false
+  }
+}

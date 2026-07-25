@@ -1,0 +1,156 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1425,
+    "Title": "Postpartum - Headache - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 5,
+    "Definition": [
+      "Postpartum headache assessment for a person who has given birth within the last year. Pre-eclampsia is especially relevant in the first days or weeks after birth; other pregnancy-related complications can occur later.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2026-03-23",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1425001,
+      "AlgorithmID": 1425,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is this a non-postpartum headache presentation without recent childbirth?",
+      "Information": "A headache not occurring in the postpartum period belongs in the Headache pathway.",
+      "GotoGuideline": "Headache",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1425002,
+      "AlgorithmID": 1425,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there a severe headache that doesn't go away with simple painkillers, vision problems (blurred vision or flashing lights), pain below the ribs, sudden swelling of the face/hands/feet, feeling very unwell, persistent heartburn unresponsive to medication, or vomiting?",
+      "Information": "NHS.UK guidance lists these as pre-eclampsia warning signs that can appear in the days or weeks after birth and always need immediate evaluation.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        142501
+      ]
+    },
+    {
+      "QuestionID": 1425003,
+      "AlgorithmID": 1425,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Is there a new or persistent postpartum headache without the emergency features above?",
+      "Information": "A new or persistent headache after birth requires clinical assessment because remote questioning alone cannot exclude a hypertensive, neurological, anaesthetic-related, or infectious cause.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        142502
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 142501,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency postpartum pre-eclampsia precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 now. Do not drive yourself. Tell the call handler that the patient gave birth recently. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening headache; vision changes worsen."
+      ]
+    },
+    {
+      "AdviceID": 142502,
+      "AlgorithmOrder": 2,
+      "Title": "Prompt postpartum headache review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Seek emergency help on 999 if the headache becomes severe or vision change, fainting, seizure, breathing difficulty, chest pain, severe upper abdominal pain, or marked swelling develops.",
+        "Call Back If: headache becomes severe; vision changes or swelling develop."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Pre-eclampsia\", https://www.nhs.uk/conditions/pre-eclampsia/ (page last reviewed 23 March 2026) - explicitly covers postpartum onset",
+    "CDC Hear Her, urgent maternal warning signs during pregnancy or within one year after pregnancy, https://www.cdc.gov/hearher/"
+  ],
+  "searchwords": [
+    "headache after giving birth",
+    "postpartum headache",
+    "bad headache since having the baby",
+    "severe headache after delivery"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "DURATION",
+      "Question": "How many days/weeks since delivery?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 20 source.",
+      "Source": "Postpartum - Headache"
+    },
+    {
+      "Order": 2,
+      "Category": "PAIN_SCALE",
+      "Question": "How severe is the headache, 0-10?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 20 source.",
+      "Source": "Postpartum - Headache"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Any vision changes, swelling, or pain below the ribs?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 20 source.",
+      "Source": "Postpartum - Headache"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 20 source.",
+      "Source": "Postpartum - Headache"
+    }
+  ]
+}

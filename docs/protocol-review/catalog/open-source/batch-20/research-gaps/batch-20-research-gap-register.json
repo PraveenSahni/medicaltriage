@@ -1,0 +1,486 @@
+{
+  "batch": "20",
+  "count": 60,
+  "gaps": [
+    {
+      "gapId": "B20-1425-algorithm-LastRevised",
+      "algorithmId": 1425,
+      "protocol": "Postpartum - Headache - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1425-clinicalReview",
+      "algorithmId": 1425,
+      "protocol": "Postpartum - Headache - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1425-localization",
+      "algorithmId": 1425,
+      "protocol": "Postpartum - Headache - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1426-algorithm-LastRevised",
+      "algorithmId": 1426,
+      "protocol": "Postpartum - Headache - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1426-clinicalReview",
+      "algorithmId": 1426,
+      "protocol": "Postpartum - Headache - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1426-localization",
+      "algorithmId": 1426,
+      "protocol": "Postpartum - Headache - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1427-algorithm-LastRevised",
+      "algorithmId": 1427,
+      "protocol": "Postpartum - High Blood Pressure - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1427-clinicalReview",
+      "algorithmId": 1427,
+      "protocol": "Postpartum - High Blood Pressure - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1427-localization",
+      "algorithmId": 1427,
+      "protocol": "Postpartum - High Blood Pressure - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1428-algorithm-LastRevised",
+      "algorithmId": 1428,
+      "protocol": "Postpartum - High Blood Pressure - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1428-clinicalReview",
+      "algorithmId": 1428,
+      "protocol": "Postpartum - High Blood Pressure - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1428-localization",
+      "algorithmId": 1428,
+      "protocol": "Postpartum - High Blood Pressure - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1429-algorithm-LastRevised",
+      "algorithmId": 1429,
+      "protocol": "Postpartum - Vision Loss or Change - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1429-clinicalReview",
+      "algorithmId": 1429,
+      "protocol": "Postpartum - Vision Loss or Change - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1429-localization",
+      "algorithmId": 1429,
+      "protocol": "Postpartum - Vision Loss or Change - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1430-algorithm-LastRevised",
+      "algorithmId": 1430,
+      "protocol": "Postpartum - Vision Loss or Change - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1430-clinicalReview",
+      "algorithmId": 1430,
+      "protocol": "Postpartum - Vision Loss or Change - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1430-localization",
+      "algorithmId": 1430,
+      "protocol": "Postpartum - Vision Loss or Change - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1431-algorithm-LastRevised",
+      "algorithmId": 1431,
+      "protocol": "Postpartum - C-section Symptoms - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1431-clinicalReview",
+      "algorithmId": 1431,
+      "protocol": "Postpartum - C-section Symptoms - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1431-localization",
+      "algorithmId": 1431,
+      "protocol": "Postpartum - C-section Symptoms - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1432-algorithm-LastRevised",
+      "algorithmId": 1432,
+      "protocol": "Postpartum - C-section Symptoms - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1432-clinicalReview",
+      "algorithmId": 1432,
+      "protocol": "Postpartum - C-section Symptoms - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1432-localization",
+      "algorithmId": 1432,
+      "protocol": "Postpartum - C-section Symptoms - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1433-algorithm-LastRevised",
+      "algorithmId": 1433,
+      "protocol": "Postpartum - Leg Pain - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1433-clinicalReview",
+      "algorithmId": 1433,
+      "protocol": "Postpartum - Leg Pain - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1433-localization",
+      "algorithmId": 1433,
+      "protocol": "Postpartum - Leg Pain - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1434-algorithm-LastRevised",
+      "algorithmId": 1434,
+      "protocol": "Postpartum - Leg Pain - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1434-clinicalReview",
+      "algorithmId": 1434,
+      "protocol": "Postpartum - Leg Pain - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1434-localization",
+      "algorithmId": 1434,
+      "protocol": "Postpartum - Leg Pain - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1435-algorithm-LastRevised",
+      "algorithmId": 1435,
+      "protocol": "Postpartum - Leg Swelling and Edema - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1435-clinicalReview",
+      "algorithmId": 1435,
+      "protocol": "Postpartum - Leg Swelling and Edema - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1435-localization",
+      "algorithmId": 1435,
+      "protocol": "Postpartum - Leg Swelling and Edema - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1436-algorithm-LastRevised",
+      "algorithmId": 1436,
+      "protocol": "Postpartum - Leg Swelling and Edema - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1436-clinicalReview",
+      "algorithmId": 1436,
+      "protocol": "Postpartum - Leg Swelling and Edema - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1436-localization",
+      "algorithmId": 1436,
+      "protocol": "Postpartum - Leg Swelling and Edema - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1437-algorithm-LastRevised",
+      "algorithmId": 1437,
+      "protocol": "Postpartum - Urination Pain - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1437-clinicalReview",
+      "algorithmId": 1437,
+      "protocol": "Postpartum - Urination Pain - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1437-localization",
+      "algorithmId": 1437,
+      "protocol": "Postpartum - Urination Pain - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1438-algorithm-LastRevised",
+      "algorithmId": 1438,
+      "protocol": "Postpartum - Urination Pain - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1438-clinicalReview",
+      "algorithmId": 1438,
+      "protocol": "Postpartum - Urination Pain - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1438-localization",
+      "algorithmId": 1438,
+      "protocol": "Postpartum - Urination Pain - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1439-algorithm-LastRevised",
+      "algorithmId": 1439,
+      "protocol": "Postpartum - Fever - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1439-clinicalReview",
+      "algorithmId": 1439,
+      "protocol": "Postpartum - Fever - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1439-localization",
+      "algorithmId": 1439,
+      "protocol": "Postpartum - Fever - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1440-algorithm-LastRevised",
+      "algorithmId": 1440,
+      "protocol": "Postpartum - Fever - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1440-clinicalReview",
+      "algorithmId": 1440,
+      "protocol": "Postpartum - Fever - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1440-localization",
+      "algorithmId": 1440,
+      "protocol": "Postpartum - Fever - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1441-algorithm-LastRevised",
+      "algorithmId": 1441,
+      "protocol": "Postpartum - Breast Pain and Engorgement - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1441-clinicalReview",
+      "algorithmId": 1441,
+      "protocol": "Postpartum - Breast Pain and Engorgement - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1441-localization",
+      "algorithmId": 1441,
+      "protocol": "Postpartum - Breast Pain and Engorgement - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1442-algorithm-LastRevised",
+      "algorithmId": 1442,
+      "protocol": "Postpartum - Breast Pain and Engorgement - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1442-clinicalReview",
+      "algorithmId": 1442,
+      "protocol": "Postpartum - Breast Pain and Engorgement - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1442-localization",
+      "algorithmId": 1442,
+      "protocol": "Postpartum - Breast Pain and Engorgement - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1443-algorithm-LastRevised",
+      "algorithmId": 1443,
+      "protocol": "Postpartum - Vaginal Bleeding and Lochia - Female (Adult)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1443-clinicalReview",
+      "algorithmId": 1443,
+      "protocol": "Postpartum - Vaginal Bleeding and Lochia - Female (Adult)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1443-localization",
+      "algorithmId": 1443,
+      "protocol": "Postpartum - Vaginal Bleeding and Lochia - Female (Adult)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1444-algorithm-LastRevised",
+      "algorithmId": 1444,
+      "protocol": "Postpartum - Vaginal Bleeding and Lochia - Female (Child)",
+      "field": "algorithm.LastRevised",
+      "description": "Internal IST clinical adaptation date is not recorded.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1444-clinicalReview",
+      "algorithmId": 1444,
+      "protocol": "Postpartum - Vaginal Bleeding and Lochia - Female (Child)",
+      "field": "clinicalReview",
+      "description": "Named IST clinician approval is required for questions, dispositions, advice, redirects, and demographic applicability.",
+      "status": "OPEN"
+    },
+    {
+      "gapId": "B20-1444-localization",
+      "algorithmId": 1444,
+      "protocol": "Postpartum - Vaginal Bleeding and Lochia - Female (Child)",
+      "field": "localization",
+      "description": "Qatar destination, medication, callback, emergency, and safeguarding instructions require approval.",
+      "status": "OPEN"
+    }
+  ]
+}

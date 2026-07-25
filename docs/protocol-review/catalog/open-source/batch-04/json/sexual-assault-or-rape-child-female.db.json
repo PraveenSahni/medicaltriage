@@ -1,0 +1,250 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited NHS.UK pages under the Open Government Licence v3.0; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Local extensions, destination mappings, safeguarding workflows, and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1094,
+    "Title": "Sexual Assault or Rape - Female (Child)",
+    "ContentSet": "IST Open-Source Guideline Content | Child | Female",
+    "Age": "Child (12-17 years)",
+    "GenderAtBirth": "Female",
+    "Acuity": 4,
+    "Definition": [
+      "UAT-only, trauma-informed safety and healthcare-routing draft after suspected or disclosed sexual assault or rape for people aged 12 years and older; it does not replace trained clinical, forensic, safeguarding, or legal assessment.",
+      "Child patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "If it is safe to communicate, call Qatar emergency services on 999 and provide the location and immediate threat or injury. Do not ask the affected person to drive or self-transport; use the emergency response arranged by 999. Do not confront or alert the suspected perpetrator, and do not send messages or leave voicemail if that may expose the caller. Prioritize life-saving care over evidence preservation. Use only the caller's agreed safe callback method. For a child or adolescent, do not rely on a caregiver who may be involved or unsafe; follow the approved safeguarding escalation. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2024-11-06",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Crown copyright (NHS.UK content), reused under the Open Government Licence v3.0. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 78,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1094001,
+      "AlgorithmID": 1094,
+      "DispositionLevel": 78,
+      "QuestionOrder": 1,
+      "Question": "Was there no sexual assault, with a non-sexual physical assault or injury now being the primary concern?",
+      "Information": "A non-sexual physical assault belongs in the physical-assault or injury pathway. Any sexual assault remains in this trauma-informed pathway.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        109402
+      ]
+    },
+    {
+      "QuestionID": 1094002,
+      "AlgorithmID": 1094,
+      "DispositionLevel": 78,
+      "QuestionOrder": 1,
+      "Question": "Is the child unable to speak safely and privately, is the suspected perpetrator or an unsafe caregiver present, or could the child be returned to an unsafe person or place?",
+      "Information": "Do not assume the accompanying adult is a safe respondent. Keep the child's immediate safety central, avoid alerting a suspected perpetrator, and follow the approved Qatar child-safeguarding escalation pathway. Call 999 for immediate danger.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        109404
+      ]
+    },
+    {
+      "QuestionID": 1094003,
+      "AlgorithmID": 1094,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is the assault occurring now; is the caller in immediate danger; is safe communication impossible because the suspected perpetrator or an unsafe caregiver is present; or is there severe bleeding, breathing difficulty, loss of consciousness, suspected strangulation, severe head or neck injury, poisoning, severe pain, suicidal crisis, or another serious injury?",
+      "Information": "Immediate danger, life-threatening injury, strangulation symptoms, impaired consciousness, or acute suicide risk requires emergency response before routine forensic or follow-up care. Qatar's official emergency number is 999. Safety planning must not alert or confront a suspected perpetrator.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        109401
+      ]
+    },
+    {
+      "QuestionID": 1094004,
+      "AlgorithmID": 1094,
+      "DispositionLevel": 78,
+      "QuestionOrder": 2,
+      "Question": "With no emergency feature above, does the caller need prompt specialist assessment for injuries, pregnancy risk, STI or HIV care, psychological support, safeguarding, or options for forensic examination, regardless of when the assault happened?",
+      "Information": "HMC's Sexual Assault Service provides specialist medical treatment, emergency contraception, STI/HIV assessment, psychological support, and forensic examination. WHO recommends urgent survivor-centred care and notes that HIV prophylaxis and emergency contraception are time-sensitive; care should still be offered after those windows and must not depend on forensic participation.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        109402
+      ]
+    },
+    {
+      "QuestionID": 1094005,
+      "AlgorithmID": 1094,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Is the caller currently safe with no emergency feature and seeking information, ongoing healthcare, or psychological support after a past assault?",
+      "Information": "Survivor-centred support remains appropriate regardless of when the assault occurred. HMC's specialist service accepts calls from survivors and people seeking advice; its trained team explains available care and Qatar legal processes.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        109403
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 109401,
+      "AlgorithmOrder": 2,
+      "Title": "Qatar emergency safety and injury response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "If it is safe to communicate, call Qatar emergency services on 999 and provide the location and immediate threat or injury. Do not ask the affected person to drive or self-transport; use the emergency response arranged by 999. Do not confront or alert the suspected perpetrator, and do not send messages or leave voicemail if that may expose the caller. Prioritize life-saving care over evidence preservation. Use only the caller's agreed safe callback method. For a child or adolescent, do not rely on a caregiver who may be involved or unsafe; follow the approved safeguarding escalation. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: ongoing danger; suspected strangulation or breathing difficulty; heavy bleeding; loss of consciousness; severe head or neck injury; suicidal crisis; unsafe caregiver or perpetrator present."
+      ]
+    },
+    {
+      "AdviceID": 109402,
+      "AlgorithmOrder": 3,
+      "Title": "HMC specialist sexual-assault care",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Offer contact with HMC's Sexual Assault Service at Hamad General Hospital on +974 4025 6460 for specialist telephone triage and prompt medical, psychological, and forensic-care options. Explain that each part of history-taking, examination, treatment, documentation, and forensic evidence collection requires an appropriate consent process and that the person may ask to pause or stop. Some pregnancy and infection-prevention treatments are time-sensitive, so do not delay medical care. If the person wants to preserve possible evidence and it does not delay urgent care, avoid washing, eating, drinking, brushing teeth, or changing clothes after relevant contact; if any of these have already happened, still offer specialist care. Do not promise confidentiality or a choice about reporting until the HMC team has explained Qatar legal processes and the organization's approved safeguarding duties.",
+        "Call Back If: new or worsening injury; breathing or swallowing difficulty after neck pressure; caller's safety changes; suicidal thoughts."
+      ]
+    },
+    {
+      "AdviceID": 109403,
+      "AlgorithmOrder": 4,
+      "Title": "Trauma-informed ongoing support",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Listen without blame, avoid asking the person to repeat unnecessary details, and affirm that the assault was not their fault. Offer HMC's Sexual Assault Service on +974 4025 6460 for advice and healthcare options even when the assault was not recent. Agree a safe contact method and explain confidentiality and its limits before recording or sharing sensitive information. Child/adolescent consent, caregiver involvement, mandatory reporting, and referral actions remain subject to the approved Qatar safeguarding pathway.",
+        "Call Back If: caller's safety or wellbeing changes; new injury symptoms; suicidal thoughts."
+      ]
+    },
+    {
+      "AdviceID": 109404,
+      "AlgorithmOrder": 1,
+      "Title": "Child safeguarding escalation",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Keep the child in a safe setting when possible. Do not promise confidentiality, confront or alert a suspected perpetrator, or assume the accompanying adult is safe. Escalate to the designated safeguarding lead and approved Qatar child-protection pathway. AMAN receives child-abuse reports and support requests on 919. Call 999 if danger is immediate or the assault is ongoing.",
+        "Clinical and legal governance must confirm the applicable Qatar reporting, consent, documentation, and information-sharing procedure before clinical use.",
+        "Call Back If: the child's safety changes; the suspected perpetrator approaches; immediate danger develops."
+      ]
+    }
+  ],
+  "references": [
+    "Hamad Medical Corporation, \"Sexual Assault Service\", https://www.hamad.qa/EN/Hospitals-and-services/Hamad-General-Hospital/Hospital-Services/Clinical-Departments/Pages/Sexual-Assault-Service.aspx (accessed 2026-07-25)",
+    "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (accessed 2026-07-25)",
+    "World Health Organization, \"Clinical management of rape and intimate partner violence survivors\", https://www.who.int/publications/i/item/9789240001411",
+    "World Health Organization, \"Responding to children and adolescents who have been sexually abused\", https://www.who.int/publications/i/item/9789241550147",
+    "NHS.UK, \"Help after rape and sexual assault\", https://www.nhs.uk/live-well/sexual-health/help-after-rape-and-sexual-assault/ (page last reviewed 06 November 2024)",
+    "Protection and Social Rehabilitation Center (AMAN), Qatar, \"AMAN Help - Report Child Abuse\", https://help.aman.org.qa/ (official Qatar child-abuse reporting and support route).",
+    "Protection and Social Rehabilitation Center (AMAN), Qatar, \"AMAN Center Continues to Offer 24-Hour Teleservices\", https://www.aman.org.qa/en/news/aman-center-continues-offer-24-hour-teleservices (published AMAN 919 support and reporting channel; current availability requires governance confirmation).",
+    "Hamad Medical Corporation, \"Life-Threatening Medical Emergency\", https://hamad.qa/EN/Emergency/Pages/Life-ThreateningMedicalEmergency.aspx (official Qatar emergency 999 instruction)."
+  ],
+  "searchwords": [
+    "sexual assault",
+    "rape",
+    "assaulted",
+    "sexually attacked"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "YES_NO",
+      "Question": "Can the caller speak privately and safely without the suspected perpetrator or another unsafe person hearing, seeing the screen, or accessing messages?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Sexual Assault or Rape"
+    },
+    {
+      "Order": 2,
+      "Category": "OPEN_TEXT",
+      "Question": "Is the caller in immediate danger now, and what safe location and callback method may be used without increasing risk?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Sexual Assault or Rape"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is there severe bleeding, breathing difficulty, loss of consciousness, suspected strangulation, severe head or neck injury, poisoning, severe pain, or another serious injury?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Sexual Assault or Rape"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "Is there immediate risk of suicide, self-harm, or serious harm to another person?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Sexual Assault or Rape"
+    },
+    {
+      "Order": 5,
+      "Category": "DURATION",
+      "Question": "When did the most recent assault happen? Ask only the minimum detail needed to arrange safe and time-sensitive care.",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Sexual Assault or Rape"
+    },
+    {
+      "Order": 6,
+      "Category": "YES_NO",
+      "Question": "Does the caller want urgent medical care or information about injury treatment, pregnancy prevention, STI or HIV care, psychological support, or forensic examination?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Sexual Assault or Rape"
+    },
+    {
+      "Order": 7,
+      "Category": "YES_NO",
+      "Question": "For a child or adolescent, can they speak privately and is a safe, non-offending caregiver or safeguarding professional available?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Sexual Assault or Rape"
+    },
+    {
+      "Order": 8,
+      "Category": "SAFEGUARDING",
+      "Question": "Is the child currently safe, is the suspected perpetrator present, and can the child speak privately with an appropriately trained safeguarding professional?",
+      "Rationale": "A caregiver cannot automatically be treated as the safe respondent in a child sexual-assault pathway.",
+      "Source": "NHS.UK child safeguarding section; local Qatar workflow required"
+    }
+  ]
+}

@@ -9,13 +9,10 @@ type ProtocolInput = ClinicalContentPackageInput["protocols"][number];
  * citations fetched and verified via WebFetch (not guessed), not fabricated,
  * not licensed STCC content. `sourceType: "open-source-clinical-rule"`.
  *
- * Two of these (HEART Score, Canadian CT Head Rule) require an honest,
- * documented telephone adaptation because part of the rule cannot be
- * assessed by phone at all (ECG/troponin; GCS/skull-fracture exam) - broader
- * than the CURB-65 Urea substitution in the original 4, since here entire
- * categories are unavailable, not just one lab value. The adaptation chosen
- * throughout: route to in-person evaluation rather than pretend a
- * phone-only partial score is sufficient to safely discharge home.
+ * UAT safety constraint: these rules were derived for clinicians evaluating
+ * selected patients in person. No rule-negative or low-risk conclusion is
+ * produced by telephone. Required ECG, troponin, palpation, range-of-motion,
+ * gait, neurologic, GCS and skull examinations remain in-person assessments.
  */
 export const batch02FormalRulesProtocols: ProtocolInput[] = [
   // ------------------------------------------------------------------
@@ -29,9 +26,9 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
     id: "oscr-chest-pain-heart",
     titleEn: "Chest Pain (HEART Score)",
     clinicalDefinitionEn:
-      "Adult chest pain major-adverse-cardiac-event risk assessment, adapted from the published, peer-reviewed HEART Score (Six et al., 2008; Backus et al., 2013).",
+      "UAT-only adult chest-pain pathway that sends active or suspected acute coronary syndrome symptoms directly to Qatar 999 without HEART scoring delay. HEART may be considered only after documented in-person clinician assessment, 12-lead ECG and troponin; it must never be calculated or implied by telephone or used as a standalone rule-out test.",
     backgroundInfoEn:
-      "The HEART Score is an ADDITIVE point score across 5 categories (History, ECG, Age, Risk factors, Troponin), each worth 0-2 points. Two of the five categories (ECG, Troponin) require in-person testing and cannot be assessed by telephone - this protocol therefore has no self-care tier: any chest pain caller without emergency red flags is routed to urgent in-person evaluation, since a safe low-risk HEART tier cannot be determined without ECG and troponin.",
+      "HEART is an emergency-department risk-stratification aid for adults with chest pain being assessed for possible acute coronary syndrome. It combines clinician-assessed history, 12-lead ECG, age, risk factors and measured troponin. A telephone call cannot supply the ECG, troponin or complete clinician assessment, so individual component points and a total score must not be displayed or used for disposition. It is not a diagnostic test and is not validated for children or for screening people without a suspected acute coronary syndrome presentation.",
     ageMin: 18,
     mode: "after-hours",
     patientGroup: "adult",
@@ -45,7 +42,8 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscr-heart-iaq1", sequence: 1, responseType: "OPEN_TEXT", promptTextEn: "Describe the chest pain in your own words - what does it feel like, where is it, does it spread anywhere?" },
       { id: "oscr-heart-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "When did the pain start, and how long has it lasted?" },
-      { id: "oscr-heart-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Any history of heart disease, stents, bypass surgery, stroke, or peripheral artery disease?" }
+      { id: "oscr-heart-iaq3", sequence: 3, responseType: "YES_NO", promptTextEn: "Is the pain present now, recurring or worsening; accompanied by breathlessness, sweating, nausea, faintness, weakness, or pain in the arm, shoulder, back, neck or jaw; or otherwise suspected by the nurse to represent acute coronary syndrome? If yes, stop assessment and use the Qatar 999 emergency branch without calculating HEART." },
+      { id: "oscr-heart-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "Is the patient under 18, pregnant or recently postpartum, or do they have known heart or vascular disease, diabetes, smoking, high blood pressure or cholesterol?" }
     ],
     questions: [
       {
@@ -53,10 +51,10 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         acuityOrder: 1,
         severity: "Emergency",
         questionTextEn:
-          "Is there crushing or pressure-like chest pain, pain spreading to the arm/neck/jaw, sweating, nausea, shortness of breath, fainting or near-fainting, or pain lasting more than 15-20 minutes without relief?",
+          "Is chest pain or pressure present now, severe, recurring or worsening, or accompanied by shortness of breath, sweating, nausea, fainting/near-fainting, marked weakness, or pain spreading to the arm, shoulder, back, neck or jaw?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         rationaleEn:
-          "Universal ACS/STEMI emergency rule-out added ahead of HEART Score scoring itself (not part of the published score) - classic acute coronary syndrome red flags require immediate emergency care regardless of the point tally below.",
+          "This is an emergency symptom screen, not part of HEART. Acute coronary syndrome can be atypical, including in women, older adults and people with diabetes; a reassuring telephone description cannot exclude it.",
         redFlag: true,
         keywords: ["crushing chest pain", "pain spreading to arm", "sweating", "shortness of breath", "fainting"],
         careAdviceIds: ["oscr-heart-emergency-advice"],
@@ -67,26 +65,26 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
       {
         id: "oscr-heart-q1-history",
         acuityOrder: 2,
-        severity: "Urgent",
+        severity: "Emergency",
         questionTextEn:
-          "HEART criterion (History): does the description sound moderately or highly suspicious for cardiac chest pain (e.g. exertional, pressure-like, radiating), rather than clearly non-cardiac (e.g. sharp, positional, reproducible by touch)?",
-        dispositionCode: "HMC_URGENT_REVIEW",
+          "Even if the symptom description is atypical or incomplete, does the nurse suspect active or recent acute coronary syndrome, or remain unable to exclude it safely during this call?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         rationaleEn:
-          "Worth 0/1/2 points in the HEART Score (slightly/moderately/highly suspicious history). Nurse should tally this alongside Age and Risk Factors below - ECG and Troponin CANNOT be assessed by phone, so no full score can be calculated here; this only informs how urgently in-person evaluation is needed.",
-        redFlag: false,
+          "Suspected acute coronary syndrome requires Qatar 999 emergency assessment without scoring delay. HEART applies only after in-person clinician assessment with a documented 12-lead ECG and measured troponin; it is not a telephone rule-out or standalone triage tool.",
+        redFlag: true,
         keywords: ["suspicious chest pain history", "exertional chest pain"],
-        careAdviceIds: ["oscr-heart-inperson-advice"],
+        careAdviceIds: ["oscr-heart-emergency-advice"],
         telemedicineEligible: false,
-        dispositionLevel: 70,
+        dispositionLevel: 100,
         questionOrder: 1
       },
       {
         id: "oscr-heart-q2-age",
         acuityOrder: 3,
         severity: "Urgent",
-        questionTextEn: "HEART criterion (Age): is the patient 45 or older?",
+        questionTextEn: "Only after the emergency and suspected-acute-coronary-syndrome branches are negative: has the chest pain resolved, but this episode has not yet had an in-person clinician assessment with a documented ECG and troponin testing?",
         dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "Worth 1 point (45-64) or 2 points (65+) in the HEART Score; under 45 scores 0.",
+        rationaleEn: "Resolved symptoms still need prompt in-person assessment, and any remaining suspicion of acute coronary syndrome belongs in the preceding Qatar 999 branch. Age is collected for the receiving clinician but is not scored by the telephone pathway.",
         redFlag: false,
         keywords: ["age 45 or older", "age 65 or older"],
         careAdviceIds: ["oscr-heart-inperson-advice"],
@@ -99,9 +97,9 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         acuityOrder: 4,
         severity: "Urgent",
         questionTextEn:
-          "HEART criterion (Risk Factors): does the patient have known risk factors (high blood pressure, high cholesterol, diabetes, obesity, smoking, family history of heart disease) or a known history of heart attack, stent, bypass, stroke, or peripheral artery disease?",
+          "Is the patient under 18, pregnant/recently postpartum, or is another serious cause possible (for example aortic, pulmonary embolic, respiratory or traumatic chest pain)?",
         dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "Worth 1 point (1-2 risk factors) or 2 points (3+ risk factors, or known atherosclerotic disease) in the HEART Score.",
+        rationaleEn: "HEART is not a pediatric rule and must not substitute for evaluation of pregnancy-related or non-coronary emergencies. Route according to symptoms and in-person clinical assessment, never a telephone score.",
         redFlag: false,
         keywords: ["heart disease risk factors", "known heart disease", "prior heart attack"],
         careAdviceIds: ["oscr-heart-inperson-advice"],
@@ -114,10 +112,10 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         acuityOrder: 5,
         severity: "Urgent",
         questionTextEn:
-          "Regardless of how low the History/Age/Risk-Factor tally seems: has an ECG and troponin blood test NOT yet been done for this episode of chest pain?",
+          "Regardless of age, risk factors or how non-cardiac the description seems, is a complete in-person assessment for this episode unavailable?",
         dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn:
-          "Published HEART Score low-risk discharge (0-3 total) requires normal ECG and troponin - both unobtainable by phone. This protocol therefore has NO self-care tier: any undiagnosed chest pain without emergency red flags is routed to urgent in-person evaluation for ECG and troponin, not sent home on a phone-only partial score.",
+          "A HEART total cannot be calculated without all five components in the intended clinical setting. No telephone low-risk or self-care tier exists.",
         redFlag: false,
         keywords: ["no ecg done", "no troponin done", "needs in-person evaluation"],
         careAdviceIds: ["oscr-heart-inperson-advice"],
@@ -130,7 +128,7 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
       {
         id: "oscr-heart-emergency-advice",
         titleEn: "Emergency chest pain precautions",
-        instructionTextEn: "Keep the caller sitting or lying still and calm. Arrange emergency transport immediately - do not let the caller drive themselves.",
+        instructionTextEn: "Call Qatar emergency services on 999 now. Keep the person resting, do not let them drive, and follow the emergency call-taker's instructions. Do not recommend aspirin, glyceryl trinitrate or other medicine unless specifically directed under an approved Qatar protocol or already prescribed for this exact situation.",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         warningSigns: ["worsening pain", "loss of consciousness", "difficulty breathing"],
         displayOrder: 1,
@@ -140,7 +138,7 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         id: "oscr-heart-inperson-advice",
         titleEn: "Chest pain requires in-person evaluation",
         instructionTextEn:
-          "This chest pain needs an in-person medical evaluation with an ECG and blood test, which cannot be done by phone. Arrange urgent transport to a facility that can perform both promptly.",
+          "Arrange prompt in-person assessment at a Qatar service capable of clinical examination, a documented 12-lead ECG and measured troponin. Do not calculate, display or interpret HEART before all required components are obtained in person, and do not use HEART alone to rule out acute coronary syndrome. Do not self-drive if symptoms recur or the person feels unwell; call 999 if any emergency feature appears or acute coronary syndrome is suspected. The exact non-emergency destination, troponin strategy and transport pathway are GOVERNANCE_REQUIRED.",
         dispositionCode: "HMC_URGENT_REVIEW",
         warningSigns: ["pain worsens or spreads", "shortness of breath develops", "sweating or nausea develops"],
         displayOrder: 2,
@@ -151,10 +149,11 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
     provenance: buildGuidelineProvenance({
       sourceDocuments: [
         "Six AJ, Backus BE, Kelder JC. Chest pain in the emergency room: value of the HEART score. Neth Heart J. 2008;16(6):191-196.",
-        "Backus BE, Six AJ, Kelder JC, et al. A prospective validation of the HEART score for chest pain patients at the emergency department. Int J Cardiol. 2013;168(3):2153-2158."
+        "Backus BE, Six AJ, Kelder JC, et al. A prospective validation of the HEART score for chest pain patients at the emergency department. Int J Cardiol. 2013;168(3):2153-2158.",
+        "Gulati M, Levy PD, Mukherjee D, et al. 2021 AHA/ACC Chest Pain Guideline. Circulation. 2021;144:e368-e454."
       ],
       contentNotice:
-        "Derived from the published, peer-reviewed HEART Score (Six et al. 2008; Backus et al. 2013) - a validated clinical decision rule, adapted into IST Health's STCC-shaped triage format. The ECG and Troponin components cannot be assessed by telephone and are explicitly not attempted here; this protocol therefore only ever routes to Emergency or Urgent in-person evaluation, never self-care, which is a deliberate telephone-triage safety adaptation, not the rule's own published low-risk discharge pathway. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use, including explicit review of the no-self-care-tier design choice."
+        "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult workflow draft. Active or suspected acute coronary syndrome symptoms route directly to Qatar 999 without HEART scoring delay. HEART is never a telephone rule-out or standalone triage test; documented in-person clinician assessment, 12-lead ECG and measured troponin are mandatory before any HEART interpretation, and no telephone self-care tier exists. No child use. GOVERNANCE_REQUIRED for Qatar chest-pain destinations, emergency transport, pregnancy/postpartum pathways, medicine advice and acceptable troponin strategy. Blocked from nurse UAT pending Qatar emergency and cardiology approval. Not production-approved and not licensed Schmitt-Thompson (STCC) content."
     })
   },
 
@@ -166,9 +165,9 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
     id: "oscr-knee-injury-ottawa",
     titleEn: "Knee Injury (Ottawa Knee Rule)",
     clinicalDefinitionEn:
-      "Adult knee injury imaging decision, adapted from the published, peer-reviewed Ottawa Knee Rule (Stiell et al., 1995/1996). Validated to identify which knee injuries do not need an X-ray.",
+      "UAT-only adult acute-knee-trauma pathway describing the Ottawa Knee Rule and routing for an in-person examination; it must not declare the rule negative by telephone.",
     backgroundInfoEn:
-      "The Ottawa Knee Rule is a validated, highly sensitive clinical decision rule for acute knee trauma: any ONE positive criterion means imaging is indicated; none positive means it is not.",
+      "The Ottawa Knee Rule guides plain radiography after acute knee trauma in the population in which it was studied. Any one of five findings supports radiography: age 55 years or older, isolated patellar tenderness, fibular-head tenderness, inability to flex to 90 degrees, or inability to bear weight for four steps both immediately after injury and at assessment. Palpation, flexion and observed gait are clinical examinations and cannot be declared negative by telephone. The rule addresses fracture radiography only; it does not exclude ligament, tendon, meniscal, vascular or other injury and is not a pediatric rule.",
     ageMin: 18,
     mode: "after-hours",
     patientGroup: "adult",
@@ -203,7 +202,7 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         id: "oscr-knee-q1",
         acuityOrder: 2,
         severity: "Urgent",
-        questionTextEn: "Ottawa Knee Rule criterion: is the patient 55 or older?",
+        questionTextEn: "For the in-person clinician: is the adult patient 55 years or older?",
         dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Published Ottawa Knee Rule age criterion (Stiell et al., 1995/1996). A positive answer to ANY criterion means imaging is indicated.",
         redFlag: false,
@@ -217,7 +216,7 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         id: "oscr-knee-q2",
         acuityOrder: 3,
         severity: "Urgent",
-        questionTextEn: "Ottawa Knee Rule criterion: is there tenderness ONLY over the kneecap (patella), with no other bony tenderness?",
+        questionTextEn: "On in-person palpation, is there isolated patellar tenderness with no other bony knee tenderness?",
         dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Published Ottawa Knee Rule isolated patellar tenderness criterion.",
         redFlag: false,
@@ -231,7 +230,7 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         id: "oscr-knee-q3",
         acuityOrder: 4,
         severity: "Urgent",
-        questionTextEn: "Ottawa Knee Rule criterion: is there tenderness over the head of the fibula (the bony bump on the outer side of the knee, below the joint)?",
+        questionTextEn: "On in-person palpation, is there fibular-head tenderness?",
         dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Published Ottawa Knee Rule fibular head tenderness criterion.",
         redFlag: false,
@@ -245,7 +244,7 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         id: "oscr-knee-q4",
         acuityOrder: 5,
         severity: "Urgent",
-        questionTextEn: "Ottawa Knee Rule criterion: is the patient unable to bend the knee to 90 degrees (a right angle)?",
+        questionTextEn: "On an in-person examination, is the patient unable to flex the knee to 90 degrees?",
         dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Published Ottawa Knee Rule flexion criterion.",
         redFlag: false,
@@ -259,7 +258,7 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         id: "oscr-knee-q5",
         acuityOrder: 6,
         severity: "Urgent",
-        questionTextEn: "Ottawa Knee Rule criterion: was the patient unable to take four steps, both right after the injury and right now?",
+        questionTextEn: "Can the patient not bear weight for four steps both immediately after injury and during the in-person assessment, regardless of limping?",
         dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Published Ottawa Knee Rule weight-bearing criterion.",
         redFlag: false,
@@ -272,23 +271,23 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
       {
         id: "oscr-knee-q6-negative",
         acuityOrder: 7,
-        severity: "Self-care",
-        questionTextEn: "If all five Ottawa Knee criteria above are No: mild swelling or pain only, can bear weight, no bony tenderness at the specified points, can bend the knee?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "The Ottawa Knee Rule's own validated conclusion: a patient who meets NONE of the five criteria does not need a knee X-ray.",
+        severity: "Urgent",
+        questionTextEn: "If no criterion is reported remotely, has the patient still not had the required in-person palpation, flexion and four-step assessment?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "A telephone interview cannot complete a validated Ottawa Knee Rule examination or exclude important non-fracture injury. This UAT pathway therefore makes no rule-negative/self-care determination.",
         redFlag: false,
         keywords: ["mild knee swelling", "can bear weight", "no bony tenderness"],
         careAdviceIds: ["oscr-knee-selfcare-advice"],
-        telemedicineEligible: true,
-        telemedicineNotesEn: "Suitable for video visit follow-up if symptoms do not resolve as expected.",
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        telemedicineNotesEn: "In-person examination is required before applying the Ottawa Knee Rule.",
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscr-knee-emergency-advice", titleEn: "Emergency knee injury precautions", instructionTextEn: "Keep the limb still, do not attempt to realign a deformity, elevate if possible, and arrange emergency transport.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening pain", "foot turning pale or blue"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscr-knee-imaging-advice", titleEn: "Ottawa Knee Rule positive - arrange imaging", instructionTextEn: "Arrange same-day or next-day X-ray evaluation per the Ottawa Knee Rule. Until then: rest, avoid weight-bearing, apply ice 20 minutes at a time, and elevate.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["increasing pain", "new numbness", "color change"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscr-knee-selfcare-advice", titleEn: "Ottawa Knee Rule negative - home care (RICE)", instructionTextEn: "Rest, Ice (20 minutes at a time), Compression (elastic bandage, not too tight), Elevation above heart level. Gradually resume weight-bearing as tolerated.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain worsens instead of improving", "new inability to bear weight", "numbness or color change develops"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscr-knee-emergency-advice", titleEn: "Emergency knee injury precautions", instructionTextEn: "Call Qatar emergency services on 999 for major deformity, open injury, uncontrolled bleeding, or a cold, pale/blue, numb or weak foot. Keep the limb still, do not straighten or realign it, and do not allow self-driving.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening pain", "foot turning pale or blue"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscr-knee-imaging-advice", titleEn: "Positive or incomplete rule - in-person assessment", instructionTextEn: "Arrange an in-person examination at a Qatar service able to assess the limb and obtain radiography when indicated. Until assessed, protect the limb, avoid forced movement and use wrapped ice briefly if comfortable. Pregnancy does not change the rule criteria but must be disclosed so the imaging clinician can individualize radiation protection and risk-benefit decisions.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["increasing pain", "new numbness", "color change"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscr-knee-selfcare-advice", titleEn: "Telephone assessment cannot make the rule negative", instructionTextEn: "Arrange in-person palpation, knee flexion and observed four-step weight bearing. A negative fracture rule does not diagnose a sprain or exclude ligament, tendon or meniscal injury. The exact non-emergency Qatar destination and analgesia advice are GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["pain worsens", "new inability to bear weight", "numbness or color change develops"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     provenance: buildGuidelineProvenance({
       sourceDocuments: [
@@ -296,7 +295,7 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         "Stiell IG, Greenberg GH, Wells GA, et al. Prospective validation of a decision rule for the use of radiography in acute knee injuries. JAMA. 1996;275(8):611-615."
       ],
       contentNotice:
-        "Derived from the published, peer-reviewed Ottawa Knee Rule (Stiell et al. 1995/1996) - a validated clinical decision rule, adapted into IST Health's STCC-shaped triage format. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+        "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult workflow draft. The Ottawa Knee Rule requires in-person palpation, range-of-motion and gait assessment and must not be declared negative by telephone. It is not for children and does not exclude important soft-tissue or vascular injury. GOVERNANCE_REQUIRED for Qatar adult trauma/imaging destinations, pregnancy imaging policy, analgesia and transport. Blocked from nurse UAT pending Qatar emergency, orthopaedic and radiology approval. Not production-approved and not licensed Schmitt-Thompson (STCC) content."
     })
   },
 
@@ -309,9 +308,9 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
     id: "oscr-neck-injury-nexus",
     titleEn: "Neck Injury (NEXUS Criteria)",
     clinicalDefinitionEn:
-      "Adult neck/cervical-spine injury imaging decision after blunt trauma, adapted from the published, peer-reviewed NEXUS Criteria (Hoffman et al., 2000).",
+      "UAT-only adult blunt-trauma cervical-spine pathway describing the NEXUS low-risk criteria and routing for in-person examination; it must not clear the cervical spine by telephone.",
     backgroundInfoEn:
-      "NEXUS Criteria: if focal neurologic deficit, midline spinal tenderness, altered consciousness, intoxication, or a distracting injury is present, imaging is indicated; if ALL are absent, imaging is not needed. The rule's own authors note it performs less reliably in patients over 65 - this protocol routes patients 65+ to in-person evaluation regardless of the other criteria as an explicit, documented caution.",
+      "NEXUS classifies a blunt-trauma patient as low probability only when all five clinician-assessed findings are absent: posterior midline cervical tenderness, focal neurological deficit, altered alertness, intoxication and a painful distracting injury. It supports an imaging decision; it does not diagnose every injury or replace clinical judgment. Telephone assessment cannot reliably perform these examinations, so this pathway never clears the neck remotely. It is adult-only here; children require a separate approved pediatric pathway, and older adults warrant particular caution.",
     ageMin: 18,
     mode: "after-hours",
     patientGroup: "adult",
@@ -346,7 +345,7 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         id: "oscr-nexus-q1",
         acuityOrder: 2,
         severity: "Urgent",
-        questionTextEn: "NEXUS criterion: is there tenderness directly over the middle of the back of the neck (midline spinal tenderness)?",
+        questionTextEn: "On in-person examination, is there posterior midline cervical-spine tenderness?",
         dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Published NEXUS midline tenderness criterion (Hoffman et al., 2000). A positive answer to ANY NEXUS criterion means imaging is indicated.",
         redFlag: false,
@@ -359,22 +358,22 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
       {
         id: "oscr-nexus-q2",
         acuityOrder: 3,
-        severity: "Urgent",
-        questionTextEn: "NEXUS criterion: is the patient confused, drowsy, or not fully alert since the injury?",
-        dispositionCode: "HMC_URGENT_REVIEW",
+        severity: "Emergency",
+        questionTextEn: "Is alertness abnormal or uncertain, including confusion, disorientation, delayed response or inability to participate reliably?",
+        dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         rationaleEn: "Published NEXUS altered-consciousness criterion.",
         redFlag: false,
         keywords: ["confused after injury", "not fully alert"],
-        careAdviceIds: ["oscr-nexus-imaging-advice"],
+        careAdviceIds: ["oscr-nexus-emergency-advice"],
         telemedicineEligible: false,
-        dispositionLevel: 70,
+        dispositionLevel: 100,
         questionOrder: 2
       },
       {
         id: "oscr-nexus-q3",
         acuityOrder: 4,
         severity: "Urgent",
-        questionTextEn: "NEXUS criterion: has the patient been drinking alcohol or taking drugs that could affect alertness or pain perception?",
+        questionTextEn: "Is there evidence or uncertainty about intoxication by alcohol, drugs or medicines that could impair alertness or pain perception?",
         dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Published NEXUS intoxication criterion.",
         redFlag: false,
@@ -388,9 +387,9 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         id: "oscr-nexus-q4",
         acuityOrder: 5,
         severity: "Urgent",
-        questionTextEn: "NEXUS criterion: is there another painful injury (e.g. a broken bone) that might be distracting the patient from noticing neck pain, OR is the patient 65 or older?",
+        questionTextEn: "Is there a painful distracting injury, unreliable examination, high-risk clinical concern, pregnancy, or age 65 years or older?",
         dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "Published NEXUS distracting-injury criterion. Age 65+ is added here as an explicit telephone-triage caution, not part of the published rule: the original authors note NEXUS performs less reliably over age 65, so this protocol routes these callers to in-person evaluation regardless of the other criteria.",
+        rationaleEn: "Painful distracting injury is a published NEXUS criterion. Age, pregnancy and other clinical concerns are not additional NEXUS points; they are flagged for cautious in-person assessment and individualized imaging decisions.",
         redFlag: false,
         keywords: ["distracting injury", "age 65 or older"],
         careAdviceIds: ["oscr-nexus-imaging-advice"],
@@ -401,29 +400,31 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
       {
         id: "oscr-nexus-q5-negative",
         acuityOrder: 6,
-        severity: "Self-care",
-        questionTextEn: "If all four NEXUS criteria above are No and the patient is under 65: no midline tenderness, fully alert, not intoxicated, no distracting injury?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-        rationaleEn: "The NEXUS Criteria's own validated conclusion: a patient with ALL five criteria negative does not need cervical spine imaging.",
+        severity: "Urgent",
+        questionTextEn: "Even if every criterion is reported absent, has the patient not had all five NEXUS findings assessed by a qualified clinician in person?",
+        dispositionCode: "HMC_URGENT_REVIEW",
+        rationaleEn: "All five NEXUS findings must be assessed in the intended clinical setting. Telephone reports cannot establish a validated rule-negative result or authorize removal of spinal precautions.",
         redFlag: false,
         keywords: ["mild neck pain", "no red flags"],
         careAdviceIds: ["oscr-nexus-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        telemedicineNotesEn: "In-person cervical-spine and neurologic examination is required.",
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscr-nexus-emergency-advice", titleEn: "Emergency neck injury precautions", instructionTextEn: "Keep the head and neck as still as possible - do not let the caller move their neck. Arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening weakness or numbness", "new loss of bladder or bowel control"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscr-nexus-imaging-advice", titleEn: "NEXUS criterion positive - arrange imaging", instructionTextEn: "Arrange prompt in-person evaluation and imaging. Keep neck movement to a minimum until seen.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["new numbness, tingling, or weakness", "worsening pain"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscr-nexus-selfcare-advice", titleEn: "NEXUS negative - home care", instructionTextEn: "Rest, over-the-counter pain relief per local policy, gentle movement as tolerated, and a heat or ice pack for comfort.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["new numbness, tingling, or weakness develops", "pain worsens instead of improving"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscr-nexus-emergency-advice", titleEn: "Emergency neck injury precautions", instructionTextEn: "Call Qatar emergency services on 999. Ask the patient to remain still in the position found unless there is immediate danger, breathing must be managed, or the 999 call-taker instructs otherwise. Do not test neck movement, remove a fitted collar, or allow self-driving.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening weakness or numbness", "new loss of bladder or bowel control"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscr-nexus-imaging-advice", titleEn: "Positive or uncertain NEXUS finding", instructionTextEn: "Arrange prompt in-person trauma assessment and clinician-directed imaging. Minimize unnecessary neck movement. Pregnancy must be disclosed, but should not delay emergency stabilization or necessary imaging; imaging risk-benefit decisions belong to the treating team.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["new numbness, tingling, or weakness", "worsening pain"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscr-nexus-selfcare-advice", titleEn: "Telephone assessment cannot clear the cervical spine", instructionTextEn: "Arrange in-person examination. Do not use a remotely reported negative checklist to remove spinal precautions or advise home care. The exact non-emergency Qatar destination, transport and analgesia pathway are GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["new numbness, tingling, or weakness develops", "pain worsens"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     provenance: buildGuidelineProvenance({
       sourceDocuments: [
-        "Hoffman JR, Mower WR, Wolfson AB, Todd KH, Zucker MI. Validity of a set of clinical criteria to rule out injury to the cervical spine in patients with blunt trauma. National Emergency X-Radiography Utilization Study Group. N Engl J Med. 2000;343(2):94-99."
+        "Hoffman JR, Mower WR, Wolfson AB, Todd KH, Zucker MI. Validity of a set of clinical criteria to rule out injury to the cervical spine in patients with blunt trauma. National Emergency X-Radiography Utilization Study Group. N Engl J Med. 2000;343(2):94-99.",
+        "American College of Radiology. ACR Appropriateness Criteria: Acute Spinal Trauma. Revised 2024."
       ],
       contentNotice:
-        "Derived from the published, peer-reviewed NEXUS Criteria (Hoffman et al., 2000) - a validated clinical decision rule, adapted into IST Health's STCC-shaped triage format, with an added age-65+ telephone-triage caution reflecting the original authors' own stated reliability limitation in that age group. Not licensed Schmitt-Thompson (STCC) content. Requires local clinical governance validation before production use."
+        "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult blunt-trauma workflow draft. NEXUS requires five in-person clinical assessments and cannot clear a cervical spine by telephone. No child applicability; older adults and unreliable examinations require particular caution. GOVERNANCE_REQUIRED for Qatar spinal-motion-restriction practice, trauma/imaging destinations, pregnancy imaging, analgesia and transport. Blocked from nurse UAT pending Qatar emergency, trauma, spinal and radiology approval. Not production-approved and not licensed Schmitt-Thompson (STCC) content."
     })
   },
 
@@ -438,9 +439,9 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
     id: "oscr-head-injury-cch",
     titleEn: "Head Injury (Canadian CT Head Rule)",
     clinicalDefinitionEn:
-      "Adult minor head injury (brief loss of consciousness, amnesia, or witnessed disorientation) CT-imaging decision, adapted from the published, peer-reviewed Canadian CT Head Rule (Stiell et al., 2001).",
+      "UAT-only adult minor-head-injury pathway describing the Canadian CT Head Rule and routing for in-person assessment; it must not decide that CT or clinical review is unnecessary by telephone.",
     backgroundInfoEn:
-      "The Canadian CT Head Rule applies to minor head injury with GCS 13-15 plus loss of consciousness, amnesia, or witnessed disorientation. It is not validated for patients under 16, on blood thinners, or with a seizure after injury - this protocol treats those populations as needing emergency-level care directly, rather than attempting to apply an unvalidated rule to them.",
+      "The original Canadian CT Head Rule applies after blunt head trauma to patients aged 16 years or older with GCS 13-15 and witnessed loss of consciousness, definite amnesia or witnessed disorientation. It does not apply to minimal head injury without those entry features, age under 16, penetrating/depressed skull injury, acute focal neurological deficit, unstable major trauma, bleeding disorder/oral anticoagulant use, or seizure after injury. This adult UAT pathway uses age 18 and older. GCS, skull-fracture signs and neurological findings require in-person examination; exclusion from the rule is not reassurance.",
     ageMin: 18,
     mode: "after-hours",
     patientGroup: "adult",
@@ -454,7 +455,8 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
     initialAssessmentQuestions: [
       { id: "oscr-cch-iaq1", sequence: 1, responseType: "YES_NO", promptTextEn: "Did the patient lose consciousness, and for how long?" },
       { id: "oscr-cch-iaq2", sequence: 2, responseType: "DURATION", promptTextEn: "When did the injury happen?" },
-      { id: "oscr-cch-iaq3", sequence: 3, responseType: "OPEN_TEXT", promptTextEn: "How did the injury happen?" }
+      { id: "oscr-cch-iaq3", sequence: 3, responseType: "OPEN_TEXT", promptTextEn: "How did the injury happen, including height, stairs, vehicle involvement, penetrating injury or other major trauma?" },
+      { id: "oscr-cch-iaq4", sequence: 4, responseType: "YES_NO", promptTextEn: "Is the patient under 18, pregnant, taking an anticoagulant or antiplatelet medicine, known to have a bleeding disorder, or did a seizure occur after injury?" }
     ],
     questions: [
       {
@@ -462,10 +464,10 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         acuityOrder: 1,
         severity: "Emergency",
         questionTextEn:
-          "Is the patient currently confused, very drowsy, or difficult to rouse; are there signs of a skull fracture (clear or bloody fluid from the ear or nose, bruising around both eyes or behind an ear); has there been a seizure since the injury; or is the patient on blood-thinning medication (e.g. warfarin, apixaban)?",
+          "Is the patient difficult to wake, increasingly confused, having a seizure, weak or numb on one side, unable to speak/walk normally, repeatedly vomiting, deteriorating, or showing suspected open/depressed or basal skull fracture, penetrating injury, uncontrolled bleeding, or unstable major trauma?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
         rationaleEn:
-          "Current altered consciousness and skull-fracture signs are the Canadian CT Head Rule's own high-risk criteria. Seizure-after-injury and blood-thinner use are populations the rule explicitly excludes (it was not validated for them) - rather than treat exclusion as 'rule doesn't apply, no action needed', this protocol treats both as real emergency-level risks requiring direct emergency care, not rule application.",
+          "These are emergency danger signs or populations needing immediate stabilization, not a telephone Canadian CT Head Rule calculation. Call 999 regardless of a reported score.",
         redFlag: true,
         keywords: ["confused after head injury", "skull fracture signs", "seizure after injury", "blood thinners"],
         careAdviceIds: ["oscr-cch-emergency-advice"],
@@ -477,7 +479,7 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         id: "oscr-cch-q1-highrisk",
         acuityOrder: 2,
         severity: "Urgent",
-        questionTextEn: "Canadian CT Head Rule high-risk criterion: has the patient vomited twice or more since the injury, or is the patient 65 or older?",
+        questionTextEn: "For the in-person clinician: is GCS below 15 at two hours, is an open/depressed or basal skull fracture suspected, has vomiting occurred two or more times, or is age 65 years or older?",
         dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Published Canadian CT Head Rule high-risk criteria (Stiell et al., 2001) - associated with need for neurosurgical intervention.",
         redFlag: false,
@@ -492,7 +494,7 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
         acuityOrder: 3,
         severity: "Urgent",
         questionTextEn:
-          "Canadian CT Head Rule medium-risk criterion: is there no memory of events for 30 minutes or more before the injury, or did the injury happen from a dangerous mechanism (struck by a vehicle, thrown from a vehicle, or a fall from more than 3 feet / 5 stairs)?",
+          "For the in-person clinician: is there retrograde amnesia longer than 30 minutes, or a dangerous mechanism (pedestrian struck by motor vehicle, occupant ejected from motor vehicle, or fall from at least 3 feet / 5 stairs)?",
         dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn: "Published Canadian CT Head Rule medium-risk criteria - associated with clinically important brain injury on CT.",
         redFlag: false,
@@ -505,29 +507,33 @@ export const batch02FormalRulesProtocols: ProtocolInput[] = [
       {
         id: "oscr-cch-q3-negative",
         acuityOrder: 4,
-        severity: "Self-care",
+        severity: "Urgent",
         questionTextEn:
-          "If none of the criteria above apply: brief loss of consciousness or confusion right after the injury, but now fully alert, no repeated vomiting, no dangerous mechanism, under 65, and not on blood thinners?",
-        dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          "Even if no criterion is reported, has the adult not had an in-person GCS, neurological and skull assessment and confirmation that the rule's entry criteria and exclusions are satisfied?",
+        dispositionCode: "HMC_URGENT_REVIEW",
         rationaleEn:
-          "The Canadian CT Head Rule's own validated conclusion (100% sensitive for injuries needing neurosurgery in the studied population): patients meeting none of the high- or medium-risk criteria do not need a head CT. Standard concussion home-observation precautions still apply.",
+          "Telephone proxies cannot establish a validated rule-negative result. Patients outside the rule, including those on anticoagulants or antiplatelets, need clinician-directed assessment rather than remote scoring. Children require a separate pediatric head-injury pathway.",
         redFlag: false,
         keywords: ["mild head injury", "brief confusion resolved"],
         careAdviceIds: ["oscr-cch-selfcare-advice"],
-        telemedicineEligible: true,
-        dispositionLevel: 15,
+        telemedicineEligible: false,
+        telemedicineNotesEn: "In-person GCS, neurological and skull examination is required.",
+        dispositionLevel: 70,
         questionOrder: 1
       }
     ],
     careAdvice: [
-      { id: "oscr-cch-emergency-advice", titleEn: "Emergency head injury precautions", instructionTextEn: "Keep the patient still, do not let them stand or drive, and arrange emergency transport immediately.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening confusion", "new weakness", "repeated vomiting"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscr-cch-imaging-advice", titleEn: "Canadian CT Head Rule criterion positive - arrange imaging", instructionTextEn: "Arrange prompt in-person evaluation and CT imaging. Someone should stay with the patient and watch for worsening symptoms until seen.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["increasing confusion or drowsiness", "repeated vomiting", "worsening headache"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscr-cch-selfcare-advice", titleEn: "Canadian CT Head Rule negative - home observation", instructionTextEn: "Standard concussion precautions: rest, avoid strenuous activity and screens, have someone check on the patient periodically for the first 24 hours, and avoid alcohol and sedating medication.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["worsening headache", "repeated vomiting develops", "increasing confusion, drowsiness, or new weakness"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
+      { id: "oscr-cch-emergency-advice", titleEn: "Emergency head injury precautions", instructionTextEn: "Call Qatar emergency services on 999. Do not allow self-driving. Keep the airway clear and follow the 999 call-taker; if unconscious but breathing and no spinal concern prevents it, use the recovery position. Do not give food, drink or unprescribed medicine while emergency assessment is being arranged.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening confusion", "new weakness", "repeated vomiting"], displayOrder: 1, adviceCategory: "DISPOSITION" },
+      { id: "oscr-cch-imaging-advice", titleEn: "Rule criterion or exclusion - in-person assessment", instructionTextEn: "Arrange prompt in-person assessment at a Qatar service able to perform GCS, neurological/skull examination and CT when clinically indicated. A responsible adult should stay with the patient. Do not stop prescribed anticoagulant or antiplatelet medicine unless the treating clinician directs it. Pregnancy must be disclosed but must not delay emergency care; CT risk-benefit belongs to the treating team.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["increasing confusion or drowsiness", "repeated vomiting", "worsening headache"], displayOrder: 2, adviceCategory: "DISPOSITION" },
+      { id: "oscr-cch-selfcare-advice", titleEn: "Telephone assessment cannot make the rule negative", instructionTextEn: "Arrange in-person assessment; do not use this telephone pathway to decide that CT or observation is unnecessary. Avoid alcohol, driving, sport and sedating non-prescribed medicines while awaiting review. The exact non-emergency Qatar destination and observation/discharge instructions are GOVERNANCE_REQUIRED.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["worsening headache", "repeated vomiting develops", "increasing confusion, drowsiness, or new weakness"], displayOrder: 3, adviceCategory: "DISPOSITION", patientSendable: true }
     ],
     provenance: buildGuidelineProvenance({
-      sourceDocuments: ["Stiell IG, Wells GA, Vandemheen K, et al. The Canadian CT Head Rule for patients with minor head injury. Lancet. 2001;357(9266):1391-1396."],
+      sourceDocuments: [
+        "Stiell IG, Wells GA, Vandemheen K, et al. The Canadian CT Head Rule for patients with minor head injury. Lancet. 2001;357(9266):1391-1396.",
+        "National Institute for Health and Care Excellence. Head injury: assessment and early management (NG232). Published 2023; updated 2025."
+      ],
       contentNotice:
-        "Derived from the published, peer-reviewed Canadian CT Head Rule (Stiell et al., 2001) - a validated clinical decision rule, adapted into IST Health's STCC-shaped triage format. GCS and skull-fracture exam findings are approximated by phone-assessable proxies (current alertness, reported skull-fracture signs) - documented as an approximation, not the validated in-person exam. Not licensed Schmitt-Thompson (STCC) content. Adult-only (ageMin 18) - the rule is not validated in children; a pediatric head-injury protocol (e.g. PECARN) is a separate future candidate. Requires local clinical governance validation before production use."
+        "UAT DATA - NOT FOR REAL PATIENT CARE. Qatar-localized adult workflow draft. Canadian CT Head Rule entry criteria, exclusions, GCS, neurological and skull findings require in-person confirmation; it must not be calculated or declared negative by telephone. No child applicability. Anticoagulant/antiplatelet use, bleeding disorder, post-traumatic seizure and other exclusions trigger clinician assessment, not reassurance. GOVERNANCE_REQUIRED for Qatar adult trauma/CT destinations, anticoagulant and antiplatelet pathways, pregnancy imaging, observation/discharge and transport. Blocked from nurse UAT pending Qatar emergency, trauma, neurosurgery and radiology approval. Not production-approved and not licensed Schmitt-Thompson (STCC) content."
     })
   }
 ];

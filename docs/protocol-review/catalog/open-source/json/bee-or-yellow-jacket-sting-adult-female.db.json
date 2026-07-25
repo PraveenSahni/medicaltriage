@@ -1,0 +1,215 @@
+{
+  "_source": "UAT DATA - NOT FOR REAL PATIENT CARE OR PRODUCTION. Qatar-localized structure-validation content generated deterministically from src/data/openSourceGuidelines/batch01.ts and cited public sources. It is not licensed STCC content. All disposition and redirect branches are non-telemedicine pending Qatar clinical and nursing governance approval. Generation does not import or deploy records. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1014,
+    "Title": "Bee or Yellow Jacket Sting - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 3,
+    "Definition": [
+      "Insect bite/sting and allergic-reaction assessment decomposed from NHS.UK's published when-to-get-help guidance.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 and do not drive. Use the person's prescribed adrenaline auto-injector immediately according to its instructions and emergency plan. Keep them flat unless breathing is easier sitting with legs extended or they are vomiting; use the left side in pregnancy. Do not allow standing or walking. A second prescribed device and timing must follow the approved plan/999 instructions. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-06-01",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1014001,
+      "AlgorithmID": 1014,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Are throat or tongue swelling, breathing difficulty, faintness, confusion, or collapse present?",
+      "Information": "Systemic airway, breathing, circulation, or consciousness features require the Anaphylaxis pathway.",
+      "GotoGuideline": "Anaphylaxis",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1014002,
+      "AlgorithmID": 1014,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Are the lips, mouth, throat or tongue suddenly swollen, is the person breathing very fast or struggling to breathe, is the throat tight or hard to swallow, has the skin or lips turned blue, grey or pale, has the person suddenly become very confused, drowsy, or dizzy, or has anyone lost consciousness or become floppy?",
+      "Information": "NHS.UK insect bites and stings guidance lists these signs of a serious allergic reaction (anaphylaxis) as Qatar 999 criteria - use an adrenaline auto-injector immediately if one is available.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        101401
+      ]
+    },
+    {
+      "QuestionID": 1014003,
+      "AlgorithmID": 1014,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Are symptoms worsening or not improving, was the sting in the mouth, throat, or near the eyes, is there abdominal pain and vomiting, dizziness, a high fever with swollen glands, more than one sting, or a previous serious allergic reaction to a sting?",
+      "Information": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) urgently rather than manage entirely at home.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        101402
+      ]
+    },
+    {
+      "QuestionID": 1014004,
+      "AlgorithmID": 1014,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Is the skin around the sting hot to touch, red, painful, swollen, or leaking pus or fluid, or is this a child under 1 year old, or a tick bite with flu-like symptoms or a bullseye rash?",
+      "Information": "NHS.UK guidance flags these infection or tick-bite signs as needing a pharmacist or clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        101403
+      ]
+    },
+    {
+      "QuestionID": 1014005,
+      "AlgorithmID": 1014,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this a single, minor sting or bite with none of the features above?",
+      "Information": "NHS.UK guidance describes minor stings/bites without infection or allergy signs as manageable at home.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        101404
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 101401,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency sting/anaphylaxis response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and do not drive. Use the person's prescribed adrenaline auto-injector immediately according to its instructions and emergency plan. Keep them flat unless breathing is easier sitting with legs extended or they are vomiting; use the left side in pregnancy. Do not allow standing or walking. A second prescribed device and timing must follow the approved plan/999 instructions. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: airway swelling or breathing difficulty; faintness, confusion, floppiness, or collapse; symptoms persist or recur."
+      ]
+    },
+    {
+      "AdviceID": 101402,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent sting review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Remove the stinger if visible by scraping (not squeezing), apply a cold compress, and arrange same-day medical review.",
+        "Call Back If: swelling spreads; breathing becomes difficult."
+      ]
+    },
+    {
+      "AdviceID": 101403,
+      "AlgorithmOrder": 3,
+      "Title": "Routine sting/bite follow-up",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Keep the area clean, apply a cold compress, and book a routine review for signs of infection or a tick bite.",
+        "Call Back If: increasing redness or pain; fever develops."
+      ]
+    },
+    {
+      "AdviceID": 101404,
+      "AlgorithmOrder": 4,
+      "Title": "Governed care for a minor local sting",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Move away from the insect, scrape out a visible bee stinger sideways without squeezing the venom sac, wash the area, elevate if practical, and use a wrapped cool pack briefly. Pain, antihistamine, and topical medicine require age, weight, pregnancy/breastfeeding, allergy, site, sedation risk, and current-medicine checks under the approved Qatar pathway.",
+        "Call Back If: swelling rapidly worsens or involves mouth/neck; breathing, swallowing, dizziness, vomiting, or generalized hives; signs of infection."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Insect bites and stings\", https://www.nhs.uk/conditions/insect-bites-and-stings/ (page last reviewed 01 June 2023)"
+  ],
+  "searchwords": [
+    "bee sting",
+    "wasp sting",
+    "yellow jacket sting",
+    "insect sting",
+    "insect bite"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, are they pregnant, what insect was involved if safely known, where and how many stings occurred, and is there a prescribed allergy plan or adrenaline device?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Bee or Yellow Jacket Sting"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Has the caller had a serious allergic reaction to a sting before?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Bee or Yellow Jacket Sting"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "How many stings, and does the caller carry an adrenaline auto-injector (EpiPen)?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 01 source.",
+      "Source": "Bee or Yellow Jacket Sting"
+    }
+  ]
+}

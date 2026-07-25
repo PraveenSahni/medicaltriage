@@ -1,0 +1,196 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1465,
+    "Title": "Pelvic Pain - Female - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 4,
+    "Definition": [
+      "Pelvic or lower abdominal pain assessment for a patient with female reproductive anatomy. Pregnancy, postpartum status, age, sexual-health and safeguarding context must be assessed; unexplained pain is not diagnosed remotely.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Tell the call handler if pregnancy or recent birth is possible. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2025-11-24",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    },
+    {
+      "LevelID": 40,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1465001,
+      "AlgorithmID": 1465,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Is the pain mainly in the upper abdomen with indigestion, reflux, or heartburn symptoms rather than the pelvis?",
+      "Information": "Pain centered in the upper abdomen belongs in the Abdominal Pain - Upper pathway.",
+      "GotoGuideline": "Abdominal Pain - Upper",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1465002,
+      "AlgorithmID": 1465,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there collapse or fainting, marked dizziness, pale or clammy skin, confusion, breathing difficulty, heavy vaginal bleeding, severe or rapidly worsening pain, a rigid or very tender abdomen, or sudden severe one-sided pelvic pain with vomiting? If pregnancy is possible, is there pain with bleeding or shoulder-tip pain?",
+      "Information": "These features can indicate ruptured ectopic pregnancy, ovarian torsion, major bleeding, peritonitis, or shock. NICE notes ectopic pregnancy can be atypical and may occur without known risk factors.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        146501
+      ]
+    },
+    {
+      "QuestionID": 1465003,
+      "AlgorithmID": 1465,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Without the emergency features above, is pregnancy possible, is the patient postpartum, under 18, or is there persistent or one-sided pain, fever or chills, vomiting, abnormal vaginal discharge or bleeding, urinary pain/frequency/retention, blood in urine or stool, rectal pressure, pain during sex, or concern about sexual assault or an unsafe caregiver?",
+      "Information": "These features require in-person examination, pregnancy testing where applicable, and possible urine, infection, ultrasound, or safeguarding assessment; tele-triage cannot exclude ectopic pregnancy, torsion, pelvic infection, appendicitis, urinary obstruction, or abuse.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        146502
+      ]
+    },
+    {
+      "QuestionID": 1465004,
+      "AlgorithmID": 1465,
+      "DispositionLevel": 40,
+      "QuestionOrder": 1,
+      "Question": "Is this mild pelvic pain with pregnancy excluded and none of the emergency, urgent, pediatric, postpartum, or safeguarding features above?",
+      "Information": "Unexplained pelvic pain still requires clinical follow-up to determine the cause; this is not a diagnosis or medication branch.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        146503
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 146501,
+      "AlgorithmOrder": 1,
+      "Title": "Emergency pelvic pain precautions",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 now. Keep the patient at rest and do not let them drive. Tell the call handler if pregnancy or recent birth is possible. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: worsening pain; worsening dizziness or bleeding."
+      ]
+    },
+    {
+      "AdviceID": 146502,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent in-person pelvic pain review",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange urgent in-person gynecology, early-pregnancy, maternity, pediatric, or safeguarding assessment as applicable; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED.",
+        "Call Back If: pain worsens; fever, faintness, vomiting, shoulder pain, or bleeding develops."
+      ]
+    },
+    {
+      "AdviceID": 146503,
+      "AlgorithmOrder": 3,
+      "Title": "Pelvic pain clinical follow-up",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Arrange in-person clinical review to determine the cause; the exact Qatar destination remains GOVERNANCE_REQUIRED. A clinician or pharmacist should confirm any medicine is suitable, especially for a child, pregnancy, postpartum patient, or patient with bleeding or kidney disease.",
+        "Call Back If: pain worsens; fever, faintness, vomiting, shoulder pain, or bleeding develops."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Pelvic pain\", https://www.nhs.uk/symptoms/pelvic-pain/",
+    "NICE NG126, \"Ectopic pregnancy and miscarriage: symptoms, signs and initial assessment\", https://www.nice.org.uk/guidance/ng126/chapter/symptoms-and-signs-of-ectopic-pregnancy-and-initial-assessment"
+  ],
+  "searchwords": [
+    "pelvic pain",
+    "pain in my lower abdomen",
+    "pain in my pelvis",
+    "lower belly pain female"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "PAIN_SCALE",
+      "Question": "Where is the pain, did it start suddenly, is it one-sided, and how severe is it from 0 to 10?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 22 source.",
+      "Source": "Pelvic Pain - Female"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "When did it begin, and is it constant, worsening, or coming and going?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 22 source.",
+      "Source": "Pelvic Pain - Female"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Could the patient be pregnant, have they recently given birth, or is a period late? Do not exclude pregnancy because contraception is used.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 22 source.",
+      "Source": "Pelvic Pain - Female"
+    },
+    {
+      "Order": 4,
+      "Category": "YES_NO",
+      "Question": "Is there vaginal bleeding or discharge, fever, vomiting, faintness, shoulder-tip pain, urinary difficulty, or blood in urine or stool?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 22 source.",
+      "Source": "Pelvic Pain - Female"
+    },
+    {
+      "Order": 5,
+      "Category": "YES_NO",
+      "Question": "If the patient is under 18, can they speak privately now, and do they say they feel safe with the accompanying adult and in sexual relationships?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 22 source.",
+      "Source": "Pelvic Pain - Female"
+    }
+  ]
+}

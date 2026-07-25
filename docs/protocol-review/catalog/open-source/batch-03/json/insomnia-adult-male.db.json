@@ -1,0 +1,185 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited NHS.UK pages under the Open Government Licence v3.0; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Local disposition mappings and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1057,
+    "Title": "Insomnia - Male (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 1,
+    "Definition": [
+      "Insomnia/sleep difficulty assessment decomposed from NHS.UK's published when-to-get-help guidance.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [
+        "Insomnia means regular difficulty falling asleep, remaining asleep, or waking too early, with daytime effects such as fatigue, irritability, or poor concentration.",
+        "Short-term insomnia lasts less than 3 months; insomnia lasting 3 months or longer is long-term.",
+        "Sleep requirements differ by age, so child and adult functional impact must be assessed in context."
+      ],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "PENDING: Qatar adult, pediatric, obstetric, emergency, specialty, mental-health, and nursing governance review"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 and do not drive when sleeplessness accompanies suicidal risk, severe confusion/agitation, hallucinations, mania with unsafe behaviour, poisoning/overdose, seizure, chest pain, severe breathing difficulty, or reduced consciousness. Stay with the person if safe and do not give alcohol, sedatives, or another person's sleep medicine. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "RESEARCH_REQUIRED - verify source review date during governance",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Crown copyright (NHS.UK content), reused under the Open Government Licence v3.0. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    },
+    {
+      "LevelID": 15,
+      "DispositionHeading": "Self Care with Callback Precautions",
+      "DispositionHeading_Telemedicine": "Home care with safety-net advice",
+      "Video": true,
+      "CssVar": "--self-care",
+      "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+      "Acuity": 2
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1057001,
+      "AlgorithmID": 1057,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Are sudden episodes of intense fear, racing heart, trembling, breathlessness, or panic the main concern rather than inability to sleep?",
+      "Information": "A panic presentation belongs in the anxiety and panic pathway; insomnia may remain a related symptom.",
+      "GotoGuideline": "Anxiety and Panic Attack",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1057002,
+      "AlgorithmID": 1057,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Does this sound like a life-threatening emergency to the triager (e.g. related to a medical condition needing immediate attention)?",
+      "Information": "Universal emergency rule-out added ahead of the insomnia guidance itself - insomnia is rarely itself an emergency, but must not mask an underlying urgent medical or mental health condition.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        105701
+      ]
+    },
+    {
+      "QuestionID": 1057003,
+      "AlgorithmID": 1057,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Has changing sleeping habits not helped, has the trouble sleeping lasted months, or is it affecting daily life to the point of making it hard to cope?",
+      "Information": "NHS.UK guidance recommends seeing a GP when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        105702
+      ]
+    },
+    {
+      "QuestionID": 1057004,
+      "AlgorithmID": 1057,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this recent, mild sleep difficulty with none of the features above?",
+      "Information": "NHS.UK guidance provides self-help sleep hygiene measures for uncomplicated, recent sleep difficulty.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        105703
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 105701,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency insomnia-associated response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 and do not drive when sleeplessness accompanies suicidal risk, severe confusion/agitation, hallucinations, mania with unsafe behaviour, poisoning/overdose, seizure, chest pain, severe breathing difficulty, or reduced consciousness. Stay with the person if safe and do not give alcohol, sedatives, or another person's sleep medicine. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: suicidal or violent risk; confusion, hallucinations, or unsafe mania; poisoning, seizure, abnormal breathing, or reduced consciousness."
+      ]
+    },
+    {
+      "AdviceID": 105702,
+      "AlgorithmOrder": 2,
+      "Title": "Routine insomnia follow-up",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Book a routine GP appointment to discuss persistent sleep difficulty.",
+        "Call Back If: mood or mental health worsens."
+      ]
+    },
+    {
+      "AdviceID": 105703,
+      "AlgorithmOrder": 3,
+      "Title": "Sleep hygiene self-help",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Go to bed only when sleepy, keep consistent wake times, relax for an hour before bed, keep the bedroom dark and quiet, exercise during the day (not within 4 hours of bedtime), and avoid tobacco, alcohol, caffeine, large meals, screens, and daytime naps close to bedtime.",
+        "Call Back If: trouble sleeping persists beyond a few weeks; affecting daily functioning."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Insomnia\", https://www.nhs.uk/conditions/insomnia/ (page last reviewed 19 March 2024)"
+  ],
+  "searchwords": [
+    "insomnia",
+    "cant sleep",
+    "trouble sleeping",
+    "not sleeping well"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person's exact age and sex, are they pregnant/recently postpartum, and how long has the sleep change lasted? Ask about child safeguarding, medicines/substances, mania, psychosis, suicidality, breathing pauses, pain, and medical illness.",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Insomnia"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Have changes to sleep habits already been tried?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Insomnia"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "How is this affecting daily life?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 3 runtime protocol.",
+      "Source": "Insomnia"
+    }
+  ]
+}

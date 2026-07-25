@@ -1,0 +1,166 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from the cited NHS.UK pages under the Open Government Licence v3.0; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect and is not a disposition row. Local extensions, destination mappings, safeguarding workflows, and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1103,
+    "Title": "Hallucinations - Male (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Male",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Male",
+    "Acuity": 4,
+    "Definition": [
+      "UAT-only assessment of hallucinations in people aged 12 years and older, separating medical or neurological emergencies from suspected psychosis and requiring age-appropriate mental health review.",
+      "Adult patient.",
+      "Male."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999. Stay with the person if this is safe, reduce stimulation, speak calmly in short sentences, and do not argue about or validate the hallucination as fact. Remove access to means of harm only when safe and do not allow the person to drive. If poisoning or overdose is possible, tell 999 what may have been taken; do not use an unresolved protocol redirect. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2023-09-05",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Crown copyright (NHS.UK content), reused under the Open Government Licence v3.0. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 78,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1103001,
+      "AlgorithmID": 1103,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Did the hallucinations begin after a suspected overdose, poisoning, recreational drug, or unknown substance exposure?",
+      "Information": "A suspected toxic exposure requires the poisoning pathway and urgent toxicology assessment.",
+      "GotoGuideline": "Poisoning",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1103002,
+      "AlgorithmID": 1103,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there immediate risk of harm; command hallucinations to harm; severe agitation or inability to maintain basic safety; sudden confusion or reduced consciousness; seizure; fever with severe headache or stiff neck; recent head injury; new neurological symptoms; suspected poisoning, overdose, or severe withdrawal; or rapidly worsening symptoms after childbirth?",
+      "Information": "Hallucinations can arise from psychosis or an acute medical, neurological, toxicological, or perinatal emergency. Immediate danger or inability to remain safe requires emergency care; sudden confusion itself requires immediate assessment. This is a direct Qatar 999 disposition and must not redirect to a missing or demographically incompatible Poisoning protocol.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        110301
+      ]
+    },
+    {
+      "QuestionID": 1103003,
+      "AlgorithmID": 1103,
+      "DispositionLevel": 78,
+      "QuestionOrder": 1,
+      "Question": "With all emergency and acute medical features excluded, are new or worsening hallucinations present now, or is this a first suspected psychotic episode?",
+      "Information": "NHS.UK and NIMH guidance support prompt assessment of possible psychosis because hallucinations have multiple causes and early treatment is important. Children and adolescents require an age-appropriate pediatric or child mental health assessment, not automatic reuse of an adult pathway.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        110302
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 110301,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency hallucination response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999. Stay with the person if this is safe, reduce stimulation, speak calmly in short sentences, and do not argue about or validate the hallucination as fact. Remove access to means of harm only when safe and do not allow the person to drive. If poisoning or overdose is possible, tell 999 what may have been taken; do not use an unresolved protocol redirect. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: risk of harm; command hallucinations; sudden confusion; reduced consciousness; seizure; fever or neurological symptoms; possible poisoning; person becomes unreachable."
+      ]
+    },
+    {
+      "AdviceID": 110302,
+      "AlgorithmOrder": 2,
+      "Title": "Urgent age-appropriate mental health assessment",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Arrange prompt assessment by an appropriately trained clinician. During the HMC National Mental Health Helpline's published hours (08:00-18:00 Saturday-Thursday), call 16000 and choose option 4. An adolescent needs a private, age-appropriate assessment with safe caregiver involvement. The organization must approve the pediatric and non-emergency out-of-hours routes before UAT. Call 999 if safety cannot be maintained or any medical or neurological red flag appears.",
+        "Call Back If: symptoms worsen rapidly; confusion or reduced responsiveness develops; command hallucinations or risk of harm develops; safe supervision fails."
+      ]
+    }
+  ],
+  "references": [
+    "Hamad Medical Corporation, \"National Mental Health Helpline marks six years of supporting Qatar's population\", https://hamad.qa/EN/news/2026/April/Pages/National-Mental-Health-Helpline-marks-six-years-of-supporting-Qatar%E2%80%99s-population.aspx (accessed 2026-07-25)",
+    "Qatar Ministry of Public Health, \"Healthcare Services in Qatar\", https://sportandhealth.moph.gov.qa/EN/faninfo/Pages/HealthcareServicesInQatar.aspx (accessed 2026-07-25)",
+    "National Institute of Mental Health, \"Understanding Psychosis\", https://www.nimh.nih.gov/health/publications/understanding-psychosis (accessed 2026-07-25)",
+    "NHS.UK, \"Urgent support\", https://www.nhs.uk/every-mind-matters/urgent-support/ (accessed 2026-07-25)",
+    "NHS.UK, \"Sudden confusion (delirium)\", https://www.nhs.uk/symptoms/confusion/ (page last reviewed 28 May 2024)"
+  ],
+  "searchwords": [
+    "hallucinations",
+    "seeing things",
+    "hearing voices",
+    "psychosis"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "DURATION",
+      "Question": "When did this start, and was the onset sudden or gradual?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Hallucinations"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Is the person confused, difficult to wake, having a seizure, severely agitated, unable to care for basic needs, or at immediate risk of harming themselves or another person?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Hallucinations"
+    },
+    {
+      "Order": 3,
+      "Category": "OPEN_TEXT",
+      "Question": "Is there fever, severe headache, stiff neck, recent head injury, new neurological symptoms, pregnancy or recent birth, sleep deprivation, medicine change, alcohol or drug use or withdrawal, or possible poisoning?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Hallucinations"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the person seeing, hearing, feeling, smelling, or tasting, and are voices giving commands to harm themselves or someone else?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Hallucinations"
+    },
+    {
+      "Order": 5,
+      "Category": "YES_NO",
+      "Question": "For an adolescent, can they speak privately and safely, and is a trusted, non-threatening caregiver or responsible adult available?",
+      "Rationale": "Condition-relevant source assessment retained from the Batch 4 runtime protocol.",
+      "Source": "Hallucinations"
+    }
+  ]
+}

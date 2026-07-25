@@ -1,0 +1,113 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1372,
+    "Title": "Pubic Lice - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 1,
+    "Definition": [
+      "UAT-only assessment of suspected pubic lice in patients aged 12 years and older; not approved for real-patient or production use.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "Pending qualified Qatar adult, pediatric, sexual-health, pharmacy, and safeguarding review"
+    },
+    "FirstAid": [],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2026-07-25",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 50,
+      "DispositionHeading": "Clinical Review",
+      "DispositionHeading_Telemedicine": "Prompt telemedicine or in-person review",
+      "Video": true,
+      "CssVar": "--review",
+      "DestinationCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
+      "Acuity": 3
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1372001,
+      "AlgorithmID": 1372,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Are lice or eggs confined to scalp hair rather than pubic or coarse body hair?",
+      "Information": "Scalp lice belong in the Head Lice pathway.",
+      "GotoGuideline": "Head Lice",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1372002,
+      "AlgorithmID": 1372,
+      "DispositionLevel": 50,
+      "QuestionOrder": 1,
+      "Question": "Is pubic lice suspected or confirmed?",
+      "Information": "NHS.UK guidance recommends contacting a sexual-health clinic, primary-care clinician, or pharmacist for pubic lice - it will not resolve without treatment, and sexual partners should also be examined.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        137201
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 137201,
+      "AlgorithmOrder": 1,
+      "Title": "Pubic lice assessment and treatment",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Arrange pharmacist or clinician confirmation and use only a locally approved product exactly as labelled; suitability differs by age, pregnancy or breastfeeding, allergy, skin condition, and treatment site. Do not apply body products to eyelashes or eyes. Avoid close body or sexual contact until assessment and treatment are complete; partner notification and STI testing must follow the confidential Qatar pathway approved for UAT. For anyone under 18, prioritize safeguarding review before partner-contact advice. Launder clothing and bedding according to the selected product's instructions.",
+        "Call Back If: eye involvement, skin infection, allergy, or symptoms persisting after correctly completed treatment; any safeguarding concern."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Pubic lice\", https://www.nhs.uk/conditions/pubic-lice/ (page last reviewed 15 May 2026)"
+  ],
+  "searchwords": [
+    "pubic lice",
+    "crabs std",
+    "itchy pubic hair",
+    "think i have pubic lice"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "OPEN_TEXT",
+      "Question": "How old is the patient, where are lice or nits seen, and how long has itching been present?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 17 source.",
+      "Source": "Pubic Lice"
+    },
+    {
+      "Order": 2,
+      "Category": "YES_NO",
+      "Question": "Can the patient speak privately and safely? For a child or adolescent, pubic lice requires an immediate Qatar-approved safeguarding assessment for possible sexual contact, abuse, or exploitation; do not question them in front of a potentially unsafe person.",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 17 source.",
+      "Source": "Pubic Lice"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is the patient pregnant or breastfeeding, immunocompromised, affected around the eyes, or allergic to lice treatments, and what medicines or treatments have already been used?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 17 source.",
+      "Source": "Pubic Lice"
+    }
+  ]
+}

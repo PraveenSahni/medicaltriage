@@ -1,0 +1,157 @@
+{
+  "_source": "Shaped to mirror the licensed After-Hours Telehealth Triage Guidelines database structure. This is IST open-source guideline content derived from cited public sources; it is not licensed STCC content. Question.DispositionLevel=null marks a See More Appropriate Guideline redirect. Demographic variants contain only source-supported differences; identical thresholds are documented rather than fabricated. Local destinations and TelemedicineEligible values require IST clinical governance approval. UAT DATA ONLY - NOT FOR REAL-PATIENT CARE OR PRODUCTION USE.",
+  "algorithm": {
+    "AlgorithmID": 1460,
+    "Title": "Hip Pain - Female (Adult)",
+    "ContentSet": "IST Open-Source Guideline Content | Adult | Female",
+    "Age": "Adult (18 years and older)",
+    "GenderAtBirth": "Female",
+    "Acuity": 2,
+    "Definition": [
+      "UAT-only adult and pediatric non-traumatic hip-pain pathway screening for septic arthritis, systemic illness and inability to stand or bear weight before in-person assessment.",
+      "Adult patient.",
+      "Female."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Call Qatar emergency services on 999 for a hot painful joint with systemic illness, inability to stand or bear weight, severe rapidly worsening pain, or a seriously unwell child. Do not allow self-driving or force walking. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
+    "LastReviewed": "2026-02-26",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Public-source content reused under its stated licence. This is not licensed STCC content."
+  },
+  "dispositions": [
+    {
+      "LevelID": 100,
+      "DispositionHeading": "Emergency Department Now",
+      "DispositionHeading_Telemedicine": "Emergency transport / in-person assessment now",
+      "Video": false,
+      "CssVar": "--ems",
+      "DestinationCode": "HMC_EMERGENCY_DEPARTMENT",
+      "Acuity": 5
+    },
+    {
+      "LevelID": 70,
+      "DispositionHeading": "Urgent Clinical Review",
+      "DispositionHeading_Telemedicine": "Urgent clinical assessment",
+      "Video": true,
+      "CssVar": "--urgent",
+      "DestinationCode": "HMC_URGENT_REVIEW",
+      "Acuity": 4
+    }
+  ],
+  "questions": [
+    {
+      "QuestionID": 1460001,
+      "AlgorithmID": 1460,
+      "DispositionLevel": null,
+      "QuestionOrder": 1,
+      "Question": "Did this problem begin with a motor vehicle crash or as part of a multi-system crash injury?",
+      "Information": "A motor vehicle crash or multi-system crash injury belongs in the Motor Vehicle Accident pathway.",
+      "GotoGuideline": "Motor Vehicle Accident",
+      "TelemedicineEligible": false,
+      "AdviceIDs": []
+    },
+    {
+      "QuestionID": 1460002,
+      "AlgorithmID": 1460,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is hip pain severe with inability to stand or bear weight, or accompanied by marked systemic illness, confusion, breathing change, collapse or rapid deterioration, including a seriously unwell child?",
+      "Information": "NHS.UK joint pain guidance identifies these as reasons for urgent clinical review; the local Qatar urgent-care pathway is used here.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        146001
+      ]
+    },
+    {
+      "QuestionID": 1460003,
+      "AlgorithmID": 1460,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "With no emergency feature, is there any persistent or unexplained hip pain, limp/functional limitation, pregnancy/postpartum state, night pain, child concern or higher-risk context?",
+      "Information": "In-person assessment is required; every child joint problem needs clinical review and telephone triage cannot exclude serious hip pathology.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [
+        146002
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "AdviceID": 146001,
+      "AlgorithmOrder": 1,
+      "Title": "Qatar emergency hip response",
+      "PatientHealthInfo": false,
+      "Internal": false,
+      "Content": [
+        "Call Qatar emergency services on 999 for a hot painful joint with systemic illness, inability to stand or bear weight, severe rapidly worsening pain, or a seriously unwell child. Do not allow self-driving or force walking. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Back If: fever/systemic illness; cannot walk or bear weight."
+      ]
+    },
+    {
+      "AdviceID": 146002,
+      "AlgorithmOrder": 2,
+      "Title": "In-person hip assessment",
+      "PatientHealthInfo": true,
+      "Internal": false,
+      "Content": [
+        "Arrange in-person assessment. Any child hip/joint problem, pregnancy/postpartum pain, night pain, functional loss or unexplained persistent pain requires an age-appropriate pathway. Medication and exact Qatar destination are GOVERNANCE_REQUIRED.",
+        "Call Back If: pain worsens; walking difficulty; swelling, redness or fever."
+      ]
+    }
+  ],
+  "references": [
+    "NHS.UK, \"Joint pain\", https://www.nhs.uk/conditions/joint-pain/ (page last reviewed 26 February 2026) - applied to non-traumatic hip pain"
+  ],
+  "searchwords": [
+    "hip pain",
+    "my hip hurts",
+    "hip has been aching",
+    "sore hip no injury",
+    "hip has just been aching for a while",
+    "hip pain no injury or anything"
+  ],
+  "initialAssessmentQuestions": [
+    {
+      "Order": 1,
+      "Category": "LOCATION",
+      "Question": "Where exactly is the pain?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 21 source.",
+      "Source": "Hip Pain"
+    },
+    {
+      "Order": 2,
+      "Category": "DURATION",
+      "Question": "How long has the pain lasted?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 21 source.",
+      "Source": "Hip Pain"
+    },
+    {
+      "Order": 3,
+      "Category": "YES_NO",
+      "Question": "Is the person able to bear weight normally?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 21 source.",
+      "Source": "Hip Pain"
+    },
+    {
+      "Order": 4,
+      "Category": "OPEN_TEXT",
+      "Question": "What is the age; is there systemic illness, pregnancy/recent birth, recent infection/procedure, night pain, immune risk, hidden trauma, or—in a child—refusal to walk/use the limb or safeguarding concern?",
+      "Rationale": "Condition-relevant assessment retained from the cited Batch 21 source.",
+      "Source": "Hip Pain"
+    }
+  ]
+}
