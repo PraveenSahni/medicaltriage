@@ -81,7 +81,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Are symptoms persistent, recurrent, or severe, or has the triggering substance not responded to treatment?",
-      "Information": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for persistent, recurrent, or severe contact dermatitis symptoms.",
+      "Information": "NHS.UK guidance: arrange a primary-care review for persistent, recurrent, or severe contact dermatitis symptoms.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

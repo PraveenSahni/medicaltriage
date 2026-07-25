@@ -130,7 +130,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange prompt clinical assessment; the exact non-emergency Qatar maternity destination remains GOVERNANCE_REQUIRED.",
+        "Arrange prompt clinical assessment; the exact non-emergency Qatar maternity destination requires local approval.",
         "Call Back If: bleeding increases; fever develops."
       ]
     },

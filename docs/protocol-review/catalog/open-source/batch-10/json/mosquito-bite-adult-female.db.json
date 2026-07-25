@@ -103,7 +103,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Is the skin around the bite hot, red, and painful, or leaking pus or fluid (signs of infection)?",
-      "Information": "NHS.UK guidance flags these infection signs as needing a pharmacist or clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+      "Information": "NHS.UK guidance flags these infection signs as needing a pharmacist or primary-care review.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

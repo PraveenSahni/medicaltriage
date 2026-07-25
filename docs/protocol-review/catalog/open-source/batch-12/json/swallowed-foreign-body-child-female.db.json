@@ -21,7 +21,7 @@
       "ExpertReviewer": "Pending qualified Qatar adult, pediatric, emergency, gastroenterology, surgery, radiology, and toxicology review"
     },
     "FirstAid": [
-      "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+      "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are local approval required. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
       "Call Qatar 999 immediately on speaker and follow the operator's instructions. If the patient can cough effectively, encourage coughing and monitor continuously. If the cough is ineffective, a trained or dispatcher-guided responder may give up to 5 back blows. If these fail, use up to 5 abdominal thrusts for an adult or child over 1 year, but use chest thrusts instead for an infant under 1 year or a pregnant patient; continue the age-appropriate sequence as directed. Do not perform a blind finger sweep or use an unapproved suction device. If the patient becomes unresponsive, start age-appropriate CPR immediately as directed by 999. Even after the object clears, a patient who received thrusts or chest compressions needs clinical assessment. Do not drive the patient to hospital. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
       "Call Qatar 999 for breathing difficulty, collapse, severe symptoms, or when emergency transport is advised; otherwise proceed immediately to the emergency department using the Qatar destination approved for this UAT environment. Do not wait for symptoms. Give no food, drink, honey, medicine, or laxative and do not induce vomiting unless Qatar 999 or a poison specialist gives object-specific instructions. Keep the patient observed. Bring the matching battery, magnet, object, packaging, container, or a photograph when safe, but do not delay departure. The patient may need urgent radiographs and specialist removal. Do not use MRI until retained metal or a magnet has been excluded by clinicians. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
     ],
@@ -79,7 +79,7 @@
       "DispositionLevel": 100,
       "QuestionOrder": 1,
       "Question": "If the patient is under 18, is harm occurring now, is there immediate danger from an accompanying or suspected caregiver, could the child be returned now to an unsafe person or place, or did contact end while an immediate threat remained unresolved?",
-      "Information": "Immediate danger, ongoing harm, an imminent unsafe return, or loss of contact during an unresolved immediate threat requires emergency action. Qatar 999 is the verified emergency route. Exact child-protection reporting, consent, documentation, and information-sharing requirements are GOVERNANCE_REQUIRED.",
+      "Information": "Immediate danger, ongoing harm, an imminent unsafe return, or loss of contact during an unresolved immediate threat requires emergency action. Qatar 999 is the verified emergency route. Exact child-protection reporting, consent, documentation, and information-sharing requirements are local approval required.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -92,7 +92,7 @@
       "DispositionLevel": 78,
       "QuestionOrder": 2,
       "Question": "If the patient is under 18 and there is no confirmed immediate danger, are they unable to speak privately, is caregiver safety uncertain, or is there another safeguarding concern requiring trained assessment?",
-      "Information": "An inability to obtain a private history, uncertainty about caregiver safety, or another safeguarding concern needs prompt trained assessment without automatically treating it as a confirmed emergency. The exact Qatar safeguarding pathway is GOVERNANCE_REQUIRED.",
+      "Information": "An inability to obtain a private history, uncertainty about caregiver safety, or another safeguarding concern needs prompt trained assessment without automatically treating it as a confirmed emergency. The exact Qatar safeguarding pathway requires local approval.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -147,7 +147,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are local approval required. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
         "Call Back If: harm occurring now or immediate danger; imminent return to an unsafe person or place; contact lost while an immediate threat remains unresolved."
       ]
     },
@@ -158,7 +158,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Keep questions neutral and seek a private conversation only when it is safe. Do not disclose sensitive information to a caregiver whose safety is uncertain, do not confront or alert a suspected unsafe person, and do not promise confidentiality. Arrange prompt in-person assessment through the governance-approved Qatar child safeguarding pathway and record only an approved safe callback method. If immediate danger emerges or contact is lost during an unresolved immediate threat, use the emergency branch and call Qatar 999. Exact reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED.",
+        "Keep questions neutral and seek a private conversation only when it is safe. Do not disclose sensitive information to a caregiver whose safety is uncertain, do not confront or alert a suspected unsafe person, and do not promise confidentiality. Arrange prompt in-person assessment through the governance-approved Qatar child safeguarding pathway and record only an approved safe callback method. If immediate danger emerges or contact is lost during an unresolved immediate threat, use the emergency branch and call Qatar 999. Exact reporting, consent, documentation, and information-sharing rules are local approval required.",
         "Call Back If: private history cannot be obtained safely; caregiver safety remains uncertain; new immediate danger or loss of contact."
       ]
     },

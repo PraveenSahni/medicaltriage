@@ -101,7 +101,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Is the skin blistered or swollen, is the temperature very high or does the caller feel hot, cold, or shivery, does the caller feel very tired, dizzy, or sick, is there a headache or muscle cramps, or is the patient a baby or young child?",
-      "Information": "NHS.UK sunburn guidance lists these as reasons for an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call.",
+      "Information": "NHS.UK sunburn guidance lists these as reasons for an urgent primary-care review or urgent clinical review call.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

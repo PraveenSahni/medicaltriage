@@ -99,7 +99,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Are symptoms worsening or not improving, was the sting in the mouth, throat, or near the eyes, is there abdominal pain and vomiting, dizziness, a high fever with swollen glands, more than one sting, or a previous serious allergic reaction to a sting?",
-      "Information": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) urgently rather than manage entirely at home.",
+      "Information": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review urgently rather than manage entirely at home.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -112,7 +112,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Is the skin around the sting hot to touch, red, painful, swollen, or leaking pus or fluid, or is this a child under 1 year old, or a tick bite with flu-like symptoms or a bullseye rash?",
-      "Information": "NHS.UK guidance flags these infection or tick-bite signs as needing a pharmacist or clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+      "Information": "NHS.UK guidance flags these infection or tick-bite signs as needing a pharmacist or primary-care review.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

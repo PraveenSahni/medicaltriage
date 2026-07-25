@@ -21,7 +21,7 @@
       "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
     },
     "FirstAid": [
-      "For critical illness or immediate danger, call Qatar emergency services on 999 now and follow the call-taker's instructions. Keep the child with a safe adult where possible. Do not confront a suspected unsafe person or disclose the child's account to them. The exact Qatar child-protection reporting and safe-callback workflow remains GOVERNANCE_REQUIRED for UAT. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
+      "For critical illness or immediate danger, call Qatar emergency services on 999 now and follow the call-taker's instructions. Keep the child with a safe adult where possible. Do not confront a suspected unsafe person or disclose the child's account to them. The exact Qatar child-protection reporting and safe-callback workflow requires local approval for UAT. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care."
     ],
     "Author": "IST Health Open-Source Guideline Content",
     "LastRevised": "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
@@ -132,7 +132,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "For critical illness or immediate danger, call Qatar emergency services on 999 now and follow the call-taker's instructions. Keep the child with a safe adult where possible. Do not confront a suspected unsafe person or disclose the child's account to them. The exact Qatar child-protection reporting and safe-callback workflow remains GOVERNANCE_REQUIRED for UAT. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+        "For critical illness or immediate danger, call Qatar emergency services on 999 now and follow the call-taker's instructions. Keep the child with a safe adult where possible. Do not confront a suspected unsafe person or disclose the child's account to them. The exact Qatar child-protection reporting and safe-callback workflow requires local approval for UAT. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
         "Call Back If: reduced responsiveness, collapse or seizure; breathing difficulty or rapid deterioration; immediate safeguarding danger."
       ]
     },
@@ -143,7 +143,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange prompt pediatric clinical review through the Qatar pathway approved for this UAT environment. A child under 5 must use a separately approved age-appropriate pathway. Excessive thirst or urination, weight loss, fever, pain, weakness, gait change, genital symptoms or safeguarding concerns must not be managed as routine bedwetting. The exact non-emergency destination, safeguarding report and safe-callback process remain GOVERNANCE_REQUIRED.",
+        "Arrange prompt pediatric clinical review through the Qatar pathway approved for this UAT environment. A child under 5 must use a separately approved age-appropriate pathway. Excessive thirst or urination, weight loss, fever, pain, weakness, gait change, genital symptoms or safeguarding concerns must not be managed as routine bedwetting. The exact non-emergency destination, safeguarding report and safe-callback process remain local approval required.",
         "Call Back If: the child becomes drowsy, weak or rapidly worse; vomiting or inability to drink develops; immediate safety concern develops."
       ]
     },

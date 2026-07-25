@@ -5,7 +5,7 @@
 - Age group: **Adult**
 - Gender at birth: **Female**
 - Completion status: **BLOCKED_BY_RESEARCH_GAP**
-- Content hash: `30c7ec09b74a478c64a2d9465183263b1b09fd943a6a884b75bf031f5130e888`
+- Content hash: `c6d8d4c90e6549058bb43f7ead0da94526df411a4a25c6b6e0c3b19bb96bdc56`
 
 ## Applicability
 

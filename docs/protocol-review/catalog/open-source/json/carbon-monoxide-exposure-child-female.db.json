@@ -57,7 +57,7 @@
       "DispositionLevel": 100,
       "QuestionOrder": 1,
       "Question": "Was there fire or smoke exposure with breathing difficulty, airway or facial burns, soot around the mouth or nose, hoarseness, severe coughing, confusion, weakness, chest or muscle pain, collapse, or loss of consciousness?",
-      "Information": "NHS.UK carbon monoxide poisoning guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for suspected exposure. Do not drive to hospital - call for an ambulance instead.",
+      "Information": "NHS.UK carbon monoxide poisoning guidance lists these as emergency ambulance or Emergency Department criteria for suspected exposure. Do not drive to hospital - call for an ambulance instead.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -70,7 +70,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Does the caller suspect carbon monoxide, fire, or smoke exposure but have none of the emergency features above?",
-      "Information": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) for suspected carbon monoxide exposure when severe symptoms are not present.",
+      "Information": "NHS.UK guidance recommends seeking urgent clinical review for suspected carbon monoxide exposure when severe symptoms are not present.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -97,7 +97,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Leave the exposure area, go into fresh air, and do not re-enter a building or restart an appliance until emergency or safety authorities say it is safe. Use the Qatar governance-approved in-person assessment route without delay (GOVERNANCE_REQUIRED). Escalate to Qatar 999 for breathing difficulty, hoarseness, soot, airway/facial burns, severe coughing, confusion, weakness, chest pain, collapse, or worsening symptoms.",
+        "Leave the exposure area, go into fresh air, and do not re-enter a building or restart an appliance until emergency or safety authorities say it is safe. Use the Qatar governance-approved in-person assessment route without delay (local approval required). Escalate to Qatar 999 for breathing difficulty, hoarseness, soot, airway/facial burns, severe coughing, confusion, weakness, chest pain, collapse, or worsening symptoms.",
         "Call Back If: breathing difficulty, hoarseness, soot, airway or facial burns, or severe coughing; confusion, weakness, chest pain, collapse, or worsening symptoms."
       ]
     }

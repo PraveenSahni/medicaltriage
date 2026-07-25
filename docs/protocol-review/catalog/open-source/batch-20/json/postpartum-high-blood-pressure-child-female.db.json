@@ -110,7 +110,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange prompt blood-pressure confirmation through the locally approved Qatar maternity pathway; the exact non-emergency destination and measurement thresholds remain GOVERNANCE_REQUIRED.",
+        "Arrange prompt blood-pressure confirmation through the locally approved Qatar maternity pathway; the exact non-emergency destination and measurement thresholds remain local approval required.",
         "Call Back If: headache, vision changes, or swelling develop."
       ]
     }

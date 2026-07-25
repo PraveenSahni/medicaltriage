@@ -99,7 +99,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Without an emergency feature, are symptoms worsening, is the bite in the mouth, throat or near the eye, are there multiple bites, fever, abdominal pain, vomiting or dizziness, or is the patient an infant, pregnant, immunocompromised, or previously severely allergic?",
-      "Information": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) urgently.",
+      "Information": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review urgently.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -112,7 +112,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Is the skin around the bite hot, red, painful, swollen, or leaking pus or fluid (signs of infection)?",
-      "Information": "NHS.UK guidance flags these infection signs as needing a pharmacist or clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+      "Information": "NHS.UK guidance flags these infection signs as needing a pharmacist or primary-care review.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

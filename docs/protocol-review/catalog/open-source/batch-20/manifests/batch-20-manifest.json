@@ -31,7 +31,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "140e1618e14286fbca74c60bdbf1cd7bad752514f4cead234b0b34a172b915b1",
+      "canonicalContentHash": "8aa49d20bf17b7d387b0065584e5b6843d8639f8a00c8f3ec1f8eca5a85379aa",
       "redirectTarget": "Headache",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -54,7 +54,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "4beb790d28c8feebd235ac2cb8fd7350412cce55727d9763ae29b40991bab1c0",
+      "canonicalContentHash": "ace00ac884903b2eb7c6ac9ab2a90647776c1c27ec0560cd9e414f0edcef335b",
       "redirectTarget": "Headache",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -78,7 +78,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "25d7b25aa6c35e57a563115de2ca85f186f7036cb07a3612d755aa1ba8d2a2e2",
+      "canonicalContentHash": "423e593b4fe68acc298e4320742b962db407253cf5405653084d44aba221ac0d",
       "redirectTarget": "DIRECT_DISPOSITION_70",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -101,7 +101,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "7bf6a366f7bfc30290ce6659fd305b60d5095a18d0027ee9be5b3604872eefc9",
+      "canonicalContentHash": "e107b946b2424be1b8528c4693afb0f33762054020eaa07201e1df3087fbb715",
       "redirectTarget": "DIRECT_DISPOSITION_70",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -172,7 +172,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "0c0d1087c4b3e2f767b83aee47e92bf9b089209fc1a0ac3ee04235efafcc1194",
+      "canonicalContentHash": "db714e93644d336de7ec622182c8e0aabc216b4e16623fa8d500aa6df7c6d6e9",
       "redirectTarget": "Skin Injury",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -195,7 +195,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3b6c9526d693951b4963d18928e6e3e3049d7ee72e9c95ccc8a47235e31cd7a7",
+      "canonicalContentHash": "fc2e8bcc51bd9c75f6f429302551ba604aa33cebd68164f075ac104bd0f8bd15",
       "redirectTarget": "Skin Injury",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -219,7 +219,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "78c135b4c73aeb6c9122459b70919a135fe0e508945c8881767bbf8281966005",
+      "canonicalContentHash": "d0c134292b07f8516382501a66420f1a2272ac7ffac3223e2ec214146616e975",
       "redirectTarget": "Neurologic Deficit",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -242,7 +242,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3a891f4c8c4b655b72e25abdda1b92169fb7def2743dab36564543dfb1900402",
+      "canonicalContentHash": "752ddfd37a53573e9887ada65e56830715e4f3670f45cb66d187d5bdff306fd4",
       "redirectTarget": "Neurologic Deficit",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -266,7 +266,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "92a5d44738257d76a15465d9021f626f93e0189d017f990b21a84bf06e71fac1",
+      "canonicalContentHash": "7c6e174d8febd02cc30081794c28afccd22b8d0914038de9c759fb70bc99afbf",
       "redirectTarget": "DIRECT_DISPOSITION_100",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -289,7 +289,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "9ac14f0546b4be4a9096f432bdd85f29c924b9cef70985600b08c4b6ba3db6f9",
+      "canonicalContentHash": "d5a5ad7f38f4e9b49b1f7b797338ecf6c570cc72dfd03e7638dbe2778bf9665f",
       "redirectTarget": "DIRECT_DISPOSITION_100",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -313,7 +313,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "b65f9007bdad0697e1dfa9524d45b8098848b0b720399a0cf947e759d756d4ff",
+      "canonicalContentHash": "fb4b36de9d53cf866a2374216c5353a4dc63aa87a011b421c54b36b219e979d1",
       "redirectTarget": "Flank Pain",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -336,7 +336,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "9f0952ff3f8b3145243ab21729f50f8344a2c0bcef763e8d80848f32aeed6a11",
+      "canonicalContentHash": "b867a025eb432951ccdbbcf4a486d4348e4d6e416ef55a6beeb419c54252fe5e",
       "redirectTarget": "Flank Pain",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -360,7 +360,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "1bcb961f1e5482381ab2569bc12e6ff5168ffbc080a92a696c213f09b09fcc63",
+      "canonicalContentHash": "155b2619aa3d63c7426d55466ce6c2acf8c2c9f0335de605a3b51777f5d77bc4",
       "redirectTarget": "COVID-19 - Diagnosed or Suspected",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -383,7 +383,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "13237e795a94eafc1770082b68902cc63162200555208e74ca3ef03b0ce499bf",
+      "canonicalContentHash": "99f0445fd3563e3c8a1381cf4154ee32e9eaf2a1e68220ee82c1bf658807938a",
       "redirectTarget": "COVID-19 - Diagnosed or Suspected",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -407,7 +407,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "416e69b04fdcc1c6757e9581c501ce6ffa70c9bfc25d1d31eb6bd4ec8bf0b622",
+      "canonicalContentHash": "edd7e1c0dbc69b4ee91da3ecfbeb4ab79f48aedae506c45e73b2b97b0f766d6d",
       "redirectTarget": "Boil (Skin Abscess)",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -430,7 +430,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "78a7c1f6e55dfb5fd509571c95bf8ca02ebc97d664db5ce6fa77fede8d080207",
+      "canonicalContentHash": "34880092029017c99acad4ec139dab9513c5cb3d1dd99c047932c53d9cac6f49",
       "redirectTarget": "Boil (Skin Abscess)",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -454,7 +454,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "be9b711b922686938680a6922f97d64013fbfdf2a13f3262ada76482931f5ce1",
+      "canonicalContentHash": "44351f18b9337508558e8ce38e34dfa2c6b8203f1aac2cec03270ae6b79267f7",
       "redirectTarget": "Fainting",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -477,7 +477,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch20-postpartum-female-applicability-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "bf7b22d0f366a31d38c68533ed286da38c3d06bf999cbc591db1d9c5b2e2a73e",
+      "canonicalContentHash": "7c2d0232ddc20d8b5df378434da34b48cc5b756c75b02e69cc04ff67bfb07d08",
       "redirectTarget": "Fainting",
       "demographicDifferentiation": {
         "ageSpecificChanges": [

@@ -77,7 +77,7 @@
       "DispositionLevel": 100,
       "QuestionOrder": 1,
       "Question": "Is there vomit that looks like blood or ground coffee, green vomit, a stiff neck with light sensitivity, a sudden severe headache or tummy ache, blue/grey/pale skin, severe breathing difficulty, or confusion?",
-      "Information": "NHS.UK diarrhoea and vomiting guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+      "Information": "NHS.UK diarrhoea and vomiting guidance lists these as emergency ambulance or Emergency Department criteria.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -90,7 +90,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Is the person unable to keep fluids down, or has vomiting lasted more than 2 days?",
-      "Information": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) for these features.",
+      "Information": "NHS.UK guidance recommends seeking urgent clinical review for these features.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

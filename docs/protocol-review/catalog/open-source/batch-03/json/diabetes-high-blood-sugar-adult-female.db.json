@@ -72,7 +72,7 @@
       "DispositionLevel": 100,
       "QuestionOrder": 1,
       "Question": "Along with high blood sugar, is there nausea/vomiting or stomach pain, faster-than-usual breathing or heart rate, drowsiness, breath with a fruity ('pear drop') smell, confusion or difficulty concentrating, or a high ketone level?",
-      "Information": "NHS.UK high blood sugar guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for possible diabetic ketoacidosis (DKA). Do not seek emergency assessment through a Qatar transport pathway approved by governance; do not self-drive when emergency features are present (GOVERNANCE_REQUIRED) - call an ambulance.",
+      "Information": "NHS.UK high blood sugar guidance lists these as emergency ambulance or Emergency Department criteria for possible diabetic ketoacidosis (DKA). Do not self-drive to the Emergency Department - call an ambulance.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -85,7 +85,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Has blood sugar remained high or symptoms continued despite trying to lower it, or is this high blood sugar in someone not previously diagnosed with diabetes?",
-      "Information": "NHS.UK guidance recommends contacting a diabetes care team or a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for persistent high readings or a new, undiagnosed presentation.",
+      "Information": "NHS.UK guidance recommends contacting a diabetes care team or primary-care clinician for persistent high readings or a new, undiagnosed presentation.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

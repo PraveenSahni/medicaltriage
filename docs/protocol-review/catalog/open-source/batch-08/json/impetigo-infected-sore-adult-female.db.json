@@ -66,7 +66,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Is this a localized rash or redness without honey-colored crusts, weeping sores, or suspected impetigo?",
-      "Information": "The localized-rash family is not generated. Arrange clinical review through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+      "Information": "The localized-rash family is not generated. Arrange clinical review through an approved local service.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -92,7 +92,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Without an emergency feature, is the patient under 1 year, pregnant or breastfeeding with breast lesions, diabetic or immunocompromised, are lesions near the eye, widespread, recurrent, worsening, or not responding, or is there a safeguarding concern?",
-      "Information": "NHS.UK guidance lists these as reasons for clinical review rather than pharmacist self-care. Impetigo is very infectious; the Qatar attendance route must be approved by clinical governance before use (GOVERNANCE_REQUIRED).",
+      "Information": "NHS.UK guidance lists these as reasons for clinical review rather than pharmacist self-care. Impetigo is very infectious; the Qatar attendance route must be approved by clinical governance before use (local approval required).",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -105,7 +105,7 @@
       "DispositionLevel": 15,
       "QuestionOrder": 1,
       "Question": "Is this a straightforward case (child 12+ months, no breastfeeding sores, no weakened immune system) with none of the features above?",
-      "Information": "NHS.UK guidance supports pharmacist assessment and treatment for straightforward impetigo; the applicable Qatar service route requires clinical-governance approval (GOVERNANCE_REQUIRED).",
+      "Information": "NHS.UK guidance supports pharmacist assessment and treatment for straightforward impetigo; the applicable Qatar service route requires clinical-governance approval (local approval required).",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -143,7 +143,7 @@
       "PatientHealthInfo": true,
       "Internal": false,
       "Content": [
-        "A pharmacist may assess and treat straightforward impetigo where permitted; the applicable Qatar service route requires clinical-governance approval (GOVERNANCE_REQUIRED). Wash affected areas with soap and water, wash hands frequently (especially before/after applying cream), and wash bedding/towels at high temperature. Do not touch or scratch sores. Stay away from work, school, or nursery until no longer contagious (48 hours after starting treatment, or once patches dry and crust over without treatment). Don't share towels or prepare food for others.",
+        "A pharmacist may assess and treat straightforward impetigo where permitted; the applicable Qatar service route requires clinical-governance approval (local approval required). Wash affected areas with soap and water, wash hands frequently (especially before/after applying cream), and wash bedding/towels at high temperature. Do not touch or scratch sores. Stay away from work, school, or nursery until no longer contagious (48 hours after starting treatment, or once patches dry and crust over without treatment). Don't share towels or prepare food for others.",
         "Call Back If: not improving with treatment; spreading or worsening."
       ]
     }

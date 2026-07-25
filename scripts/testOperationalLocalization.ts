@@ -15,21 +15,25 @@ import { batch12Protocols } from "../src/data/openSourceGuidelines/batch12.js";
 
 const prohibited =
   /\bGP\b|\b(?:NHS\s*)?111\b|\bA&E\b|\bcall-999\b|\bchemist\b|\bwalk-in centre\b|\bminor injuries unit\b/i;
+const malformed =
+  /\bGOVERNANCE_REQUIRED\b|Qatar 999\/|Qatar pathway approved by governance|clinical-review pathway approved by governance|an emergency assessment service selected through/i;
 const samples = [
   "Seek urgent GP/111 contact.",
   "Call NHS 111.",
   "Go to A&E.",
   "Drive to A&E.",
+  "These are call-999/A&E criteria.",
   "Book a GP appointment.",
   "Ask a chemist.",
   "Attend a walk-in centre.",
   "Use a minor injuries unit.",
+  "Exact route remains GOVERNANCE_REQUIRED.",
 ];
 
 for (const sample of samples) {
   const localized = localizeOperationalText(sample);
   assert.doesNotMatch(localized, prohibited, sample);
-  assert.match(localized, /GOVERNANCE_REQUIRED|Qatar 999/, sample);
+  assert.doesNotMatch(localized, malformed, sample);
 }
 
 const batches = [
@@ -51,6 +55,7 @@ const checkRenderedStrings = (value: unknown, location: string): void => {
   if (typeof value === "string") {
     const localized = localizeOperationalText(value);
     assert.doesNotMatch(localized, prohibited, location);
+    assert.doesNotMatch(localized, malformed, location);
     renderedStringsChecked += 1;
     return;
   }
@@ -97,5 +102,5 @@ console.log(JSON.stringify({
   batches: batches.length,
   renderedStringsChecked,
   canonicalStringsChecked,
-  assertions: samples.length * 2 + renderedStringsChecked + canonicalStringsChecked,
+  assertions: samples.length * 2 + renderedStringsChecked * 2 + canonicalStringsChecked,
 }, null, 2));

@@ -84,7 +84,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the caller had regular, unexpected panic attacks followed by at least a month of ongoing worry about having more?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for assessment.",
+          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a primary-care review for assessment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -124,7 +124,7 @@
         {
           "id": "oscg-anxiety-and-panic-attack-adult-female-advice-106202",
           "titleEn": "Routine panic disorder follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
+          "instructionTextEn": "Book a routine primary-care review to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -273,7 +273,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the caller had regular, unexpected panic attacks followed by at least a month of ongoing worry about having more?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for assessment.",
+          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a primary-care review for assessment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -313,7 +313,7 @@
         {
           "id": "oscg-anxiety-and-panic-attack-adult-male-advice-106102",
           "titleEn": "Routine panic disorder follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
+          "instructionTextEn": "Book a routine primary-care review to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -471,7 +471,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the caller had regular, unexpected panic attacks followed by at least a month of ongoing worry about having more?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for assessment.",
+          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a primary-care review for assessment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -511,7 +511,7 @@
         {
           "id": "oscg-anxiety-and-panic-attack-child-female-advice-106402",
           "titleEn": "Routine panic disorder follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
+          "instructionTextEn": "Book a routine primary-care review to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -669,7 +669,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the caller had regular, unexpected panic attacks followed by at least a month of ongoing worry about having more?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for assessment.",
+          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a primary-care review for assessment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -709,7 +709,7 @@
         {
           "id": "oscg-anxiety-and-panic-attack-child-male-advice-106302",
           "titleEn": "Routine panic disorder follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
+          "instructionTextEn": "Book a routine primary-care review to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -862,7 +862,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the patient pregnant or recently postpartum with severe headache, new visual disturbance, severe pain below the ribs or in the upper abdomen, seizure, confusion, collapse, severe breathing difficulty, or rapidly worsening severe illness?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NICE and RCOG identify severe headache, visual symptoms and severe upper-abdominal/rib pain in pregnancy or after birth as possible pre-eclampsia warning symptoms requiring immediate medical help. Qatar 999 is reserved here for immediate life-threatening or rapidly deteriorating features; exact maternity handover remains GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE and RCOG identify severe headache, visual symptoms and severe upper-abdominal/rib pain in pregnancy or after birth as possible pre-eclampsia warning symptoms requiring immediate medical help. Qatar 999 is reserved here for immediate life-threatening or rapidly deteriorating features; exact maternity handover requires local approval.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -878,7 +878,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is the patient pregnant or recently postpartum with a raised blood-pressure reading or new headache, visual symptoms, swelling, nausea/vomiting, or upper-abdominal discomfort, but none of the immediate life-threatening features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "Pregnancy and postpartum hypertension require prompt maternity assessment because pre-eclampsia may first occur during pregnancy or after birth. Exact Qatar maternity destination, timing and transport remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "Pregnancy and postpartum hypertension require prompt maternity assessment because pre-eclampsia may first occur during pregnancy or after birth. Exact Qatar maternity destination, timing and transport remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -894,7 +894,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are there frequent headaches or blurred vision, or chest pain that comes and goes?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) for these symptoms alongside high blood pressure.",
+          "rationaleEn": "NHS.UK guidance recommends seeking urgent clinical review for these symptoms alongside high blood pressure.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -910,7 +910,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the reading 140/90 or higher (professional check) or 135/85 or higher (home check), with none of the features above?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance defines these as high blood pressure readings warranting a a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or pharmacy check and follow-up.",
+          "rationaleEn": "NHS.UK guidance defines these as high blood pressure readings warranting a primary-care clinician or pharmacy check and follow-up.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -934,7 +934,7 @@
         {
           "id": "oscg-blood-pressure-high-adult-female-advice-107002",
           "titleEn": "Emergency pregnancy/postpartum hypertension response",
-          "instructionTextEn": "Call Qatar emergency services on 999 for seizure, collapse, confusion, severe breathing difficulty, reduced consciousness, or rapidly worsening severe pregnancy/postpartum symptoms. Keep the patient resting, do not allow self-driving, and do not give extra blood-pressure medicine unless directed by the approved maternity/emergency pathway. Provide pregnancy or birth date and symptoms during handover; exact maternity receiving service remains GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: seizure, confusion, collapse, or reduced consciousness; severe breathing difficulty; rapidly worsening severe headache, visual disturbance, or upper-abdominal pain.",
+          "instructionTextEn": "Call Qatar emergency services on 999 for seizure, collapse, confusion, severe breathing difficulty, reduced consciousness, or rapidly worsening severe pregnancy/postpartum symptoms. Keep the patient resting, do not allow self-driving, and do not give extra blood-pressure medicine unless directed by the approved maternity/emergency pathway. Provide pregnancy or birth date and symptoms during handover; exact maternity receiving service requires local approval. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: seizure, confusion, collapse, or reduced consciousness; severe breathing difficulty; rapidly worsening severe headache, visual disturbance, or upper-abdominal pain.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -943,7 +943,7 @@
         {
           "id": "oscg-blood-pressure-high-adult-female-advice-107003",
           "titleEn": "Urgent maternity blood-pressure assessment",
-          "instructionTextEn": "Arrange prompt same-day maternity assessment through the Qatar governance-approved pathway; do not route a pregnant or recently postpartum patient through routine adult blood-pressure follow-up. Do not self-adjust medication. Call 999 for seizure, collapse, confusion, severe breathing difficulty, reduced consciousness, or rapid deterioration. Exact destination and transport remain GOVERNANCE_REQUIRED. Call Back If: severe or worsening headache; new visual symptoms or severe upper-abdominal/rib pain; seizure, confusion, collapse, breathing difficulty, or reduced consciousness.",
+          "instructionTextEn": "Arrange prompt same-day maternity assessment through the Qatar governance-approved pathway; do not route a pregnant or recently postpartum patient through routine adult blood-pressure follow-up. Do not self-adjust medication. Call 999 for seizure, collapse, confusion, severe breathing difficulty, reduced consciousness, or rapid deterioration. Exact destination and transport remain local approval required. Call Back If: severe or worsening headache; new visual symptoms or severe upper-abdominal/rib pain; seizure, confusion, collapse, breathing difficulty, or reduced consciousness.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -996,7 +996,7 @@
         },
         {
           "titleEn": "First Aid",
-          "instructionTextEn": "Call Qatar emergency services on 999 for seizure, collapse, confusion, severe breathing difficulty, reduced consciousness, or rapidly worsening severe pregnancy/postpartum symptoms. Keep the patient resting, do not allow self-driving, and do not give extra blood-pressure medicine unless directed by the approved maternity/emergency pathway. Provide pregnancy or birth date and symptoms during handover; exact maternity receiving service remains GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "instructionTextEn": "Call Qatar emergency services on 999 for seizure, collapse, confusion, severe breathing difficulty, reduced consciousness, or rapidly worsening severe pregnancy/postpartum symptoms. Keep the patient resting, do not allow self-driving, and do not give extra blood-pressure medicine unless directed by the approved maternity/emergency pathway. Provide pregnancy or birth date and symptoms during handover; exact maternity receiving service requires local approval. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
           "displayOrder": 2
         }
       ],
@@ -1116,7 +1116,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the patient pregnant or recently postpartum with severe headache, new visual disturbance, severe pain below the ribs or in the upper abdomen, seizure, confusion, collapse, severe breathing difficulty, or rapidly worsening severe illness?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NICE and RCOG identify severe headache, visual symptoms and severe upper-abdominal/rib pain in pregnancy or after birth as possible pre-eclampsia warning symptoms requiring immediate medical help. Qatar 999 is reserved here for immediate life-threatening or rapidly deteriorating features; exact maternity handover remains GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE and RCOG identify severe headache, visual symptoms and severe upper-abdominal/rib pain in pregnancy or after birth as possible pre-eclampsia warning symptoms requiring immediate medical help. Qatar 999 is reserved here for immediate life-threatening or rapidly deteriorating features; exact maternity handover requires local approval.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -1132,7 +1132,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is the patient pregnant or recently postpartum with a raised blood-pressure reading or new headache, visual symptoms, swelling, nausea/vomiting, or upper-abdominal discomfort, but none of the immediate life-threatening features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "Pregnancy and postpartum hypertension require prompt maternity assessment because pre-eclampsia may first occur during pregnancy or after birth. Exact Qatar maternity destination, timing and transport remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "Pregnancy and postpartum hypertension require prompt maternity assessment because pre-eclampsia may first occur during pregnancy or after birth. Exact Qatar maternity destination, timing and transport remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1148,7 +1148,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are there frequent headaches or blurred vision, or chest pain that comes and goes?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) for these symptoms alongside high blood pressure.",
+          "rationaleEn": "NHS.UK guidance recommends seeking urgent clinical review for these symptoms alongside high blood pressure.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1164,7 +1164,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the reading 140/90 or higher (professional check) or 135/85 or higher (home check), with none of the features above?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance defines these as high blood pressure readings warranting a a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or pharmacy check and follow-up.",
+          "rationaleEn": "NHS.UK guidance defines these as high blood pressure readings warranting a primary-care clinician or pharmacy check and follow-up.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1188,7 +1188,7 @@
         {
           "id": "oscg-blood-pressure-high-adult-male-advice-106902",
           "titleEn": "Emergency pregnancy/postpartum hypertension response",
-          "instructionTextEn": "Call Qatar emergency services on 999 for seizure, collapse, confusion, severe breathing difficulty, reduced consciousness, or rapidly worsening severe pregnancy/postpartum symptoms. Keep the patient resting, do not allow self-driving, and do not give extra blood-pressure medicine unless directed by the approved maternity/emergency pathway. Provide pregnancy or birth date and symptoms during handover; exact maternity receiving service remains GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: seizure, confusion, collapse, or reduced consciousness; severe breathing difficulty; rapidly worsening severe headache, visual disturbance, or upper-abdominal pain.",
+          "instructionTextEn": "Call Qatar emergency services on 999 for seizure, collapse, confusion, severe breathing difficulty, reduced consciousness, or rapidly worsening severe pregnancy/postpartum symptoms. Keep the patient resting, do not allow self-driving, and do not give extra blood-pressure medicine unless directed by the approved maternity/emergency pathway. Provide pregnancy or birth date and symptoms during handover; exact maternity receiving service requires local approval. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: seizure, confusion, collapse, or reduced consciousness; severe breathing difficulty; rapidly worsening severe headache, visual disturbance, or upper-abdominal pain.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -1197,7 +1197,7 @@
         {
           "id": "oscg-blood-pressure-high-adult-male-advice-106903",
           "titleEn": "Urgent maternity blood-pressure assessment",
-          "instructionTextEn": "Arrange prompt same-day maternity assessment through the Qatar governance-approved pathway; do not route a pregnant or recently postpartum patient through routine adult blood-pressure follow-up. Do not self-adjust medication. Call 999 for seizure, collapse, confusion, severe breathing difficulty, reduced consciousness, or rapid deterioration. Exact destination and transport remain GOVERNANCE_REQUIRED. Call Back If: severe or worsening headache; new visual symptoms or severe upper-abdominal/rib pain; seizure, confusion, collapse, breathing difficulty, or reduced consciousness.",
+          "instructionTextEn": "Arrange prompt same-day maternity assessment through the Qatar governance-approved pathway; do not route a pregnant or recently postpartum patient through routine adult blood-pressure follow-up. Do not self-adjust medication. Call 999 for seizure, collapse, confusion, severe breathing difficulty, reduced consciousness, or rapid deterioration. Exact destination and transport remain local approval required. Call Back If: severe or worsening headache; new visual symptoms or severe upper-abdominal/rib pain; seizure, confusion, collapse, breathing difficulty, or reduced consciousness.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -1250,7 +1250,7 @@
         },
         {
           "titleEn": "First Aid",
-          "instructionTextEn": "Call Qatar emergency services on 999 for seizure, collapse, confusion, severe breathing difficulty, reduced consciousness, or rapidly worsening severe pregnancy/postpartum symptoms. Keep the patient resting, do not allow self-driving, and do not give extra blood-pressure medicine unless directed by the approved maternity/emergency pathway. Provide pregnancy or birth date and symptoms during handover; exact maternity receiving service remains GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "instructionTextEn": "Call Qatar emergency services on 999 for seizure, collapse, confusion, severe breathing difficulty, reduced consciousness, or rapidly worsening severe pregnancy/postpartum symptoms. Keep the patient resting, do not allow self-driving, and do not give extra blood-pressure medicine unless directed by the approved maternity/emergency pathway. Provide pregnancy or birth date and symptoms during handover; exact maternity receiving service requires local approval. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
           "displayOrder": 2
         }
       ],
@@ -1366,7 +1366,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is bleeding uncontrolled or spurting bright red blood, is there numbness or trouble moving near the wound, is it a bad cut on the face or palm, is the wound very large or deep, or is something stuck in it (e.g. glass)?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -1382,7 +1382,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the wound have soil, pus, or dirt still in it after cleaning, was it from a person or animal bite, is it swollen/red/getting more painful or leaking pus, is it larger than about 5cm, or does the caller feel generally unwell or feverish?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for the wound.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review for the wound.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1579,7 +1579,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is bleeding uncontrolled or spurting bright red blood, is there numbness or trouble moving near the wound, is it a bad cut on the face or palm, is the wound very large or deep, or is something stuck in it (e.g. glass)?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -1595,7 +1595,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the wound have soil, pus, or dirt still in it after cleaning, was it from a person or animal bite, is it swollen/red/getting more painful or leaking pus, is it larger than about 5cm, or does the caller feel generally unwell or feverish?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for the wound.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review for the wound.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1801,7 +1801,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is bleeding uncontrolled or spurting bright red blood, is there numbness or trouble moving near the wound, is it a bad cut on the face or palm, is the wound very large or deep, or is something stuck in it (e.g. glass)?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -1817,7 +1817,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the wound have soil, pus, or dirt still in it after cleaning, was it from a person or animal bite, is it swollen/red/getting more painful or leaking pus, is it larger than about 5cm, or does the caller feel generally unwell or feverish?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for the wound.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review for the wound.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2023,7 +2023,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is bleeding uncontrolled or spurting bright red blood, is there numbness or trouble moving near the wound, is it a bad cut on the face or palm, is the wound very large or deep, or is something stuck in it (e.g. glass)?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -2039,7 +2039,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the wound have soil, pus, or dirt still in it after cleaning, was it from a person or animal bite, is it swollen/red/getting more painful or leaking pus, is it larger than about 5cm, or does the caller feel generally unwell or feverish?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for the wound.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review for the wound.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2244,7 +2244,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a patient aged 12 to 17, is private assessment not currently safe or possible, might the caregiver be unsafe, or is there abuse, neglect, bullying, substance use, psychosis, risk to another person, inability to remain safe, or self-harm/suicidal thinking without the immediate plan-or-attempt features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NICE child-depression and self-harm guidance requires child-specific assessment of home/social context, abuse or bullying, substances, self-harm/suicide and safeguarding, with an opportunity for private assessment. Exact Qatar safeguarding, mental-health destination, confidentiality, reporting, and disconnect procedure remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE child-depression and self-harm guidance requires child-specific assessment of home/social context, abuse or bullying, substances, self-harm/suicide and safeguarding, with an opportunity for private assessment. Exact Qatar safeguarding, mental-health destination, confidentiality, reporting, and disconnect procedure remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2260,7 +2260,7 @@
           "severity": "Routine",
           "questionTextEn": "Have symptoms of low mood, loss of interest, or hopelessness been present for most of the day, nearly every day, for more than 2 weeks?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
+          "rationaleEn": "NHS.UK guidance: arrange a primary-care review if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2276,7 +2276,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the patient aged 12 to 17 with low mood or loss of interest, with none of the emergency or safeguarding features above?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "A child or adolescent requires age-appropriate clinical assessment and safeguarding review rather than the adult-derived brief-low-mood self-care branch. Exact Qatar pediatric mental-health destination and timing remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "A child or adolescent requires age-appropriate clinical assessment and safeguarding review rather than the adult-derived brief-low-mood self-care branch. Exact Qatar pediatric mental-health destination and timing remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2316,7 +2316,7 @@
         {
           "id": "oscg-depression-adult-female-advice-105402",
           "titleEn": "Urgent child mental-health and safeguarding response",
-          "instructionTextEn": "Keep the young person engaged in a safe setting and arrange urgent assessment through the Qatar governance-approved child mental-health/safeguarding pathway. Offer a safe opportunity to speak privately; do not rely on a caregiver who may be unsafe and do not promise absolute confidentiality. If immediate danger, an attempt, plan/intent, access to means, severe agitation/psychosis, unsafe supervision, or loss of contact develops, call 999 and follow the approved emergency handover or welfare-check procedure. Exact service, reporting, consent, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED. Call Back If: attempt, plan, intent, or access to means; psychosis, severe agitation, risk to another person, or inability to remain safe; unsafe caregiver, loss of contact, or no safe supervision.",
+          "instructionTextEn": "Keep the young person engaged in a safe setting and arrange urgent assessment through the Qatar governance-approved child mental-health/safeguarding pathway. Offer a safe opportunity to speak privately; do not rely on a caregiver who may be unsafe and do not promise absolute confidentiality. If immediate danger, an attempt, plan/intent, access to means, severe agitation/psychosis, unsafe supervision, or loss of contact develops, call 999 and follow the approved emergency handover or welfare-check procedure. Exact service, reporting, consent, confidentiality, and disconnect actions remain local approval required. Call Back If: attempt, plan, intent, or access to means; psychosis, severe agitation, risk to another person, or inability to remain safe; unsafe caregiver, loss of contact, or no safe supervision.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2334,7 +2334,7 @@
         {
           "id": "oscg-depression-adult-female-advice-105404",
           "titleEn": "Child depression assessment required",
-          "instructionTextEn": "Arrange age-appropriate child or adolescent mental-health assessment through the Qatar governance-approved pathway. Confirm a safe opportunity for private assessment and review home, school, bullying/abuse, substance use, self-harm, suicide, risk to others, safe supervision, and safeguarding. Exact destination, consent and reporting remain GOVERNANCE_REQUIRED. Call Back If: self-harm or suicidal thinking; psychosis, severe agitation, or inability to remain safe; abuse, bullying, unsafe caregiver, or loss of safe supervision.",
+          "instructionTextEn": "Arrange age-appropriate child or adolescent mental-health assessment through the Qatar governance-approved pathway. Confirm a safe opportunity for private assessment and review home, school, bullying/abuse, substance use, self-harm, suicide, risk to others, safe supervision, and safeguarding. Exact destination, consent and reporting remain local approval required. Call Back If: self-harm or suicidal thinking; psychosis, severe agitation, or inability to remain safe; abuse, bullying, unsafe caregiver, or loss of safe supervision.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 4,
@@ -2497,7 +2497,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a patient aged 12 to 17, is private assessment not currently safe or possible, might the caregiver be unsafe, or is there abuse, neglect, bullying, substance use, psychosis, risk to another person, inability to remain safe, or self-harm/suicidal thinking without the immediate plan-or-attempt features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NICE child-depression and self-harm guidance requires child-specific assessment of home/social context, abuse or bullying, substances, self-harm/suicide and safeguarding, with an opportunity for private assessment. Exact Qatar safeguarding, mental-health destination, confidentiality, reporting, and disconnect procedure remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE child-depression and self-harm guidance requires child-specific assessment of home/social context, abuse or bullying, substances, self-harm/suicide and safeguarding, with an opportunity for private assessment. Exact Qatar safeguarding, mental-health destination, confidentiality, reporting, and disconnect procedure remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2513,7 +2513,7 @@
           "severity": "Routine",
           "questionTextEn": "Have symptoms of low mood, loss of interest, or hopelessness been present for most of the day, nearly every day, for more than 2 weeks?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
+          "rationaleEn": "NHS.UK guidance: arrange a primary-care review if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2529,7 +2529,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the patient aged 12 to 17 with low mood or loss of interest, with none of the emergency or safeguarding features above?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "A child or adolescent requires age-appropriate clinical assessment and safeguarding review rather than the adult-derived brief-low-mood self-care branch. Exact Qatar pediatric mental-health destination and timing remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "A child or adolescent requires age-appropriate clinical assessment and safeguarding review rather than the adult-derived brief-low-mood self-care branch. Exact Qatar pediatric mental-health destination and timing remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2569,7 +2569,7 @@
         {
           "id": "oscg-depression-adult-male-advice-105302",
           "titleEn": "Urgent child mental-health and safeguarding response",
-          "instructionTextEn": "Keep the young person engaged in a safe setting and arrange urgent assessment through the Qatar governance-approved child mental-health/safeguarding pathway. Offer a safe opportunity to speak privately; do not rely on a caregiver who may be unsafe and do not promise absolute confidentiality. If immediate danger, an attempt, plan/intent, access to means, severe agitation/psychosis, unsafe supervision, or loss of contact develops, call 999 and follow the approved emergency handover or welfare-check procedure. Exact service, reporting, consent, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED. Call Back If: attempt, plan, intent, or access to means; psychosis, severe agitation, risk to another person, or inability to remain safe; unsafe caregiver, loss of contact, or no safe supervision.",
+          "instructionTextEn": "Keep the young person engaged in a safe setting and arrange urgent assessment through the Qatar governance-approved child mental-health/safeguarding pathway. Offer a safe opportunity to speak privately; do not rely on a caregiver who may be unsafe and do not promise absolute confidentiality. If immediate danger, an attempt, plan/intent, access to means, severe agitation/psychosis, unsafe supervision, or loss of contact develops, call 999 and follow the approved emergency handover or welfare-check procedure. Exact service, reporting, consent, confidentiality, and disconnect actions remain local approval required. Call Back If: attempt, plan, intent, or access to means; psychosis, severe agitation, risk to another person, or inability to remain safe; unsafe caregiver, loss of contact, or no safe supervision.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2587,7 +2587,7 @@
         {
           "id": "oscg-depression-adult-male-advice-105304",
           "titleEn": "Child depression assessment required",
-          "instructionTextEn": "Arrange age-appropriate child or adolescent mental-health assessment through the Qatar governance-approved pathway. Confirm a safe opportunity for private assessment and review home, school, bullying/abuse, substance use, self-harm, suicide, risk to others, safe supervision, and safeguarding. Exact destination, consent and reporting remain GOVERNANCE_REQUIRED. Call Back If: self-harm or suicidal thinking; psychosis, severe agitation, or inability to remain safe; abuse, bullying, unsafe caregiver, or loss of safe supervision.",
+          "instructionTextEn": "Arrange age-appropriate child or adolescent mental-health assessment through the Qatar governance-approved pathway. Confirm a safe opportunity for private assessment and review home, school, bullying/abuse, substance use, self-harm, suicide, risk to others, safe supervision, and safeguarding. Exact destination, consent and reporting remain local approval required. Call Back If: self-harm or suicidal thinking; psychosis, severe agitation, or inability to remain safe; abuse, bullying, unsafe caregiver, or loss of safe supervision.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 4,
@@ -2759,7 +2759,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a patient aged 12 to 17, is private assessment not currently safe or possible, might the caregiver be unsafe, or is there abuse, neglect, bullying, substance use, psychosis, risk to another person, inability to remain safe, or self-harm/suicidal thinking without the immediate plan-or-attempt features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NICE child-depression and self-harm guidance requires child-specific assessment of home/social context, abuse or bullying, substances, self-harm/suicide and safeguarding, with an opportunity for private assessment. Exact Qatar safeguarding, mental-health destination, confidentiality, reporting, and disconnect procedure remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE child-depression and self-harm guidance requires child-specific assessment of home/social context, abuse or bullying, substances, self-harm/suicide and safeguarding, with an opportunity for private assessment. Exact Qatar safeguarding, mental-health destination, confidentiality, reporting, and disconnect procedure remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2775,7 +2775,7 @@
           "severity": "Routine",
           "questionTextEn": "Have symptoms of low mood, loss of interest, or hopelessness been present for most of the day, nearly every day, for more than 2 weeks?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
+          "rationaleEn": "NHS.UK guidance: arrange a primary-care review if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2791,7 +2791,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the patient aged 12 to 17 with low mood or loss of interest, with none of the emergency or safeguarding features above?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "A child or adolescent requires age-appropriate clinical assessment and safeguarding review rather than the adult-derived brief-low-mood self-care branch. Exact Qatar pediatric mental-health destination and timing remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "A child or adolescent requires age-appropriate clinical assessment and safeguarding review rather than the adult-derived brief-low-mood self-care branch. Exact Qatar pediatric mental-health destination and timing remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2831,7 +2831,7 @@
         {
           "id": "oscg-depression-child-female-advice-105602",
           "titleEn": "Urgent child mental-health and safeguarding response",
-          "instructionTextEn": "Keep the young person engaged in a safe setting and arrange urgent assessment through the Qatar governance-approved child mental-health/safeguarding pathway. Offer a safe opportunity to speak privately; do not rely on a caregiver who may be unsafe and do not promise absolute confidentiality. If immediate danger, an attempt, plan/intent, access to means, severe agitation/psychosis, unsafe supervision, or loss of contact develops, call 999 and follow the approved emergency handover or welfare-check procedure. Exact service, reporting, consent, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED. Call Back If: attempt, plan, intent, or access to means; psychosis, severe agitation, risk to another person, or inability to remain safe; unsafe caregiver, loss of contact, or no safe supervision.",
+          "instructionTextEn": "Keep the young person engaged in a safe setting and arrange urgent assessment through the Qatar governance-approved child mental-health/safeguarding pathway. Offer a safe opportunity to speak privately; do not rely on a caregiver who may be unsafe and do not promise absolute confidentiality. If immediate danger, an attempt, plan/intent, access to means, severe agitation/psychosis, unsafe supervision, or loss of contact develops, call 999 and follow the approved emergency handover or welfare-check procedure. Exact service, reporting, consent, confidentiality, and disconnect actions remain local approval required. Call Back If: attempt, plan, intent, or access to means; psychosis, severe agitation, risk to another person, or inability to remain safe; unsafe caregiver, loss of contact, or no safe supervision.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2849,7 +2849,7 @@
         {
           "id": "oscg-depression-child-female-advice-105604",
           "titleEn": "Child depression assessment required",
-          "instructionTextEn": "Arrange age-appropriate child or adolescent mental-health assessment through the Qatar governance-approved pathway. Confirm a safe opportunity for private assessment and review home, school, bullying/abuse, substance use, self-harm, suicide, risk to others, safe supervision, and safeguarding. Exact destination, consent and reporting remain GOVERNANCE_REQUIRED. Call Back If: self-harm or suicidal thinking; psychosis, severe agitation, or inability to remain safe; abuse, bullying, unsafe caregiver, or loss of safe supervision.",
+          "instructionTextEn": "Arrange age-appropriate child or adolescent mental-health assessment through the Qatar governance-approved pathway. Confirm a safe opportunity for private assessment and review home, school, bullying/abuse, substance use, self-harm, suicide, risk to others, safe supervision, and safeguarding. Exact destination, consent and reporting remain local approval required. Call Back If: self-harm or suicidal thinking; psychosis, severe agitation, or inability to remain safe; abuse, bullying, unsafe caregiver, or loss of safe supervision.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 4,
@@ -3021,7 +3021,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a patient aged 12 to 17, is private assessment not currently safe or possible, might the caregiver be unsafe, or is there abuse, neglect, bullying, substance use, psychosis, risk to another person, inability to remain safe, or self-harm/suicidal thinking without the immediate plan-or-attempt features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NICE child-depression and self-harm guidance requires child-specific assessment of home/social context, abuse or bullying, substances, self-harm/suicide and safeguarding, with an opportunity for private assessment. Exact Qatar safeguarding, mental-health destination, confidentiality, reporting, and disconnect procedure remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE child-depression and self-harm guidance requires child-specific assessment of home/social context, abuse or bullying, substances, self-harm/suicide and safeguarding, with an opportunity for private assessment. Exact Qatar safeguarding, mental-health destination, confidentiality, reporting, and disconnect procedure remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3037,7 +3037,7 @@
           "severity": "Routine",
           "questionTextEn": "Have symptoms of low mood, loss of interest, or hopelessness been present for most of the day, nearly every day, for more than 2 weeks?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
+          "rationaleEn": "NHS.UK guidance: arrange a primary-care review if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3053,7 +3053,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the patient aged 12 to 17 with low mood or loss of interest, with none of the emergency or safeguarding features above?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "A child or adolescent requires age-appropriate clinical assessment and safeguarding review rather than the adult-derived brief-low-mood self-care branch. Exact Qatar pediatric mental-health destination and timing remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "A child or adolescent requires age-appropriate clinical assessment and safeguarding review rather than the adult-derived brief-low-mood self-care branch. Exact Qatar pediatric mental-health destination and timing remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3093,7 +3093,7 @@
         {
           "id": "oscg-depression-child-male-advice-105502",
           "titleEn": "Urgent child mental-health and safeguarding response",
-          "instructionTextEn": "Keep the young person engaged in a safe setting and arrange urgent assessment through the Qatar governance-approved child mental-health/safeguarding pathway. Offer a safe opportunity to speak privately; do not rely on a caregiver who may be unsafe and do not promise absolute confidentiality. If immediate danger, an attempt, plan/intent, access to means, severe agitation/psychosis, unsafe supervision, or loss of contact develops, call 999 and follow the approved emergency handover or welfare-check procedure. Exact service, reporting, consent, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED. Call Back If: attempt, plan, intent, or access to means; psychosis, severe agitation, risk to another person, or inability to remain safe; unsafe caregiver, loss of contact, or no safe supervision.",
+          "instructionTextEn": "Keep the young person engaged in a safe setting and arrange urgent assessment through the Qatar governance-approved child mental-health/safeguarding pathway. Offer a safe opportunity to speak privately; do not rely on a caregiver who may be unsafe and do not promise absolute confidentiality. If immediate danger, an attempt, plan/intent, access to means, severe agitation/psychosis, unsafe supervision, or loss of contact develops, call 999 and follow the approved emergency handover or welfare-check procedure. Exact service, reporting, consent, confidentiality, and disconnect actions remain local approval required. Call Back If: attempt, plan, intent, or access to means; psychosis, severe agitation, risk to another person, or inability to remain safe; unsafe caregiver, loss of contact, or no safe supervision.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3111,7 +3111,7 @@
         {
           "id": "oscg-depression-child-male-advice-105504",
           "titleEn": "Child depression assessment required",
-          "instructionTextEn": "Arrange age-appropriate child or adolescent mental-health assessment through the Qatar governance-approved pathway. Confirm a safe opportunity for private assessment and review home, school, bullying/abuse, substance use, self-harm, suicide, risk to others, safe supervision, and safeguarding. Exact destination, consent and reporting remain GOVERNANCE_REQUIRED. Call Back If: self-harm or suicidal thinking; psychosis, severe agitation, or inability to remain safe; abuse, bullying, unsafe caregiver, or loss of safe supervision.",
+          "instructionTextEn": "Arrange age-appropriate child or adolescent mental-health assessment through the Qatar governance-approved pathway. Confirm a safe opportunity for private assessment and review home, school, bullying/abuse, substance use, self-harm, suicide, risk to others, safe supervision, and safeguarding. Exact destination, consent and reporting remain local approval required. Call Back If: self-harm or suicidal thinking; psychosis, severe agitation, or inability to remain safe; abuse, bullying, unsafe caregiver, or loss of safe supervision.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 4,
@@ -3266,7 +3266,7 @@
           "severity": "Emergency",
           "questionTextEn": "Along with high blood sugar, is there nausea/vomiting or stomach pain, faster-than-usual breathing or heart rate, drowsiness, breath with a fruity ('pear drop') smell, confusion or difficulty concentrating, or a high ketone level?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK high blood sugar guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for possible diabetic ketoacidosis (DKA). Do not seek emergency assessment through a Qatar transport pathway approved by governance; do not self-drive when emergency features are present (GOVERNANCE_REQUIRED) - call an ambulance.",
+          "rationaleEn": "NHS.UK high blood sugar guidance lists these as emergency ambulance or Emergency Department criteria for possible diabetic ketoacidosis (DKA). Do not self-drive to the Emergency Department - call an ambulance.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3282,7 +3282,7 @@
           "severity": "Routine",
           "questionTextEn": "Has blood sugar remained high or symptoms continued despite trying to lower it, or is this high blood sugar in someone not previously diagnosed with diabetes?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for persistent high readings or a new, undiagnosed presentation.",
+          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or primary-care clinician for persistent high readings or a new, undiagnosed presentation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3430,7 +3430,7 @@
           "severity": "Emergency",
           "questionTextEn": "Along with high blood sugar, is there nausea/vomiting or stomach pain, faster-than-usual breathing or heart rate, drowsiness, breath with a fruity ('pear drop') smell, confusion or difficulty concentrating, or a high ketone level?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK high blood sugar guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for possible diabetic ketoacidosis (DKA). Do not seek emergency assessment through a Qatar transport pathway approved by governance; do not self-drive when emergency features are present (GOVERNANCE_REQUIRED) - call an ambulance.",
+          "rationaleEn": "NHS.UK high blood sugar guidance lists these as emergency ambulance or Emergency Department criteria for possible diabetic ketoacidosis (DKA). Do not self-drive to the Emergency Department - call an ambulance.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3446,7 +3446,7 @@
           "severity": "Routine",
           "questionTextEn": "Has blood sugar remained high or symptoms continued despite trying to lower it, or is this high blood sugar in someone not previously diagnosed with diabetes?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for persistent high readings or a new, undiagnosed presentation.",
+          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or primary-care clinician for persistent high readings or a new, undiagnosed presentation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3603,7 +3603,7 @@
           "severity": "Emergency",
           "questionTextEn": "Along with high blood sugar, is there nausea/vomiting or stomach pain, faster-than-usual breathing or heart rate, drowsiness, breath with a fruity ('pear drop') smell, confusion or difficulty concentrating, or a high ketone level?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK high blood sugar guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for possible diabetic ketoacidosis (DKA). Do not seek emergency assessment through a Qatar transport pathway approved by governance; do not self-drive when emergency features are present (GOVERNANCE_REQUIRED) - call an ambulance.",
+          "rationaleEn": "NHS.UK high blood sugar guidance lists these as emergency ambulance or Emergency Department criteria for possible diabetic ketoacidosis (DKA). Do not self-drive to the Emergency Department - call an ambulance.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3619,7 +3619,7 @@
           "severity": "Routine",
           "questionTextEn": "Has blood sugar remained high or symptoms continued despite trying to lower it, or is this high blood sugar in someone not previously diagnosed with diabetes?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for persistent high readings or a new, undiagnosed presentation.",
+          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or primary-care clinician for persistent high readings or a new, undiagnosed presentation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3776,7 +3776,7 @@
           "severity": "Emergency",
           "questionTextEn": "Along with high blood sugar, is there nausea/vomiting or stomach pain, faster-than-usual breathing or heart rate, drowsiness, breath with a fruity ('pear drop') smell, confusion or difficulty concentrating, or a high ketone level?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK high blood sugar guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for possible diabetic ketoacidosis (DKA). Do not seek emergency assessment through a Qatar transport pathway approved by governance; do not self-drive when emergency features are present (GOVERNANCE_REQUIRED) - call an ambulance.",
+          "rationaleEn": "NHS.UK high blood sugar guidance lists these as emergency ambulance or Emergency Department criteria for possible diabetic ketoacidosis (DKA). Do not self-drive to the Emergency Department - call an ambulance.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3792,7 +3792,7 @@
           "severity": "Routine",
           "questionTextEn": "Has blood sugar remained high or symptoms continued despite trying to lower it, or is this high blood sugar in someone not previously diagnosed with diabetes?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for persistent high readings or a new, undiagnosed presentation.",
+          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or primary-care clinician for persistent high readings or a new, undiagnosed presentation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4638,7 +4638,7 @@
           "severity": "Urgent",
           "questionTextEn": "Did the hearing loss come on suddenly in one or both ears, has it worsened over just the last few days or weeks, or does it come with earache or discharge?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
+          "rationaleEn": "NHS.UK guidance recommends an urgent primary-care review or urgent clinical review call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4654,7 +4654,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the hearing been getting gradually worse over time, or did it not improve after treatment for an ear infection or earwax?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for gradual hearing changes or hearing that hasn't improved after prior treatment.",
+          "rationaleEn": "NHS.UK guidance recommends a routine primary-care review for gradual hearing changes or hearing that hasn't improved after prior treatment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4678,7 +4678,7 @@
         {
           "id": "oscg-hearing-loss-or-change-adult-female-advice-108402",
           "titleEn": "Urgent hearing review",
-          "instructionTextEn": "Arrange an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
+          "instructionTextEn": "Arrange an urgent primary-care review or urgent clinical review assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -4687,7 +4687,7 @@
         {
           "id": "oscg-hearing-loss-or-change-adult-female-advice-108403",
           "titleEn": "Routine hearing follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED); a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
+          "instructionTextEn": "Book a routine primary-care review; a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 3,
@@ -4827,7 +4827,7 @@
           "severity": "Urgent",
           "questionTextEn": "Did the hearing loss come on suddenly in one or both ears, has it worsened over just the last few days or weeks, or does it come with earache or discharge?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
+          "rationaleEn": "NHS.UK guidance recommends an urgent primary-care review or urgent clinical review call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4843,7 +4843,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the hearing been getting gradually worse over time, or did it not improve after treatment for an ear infection or earwax?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for gradual hearing changes or hearing that hasn't improved after prior treatment.",
+          "rationaleEn": "NHS.UK guidance recommends a routine primary-care review for gradual hearing changes or hearing that hasn't improved after prior treatment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4867,7 +4867,7 @@
         {
           "id": "oscg-hearing-loss-or-change-adult-male-advice-108302",
           "titleEn": "Urgent hearing review",
-          "instructionTextEn": "Arrange an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
+          "instructionTextEn": "Arrange an urgent primary-care review or urgent clinical review assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -4876,7 +4876,7 @@
         {
           "id": "oscg-hearing-loss-or-change-adult-male-advice-108303",
           "titleEn": "Routine hearing follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED); a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
+          "instructionTextEn": "Book a routine primary-care review; a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 3,
@@ -5025,7 +5025,7 @@
           "severity": "Urgent",
           "questionTextEn": "Did the hearing loss come on suddenly in one or both ears, has it worsened over just the last few days or weeks, or does it come with earache or discharge?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
+          "rationaleEn": "NHS.UK guidance recommends an urgent primary-care review or urgent clinical review call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5041,7 +5041,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the hearing been getting gradually worse over time, or did it not improve after treatment for an ear infection or earwax?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for gradual hearing changes or hearing that hasn't improved after prior treatment.",
+          "rationaleEn": "NHS.UK guidance recommends a routine primary-care review for gradual hearing changes or hearing that hasn't improved after prior treatment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5065,7 +5065,7 @@
         {
           "id": "oscg-hearing-loss-or-change-child-female-advice-108602",
           "titleEn": "Urgent hearing review",
-          "instructionTextEn": "Arrange an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
+          "instructionTextEn": "Arrange an urgent primary-care review or urgent clinical review assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5074,7 +5074,7 @@
         {
           "id": "oscg-hearing-loss-or-change-child-female-advice-108603",
           "titleEn": "Routine hearing follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED); a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
+          "instructionTextEn": "Book a routine primary-care review; a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 3,
@@ -5223,7 +5223,7 @@
           "severity": "Urgent",
           "questionTextEn": "Did the hearing loss come on suddenly in one or both ears, has it worsened over just the last few days or weeks, or does it come with earache or discharge?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
+          "rationaleEn": "NHS.UK guidance recommends an urgent primary-care review or urgent clinical review call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5239,7 +5239,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the hearing been getting gradually worse over time, or did it not improve after treatment for an ear infection or earwax?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for gradual hearing changes or hearing that hasn't improved after prior treatment.",
+          "rationaleEn": "NHS.UK guidance recommends a routine primary-care review for gradual hearing changes or hearing that hasn't improved after prior treatment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5263,7 +5263,7 @@
         {
           "id": "oscg-hearing-loss-or-change-child-male-advice-108502",
           "titleEn": "Urgent hearing review",
-          "instructionTextEn": "Arrange an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
+          "instructionTextEn": "Arrange an urgent primary-care review or urgent clinical review assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5272,7 +5272,7 @@
         {
           "id": "oscg-hearing-loss-or-change-child-male-advice-108503",
           "titleEn": "Routine hearing follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED); a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
+          "instructionTextEn": "Book a routine primary-care review; a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 3,
@@ -5412,7 +5412,7 @@
           "severity": "Routine",
           "questionTextEn": "Has changing sleeping habits not helped, has the trouble sleeping lasted months, or is it affecting daily life to the point of making it hard to cope?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends arranging clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
+          "rationaleEn": "NHS.UK guidance recommends arranging a primary-care review when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5452,7 +5452,7 @@
         {
           "id": "oscg-insomnia-adult-female-advice-105802",
           "titleEn": "Routine insomnia follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
+          "instructionTextEn": "Book a routine primary-care review to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5601,7 +5601,7 @@
           "severity": "Routine",
           "questionTextEn": "Has changing sleeping habits not helped, has the trouble sleeping lasted months, or is it affecting daily life to the point of making it hard to cope?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends arranging clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
+          "rationaleEn": "NHS.UK guidance recommends arranging a primary-care review when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5641,7 +5641,7 @@
         {
           "id": "oscg-insomnia-adult-male-advice-105702",
           "titleEn": "Routine insomnia follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
+          "instructionTextEn": "Book a routine primary-care review to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5799,7 +5799,7 @@
           "severity": "Routine",
           "questionTextEn": "Has changing sleeping habits not helped, has the trouble sleeping lasted months, or is it affecting daily life to the point of making it hard to cope?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends arranging clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
+          "rationaleEn": "NHS.UK guidance recommends arranging a primary-care review when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5839,7 +5839,7 @@
         {
           "id": "oscg-insomnia-child-female-advice-106002",
           "titleEn": "Routine insomnia follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
+          "instructionTextEn": "Book a routine primary-care review to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5997,7 +5997,7 @@
           "severity": "Routine",
           "questionTextEn": "Has changing sleeping habits not helped, has the trouble sleeping lasted months, or is it affecting daily life to the point of making it hard to cope?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends arranging clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
+          "rationaleEn": "NHS.UK guidance recommends arranging a primary-care review when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -6037,7 +6037,7 @@
         {
           "id": "oscg-insomnia-child-male-advice-105902",
           "titleEn": "Routine insomnia follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
+          "instructionTextEn": "Book a routine primary-care review to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -7364,7 +7364,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the tiredness lasted a few weeks without a clear cause, is it affecting daily life, or is it accompanied by weight loss, mood changes, or gasping/snorting/choking sounds during sleep?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
+          "rationaleEn": "NHS.UK guidance recommends a primary-care review for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7404,7 +7404,7 @@
         {
           "id": "oscg-weakness-generalized-and-fatigue-adult-female-advice-106602",
           "titleEn": "Routine fatigue follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
+          "instructionTextEn": "Book a routine primary-care review to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -7560,7 +7560,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the tiredness lasted a few weeks without a clear cause, is it affecting daily life, or is it accompanied by weight loss, mood changes, or gasping/snorting/choking sounds during sleep?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
+          "rationaleEn": "NHS.UK guidance recommends a primary-care review for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7600,7 +7600,7 @@
         {
           "id": "oscg-weakness-generalized-and-fatigue-adult-male-advice-106502",
           "titleEn": "Routine fatigue follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
+          "instructionTextEn": "Book a routine primary-care review to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -7765,7 +7765,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the tiredness lasted a few weeks without a clear cause, is it affecting daily life, or is it accompanied by weight loss, mood changes, or gasping/snorting/choking sounds during sleep?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
+          "rationaleEn": "NHS.UK guidance recommends a primary-care review for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7805,7 +7805,7 @@
         {
           "id": "oscg-weakness-generalized-and-fatigue-child-female-advice-106802",
           "titleEn": "Routine fatigue follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
+          "instructionTextEn": "Book a routine primary-care review to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -7970,7 +7970,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the tiredness lasted a few weeks without a clear cause, is it affecting daily life, or is it accompanied by weight loss, mood changes, or gasping/snorting/choking sounds during sleep?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
+          "rationaleEn": "NHS.UK guidance recommends a primary-care review for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -8010,7 +8010,7 @@
         {
           "id": "oscg-weakness-generalized-and-fatigue-child-male-advice-106702",
           "titleEn": "Routine fatigue follow-up",
-          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
+          "instructionTextEn": "Book a routine primary-care review to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,

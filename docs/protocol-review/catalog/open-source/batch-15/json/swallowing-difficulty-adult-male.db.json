@@ -108,7 +108,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway, with speech-and-language/swallowing, medical, ENT, gastrointestinal or neurological input as indicated. Until assessed, stop any item that causes cough, choke, wet voice or breathlessness; use only an existing clinician-prescribed texture/feeding plan. Do not invent a texture, add thickener, crush/open tablets or stop essential medicine without pharmacist/clinician instruction. Call 999 for airway difficulty, inability to swallow saliva, acute neurological signs or deterioration. Exact non-emergency destinations are GOVERNANCE_REQUIRED.",
+        "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway, with speech-and-language/swallowing, medical, ENT, gastrointestinal or neurological input as indicated. Until assessed, stop any item that causes cough, choke, wet voice or breathlessness; use only an existing clinician-prescribed texture/feeding plan. Do not invent a texture, add thickener, crush/open tablets or stop essential medicine without pharmacist/clinician instruction. Call 999 for airway difficulty, inability to swallow saliva, acute neurological signs or deterioration. Exact non-emergency destinations are local approval required.",
         "Call Back If: choking episode; cannot swallow saliva; breathing or voice change; fever or chest symptoms; dehydration; weight loss or child poor growth."
       ]
     }

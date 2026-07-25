@@ -75,7 +75,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Is a widespread or flat localized rash the main concern, without a painful pus-filled lump or abscess?",
-      "Information": "The localized-rash family is not generated. Arrange in-person clinical assessment through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+      "Information": "The localized-rash family is not generated. Arrange in-person clinical assessment through an approved local service.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": []

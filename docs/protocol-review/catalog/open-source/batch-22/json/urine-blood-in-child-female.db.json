@@ -108,7 +108,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway for urine testing and clinician-directed examination, blood tests or imaging. Do not assume food, menstruation or medicine is the cause and do not start leftover antibiotics. Children with unexplained visible blood need a very urgent age-appropriate pathway. Call 999 for heavy bleeding, clots with retention, severe pain/illness, fainting, confusion or deterioration. The exact Qatar non-emergency urology, nephrology, pediatric, maternity and trauma destinations are GOVERNANCE_REQUIRED.",
+        "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway for urine testing and clinician-directed examination, blood tests or imaging. Do not assume food, menstruation or medicine is the cause and do not start leftover antibiotics. Children with unexplained visible blood need a very urgent age-appropriate pathway. Call 999 for heavy bleeding, clots with retention, severe pain/illness, fainting, confusion or deterioration. The exact Qatar non-emergency urology, nephrology, pediatric, maternity and trauma destinations are local approval required.",
         "Call Back If: heavy bleeding or clots; cannot urinate; fever or rigors; flank pain or vomiting; reduced urine; child becomes unwell."
       ]
     }

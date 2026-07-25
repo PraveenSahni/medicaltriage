@@ -130,7 +130,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange prompt clinical review; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Antibiotics or further treatment may be needed.",
+        "Arrange prompt clinical review; the exact non-emergency Qatar destination requires local approval. Antibiotics or further treatment may be needed.",
         "Call Back If: fever worsens; redness spreads."
       ]
     },

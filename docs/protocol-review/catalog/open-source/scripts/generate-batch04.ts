@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { batch04Protocols } from "../../../../../src/data/openSourceGuidelines/batch04.js";
 import {
+  localizeObjectText,
   localizeOperationalText,
   normalizeEmergencyAdvice,
 } from "./shared-demographic-generator.js";
@@ -262,7 +263,7 @@ for (const protocol of batch04Protocols) {
           ? normalizeEmergencyAdvice(localizedInstruction)
           : localizedInstruction;
       };
-      const doc = {
+      const doc = localizeObjectText({
         _source: sourceText,
         algorithm: {
           AlgorithmID: algorithmId,
@@ -332,7 +333,7 @@ for (const protocol of batch04Protocols) {
             : protocol.provenance.sourceDocuments,
         searchwords: protocol.keywords.map((keyword) => keyword.phrase),
         initialAssessmentQuestions: iaqs,
-      };
+      });
       const canonicalContentHash = sha(doc);
       fs.writeFileSync(
         path.join(root, "json", `${slug}.db.json`),

@@ -130,7 +130,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange prompt in-person clinical assessment through the Qatar pathway approved for this UAT environment. A young infant meeting a fever threshold, or any patient with feeding, hydration, breathing or high-risk-host concerns, must not remain on routine cold self-care. The exact non-emergency destination and timeframe remain GOVERNANCE_REQUIRED.",
+        "Arrange prompt in-person clinical assessment through the Qatar pathway approved for this UAT environment. A young infant meeting a fever threshold, or any patient with feeding, hydration, breathing or high-risk-host concerns, must not remain on routine cold self-care. The exact non-emergency destination and timeframe remain local approval required.",
         "Call Back If: breathing difficulty develops; feeding, urine or alertness worsens; symptoms significantly worsen."
       ]
     },

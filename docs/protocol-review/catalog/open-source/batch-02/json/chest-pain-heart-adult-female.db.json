@@ -153,7 +153,7 @@
       "PatientHealthInfo": true,
       "Internal": false,
       "Content": [
-        "Arrange prompt in-person assessment at a Qatar service capable of clinical examination, a documented 12-lead ECG and measured troponin. Do not calculate, display or interpret HEART before all required components are obtained in person, and do not use HEART alone to rule out acute coronary syndrome. Do not self-drive if symptoms recur or the person feels unwell; call 999 if any emergency feature appears or acute coronary syndrome is suspected. The exact non-emergency destination, troponin strategy and transport pathway are GOVERNANCE_REQUIRED.",
+        "Arrange prompt in-person assessment at a Qatar service capable of clinical examination, a documented 12-lead ECG and measured troponin. Do not calculate, display or interpret HEART before all required components are obtained in person, and do not use HEART alone to rule out acute coronary syndrome. Do not self-drive if symptoms recur or the person feels unwell; call 999 if any emergency feature appears or acute coronary syndrome is suspected. The exact non-emergency destination, troponin strategy and transport pathway are local approval required.",
         "Call Back If: pain worsens or spreads; shortness of breath develops; sweating or nausea develops."
       ]
     }

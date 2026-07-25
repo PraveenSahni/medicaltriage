@@ -173,7 +173,7 @@
         {
           "id": "oscg-eye-pain-and-other-symptoms-adult-female-advice-134203",
           "titleEn": "Telephone assessment cannot diagnose mild eye pain",
-          "instructionTextEn": "Arrange an age-appropriate in-person eye examination. Avoid rubbing, contact lenses and unprescribed drops while awaiting review. The exact Qatar non-emergency destination, transport and medication pathway are GOVERNANCE_REQUIRED. Call Back If: pain worsens; redness, photophobia or vision change develops.",
+          "instructionTextEn": "Arrange an age-appropriate in-person eye examination. Avoid rubbing, contact lenses and unprescribed drops while awaiting review. The exact Qatar non-emergency destination, transport and medication pathway are local approval required. Call Back If: pain worsens; redness, photophobia or vision change develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -420,7 +420,7 @@
         {
           "id": "oscg-eye-pain-and-other-symptoms-adult-male-advice-134103",
           "titleEn": "Telephone assessment cannot diagnose mild eye pain",
-          "instructionTextEn": "Arrange an age-appropriate in-person eye examination. Avoid rubbing, contact lenses and unprescribed drops while awaiting review. The exact Qatar non-emergency destination, transport and medication pathway are GOVERNANCE_REQUIRED. Call Back If: pain worsens; redness, photophobia or vision change develops.",
+          "instructionTextEn": "Arrange an age-appropriate in-person eye examination. Avoid rubbing, contact lenses and unprescribed drops while awaiting review. The exact Qatar non-emergency destination, transport and medication pathway are local approval required. Call Back If: pain worsens; redness, photophobia or vision change develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -676,7 +676,7 @@
         {
           "id": "oscg-eye-pain-and-other-symptoms-child-female-advice-134403",
           "titleEn": "Telephone assessment cannot diagnose mild eye pain",
-          "instructionTextEn": "Arrange an age-appropriate in-person eye examination. Avoid rubbing, contact lenses and unprescribed drops while awaiting review. The exact Qatar non-emergency destination, transport and medication pathway are GOVERNANCE_REQUIRED. Call Back If: pain worsens; redness, photophobia or vision change develops.",
+          "instructionTextEn": "Arrange an age-appropriate in-person eye examination. Avoid rubbing, contact lenses and unprescribed drops while awaiting review. The exact Qatar non-emergency destination, transport and medication pathway are local approval required. Call Back If: pain worsens; redness, photophobia or vision change develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -932,7 +932,7 @@
         {
           "id": "oscg-eye-pain-and-other-symptoms-child-male-advice-134303",
           "titleEn": "Telephone assessment cannot diagnose mild eye pain",
-          "instructionTextEn": "Arrange an age-appropriate in-person eye examination. Avoid rubbing, contact lenses and unprescribed drops while awaiting review. The exact Qatar non-emergency destination, transport and medication pathway are GOVERNANCE_REQUIRED. Call Back If: pain worsens; redness, photophobia or vision change develops.",
+          "instructionTextEn": "Arrange an age-appropriate in-person eye examination. Avoid rubbing, contact lenses and unprescribed drops while awaiting review. The exact Qatar non-emergency destination, transport and medication pathway are local approval required. Call Back If: pain worsens; redness, photophobia or vision change develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -1800,7 +1800,7 @@
         {
           "id": "oscg-swallowing-difficulty-adult-female-advice-133402",
           "titleEn": "Prompt in-person swallowing assessment",
-          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway, with speech-and-language/swallowing, medical, ENT, gastrointestinal or neurological input as indicated. Until assessed, stop any item that causes cough, choke, wet voice or breathlessness; use only an existing clinician-prescribed texture/feeding plan. Do not invent a texture, add thickener, crush/open tablets or stop essential medicine without pharmacist/clinician instruction. Call 999 for airway difficulty, inability to swallow saliva, acute neurological signs or deterioration. Exact non-emergency destinations are GOVERNANCE_REQUIRED. Call Back If: choking episode; cannot swallow saliva; breathing or voice change; fever or chest symptoms; dehydration; weight loss or child poor growth.",
+          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway, with speech-and-language/swallowing, medical, ENT, gastrointestinal or neurological input as indicated. Until assessed, stop any item that causes cough, choke, wet voice or breathlessness; use only an existing clinician-prescribed texture/feeding plan. Do not invent a texture, add thickener, crush/open tablets or stop essential medicine without pharmacist/clinician instruction. Call 999 for airway difficulty, inability to swallow saliva, acute neurological signs or deterioration. Exact non-emergency destinations are local approval required. Call Back If: choking episode; cannot swallow saliva; breathing or voice change; fever or chest symptoms; dehydration; weight loss or child poor growth.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2007,7 +2007,7 @@
         {
           "id": "oscg-swallowing-difficulty-adult-male-advice-133302",
           "titleEn": "Prompt in-person swallowing assessment",
-          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway, with speech-and-language/swallowing, medical, ENT, gastrointestinal or neurological input as indicated. Until assessed, stop any item that causes cough, choke, wet voice or breathlessness; use only an existing clinician-prescribed texture/feeding plan. Do not invent a texture, add thickener, crush/open tablets or stop essential medicine without pharmacist/clinician instruction. Call 999 for airway difficulty, inability to swallow saliva, acute neurological signs or deterioration. Exact non-emergency destinations are GOVERNANCE_REQUIRED. Call Back If: choking episode; cannot swallow saliva; breathing or voice change; fever or chest symptoms; dehydration; weight loss or child poor growth.",
+          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway, with speech-and-language/swallowing, medical, ENT, gastrointestinal or neurological input as indicated. Until assessed, stop any item that causes cough, choke, wet voice or breathlessness; use only an existing clinician-prescribed texture/feeding plan. Do not invent a texture, add thickener, crush/open tablets or stop essential medicine without pharmacist/clinician instruction. Call 999 for airway difficulty, inability to swallow saliva, acute neurological signs or deterioration. Exact non-emergency destinations are local approval required. Call Back If: choking episode; cannot swallow saliva; breathing or voice change; fever or chest symptoms; dehydration; weight loss or child poor growth.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2223,7 +2223,7 @@
         {
           "id": "oscg-swallowing-difficulty-child-female-advice-133602",
           "titleEn": "Prompt in-person swallowing assessment",
-          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway, with speech-and-language/swallowing, medical, ENT, gastrointestinal or neurological input as indicated. Until assessed, stop any item that causes cough, choke, wet voice or breathlessness; use only an existing clinician-prescribed texture/feeding plan. Do not invent a texture, add thickener, crush/open tablets or stop essential medicine without pharmacist/clinician instruction. Call 999 for airway difficulty, inability to swallow saliva, acute neurological signs or deterioration. Exact non-emergency destinations are GOVERNANCE_REQUIRED. Call Back If: choking episode; cannot swallow saliva; breathing or voice change; fever or chest symptoms; dehydration; weight loss or child poor growth.",
+          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway, with speech-and-language/swallowing, medical, ENT, gastrointestinal or neurological input as indicated. Until assessed, stop any item that causes cough, choke, wet voice or breathlessness; use only an existing clinician-prescribed texture/feeding plan. Do not invent a texture, add thickener, crush/open tablets or stop essential medicine without pharmacist/clinician instruction. Call 999 for airway difficulty, inability to swallow saliva, acute neurological signs or deterioration. Exact non-emergency destinations are local approval required. Call Back If: choking episode; cannot swallow saliva; breathing or voice change; fever or chest symptoms; dehydration; weight loss or child poor growth.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2439,7 +2439,7 @@
         {
           "id": "oscg-swallowing-difficulty-child-male-advice-133502",
           "titleEn": "Prompt in-person swallowing assessment",
-          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway, with speech-and-language/swallowing, medical, ENT, gastrointestinal or neurological input as indicated. Until assessed, stop any item that causes cough, choke, wet voice or breathlessness; use only an existing clinician-prescribed texture/feeding plan. Do not invent a texture, add thickener, crush/open tablets or stop essential medicine without pharmacist/clinician instruction. Call 999 for airway difficulty, inability to swallow saliva, acute neurological signs or deterioration. Exact non-emergency destinations are GOVERNANCE_REQUIRED. Call Back If: choking episode; cannot swallow saliva; breathing or voice change; fever or chest symptoms; dehydration; weight loss or child poor growth.",
+          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway, with speech-and-language/swallowing, medical, ENT, gastrointestinal or neurological input as indicated. Until assessed, stop any item that causes cough, choke, wet voice or breathlessness; use only an existing clinician-prescribed texture/feeding plan. Do not invent a texture, add thickener, crush/open tablets or stop essential medicine without pharmacist/clinician instruction. Call 999 for airway difficulty, inability to swallow saliva, acute neurological signs or deterioration. Exact non-emergency destinations are local approval required. Call Back If: choking episode; cannot swallow saliva; breathing or voice change; fever or chest symptoms; dehydration; weight loss or child poor growth.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,

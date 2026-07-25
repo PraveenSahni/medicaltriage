@@ -94,7 +94,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Did the hearing loss come on suddenly in one or both ears, has it worsened over just the last few days or weeks, or does it come with earache or discharge?",
-      "Information": "NHS.UK guidance recommends an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
+      "Information": "NHS.UK guidance recommends an urgent primary-care review or urgent clinical review call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -107,7 +107,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Has the hearing been getting gradually worse over time, or did it not improve after treatment for an ear infection or earwax?",
-      "Information": "NHS.UK guidance recommends a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for gradual hearing changes or hearing that hasn't improved after prior treatment.",
+      "Information": "NHS.UK guidance recommends a routine primary-care review for gradual hearing changes or hearing that hasn't improved after prior treatment.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -134,7 +134,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) assessment - sudden hearing changes may need quick treatment.",
+        "Arrange an urgent primary-care review or urgent clinical review assessment - sudden hearing changes may need quick treatment.",
         "Call Back If: hearing worsens further; dizziness develops."
       ]
     },
@@ -145,7 +145,7 @@
       "PatientHealthInfo": true,
       "Internal": false,
       "Content": [
-        "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED); a free hearing test may also be available at some pharmacies and opticians.",
+        "Book a routine primary-care review; a free hearing test may also be available at some pharmacies and opticians.",
         "Call Back If: sudden worsening; new ear pain or discharge."
       ]
     }

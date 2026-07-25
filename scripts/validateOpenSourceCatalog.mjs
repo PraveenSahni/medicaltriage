@@ -16,6 +16,31 @@ const emergencyTransportPattern =
 const qatar999Pattern = /\bQatar(?: emergency services(?: on)?)? 999\b/i;
 const prohibitedUkOperationalPattern =
   /\bGP\b|\b(?:NHS\s*)?111\b|\bA&E\b|\bcall-999\b|\bchemist\b|\bwalk-in centre\b|\bminor injuries unit\b/i;
+const malformedNurseVisiblePattern =
+  /\bGOVERNANCE_REQUIRED\b|Qatar 999\/|Qatar pathway approved by governance|clinical-review pathway approved by governance|an emergency assessment service selected through/i;
+
+function dbNurseVisibleText(doc) {
+  return JSON.stringify({
+    definition: doc.algorithm?.Definition,
+    background: doc.algorithm?.Background,
+    firstAid: doc.algorithm?.FirstAid,
+    questions: doc.questions,
+    advice: doc.advice,
+    initialAssessmentQuestions: doc.initialAssessmentQuestions,
+  });
+}
+
+function runtimeNurseVisibleText(protocol) {
+  return JSON.stringify({
+    definition: protocol.clinicalDefinitionEn,
+    background: protocol.backgroundInfoEn,
+    backgroundDetail: protocol.backgroundDetail,
+    firstAid: protocol.firstAid,
+    questions: protocol.questions,
+    advice: protocol.careAdvice,
+    initialAssessmentQuestions: protocol.initialAssessmentQuestions,
+  });
+}
 
 function canonicalSourceProtocolIds() {
   const sourceDir = path.join(REPO_ROOT, "src", "data", "openSourceGuidelines");
@@ -53,6 +78,9 @@ export function runSelfTests() {
   assert.doesNotMatch("Arrange review when convenient.", emergencyTransportPattern);
   assert.match("Book a GP appointment.", prohibitedUkOperationalPattern);
   assert.doesNotMatch("Arrange a primary-care review.", prohibitedUkOperationalPattern);
+  assert.match("Route remains GOVERNANCE_REQUIRED.", malformedNurseVisiblePattern);
+  assert.match("Use Qatar 999/an emergency service.", malformedNurseVisiblePattern);
+  assert.doesNotMatch("Call Qatar 999 or attend the Emergency Department.", malformedNurseVisiblePattern);
 
   const errors = [];
   const linked = assertAdviceLinks({
@@ -70,7 +98,7 @@ export function runSelfTests() {
   assert.ok(canonical.has("oscr-chest-pain-heart"));
   assert.ok(canonical.has("oscg-snakebite"));
   assert.ok(!canonical.has("oscg-elbow-pain-child"));
-  return { status: "PASS", assertions: 13 };
+  return { status: "PASS", assertions: 16 };
 }
 
 function sourceProtocolId(entry) {
@@ -154,6 +182,11 @@ export function validateCatalog({ requireRuntime = true, requirePdfs = true } = 
           `Batch ${batch} ID ${entry.algorithmId}: generated JSON contains prohibited UK operational routing language`,
         );
       }
+      if (malformedNurseVisiblePattern.test(dbNurseVisibleText(doc))) {
+        errors.push(
+          `Batch ${batch} ID ${entry.algorithmId}: generated JSON contains malformed or internal placeholder text in nurse-visible content`,
+        );
+      }
       for (const question of doc.questions ?? []) {
         if (question.TelemedicineEligible !== false) {
           errors.push(`Batch ${batch} ID ${entry.algorithmId}: question ${question.QuestionID} is telemedicine eligible`);
@@ -232,6 +265,11 @@ export function validateCatalog({ requireRuntime = true, requirePdfs = true } = 
           if (prohibitedUkOperationalPattern.test(JSON.stringify(protocol))) {
             errors.push(
               `Batch ${batch} runtime ${protocol.id}: contains prohibited UK operational routing language`,
+            );
+          }
+          if (malformedNurseVisiblePattern.test(runtimeNurseVisibleText(protocol))) {
+            errors.push(
+              `Batch ${batch} runtime ${protocol.id}: contains malformed or internal placeholder text in nurse-visible content`,
             );
           }
           for (const question of protocol.questions ?? []) {

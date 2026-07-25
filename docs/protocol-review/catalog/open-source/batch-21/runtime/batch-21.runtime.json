@@ -866,7 +866,7 @@
         {
           "id": "oscg-ankle-swelling-adult-female-advice-144802",
           "titleEn": "Same-day ankle-swelling assessment",
-          "instructionTextEn": "Arrange same-day in-person assessment for unilateral, sudden, painful, red/hot or unexplained swelling, fever, diabetes, pregnancy/postpartum status, or kidney/heart/liver disease. Exact Qatar vascular, maternity and medical destinations are GOVERNANCE_REQUIRED. Call Back If: breathlessness; swelling spreads; pain or fever.",
+          "instructionTextEn": "Arrange same-day in-person assessment for unilateral, sudden, painful, red/hot or unexplained swelling, fever, diabetes, pregnancy/postpartum status, or kidney/heart/liver disease. Exact Qatar vascular, maternity and medical destinations are local approval required. Call Back If: breathlessness; swelling spreads; pain or fever.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -1075,7 +1075,7 @@
         {
           "id": "oscg-ankle-swelling-adult-male-advice-144702",
           "titleEn": "Same-day ankle-swelling assessment",
-          "instructionTextEn": "Arrange same-day in-person assessment for unilateral, sudden, painful, red/hot or unexplained swelling, fever, diabetes, pregnancy/postpartum status, or kidney/heart/liver disease. Exact Qatar vascular, maternity and medical destinations are GOVERNANCE_REQUIRED. Call Back If: breathlessness; swelling spreads; pain or fever.",
+          "instructionTextEn": "Arrange same-day in-person assessment for unilateral, sudden, painful, red/hot or unexplained swelling, fever, diabetes, pregnancy/postpartum status, or kidney/heart/liver disease. Exact Qatar vascular, maternity and medical destinations are local approval required. Call Back If: breathlessness; swelling spreads; pain or fever.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -1622,7 +1622,7 @@
         {
           "id": "oscg-elbow-swelling-adult-female-advice-145202",
           "titleEn": "In-person elbow-swelling assessment",
-          "instructionTextEn": "Arrange in-person assessment; telephone review cannot exclude septic arthritis/bursitis, inflammatory disease or occult trauma. Medication and exact Qatar destination are GOVERNANCE_REQUIRED. Call Back If: redness, warmth or fever; movement worsens.",
+          "instructionTextEn": "Arrange in-person assessment; telephone review cannot exclude septic arthritis/bursitis, inflammatory disease or occult trauma. Medication and exact Qatar destination are local approval required. Call Back If: redness, warmth or fever; movement worsens.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -1799,7 +1799,7 @@
         {
           "id": "oscg-elbow-swelling-adult-male-advice-145102",
           "titleEn": "In-person elbow-swelling assessment",
-          "instructionTextEn": "Arrange in-person assessment; telephone review cannot exclude septic arthritis/bursitis, inflammatory disease or occult trauma. Medication and exact Qatar destination are GOVERNANCE_REQUIRED. Call Back If: redness, warmth or fever; movement worsens.",
+          "instructionTextEn": "Arrange in-person assessment; telephone review cannot exclude septic arthritis/bursitis, inflammatory disease or occult trauma. Medication and exact Qatar destination are local approval required. Call Back If: redness, warmth or fever; movement worsens.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2684,7 +2684,7 @@
         {
           "id": "oscg-hand-swelling-adult-female-advice-145802",
           "titleEn": "In-person hand-swelling assessment",
-          "instructionTextEn": "Arrange in-person assessment; unexplained swelling may reflect infection, inflammatory disease, allergy, vascular obstruction or occult injury. Medication and exact Qatar destination are GOVERNANCE_REQUIRED. Call Back If: redness, warmth or fever; swelling progresses.",
+          "instructionTextEn": "Arrange in-person assessment; unexplained swelling may reflect infection, inflammatory disease, allergy, vascular obstruction or occult injury. Medication and exact Qatar destination are local approval required. Call Back If: redness, warmth or fever; swelling progresses.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2861,7 +2861,7 @@
         {
           "id": "oscg-hand-swelling-adult-male-advice-145702",
           "titleEn": "In-person hand-swelling assessment",
-          "instructionTextEn": "Arrange in-person assessment; unexplained swelling may reflect infection, inflammatory disease, allergy, vascular obstruction or occult injury. Medication and exact Qatar destination are GOVERNANCE_REQUIRED. Call Back If: redness, warmth or fever; swelling progresses.",
+          "instructionTextEn": "Arrange in-person assessment; unexplained swelling may reflect infection, inflammatory disease, allergy, vascular obstruction or occult injury. Medication and exact Qatar destination are local approval required. Call Back If: redness, warmth or fever; swelling progresses.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3038,7 +3038,7 @@
         {
           "id": "oscg-hip-pain-adult-female-advice-146002",
           "titleEn": "In-person hip assessment",
-          "instructionTextEn": "Arrange in-person assessment. Any child hip/joint problem, pregnancy/postpartum pain, night pain, functional loss or unexplained persistent pain requires an age-appropriate pathway. Medication and exact Qatar destination are GOVERNANCE_REQUIRED. Call Back If: pain worsens; walking difficulty; swelling, redness or fever.",
+          "instructionTextEn": "Arrange in-person assessment. Any child hip/joint problem, pregnancy/postpartum pain, night pain, functional loss or unexplained persistent pain requires an age-appropriate pathway. Medication and exact Qatar destination are local approval required. Call Back If: pain worsens; walking difficulty; swelling, redness or fever.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3215,7 +3215,7 @@
         {
           "id": "oscg-hip-pain-adult-male-advice-145902",
           "titleEn": "In-person hip assessment",
-          "instructionTextEn": "Arrange in-person assessment. Any child hip/joint problem, pregnancy/postpartum pain, night pain, functional loss or unexplained persistent pain requires an age-appropriate pathway. Medication and exact Qatar destination are GOVERNANCE_REQUIRED. Call Back If: pain worsens; walking difficulty; swelling, redness or fever.",
+          "instructionTextEn": "Arrange in-person assessment. Any child hip/joint problem, pregnancy/postpartum pain, night pain, functional loss or unexplained persistent pain requires an age-appropriate pathway. Medication and exact Qatar destination are local approval required. Call Back If: pain worsens; walking difficulty; swelling, redness or fever.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3392,7 +3392,7 @@
         {
           "id": "oscg-knee-swelling-adult-female-advice-146202",
           "titleEn": "In-person knee-swelling assessment",
-          "instructionTextEn": "Arrange in-person assessment; telephone review cannot exclude joint infection, inflammatory disease, crystal arthritis, vascular causes or occult trauma. Medication and exact Qatar destination are GOVERNANCE_REQUIRED. Call Back If: redness, warmth or fever; unable to bear weight.",
+          "instructionTextEn": "Arrange in-person assessment; telephone review cannot exclude joint infection, inflammatory disease, crystal arthritis, vascular causes or occult trauma. Medication and exact Qatar destination are local approval required. Call Back If: redness, warmth or fever; unable to bear weight.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3569,7 +3569,7 @@
         {
           "id": "oscg-knee-swelling-adult-male-advice-146102",
           "titleEn": "In-person knee-swelling assessment",
-          "instructionTextEn": "Arrange in-person assessment; telephone review cannot exclude joint infection, inflammatory disease, crystal arthritis, vascular causes or occult trauma. Medication and exact Qatar destination are GOVERNANCE_REQUIRED. Call Back If: redness, warmth or fever; unable to bear weight.",
+          "instructionTextEn": "Arrange in-person assessment; telephone review cannot exclude joint infection, inflammatory disease, crystal arthritis, vascular causes or occult trauma. Medication and exact Qatar destination are local approval required. Call Back If: redness, warmth or fever; unable to bear weight.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 2,

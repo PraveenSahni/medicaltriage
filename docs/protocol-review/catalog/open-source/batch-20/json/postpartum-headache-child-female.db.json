@@ -108,7 +108,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Seek emergency help on 999 if the headache becomes severe or vision change, fainting, seizure, breathing difficulty, chest pain, severe upper abdominal pain, or marked swelling develops.",
+        "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination requires local approval. Seek emergency help on 999 if the headache becomes severe or vision change, fainting, seizure, breathing difficulty, chest pain, severe upper abdominal pain, or marked swelling develops.",
         "Call Back If: headache becomes severe; vision changes or swelling develop."
       ]
     }

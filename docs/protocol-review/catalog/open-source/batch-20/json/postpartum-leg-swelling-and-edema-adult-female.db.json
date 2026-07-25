@@ -132,7 +132,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED.",
+        "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination requires local approval.",
         "Call Back If: breathing difficulty or chest pain develops; swelling worsens."
       ]
     },

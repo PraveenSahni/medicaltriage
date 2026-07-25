@@ -66,7 +66,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Using the recorded demographics rather than asking the caller to choose: is the patient age 17 or younger? Also route urgently if pregnant, breastfeeding with the rash on the breasts, the rash is on the eye or nose, there are vision changes, or the patient has a severely weakened immune system.",
-      "Information": "NHS.UK shingles guidance recommends urgent clinical review for these groups. In a generated Child variant, age 17 or younger is already established and this branch must be treated as true without asking the caller to validate age eligibility. Exact Qatar destination remains GOVERNANCE_REQUIRED.",
+      "Information": "NHS.UK shingles guidance recommends urgent clinical review for these groups. In a generated Child variant, age 17 or younger is already established and this branch must be treated as true without asking the caller to validate age eligibility. Exact Qatar destination requires local approval.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -95,7 +95,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "For every generated Child variant, route directly to prompt same-day in-person assessment based on the recorded age; do not ask the caller to decide whether the age rule applies. Also arrange urgent assessment for eye/nose/ear involvement, vision or hearing change, facial weakness, severe headache/confusion, pregnancy, breastfeeding breast lesions, immunocompromise, or disseminated rash. Antiviral selection, dose, timing, pregnancy/breastfeeding use, renal adjustment, and pediatric use require the approved Qatar prescriber pathway. Call 999 for reduced consciousness, seizure, severe breathing difficulty, collapse, or rapidly severe illness. Exact Qatar destination remains GOVERNANCE_REQUIRED.",
+        "For every generated Child variant, route directly to prompt same-day in-person assessment based on the recorded age; do not ask the caller to decide whether the age rule applies. Also arrange urgent assessment for eye/nose/ear involvement, vision or hearing change, facial weakness, severe headache/confusion, pregnancy, breastfeeding breast lesions, immunocompromise, or disseminated rash. Antiviral selection, dose, timing, pregnancy/breastfeeding use, renal adjustment, and pediatric use require the approved Qatar prescriber pathway. Call 999 for reduced consciousness, seizure, severe breathing difficulty, collapse, or rapidly severe illness. Exact Qatar destination requires local approval.",
         "Call Back If: eye pain, red eye, or vision change; ear rash, hearing change, or facial weakness; confusion, severe headache, weakness, or widespread rash; fever or rapid deterioration."
       ]
     },

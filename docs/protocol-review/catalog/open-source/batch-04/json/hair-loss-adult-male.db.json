@@ -57,7 +57,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Is an inflamed, painful, scaling, crusting, or infected-looking scalp the main concern rather than hair loss itself?",
-      "Information": "The localized-rash family is not generated. Arrange prompt in-person assessment through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+      "Information": "The localized-rash family is not generated. Arrange prompt in-person assessment through an approved local service.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": []
@@ -81,7 +81,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Is the caller worried about the hair loss and would like it assessed?",
-      "Information": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
+      "Information": "NHS.UK guidance: arrange a primary-care review if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

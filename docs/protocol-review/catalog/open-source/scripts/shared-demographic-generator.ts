@@ -49,32 +49,68 @@ export const normalizeEmergencyAdvice = (value: string) =>
     : `${value.trim()} ${controlledEmergencyTransportInstruction}`.trim();
 export const localizeOperationalText = (value: string) =>
   value
-    .replace(/\burgent GP\/111 contact\b/gi, "urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\burgent (?:NHS )?111 or emergency GP contact\b/gi, "urgent clinical review or emergency assessment through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bpharmacy\/GP treatment\b/gi, "pharmacy or clinical treatment through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bGP review\b/gi, "clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bthe same ([^.]+) as a GP\b/gi, "the same $1 as a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
+    .replace(
+      /\bQatar 999\/an emergency assessment service selected through the Qatar pathway approved by governance \(GOVERNANCE_REQUIRED\)/gi,
+      "emergency ambulance or Emergency Department",
+    )
+    .replace(
+      /\bthe Qatar clinical-review pathway approved by governance \(GOVERNANCE_REQUIRED\)/gi,
+      "urgent clinical review",
+    )
+    .replace(
+      /\bclinical review through a Qatar pathway approved by governance \(GOVERNANCE_REQUIRED\)/gi,
+      "clinical review",
+    )
+    .replace(
+      /\b(?:the )?Qatar route approved by governance \(GOVERNANCE_REQUIRED\)/gi,
+      "an approved local service",
+    )
+    .replace(
+      /\ba Qatar pathway approved by governance \(GOVERNANCE_REQUIRED\)/gi,
+      "an approved local pathway",
+    )
+    .replace(/\bcall-999\/A&E\b/gi, "emergency ambulance or Emergency Department")
+    .replace(/\burgent GP\/111 contact\b/gi, "urgent clinical review")
+    .replace(/\burgent (?:NHS )?111 or emergency GP contact\b/gi, "urgent clinical review or emergency assessment")
+    .replace(/\bpharmacy\/GP treatment\b/gi, "pharmacist advice or primary-care treatment")
+    .replace(/\bGP review\b/gi, "primary-care review")
+    .replace(/\bthe same ([^.]+) as a GP\b/gi, "the same $1 as a primary-care clinician")
     .replace(/\bcall-999\b/gi, "Qatar 999")
     .replace(/\bcall 999 or go to A&E\b/gi, "call Qatar 999 and follow the call-taker's emergency transport instructions")
-    .replace(/\bdrive to A&E\b/gi, "seek emergency assessment through a Qatar transport pathway approved by governance; do not self-drive when emergency features are present (GOVERNANCE_REQUIRED)")
-    .replace(/\bgo to A&E\b/gi, "seek emergency assessment through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bA&E\b/g, "an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bNHS 111\b/gi, "the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\burgent 111\b/gi, "urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bcontact 111\b/gi, "seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bcalling 111\b/gi, "contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bcall 111\b/gi, "seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\b111\b/g, "the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bsee a GP\b/gi, "arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bseeing a GP\b/gi, "arranging clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bGP visit\b/gi, "clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bGP or dentist appointment\b/gi, "clinical or dental review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bGP appointment\b/gi, "clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bbook a GP appointment\b/gi, "arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bGP\b/gi, "a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bchemist\b/gi, "pharmacy review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bwalk-in centre\b/gi, "an in-person service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED)")
-    .replace(/\bminor injuries unit\b/gi, "an in-person injury service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED)");
+    .replace(/\bdrive to A&E\b/gi, "self-drive to the Emergency Department")
+    .replace(/\bgo to A&E\b/gi, "attend the Emergency Department")
+    .replace(/\bA&E\b/g, "Emergency Department")
+    .replace(/\bNHS 111\b/gi, "urgent clinical review")
+    .replace(/\burgent 111\b/gi, "urgent clinical review")
+    .replace(/\bcontact 111\b/gi, "seek urgent clinical review")
+    .replace(/\bcalling 111\b/gi, "seeking urgent clinical review")
+    .replace(/\bcall 111\b/gi, "seek urgent clinical review")
+    .replace(/\b111\b/g, "urgent clinical review")
+    .replace(/\bsee a GP\b/gi, "arrange a primary-care review")
+    .replace(/\bseeing a GP\b/gi, "arranging a primary-care review")
+    .replace(/\bGP visit\b/gi, "primary-care review")
+    .replace(/\bGP or dentist appointment\b/gi, "primary-care or dental review")
+    .replace(/\bGP appointment\b/gi, "primary-care review")
+    .replace(/\bbook a GP appointment\b/gi, "arrange a primary-care review")
+    .replace(/\bGP\b/gi, "primary-care clinician")
+    .replace(/\bchemist\b/gi, "pharmacist")
+    .replace(/\bwalk-in centre\b/gi, "urgent in-person service")
+    .replace(/\bminor injuries unit\b/gi, "urgent in-person injury service")
+    .replace(/\bremains GOVERNANCE_REQUIRED\b/gi, "requires local approval")
+    .replace(/\bis GOVERNANCE_REQUIRED\b/gi, "requires local approval")
+    .replace(/\bGOVERNANCE_REQUIRED\b/g, "local approval required")
+    .replace(/\s+\./g, ".");
+
+export const localizeObjectText = <T>(value: T): T => {
+  if (typeof value === "string") return localizeOperationalText(value) as T;
+  if (Array.isArray(value)) return value.map(localizeObjectText) as T;
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [key, localizeObjectText(item)]),
+    ) as T;
+  }
+  return value;
+};
 
 export const canonicalLineageId = (protocol: any): string =>
   protocol.canonicalSourceProtocolId ?? protocol.id;
@@ -177,7 +213,7 @@ export function generateDemographicBatch(config: Config) {
             Acuity: level >= 100 ? 5 : level >= 70 ? 4 : level >= 40 ? 3 : 2,
           });
         }
-        const doc = {
+        const doc = localizeObjectText({
           _source: config.sourceText ?? sourceText,
           algorithm: {
             AlgorithmID: algorithmId, Title: `${protocol.titleEn} - ${gender} (${age.label})`,
@@ -213,7 +249,7 @@ export function generateDemographicBatch(config: Config) {
           references: protocol.provenance.sourceDocuments,
           searchwords: protocol.keywords.map((keyword: any) => keyword.phrase),
           initialAssessmentQuestions: iaqs,
-        };
+        });
         const prohibitedMatch = JSON.stringify(doc).match(prohibitedOperationalLanguage);
         if (prohibitedMatch) {
           throw new Error(

@@ -86,7 +86,7 @@
       "DispositionLevel": 100,
       "QuestionOrder": 1,
       "Question": "Is there difficulty breathing, reduced consciousness, collapse, faintness or shock, major facial/head trauma, or severe uncontrolled bleeding that is rapidly worsening?",
-      "Information": "Immediate life-threatening features require Qatar 999. This separates ambulance need from other NHS.UK an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria that may be stable enough for governed non-ambulance transport.",
+      "Information": "Immediate life-threatening features require Qatar 999. This separates ambulance need from other NHS.UK Emergency Department criteria that may be stable enough for governed non-ambulance transport.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -99,7 +99,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "After uninterrupted pinching of the soft nose, has bleeding continued longer than 10-15 minutes, does it still seem excessive, is the person swallowing a lot of blood and vomiting, or did it begin after a blow to the head without the immediate life-threatening features above?",
-      "Information": "NHS.UK directs these features to an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) and says not to self-drive, while allowing either another driver or an ambulance. Exact Qatar destination and transport choice remain GOVERNANCE_REQUIRED.",
+      "Information": "NHS.UK directs these features to Emergency Department and says not to self-drive, while allowing either another driver or an ambulance. Exact Qatar destination and transport choice remain local approval required.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -112,7 +112,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Is the patient a child under 2, does the caller have regular nosebleeds, anaemia symptoms, take blood-thinning medication, or have a clotting disorder such as haemophilia?",
-      "Information": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for these situations even when the bleed itself has stopped.",
+      "Information": "NHS.UK guidance recommends a primary-care review for these situations even when the bleed itself has stopped.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -152,7 +152,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Continue sitting forward and pinching the soft nose while arranging prompt in-person emergency assessment through the Qatar governance-approved pathway. Do not self-drive. A safe adult may transport a stable patient only if the approved local pathway permits; call 999 for breathing difficulty, reduced consciousness, collapse, shock, major trauma, or rapidly worsening/uncontrolled bleeding. Exact destination and transport remain GOVERNANCE_REQUIRED.",
+        "Continue sitting forward and pinching the soft nose while arranging prompt in-person emergency assessment through the Qatar governance-approved pathway. Do not self-drive. A safe adult may transport a stable patient only if the approved local pathway permits; call 999 for breathing difficulty, reduced consciousness, collapse, shock, major trauma, or rapidly worsening/uncontrolled bleeding. Exact destination and transport remain local approval required.",
         "Call Back If: difficulty breathing, faintness, collapse, or reduced consciousness; bleeding becomes rapidly worse or remains uncontrolled; major trauma."
       ]
     },

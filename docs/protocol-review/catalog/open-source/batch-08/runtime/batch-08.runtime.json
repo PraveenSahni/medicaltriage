@@ -2602,7 +2602,7 @@
           "severity": "Routine",
           "questionTextEn": "Is this a localized rash or redness without honey-colored crusts, weeping sores, or suspected impetigo?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "The localized-rash family is not generated. Arrange clinical review through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "The localized-rash family is not generated. Arrange clinical review through an approved local service.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2618,7 +2618,7 @@
           "severity": "Routine",
           "questionTextEn": "Without an emergency feature, is the patient under 1 year, pregnant or breastfeeding with breast lesions, diabetic or immunocompromised, are lesions near the eye, widespread, recurrent, worsening, or not responding, or is there a safeguarding concern?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons for clinical review rather than pharmacist self-care. Impetigo is very infectious; the Qatar attendance route must be approved by clinical governance before use (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance lists these as reasons for clinical review rather than pharmacist self-care. Impetigo is very infectious; the Qatar attendance route must be approved by clinical governance before use (local approval required).",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2634,7 +2634,7 @@
           "severity": "Self-care",
           "questionTextEn": "Is this a straightforward case (child 12+ months, no breastfeeding sores, no weakened immune system) with none of the features above?",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-          "rationaleEn": "NHS.UK guidance supports pharmacist assessment and treatment for straightforward impetigo; the applicable Qatar service route requires clinical-governance approval (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance supports pharmacist assessment and treatment for straightforward impetigo; the applicable Qatar service route requires clinical-governance approval (local approval required).",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2667,7 +2667,7 @@
         {
           "id": "oscg-impetigo-infected-sore-adult-female-advice-119403",
           "titleEn": "Pharmacy self-care for impetigo",
-          "instructionTextEn": "A pharmacist may assess and treat straightforward impetigo where permitted; the applicable Qatar service route requires clinical-governance approval (GOVERNANCE_REQUIRED). Wash affected areas with soap and water, wash hands frequently (especially before/after applying cream), and wash bedding/towels at high temperature. Do not touch or scratch sores. Stay away from work, school, or nursery until no longer contagious (48 hours after starting treatment, or once patches dry and crust over without treatment). Don't share towels or prepare food for others. Call Back If: not improving with treatment; spreading or worsening.",
+          "instructionTextEn": "A pharmacist may assess and treat straightforward impetigo where permitted; the applicable Qatar service route requires clinical-governance approval (local approval required). Wash affected areas with soap and water, wash hands frequently (especially before/after applying cream), and wash bedding/towels at high temperature. Do not touch or scratch sores. Stay away from work, school, or nursery until no longer contagious (48 hours after starting treatment, or once patches dry and crust over without treatment). Don't share towels or prepare food for others. Call Back If: not improving with treatment; spreading or worsening.",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
           "warningSigns": [],
           "displayOrder": 3,
@@ -2796,7 +2796,7 @@
           "severity": "Routine",
           "questionTextEn": "Is this a localized rash or redness without honey-colored crusts, weeping sores, or suspected impetigo?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "The localized-rash family is not generated. Arrange clinical review through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "The localized-rash family is not generated. Arrange clinical review through an approved local service.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2812,7 +2812,7 @@
           "severity": "Routine",
           "questionTextEn": "Without an emergency feature, is the patient under 1 year, pregnant or breastfeeding with breast lesions, diabetic or immunocompromised, are lesions near the eye, widespread, recurrent, worsening, or not responding, or is there a safeguarding concern?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons for clinical review rather than pharmacist self-care. Impetigo is very infectious; the Qatar attendance route must be approved by clinical governance before use (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance lists these as reasons for clinical review rather than pharmacist self-care. Impetigo is very infectious; the Qatar attendance route must be approved by clinical governance before use (local approval required).",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2828,7 +2828,7 @@
           "severity": "Self-care",
           "questionTextEn": "Is this a straightforward case (child 12+ months, no breastfeeding sores, no weakened immune system) with none of the features above?",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-          "rationaleEn": "NHS.UK guidance supports pharmacist assessment and treatment for straightforward impetigo; the applicable Qatar service route requires clinical-governance approval (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance supports pharmacist assessment and treatment for straightforward impetigo; the applicable Qatar service route requires clinical-governance approval (local approval required).",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2861,7 +2861,7 @@
         {
           "id": "oscg-impetigo-infected-sore-adult-male-advice-119303",
           "titleEn": "Pharmacy self-care for impetigo",
-          "instructionTextEn": "A pharmacist may assess and treat straightforward impetigo where permitted; the applicable Qatar service route requires clinical-governance approval (GOVERNANCE_REQUIRED). Wash affected areas with soap and water, wash hands frequently (especially before/after applying cream), and wash bedding/towels at high temperature. Do not touch or scratch sores. Stay away from work, school, or nursery until no longer contagious (48 hours after starting treatment, or once patches dry and crust over without treatment). Don't share towels or prepare food for others. Call Back If: not improving with treatment; spreading or worsening.",
+          "instructionTextEn": "A pharmacist may assess and treat straightforward impetigo where permitted; the applicable Qatar service route requires clinical-governance approval (local approval required). Wash affected areas with soap and water, wash hands frequently (especially before/after applying cream), and wash bedding/towels at high temperature. Do not touch or scratch sores. Stay away from work, school, or nursery until no longer contagious (48 hours after starting treatment, or once patches dry and crust over without treatment). Don't share towels or prepare food for others. Call Back If: not improving with treatment; spreading or worsening.",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
           "warningSigns": [],
           "displayOrder": 3,
@@ -2999,7 +2999,7 @@
           "severity": "Routine",
           "questionTextEn": "Is this a localized rash or redness without honey-colored crusts, weeping sores, or suspected impetigo?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "The localized-rash family is not generated. Arrange clinical review through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "The localized-rash family is not generated. Arrange clinical review through an approved local service.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3015,7 +3015,7 @@
           "severity": "Routine",
           "questionTextEn": "Without an emergency feature, is the patient under 1 year, pregnant or breastfeeding with breast lesions, diabetic or immunocompromised, are lesions near the eye, widespread, recurrent, worsening, or not responding, or is there a safeguarding concern?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons for clinical review rather than pharmacist self-care. Impetigo is very infectious; the Qatar attendance route must be approved by clinical governance before use (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance lists these as reasons for clinical review rather than pharmacist self-care. Impetigo is very infectious; the Qatar attendance route must be approved by clinical governance before use (local approval required).",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3031,7 +3031,7 @@
           "severity": "Self-care",
           "questionTextEn": "Is this a straightforward case (child 12+ months, no breastfeeding sores, no weakened immune system) with none of the features above?",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-          "rationaleEn": "NHS.UK guidance supports pharmacist assessment and treatment for straightforward impetigo; the applicable Qatar service route requires clinical-governance approval (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance supports pharmacist assessment and treatment for straightforward impetigo; the applicable Qatar service route requires clinical-governance approval (local approval required).",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3064,7 +3064,7 @@
         {
           "id": "oscg-impetigo-infected-sore-child-female-advice-119603",
           "titleEn": "Pharmacy self-care for impetigo",
-          "instructionTextEn": "A pharmacist may assess and treat straightforward impetigo where permitted; the applicable Qatar service route requires clinical-governance approval (GOVERNANCE_REQUIRED). Wash affected areas with soap and water, wash hands frequently (especially before/after applying cream), and wash bedding/towels at high temperature. Do not touch or scratch sores. Stay away from work, school, or nursery until no longer contagious (48 hours after starting treatment, or once patches dry and crust over without treatment). Don't share towels or prepare food for others. Call Back If: not improving with treatment; spreading or worsening.",
+          "instructionTextEn": "A pharmacist may assess and treat straightforward impetigo where permitted; the applicable Qatar service route requires clinical-governance approval (local approval required). Wash affected areas with soap and water, wash hands frequently (especially before/after applying cream), and wash bedding/towels at high temperature. Do not touch or scratch sores. Stay away from work, school, or nursery until no longer contagious (48 hours after starting treatment, or once patches dry and crust over without treatment). Don't share towels or prepare food for others. Call Back If: not improving with treatment; spreading or worsening.",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
           "warningSigns": [],
           "displayOrder": 3,
@@ -3202,7 +3202,7 @@
           "severity": "Routine",
           "questionTextEn": "Is this a localized rash or redness without honey-colored crusts, weeping sores, or suspected impetigo?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "The localized-rash family is not generated. Arrange clinical review through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "The localized-rash family is not generated. Arrange clinical review through an approved local service.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3218,7 +3218,7 @@
           "severity": "Routine",
           "questionTextEn": "Without an emergency feature, is the patient under 1 year, pregnant or breastfeeding with breast lesions, diabetic or immunocompromised, are lesions near the eye, widespread, recurrent, worsening, or not responding, or is there a safeguarding concern?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons for clinical review rather than pharmacist self-care. Impetigo is very infectious; the Qatar attendance route must be approved by clinical governance before use (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance lists these as reasons for clinical review rather than pharmacist self-care. Impetigo is very infectious; the Qatar attendance route must be approved by clinical governance before use (local approval required).",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3234,7 +3234,7 @@
           "severity": "Self-care",
           "questionTextEn": "Is this a straightforward case (child 12+ months, no breastfeeding sores, no weakened immune system) with none of the features above?",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-          "rationaleEn": "NHS.UK guidance supports pharmacist assessment and treatment for straightforward impetigo; the applicable Qatar service route requires clinical-governance approval (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance supports pharmacist assessment and treatment for straightforward impetigo; the applicable Qatar service route requires clinical-governance approval (local approval required).",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3267,7 +3267,7 @@
         {
           "id": "oscg-impetigo-infected-sore-child-male-advice-119503",
           "titleEn": "Pharmacy self-care for impetigo",
-          "instructionTextEn": "A pharmacist may assess and treat straightforward impetigo where permitted; the applicable Qatar service route requires clinical-governance approval (GOVERNANCE_REQUIRED). Wash affected areas with soap and water, wash hands frequently (especially before/after applying cream), and wash bedding/towels at high temperature. Do not touch or scratch sores. Stay away from work, school, or nursery until no longer contagious (48 hours after starting treatment, or once patches dry and crust over without treatment). Don't share towels or prepare food for others. Call Back If: not improving with treatment; spreading or worsening.",
+          "instructionTextEn": "A pharmacist may assess and treat straightforward impetigo where permitted; the applicable Qatar service route requires clinical-governance approval (local approval required). Wash affected areas with soap and water, wash hands frequently (especially before/after applying cream), and wash bedding/towels at high temperature. Do not touch or scratch sores. Stay away from work, school, or nursery until no longer contagious (48 hours after starting treatment, or once patches dry and crust over without treatment). Don't share towels or prepare food for others. Call Back If: not improving with treatment; spreading or worsening.",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
           "warningSigns": [],
           "displayOrder": 3,
@@ -3396,7 +3396,7 @@
           "severity": "Urgent",
           "questionTextEn": "Without an emergency feature, are symptoms worsening, is the bite in the mouth, throat or near the eye, are there multiple bites, fever, abdominal pain, vomiting or dizziness, or is the patient an infant, pregnant, immunocompromised, or previously severely allergic?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) urgently.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review urgently.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3412,7 +3412,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the skin around the bite hot, red, painful, swollen, or leaking pus or fluid (signs of infection)?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance flags these infection signs as needing a pharmacist or clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance flags these infection signs as needing a pharmacist or primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3607,7 +3607,7 @@
           "severity": "Urgent",
           "questionTextEn": "Without an emergency feature, are symptoms worsening, is the bite in the mouth, throat or near the eye, are there multiple bites, fever, abdominal pain, vomiting or dizziness, or is the patient an infant, pregnant, immunocompromised, or previously severely allergic?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) urgently.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review urgently.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3623,7 +3623,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the skin around the bite hot, red, painful, swollen, or leaking pus or fluid (signs of infection)?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance flags these infection signs as needing a pharmacist or clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance flags these infection signs as needing a pharmacist or primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3827,7 +3827,7 @@
           "severity": "Urgent",
           "questionTextEn": "Without an emergency feature, are symptoms worsening, is the bite in the mouth, throat or near the eye, are there multiple bites, fever, abdominal pain, vomiting or dizziness, or is the patient an infant, pregnant, immunocompromised, or previously severely allergic?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) urgently.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review urgently.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3843,7 +3843,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the skin around the bite hot, red, painful, swollen, or leaking pus or fluid (signs of infection)?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance flags these infection signs as needing a pharmacist or clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance flags these infection signs as needing a pharmacist or primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4047,7 +4047,7 @@
           "severity": "Urgent",
           "questionTextEn": "Without an emergency feature, are symptoms worsening, is the bite in the mouth, throat or near the eye, are there multiple bites, fever, abdominal pain, vomiting or dizziness, or is the patient an infant, pregnant, immunocompromised, or previously severely allergic?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) urgently.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review urgently.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4063,7 +4063,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the skin around the bite hot, red, painful, swollen, or leaking pus or fluid (signs of infection)?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance flags these infection signs as needing a pharmacist or clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance flags these infection signs as needing a pharmacist or primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [

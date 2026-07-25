@@ -130,7 +130,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED.",
+        "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination requires local approval.",
         "Call Back If: symptoms worsen; fever develops."
       ]
     },

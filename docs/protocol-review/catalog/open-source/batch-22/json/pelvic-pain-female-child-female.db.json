@@ -130,7 +130,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange urgent in-person gynecology, early-pregnancy, maternity, pediatric, or safeguarding assessment as applicable; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED.",
+        "Arrange urgent in-person gynecology, early-pregnancy, maternity, pediatric, or safeguarding assessment as applicable; the exact non-emergency Qatar destination requires local approval.",
         "Call Back If: pain worsens; fever, faintness, vomiting, shoulder pain, or bleeding develops."
       ]
     },
@@ -141,7 +141,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange in-person clinical review to determine the cause; the exact Qatar destination remains GOVERNANCE_REQUIRED. A clinician or pharmacist should confirm any medicine is suitable, especially for a child, pregnancy, postpartum patient, or patient with bleeding or kidney disease.",
+        "Arrange in-person clinical review to determine the cause; the exact Qatar destination requires local approval. A clinician or pharmacist should confirm any medicine is suitable, especially for a child, pregnancy, postpartum patient, or patient with bleeding or kidney disease.",
         "Call Back If: pain worsens; fever, faintness, vomiting, shoulder pain, or bleeding develops."
       ]
     }

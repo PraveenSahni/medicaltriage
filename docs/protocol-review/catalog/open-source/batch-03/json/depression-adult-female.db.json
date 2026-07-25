@@ -103,7 +103,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "For a patient aged 12 to 17, is private assessment not currently safe or possible, might the caregiver be unsafe, or is there abuse, neglect, bullying, substance use, psychosis, risk to another person, inability to remain safe, or self-harm/suicidal thinking without the immediate plan-or-attempt features above?",
-      "Information": "NICE child-depression and self-harm guidance requires child-specific assessment of home/social context, abuse or bullying, substances, self-harm/suicide and safeguarding, with an opportunity for private assessment. Exact Qatar safeguarding, mental-health destination, confidentiality, reporting, and disconnect procedure remain GOVERNANCE_REQUIRED.",
+      "Information": "NICE child-depression and self-harm guidance requires child-specific assessment of home/social context, abuse or bullying, substances, self-harm/suicide and safeguarding, with an opportunity for private assessment. Exact Qatar safeguarding, mental-health destination, confidentiality, reporting, and disconnect procedure remain local approval required.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -116,7 +116,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Have symptoms of low mood, loss of interest, or hopelessness been present for most of the day, nearly every day, for more than 2 weeks?",
-      "Information": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
+      "Information": "NHS.UK guidance: arrange a primary-care review if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -129,7 +129,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Is the patient aged 12 to 17 with low mood or loss of interest, with none of the emergency or safeguarding features above?",
-      "Information": "A child or adolescent requires age-appropriate clinical assessment and safeguarding review rather than the adult-derived brief-low-mood self-care branch. Exact Qatar pediatric mental-health destination and timing remain GOVERNANCE_REQUIRED.",
+      "Information": "A child or adolescent requires age-appropriate clinical assessment and safeguarding review rather than the adult-derived brief-low-mood self-care branch. Exact Qatar pediatric mental-health destination and timing remain local approval required.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -169,7 +169,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Keep the young person engaged in a safe setting and arrange urgent assessment through the Qatar governance-approved child mental-health/safeguarding pathway. Offer a safe opportunity to speak privately; do not rely on a caregiver who may be unsafe and do not promise absolute confidentiality. If immediate danger, an attempt, plan/intent, access to means, severe agitation/psychosis, unsafe supervision, or loss of contact develops, call 999 and follow the approved emergency handover or welfare-check procedure. Exact service, reporting, consent, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED.",
+        "Keep the young person engaged in a safe setting and arrange urgent assessment through the Qatar governance-approved child mental-health/safeguarding pathway. Offer a safe opportunity to speak privately; do not rely on a caregiver who may be unsafe and do not promise absolute confidentiality. If immediate danger, an attempt, plan/intent, access to means, severe agitation/psychosis, unsafe supervision, or loss of contact develops, call 999 and follow the approved emergency handover or welfare-check procedure. Exact service, reporting, consent, confidentiality, and disconnect actions remain local approval required.",
         "Call Back If: attempt, plan, intent, or access to means; psychosis, severe agitation, risk to another person, or inability to remain safe; unsafe caregiver, loss of contact, or no safe supervision."
       ]
     },
@@ -191,7 +191,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange age-appropriate child or adolescent mental-health assessment through the Qatar governance-approved pathway. Confirm a safe opportunity for private assessment and review home, school, bullying/abuse, substance use, self-harm, suicide, risk to others, safe supervision, and safeguarding. Exact destination, consent and reporting remain GOVERNANCE_REQUIRED.",
+        "Arrange age-appropriate child or adolescent mental-health assessment through the Qatar governance-approved pathway. Confirm a safe opportunity for private assessment and review home, school, bullying/abuse, substance use, self-harm, suicide, risk to others, safe supervision, and safeguarding. Exact destination, consent and reporting remain local approval required.",
         "Call Back If: self-harm or suicidal thinking; psychosis, severe agitation, or inability to remain safe; abuse, bullying, unsafe caregiver, or loss of safe supervision."
       ]
     },

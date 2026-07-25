@@ -103,7 +103,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "For a child or vulnerable person, is the explanation absent, unsuitable, inconsistent with the wound or developmental ability, is there delay in seeking help or concern about supervision, might the caregiver be unsafe, or can the patient not be offered a safe opportunity to speak privately?",
-      "Information": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations, possible neglect/lack of supervision, and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED.",
+      "Information": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations, possible neglect/lack of supervision, and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain local approval required.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -154,7 +154,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain GOVERNANCE_REQUIRED.",
+        "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain local approval required.",
         "Call Back If: immediate danger or unsafe caregiver; uncontrolled bleeding, collapse, or serious injury; caller disconnects before safety is established."
       ]
     },

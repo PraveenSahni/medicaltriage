@@ -130,7 +130,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Book a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if symptoms worsen or pharmacy treatments aren't helping.",
+        "Book a primary-care review if symptoms worsen or pharmacy treatments aren't helping.",
         "Call Back If: symptoms significantly worsen."
       ]
     },

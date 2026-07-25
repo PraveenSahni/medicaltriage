@@ -96,7 +96,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a child or vulnerable person, is the explanation absent, unsuitable, inconsistent with the injury or developmental ability, is there delay in seeking help, might the caregiver be unsafe, or can the patient not be offered a safe opportunity to speak privately?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -152,7 +152,7 @@
         {
           "id": "oscg-chest-injury-adult-female-advice-124602",
           "titleEn": "Child chest-injury safeguarding response",
-          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain GOVERNANCE_REQUIRED. Call Back If: immediate danger or unsafe caregiver; new breathing difficulty, collapse, or severe pain; caller disconnects before safety is established.",
+          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain local approval required. Call Back If: immediate danger or unsafe caregiver; new breathing difficulty, collapse, or severe pain; caller disconnects before safety is established.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -333,7 +333,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a child or vulnerable person, is the explanation absent, unsuitable, inconsistent with the injury or developmental ability, is there delay in seeking help, might the caregiver be unsafe, or can the patient not be offered a safe opportunity to speak privately?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -389,7 +389,7 @@
         {
           "id": "oscg-chest-injury-adult-male-advice-124502",
           "titleEn": "Child chest-injury safeguarding response",
-          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain GOVERNANCE_REQUIRED. Call Back If: immediate danger or unsafe caregiver; new breathing difficulty, collapse, or severe pain; caller disconnects before safety is established.",
+          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain local approval required. Call Back If: immediate danger or unsafe caregiver; new breathing difficulty, collapse, or severe pain; caller disconnects before safety is established.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -579,7 +579,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a child or vulnerable person, is the explanation absent, unsuitable, inconsistent with the injury or developmental ability, is there delay in seeking help, might the caregiver be unsafe, or can the patient not be offered a safe opportunity to speak privately?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -635,7 +635,7 @@
         {
           "id": "oscg-chest-injury-child-female-advice-124802",
           "titleEn": "Child chest-injury safeguarding response",
-          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain GOVERNANCE_REQUIRED. Call Back If: immediate danger or unsafe caregiver; new breathing difficulty, collapse, or severe pain; caller disconnects before safety is established.",
+          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain local approval required. Call Back If: immediate danger or unsafe caregiver; new breathing difficulty, collapse, or severe pain; caller disconnects before safety is established.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -825,7 +825,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a child or vulnerable person, is the explanation absent, unsuitable, inconsistent with the injury or developmental ability, is there delay in seeking help, might the caregiver be unsafe, or can the patient not be offered a safe opportunity to speak privately?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -881,7 +881,7 @@
         {
           "id": "oscg-chest-injury-child-male-advice-124702",
           "titleEn": "Child chest-injury safeguarding response",
-          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain GOVERNANCE_REQUIRED. Call Back If: immediate danger or unsafe caregiver; new breathing difficulty, collapse, or severe pain; caller disconnects before safety is established.",
+          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain local approval required. Call Back If: immediate danger or unsafe caregiver; new breathing difficulty, collapse, or severe pain; caller disconnects before safety is established.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -1876,7 +1876,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a child or vulnerable person, is the explanation absent, unsuitable, inconsistent with the wound or developmental ability, is there delay in seeking help or concern about supervision, might the caregiver be unsafe, or can the patient not be offered a safe opportunity to speak privately?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations, possible neglect/lack of supervision, and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations, possible neglect/lack of supervision, and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1925,7 +1925,7 @@
         {
           "id": "oscg-scrapes-adult-female-advice-125403",
           "titleEn": "Child wound safeguarding response",
-          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain GOVERNANCE_REQUIRED. Call Back If: immediate danger or unsafe caregiver; uncontrolled bleeding, collapse, or serious injury; caller disconnects before safety is established.",
+          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain local approval required. Call Back If: immediate danger or unsafe caregiver; uncontrolled bleeding, collapse, or serious injury; caller disconnects before safety is established.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -2101,7 +2101,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a child or vulnerable person, is the explanation absent, unsuitable, inconsistent with the wound or developmental ability, is there delay in seeking help or concern about supervision, might the caregiver be unsafe, or can the patient not be offered a safe opportunity to speak privately?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations, possible neglect/lack of supervision, and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations, possible neglect/lack of supervision, and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2150,7 +2150,7 @@
         {
           "id": "oscg-scrapes-adult-male-advice-125303",
           "titleEn": "Child wound safeguarding response",
-          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain GOVERNANCE_REQUIRED. Call Back If: immediate danger or unsafe caregiver; uncontrolled bleeding, collapse, or serious injury; caller disconnects before safety is established.",
+          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain local approval required. Call Back If: immediate danger or unsafe caregiver; uncontrolled bleeding, collapse, or serious injury; caller disconnects before safety is established.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -2335,7 +2335,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a child or vulnerable person, is the explanation absent, unsuitable, inconsistent with the wound or developmental ability, is there delay in seeking help or concern about supervision, might the caregiver be unsafe, or can the patient not be offered a safe opportunity to speak privately?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations, possible neglect/lack of supervision, and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations, possible neglect/lack of supervision, and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2384,7 +2384,7 @@
         {
           "id": "oscg-scrapes-child-female-advice-125603",
           "titleEn": "Child wound safeguarding response",
-          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain GOVERNANCE_REQUIRED. Call Back If: immediate danger or unsafe caregiver; uncontrolled bleeding, collapse, or serious injury; caller disconnects before safety is established.",
+          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain local approval required. Call Back If: immediate danger or unsafe caregiver; uncontrolled bleeding, collapse, or serious injury; caller disconnects before safety is established.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -2569,7 +2569,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a child or vulnerable person, is the explanation absent, unsuitable, inconsistent with the wound or developmental ability, is there delay in seeking help or concern about supervision, might the caregiver be unsafe, or can the patient not be offered a safe opportunity to speak privately?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations, possible neglect/lack of supervision, and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NICE child-maltreatment guidance identifies unsuitable or inconsistent explanations, possible neglect/lack of supervision, and caregiver obstruction of private discussion as safeguarding alerts. Exact Qatar reporting, destination, confidentiality, and disconnect actions remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2618,7 +2618,7 @@
         {
           "id": "oscg-scrapes-child-male-advice-125503",
           "titleEn": "Child wound safeguarding response",
-          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain GOVERNANCE_REQUIRED. Call Back If: immediate danger or unsafe caregiver; uncontrolled bleeding, collapse, or serious injury; caller disconnects before safety is established.",
+          "instructionTextEn": "Arrange urgent in-person clinical and safeguarding assessment through the Qatar governance-approved pathway. Offer the child a safe opportunity to speak privately when clinically and developmentally appropriate; do not rely on or disclose the plan to a caregiver who may be unsafe. Do not confront a suspected abuser. If the child is in immediate danger, has life-threatening injury, or contact is lost before safety is established, use 999 and the approved emergency handover or welfare-check procedure. Exact reporting, consent, confidentiality, documentation, destination, and disconnect actions remain local approval required. Call Back If: immediate danger or unsafe caregiver; uncontrolled bleeding, collapse, or serious injury; caller disconnects before safety is established.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -2762,7 +2762,7 @@
           "severity": "Urgent",
           "questionTextEn": "Using the recorded demographics rather than asking the caller to choose: is the patient age 17 or younger? Also route urgently if pregnant, breastfeeding with the rash on the breasts, the rash is on the eye or nose, there are vision changes, or the patient has a severely weakened immune system.",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK shingles guidance recommends urgent clinical review for these groups. In a generated Child variant, age 17 or younger is already established and this branch must be treated as true without asking the caller to validate age eligibility. Exact Qatar destination remains GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS.UK shingles guidance recommends urgent clinical review for these groups. In a generated Child variant, age 17 or younger is already established and this branch must be treated as true without asking the caller to validate age eligibility. Exact Qatar destination requires local approval.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2793,7 +2793,7 @@
         {
           "id": "oscg-shingles-zoster-adult-female-advice-125801",
           "titleEn": "Urgent Qatar shingles assessment",
-          "instructionTextEn": "For every generated Child variant, route directly to prompt same-day in-person assessment based on the recorded age; do not ask the caller to decide whether the age rule applies. Also arrange urgent assessment for eye/nose/ear involvement, vision or hearing change, facial weakness, severe headache/confusion, pregnancy, breastfeeding breast lesions, immunocompromise, or disseminated rash. Antiviral selection, dose, timing, pregnancy/breastfeeding use, renal adjustment, and pediatric use require the approved Qatar prescriber pathway. Call 999 for reduced consciousness, seizure, severe breathing difficulty, collapse, or rapidly severe illness. Exact Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: eye pain, red eye, or vision change; ear rash, hearing change, or facial weakness; confusion, severe headache, weakness, or widespread rash; fever or rapid deterioration.",
+          "instructionTextEn": "For every generated Child variant, route directly to prompt same-day in-person assessment based on the recorded age; do not ask the caller to decide whether the age rule applies. Also arrange urgent assessment for eye/nose/ear involvement, vision or hearing change, facial weakness, severe headache/confusion, pregnancy, breastfeeding breast lesions, immunocompromise, or disseminated rash. Antiviral selection, dose, timing, pregnancy/breastfeeding use, renal adjustment, and pediatric use require the approved Qatar prescriber pathway. Call 999 for reduced consciousness, seizure, severe breathing difficulty, collapse, or rapidly severe illness. Exact Qatar destination requires local approval. Call Back If: eye pain, red eye, or vision change; ear rash, hearing change, or facial weakness; confusion, severe headache, weakness, or widespread rash; fever or rapid deterioration.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 1,
@@ -2917,7 +2917,7 @@
           "severity": "Urgent",
           "questionTextEn": "Using the recorded demographics rather than asking the caller to choose: is the patient age 17 or younger? Also route urgently if pregnant, breastfeeding with the rash on the breasts, the rash is on the eye or nose, there are vision changes, or the patient has a severely weakened immune system.",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK shingles guidance recommends urgent clinical review for these groups. In a generated Child variant, age 17 or younger is already established and this branch must be treated as true without asking the caller to validate age eligibility. Exact Qatar destination remains GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS.UK shingles guidance recommends urgent clinical review for these groups. In a generated Child variant, age 17 or younger is already established and this branch must be treated as true without asking the caller to validate age eligibility. Exact Qatar destination requires local approval.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2948,7 +2948,7 @@
         {
           "id": "oscg-shingles-zoster-adult-male-advice-125701",
           "titleEn": "Urgent Qatar shingles assessment",
-          "instructionTextEn": "For every generated Child variant, route directly to prompt same-day in-person assessment based on the recorded age; do not ask the caller to decide whether the age rule applies. Also arrange urgent assessment for eye/nose/ear involvement, vision or hearing change, facial weakness, severe headache/confusion, pregnancy, breastfeeding breast lesions, immunocompromise, or disseminated rash. Antiviral selection, dose, timing, pregnancy/breastfeeding use, renal adjustment, and pediatric use require the approved Qatar prescriber pathway. Call 999 for reduced consciousness, seizure, severe breathing difficulty, collapse, or rapidly severe illness. Exact Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: eye pain, red eye, or vision change; ear rash, hearing change, or facial weakness; confusion, severe headache, weakness, or widespread rash; fever or rapid deterioration.",
+          "instructionTextEn": "For every generated Child variant, route directly to prompt same-day in-person assessment based on the recorded age; do not ask the caller to decide whether the age rule applies. Also arrange urgent assessment for eye/nose/ear involvement, vision or hearing change, facial weakness, severe headache/confusion, pregnancy, breastfeeding breast lesions, immunocompromise, or disseminated rash. Antiviral selection, dose, timing, pregnancy/breastfeeding use, renal adjustment, and pediatric use require the approved Qatar prescriber pathway. Call 999 for reduced consciousness, seizure, severe breathing difficulty, collapse, or rapidly severe illness. Exact Qatar destination requires local approval. Call Back If: eye pain, red eye, or vision change; ear rash, hearing change, or facial weakness; confusion, severe headache, weakness, or widespread rash; fever or rapid deterioration.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 1,
@@ -3081,7 +3081,7 @@
           "severity": "Urgent",
           "questionTextEn": "Using the recorded demographics rather than asking the caller to choose: is the patient age 17 or younger? Also route urgently if pregnant, breastfeeding with the rash on the breasts, the rash is on the eye or nose, there are vision changes, or the patient has a severely weakened immune system.",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK shingles guidance recommends urgent clinical review for these groups. In a generated Child variant, age 17 or younger is already established and this branch must be treated as true without asking the caller to validate age eligibility. Exact Qatar destination remains GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS.UK shingles guidance recommends urgent clinical review for these groups. In a generated Child variant, age 17 or younger is already established and this branch must be treated as true without asking the caller to validate age eligibility. Exact Qatar destination requires local approval.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3097,7 +3097,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a generated Child variant only: is the recorded age unavailable, contradictory, or not safely confirmed?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "A generated Child variant cannot enter adult self-care. If the recorded age is unavailable or inconsistent, fail closed to prompt clinical review rather than leaving the child without a terminal disposition. Exact Qatar destination remains GOVERNANCE_REQUIRED.",
+          "rationaleEn": "A generated Child variant cannot enter adult self-care. If the recorded age is unavailable or inconsistent, fail closed to prompt clinical review rather than leaving the child without a terminal disposition. Exact Qatar destination requires local approval.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3112,7 +3112,7 @@
         {
           "id": "oscg-shingles-zoster-child-female-advice-126001",
           "titleEn": "Urgent Qatar shingles assessment",
-          "instructionTextEn": "For every generated Child variant, route directly to prompt same-day in-person assessment based on the recorded age; do not ask the caller to decide whether the age rule applies. Also arrange urgent assessment for eye/nose/ear involvement, vision or hearing change, facial weakness, severe headache/confusion, pregnancy, breastfeeding breast lesions, immunocompromise, or disseminated rash. Antiviral selection, dose, timing, pregnancy/breastfeeding use, renal adjustment, and pediatric use require the approved Qatar prescriber pathway. Call 999 for reduced consciousness, seizure, severe breathing difficulty, collapse, or rapidly severe illness. Exact Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: eye pain, red eye, or vision change; ear rash, hearing change, or facial weakness; confusion, severe headache, weakness, or widespread rash; fever or rapid deterioration.",
+          "instructionTextEn": "For every generated Child variant, route directly to prompt same-day in-person assessment based on the recorded age; do not ask the caller to decide whether the age rule applies. Also arrange urgent assessment for eye/nose/ear involvement, vision or hearing change, facial weakness, severe headache/confusion, pregnancy, breastfeeding breast lesions, immunocompromise, or disseminated rash. Antiviral selection, dose, timing, pregnancy/breastfeeding use, renal adjustment, and pediatric use require the approved Qatar prescriber pathway. Call 999 for reduced consciousness, seizure, severe breathing difficulty, collapse, or rapidly severe illness. Exact Qatar destination requires local approval. Call Back If: eye pain, red eye, or vision change; ear rash, hearing change, or facial weakness; confusion, severe headache, weakness, or widespread rash; fever or rapid deterioration.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 1,
@@ -3236,7 +3236,7 @@
           "severity": "Urgent",
           "questionTextEn": "Using the recorded demographics rather than asking the caller to choose: is the patient age 17 or younger? Also route urgently if pregnant, breastfeeding with the rash on the breasts, the rash is on the eye or nose, there are vision changes, or the patient has a severely weakened immune system.",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK shingles guidance recommends urgent clinical review for these groups. In a generated Child variant, age 17 or younger is already established and this branch must be treated as true without asking the caller to validate age eligibility. Exact Qatar destination remains GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS.UK shingles guidance recommends urgent clinical review for these groups. In a generated Child variant, age 17 or younger is already established and this branch must be treated as true without asking the caller to validate age eligibility. Exact Qatar destination requires local approval.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3252,7 +3252,7 @@
           "severity": "Urgent",
           "questionTextEn": "For a generated Child variant only: is the recorded age unavailable, contradictory, or not safely confirmed?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "A generated Child variant cannot enter adult self-care. If the recorded age is unavailable or inconsistent, fail closed to prompt clinical review rather than leaving the child without a terminal disposition. Exact Qatar destination remains GOVERNANCE_REQUIRED.",
+          "rationaleEn": "A generated Child variant cannot enter adult self-care. If the recorded age is unavailable or inconsistent, fail closed to prompt clinical review rather than leaving the child without a terminal disposition. Exact Qatar destination requires local approval.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3267,7 +3267,7 @@
         {
           "id": "oscg-shingles-zoster-child-male-advice-125901",
           "titleEn": "Urgent Qatar shingles assessment",
-          "instructionTextEn": "For every generated Child variant, route directly to prompt same-day in-person assessment based on the recorded age; do not ask the caller to decide whether the age rule applies. Also arrange urgent assessment for eye/nose/ear involvement, vision or hearing change, facial weakness, severe headache/confusion, pregnancy, breastfeeding breast lesions, immunocompromise, or disseminated rash. Antiviral selection, dose, timing, pregnancy/breastfeeding use, renal adjustment, and pediatric use require the approved Qatar prescriber pathway. Call 999 for reduced consciousness, seizure, severe breathing difficulty, collapse, or rapidly severe illness. Exact Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: eye pain, red eye, or vision change; ear rash, hearing change, or facial weakness; confusion, severe headache, weakness, or widespread rash; fever or rapid deterioration.",
+          "instructionTextEn": "For every generated Child variant, route directly to prompt same-day in-person assessment based on the recorded age; do not ask the caller to decide whether the age rule applies. Also arrange urgent assessment for eye/nose/ear involvement, vision or hearing change, facial weakness, severe headache/confusion, pregnancy, breastfeeding breast lesions, immunocompromise, or disseminated rash. Antiviral selection, dose, timing, pregnancy/breastfeeding use, renal adjustment, and pediatric use require the approved Qatar prescriber pathway. Call 999 for reduced consciousness, seizure, severe breathing difficulty, collapse, or rapidly severe illness. Exact Qatar destination requires local approval. Call Back If: eye pain, red eye, or vision change; ear rash, hearing change, or facial weakness; confusion, severe headache, weakness, or widespread rash; fever or rapid deterioration.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 1,

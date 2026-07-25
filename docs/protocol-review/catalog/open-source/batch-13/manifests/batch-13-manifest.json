@@ -32,7 +32,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "26344207b01aea609409ba96056a35ffe9c7b9ca387f870a9a151feb0b169431",
+      "canonicalContentHash": "331ae6b857db120b3b9cc9fd25244b056310b3c14fe87e4d3225e1cffe1579f3",
       "redirectTarget": "Ear - Foreign Body",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -55,7 +55,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "d29185291d8ad114fde01d946680d46ba4e91d8828f1f01a162573c9c25a270a",
+      "canonicalContentHash": "a4854fefc48df9e0b77ae98eb587a2ff9c45c24411c3d528ae5a053fcb31dca6",
       "redirectTarget": "Ear - Foreign Body",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -78,7 +78,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "211e6f741cabd1f37f33c0a7f9b69b12e6412ecac350c2a0c9acecd1a5e3bd53",
+      "canonicalContentHash": "7918f7dbd840864683e5a3ebf7eb9b4981ac9dc628221be978828725d6667e9c",
       "redirectTarget": "Ear - Foreign Body",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -102,7 +102,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "87b54641a871bceedb470bccda3a0c1b906ad81ece48a36c3586fadf9aedc219",
+      "canonicalContentHash": "42cf2d4694472a27ab28d834bd274acc5ecf5e7a4080b9f9753706accf97532d",
       "redirectTarget": "Ear - Foreign Body",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -126,7 +126,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "35140491a16856f611a0146a51dcf2dedc14a85f83274e42298441acc60f9827",
+      "canonicalContentHash": "1e7f557724fdb762bcae506c26c3a168cdb7e18fa4a571bc871086d624c2589b",
       "redirectTarget": "Motor Vehicle Accident",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -149,7 +149,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "c642bc934ba7e783f92299052c062eea0448bf4cde6bc37dd04f3ae43fb7a642",
+      "canonicalContentHash": "bb83e027e7547a73c95730b472b868b2237f91780e7f67f2ee44d78a7f47406a",
       "redirectTarget": "Motor Vehicle Accident",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -172,7 +172,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "759248b674b15cfd4b502c8e4673405cbeab5801833b663199c62eb2dca7c156",
+      "canonicalContentHash": "6680e1f63c69c9e62064614140a8d01e3c4e6f738f62f6aaa3526943cb6af5bd",
       "redirectTarget": "Motor Vehicle Accident",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -196,7 +196,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "437d00c4bf2c8ea782ada25fb9b0406fdd444f5f1b579b55eae3b85a2a2dab7e",
+      "canonicalContentHash": "f367d10692dda3a057b21425d9a181fd84f885771d7eb131094cb3390e77279c",
       "redirectTarget": "Motor Vehicle Accident",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -220,7 +220,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "173d009b9a64120cfe2eea2f1e66a597daa3b5df6511177ede44787640b6058a",
+      "canonicalContentHash": "9913bced16db814f6e0d8879ec18b81fed8d9100c6baa58740edbbee987332d9",
       "redirectTarget": "DIRECT_DISPOSITION_100",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -243,7 +243,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "56b5a4812373a2f786cbccc5c076f5b3f231030841ede0ebb026cc1c8d422dc7",
+      "canonicalContentHash": "da8d3f484f98a206fd0119d49653e29a46bf943d528c1c4d48fc63d848c18a8f",
       "redirectTarget": "DIRECT_DISPOSITION_100",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -266,7 +266,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "294c92781d8fdda7536c939e2930469fb615cea5cef8c05e80ccb369d50534ef",
+      "canonicalContentHash": "c2b6347fb4a6eeaff9ae964c4b268f7302a249596a1ff346590ea7583e7f4ca5",
       "redirectTarget": "DIRECT_DISPOSITION_100",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -290,7 +290,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "ee3a53bd3e65ac9d4a097c71d666ddf077d22339051029206a92508c21b1b182",
+      "canonicalContentHash": "a085e5ab85d21c6a7dab5d089c7a8f52fc27940cd0af48bb4188f1c74975365b",
       "redirectTarget": "DIRECT_DISPOSITION_100",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -314,7 +314,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "b6edab04ab3e6b97f3356f4dae097c31b74eb332dcc13772c75f79db455c5a3c",
+      "canonicalContentHash": "ea672014fbf0cf2fc8dbd2cc75e83b941d801fd55deb4d0131e56fb8aada0a1e",
       "redirectTarget": "Motor Vehicle Accident",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -337,7 +337,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "efc1f5ee120c72b54cc75d3c68f92405a4e1e3f3706e11f3115048b897b6f802",
+      "canonicalContentHash": "db4d4c881f9fb338959bd8e6d10397e3842a5c2805e9cf77ae45bdeb09aac43a",
       "redirectTarget": "Motor Vehicle Accident",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -360,7 +360,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "32820b1d51964b1cf9a7b915516bec8491b3163dbc025d63f0679ac08da9c66a",
+      "canonicalContentHash": "eb5db32d964e92b604013f5d52202f0aa8854bee919a1481fc8cdbcbb963816d",
       "redirectTarget": "Motor Vehicle Accident",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -384,7 +384,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "2b2561c4157acb12511eaaa6779696b18febf6eb7d905cf736006520c6316c99",
+      "canonicalContentHash": "83483b8e94c787ab3484dcde43445b7a88ac6821131c2dfd667aaa93f2a8fe1e",
       "redirectTarget": "Motor Vehicle Accident",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -408,7 +408,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "74b1340810eb49a475aab8c5ff0cb2f75da855199ed3c02a36c03c2978ec74f8",
+      "canonicalContentHash": "c219000756d9ab1f96fbed2eba15697f5740bc0bf8e6586326ef7dfa3be97ca9",
       "redirectTarget": "Motor Vehicle Accident",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -431,7 +431,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "355c7a50d59afb066d4370605fcab67ef2ba84d5daadd2ec9185d8c96b771721",
+      "canonicalContentHash": "2517e7166ae3162663a2f09411e233450099901f8d04c5b2afcf0146d8a4bcab",
       "redirectTarget": "Motor Vehicle Accident",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -454,7 +454,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "9e60ff5afeb21681425f1cc7a889225f7bf40e85ac3e3242c6ed27c014656883",
+      "canonicalContentHash": "27bbf7dc487547b00640c2be1499d58366ca9b08f8d105e97944d0c0710aac89",
       "redirectTarget": "Motor Vehicle Accident",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -478,7 +478,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch13-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "49abba04c8739102ebd2e7d6a6781449f7fd2a2674e76c48364a856ff8f2e3ad",
+      "canonicalContentHash": "343a00bc4960edaaf0dab04f096d6e1bc20a3441eb7c854f5f50cdccdaaad3ef",
       "redirectTarget": "Motor Vehicle Accident",
       "demographicDifferentiation": {
         "ageSpecificChanges": [

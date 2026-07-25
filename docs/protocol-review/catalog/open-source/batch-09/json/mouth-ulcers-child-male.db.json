@@ -55,7 +55,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Are fluid-filled blisters on or around the lips the main concern rather than ulcers inside the mouth?",
-      "Information": "The cold-sore family is not generated. Arrange in-person clinical assessment through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+      "Information": "The cold-sore family is not generated. Arrange in-person clinical assessment through an approved local service.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -68,7 +68,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Has the ulcer lasted longer than 3 weeks, is it unusually large or near the throat, is it bleeding or becoming more painful and red, or are there ulcers elsewhere on the body with joint symptoms?",
-      "Information": "NHS.UK guidance recommends arranging clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or dentist for these features - prolonged ulcers can occasionally indicate a more serious condition.",
+      "Information": "NHS.UK guidance recommends arranging a primary-care review or dentist for these features - prolonged ulcers can occasionally indicate a more serious condition.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -97,7 +97,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Book a clinical or dental review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for these features.",
+        "Book a primary-care or dental review for these features.",
         "Call Back If: ulcer grows or bleeds more."
       ]
     },

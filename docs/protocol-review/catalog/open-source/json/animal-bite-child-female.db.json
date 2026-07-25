@@ -88,7 +88,7 @@
       "DispositionLevel": 100,
       "QuestionOrder": 1,
       "Question": "Is the wound large or deep, or is bleeding not stopping with direct pressure?",
-      "Information": "NHS.UK animal and human bites guidance lists a large or deep wound, or bleeding that cannot be stopped, as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+      "Information": "NHS.UK animal and human bites guidance lists a large or deep wound, or bleeding that cannot be stopped, as emergency ambulance or Emergency Department criteria.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -101,7 +101,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Might there be debris such as teeth, hair, or dirt in the wound; is it hot, swollen, or leaking fluid; is there fever or chills; does it smell unpleasant; is it on the hands, feet, face, or head; was it a human bite; or has the caller not had a tetanus vaccine in the last 10 years?",
-      "Information": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for same-day assessment rather than manage entirely at home.",
+      "Information": "NHS.UK guidance lists these as reasons to seek urgent clinical review for same-day assessment rather than manage entirely at home.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

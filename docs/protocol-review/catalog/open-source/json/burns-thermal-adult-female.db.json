@@ -77,7 +77,7 @@
       "DispositionLevel": 100,
       "QuestionOrder": 1,
       "Question": "Is the burn very large or deep, on the face, genitals, or bottom, or was it caused by an acid, chemical, or electricity?",
-      "Information": "NHS.UK burns and scalds guidance lists large/deep burns, burns to the face/genitals/bottom, and chemical or electrical burns as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+      "Information": "NHS.UK burns and scalds guidance lists large/deep burns, burns to the face/genitals/bottom, and chemical or electrical burns as emergency ambulance or Emergency Department criteria.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -90,7 +90,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Is the caller unsure how serious the burn is, or is the patient a child under 5?",
-      "Information": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) whenever there is uncertainty about a burn or scald, and specifically for children under 5.",
+      "Information": "NHS.UK guidance recommends seeking urgent clinical review whenever there is uncertainty about a burn or scald, and specifically for children under 5.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

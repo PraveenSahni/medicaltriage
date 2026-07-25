@@ -132,7 +132,7 @@
       "PatientHealthInfo": true,
       "Internal": false,
       "Content": [
-        "Until assessed, rest and drink normally to thirst if fully alert and not vomiting or fluid-restricted. Do not force excessive fluids, start leftover antibiotics, use urinary alkalinizing products, or give fixed-dose/timed analgesia unless an approved Qatar clinician or protocol confirms age, weight, pregnancy, allergies, kidney function, interactions and maximum dose. The exact non-emergency destination and medicine pathway are GOVERNANCE_REQUIRED.",
+        "Until assessed, rest and drink normally to thirst if fully alert and not vomiting or fluid-restricted. Do not force excessive fluids, start leftover antibiotics, use urinary alkalinizing products, or give fixed-dose/timed analgesia unless an approved Qatar clinician or protocol confirms age, weight, pregnancy, allergies, kidney function, interactions and maximum dose. The exact non-emergency destination and medicine pathway are local approval required.",
         "Call Back If: symptoms worsen; fever or flank pain; vomiting; reduced urine; pregnancy concern."
       ]
     }

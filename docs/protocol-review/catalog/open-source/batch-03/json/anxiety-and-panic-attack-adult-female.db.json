@@ -94,7 +94,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Has the caller had regular, unexpected panic attacks followed by at least a month of ongoing worry about having more?",
-      "Information": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for assessment.",
+      "Information": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a primary-care review for assessment.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -134,7 +134,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss recurring panic attacks and treatment options.",
+        "Book a routine primary-care review to discuss recurring panic attacks and treatment options.",
         "Call Back If: attacks become more frequent or severe."
       ]
     },

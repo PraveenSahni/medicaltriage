@@ -180,7 +180,7 @@
         {
           "id": "oscg-chest-pain-heart-adult-female-advice-104202",
           "titleEn": "Chest pain requires in-person evaluation",
-          "instructionTextEn": "Arrange prompt in-person assessment at a Qatar service capable of clinical examination, a documented 12-lead ECG and measured troponin. Do not calculate, display or interpret HEART before all required components are obtained in person, and do not use HEART alone to rule out acute coronary syndrome. Do not self-drive if symptoms recur or the person feels unwell; call 999 if any emergency feature appears or acute coronary syndrome is suspected. The exact non-emergency destination, troponin strategy and transport pathway are GOVERNANCE_REQUIRED. Call Back If: pain worsens or spreads; shortness of breath develops; sweating or nausea develops.",
+          "instructionTextEn": "Arrange prompt in-person assessment at a Qatar service capable of clinical examination, a documented 12-lead ECG and measured troponin. Do not calculate, display or interpret HEART before all required components are obtained in person, and do not use HEART alone to rule out acute coronary syndrome. Do not self-drive if symptoms recur or the person feels unwell; call 999 if any emergency feature appears or acute coronary syndrome is suspected. The exact non-emergency destination, troponin strategy and transport pathway are local approval required. Call Back If: pain worsens or spreads; shortness of breath develops; sweating or nausea develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -436,7 +436,7 @@
         {
           "id": "oscg-chest-pain-heart-adult-male-advice-104102",
           "titleEn": "Chest pain requires in-person evaluation",
-          "instructionTextEn": "Arrange prompt in-person assessment at a Qatar service capable of clinical examination, a documented 12-lead ECG and measured troponin. Do not calculate, display or interpret HEART before all required components are obtained in person, and do not use HEART alone to rule out acute coronary syndrome. Do not self-drive if symptoms recur or the person feels unwell; call 999 if any emergency feature appears or acute coronary syndrome is suspected. The exact non-emergency destination, troponin strategy and transport pathway are GOVERNANCE_REQUIRED. Call Back If: pain worsens or spreads; shortness of breath develops; sweating or nausea develops.",
+          "instructionTextEn": "Arrange prompt in-person assessment at a Qatar service capable of clinical examination, a documented 12-lead ECG and measured troponin. Do not calculate, display or interpret HEART before all required components are obtained in person, and do not use HEART alone to rule out acute coronary syndrome. Do not self-drive if symptoms recur or the person feels unwell; call 999 if any emergency feature appears or acute coronary syndrome is suspected. The exact non-emergency destination, troponin strategy and transport pathway are local approval required. Call Back If: pain worsens or spreads; shortness of breath develops; sweating or nausea develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -693,7 +693,7 @@
         {
           "id": "oscg-head-injury-canadian-ct-adult-female-advice-104803",
           "titleEn": "Telephone assessment cannot make the rule negative",
-          "instructionTextEn": "Arrange in-person assessment; do not use this telephone pathway to decide that CT or observation is unnecessary. Avoid alcohol, driving, sport and sedating non-prescribed medicines while awaiting review. The exact non-emergency Qatar destination and observation/discharge instructions are GOVERNANCE_REQUIRED. Call Back If: worsening headache; repeated vomiting develops; increasing confusion, drowsiness, or new weakness.",
+          "instructionTextEn": "Arrange in-person assessment; do not use this telephone pathway to decide that CT or observation is unnecessary. Avoid alcohol, driving, sport and sedating non-prescribed medicines while awaiting review. The exact non-emergency Qatar destination and observation/discharge instructions are local approval required. Call Back If: worsening headache; repeated vomiting develops; increasing confusion, drowsiness, or new weakness.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -935,7 +935,7 @@
         {
           "id": "oscg-head-injury-canadian-ct-adult-male-advice-104703",
           "titleEn": "Telephone assessment cannot make the rule negative",
-          "instructionTextEn": "Arrange in-person assessment; do not use this telephone pathway to decide that CT or observation is unnecessary. Avoid alcohol, driving, sport and sedating non-prescribed medicines while awaiting review. The exact non-emergency Qatar destination and observation/discharge instructions are GOVERNANCE_REQUIRED. Call Back If: worsening headache; repeated vomiting develops; increasing confusion, drowsiness, or new weakness.",
+          "instructionTextEn": "Arrange in-person assessment; do not use this telephone pathway to decide that CT or observation is unnecessary. Avoid alcohol, driving, sport and sedating non-prescribed medicines while awaiting review. The exact non-emergency Qatar destination and observation/discharge instructions are local approval required. Call Back If: worsening headache; repeated vomiting develops; increasing confusion, drowsiness, or new weakness.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -1241,7 +1241,7 @@
         {
           "id": "oscg-knee-injury-ottawa-adult-female-advice-104403",
           "titleEn": "Telephone assessment cannot make the rule negative",
-          "instructionTextEn": "Arrange in-person palpation, knee flexion and observed four-step weight bearing. A negative fracture rule does not diagnose a sprain or exclude ligament, tendon or meniscal injury. The exact non-emergency Qatar destination and analgesia advice are GOVERNANCE_REQUIRED. Call Back If: pain worsens; new inability to bear weight; numbness or color change develops.",
+          "instructionTextEn": "Arrange in-person palpation, knee flexion and observed four-step weight bearing. A negative fracture rule does not diagnose a sprain or exclude ligament, tendon or meniscal injury. The exact non-emergency Qatar destination and analgesia advice are local approval required. Call Back If: pain worsens; new inability to bear weight; numbness or color change develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -1531,7 +1531,7 @@
         {
           "id": "oscg-knee-injury-ottawa-adult-male-advice-104303",
           "titleEn": "Telephone assessment cannot make the rule negative",
-          "instructionTextEn": "Arrange in-person palpation, knee flexion and observed four-step weight bearing. A negative fracture rule does not diagnose a sprain or exclude ligament, tendon or meniscal injury. The exact non-emergency Qatar destination and analgesia advice are GOVERNANCE_REQUIRED. Call Back If: pain worsens; new inability to bear weight; numbness or color change develops.",
+          "instructionTextEn": "Arrange in-person palpation, knee flexion and observed four-step weight bearing. A negative fracture rule does not diagnose a sprain or exclude ligament, tendon or meniscal injury. The exact non-emergency Qatar destination and analgesia advice are local approval required. Call Back If: pain worsens; new inability to bear weight; numbness or color change develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -1813,7 +1813,7 @@
         {
           "id": "oscg-neck-injury-nexus-adult-female-advice-104603",
           "titleEn": "Telephone assessment cannot clear the cervical spine",
-          "instructionTextEn": "Arrange in-person examination. Do not use a remotely reported negative checklist to remove spinal precautions or advise home care. The exact non-emergency Qatar destination, transport and analgesia pathway are GOVERNANCE_REQUIRED. Call Back If: new numbness, tingling, or weakness develops; pain worsens.",
+          "instructionTextEn": "Arrange in-person examination. Do not use a remotely reported negative checklist to remove spinal precautions or advise home care. The exact non-emergency Qatar destination, transport and analgesia pathway are local approval required. Call Back If: new numbness, tingling, or weakness develops; pain worsens.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -2087,7 +2087,7 @@
         {
           "id": "oscg-neck-injury-nexus-adult-male-advice-104503",
           "titleEn": "Telephone assessment cannot clear the cervical spine",
-          "instructionTextEn": "Arrange in-person examination. Do not use a remotely reported negative checklist to remove spinal precautions or advise home care. The exact non-emergency Qatar destination, transport and analgesia pathway are GOVERNANCE_REQUIRED. Call Back If: new numbness, tingling, or weakness develops; pain worsens.",
+          "instructionTextEn": "Arrange in-person examination. Do not use a remotely reported negative checklist to remove spinal precautions or advise home care. The exact non-emergency Qatar destination, transport and analgesia pathway are local approval required. Call Back If: new numbness, tingling, or weakness develops; pain worsens.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,

@@ -31,7 +31,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "4589f98c0c94377455987cb9dc3e38e0736751fbb0a9ec9cbe9967e13662b3f5",
+      "canonicalContentHash": "b802578bfce3e2f1c4b1dbb83e451e50b2dbcd0694e23ae6c45980d42c93ead1",
       "redirectTarget": "DIRECT_DISPOSITION_100 | DIRECT_DISPOSITION_70",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -54,7 +54,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "a5835884840b99fc2f3d4fbfc8cadde74257efafa83ab61a1fa7bf3de3a7b076",
+      "canonicalContentHash": "d39149cb59d1f259551cf24c366d4eca82914a769b80deb2d3348421cb305431",
       "redirectTarget": "DIRECT_DISPOSITION_100 | DIRECT_DISPOSITION_70",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -77,7 +77,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "33eb6914fa14a7b695d6719052367da907c498c5fd546ff1e10c267e36eebd21",
+      "canonicalContentHash": "90490b69c5c043131f194be92cb816549914228fd0bdfdaefa4802be389186c5",
       "redirectTarget": "DIRECT_DISPOSITION_100 | DIRECT_DISPOSITION_70",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -101,7 +101,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "bc58968548e2c94cef733ffddb5bb67f5215ea2a238230d1a5300683762604f2",
+      "canonicalContentHash": "3e50ec3b0982a1bb4dc9350d06420b29b82cf9ca628e4fc89e8dd5e23b83e3c5",
       "redirectTarget": "DIRECT_DISPOSITION_100 | DIRECT_DISPOSITION_70",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -219,7 +219,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "643e01f704f8d482616a866bfab4bf32792fb1fba44b218da8a00e13d1dc02ed",
+      "canonicalContentHash": "8c0af0d7f848a5117578ff5aa428a2ae95858aa5cd6bdfad4e6366ba948b63a9",
       "redirectTarget": "Cuts and Lacerations",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -242,7 +242,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "e17dc68052b35bd4fef08a878fd1cf21fb370b0ce0aa5b094fc10e1ea6b77605",
+      "canonicalContentHash": "fab932c4109f7918eeb9859829baccf642020b15d3447513838463f08a622fdd",
       "redirectTarget": "Cuts and Lacerations",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -265,7 +265,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "e48d2d6900ea36701578b99ab39fd208be1ec96840433227c8fb4aee23352e5d",
+      "canonicalContentHash": "9a46085f3d62ccdfaf5e3ad823f4ea5df29dfc03f0220855376b49038bd6d800",
       "redirectTarget": "Cuts and Lacerations",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -289,7 +289,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "4736a764d29443a00c3f90caac0d0c722e924920928c1fa1bbd5264650b50991",
+      "canonicalContentHash": "b575fa4cbad1abf404d4ab1a0a2ddb8424e883eba983da7273a3479d9649ea0a",
       "redirectTarget": "Cuts and Lacerations",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -313,7 +313,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "1c5f770306afc0354e904278fa17fd9fe041cbbf28a6c3ed0762f402f3858264",
+      "canonicalContentHash": "84549479d1744b336cc0f592207b34276ff57d4561afda527eb2853205c975ca",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -336,7 +336,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "2922fadb1ba7d20d176c6fea2ec1fc73ed7427c503c3aedac483523336c1bbfd",
+      "canonicalContentHash": "993dc2a8f4e8f500119304f0a7321168718a986b8ee27132a2a43a2feff27b73",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -359,7 +359,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "680533181d7e19032841f9a0ddb4cbbc63e0bce152217a2c3e293e883551f7aa",
+      "canonicalContentHash": "cd7cdea21ddc887776dd5c90eb05ae0d203ff86fbfcf98f4d89cd7346ac149cd",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -383,7 +383,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "3441844c8e3fce983b43930cdbd723c80959acc6883d5cecc14637d2b350164d",
+      "canonicalContentHash": "51dec60adf503c6159e3642bb430e1a92587827f9ff44deba835268d54cb9238",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -407,7 +407,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "c3bc68aa1d4e654fe045f7dcd6c076d6fa02288294eb391e8f5ced7369cced30",
+      "canonicalContentHash": "468b5d17fe36323d8495ee9f20f5864fe9ed31bf0dac5183a13ca2ea324e04f8",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -430,7 +430,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "1b75027d164d98cd5b6f5f3b7c93ecc45e531b9eef912e9e5f4e0a15a94d82b9",
+      "canonicalContentHash": "509f2df6bbfa5972388332903e12a01f1d4f4a36c505a56fa3caaf11c66a4198",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -453,7 +453,7 @@
       "genderAtBirth": "Male",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "afc5d33864bdc825dc9cc0bb7a62b041c238848d59208f3d57a52dac7ee484b4",
+      "canonicalContentHash": "d64bfa5fc387770e890c3f1b6131a4d5c2692e405210e3092f6db757619c73f1",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -477,7 +477,7 @@
       "genderAtBirth": "Female",
       "protocolVersion": "batch10-learned-safeguard-expansion-2026-07-25",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "cc7edb1fe1e9460c5550dcd2aa4032fc9ce6a567f3bbeceaeb9db178bb35191f",
+      "canonicalContentHash": "5fdc8b992d3d46cb45ddc6af060fe0783c8ed4ccd797521788aa001565d228f0",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [

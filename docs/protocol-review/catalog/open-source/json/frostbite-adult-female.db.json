@@ -68,7 +68,7 @@
       "DispositionLevel": 100,
       "QuestionOrder": 1,
       "Question": "Is the skin hard and frozen, is there swelling and loss of feeling in the area, are there blisters filled with blood or milky fluid, or is the person shivering constantly with slurred speech, slow breathing, and confusion?",
-      "Information": "NHS.UK frostbite guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria, including hypothermia signs (constant shivering, slurred speech, slow breathing, confusion).",
+      "Information": "NHS.UK frostbite guidance lists these as emergency ambulance or Emergency Department criteria, including hypothermia signs (constant shivering, slurred speech, slow breathing, confusion).",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

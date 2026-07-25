@@ -866,7 +866,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the wound large or deep, or is bleeding not stopping with direct pressure?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK animal and human bites guidance lists a large or deep wound, or bleeding that cannot be stopped, as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+          "rationaleEn": "NHS.UK animal and human bites guidance lists a large or deep wound, or bleeding that cannot be stopped, as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -882,7 +882,7 @@
           "severity": "Urgent",
           "questionTextEn": "Might there be debris such as teeth, hair, or dirt in the wound; is it hot, swollen, or leaking fluid; is there fever or chills; does it smell unpleasant; is it on the hands, feet, face, or head; was it a human bite; or has the caller not had a tetanus vaccine in the last 10 years?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for same-day assessment rather than manage entirely at home.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review for same-day assessment rather than manage entirely at home.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1059,7 +1059,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the wound large or deep, or is bleeding not stopping with direct pressure?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK animal and human bites guidance lists a large or deep wound, or bleeding that cannot be stopped, as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+          "rationaleEn": "NHS.UK animal and human bites guidance lists a large or deep wound, or bleeding that cannot be stopped, as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -1075,7 +1075,7 @@
           "severity": "Urgent",
           "questionTextEn": "Might there be debris such as teeth, hair, or dirt in the wound; is it hot, swollen, or leaking fluid; is there fever or chills; does it smell unpleasant; is it on the hands, feet, face, or head; was it a human bite; or has the caller not had a tetanus vaccine in the last 10 years?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for same-day assessment rather than manage entirely at home.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review for same-day assessment rather than manage entirely at home.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1261,7 +1261,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the wound large or deep, or is bleeding not stopping with direct pressure?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK animal and human bites guidance lists a large or deep wound, or bleeding that cannot be stopped, as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+          "rationaleEn": "NHS.UK animal and human bites guidance lists a large or deep wound, or bleeding that cannot be stopped, as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -1277,7 +1277,7 @@
           "severity": "Urgent",
           "questionTextEn": "Might there be debris such as teeth, hair, or dirt in the wound; is it hot, swollen, or leaking fluid; is there fever or chills; does it smell unpleasant; is it on the hands, feet, face, or head; was it a human bite; or has the caller not had a tetanus vaccine in the last 10 years?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for same-day assessment rather than manage entirely at home.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review for same-day assessment rather than manage entirely at home.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1463,7 +1463,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the wound large or deep, or is bleeding not stopping with direct pressure?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK animal and human bites guidance lists a large or deep wound, or bleeding that cannot be stopped, as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+          "rationaleEn": "NHS.UK animal and human bites guidance lists a large or deep wound, or bleeding that cannot be stopped, as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -1479,7 +1479,7 @@
           "severity": "Urgent",
           "questionTextEn": "Might there be debris such as teeth, hair, or dirt in the wound; is it hot, swollen, or leaking fluid; is there fever or chills; does it smell unpleasant; is it on the hands, feet, face, or head; was it a human bite; or has the caller not had a tetanus vaccine in the last 10 years?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for same-day assessment rather than manage entirely at home.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review for same-day assessment rather than manage entirely at home.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1656,7 +1656,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is there numbness, tingling or weakness in BOTH legs, loss of feeling around the genitals or back passage, new difficulty controlling bladder or bowel, chest pain, or did the pain start after a serious accident such as a car crash or a fall from height?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK back pain guidance lists bilateral leg symptoms, saddle numbness, new bladder/bowel changes, sexual dysfunction, concurrent chest pain, and a major-trauma trigger as its own Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria - possible cauda equina syndrome or major trauma.",
+          "rationaleEn": "NHS.UK back pain guidance lists bilateral leg symptoms, saddle numbness, new bladder/bowel changes, sexual dysfunction, concurrent chest pain, and a major-trauma trigger as its own emergency ambulance or Emergency Department criteria - possible cauda equina syndrome or major trauma.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -1672,7 +1672,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the caller feel hot, cold, shivery, or generally unwell, OR is this severe pain that started suddenly and is quickly getting worse?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance flags fever/feeling unwell with back pain, and sudden severe or rapidly worsening pain, as needing a same-day clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call.",
+          "rationaleEn": "NHS.UK guidance flags fever/feeling unwell with back pain, and sudden severe or rapidly worsening pain, as needing a same-day primary-care review or urgent clinical review call.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1688,7 +1688,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the pain lasted several weeks despite home treatment, is it interfering with daily activities, is there unexplained weight loss, a new lump or change in the shape of the back, is it worse at night or with rest, worse with coughing or straining, or is it upper back pain between the shoulder blades?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) rather than manage entirely at home.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to book a routine primary-care review rather than manage entirely at home.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1873,7 +1873,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is there numbness, tingling or weakness in BOTH legs, loss of feeling around the genitals or back passage, new difficulty controlling bladder or bowel, chest pain, or did the pain start after a serious accident such as a car crash or a fall from height?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK back pain guidance lists bilateral leg symptoms, saddle numbness, new bladder/bowel changes, sexual dysfunction, concurrent chest pain, and a major-trauma trigger as its own Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria - possible cauda equina syndrome or major trauma.",
+          "rationaleEn": "NHS.UK back pain guidance lists bilateral leg symptoms, saddle numbness, new bladder/bowel changes, sexual dysfunction, concurrent chest pain, and a major-trauma trigger as its own emergency ambulance or Emergency Department criteria - possible cauda equina syndrome or major trauma.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -1889,7 +1889,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the caller feel hot, cold, shivery, or generally unwell, OR is this severe pain that started suddenly and is quickly getting worse?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance flags fever/feeling unwell with back pain, and sudden severe or rapidly worsening pain, as needing a same-day clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call.",
+          "rationaleEn": "NHS.UK guidance flags fever/feeling unwell with back pain, and sudden severe or rapidly worsening pain, as needing a same-day primary-care review or urgent clinical review call.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1905,7 +1905,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the pain lasted several weeks despite home treatment, is it interfering with daily activities, is there unexplained weight loss, a new lump or change in the shape of the back, is it worse at night or with rest, worse with coughing or straining, or is it upper back pain between the shoulder blades?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) rather than manage entirely at home.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to book a routine primary-care review rather than manage entirely at home.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2099,7 +2099,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is there numbness, tingling or weakness in BOTH legs, loss of feeling around the genitals or back passage, new difficulty controlling bladder or bowel, chest pain, or did the pain start after a serious accident such as a car crash or a fall from height?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK back pain guidance lists bilateral leg symptoms, saddle numbness, new bladder/bowel changes, sexual dysfunction, concurrent chest pain, and a major-trauma trigger as its own Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria - possible cauda equina syndrome or major trauma.",
+          "rationaleEn": "NHS.UK back pain guidance lists bilateral leg symptoms, saddle numbness, new bladder/bowel changes, sexual dysfunction, concurrent chest pain, and a major-trauma trigger as its own emergency ambulance or Emergency Department criteria - possible cauda equina syndrome or major trauma.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -2115,7 +2115,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the caller feel hot, cold, shivery, or generally unwell, OR is this severe pain that started suddenly and is quickly getting worse?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance flags fever/feeling unwell with back pain, and sudden severe or rapidly worsening pain, as needing a same-day clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call.",
+          "rationaleEn": "NHS.UK guidance flags fever/feeling unwell with back pain, and sudden severe or rapidly worsening pain, as needing a same-day primary-care review or urgent clinical review call.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2131,7 +2131,7 @@
           "severity": "Routine",
           "questionTextEn": "Is this a patient aged 5 to 17 years with back pain and none of the emergency or urgent features above, including no fever or systemic illness, night or rest pain, unexplained weight loss, gait change, progressive weakness or numbness, bladder or bowel change, major trauma, or safeguarding concern?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS pediatric guidance identifies age, systemic illness, night/rest pain, weight loss, gait or neurological change, bladder/bowel symptoms, trauma, and safeguarding context as reasons for age-appropriate clinical assessment. The generated child pathway fails closed to in-person review rather than entering the adult self-care branch. Exact Qatar pediatric destination and timing remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS pediatric guidance identifies age, systemic illness, night/rest pain, weight loss, gait or neurological change, bladder/bowel symptoms, trauma, and safeguarding context as reasons for age-appropriate clinical assessment. The generated child pathway fails closed to in-person review rather than entering the adult self-care branch. Exact Qatar pediatric destination and timing remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2164,7 +2164,7 @@
         {
           "id": "oscg-back-pain-child-female-advice-100403",
           "titleEn": "Pediatric back-pain assessment required",
-          "instructionTextEn": "Arrange age-appropriate in-person pediatric assessment through the Qatar governance-approved pathway. Do not use the adult-derived self-care branch for a patient aged 5 to 17 years. Escalate immediately for major trauma, fever or severe illness, progressive weakness or numbness, saddle sensory loss, bladder/bowel change, chest pain, collapse, or worsening symptoms. Exact destination and timing remain GOVERNANCE_REQUIRED. Call Back If: fever or rapidly worsening pain; new weakness, numbness, gait change, or bladder/bowel change; major trauma, chest pain, collapse, or severe illness.",
+          "instructionTextEn": "Arrange age-appropriate in-person pediatric assessment through the Qatar governance-approved pathway. Do not use the adult-derived self-care branch for a patient aged 5 to 17 years. Escalate immediately for major trauma, fever or severe illness, progressive weakness or numbness, saddle sensory loss, bladder/bowel change, chest pain, collapse, or worsening symptoms. Exact destination and timing remain local approval required. Call Back If: fever or rapidly worsening pain; new weakness, numbness, gait change, or bladder/bowel change; major trauma, chest pain, collapse, or severe illness.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 3,
@@ -2300,7 +2300,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is there numbness, tingling or weakness in BOTH legs, loss of feeling around the genitals or back passage, new difficulty controlling bladder or bowel, chest pain, or did the pain start after a serious accident such as a car crash or a fall from height?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK back pain guidance lists bilateral leg symptoms, saddle numbness, new bladder/bowel changes, sexual dysfunction, concurrent chest pain, and a major-trauma trigger as its own Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria - possible cauda equina syndrome or major trauma.",
+          "rationaleEn": "NHS.UK back pain guidance lists bilateral leg symptoms, saddle numbness, new bladder/bowel changes, sexual dysfunction, concurrent chest pain, and a major-trauma trigger as its own emergency ambulance or Emergency Department criteria - possible cauda equina syndrome or major trauma.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -2316,7 +2316,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the caller feel hot, cold, shivery, or generally unwell, OR is this severe pain that started suddenly and is quickly getting worse?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance flags fever/feeling unwell with back pain, and sudden severe or rapidly worsening pain, as needing a same-day clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call.",
+          "rationaleEn": "NHS.UK guidance flags fever/feeling unwell with back pain, and sudden severe or rapidly worsening pain, as needing a same-day primary-care review or urgent clinical review call.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2332,7 +2332,7 @@
           "severity": "Routine",
           "questionTextEn": "Is this a patient aged 5 to 17 years with back pain and none of the emergency or urgent features above, including no fever or systemic illness, night or rest pain, unexplained weight loss, gait change, progressive weakness or numbness, bladder or bowel change, major trauma, or safeguarding concern?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS pediatric guidance identifies age, systemic illness, night/rest pain, weight loss, gait or neurological change, bladder/bowel symptoms, trauma, and safeguarding context as reasons for age-appropriate clinical assessment. The generated child pathway fails closed to in-person review rather than entering the adult self-care branch. Exact Qatar pediatric destination and timing remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS pediatric guidance identifies age, systemic illness, night/rest pain, weight loss, gait or neurological change, bladder/bowel symptoms, trauma, and safeguarding context as reasons for age-appropriate clinical assessment. The generated child pathway fails closed to in-person review rather than entering the adult self-care branch. Exact Qatar pediatric destination and timing remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2365,7 +2365,7 @@
         {
           "id": "oscg-back-pain-child-male-advice-100303",
           "titleEn": "Pediatric back-pain assessment required",
-          "instructionTextEn": "Arrange age-appropriate in-person pediatric assessment through the Qatar governance-approved pathway. Do not use the adult-derived self-care branch for a patient aged 5 to 17 years. Escalate immediately for major trauma, fever or severe illness, progressive weakness or numbness, saddle sensory loss, bladder/bowel change, chest pain, collapse, or worsening symptoms. Exact destination and timing remain GOVERNANCE_REQUIRED. Call Back If: fever or rapidly worsening pain; new weakness, numbness, gait change, or bladder/bowel change; major trauma, chest pain, collapse, or severe illness.",
+          "instructionTextEn": "Arrange age-appropriate in-person pediatric assessment through the Qatar governance-approved pathway. Do not use the adult-derived self-care branch for a patient aged 5 to 17 years. Escalate immediately for major trauma, fever or severe illness, progressive weakness or numbness, saddle sensory loss, bladder/bowel change, chest pain, collapse, or worsening symptoms. Exact destination and timing remain local approval required. Call Back If: fever or rapidly worsening pain; new weakness, numbness, gait change, or bladder/bowel change; major trauma, chest pain, collapse, or severe illness.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 3,
@@ -2512,7 +2512,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are symptoms worsening or not improving, was the sting in the mouth, throat, or near the eyes, is there abdominal pain and vomiting, dizziness, a high fever with swollen glands, more than one sting, or a previous serious allergic reaction to a sting?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) urgently rather than manage entirely at home.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review urgently rather than manage entirely at home.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2528,7 +2528,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the skin around the sting hot to touch, red, painful, swollen, or leaking pus or fluid, or is this a child under 1 year old, or a tick bite with flu-like symptoms or a bullseye rash?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance flags these infection or tick-bite signs as needing a pharmacist or clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance flags these infection or tick-bite signs as needing a pharmacist or primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2727,7 +2727,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are symptoms worsening or not improving, was the sting in the mouth, throat, or near the eyes, is there abdominal pain and vomiting, dizziness, a high fever with swollen glands, more than one sting, or a previous serious allergic reaction to a sting?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) urgently rather than manage entirely at home.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review urgently rather than manage entirely at home.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2743,7 +2743,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the skin around the sting hot to touch, red, painful, swollen, or leaking pus or fluid, or is this a child under 1 year old, or a tick bite with flu-like symptoms or a bullseye rash?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance flags these infection or tick-bite signs as needing a pharmacist or clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance flags these infection or tick-bite signs as needing a pharmacist or primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2951,7 +2951,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are symptoms worsening or not improving, was the sting in the mouth, throat, or near the eyes, is there abdominal pain and vomiting, dizziness, a high fever with swollen glands, more than one sting, or a previous serious allergic reaction to a sting?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) urgently rather than manage entirely at home.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review urgently rather than manage entirely at home.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2967,7 +2967,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the skin around the sting hot to touch, red, painful, swollen, or leaking pus or fluid, or is this a child under 1 year old, or a tick bite with flu-like symptoms or a bullseye rash?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance flags these infection or tick-bite signs as needing a pharmacist or clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance flags these infection or tick-bite signs as needing a pharmacist or primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3175,7 +3175,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are symptoms worsening or not improving, was the sting in the mouth, throat, or near the eyes, is there abdominal pain and vomiting, dizziness, a high fever with swollen glands, more than one sting, or a previous serious allergic reaction to a sting?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) urgently rather than manage entirely at home.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review urgently rather than manage entirely at home.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3191,7 +3191,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the skin around the sting hot to touch, red, painful, swollen, or leaking pus or fluid, or is this a child under 1 year old, or a tick bite with flu-like symptoms or a bullseye rash?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance flags these infection or tick-bite signs as needing a pharmacist or clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance flags these infection or tick-bite signs as needing a pharmacist or primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3382,7 +3382,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the burn very large or deep, on the face, genitals, or bottom, or was it caused by an acid, chemical, or electricity?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK burns and scalds guidance lists large/deep burns, burns to the face/genitals/bottom, and chemical or electrical burns as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+          "rationaleEn": "NHS.UK burns and scalds guidance lists large/deep burns, burns to the face/genitals/bottom, and chemical or electrical burns as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3398,7 +3398,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is the caller unsure how serious the burn is, or is the patient a child under 5?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) whenever there is uncertainty about a burn or scald, and specifically for children under 5.",
+          "rationaleEn": "NHS.UK guidance recommends seeking urgent clinical review whenever there is uncertainty about a burn or scald, and specifically for children under 5.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3580,7 +3580,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the burn very large or deep, on the face, genitals, or bottom, or was it caused by an acid, chemical, or electricity?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK burns and scalds guidance lists large/deep burns, burns to the face/genitals/bottom, and chemical or electrical burns as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+          "rationaleEn": "NHS.UK burns and scalds guidance lists large/deep burns, burns to the face/genitals/bottom, and chemical or electrical burns as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3596,7 +3596,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is the caller unsure how serious the burn is, or is the patient a child under 5?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) whenever there is uncertainty about a burn or scald, and specifically for children under 5.",
+          "rationaleEn": "NHS.UK guidance recommends seeking urgent clinical review whenever there is uncertainty about a burn or scald, and specifically for children under 5.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3787,7 +3787,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the burn very large or deep, on the face, genitals, or bottom, or was it caused by an acid, chemical, or electricity?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK burns and scalds guidance lists large/deep burns, burns to the face/genitals/bottom, and chemical or electrical burns as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+          "rationaleEn": "NHS.UK burns and scalds guidance lists large/deep burns, burns to the face/genitals/bottom, and chemical or electrical burns as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3803,7 +3803,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is the caller unsure how serious the burn is, or is the patient a child under 5?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) whenever there is uncertainty about a burn or scald, and specifically for children under 5.",
+          "rationaleEn": "NHS.UK guidance recommends seeking urgent clinical review whenever there is uncertainty about a burn or scald, and specifically for children under 5.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3994,7 +3994,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the burn very large or deep, on the face, genitals, or bottom, or was it caused by an acid, chemical, or electricity?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK burns and scalds guidance lists large/deep burns, burns to the face/genitals/bottom, and chemical or electrical burns as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+          "rationaleEn": "NHS.UK burns and scalds guidance lists large/deep burns, burns to the face/genitals/bottom, and chemical or electrical burns as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -4010,7 +4010,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is the caller unsure how serious the burn is, or is the patient a child under 5?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) whenever there is uncertainty about a burn or scald, and specifically for children under 5.",
+          "rationaleEn": "NHS.UK guidance recommends seeking urgent clinical review whenever there is uncertainty about a burn or scald, and specifically for children under 5.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4188,7 +4188,7 @@
           "severity": "Emergency",
           "questionTextEn": "Was there fire or smoke exposure with breathing difficulty, airway or facial burns, soot around the mouth or nose, hoarseness, severe coughing, confusion, weakness, chest or muscle pain, collapse, or loss of consciousness?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK carbon monoxide poisoning guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for suspected exposure. Do not drive to hospital - call for an ambulance instead.",
+          "rationaleEn": "NHS.UK carbon monoxide poisoning guidance lists these as emergency ambulance or Emergency Department criteria for suspected exposure. Do not drive to hospital - call for an ambulance instead.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -4204,7 +4204,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the caller suspect carbon monoxide, fire, or smoke exposure but have none of the emergency features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) for suspected carbon monoxide exposure when severe symptoms are not present.",
+          "rationaleEn": "NHS.UK guidance recommends seeking urgent clinical review for suspected carbon monoxide exposure when severe symptoms are not present.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4228,7 +4228,7 @@
         {
           "id": "oscg-carbon-monoxide-exposure-adult-female-advice-102202",
           "titleEn": "Urgent carbon monoxide or smoke-exposure review",
-          "instructionTextEn": "Leave the exposure area, go into fresh air, and do not re-enter a building or restart an appliance until emergency or safety authorities say it is safe. Use the Qatar governance-approved in-person assessment route without delay (GOVERNANCE_REQUIRED). Escalate to Qatar 999 for breathing difficulty, hoarseness, soot, airway/facial burns, severe coughing, confusion, weakness, chest pain, collapse, or worsening symptoms. Call Back If: breathing difficulty, hoarseness, soot, airway or facial burns, or severe coughing; confusion, weakness, chest pain, collapse, or worsening symptoms.",
+          "instructionTextEn": "Leave the exposure area, go into fresh air, and do not re-enter a building or restart an appliance until emergency or safety authorities say it is safe. Use the Qatar governance-approved in-person assessment route without delay (local approval required). Escalate to Qatar 999 for breathing difficulty, hoarseness, soot, airway/facial burns, severe coughing, confusion, weakness, chest pain, collapse, or worsening symptoms. Call Back If: breathing difficulty, hoarseness, soot, airway or facial burns, or severe coughing; confusion, weakness, chest pain, collapse, or worsening symptoms.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -4349,7 +4349,7 @@
           "severity": "Emergency",
           "questionTextEn": "Was there fire or smoke exposure with breathing difficulty, airway or facial burns, soot around the mouth or nose, hoarseness, severe coughing, confusion, weakness, chest or muscle pain, collapse, or loss of consciousness?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK carbon monoxide poisoning guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for suspected exposure. Do not drive to hospital - call for an ambulance instead.",
+          "rationaleEn": "NHS.UK carbon monoxide poisoning guidance lists these as emergency ambulance or Emergency Department criteria for suspected exposure. Do not drive to hospital - call for an ambulance instead.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -4365,7 +4365,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the caller suspect carbon monoxide, fire, or smoke exposure but have none of the emergency features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) for suspected carbon monoxide exposure when severe symptoms are not present.",
+          "rationaleEn": "NHS.UK guidance recommends seeking urgent clinical review for suspected carbon monoxide exposure when severe symptoms are not present.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4389,7 +4389,7 @@
         {
           "id": "oscg-carbon-monoxide-exposure-adult-male-advice-102102",
           "titleEn": "Urgent carbon monoxide or smoke-exposure review",
-          "instructionTextEn": "Leave the exposure area, go into fresh air, and do not re-enter a building or restart an appliance until emergency or safety authorities say it is safe. Use the Qatar governance-approved in-person assessment route without delay (GOVERNANCE_REQUIRED). Escalate to Qatar 999 for breathing difficulty, hoarseness, soot, airway/facial burns, severe coughing, confusion, weakness, chest pain, collapse, or worsening symptoms. Call Back If: breathing difficulty, hoarseness, soot, airway or facial burns, or severe coughing; confusion, weakness, chest pain, collapse, or worsening symptoms.",
+          "instructionTextEn": "Leave the exposure area, go into fresh air, and do not re-enter a building or restart an appliance until emergency or safety authorities say it is safe. Use the Qatar governance-approved in-person assessment route without delay (local approval required). Escalate to Qatar 999 for breathing difficulty, hoarseness, soot, airway/facial burns, severe coughing, confusion, weakness, chest pain, collapse, or worsening symptoms. Call Back If: breathing difficulty, hoarseness, soot, airway or facial burns, or severe coughing; confusion, weakness, chest pain, collapse, or worsening symptoms.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -4519,7 +4519,7 @@
           "severity": "Emergency",
           "questionTextEn": "Was there fire or smoke exposure with breathing difficulty, airway or facial burns, soot around the mouth or nose, hoarseness, severe coughing, confusion, weakness, chest or muscle pain, collapse, or loss of consciousness?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK carbon monoxide poisoning guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for suspected exposure. Do not drive to hospital - call for an ambulance instead.",
+          "rationaleEn": "NHS.UK carbon monoxide poisoning guidance lists these as emergency ambulance or Emergency Department criteria for suspected exposure. Do not drive to hospital - call for an ambulance instead.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -4535,7 +4535,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the caller suspect carbon monoxide, fire, or smoke exposure but have none of the emergency features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) for suspected carbon monoxide exposure when severe symptoms are not present.",
+          "rationaleEn": "NHS.UK guidance recommends seeking urgent clinical review for suspected carbon monoxide exposure when severe symptoms are not present.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4559,7 +4559,7 @@
         {
           "id": "oscg-carbon-monoxide-exposure-child-female-advice-102402",
           "titleEn": "Urgent carbon monoxide or smoke-exposure review",
-          "instructionTextEn": "Leave the exposure area, go into fresh air, and do not re-enter a building or restart an appliance until emergency or safety authorities say it is safe. Use the Qatar governance-approved in-person assessment route without delay (GOVERNANCE_REQUIRED). Escalate to Qatar 999 for breathing difficulty, hoarseness, soot, airway/facial burns, severe coughing, confusion, weakness, chest pain, collapse, or worsening symptoms. Call Back If: breathing difficulty, hoarseness, soot, airway or facial burns, or severe coughing; confusion, weakness, chest pain, collapse, or worsening symptoms.",
+          "instructionTextEn": "Leave the exposure area, go into fresh air, and do not re-enter a building or restart an appliance until emergency or safety authorities say it is safe. Use the Qatar governance-approved in-person assessment route without delay (local approval required). Escalate to Qatar 999 for breathing difficulty, hoarseness, soot, airway/facial burns, severe coughing, confusion, weakness, chest pain, collapse, or worsening symptoms. Call Back If: breathing difficulty, hoarseness, soot, airway or facial burns, or severe coughing; confusion, weakness, chest pain, collapse, or worsening symptoms.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -4689,7 +4689,7 @@
           "severity": "Emergency",
           "questionTextEn": "Was there fire or smoke exposure with breathing difficulty, airway or facial burns, soot around the mouth or nose, hoarseness, severe coughing, confusion, weakness, chest or muscle pain, collapse, or loss of consciousness?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK carbon monoxide poisoning guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for suspected exposure. Do not drive to hospital - call for an ambulance instead.",
+          "rationaleEn": "NHS.UK carbon monoxide poisoning guidance lists these as emergency ambulance or Emergency Department criteria for suspected exposure. Do not drive to hospital - call for an ambulance instead.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -4705,7 +4705,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the caller suspect carbon monoxide, fire, or smoke exposure but have none of the emergency features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) for suspected carbon monoxide exposure when severe symptoms are not present.",
+          "rationaleEn": "NHS.UK guidance recommends seeking urgent clinical review for suspected carbon monoxide exposure when severe symptoms are not present.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4729,7 +4729,7 @@
         {
           "id": "oscg-carbon-monoxide-exposure-child-male-advice-102302",
           "titleEn": "Urgent carbon monoxide or smoke-exposure review",
-          "instructionTextEn": "Leave the exposure area, go into fresh air, and do not re-enter a building or restart an appliance until emergency or safety authorities say it is safe. Use the Qatar governance-approved in-person assessment route without delay (GOVERNANCE_REQUIRED). Escalate to Qatar 999 for breathing difficulty, hoarseness, soot, airway/facial burns, severe coughing, confusion, weakness, chest pain, collapse, or worsening symptoms. Call Back If: breathing difficulty, hoarseness, soot, airway or facial burns, or severe coughing; confusion, weakness, chest pain, collapse, or worsening symptoms.",
+          "instructionTextEn": "Leave the exposure area, go into fresh air, and do not re-enter a building or restart an appliance until emergency or safety authorities say it is safe. Use the Qatar governance-approved in-person assessment route without delay (local approval required). Escalate to Qatar 999 for breathing difficulty, hoarseness, soot, airway/facial burns, severe coughing, confusion, weakness, chest pain, collapse, or worsening symptoms. Call Back If: breathing difficulty, hoarseness, soot, airway or facial burns, or severe coughing; confusion, weakness, chest pain, collapse, or worsening symptoms.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -4850,7 +4850,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the skin hard and frozen, is there swelling and loss of feeling in the area, are there blisters filled with blood or milky fluid, or is the person shivering constantly with slurred speech, slow breathing, and confusion?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK frostbite guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria, including hypothermia signs (constant shivering, slurred speech, slow breathing, confusion).",
+          "rationaleEn": "NHS.UK frostbite guidance lists these as emergency ambulance or Emergency Department criteria, including hypothermia signs (constant shivering, slurred speech, slow breathing, confusion).",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -5019,7 +5019,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the skin hard and frozen, is there swelling and loss of feeling in the area, are there blisters filled with blood or milky fluid, or is the person shivering constantly with slurred speech, slow breathing, and confusion?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK frostbite guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria, including hypothermia signs (constant shivering, slurred speech, slow breathing, confusion).",
+          "rationaleEn": "NHS.UK frostbite guidance lists these as emergency ambulance or Emergency Department criteria, including hypothermia signs (constant shivering, slurred speech, slow breathing, confusion).",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -5197,7 +5197,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the skin hard and frozen, is there swelling and loss of feeling in the area, are there blisters filled with blood or milky fluid, or is the person shivering constantly with slurred speech, slow breathing, and confusion?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK frostbite guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria, including hypothermia signs (constant shivering, slurred speech, slow breathing, confusion).",
+          "rationaleEn": "NHS.UK frostbite guidance lists these as emergency ambulance or Emergency Department criteria, including hypothermia signs (constant shivering, slurred speech, slow breathing, confusion).",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -5375,7 +5375,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the skin hard and frozen, is there swelling and loss of feeling in the area, are there blisters filled with blood or milky fluid, or is the person shivering constantly with slurred speech, slow breathing, and confusion?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK frostbite guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria, including hypothermia signs (constant shivering, slurred speech, slow breathing, confusion).",
+          "rationaleEn": "NHS.UK frostbite guidance lists these as emergency ambulance or Emergency Department criteria, including hypothermia signs (constant shivering, slurred speech, slow breathing, confusion).",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -5532,7 +5532,7 @@
           "severity": "Emergency",
           "questionTextEn": "Has there been a seizure, numbness or weakness in the body or face, sudden extremely painful onset, difficulty speaking, balancing, walking, or remembering things, drowsiness or confusion, loss of vision, a non-fading rash, a very high temperature with a stiff neck or light sensitivity, or a recent major head injury with deterioration?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK headache guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria - possible stroke, meningitis, or other serious cause.",
+          "rationaleEn": "NHS.UK headache guidance lists these as emergency ambulance or Emergency Department criteria - possible stroke, meningitis, or other serious cause.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -5548,7 +5548,7 @@
           "severity": "Urgent",
           "questionTextEn": "Did the headache occur after any head injury within the last 3 months, with none of the immediate life-threatening features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK directs headache after head injury within 3 months to 999 or an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED). This branch preserves emergency assessment while avoiding an unsupported rule that every stable case requires a Qatar ambulance; exact local destination and transport remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS.UK directs headache after head injury within 3 months to 999 or Emergency Department. This branch preserves emergency assessment while avoiding an unsupported rule that every stable case requires a Qatar ambulance; exact local destination and transport remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5564,7 +5564,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are there vision or eye problems, is the headache triggered or worsened by coughing, sneezing, bending down, or exercise, is there vomiting, is a child's headache getting worse or waking them at night, or is there jaw pain when eating or a tender scalp?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or get an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or get an urgent primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5604,7 +5604,7 @@
         {
           "id": "oscg-headache-adult-female-advice-103002",
           "titleEn": "Emergency assessment after recent head injury",
-          "instructionTextEn": "Arrange prompt in-person emergency assessment through the Qatar governance-approved pathway and do not self-drive. Call 999 immediately if severe or worsening headache, repeated vomiting, seizure, weakness/numbness, speech/balance/vision change, confusion, drowsiness, collapse, abnormal breathing, or other deterioration develops. Exact destination and transport for a stable patient remain GOVERNANCE_REQUIRED. Call Back If: worsening headache or repeated vomiting; confusion, drowsiness, seizure, weakness, speech, balance, or vision change; collapse or abnormal breathing.",
+          "instructionTextEn": "Arrange prompt in-person emergency assessment through the Qatar governance-approved pathway and do not self-drive. Call 999 immediately if severe or worsening headache, repeated vomiting, seizure, weakness/numbness, speech/balance/vision change, confusion, drowsiness, collapse, abnormal breathing, or other deterioration develops. Exact destination and transport for a stable patient remain local approval required. Call Back If: worsening headache or repeated vomiting; confusion, drowsiness, seizure, weakness, speech, balance, or vision change; collapse or abnormal breathing.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5731,7 +5731,7 @@
           "severity": "Emergency",
           "questionTextEn": "Has there been a seizure, numbness or weakness in the body or face, sudden extremely painful onset, difficulty speaking, balancing, walking, or remembering things, drowsiness or confusion, loss of vision, a non-fading rash, a very high temperature with a stiff neck or light sensitivity, or a recent major head injury with deterioration?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK headache guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria - possible stroke, meningitis, or other serious cause.",
+          "rationaleEn": "NHS.UK headache guidance lists these as emergency ambulance or Emergency Department criteria - possible stroke, meningitis, or other serious cause.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -5747,7 +5747,7 @@
           "severity": "Urgent",
           "questionTextEn": "Did the headache occur after any head injury within the last 3 months, with none of the immediate life-threatening features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK directs headache after head injury within 3 months to 999 or an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED). This branch preserves emergency assessment while avoiding an unsupported rule that every stable case requires a Qatar ambulance; exact local destination and transport remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS.UK directs headache after head injury within 3 months to 999 or Emergency Department. This branch preserves emergency assessment while avoiding an unsupported rule that every stable case requires a Qatar ambulance; exact local destination and transport remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5763,7 +5763,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are there vision or eye problems, is the headache triggered or worsened by coughing, sneezing, bending down, or exercise, is there vomiting, is a child's headache getting worse or waking them at night, or is there jaw pain when eating or a tender scalp?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or get an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or get an urgent primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5803,7 +5803,7 @@
         {
           "id": "oscg-headache-adult-male-advice-102902",
           "titleEn": "Emergency assessment after recent head injury",
-          "instructionTextEn": "Arrange prompt in-person emergency assessment through the Qatar governance-approved pathway and do not self-drive. Call 999 immediately if severe or worsening headache, repeated vomiting, seizure, weakness/numbness, speech/balance/vision change, confusion, drowsiness, collapse, abnormal breathing, or other deterioration develops. Exact destination and transport for a stable patient remain GOVERNANCE_REQUIRED. Call Back If: worsening headache or repeated vomiting; confusion, drowsiness, seizure, weakness, speech, balance, or vision change; collapse or abnormal breathing.",
+          "instructionTextEn": "Arrange prompt in-person emergency assessment through the Qatar governance-approved pathway and do not self-drive. Call 999 immediately if severe or worsening headache, repeated vomiting, seizure, weakness/numbness, speech/balance/vision change, confusion, drowsiness, collapse, abnormal breathing, or other deterioration develops. Exact destination and transport for a stable patient remain local approval required. Call Back If: worsening headache or repeated vomiting; confusion, drowsiness, seizure, weakness, speech, balance, or vision change; collapse or abnormal breathing.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5939,7 +5939,7 @@
           "severity": "Emergency",
           "questionTextEn": "Has there been a seizure, numbness or weakness in the body or face, sudden extremely painful onset, difficulty speaking, balancing, walking, or remembering things, drowsiness or confusion, loss of vision, a non-fading rash, a very high temperature with a stiff neck or light sensitivity, or a recent major head injury with deterioration?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK headache guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria - possible stroke, meningitis, or other serious cause.",
+          "rationaleEn": "NHS.UK headache guidance lists these as emergency ambulance or Emergency Department criteria - possible stroke, meningitis, or other serious cause.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -5955,7 +5955,7 @@
           "severity": "Urgent",
           "questionTextEn": "Did the headache occur after any head injury within the last 3 months, with none of the immediate life-threatening features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK directs headache after head injury within 3 months to 999 or an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED). This branch preserves emergency assessment while avoiding an unsupported rule that every stable case requires a Qatar ambulance; exact local destination and transport remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS.UK directs headache after head injury within 3 months to 999 or Emergency Department. This branch preserves emergency assessment while avoiding an unsupported rule that every stable case requires a Qatar ambulance; exact local destination and transport remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5971,7 +5971,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are there vision or eye problems, is the headache triggered or worsened by coughing, sneezing, bending down, or exercise, is there vomiting, is a child's headache getting worse or waking them at night, or is there jaw pain when eating or a tender scalp?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or get an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or get an urgent primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -6011,7 +6011,7 @@
         {
           "id": "oscg-headache-child-female-advice-103202",
           "titleEn": "Emergency assessment after recent head injury",
-          "instructionTextEn": "Arrange prompt in-person emergency assessment through the Qatar governance-approved pathway and do not self-drive. Call 999 immediately if severe or worsening headache, repeated vomiting, seizure, weakness/numbness, speech/balance/vision change, confusion, drowsiness, collapse, abnormal breathing, or other deterioration develops. Exact destination and transport for a stable patient remain GOVERNANCE_REQUIRED. Call Back If: worsening headache or repeated vomiting; confusion, drowsiness, seizure, weakness, speech, balance, or vision change; collapse or abnormal breathing.",
+          "instructionTextEn": "Arrange prompt in-person emergency assessment through the Qatar governance-approved pathway and do not self-drive. Call 999 immediately if severe or worsening headache, repeated vomiting, seizure, weakness/numbness, speech/balance/vision change, confusion, drowsiness, collapse, abnormal breathing, or other deterioration develops. Exact destination and transport for a stable patient remain local approval required. Call Back If: worsening headache or repeated vomiting; confusion, drowsiness, seizure, weakness, speech, balance, or vision change; collapse or abnormal breathing.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -6147,7 +6147,7 @@
           "severity": "Emergency",
           "questionTextEn": "Has there been a seizure, numbness or weakness in the body or face, sudden extremely painful onset, difficulty speaking, balancing, walking, or remembering things, drowsiness or confusion, loss of vision, a non-fading rash, a very high temperature with a stiff neck or light sensitivity, or a recent major head injury with deterioration?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK headache guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria - possible stroke, meningitis, or other serious cause.",
+          "rationaleEn": "NHS.UK headache guidance lists these as emergency ambulance or Emergency Department criteria - possible stroke, meningitis, or other serious cause.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -6163,7 +6163,7 @@
           "severity": "Urgent",
           "questionTextEn": "Did the headache occur after any head injury within the last 3 months, with none of the immediate life-threatening features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK directs headache after head injury within 3 months to 999 or an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED). This branch preserves emergency assessment while avoiding an unsupported rule that every stable case requires a Qatar ambulance; exact local destination and transport remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS.UK directs headache after head injury within 3 months to 999 or Emergency Department. This branch preserves emergency assessment while avoiding an unsupported rule that every stable case requires a Qatar ambulance; exact local destination and transport remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -6179,7 +6179,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are there vision or eye problems, is the headache triggered or worsened by coughing, sneezing, bending down, or exercise, is there vomiting, is a child's headache getting worse or waking them at night, or is there jaw pain when eating or a tender scalp?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or get an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek urgent clinical review or get an urgent primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -6219,7 +6219,7 @@
         {
           "id": "oscg-headache-child-male-advice-103102",
           "titleEn": "Emergency assessment after recent head injury",
-          "instructionTextEn": "Arrange prompt in-person emergency assessment through the Qatar governance-approved pathway and do not self-drive. Call 999 immediately if severe or worsening headache, repeated vomiting, seizure, weakness/numbness, speech/balance/vision change, confusion, drowsiness, collapse, abnormal breathing, or other deterioration develops. Exact destination and transport for a stable patient remain GOVERNANCE_REQUIRED. Call Back If: worsening headache or repeated vomiting; confusion, drowsiness, seizure, weakness, speech, balance, or vision change; collapse or abnormal breathing.",
+          "instructionTextEn": "Arrange prompt in-person emergency assessment through the Qatar governance-approved pathway and do not self-drive. Call 999 immediately if severe or worsening headache, repeated vomiting, seizure, weakness/numbness, speech/balance/vision change, confusion, drowsiness, collapse, abnormal breathing, or other deterioration develops. Exact destination and transport for a stable patient remain local approval required. Call Back If: worsening headache or repeated vomiting; confusion, drowsiness, seizure, weakness, speech, balance, or vision change; collapse or abnormal breathing.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -6346,7 +6346,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is there difficulty breathing, reduced consciousness, collapse, faintness or shock, major facial/head trauma, or severe uncontrolled bleeding that is rapidly worsening?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "Immediate life-threatening features require Qatar 999. This separates ambulance need from other NHS.UK an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria that may be stable enough for governed non-ambulance transport.",
+          "rationaleEn": "Immediate life-threatening features require Qatar 999. This separates ambulance need from other NHS.UK Emergency Department criteria that may be stable enough for governed non-ambulance transport.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -6362,7 +6362,7 @@
           "severity": "Urgent",
           "questionTextEn": "After uninterrupted pinching of the soft nose, has bleeding continued longer than 10-15 minutes, does it still seem excessive, is the person swallowing a lot of blood and vomiting, or did it begin after a blow to the head without the immediate life-threatening features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK directs these features to an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) and says not to self-drive, while allowing either another driver or an ambulance. Exact Qatar destination and transport choice remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS.UK directs these features to Emergency Department and says not to self-drive, while allowing either another driver or an ambulance. Exact Qatar destination and transport choice remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -6378,7 +6378,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the patient a child under 2, does the caller have regular nosebleeds, anaemia symptoms, take blood-thinning medication, or have a clotting disorder such as haemophilia?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for these situations even when the bleed itself has stopped.",
+          "rationaleEn": "NHS.UK guidance recommends a primary-care review for these situations even when the bleed itself has stopped.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -6418,7 +6418,7 @@
         {
           "id": "oscg-nosebleed-adult-female-advice-102602",
           "titleEn": "Urgent in-person nosebleed assessment",
-          "instructionTextEn": "Continue sitting forward and pinching the soft nose while arranging prompt in-person emergency assessment through the Qatar governance-approved pathway. Do not self-drive. A safe adult may transport a stable patient only if the approved local pathway permits; call 999 for breathing difficulty, reduced consciousness, collapse, shock, major trauma, or rapidly worsening/uncontrolled bleeding. Exact destination and transport remain GOVERNANCE_REQUIRED. Call Back If: difficulty breathing, faintness, collapse, or reduced consciousness; bleeding becomes rapidly worse or remains uncontrolled; major trauma.",
+          "instructionTextEn": "Continue sitting forward and pinching the soft nose while arranging prompt in-person emergency assessment through the Qatar governance-approved pathway. Do not self-drive. A safe adult may transport a stable patient only if the approved local pathway permits; call 999 for breathing difficulty, reduced consciousness, collapse, shock, major trauma, or rapidly worsening/uncontrolled bleeding. Exact destination and transport remain local approval required. Call Back If: difficulty breathing, faintness, collapse, or reduced consciousness; bleeding becomes rapidly worse or remains uncontrolled; major trauma.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -6553,7 +6553,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is there difficulty breathing, reduced consciousness, collapse, faintness or shock, major facial/head trauma, or severe uncontrolled bleeding that is rapidly worsening?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "Immediate life-threatening features require Qatar 999. This separates ambulance need from other NHS.UK an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria that may be stable enough for governed non-ambulance transport.",
+          "rationaleEn": "Immediate life-threatening features require Qatar 999. This separates ambulance need from other NHS.UK Emergency Department criteria that may be stable enough for governed non-ambulance transport.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -6569,7 +6569,7 @@
           "severity": "Urgent",
           "questionTextEn": "After uninterrupted pinching of the soft nose, has bleeding continued longer than 10-15 minutes, does it still seem excessive, is the person swallowing a lot of blood and vomiting, or did it begin after a blow to the head without the immediate life-threatening features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK directs these features to an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) and says not to self-drive, while allowing either another driver or an ambulance. Exact Qatar destination and transport choice remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS.UK directs these features to Emergency Department and says not to self-drive, while allowing either another driver or an ambulance. Exact Qatar destination and transport choice remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -6585,7 +6585,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the patient a child under 2, does the caller have regular nosebleeds, anaemia symptoms, take blood-thinning medication, or have a clotting disorder such as haemophilia?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for these situations even when the bleed itself has stopped.",
+          "rationaleEn": "NHS.UK guidance recommends a primary-care review for these situations even when the bleed itself has stopped.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -6625,7 +6625,7 @@
         {
           "id": "oscg-nosebleed-adult-male-advice-102502",
           "titleEn": "Urgent in-person nosebleed assessment",
-          "instructionTextEn": "Continue sitting forward and pinching the soft nose while arranging prompt in-person emergency assessment through the Qatar governance-approved pathway. Do not self-drive. A safe adult may transport a stable patient only if the approved local pathway permits; call 999 for breathing difficulty, reduced consciousness, collapse, shock, major trauma, or rapidly worsening/uncontrolled bleeding. Exact destination and transport remain GOVERNANCE_REQUIRED. Call Back If: difficulty breathing, faintness, collapse, or reduced consciousness; bleeding becomes rapidly worse or remains uncontrolled; major trauma.",
+          "instructionTextEn": "Continue sitting forward and pinching the soft nose while arranging prompt in-person emergency assessment through the Qatar governance-approved pathway. Do not self-drive. A safe adult may transport a stable patient only if the approved local pathway permits; call 999 for breathing difficulty, reduced consciousness, collapse, shock, major trauma, or rapidly worsening/uncontrolled bleeding. Exact destination and transport remain local approval required. Call Back If: difficulty breathing, faintness, collapse, or reduced consciousness; bleeding becomes rapidly worse or remains uncontrolled; major trauma.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -6769,7 +6769,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is there difficulty breathing, reduced consciousness, collapse, faintness or shock, major facial/head trauma, or severe uncontrolled bleeding that is rapidly worsening?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "Immediate life-threatening features require Qatar 999. This separates ambulance need from other NHS.UK an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria that may be stable enough for governed non-ambulance transport.",
+          "rationaleEn": "Immediate life-threatening features require Qatar 999. This separates ambulance need from other NHS.UK Emergency Department criteria that may be stable enough for governed non-ambulance transport.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -6785,7 +6785,7 @@
           "severity": "Urgent",
           "questionTextEn": "After uninterrupted pinching of the soft nose, has bleeding continued longer than 10-15 minutes, does it still seem excessive, is the person swallowing a lot of blood and vomiting, or did it begin after a blow to the head without the immediate life-threatening features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK directs these features to an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) and says not to self-drive, while allowing either another driver or an ambulance. Exact Qatar destination and transport choice remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS.UK directs these features to Emergency Department and says not to self-drive, while allowing either another driver or an ambulance. Exact Qatar destination and transport choice remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -6801,7 +6801,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the patient a child under 2, does the caller have regular nosebleeds, anaemia symptoms, take blood-thinning medication, or have a clotting disorder such as haemophilia?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for these situations even when the bleed itself has stopped.",
+          "rationaleEn": "NHS.UK guidance recommends a primary-care review for these situations even when the bleed itself has stopped.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -6841,7 +6841,7 @@
         {
           "id": "oscg-nosebleed-child-female-advice-102802",
           "titleEn": "Urgent in-person nosebleed assessment",
-          "instructionTextEn": "Continue sitting forward and pinching the soft nose while arranging prompt in-person emergency assessment through the Qatar governance-approved pathway. Do not self-drive. A safe adult may transport a stable patient only if the approved local pathway permits; call 999 for breathing difficulty, reduced consciousness, collapse, shock, major trauma, or rapidly worsening/uncontrolled bleeding. Exact destination and transport remain GOVERNANCE_REQUIRED. Call Back If: difficulty breathing, faintness, collapse, or reduced consciousness; bleeding becomes rapidly worse or remains uncontrolled; major trauma.",
+          "instructionTextEn": "Continue sitting forward and pinching the soft nose while arranging prompt in-person emergency assessment through the Qatar governance-approved pathway. Do not self-drive. A safe adult may transport a stable patient only if the approved local pathway permits; call 999 for breathing difficulty, reduced consciousness, collapse, shock, major trauma, or rapidly worsening/uncontrolled bleeding. Exact destination and transport remain local approval required. Call Back If: difficulty breathing, faintness, collapse, or reduced consciousness; bleeding becomes rapidly worse or remains uncontrolled; major trauma.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -6985,7 +6985,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is there difficulty breathing, reduced consciousness, collapse, faintness or shock, major facial/head trauma, or severe uncontrolled bleeding that is rapidly worsening?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "Immediate life-threatening features require Qatar 999. This separates ambulance need from other NHS.UK an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria that may be stable enough for governed non-ambulance transport.",
+          "rationaleEn": "Immediate life-threatening features require Qatar 999. This separates ambulance need from other NHS.UK Emergency Department criteria that may be stable enough for governed non-ambulance transport.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -7001,7 +7001,7 @@
           "severity": "Urgent",
           "questionTextEn": "After uninterrupted pinching of the soft nose, has bleeding continued longer than 10-15 minutes, does it still seem excessive, is the person swallowing a lot of blood and vomiting, or did it begin after a blow to the head without the immediate life-threatening features above?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK directs these features to an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) and says not to self-drive, while allowing either another driver or an ambulance. Exact Qatar destination and transport choice remain GOVERNANCE_REQUIRED.",
+          "rationaleEn": "NHS.UK directs these features to Emergency Department and says not to self-drive, while allowing either another driver or an ambulance. Exact Qatar destination and transport choice remain local approval required.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7017,7 +7017,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the patient a child under 2, does the caller have regular nosebleeds, anaemia symptoms, take blood-thinning medication, or have a clotting disorder such as haemophilia?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for these situations even when the bleed itself has stopped.",
+          "rationaleEn": "NHS.UK guidance recommends a primary-care review for these situations even when the bleed itself has stopped.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7057,7 +7057,7 @@
         {
           "id": "oscg-nosebleed-child-male-advice-102702",
           "titleEn": "Urgent in-person nosebleed assessment",
-          "instructionTextEn": "Continue sitting forward and pinching the soft nose while arranging prompt in-person emergency assessment through the Qatar governance-approved pathway. Do not self-drive. A safe adult may transport a stable patient only if the approved local pathway permits; call 999 for breathing difficulty, reduced consciousness, collapse, shock, major trauma, or rapidly worsening/uncontrolled bleeding. Exact destination and transport remain GOVERNANCE_REQUIRED. Call Back If: difficulty breathing, faintness, collapse, or reduced consciousness; bleeding becomes rapidly worse or remains uncontrolled; major trauma.",
+          "instructionTextEn": "Continue sitting forward and pinching the soft nose while arranging prompt in-person emergency assessment through the Qatar governance-approved pathway. Do not self-drive. A safe adult may transport a stable patient only if the approved local pathway permits; call 999 for breathing difficulty, reduced consciousness, collapse, shock, major trauma, or rapidly worsening/uncontrolled bleeding. Exact destination and transport remain local approval required. Call Back If: difficulty breathing, faintness, collapse, or reduced consciousness; bleeding becomes rapidly worse or remains uncontrolled; major trauma.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -7220,7 +7220,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is the skin blistered or swollen, is the temperature very high or does the caller feel hot, cold, or shivery, does the caller feel very tired, dizzy, or sick, is there a headache or muscle cramps, or is the patient a baby or young child?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK sunburn guidance lists these as reasons for an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call.",
+          "rationaleEn": "NHS.UK sunburn guidance lists these as reasons for an urgent primary-care review or urgent clinical review call.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7421,7 +7421,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is the skin blistered or swollen, is the temperature very high or does the caller feel hot, cold, or shivery, does the caller feel very tired, dizzy, or sick, is there a headache or muscle cramps, or is the patient a baby or young child?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK sunburn guidance lists these as reasons for an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call.",
+          "rationaleEn": "NHS.UK sunburn guidance lists these as reasons for an urgent primary-care review or urgent clinical review call.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7631,7 +7631,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is the skin blistered or swollen, is the temperature very high or does the caller feel hot, cold, or shivery, does the caller feel very tired, dizzy, or sick, is there a headache or muscle cramps, or is the patient a baby or young child?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK sunburn guidance lists these as reasons for an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call.",
+          "rationaleEn": "NHS.UK sunburn guidance lists these as reasons for an urgent primary-care review or urgent clinical review call.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7841,7 +7841,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is the skin blistered or swollen, is the temperature very high or does the caller feel hot, cold, or shivery, does the caller feel very tired, dizzy, or sick, is there a headache or muscle cramps, or is the patient a baby or young child?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK sunburn guidance lists these as reasons for an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call.",
+          "rationaleEn": "NHS.UK sunburn guidance lists these as reasons for an urgent primary-care review or urgent clinical review call.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [

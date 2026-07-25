@@ -66,7 +66,7 @@
       "DispositionLevel": 100,
       "QuestionOrder": 1,
       "Question": "Has there been a seizure, numbness or weakness in the body or face, sudden extremely painful onset, difficulty speaking, balancing, walking, or remembering things, drowsiness or confusion, loss of vision, a non-fading rash, a very high temperature with a stiff neck or light sensitivity, or a recent major head injury with deterioration?",
-      "Information": "NHS.UK headache guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria - possible stroke, meningitis, or other serious cause.",
+      "Information": "NHS.UK headache guidance lists these as emergency ambulance or Emergency Department criteria - possible stroke, meningitis, or other serious cause.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -79,7 +79,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Did the headache occur after any head injury within the last 3 months, with none of the immediate life-threatening features above?",
-      "Information": "NHS.UK directs headache after head injury within 3 months to 999 or an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED). This branch preserves emergency assessment while avoiding an unsupported rule that every stable case requires a Qatar ambulance; exact local destination and transport remain GOVERNANCE_REQUIRED.",
+      "Information": "NHS.UK directs headache after head injury within 3 months to 999 or Emergency Department. This branch preserves emergency assessment while avoiding an unsupported rule that every stable case requires a Qatar ambulance; exact local destination and transport remain local approval required.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -92,7 +92,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Are there vision or eye problems, is the headache triggered or worsened by coughing, sneezing, bending down, or exercise, is there vomiting, is a child's headache getting worse or waking them at night, or is there jaw pain when eating or a tender scalp?",
-      "Information": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or get an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED).",
+      "Information": "NHS.UK guidance lists these as reasons to seek urgent clinical review or get an urgent primary-care review.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -132,7 +132,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Arrange prompt in-person emergency assessment through the Qatar governance-approved pathway and do not self-drive. Call 999 immediately if severe or worsening headache, repeated vomiting, seizure, weakness/numbness, speech/balance/vision change, confusion, drowsiness, collapse, abnormal breathing, or other deterioration develops. Exact destination and transport for a stable patient remain GOVERNANCE_REQUIRED.",
+        "Arrange prompt in-person emergency assessment through the Qatar governance-approved pathway and do not self-drive. Call 999 immediately if severe or worsening headache, repeated vomiting, seizure, weakness/numbness, speech/balance/vision change, confusion, drowsiness, collapse, abnormal breathing, or other deterioration develops. Exact destination and transport for a stable patient remain local approval required.",
         "Call Back If: worsening headache or repeated vomiting; confusion, drowsiness, seizure, weakness, speech, balance, or vision change; collapse or abnormal breathing."
       ]
     },

@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { batch02FormalRulesProtocols } from "../../../../../src/data/openSourceGuidelines/batch02FormalRules.js";
-import { normalizeEmergencyAdvice } from "./shared-demographic-generator.js";
+import { localizeObjectText, normalizeEmergencyAdvice } from "./shared-demographic-generator.js";
 
 const root = path.resolve("docs/protocol-review/catalog/open-source/batch-02");
 const jsonDir = path.join(root, "json");
@@ -160,7 +160,7 @@ for (const [familyIndex, protocol] of batch02FormalRulesProtocols.entries()) {
       })),
     ];
     const references = protocol.provenance.sourceDocuments;
-    const doc = {
+    const doc = localizeObjectText({
       _source: sourceText,
       algorithm: {
         AlgorithmID: algorithmId,
@@ -211,7 +211,7 @@ for (const [familyIndex, protocol] of batch02FormalRulesProtocols.entries()) {
       references,
       searchwords: protocol.keywords.map((k) => k.phrase),
       initialAssessmentQuestions: iaqs,
-    };
+    });
     const canonicalContentHash = sha(doc);
     fs.writeFileSync(path.join(jsonDir, `${slug}.db.json`), `${JSON.stringify(doc, null, 2)}\n`);
     entries.push({

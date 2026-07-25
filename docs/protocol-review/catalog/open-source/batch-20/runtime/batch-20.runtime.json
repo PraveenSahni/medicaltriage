@@ -140,7 +140,7 @@
         {
           "id": "oscg-postpartum-breast-pain-and-engorgement-adult-female-advice-144102",
           "titleEn": "Urgent mastitis review",
-          "instructionTextEn": "Arrange prompt clinical review; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Antibiotics or further treatment may be needed. Call Back If: fever worsens; redness spreads.",
+          "instructionTextEn": "Arrange prompt clinical review; the exact non-emergency Qatar destination requires local approval. Antibiotics or further treatment may be needed. Call Back If: fever worsens; redness spreads.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 1,
@@ -365,7 +365,7 @@
         {
           "id": "oscg-postpartum-breast-pain-and-engorgement-child-female-advice-144202",
           "titleEn": "Urgent mastitis review",
-          "instructionTextEn": "Arrange prompt clinical review; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Antibiotics or further treatment may be needed. Call Back If: fever worsens; redness spreads.",
+          "instructionTextEn": "Arrange prompt clinical review; the exact non-emergency Qatar destination requires local approval. Antibiotics or further treatment may be needed. Call Back If: fever worsens; redness spreads.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 1,
@@ -581,7 +581,7 @@
         {
           "id": "oscg-postpartum-c-section-symptoms-adult-female-advice-143102",
           "titleEn": "Urgent C-section complication review",
-          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Call Back If: symptoms worsen; fever develops.",
+          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination requires local approval. Call Back If: symptoms worsen; fever develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -792,7 +792,7 @@
         {
           "id": "oscg-postpartum-c-section-symptoms-child-female-advice-143202",
           "titleEn": "Urgent C-section complication review",
-          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Call Back If: symptoms worsen; fever develops.",
+          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination requires local approval. Call Back If: symptoms worsen; fever develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -970,7 +970,7 @@
         {
           "id": "oscg-postpartum-fever-adult-female-advice-143902",
           "titleEn": "Urgent postpartum fever review",
-          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Call Back If: fever worsens; any new symptoms develop.",
+          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination requires local approval. Call Back If: fever worsens; any new symptoms develop.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -1155,7 +1155,7 @@
         {
           "id": "oscg-postpartum-fever-child-female-advice-144002",
           "titleEn": "Urgent postpartum fever review",
-          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Call Back If: fever worsens; any new symptoms develop.",
+          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination requires local approval. Call Back If: fever worsens; any new symptoms develop.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -1331,7 +1331,7 @@
         {
           "id": "oscg-postpartum-headache-adult-female-advice-142502",
           "titleEn": "Prompt postpartum headache review",
-          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Seek emergency help on 999 if the headache becomes severe or vision change, fainting, seizure, breathing difficulty, chest pain, severe upper abdominal pain, or marked swelling develops. Call Back If: headache becomes severe; vision changes or swelling develop.",
+          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination requires local approval. Seek emergency help on 999 if the headache becomes severe or vision change, fainting, seizure, breathing difficulty, chest pain, severe upper abdominal pain, or marked swelling develops. Call Back If: headache becomes severe; vision changes or swelling develop.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -1516,7 +1516,7 @@
         {
           "id": "oscg-postpartum-headache-child-female-advice-142602",
           "titleEn": "Prompt postpartum headache review",
-          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination remains GOVERNANCE_REQUIRED. Seek emergency help on 999 if the headache becomes severe or vision change, fainting, seizure, breathing difficulty, chest pain, severe upper abdominal pain, or marked swelling develops. Call Back If: headache becomes severe; vision changes or swelling develop.",
+          "instructionTextEn": "Arrange prompt clinical assessment through the locally approved Qatar maternity pathway; the exact non-emergency destination requires local approval. Seek emergency help on 999 if the headache becomes severe or vision change, fainting, seizure, breathing difficulty, chest pain, severe upper abdominal pain, or marked swelling develops. Call Back If: headache becomes severe; vision changes or swelling develop.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -1708,7 +1708,7 @@
         {
           "id": "oscg-postpartum-high-blood-pressure-adult-female-advice-142702",
           "titleEn": "Urgent postpartum blood pressure review",
-          "instructionTextEn": "Arrange prompt blood-pressure confirmation through the locally approved Qatar maternity pathway; the exact non-emergency destination and measurement thresholds remain GOVERNANCE_REQUIRED. Call Back If: headache, vision changes, or swelling develop.",
+          "instructionTextEn": "Arrange prompt blood-pressure confirmation through the locally approved Qatar maternity pathway; the exact non-emergency destination and measurement thresholds remain local approval required. Call Back If: headache, vision changes, or swelling develop.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -1894,7 +1894,7 @@
         {
           "id": "oscg-postpartum-high-blood-pressure-child-female-advice-142802",
           "titleEn": "Urgent postpartum blood pressure review",
-          "instructionTextEn": "Arrange prompt blood-pressure confirmation through the locally approved Qatar maternity pathway; the exact non-emergency destination and measurement thresholds remain GOVERNANCE_REQUIRED. Call Back If: headache, vision changes, or swelling develop.",
+          "instructionTextEn": "Arrange prompt blood-pressure confirmation through the locally approved Qatar maternity pathway; the exact non-emergency destination and measurement thresholds remain local approval required. Call Back If: headache, vision changes, or swelling develop.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2059,7 +2059,7 @@
         {
           "id": "oscg-postpartum-leg-pain-adult-female-advice-143302",
           "titleEn": "Urgent postpartum leg pain review",
-          "instructionTextEn": "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call 999 if chest pain, breathing difficulty, fainting, or coughing blood develops. Call Back If: breathing difficulty or chest pain develops; swelling worsens.",
+          "instructionTextEn": "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination requires local approval. Call 999 if chest pain, breathing difficulty, fainting, or coughing blood develops. Call Back If: breathing difficulty or chest pain develops; swelling worsens.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2241,7 +2241,7 @@
         {
           "id": "oscg-postpartum-leg-pain-child-female-advice-143402",
           "titleEn": "Urgent postpartum leg pain review",
-          "instructionTextEn": "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call 999 if chest pain, breathing difficulty, fainting, or coughing blood develops. Call Back If: breathing difficulty or chest pain develops; swelling worsens.",
+          "instructionTextEn": "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination requires local approval. Call 999 if chest pain, breathing difficulty, fainting, or coughing blood develops. Call Back If: breathing difficulty or chest pain develops; swelling worsens.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2442,7 +2442,7 @@
         {
           "id": "oscg-postpartum-leg-swelling-and-edema-adult-female-advice-143502",
           "titleEn": "Urgent postpartum leg swelling review",
-          "instructionTextEn": "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: breathing difficulty or chest pain develops; swelling worsens.",
+          "instructionTextEn": "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination requires local approval. Call Back If: breathing difficulty or chest pain develops; swelling worsens.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2653,7 +2653,7 @@
         {
           "id": "oscg-postpartum-leg-swelling-and-edema-child-female-advice-143602",
           "titleEn": "Urgent postpartum leg swelling review",
-          "instructionTextEn": "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: breathing difficulty or chest pain develops; swelling worsens.",
+          "instructionTextEn": "Arrange prompt in-person assessment to rule out a blood clot; the exact non-emergency Qatar destination requires local approval. Call Back If: breathing difficulty or chest pain develops; swelling worsens.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2827,7 +2827,7 @@
         {
           "id": "oscg-postpartum-urination-pain-adult-female-advice-143702",
           "titleEn": "Urgent postpartum urinary symptom review",
-          "instructionTextEn": "Arrange prompt clinical assessment; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Postpartum urinary symptoms may need examination and testing. Call Back If: fever develops; back pain worsens.",
+          "instructionTextEn": "Arrange prompt clinical assessment; the exact non-emergency Qatar destination requires local approval. Postpartum urinary symptoms may need examination and testing. Call Back If: fever develops; back pain worsens.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3016,7 +3016,7 @@
         {
           "id": "oscg-postpartum-urination-pain-child-female-advice-143802",
           "titleEn": "Urgent postpartum urinary symptom review",
-          "instructionTextEn": "Arrange prompt clinical assessment; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Postpartum urinary symptoms may need examination and testing. Call Back If: fever develops; back pain worsens.",
+          "instructionTextEn": "Arrange prompt clinical assessment; the exact non-emergency Qatar destination requires local approval. Postpartum urinary symptoms may need examination and testing. Call Back If: fever develops; back pain worsens.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3208,7 +3208,7 @@
         {
           "id": "oscg-postpartum-vaginal-bleeding-and-lochia-adult-female-advice-144302",
           "titleEn": "Urgent postpartum bleeding review",
-          "instructionTextEn": "Arrange prompt clinical assessment; the exact non-emergency Qatar maternity destination remains GOVERNANCE_REQUIRED. Call Back If: bleeding increases; fever develops.",
+          "instructionTextEn": "Arrange prompt clinical assessment; the exact non-emergency Qatar maternity destination requires local approval. Call Back If: bleeding increases; fever develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3417,7 +3417,7 @@
         {
           "id": "oscg-postpartum-vaginal-bleeding-and-lochia-child-female-advice-144402",
           "titleEn": "Urgent postpartum bleeding review",
-          "instructionTextEn": "Arrange prompt clinical assessment; the exact non-emergency Qatar maternity destination remains GOVERNANCE_REQUIRED. Call Back If: bleeding increases; fever develops.",
+          "instructionTextEn": "Arrange prompt clinical assessment; the exact non-emergency Qatar maternity destination requires local approval. Call Back If: bleeding increases; fever develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,

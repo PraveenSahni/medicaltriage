@@ -148,7 +148,7 @@
         {
           "id": "oscg-bedwetting-nocturnal-enuresis-child-female-advice-148601",
           "titleEn": "Emergency pediatric or safeguarding response",
-          "instructionTextEn": "For critical illness or immediate danger, call Qatar emergency services on 999 now and follow the call-taker's instructions. Keep the child with a safe adult where possible. Do not confront a suspected unsafe person or disclose the child's account to them. The exact Qatar child-protection reporting and safe-callback workflow remains GOVERNANCE_REQUIRED for UAT. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: reduced responsiveness, collapse or seizure; breathing difficulty or rapid deterioration; immediate safeguarding danger.",
+          "instructionTextEn": "For critical illness or immediate danger, call Qatar emergency services on 999 now and follow the call-taker's instructions. Keep the child with a safe adult where possible. Do not confront a suspected unsafe person or disclose the child's account to them. The exact Qatar child-protection reporting and safe-callback workflow requires local approval for UAT. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: reduced responsiveness, collapse or seizure; breathing difficulty or rapid deterioration; immediate safeguarding danger.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 1,
@@ -157,7 +157,7 @@
         {
           "id": "oscg-bedwetting-nocturnal-enuresis-child-female-advice-148602",
           "titleEn": "Prompt pediatric assessment",
-          "instructionTextEn": "Arrange prompt pediatric clinical review through the Qatar pathway approved for this UAT environment. A child under 5 must use a separately approved age-appropriate pathway. Excessive thirst or urination, weight loss, fever, pain, weakness, gait change, genital symptoms or safeguarding concerns must not be managed as routine bedwetting. The exact non-emergency destination, safeguarding report and safe-callback process remain GOVERNANCE_REQUIRED. Call Back If: the child becomes drowsy, weak or rapidly worse; vomiting or inability to drink develops; immediate safety concern develops.",
+          "instructionTextEn": "Arrange prompt pediatric clinical review through the Qatar pathway approved for this UAT environment. A child under 5 must use a separately approved age-appropriate pathway. Excessive thirst or urination, weight loss, fever, pain, weakness, gait change, genital symptoms or safeguarding concerns must not be managed as routine bedwetting. The exact non-emergency destination, safeguarding report and safe-callback process remain local approval required. Call Back If: the child becomes drowsy, weak or rapidly worse; vomiting or inability to drink develops; immediate safety concern develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -201,7 +201,7 @@
       "firstAid": [
         {
           "titleEn": "First Aid",
-          "instructionTextEn": "For critical illness or immediate danger, call Qatar emergency services on 999 now and follow the call-taker's instructions. Keep the child with a safe adult where possible. Do not confront a suspected unsafe person or disclose the child's account to them. The exact Qatar child-protection reporting and safe-callback workflow remains GOVERNANCE_REQUIRED for UAT. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "instructionTextEn": "For critical illness or immediate danger, call Qatar emergency services on 999 now and follow the call-taker's instructions. Keep the child with a safe adult where possible. Do not confront a suspected unsafe person or disclose the child's account to them. The exact Qatar child-protection reporting and safe-callback workflow requires local approval for UAT. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
           "displayOrder": 1
         }
       ],
@@ -376,7 +376,7 @@
         {
           "id": "oscg-bedwetting-nocturnal-enuresis-child-male-advice-148501",
           "titleEn": "Emergency pediatric or safeguarding response",
-          "instructionTextEn": "For critical illness or immediate danger, call Qatar emergency services on 999 now and follow the call-taker's instructions. Keep the child with a safe adult where possible. Do not confront a suspected unsafe person or disclose the child's account to them. The exact Qatar child-protection reporting and safe-callback workflow remains GOVERNANCE_REQUIRED for UAT. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: reduced responsiveness, collapse or seizure; breathing difficulty or rapid deterioration; immediate safeguarding danger.",
+          "instructionTextEn": "For critical illness or immediate danger, call Qatar emergency services on 999 now and follow the call-taker's instructions. Keep the child with a safe adult where possible. Do not confront a suspected unsafe person or disclose the child's account to them. The exact Qatar child-protection reporting and safe-callback workflow requires local approval for UAT. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: reduced responsiveness, collapse or seizure; breathing difficulty or rapid deterioration; immediate safeguarding danger.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 1,
@@ -385,7 +385,7 @@
         {
           "id": "oscg-bedwetting-nocturnal-enuresis-child-male-advice-148502",
           "titleEn": "Prompt pediatric assessment",
-          "instructionTextEn": "Arrange prompt pediatric clinical review through the Qatar pathway approved for this UAT environment. A child under 5 must use a separately approved age-appropriate pathway. Excessive thirst or urination, weight loss, fever, pain, weakness, gait change, genital symptoms or safeguarding concerns must not be managed as routine bedwetting. The exact non-emergency destination, safeguarding report and safe-callback process remain GOVERNANCE_REQUIRED. Call Back If: the child becomes drowsy, weak or rapidly worse; vomiting or inability to drink develops; immediate safety concern develops.",
+          "instructionTextEn": "Arrange prompt pediatric clinical review through the Qatar pathway approved for this UAT environment. A child under 5 must use a separately approved age-appropriate pathway. Excessive thirst or urination, weight loss, fever, pain, weakness, gait change, genital symptoms or safeguarding concerns must not be managed as routine bedwetting. The exact non-emergency destination, safeguarding report and safe-callback process remain local approval required. Call Back If: the child becomes drowsy, weak or rapidly worse; vomiting or inability to drink develops; immediate safety concern develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -429,7 +429,7 @@
       "firstAid": [
         {
           "titleEn": "First Aid",
-          "instructionTextEn": "For critical illness or immediate danger, call Qatar emergency services on 999 now and follow the call-taker's instructions. Keep the child with a safe adult where possible. Do not confront a suspected unsafe person or disclose the child's account to them. The exact Qatar child-protection reporting and safe-callback workflow remains GOVERNANCE_REQUIRED for UAT. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "instructionTextEn": "For critical illness or immediate danger, call Qatar emergency services on 999 now and follow the call-taker's instructions. Keep the child with a safe adult where possible. Do not confront a suspected unsafe person or disclose the child's account to them. The exact Qatar child-protection reporting and safe-callback workflow requires local approval for UAT. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
           "displayOrder": 1
         }
       ],
@@ -621,7 +621,7 @@
         {
           "id": "oscg-crying-before-3-months-old-child-female-advice-148802",
           "titleEn": "Urgent in-person assessment for a young infant",
-          "instructionTextEn": "Arrange urgent in-person pediatric assessment now; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Do not give fever medicine to delay assessment. Call 999 if the baby becomes difficult to wake, floppy, blue or grey, has breathing difficulty or a seizure, or cannot be transported safely. Call Back If: feeding or urine output falls; crying or behaviour changes; temperature reaches 38 C.",
+          "instructionTextEn": "Arrange urgent in-person pediatric assessment now; the exact non-emergency Qatar destination requires local approval. Do not give fever medicine to delay assessment. Call 999 if the baby becomes difficult to wake, floppy, blue or grey, has breathing difficulty or a seizure, or cannot be transported safely. Call Back If: feeding or urine output falls; crying or behaviour changes; temperature reaches 38 C.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -869,7 +869,7 @@
         {
           "id": "oscg-crying-before-3-months-old-child-male-advice-148702",
           "titleEn": "Urgent in-person assessment for a young infant",
-          "instructionTextEn": "Arrange urgent in-person pediatric assessment now; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Do not give fever medicine to delay assessment. Call 999 if the baby becomes difficult to wake, floppy, blue or grey, has breathing difficulty or a seizure, or cannot be transported safely. Call Back If: feeding or urine output falls; crying or behaviour changes; temperature reaches 38 C.",
+          "instructionTextEn": "Arrange urgent in-person pediatric assessment now; the exact non-emergency Qatar destination requires local approval. Do not give fever medicine to delay assessment. Call 999 if the baby becomes difficult to wake, floppy, blue or grey, has breathing difficulty or a seizure, or cannot be transported safely. Call Back If: feeding or urine output falls; crying or behaviour changes; temperature reaches 38 C.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2239,7 +2239,7 @@
         {
           "id": "oscg-elbow-swelling-child-female-advice-149802",
           "titleEn": "In-person elbow-swelling assessment",
-          "instructionTextEn": "Arrange in-person assessment; telephone review cannot exclude septic arthritis/bursitis, inflammatory disease or occult trauma. Medication and exact Qatar destination are GOVERNANCE_REQUIRED. Call Back If: redness, warmth or fever; movement worsens.",
+          "instructionTextEn": "Arrange in-person assessment; telephone review cannot exclude septic arthritis/bursitis, inflammatory disease or occult trauma. Medication and exact Qatar destination are local approval required. Call Back If: redness, warmth or fever; movement worsens.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2425,7 +2425,7 @@
         {
           "id": "oscg-elbow-swelling-child-male-advice-149702",
           "titleEn": "In-person elbow-swelling assessment",
-          "instructionTextEn": "Arrange in-person assessment; telephone review cannot exclude septic arthritis/bursitis, inflammatory disease or occult trauma. Medication and exact Qatar destination are GOVERNANCE_REQUIRED. Call Back If: redness, warmth or fever; movement worsens.",
+          "instructionTextEn": "Arrange in-person assessment; telephone review cannot exclude septic arthritis/bursitis, inflammatory disease or occult trauma. Medication and exact Qatar destination are local approval required. Call Back If: redness, warmth or fever; movement worsens.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3355,7 +3355,7 @@
         {
           "id": "oscg-hand-swelling-child-female-advice-150402",
           "titleEn": "In-person hand-swelling assessment",
-          "instructionTextEn": "Arrange in-person assessment; unexplained swelling may reflect infection, inflammatory disease, allergy, vascular obstruction or occult injury. Medication and exact Qatar destination are GOVERNANCE_REQUIRED. Call Back If: redness, warmth or fever; swelling progresses.",
+          "instructionTextEn": "Arrange in-person assessment; unexplained swelling may reflect infection, inflammatory disease, allergy, vascular obstruction or occult injury. Medication and exact Qatar destination are local approval required. Call Back If: redness, warmth or fever; swelling progresses.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3541,7 +3541,7 @@
         {
           "id": "oscg-hand-swelling-child-male-advice-150302",
           "titleEn": "In-person hand-swelling assessment",
-          "instructionTextEn": "Arrange in-person assessment; unexplained swelling may reflect infection, inflammatory disease, allergy, vascular obstruction or occult injury. Medication and exact Qatar destination are GOVERNANCE_REQUIRED. Call Back If: redness, warmth or fever; swelling progresses.",
+          "instructionTextEn": "Arrange in-person assessment; unexplained swelling may reflect infection, inflammatory disease, allergy, vascular obstruction or occult injury. Medication and exact Qatar destination are local approval required. Call Back If: redness, warmth or fever; swelling progresses.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 2,

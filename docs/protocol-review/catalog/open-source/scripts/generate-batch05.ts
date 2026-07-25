@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { batch05Protocols } from "../../../../../src/data/openSourceGuidelines/batch05.js";
 import {
+  localizeObjectText,
   localizeOperationalText,
   normalizeEmergencyAdvice,
 } from "./shared-demographic-generator.js";
@@ -179,7 +180,7 @@ for (const protocol of selected) {
 
       const ageText =
         age.max === null ? "Adult (18 years and older)" : `Child (${age.min}-${age.max} years)`;
-      const doc = {
+      const doc = localizeObjectText({
         _source: sourceText,
         algorithm: {
           AlgorithmID: algorithmId,
@@ -231,7 +232,7 @@ for (const protocol of selected) {
         references: protocol.provenance.sourceDocuments,
         searchwords: protocol.keywords.map((keyword) => keyword.phrase),
         initialAssessmentQuestions: iaqs,
-      };
+      });
 
       const canonicalContentHash = sha(doc);
       fs.writeFileSync(

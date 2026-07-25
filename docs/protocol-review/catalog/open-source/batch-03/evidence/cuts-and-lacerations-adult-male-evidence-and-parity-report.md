@@ -7,7 +7,7 @@
 - Age group: **Adult**
 - Gender at birth: **Male**
 - Completion status: **BLOCKED_BY_RESEARCH_GAP**
-- Content hash: `616140193329ebc3db6b8b7e3b91ec00b50523b3478a853b767033b7667cd6a4`
+- Content hash: `81cf97686bb70b7004d26a72face947826525f14efc61578cdc774632ff28ba9`
 
 ## Canonical format
 

@@ -140,7 +140,7 @@
         {
           "id": "oscg-abdominal-pain-upper-adult-female-advice-146802",
           "titleEn": "Mandatory upper abdominal pain assessment",
-          "instructionTextEn": "Children, pregnant/postpartum patients, and anyone with persistent or concerning features need in-person assessment; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: pain becomes severe or persistent; vomiting, fever, jaundice, chest symptoms, blood, black stool, fainting, or breathing difficulty develops.",
+          "instructionTextEn": "Children, pregnant/postpartum patients, and anyone with persistent or concerning features need in-person assessment; the exact non-emergency Qatar destination requires local approval. Call Back If: pain becomes severe or persistent; vomiting, fever, jaundice, chest symptoms, blood, black stool, fainting, or breathing difficulty develops.",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
           "warningSigns": [],
           "displayOrder": 2,
@@ -356,7 +356,7 @@
         {
           "id": "oscg-abdominal-pain-upper-adult-male-advice-146702",
           "titleEn": "Mandatory upper abdominal pain assessment",
-          "instructionTextEn": "Children, pregnant/postpartum patients, and anyone with persistent or concerning features need in-person assessment; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: pain becomes severe or persistent; vomiting, fever, jaundice, chest symptoms, blood, black stool, fainting, or breathing difficulty develops.",
+          "instructionTextEn": "Children, pregnant/postpartum patients, and anyone with persistent or concerning features need in-person assessment; the exact non-emergency Qatar destination requires local approval. Call Back If: pain becomes severe or persistent; vomiting, fever, jaundice, chest symptoms, blood, black stool, fainting, or breathing difficulty develops.",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
           "warningSigns": [],
           "displayOrder": 2,
@@ -581,7 +581,7 @@
         {
           "id": "oscg-abdominal-pain-upper-child-female-advice-147002",
           "titleEn": "Mandatory upper abdominal pain assessment",
-          "instructionTextEn": "Children, pregnant/postpartum patients, and anyone with persistent or concerning features need in-person assessment; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: pain becomes severe or persistent; vomiting, fever, jaundice, chest symptoms, blood, black stool, fainting, or breathing difficulty develops.",
+          "instructionTextEn": "Children, pregnant/postpartum patients, and anyone with persistent or concerning features need in-person assessment; the exact non-emergency Qatar destination requires local approval. Call Back If: pain becomes severe or persistent; vomiting, fever, jaundice, chest symptoms, blood, black stool, fainting, or breathing difficulty develops.",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
           "warningSigns": [],
           "displayOrder": 2,
@@ -806,7 +806,7 @@
         {
           "id": "oscg-abdominal-pain-upper-child-male-advice-146902",
           "titleEn": "Mandatory upper abdominal pain assessment",
-          "instructionTextEn": "Children, pregnant/postpartum patients, and anyone with persistent or concerning features need in-person assessment; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: pain becomes severe or persistent; vomiting, fever, jaundice, chest symptoms, blood, black stool, fainting, or breathing difficulty develops.",
+          "instructionTextEn": "Children, pregnant/postpartum patients, and anyone with persistent or concerning features need in-person assessment; the exact non-emergency Qatar destination requires local approval. Call Back If: pain becomes severe or persistent; vomiting, fever, jaundice, chest symptoms, blood, black stool, fainting, or breathing difficulty develops.",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
           "warningSigns": [],
           "displayOrder": 2,
@@ -1022,7 +1022,7 @@
         {
           "id": "oscg-contraception-iud-symptoms-and-questions-adult-female-advice-147102",
           "titleEn": "Urgent in-person IUD assessment",
-          "instructionTextEn": "Arrange urgent in-person gynecology, early-pregnancy, pediatric or safeguarding assessment as applicable; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. If threads cannot be felt or have changed, do not rely on the IUD for contraception until checked; a clinician must assess whether emergency contraception and pregnancy testing are needed. Call Back If: pain, faintness, fever, discharge, or bleeding worsens.",
+          "instructionTextEn": "Arrange urgent in-person gynecology, early-pregnancy, pediatric or safeguarding assessment as applicable; the exact non-emergency Qatar destination requires local approval. If threads cannot be felt or have changed, do not rely on the IUD for contraception until checked; a clinician must assess whether emergency contraception and pregnancy testing are needed. Call Back If: pain, faintness, fever, discharge, or bleeding worsens.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -1240,7 +1240,7 @@
         {
           "id": "oscg-contraception-iud-symptoms-and-questions-child-female-advice-147202",
           "titleEn": "Urgent in-person IUD assessment",
-          "instructionTextEn": "Arrange urgent in-person gynecology, early-pregnancy, pediatric or safeguarding assessment as applicable; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. If threads cannot be felt or have changed, do not rely on the IUD for contraception until checked; a clinician must assess whether emergency contraception and pregnancy testing are needed. Call Back If: pain, faintness, fever, discharge, or bleeding worsens.",
+          "instructionTextEn": "Arrange urgent in-person gynecology, early-pregnancy, pediatric or safeguarding assessment as applicable; the exact non-emergency Qatar destination requires local approval. If threads cannot be felt or have changed, do not rely on the IUD for contraception until checked; a clinician must assess whether emergency contraception and pregnancy testing are needed. Call Back If: pain, faintness, fever, discharge, or bleeding worsens.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2135,7 +2135,7 @@
         {
           "id": "oscg-pelvic-pain-female-adult-female-advice-146502",
           "titleEn": "Urgent in-person pelvic pain review",
-          "instructionTextEn": "Arrange urgent in-person gynecology, early-pregnancy, maternity, pediatric, or safeguarding assessment as applicable; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: pain worsens; fever, faintness, vomiting, shoulder pain, or bleeding develops.",
+          "instructionTextEn": "Arrange urgent in-person gynecology, early-pregnancy, maternity, pediatric, or safeguarding assessment as applicable; the exact non-emergency Qatar destination requires local approval. Call Back If: pain worsens; fever, faintness, vomiting, shoulder pain, or bleeding develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2144,7 +2144,7 @@
         {
           "id": "oscg-pelvic-pain-female-adult-female-advice-146503",
           "titleEn": "Pelvic pain clinical follow-up",
-          "instructionTextEn": "Arrange in-person clinical review to determine the cause; the exact Qatar destination remains GOVERNANCE_REQUIRED. A clinician or pharmacist should confirm any medicine is suitable, especially for a child, pregnancy, postpartum patient, or patient with bleeding or kidney disease. Call Back If: pain worsens; fever, faintness, vomiting, shoulder pain, or bleeding develops.",
+          "instructionTextEn": "Arrange in-person clinical review to determine the cause; the exact Qatar destination requires local approval. A clinician or pharmacist should confirm any medicine is suitable, especially for a child, pregnancy, postpartum patient, or patient with bleeding or kidney disease. Call Back If: pain worsens; fever, faintness, vomiting, shoulder pain, or bleeding develops.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 3,
@@ -2353,7 +2353,7 @@
         {
           "id": "oscg-pelvic-pain-female-child-female-advice-146602",
           "titleEn": "Urgent in-person pelvic pain review",
-          "instructionTextEn": "Arrange urgent in-person gynecology, early-pregnancy, maternity, pediatric, or safeguarding assessment as applicable; the exact non-emergency Qatar destination remains GOVERNANCE_REQUIRED. Call Back If: pain worsens; fever, faintness, vomiting, shoulder pain, or bleeding develops.",
+          "instructionTextEn": "Arrange urgent in-person gynecology, early-pregnancy, maternity, pediatric, or safeguarding assessment as applicable; the exact non-emergency Qatar destination requires local approval. Call Back If: pain worsens; fever, faintness, vomiting, shoulder pain, or bleeding develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -2362,7 +2362,7 @@
         {
           "id": "oscg-pelvic-pain-female-child-female-advice-146603",
           "titleEn": "Pelvic pain clinical follow-up",
-          "instructionTextEn": "Arrange in-person clinical review to determine the cause; the exact Qatar destination remains GOVERNANCE_REQUIRED. A clinician or pharmacist should confirm any medicine is suitable, especially for a child, pregnancy, postpartum patient, or patient with bleeding or kidney disease. Call Back If: pain worsens; fever, faintness, vomiting, shoulder pain, or bleeding develops.",
+          "instructionTextEn": "Arrange in-person clinical review to determine the cause; the exact Qatar destination requires local approval. A clinician or pharmacist should confirm any medicine is suitable, especially for a child, pregnancy, postpartum patient, or patient with bleeding or kidney disease. Call Back If: pain worsens; fever, faintness, vomiting, shoulder pain, or bleeding develops.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 3,
@@ -2583,7 +2583,7 @@
         {
           "id": "oscg-urination-pain-female-adult-female-advice-148103",
           "titleEn": "Testing before a lower-UTI plan",
-          "instructionTextEn": "Until assessed, rest and drink normally to thirst if fully alert and not vomiting or fluid-restricted. Do not force excessive fluids, start leftover antibiotics, use urinary alkalinizing products, or give fixed-dose/timed analgesia unless an approved Qatar clinician or protocol confirms age, weight, pregnancy, allergies, kidney function, interactions and maximum dose. The exact non-emergency destination and medicine pathway are GOVERNANCE_REQUIRED. Call Back If: symptoms worsen; fever or flank pain; vomiting; reduced urine; pregnancy concern.",
+          "instructionTextEn": "Until assessed, rest and drink normally to thirst if fully alert and not vomiting or fluid-restricted. Do not force excessive fluids, start leftover antibiotics, use urinary alkalinizing products, or give fixed-dose/timed analgesia unless an approved Qatar clinician or protocol confirms age, weight, pregnancy, allergies, kidney function, interactions and maximum dose. The exact non-emergency destination and medicine pathway are local approval required. Call Back If: symptoms worsen; fever or flank pain; vomiting; reduced urine; pregnancy concern.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -2827,7 +2827,7 @@
         {
           "id": "oscg-urination-pain-female-child-female-advice-148203",
           "titleEn": "Testing before a lower-UTI plan",
-          "instructionTextEn": "Until assessed, rest and drink normally to thirst if fully alert and not vomiting or fluid-restricted. Do not force excessive fluids, start leftover antibiotics, use urinary alkalinizing products, or give fixed-dose/timed analgesia unless an approved Qatar clinician or protocol confirms age, weight, pregnancy, allergies, kidney function, interactions and maximum dose. The exact non-emergency destination and medicine pathway are GOVERNANCE_REQUIRED. Call Back If: symptoms worsen; fever or flank pain; vomiting; reduced urine; pregnancy concern.",
+          "instructionTextEn": "Until assessed, rest and drink normally to thirst if fully alert and not vomiting or fluid-restricted. Do not force excessive fluids, start leftover antibiotics, use urinary alkalinizing products, or give fixed-dose/timed analgesia unless an approved Qatar clinician or protocol confirms age, weight, pregnancy, allergies, kidney function, interactions and maximum dose. The exact non-emergency destination and medicine pathway are local approval required. Call Back If: symptoms worsen; fever or flank pain; vomiting; reduced urine; pregnancy concern.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 3,
@@ -3041,7 +3041,7 @@
         {
           "id": "oscg-urination-pain-male-adult-male-advice-148302",
           "titleEn": "Same-day urinary and genital assessment",
-          "instructionTextEn": "Arrange same-day in-person assessment through an approved Qatar adult or pediatric pathway for urine sampling before antibiotics when feasible and clinician-directed genital, prostate or STI testing as indicated. Adolescents should be offered developmentally appropriate private time, within Qatar consent, confidentiality and safeguarding policy. Do not start leftover antibiotics or use fixed-dose/timed analgesia without an approved Qatar medicine pathway. Call 999 for sudden severe scrotal pain, retention, sepsis features or deterioration. Exact non-emergency destinations are GOVERNANCE_REQUIRED. Call Back If: fever or rigors; testicular pain develops or worsens; vomiting; cannot urinate; blood in urine; becomes very unwell.",
+          "instructionTextEn": "Arrange same-day in-person assessment through an approved Qatar adult or pediatric pathway for urine sampling before antibiotics when feasible and clinician-directed genital, prostate or STI testing as indicated. Adolescents should be offered developmentally appropriate private time, within Qatar consent, confidentiality and safeguarding policy. Do not start leftover antibiotics or use fixed-dose/timed analgesia without an approved Qatar medicine pathway. Call 999 for sudden severe scrotal pain, retention, sepsis features or deterioration. Exact non-emergency destinations are local approval required. Call Back If: fever or rigors; testicular pain develops or worsens; vomiting; cannot urinate; blood in urine; becomes very unwell.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3264,7 +3264,7 @@
         {
           "id": "oscg-urination-pain-male-child-male-advice-148402",
           "titleEn": "Same-day urinary and genital assessment",
-          "instructionTextEn": "Arrange same-day in-person assessment through an approved Qatar adult or pediatric pathway for urine sampling before antibiotics when feasible and clinician-directed genital, prostate or STI testing as indicated. Adolescents should be offered developmentally appropriate private time, within Qatar consent, confidentiality and safeguarding policy. Do not start leftover antibiotics or use fixed-dose/timed analgesia without an approved Qatar medicine pathway. Call 999 for sudden severe scrotal pain, retention, sepsis features or deterioration. Exact non-emergency destinations are GOVERNANCE_REQUIRED. Call Back If: fever or rigors; testicular pain develops or worsens; vomiting; cannot urinate; blood in urine; becomes very unwell.",
+          "instructionTextEn": "Arrange same-day in-person assessment through an approved Qatar adult or pediatric pathway for urine sampling before antibiotics when feasible and clinician-directed genital, prostate or STI testing as indicated. Adolescents should be offered developmentally appropriate private time, within Qatar consent, confidentiality and safeguarding policy. Do not start leftover antibiotics or use fixed-dose/timed analgesia without an approved Qatar medicine pathway. Call 999 for sudden severe scrotal pain, retention, sepsis features or deterioration. Exact non-emergency destinations are local approval required. Call Back If: fever or rigors; testicular pain develops or worsens; vomiting; cannot urinate; blood in urine; becomes very unwell.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3474,7 +3474,7 @@
         {
           "id": "oscg-urine-blood-in-adult-female-advice-147802",
           "titleEn": "Prompt in-person haematuria assessment",
-          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway for urine testing and clinician-directed examination, blood tests or imaging. Do not assume food, menstruation or medicine is the cause and do not start leftover antibiotics. Children with unexplained visible blood need a very urgent age-appropriate pathway. Call 999 for heavy bleeding, clots with retention, severe pain/illness, fainting, confusion or deterioration. The exact Qatar non-emergency urology, nephrology, pediatric, maternity and trauma destinations are GOVERNANCE_REQUIRED. Call Back If: heavy bleeding or clots; cannot urinate; fever or rigors; flank pain or vomiting; reduced urine; child becomes unwell.",
+          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway for urine testing and clinician-directed examination, blood tests or imaging. Do not assume food, menstruation or medicine is the cause and do not start leftover antibiotics. Children with unexplained visible blood need a very urgent age-appropriate pathway. Call 999 for heavy bleeding, clots with retention, severe pain/illness, fainting, confusion or deterioration. The exact Qatar non-emergency urology, nephrology, pediatric, maternity and trauma destinations are local approval required. Call Back If: heavy bleeding or clots; cannot urinate; fever or rigors; flank pain or vomiting; reduced urine; child becomes unwell.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3677,7 +3677,7 @@
         {
           "id": "oscg-urine-blood-in-adult-male-advice-147702",
           "titleEn": "Prompt in-person haematuria assessment",
-          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway for urine testing and clinician-directed examination, blood tests or imaging. Do not assume food, menstruation or medicine is the cause and do not start leftover antibiotics. Children with unexplained visible blood need a very urgent age-appropriate pathway. Call 999 for heavy bleeding, clots with retention, severe pain/illness, fainting, confusion or deterioration. The exact Qatar non-emergency urology, nephrology, pediatric, maternity and trauma destinations are GOVERNANCE_REQUIRED. Call Back If: heavy bleeding or clots; cannot urinate; fever or rigors; flank pain or vomiting; reduced urine; child becomes unwell.",
+          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway for urine testing and clinician-directed examination, blood tests or imaging. Do not assume food, menstruation or medicine is the cause and do not start leftover antibiotics. Children with unexplained visible blood need a very urgent age-appropriate pathway. Call 999 for heavy bleeding, clots with retention, severe pain/illness, fainting, confusion or deterioration. The exact Qatar non-emergency urology, nephrology, pediatric, maternity and trauma destinations are local approval required. Call Back If: heavy bleeding or clots; cannot urinate; fever or rigors; flank pain or vomiting; reduced urine; child becomes unwell.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3889,7 +3889,7 @@
         {
           "id": "oscg-urine-blood-in-child-female-advice-148002",
           "titleEn": "Prompt in-person haematuria assessment",
-          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway for urine testing and clinician-directed examination, blood tests or imaging. Do not assume food, menstruation or medicine is the cause and do not start leftover antibiotics. Children with unexplained visible blood need a very urgent age-appropriate pathway. Call 999 for heavy bleeding, clots with retention, severe pain/illness, fainting, confusion or deterioration. The exact Qatar non-emergency urology, nephrology, pediatric, maternity and trauma destinations are GOVERNANCE_REQUIRED. Call Back If: heavy bleeding or clots; cannot urinate; fever or rigors; flank pain or vomiting; reduced urine; child becomes unwell.",
+          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway for urine testing and clinician-directed examination, blood tests or imaging. Do not assume food, menstruation or medicine is the cause and do not start leftover antibiotics. Children with unexplained visible blood need a very urgent age-appropriate pathway. Call 999 for heavy bleeding, clots with retention, severe pain/illness, fainting, confusion or deterioration. The exact Qatar non-emergency urology, nephrology, pediatric, maternity and trauma destinations are local approval required. Call Back If: heavy bleeding or clots; cannot urinate; fever or rigors; flank pain or vomiting; reduced urine; child becomes unwell.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -4101,7 +4101,7 @@
         {
           "id": "oscg-urine-blood-in-child-male-advice-147902",
           "titleEn": "Prompt in-person haematuria assessment",
-          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway for urine testing and clinician-directed examination, blood tests or imaging. Do not assume food, menstruation or medicine is the cause and do not start leftover antibiotics. Children with unexplained visible blood need a very urgent age-appropriate pathway. Call 999 for heavy bleeding, clots with retention, severe pain/illness, fainting, confusion or deterioration. The exact Qatar non-emergency urology, nephrology, pediatric, maternity and trauma destinations are GOVERNANCE_REQUIRED. Call Back If: heavy bleeding or clots; cannot urinate; fever or rigors; flank pain or vomiting; reduced urine; child becomes unwell.",
+          "instructionTextEn": "Arrange prompt in-person assessment through an approved Qatar adult or pediatric pathway for urine testing and clinician-directed examination, blood tests or imaging. Do not assume food, menstruation or medicine is the cause and do not start leftover antibiotics. Children with unexplained visible blood need a very urgent age-appropriate pathway. Call 999 for heavy bleeding, clots with retention, severe pain/illness, fainting, confusion or deterioration. The exact Qatar non-emergency urology, nephrology, pediatric, maternity and trauma destinations are local approval required. Call Back If: heavy bleeding or clots; cannot urinate; fever or rigors; flank pain or vomiting; reduced urine; child becomes unwell.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,

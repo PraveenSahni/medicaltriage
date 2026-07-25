@@ -3580,7 +3580,7 @@
           "severity": "Emergency",
           "questionTextEn": "If the patient is under 18, is harm occurring now, is there immediate danger from an accompanying or suspected caregiver, could the child be returned now to an unsafe person or place, or did contact end while an immediate threat remained unresolved?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "Immediate danger, ongoing harm, an imminent unsafe return, or loss of contact during an unresolved immediate threat requires emergency action. Qatar 999 is the verified emergency route. Exact child-protection reporting, consent, documentation, and information-sharing requirements are GOVERNANCE_REQUIRED.",
+          "rationaleEn": "Immediate danger, ongoing harm, an imminent unsafe return, or loss of contact during an unresolved immediate threat requires emergency action. Qatar 999 is the verified emergency route. Exact child-protection reporting, consent, documentation, and information-sharing requirements are local approval required.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3612,7 +3612,7 @@
           "severity": "Urgent",
           "questionTextEn": "If the patient is under 18 and there is no confirmed immediate danger, are they unable to speak privately, is caregiver safety uncertain, or is there another safeguarding concern requiring trained assessment?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "An inability to obtain a private history, uncertainty about caregiver safety, or another safeguarding concern needs prompt trained assessment without automatically treating it as a confirmed emergency. The exact Qatar safeguarding pathway is GOVERNANCE_REQUIRED.",
+          "rationaleEn": "An inability to obtain a private history, uncertainty about caregiver safety, or another safeguarding concern needs prompt trained assessment without automatically treating it as a confirmed emergency. The exact Qatar safeguarding pathway requires local approval.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3659,7 +3659,7 @@
         {
           "id": "oscg-wrist-injury-adult-female-advice-130601",
           "titleEn": "Immediate child safeguarding danger",
-          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: harm occurring now or immediate danger; imminent return to an unsafe person or place; contact lost while an immediate threat remains unresolved.",
+          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are local approval required. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: harm occurring now or immediate danger; imminent return to an unsafe person or place; contact lost while an immediate threat remains unresolved.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 1,
@@ -3668,7 +3668,7 @@
         {
           "id": "oscg-wrist-injury-adult-female-advice-130602",
           "titleEn": "Urgent private child safeguarding assessment",
-          "instructionTextEn": "Keep questions neutral and seek a private conversation only when it is safe. Do not disclose sensitive information to a caregiver whose safety is uncertain, do not confront or alert a suspected unsafe person, and do not promise confidentiality. Arrange prompt in-person assessment through the governance-approved Qatar child safeguarding pathway and record only an approved safe callback method. If immediate danger emerges or contact is lost during an unresolved immediate threat, use the emergency branch and call Qatar 999. Exact reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Back If: private history cannot be obtained safely; caregiver safety remains uncertain; new immediate danger or loss of contact.",
+          "instructionTextEn": "Keep questions neutral and seek a private conversation only when it is safe. Do not disclose sensitive information to a caregiver whose safety is uncertain, do not confront or alert a suspected unsafe person, and do not promise confidentiality. Arrange prompt in-person assessment through the governance-approved Qatar child safeguarding pathway and record only an approved safe callback method. If immediate danger emerges or contact is lost during an unresolved immediate threat, use the emergency branch and call Qatar 999. Exact reporting, consent, documentation, and information-sharing rules are local approval required. Call Back If: private history cannot be obtained safely; caregiver safety remains uncertain; new immediate danger or loss of contact.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3721,7 +3721,7 @@
       "firstAid": [
         {
           "titleEn": "First Aid",
-          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are local approval required. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
           "displayOrder": 1
         },
         {
@@ -3852,7 +3852,7 @@
           "severity": "Emergency",
           "questionTextEn": "If the patient is under 18, is harm occurring now, is there immediate danger from an accompanying or suspected caregiver, could the child be returned now to an unsafe person or place, or did contact end while an immediate threat remained unresolved?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "Immediate danger, ongoing harm, an imminent unsafe return, or loss of contact during an unresolved immediate threat requires emergency action. Qatar 999 is the verified emergency route. Exact child-protection reporting, consent, documentation, and information-sharing requirements are GOVERNANCE_REQUIRED.",
+          "rationaleEn": "Immediate danger, ongoing harm, an imminent unsafe return, or loss of contact during an unresolved immediate threat requires emergency action. Qatar 999 is the verified emergency route. Exact child-protection reporting, consent, documentation, and information-sharing requirements are local approval required.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3884,7 +3884,7 @@
           "severity": "Urgent",
           "questionTextEn": "If the patient is under 18 and there is no confirmed immediate danger, are they unable to speak privately, is caregiver safety uncertain, or is there another safeguarding concern requiring trained assessment?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "An inability to obtain a private history, uncertainty about caregiver safety, or another safeguarding concern needs prompt trained assessment without automatically treating it as a confirmed emergency. The exact Qatar safeguarding pathway is GOVERNANCE_REQUIRED.",
+          "rationaleEn": "An inability to obtain a private history, uncertainty about caregiver safety, or another safeguarding concern needs prompt trained assessment without automatically treating it as a confirmed emergency. The exact Qatar safeguarding pathway requires local approval.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3931,7 +3931,7 @@
         {
           "id": "oscg-wrist-injury-adult-male-advice-130501",
           "titleEn": "Immediate child safeguarding danger",
-          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: harm occurring now or immediate danger; imminent return to an unsafe person or place; contact lost while an immediate threat remains unresolved.",
+          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are local approval required. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: harm occurring now or immediate danger; imminent return to an unsafe person or place; contact lost while an immediate threat remains unresolved.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 1,
@@ -3940,7 +3940,7 @@
         {
           "id": "oscg-wrist-injury-adult-male-advice-130502",
           "titleEn": "Urgent private child safeguarding assessment",
-          "instructionTextEn": "Keep questions neutral and seek a private conversation only when it is safe. Do not disclose sensitive information to a caregiver whose safety is uncertain, do not confront or alert a suspected unsafe person, and do not promise confidentiality. Arrange prompt in-person assessment through the governance-approved Qatar child safeguarding pathway and record only an approved safe callback method. If immediate danger emerges or contact is lost during an unresolved immediate threat, use the emergency branch and call Qatar 999. Exact reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Back If: private history cannot be obtained safely; caregiver safety remains uncertain; new immediate danger or loss of contact.",
+          "instructionTextEn": "Keep questions neutral and seek a private conversation only when it is safe. Do not disclose sensitive information to a caregiver whose safety is uncertain, do not confront or alert a suspected unsafe person, and do not promise confidentiality. Arrange prompt in-person assessment through the governance-approved Qatar child safeguarding pathway and record only an approved safe callback method. If immediate danger emerges or contact is lost during an unresolved immediate threat, use the emergency branch and call Qatar 999. Exact reporting, consent, documentation, and information-sharing rules are local approval required. Call Back If: private history cannot be obtained safely; caregiver safety remains uncertain; new immediate danger or loss of contact.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3993,7 +3993,7 @@
       "firstAid": [
         {
           "titleEn": "First Aid",
-          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are local approval required. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
           "displayOrder": 1
         },
         {
@@ -4133,7 +4133,7 @@
           "severity": "Emergency",
           "questionTextEn": "If the patient is under 18, is harm occurring now, is there immediate danger from an accompanying or suspected caregiver, could the child be returned now to an unsafe person or place, or did contact end while an immediate threat remained unresolved?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "Immediate danger, ongoing harm, an imminent unsafe return, or loss of contact during an unresolved immediate threat requires emergency action. Qatar 999 is the verified emergency route. Exact child-protection reporting, consent, documentation, and information-sharing requirements are GOVERNANCE_REQUIRED.",
+          "rationaleEn": "Immediate danger, ongoing harm, an imminent unsafe return, or loss of contact during an unresolved immediate threat requires emergency action. Qatar 999 is the verified emergency route. Exact child-protection reporting, consent, documentation, and information-sharing requirements are local approval required.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -4165,7 +4165,7 @@
           "severity": "Urgent",
           "questionTextEn": "If the patient is under 18 and there is no confirmed immediate danger, are they unable to speak privately, is caregiver safety uncertain, or is there another safeguarding concern requiring trained assessment?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "An inability to obtain a private history, uncertainty about caregiver safety, or another safeguarding concern needs prompt trained assessment without automatically treating it as a confirmed emergency. The exact Qatar safeguarding pathway is GOVERNANCE_REQUIRED.",
+          "rationaleEn": "An inability to obtain a private history, uncertainty about caregiver safety, or another safeguarding concern needs prompt trained assessment without automatically treating it as a confirmed emergency. The exact Qatar safeguarding pathway requires local approval.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4212,7 +4212,7 @@
         {
           "id": "oscg-wrist-injury-child-female-advice-130801",
           "titleEn": "Immediate child safeguarding danger",
-          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: harm occurring now or immediate danger; imminent return to an unsafe person or place; contact lost while an immediate threat remains unresolved.",
+          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are local approval required. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: harm occurring now or immediate danger; imminent return to an unsafe person or place; contact lost while an immediate threat remains unresolved.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 1,
@@ -4221,7 +4221,7 @@
         {
           "id": "oscg-wrist-injury-child-female-advice-130802",
           "titleEn": "Urgent private child safeguarding assessment",
-          "instructionTextEn": "Keep questions neutral and seek a private conversation only when it is safe. Do not disclose sensitive information to a caregiver whose safety is uncertain, do not confront or alert a suspected unsafe person, and do not promise confidentiality. Arrange prompt in-person assessment through the governance-approved Qatar child safeguarding pathway and record only an approved safe callback method. If immediate danger emerges or contact is lost during an unresolved immediate threat, use the emergency branch and call Qatar 999. Exact reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Back If: private history cannot be obtained safely; caregiver safety remains uncertain; new immediate danger or loss of contact.",
+          "instructionTextEn": "Keep questions neutral and seek a private conversation only when it is safe. Do not disclose sensitive information to a caregiver whose safety is uncertain, do not confront or alert a suspected unsafe person, and do not promise confidentiality. Arrange prompt in-person assessment through the governance-approved Qatar child safeguarding pathway and record only an approved safe callback method. If immediate danger emerges or contact is lost during an unresolved immediate threat, use the emergency branch and call Qatar 999. Exact reporting, consent, documentation, and information-sharing rules are local approval required. Call Back If: private history cannot be obtained safely; caregiver safety remains uncertain; new immediate danger or loss of contact.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -4274,7 +4274,7 @@
       "firstAid": [
         {
           "titleEn": "First Aid",
-          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are local approval required. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
           "displayOrder": 1
         },
         {
@@ -4414,7 +4414,7 @@
           "severity": "Emergency",
           "questionTextEn": "If the patient is under 18, is harm occurring now, is there immediate danger from an accompanying or suspected caregiver, could the child be returned now to an unsafe person or place, or did contact end while an immediate threat remained unresolved?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "Immediate danger, ongoing harm, an imminent unsafe return, or loss of contact during an unresolved immediate threat requires emergency action. Qatar 999 is the verified emergency route. Exact child-protection reporting, consent, documentation, and information-sharing requirements are GOVERNANCE_REQUIRED.",
+          "rationaleEn": "Immediate danger, ongoing harm, an imminent unsafe return, or loss of contact during an unresolved immediate threat requires emergency action. Qatar 999 is the verified emergency route. Exact child-protection reporting, consent, documentation, and information-sharing requirements are local approval required.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -4446,7 +4446,7 @@
           "severity": "Urgent",
           "questionTextEn": "If the patient is under 18 and there is no confirmed immediate danger, are they unable to speak privately, is caregiver safety uncertain, or is there another safeguarding concern requiring trained assessment?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "An inability to obtain a private history, uncertainty about caregiver safety, or another safeguarding concern needs prompt trained assessment without automatically treating it as a confirmed emergency. The exact Qatar safeguarding pathway is GOVERNANCE_REQUIRED.",
+          "rationaleEn": "An inability to obtain a private history, uncertainty about caregiver safety, or another safeguarding concern needs prompt trained assessment without automatically treating it as a confirmed emergency. The exact Qatar safeguarding pathway requires local approval.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4493,7 +4493,7 @@
         {
           "id": "oscg-wrist-injury-child-male-advice-130701",
           "titleEn": "Immediate child safeguarding danger",
-          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: harm occurring now or immediate danger; imminent return to an unsafe person or place; contact lost while an immediate threat remains unresolved.",
+          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are local approval required. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care. Call Back If: harm occurring now or immediate danger; imminent return to an unsafe person or place; contact lost while an immediate threat remains unresolved.",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
           "warningSigns": [],
           "displayOrder": 1,
@@ -4502,7 +4502,7 @@
         {
           "id": "oscg-wrist-injury-child-male-advice-130702",
           "titleEn": "Urgent private child safeguarding assessment",
-          "instructionTextEn": "Keep questions neutral and seek a private conversation only when it is safe. Do not disclose sensitive information to a caregiver whose safety is uncertain, do not confront or alert a suspected unsafe person, and do not promise confidentiality. Arrange prompt in-person assessment through the governance-approved Qatar child safeguarding pathway and record only an approved safe callback method. If immediate danger emerges or contact is lost during an unresolved immediate threat, use the emergency branch and call Qatar 999. Exact reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Back If: private history cannot be obtained safely; caregiver safety remains uncertain; new immediate danger or loss of contact.",
+          "instructionTextEn": "Keep questions neutral and seek a private conversation only when it is safe. Do not disclose sensitive information to a caregiver whose safety is uncertain, do not confront or alert a suspected unsafe person, and do not promise confidentiality. Arrange prompt in-person assessment through the governance-approved Qatar child safeguarding pathway and record only an approved safe callback method. If immediate danger emerges or contact is lost during an unresolved immediate threat, use the emergency branch and call Qatar 999. Exact reporting, consent, documentation, and information-sharing rules are local approval required. Call Back If: private history cannot be obtained safely; caregiver safety remains uncertain; new immediate danger or loss of contact.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -4555,7 +4555,7 @@
       "firstAid": [
         {
           "titleEn": "First Aid",
-          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are GOVERNANCE_REQUIRED. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
+          "instructionTextEn": "Call Qatar 999 now when immediate danger or ongoing harm is suspected. If contact continues, confirm the child's current location and a safe way to communicate without alerting or confronting a suspected unsafe caregiver. If contact is lost, use only the approved safe callback method and follow the governance-approved emergency escalation process. Do not promise confidentiality. Exact Qatar child-protection reporting, consent, documentation, and information-sharing rules are local approval required. Call Qatar 999 now, follow the call-taker's ambulance and emergency-transport instructions, and do not self-drive. Do not delay emergency care.",
           "displayOrder": 1
         },
         {

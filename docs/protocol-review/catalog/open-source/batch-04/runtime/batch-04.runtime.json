@@ -1884,7 +1884,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is an inflamed, painful, scaling, crusting, or infected-looking scalp the main concern rather than hair loss itself?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "The localized-rash family is not generated. Arrange prompt in-person assessment through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "The localized-rash family is not generated. Arrange prompt in-person assessment through an approved local service.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [],
@@ -1898,7 +1898,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the caller worried about the hair loss and would like it assessed?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
+          "rationaleEn": "NHS.UK guidance: arrange a primary-care review if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2059,7 +2059,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is an inflamed, painful, scaling, crusting, or infected-looking scalp the main concern rather than hair loss itself?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "The localized-rash family is not generated. Arrange prompt in-person assessment through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "The localized-rash family is not generated. Arrange prompt in-person assessment through an approved local service.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [],
@@ -2073,7 +2073,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the caller worried about the hair loss and would like it assessed?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
+          "rationaleEn": "NHS.UK guidance: arrange a primary-care review if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2243,7 +2243,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is an inflamed, painful, scaling, crusting, or infected-looking scalp the main concern rather than hair loss itself?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "The localized-rash family is not generated. Arrange prompt in-person assessment through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "The localized-rash family is not generated. Arrange prompt in-person assessment through an approved local service.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [],
@@ -2257,7 +2257,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the caller worried about the hair loss and would like it assessed?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
+          "rationaleEn": "NHS.UK guidance: arrange a primary-care review if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2427,7 +2427,7 @@
           "severity": "Urgent",
           "questionTextEn": "Is an inflamed, painful, scaling, crusting, or infected-looking scalp the main concern rather than hair loss itself?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "The localized-rash family is not generated. Arrange prompt in-person assessment through the Qatar route approved by governance (GOVERNANCE_REQUIRED).",
+          "rationaleEn": "The localized-rash family is not generated. Arrange prompt in-person assessment through an approved local service.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [],
@@ -2441,7 +2441,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the caller worried about the hair loss and would like it assessed?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
+          "rationaleEn": "NHS.UK guidance: arrange a primary-care review if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3472,7 +3472,7 @@
           "severity": "Routine",
           "questionTextEn": "Do the tics occur very regularly or are becoming more frequent/severe, cause social or emotional problems, cause pain or accidental injury, interfere with daily activities, or come with anger, depression, or self-harm?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) about tics.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to arrange a primary-care review about tics.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3488,7 +3488,7 @@
           "severity": "Self-care",
           "questionTextEn": "Are the tics mild and not causing problems, with none of the features above?",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) evaluation.",
+          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need primary-care clinician evaluation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3512,7 +3512,7 @@
         {
           "id": "oscg-muscle-jerks-tics-shudders-adult-female-advice-110802",
           "titleEn": "Fail-closed seizure or infantile-spasm assessment",
-          "instructionTextEn": "Do not label the event as a tic. Arrange age-appropriate urgent clinical assessment. Suspected infantile spasms in a child under 2 years require specialist pediatric neurology guidance and referral within 24 hours; a first suspected seizure requires urgent specialist follow-up even when fully resolved. Call 999 if another event begins, recovery is incomplete, breathing is abnormal, or any emergency criterion develops. The exact Qatar pediatric neurology and first-seizure destination is GOVERNANCE_REQUIRED. Call Back If: another seizure; reduced responsiveness; breathing change; developmental regression; clusters of infant spasms.",
+          "instructionTextEn": "Do not label the event as a tic. Arrange age-appropriate urgent clinical assessment. Suspected infantile spasms in a child under 2 years require specialist pediatric neurology guidance and referral within 24 hours; a first suspected seizure requires urgent specialist follow-up even when fully resolved. Call 999 if another event begins, recovery is incomplete, breathing is abnormal, or any emergency criterion develops. The exact Qatar pediatric neurology and first-seizure destination requires local approval. Call Back If: another seizure; reduced responsiveness; breathing change; developmental regression; clusters of infant spasms.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3720,7 +3720,7 @@
           "severity": "Routine",
           "questionTextEn": "Do the tics occur very regularly or are becoming more frequent/severe, cause social or emotional problems, cause pain or accidental injury, interfere with daily activities, or come with anger, depression, or self-harm?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) about tics.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to arrange a primary-care review about tics.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3736,7 +3736,7 @@
           "severity": "Self-care",
           "questionTextEn": "Are the tics mild and not causing problems, with none of the features above?",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) evaluation.",
+          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need primary-care clinician evaluation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3760,7 +3760,7 @@
         {
           "id": "oscg-muscle-jerks-tics-shudders-adult-male-advice-110702",
           "titleEn": "Fail-closed seizure or infantile-spasm assessment",
-          "instructionTextEn": "Do not label the event as a tic. Arrange age-appropriate urgent clinical assessment. Suspected infantile spasms in a child under 2 years require specialist pediatric neurology guidance and referral within 24 hours; a first suspected seizure requires urgent specialist follow-up even when fully resolved. Call 999 if another event begins, recovery is incomplete, breathing is abnormal, or any emergency criterion develops. The exact Qatar pediatric neurology and first-seizure destination is GOVERNANCE_REQUIRED. Call Back If: another seizure; reduced responsiveness; breathing change; developmental regression; clusters of infant spasms.",
+          "instructionTextEn": "Do not label the event as a tic. Arrange age-appropriate urgent clinical assessment. Suspected infantile spasms in a child under 2 years require specialist pediatric neurology guidance and referral within 24 hours; a first suspected seizure requires urgent specialist follow-up even when fully resolved. Call 999 if another event begins, recovery is incomplete, breathing is abnormal, or any emergency criterion develops. The exact Qatar pediatric neurology and first-seizure destination requires local approval. Call Back If: another seizure; reduced responsiveness; breathing change; developmental regression; clusters of infant spasms.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3977,7 +3977,7 @@
           "severity": "Routine",
           "questionTextEn": "Do the tics occur very regularly or are becoming more frequent/severe, cause social or emotional problems, cause pain or accidental injury, interfere with daily activities, or come with anger, depression, or self-harm?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) about tics.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to arrange a primary-care review about tics.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3993,7 +3993,7 @@
           "severity": "Self-care",
           "questionTextEn": "Are the tics mild and not causing problems, with none of the features above?",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) evaluation.",
+          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need primary-care clinician evaluation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4017,7 +4017,7 @@
         {
           "id": "oscg-muscle-jerks-tics-shudders-child-female-advice-111002",
           "titleEn": "Fail-closed seizure or infantile-spasm assessment",
-          "instructionTextEn": "Do not label the event as a tic. Arrange age-appropriate urgent clinical assessment. Suspected infantile spasms in a child under 2 years require specialist pediatric neurology guidance and referral within 24 hours; a first suspected seizure requires urgent specialist follow-up even when fully resolved. Call 999 if another event begins, recovery is incomplete, breathing is abnormal, or any emergency criterion develops. The exact Qatar pediatric neurology and first-seizure destination is GOVERNANCE_REQUIRED. Call Back If: another seizure; reduced responsiveness; breathing change; developmental regression; clusters of infant spasms.",
+          "instructionTextEn": "Do not label the event as a tic. Arrange age-appropriate urgent clinical assessment. Suspected infantile spasms in a child under 2 years require specialist pediatric neurology guidance and referral within 24 hours; a first suspected seizure requires urgent specialist follow-up even when fully resolved. Call 999 if another event begins, recovery is incomplete, breathing is abnormal, or any emergency criterion develops. The exact Qatar pediatric neurology and first-seizure destination requires local approval. Call Back If: another seizure; reduced responsiveness; breathing change; developmental regression; clusters of infant spasms.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -4234,7 +4234,7 @@
           "severity": "Routine",
           "questionTextEn": "Do the tics occur very regularly or are becoming more frequent/severe, cause social or emotional problems, cause pain or accidental injury, interfere with daily activities, or come with anger, depression, or self-harm?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) about tics.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to arrange a primary-care review about tics.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4250,7 +4250,7 @@
           "severity": "Self-care",
           "questionTextEn": "Are the tics mild and not causing problems, with none of the features above?",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) evaluation.",
+          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need primary-care clinician evaluation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4274,7 +4274,7 @@
         {
           "id": "oscg-muscle-jerks-tics-shudders-child-male-advice-110902",
           "titleEn": "Fail-closed seizure or infantile-spasm assessment",
-          "instructionTextEn": "Do not label the event as a tic. Arrange age-appropriate urgent clinical assessment. Suspected infantile spasms in a child under 2 years require specialist pediatric neurology guidance and referral within 24 hours; a first suspected seizure requires urgent specialist follow-up even when fully resolved. Call 999 if another event begins, recovery is incomplete, breathing is abnormal, or any emergency criterion develops. The exact Qatar pediatric neurology and first-seizure destination is GOVERNANCE_REQUIRED. Call Back If: another seizure; reduced responsiveness; breathing change; developmental regression; clusters of infant spasms.",
+          "instructionTextEn": "Do not label the event as a tic. Arrange age-appropriate urgent clinical assessment. Suspected infantile spasms in a child under 2 years require specialist pediatric neurology guidance and referral within 24 hours; a first suspected seizure requires urgent specialist follow-up even when fully resolved. Call 999 if another event begins, recovery is incomplete, breathing is abnormal, or any emergency criterion develops. The exact Qatar pediatric neurology and first-seizure destination requires local approval. Call Back If: another seizure; reduced responsiveness; breathing change; developmental regression; clusters of infant spasms.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5436,7 +5436,7 @@
         {
           "id": "oscg-poisoning-adult-female-advice-111602",
           "titleEn": "Qatar Poison Center assessment and route-specific first aid",
-          "instructionTextEn": "Call Sidra Medicine's Qatar Poison Center on +974 4003 1111 during its published hours (09:00-01:00 daily) for individualized adult or child advice; it is a phone service and cannot dispatch an ambulance. Do not wait for symptoms and do not induce vomiting or give anything by mouth unless directed. For inhalation, move to fresh air without entering an unsafe area. For eye exposure, remove contact lenses when easy and rinse immediately with plenty of room-temperature water for 15-20 minutes. For skin exposure, remove contaminated clothing while avoiding secondary exposure and rinse with plenty of room-temperature running water for at least 15 minutes; brush off a dry chemical first only when its label or a poison specialist directs this. Keep the product/container available. Outside published hours, the approved Qatar non-emergency toxicology route is GOVERNANCE_REQUIRED; call 999 for any deterioration or uncertainty about immediate safety. Call Back If: any new symptom; drowsiness or confusion; vomiting or drooling; breathing difficulty; seizure; persistent eye pain or vision change; worsening skin pain or burn.",
+          "instructionTextEn": "Call Sidra Medicine's Qatar Poison Center on +974 4003 1111 during its published hours (09:00-01:00 daily) for individualized adult or child advice; it is a phone service and cannot dispatch an ambulance. Do not wait for symptoms and do not induce vomiting or give anything by mouth unless directed. For inhalation, move to fresh air without entering an unsafe area. For eye exposure, remove contact lenses when easy and rinse immediately with plenty of room-temperature water for 15-20 minutes. For skin exposure, remove contaminated clothing while avoiding secondary exposure and rinse with plenty of room-temperature running water for at least 15 minutes; brush off a dry chemical first only when its label or a poison specialist directs this. Keep the product/container available. Outside published hours, the approved Qatar non-emergency toxicology route requires local approval; call 999 for any deterioration or uncertainty about immediate safety. Call Back If: any new symptom; drowsiness or confusion; vomiting or drooling; breathing difficulty; seizure; persistent eye pain or vision change; worsening skin pain or burn.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5657,7 +5657,7 @@
         {
           "id": "oscg-poisoning-adult-male-advice-111502",
           "titleEn": "Qatar Poison Center assessment and route-specific first aid",
-          "instructionTextEn": "Call Sidra Medicine's Qatar Poison Center on +974 4003 1111 during its published hours (09:00-01:00 daily) for individualized adult or child advice; it is a phone service and cannot dispatch an ambulance. Do not wait for symptoms and do not induce vomiting or give anything by mouth unless directed. For inhalation, move to fresh air without entering an unsafe area. For eye exposure, remove contact lenses when easy and rinse immediately with plenty of room-temperature water for 15-20 minutes. For skin exposure, remove contaminated clothing while avoiding secondary exposure and rinse with plenty of room-temperature running water for at least 15 minutes; brush off a dry chemical first only when its label or a poison specialist directs this. Keep the product/container available. Outside published hours, the approved Qatar non-emergency toxicology route is GOVERNANCE_REQUIRED; call 999 for any deterioration or uncertainty about immediate safety. Call Back If: any new symptom; drowsiness or confusion; vomiting or drooling; breathing difficulty; seizure; persistent eye pain or vision change; worsening skin pain or burn.",
+          "instructionTextEn": "Call Sidra Medicine's Qatar Poison Center on +974 4003 1111 during its published hours (09:00-01:00 daily) for individualized adult or child advice; it is a phone service and cannot dispatch an ambulance. Do not wait for symptoms and do not induce vomiting or give anything by mouth unless directed. For inhalation, move to fresh air without entering an unsafe area. For eye exposure, remove contact lenses when easy and rinse immediately with plenty of room-temperature water for 15-20 minutes. For skin exposure, remove contaminated clothing while avoiding secondary exposure and rinse with plenty of room-temperature running water for at least 15 minutes; brush off a dry chemical first only when its label or a poison specialist directs this. Keep the product/container available. Outside published hours, the approved Qatar non-emergency toxicology route requires local approval; call 999 for any deterioration or uncertainty about immediate safety. Call Back If: any new symptom; drowsiness or confusion; vomiting or drooling; breathing difficulty; seizure; persistent eye pain or vision change; worsening skin pain or burn.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5887,7 +5887,7 @@
         {
           "id": "oscg-poisoning-child-female-advice-111802",
           "titleEn": "Qatar Poison Center assessment and route-specific first aid",
-          "instructionTextEn": "Call Sidra Medicine's Qatar Poison Center on +974 4003 1111 during its published hours (09:00-01:00 daily) for individualized adult or child advice; it is a phone service and cannot dispatch an ambulance. Do not wait for symptoms and do not induce vomiting or give anything by mouth unless directed. For inhalation, move to fresh air without entering an unsafe area. For eye exposure, remove contact lenses when easy and rinse immediately with plenty of room-temperature water for 15-20 minutes. For skin exposure, remove contaminated clothing while avoiding secondary exposure and rinse with plenty of room-temperature running water for at least 15 minutes; brush off a dry chemical first only when its label or a poison specialist directs this. Keep the product/container available. Outside published hours, the approved Qatar non-emergency toxicology route is GOVERNANCE_REQUIRED; call 999 for any deterioration or uncertainty about immediate safety. Call Back If: any new symptom; drowsiness or confusion; vomiting or drooling; breathing difficulty; seizure; persistent eye pain or vision change; worsening skin pain or burn.",
+          "instructionTextEn": "Call Sidra Medicine's Qatar Poison Center on +974 4003 1111 during its published hours (09:00-01:00 daily) for individualized adult or child advice; it is a phone service and cannot dispatch an ambulance. Do not wait for symptoms and do not induce vomiting or give anything by mouth unless directed. For inhalation, move to fresh air without entering an unsafe area. For eye exposure, remove contact lenses when easy and rinse immediately with plenty of room-temperature water for 15-20 minutes. For skin exposure, remove contaminated clothing while avoiding secondary exposure and rinse with plenty of room-temperature running water for at least 15 minutes; brush off a dry chemical first only when its label or a poison specialist directs this. Keep the product/container available. Outside published hours, the approved Qatar non-emergency toxicology route requires local approval; call 999 for any deterioration or uncertainty about immediate safety. Call Back If: any new symptom; drowsiness or confusion; vomiting or drooling; breathing difficulty; seizure; persistent eye pain or vision change; worsening skin pain or burn.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -6117,7 +6117,7 @@
         {
           "id": "oscg-poisoning-child-male-advice-111702",
           "titleEn": "Qatar Poison Center assessment and route-specific first aid",
-          "instructionTextEn": "Call Sidra Medicine's Qatar Poison Center on +974 4003 1111 during its published hours (09:00-01:00 daily) for individualized adult or child advice; it is a phone service and cannot dispatch an ambulance. Do not wait for symptoms and do not induce vomiting or give anything by mouth unless directed. For inhalation, move to fresh air without entering an unsafe area. For eye exposure, remove contact lenses when easy and rinse immediately with plenty of room-temperature water for 15-20 minutes. For skin exposure, remove contaminated clothing while avoiding secondary exposure and rinse with plenty of room-temperature running water for at least 15 minutes; brush off a dry chemical first only when its label or a poison specialist directs this. Keep the product/container available. Outside published hours, the approved Qatar non-emergency toxicology route is GOVERNANCE_REQUIRED; call 999 for any deterioration or uncertainty about immediate safety. Call Back If: any new symptom; drowsiness or confusion; vomiting or drooling; breathing difficulty; seizure; persistent eye pain or vision change; worsening skin pain or burn.",
+          "instructionTextEn": "Call Sidra Medicine's Qatar Poison Center on +974 4003 1111 during its published hours (09:00-01:00 daily) for individualized adult or child advice; it is a phone service and cannot dispatch an ambulance. Do not wait for symptoms and do not induce vomiting or give anything by mouth unless directed. For inhalation, move to fresh air without entering an unsafe area. For eye exposure, remove contact lenses when easy and rinse immediately with plenty of room-temperature water for 15-20 minutes. For skin exposure, remove contaminated clothing while avoiding secondary exposure and rinse with plenty of room-temperature running water for at least 15 minutes; brush off a dry chemical first only when its label or a poison specialist directs this. Keep the product/container available. Outside published hours, the approved Qatar non-emergency toxicology route requires local approval; call 999 for any deterioration or uncertainty about immediate safety. Call Back If: any new symptom; drowsiness or confusion; vomiting or drooling; breathing difficulty; seizure; persistent eye pain or vision change; worsening skin pain or burn.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -7830,7 +7830,7 @@
           "severity": "Urgent",
           "questionTextEn": "With emergency features excluded, is measured weight continuing to fall without intent, is there another symptom or medicine change, or is the person aged 12-17, pregnant/postpartum, medically vulnerable, possibly restricting/purging, or affected by food insecurity or safeguarding concerns?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
+          "rationaleEn": "NHS.UK guidance: arrange a primary-care review as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7999,7 +7999,7 @@
           "severity": "Urgent",
           "questionTextEn": "With emergency features excluded, is measured weight continuing to fall without intent, is there another symptom or medicine change, or is the person aged 12-17, pregnant/postpartum, medically vulnerable, possibly restricting/purging, or affected by food insecurity or safeguarding concerns?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
+          "rationaleEn": "NHS.UK guidance: arrange a primary-care review as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -8177,7 +8177,7 @@
           "severity": "Urgent",
           "questionTextEn": "With emergency features excluded, is measured weight continuing to fall without intent, is there another symptom or medicine change, or is the person aged 12-17, pregnant/postpartum, medically vulnerable, possibly restricting/purging, or affected by food insecurity or safeguarding concerns?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
+          "rationaleEn": "NHS.UK guidance: arrange a primary-care review as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -8355,7 +8355,7 @@
           "severity": "Urgent",
           "questionTextEn": "With emergency features excluded, is measured weight continuing to fall without intent, is there another symptom or medicine change, or is the person aged 12-17, pregnant/postpartum, medically vulnerable, possibly restricting/purging, or affected by food insecurity or safeguarding concerns?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
+          "rationaleEn": "NHS.UK guidance: arrange a primary-care review as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [

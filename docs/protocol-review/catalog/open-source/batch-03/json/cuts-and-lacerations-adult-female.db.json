@@ -85,7 +85,7 @@
       "DispositionLevel": 100,
       "QuestionOrder": 1,
       "Question": "Is bleeding uncontrolled or spurting bright red blood, is there numbness or trouble moving near the wound, is it a bad cut on the face or palm, is the wound very large or deep, or is something stuck in it (e.g. glass)?",
-      "Information": "NHS.UK cuts and grazes guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
+      "Information": "NHS.UK cuts and grazes guidance lists these as emergency ambulance or Emergency Department criteria.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -98,7 +98,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Does the wound have soil, pus, or dirt still in it after cleaning, was it from a person or animal bite, is it swollen/red/getting more painful or leaking pus, is it larger than about 5cm, or does the caller feel generally unwell or feverish?",
-      "Information": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for the wound.",
+      "Information": "NHS.UK guidance lists these as reasons to seek urgent clinical review or arrange a primary-care review for the wound.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

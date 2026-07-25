@@ -151,7 +151,7 @@
       "PatientHealthInfo": true,
       "Internal": false,
       "Content": [
-        "Arrange in-person assessment; do not use this telephone pathway to decide that CT or observation is unnecessary. Avoid alcohol, driving, sport and sedating non-prescribed medicines while awaiting review. The exact non-emergency Qatar destination and observation/discharge instructions are GOVERNANCE_REQUIRED.",
+        "Arrange in-person assessment; do not use this telephone pathway to decide that CT or observation is unnecessary. Avoid alcohol, driving, sport and sedating non-prescribed medicines while awaiting review. The exact non-emergency Qatar destination and observation/discharge instructions are local approval required.",
         "Call Back If: worsening headache; repeated vomiting develops; increasing confusion, drowsiness, or new weakness."
       ]
     }
