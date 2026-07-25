@@ -81,7 +81,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Are there multiple stings, symptoms worsening, or a previous serious allergic reaction to a sting?",
-      "Information": "NHS.UK guidance lists multiple stings and a prior serious reaction as reasons to seek urgent clinical review or arrange primary-care review urgently.",
+      "Information": "NHS.UK guidance lists multiple stings and a prior serious reaction as reasons for an urgent clinical review.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

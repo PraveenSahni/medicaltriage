@@ -84,7 +84,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the caller had regular, unexpected panic attacks followed by at least a month of ongoing worry about having more?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a GP visit for assessment.",
+          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for assessment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -124,7 +124,7 @@
         {
           "id": "oscg-anxiety-and-panic-attack-adult-female-advice-106202",
           "titleEn": "Routine panic disorder follow-up",
-          "instructionTextEn": "Book a routine GP appointment to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -273,7 +273,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the caller had regular, unexpected panic attacks followed by at least a month of ongoing worry about having more?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a GP visit for assessment.",
+          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for assessment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -313,7 +313,7 @@
         {
           "id": "oscg-anxiety-and-panic-attack-adult-male-advice-106102",
           "titleEn": "Routine panic disorder follow-up",
-          "instructionTextEn": "Book a routine GP appointment to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -471,7 +471,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the caller had regular, unexpected panic attacks followed by at least a month of ongoing worry about having more?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a GP visit for assessment.",
+          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for assessment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -511,7 +511,7 @@
         {
           "id": "oscg-anxiety-and-panic-attack-child-female-advice-106402",
           "titleEn": "Routine panic disorder follow-up",
-          "instructionTextEn": "Book a routine GP appointment to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -669,7 +669,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the caller had regular, unexpected panic attacks followed by at least a month of ongoing worry about having more?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a GP visit for assessment.",
+          "rationaleEn": "NHS.UK guidance: this pattern may indicate panic disorder and warrants a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for assessment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -709,7 +709,7 @@
         {
           "id": "oscg-anxiety-and-panic-attack-child-male-advice-106302",
           "titleEn": "Routine panic disorder follow-up",
-          "instructionTextEn": "Book a routine GP appointment to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss recurring panic attacks and treatment options. Call Back If: attacks become more frequent or severe.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -846,7 +846,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is there chest pain or discomfort that does not go away, pain spreading to the arm/neck/jaw/back, or chest pain with sweating, nausea, lightheadedness, or breathlessness?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK high blood pressure guidance lists these as call-999 criteria for a possible heart attack.",
+          "rationaleEn": "NHS.UK high blood pressure guidance lists these as Qatar 999 criteria for a possible heart attack.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -894,7 +894,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are there frequent headaches or blurred vision, or chest pain that comes and goes?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends calling 111 for these symptoms alongside high blood pressure.",
+          "rationaleEn": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) for these symptoms alongside high blood pressure.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -910,7 +910,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the reading 140/90 or higher (professional check) or 135/85 or higher (home check), with none of the features above?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance defines these as high blood pressure readings warranting a GP or pharmacy check and follow-up.",
+          "rationaleEn": "NHS.UK guidance defines these as high blood pressure readings warranting a a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or pharmacy check and follow-up.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1100,7 +1100,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is there chest pain or discomfort that does not go away, pain spreading to the arm/neck/jaw/back, or chest pain with sweating, nausea, lightheadedness, or breathlessness?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK high blood pressure guidance lists these as call-999 criteria for a possible heart attack.",
+          "rationaleEn": "NHS.UK high blood pressure guidance lists these as Qatar 999 criteria for a possible heart attack.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -1148,7 +1148,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are there frequent headaches or blurred vision, or chest pain that comes and goes?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends calling 111 for these symptoms alongside high blood pressure.",
+          "rationaleEn": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) for these symptoms alongside high blood pressure.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1164,7 +1164,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the reading 140/90 or higher (professional check) or 135/85 or higher (home check), with none of the features above?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance defines these as high blood pressure readings warranting a GP or pharmacy check and follow-up.",
+          "rationaleEn": "NHS.UK guidance defines these as high blood pressure readings warranting a a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or pharmacy check and follow-up.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1366,7 +1366,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is bleeding uncontrolled or spurting bright red blood, is there numbness or trouble moving near the wound, is it a bad cut on the face or palm, is the wound very large or deep, or is something stuck in it (e.g. glass)?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as call-999/A&E criteria.",
+          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -1382,7 +1382,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the wound have soil, pus, or dirt still in it after cleaning, was it from a person or animal bite, is it swollen/red/getting more painful or leaking pus, is it larger than about 5cm, or does the caller feel generally unwell or feverish?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to call 111 or see a GP for the wound.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for the wound.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1579,7 +1579,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is bleeding uncontrolled or spurting bright red blood, is there numbness or trouble moving near the wound, is it a bad cut on the face or palm, is the wound very large or deep, or is something stuck in it (e.g. glass)?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as call-999/A&E criteria.",
+          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -1595,7 +1595,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the wound have soil, pus, or dirt still in it after cleaning, was it from a person or animal bite, is it swollen/red/getting more painful or leaking pus, is it larger than about 5cm, or does the caller feel generally unwell or feverish?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to call 111 or see a GP for the wound.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for the wound.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -1801,7 +1801,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is bleeding uncontrolled or spurting bright red blood, is there numbness or trouble moving near the wound, is it a bad cut on the face or palm, is the wound very large or deep, or is something stuck in it (e.g. glass)?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as call-999/A&E criteria.",
+          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -1817,7 +1817,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the wound have soil, pus, or dirt still in it after cleaning, was it from a person or animal bite, is it swollen/red/getting more painful or leaking pus, is it larger than about 5cm, or does the caller feel generally unwell or feverish?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to call 111 or see a GP for the wound.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for the wound.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2023,7 +2023,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is bleeding uncontrolled or spurting bright red blood, is there numbness or trouble moving near the wound, is it a bad cut on the face or palm, is the wound very large or deep, or is something stuck in it (e.g. glass)?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as call-999/A&E criteria.",
+          "rationaleEn": "NHS.UK cuts and grazes guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -2039,7 +2039,7 @@
           "severity": "Urgent",
           "questionTextEn": "Does the wound have soil, pus, or dirt still in it after cleaning, was it from a person or animal bite, is it swollen/red/getting more painful or leaking pus, is it larger than about 5cm, or does the caller feel generally unwell or feverish?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to call 111 or see a GP for the wound.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to seek clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for the wound.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2260,7 +2260,7 @@
           "severity": "Routine",
           "questionTextEn": "Have symptoms of low mood, loss of interest, or hopelessness been present for most of the day, nearly every day, for more than 2 weeks?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: see a GP if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
+          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2513,7 +2513,7 @@
           "severity": "Routine",
           "questionTextEn": "Have symptoms of low mood, loss of interest, or hopelessness been present for most of the day, nearly every day, for more than 2 weeks?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: see a GP if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
+          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2775,7 +2775,7 @@
           "severity": "Routine",
           "questionTextEn": "Have symptoms of low mood, loss of interest, or hopelessness been present for most of the day, nearly every day, for more than 2 weeks?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: see a GP if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
+          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3037,7 +3037,7 @@
           "severity": "Routine",
           "questionTextEn": "Have symptoms of low mood, loss of interest, or hopelessness been present for most of the day, nearly every day, for more than 2 weeks?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: see a GP if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
+          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3266,7 +3266,7 @@
           "severity": "Emergency",
           "questionTextEn": "Along with high blood sugar, is there nausea/vomiting or stomach pain, faster-than-usual breathing or heart rate, drowsiness, breath with a fruity ('pear drop') smell, confusion or difficulty concentrating, or a high ketone level?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK high blood sugar guidance lists these as call-999/A&E criteria for possible diabetic ketoacidosis (DKA). Do not drive to A&E - call an ambulance.",
+          "rationaleEn": "NHS.UK high blood sugar guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for possible diabetic ketoacidosis (DKA). Do not seek emergency assessment through a Qatar transport pathway approved by governance; do not self-drive when emergency features are present (GOVERNANCE_REQUIRED) - call an ambulance.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3282,7 +3282,7 @@
           "severity": "Routine",
           "questionTextEn": "Has blood sugar remained high or symptoms continued despite trying to lower it, or is this high blood sugar in someone not previously diagnosed with diabetes?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or GP for persistent high readings or a new, undiagnosed presentation.",
+          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for persistent high readings or a new, undiagnosed presentation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3430,7 +3430,7 @@
           "severity": "Emergency",
           "questionTextEn": "Along with high blood sugar, is there nausea/vomiting or stomach pain, faster-than-usual breathing or heart rate, drowsiness, breath with a fruity ('pear drop') smell, confusion or difficulty concentrating, or a high ketone level?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK high blood sugar guidance lists these as call-999/A&E criteria for possible diabetic ketoacidosis (DKA). Do not drive to A&E - call an ambulance.",
+          "rationaleEn": "NHS.UK high blood sugar guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for possible diabetic ketoacidosis (DKA). Do not seek emergency assessment through a Qatar transport pathway approved by governance; do not self-drive when emergency features are present (GOVERNANCE_REQUIRED) - call an ambulance.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3446,7 +3446,7 @@
           "severity": "Routine",
           "questionTextEn": "Has blood sugar remained high or symptoms continued despite trying to lower it, or is this high blood sugar in someone not previously diagnosed with diabetes?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or GP for persistent high readings or a new, undiagnosed presentation.",
+          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for persistent high readings or a new, undiagnosed presentation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3603,7 +3603,7 @@
           "severity": "Emergency",
           "questionTextEn": "Along with high blood sugar, is there nausea/vomiting or stomach pain, faster-than-usual breathing or heart rate, drowsiness, breath with a fruity ('pear drop') smell, confusion or difficulty concentrating, or a high ketone level?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK high blood sugar guidance lists these as call-999/A&E criteria for possible diabetic ketoacidosis (DKA). Do not drive to A&E - call an ambulance.",
+          "rationaleEn": "NHS.UK high blood sugar guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for possible diabetic ketoacidosis (DKA). Do not seek emergency assessment through a Qatar transport pathway approved by governance; do not self-drive when emergency features are present (GOVERNANCE_REQUIRED) - call an ambulance.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3619,7 +3619,7 @@
           "severity": "Routine",
           "questionTextEn": "Has blood sugar remained high or symptoms continued despite trying to lower it, or is this high blood sugar in someone not previously diagnosed with diabetes?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or GP for persistent high readings or a new, undiagnosed presentation.",
+          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for persistent high readings or a new, undiagnosed presentation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3776,7 +3776,7 @@
           "severity": "Emergency",
           "questionTextEn": "Along with high blood sugar, is there nausea/vomiting or stomach pain, faster-than-usual breathing or heart rate, drowsiness, breath with a fruity ('pear drop') smell, confusion or difficulty concentrating, or a high ketone level?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK high blood sugar guidance lists these as call-999/A&E criteria for possible diabetic ketoacidosis (DKA). Do not drive to A&E - call an ambulance.",
+          "rationaleEn": "NHS.UK high blood sugar guidance lists these as Qatar 999/an emergency assessment service selected through the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) criteria for possible diabetic ketoacidosis (DKA). Do not seek emergency assessment through a Qatar transport pathway approved by governance; do not self-drive when emergency features are present (GOVERNANCE_REQUIRED) - call an ambulance.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3792,7 +3792,7 @@
           "severity": "Routine",
           "questionTextEn": "Has blood sugar remained high or symptoms continued despite trying to lower it, or is this high blood sugar in someone not previously diagnosed with diabetes?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or GP for persistent high readings or a new, undiagnosed presentation.",
+          "rationaleEn": "NHS.UK guidance recommends contacting a diabetes care team or a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for persistent high readings or a new, undiagnosed presentation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3948,7 +3948,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the person unresponsive or unconscious, AND is a glucagon injection unavailable, or has one already been given without recovery within 10 minutes, or has the person been drinking alcohol?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK low blood sugar guidance lists these as call-999 criteria for severe hypoglycemia.",
+          "rationaleEn": "NHS.UK low blood sugar guidance lists these as Qatar 999 criteria for severe hypoglycemia.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -4112,7 +4112,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the person unresponsive or unconscious, AND is a glucagon injection unavailable, or has one already been given without recovery within 10 minutes, or has the person been drinking alcohol?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK low blood sugar guidance lists these as call-999 criteria for severe hypoglycemia.",
+          "rationaleEn": "NHS.UK low blood sugar guidance lists these as Qatar 999 criteria for severe hypoglycemia.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -4285,7 +4285,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the person unresponsive or unconscious, AND is a glucagon injection unavailable, or has one already been given without recovery within 10 minutes, or has the person been drinking alcohol?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK low blood sugar guidance lists these as call-999 criteria for severe hypoglycemia.",
+          "rationaleEn": "NHS.UK low blood sugar guidance lists these as Qatar 999 criteria for severe hypoglycemia.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -4458,7 +4458,7 @@
           "severity": "Emergency",
           "questionTextEn": "Is the person unresponsive or unconscious, AND is a glucagon injection unavailable, or has one already been given without recovery within 10 minutes, or has the person been drinking alcohol?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK low blood sugar guidance lists these as call-999 criteria for severe hypoglycemia.",
+          "rationaleEn": "NHS.UK low blood sugar guidance lists these as Qatar 999 criteria for severe hypoglycemia.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -4638,7 +4638,7 @@
           "severity": "Urgent",
           "questionTextEn": "Did the hearing loss come on suddenly in one or both ears, has it worsened over just the last few days or weeks, or does it come with earache or discharge?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends an urgent GP appointment or 111 call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
+          "rationaleEn": "NHS.UK guidance recommends an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4654,7 +4654,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the hearing been getting gradually worse over time, or did it not improve after treatment for an ear infection or earwax?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a routine GP visit for gradual hearing changes or hearing that hasn't improved after prior treatment.",
+          "rationaleEn": "NHS.UK guidance recommends a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for gradual hearing changes or hearing that hasn't improved after prior treatment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4678,7 +4678,7 @@
         {
           "id": "oscg-hearing-loss-or-change-adult-female-advice-108402",
           "titleEn": "Urgent hearing review",
-          "instructionTextEn": "Arrange an urgent GP appointment or 111 assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
+          "instructionTextEn": "Arrange an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -4687,7 +4687,7 @@
         {
           "id": "oscg-hearing-loss-or-change-adult-female-advice-108403",
           "titleEn": "Routine hearing follow-up",
-          "instructionTextEn": "Book a routine GP appointment; a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED); a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 3,
@@ -4827,7 +4827,7 @@
           "severity": "Urgent",
           "questionTextEn": "Did the hearing loss come on suddenly in one or both ears, has it worsened over just the last few days or weeks, or does it come with earache or discharge?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends an urgent GP appointment or 111 call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
+          "rationaleEn": "NHS.UK guidance recommends an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4843,7 +4843,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the hearing been getting gradually worse over time, or did it not improve after treatment for an ear infection or earwax?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a routine GP visit for gradual hearing changes or hearing that hasn't improved after prior treatment.",
+          "rationaleEn": "NHS.UK guidance recommends a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for gradual hearing changes or hearing that hasn't improved after prior treatment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4867,7 +4867,7 @@
         {
           "id": "oscg-hearing-loss-or-change-adult-male-advice-108302",
           "titleEn": "Urgent hearing review",
-          "instructionTextEn": "Arrange an urgent GP appointment or 111 assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
+          "instructionTextEn": "Arrange an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -4876,7 +4876,7 @@
         {
           "id": "oscg-hearing-loss-or-change-adult-male-advice-108303",
           "titleEn": "Routine hearing follow-up",
-          "instructionTextEn": "Book a routine GP appointment; a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED); a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 3,
@@ -5025,7 +5025,7 @@
           "severity": "Urgent",
           "questionTextEn": "Did the hearing loss come on suddenly in one or both ears, has it worsened over just the last few days or weeks, or does it come with earache or discharge?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends an urgent GP appointment or 111 call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
+          "rationaleEn": "NHS.UK guidance recommends an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5041,7 +5041,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the hearing been getting gradually worse over time, or did it not improve after treatment for an ear infection or earwax?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a routine GP visit for gradual hearing changes or hearing that hasn't improved after prior treatment.",
+          "rationaleEn": "NHS.UK guidance recommends a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for gradual hearing changes or hearing that hasn't improved after prior treatment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5065,7 +5065,7 @@
         {
           "id": "oscg-hearing-loss-or-change-child-female-advice-108602",
           "titleEn": "Urgent hearing review",
-          "instructionTextEn": "Arrange an urgent GP appointment or 111 assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
+          "instructionTextEn": "Arrange an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5074,7 +5074,7 @@
         {
           "id": "oscg-hearing-loss-or-change-child-female-advice-108603",
           "titleEn": "Routine hearing follow-up",
-          "instructionTextEn": "Book a routine GP appointment; a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED); a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 3,
@@ -5223,7 +5223,7 @@
           "severity": "Urgent",
           "questionTextEn": "Did the hearing loss come on suddenly in one or both ears, has it worsened over just the last few days or weeks, or does it come with earache or discharge?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance recommends an urgent GP appointment or 111 call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
+          "rationaleEn": "NHS.UK guidance recommends an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) call for sudden hearing loss or hearing loss with other symptoms - it may need to be treated quickly.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5239,7 +5239,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the hearing been getting gradually worse over time, or did it not improve after treatment for an ear infection or earwax?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a routine GP visit for gradual hearing changes or hearing that hasn't improved after prior treatment.",
+          "rationaleEn": "NHS.UK guidance recommends a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for gradual hearing changes or hearing that hasn't improved after prior treatment.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5263,7 +5263,7 @@
         {
           "id": "oscg-hearing-loss-or-change-child-male-advice-108502",
           "titleEn": "Urgent hearing review",
-          "instructionTextEn": "Arrange an urgent GP appointment or 111 assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
+          "instructionTextEn": "Arrange an urgent clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) assessment - sudden hearing changes may need quick treatment. Call Back If: hearing worsens further; dizziness develops.",
           "dispositionCode": "HMC_URGENT_REVIEW",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5272,7 +5272,7 @@
         {
           "id": "oscg-hearing-loss-or-change-child-male-advice-108503",
           "titleEn": "Routine hearing follow-up",
-          "instructionTextEn": "Book a routine GP appointment; a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED); a free hearing test may also be available at some pharmacies and opticians. Call Back If: sudden worsening; new ear pain or discharge.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 3,
@@ -5412,7 +5412,7 @@
           "severity": "Routine",
           "questionTextEn": "Has changing sleeping habits not helped, has the trouble sleeping lasted months, or is it affecting daily life to the point of making it hard to cope?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends seeing a GP when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
+          "rationaleEn": "NHS.UK guidance recommends arranging clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5452,7 +5452,7 @@
         {
           "id": "oscg-insomnia-adult-female-advice-105802",
           "titleEn": "Routine insomnia follow-up",
-          "instructionTextEn": "Book a routine GP appointment to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5601,7 +5601,7 @@
           "severity": "Routine",
           "questionTextEn": "Has changing sleeping habits not helped, has the trouble sleeping lasted months, or is it affecting daily life to the point of making it hard to cope?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends seeing a GP when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
+          "rationaleEn": "NHS.UK guidance recommends arranging clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5641,7 +5641,7 @@
         {
           "id": "oscg-insomnia-adult-male-advice-105702",
           "titleEn": "Routine insomnia follow-up",
-          "instructionTextEn": "Book a routine GP appointment to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5799,7 +5799,7 @@
           "severity": "Routine",
           "questionTextEn": "Has changing sleeping habits not helped, has the trouble sleeping lasted months, or is it affecting daily life to the point of making it hard to cope?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends seeing a GP when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
+          "rationaleEn": "NHS.UK guidance recommends arranging clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -5839,7 +5839,7 @@
         {
           "id": "oscg-insomnia-child-female-advice-106002",
           "titleEn": "Routine insomnia follow-up",
-          "instructionTextEn": "Book a routine GP appointment to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -5997,7 +5997,7 @@
           "severity": "Routine",
           "questionTextEn": "Has changing sleeping habits not helped, has the trouble sleeping lasted months, or is it affecting daily life to the point of making it hard to cope?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends seeing a GP when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
+          "rationaleEn": "NHS.UK guidance recommends arranging clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) when self-help sleep changes have not helped, symptoms have lasted months, or daily functioning is impaired.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -6037,7 +6037,7 @@
         {
           "id": "oscg-insomnia-child-male-advice-105902",
           "titleEn": "Routine insomnia follow-up",
-          "instructionTextEn": "Book a routine GP appointment to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to discuss persistent sleep difficulty. Call Back If: mood or mental health worsens.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -7364,7 +7364,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the tiredness lasted a few weeks without a clear cause, is it affecting daily life, or is it accompanied by weight loss, mood changes, or gasping/snorting/choking sounds during sleep?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a GP visit for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
+          "rationaleEn": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7404,7 +7404,7 @@
         {
           "id": "oscg-weakness-generalized-and-fatigue-adult-female-advice-106602",
           "titleEn": "Routine fatigue follow-up",
-          "instructionTextEn": "Book a routine GP appointment to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -7560,7 +7560,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the tiredness lasted a few weeks without a clear cause, is it affecting daily life, or is it accompanied by weight loss, mood changes, or gasping/snorting/choking sounds during sleep?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a GP visit for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
+          "rationaleEn": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7600,7 +7600,7 @@
         {
           "id": "oscg-weakness-generalized-and-fatigue-adult-male-advice-106502",
           "titleEn": "Routine fatigue follow-up",
-          "instructionTextEn": "Book a routine GP appointment to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -7765,7 +7765,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the tiredness lasted a few weeks without a clear cause, is it affecting daily life, or is it accompanied by weight loss, mood changes, or gasping/snorting/choking sounds during sleep?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a GP visit for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
+          "rationaleEn": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7805,7 +7805,7 @@
         {
           "id": "oscg-weakness-generalized-and-fatigue-child-female-advice-106802",
           "titleEn": "Routine fatigue follow-up",
-          "instructionTextEn": "Book a routine GP appointment to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -7970,7 +7970,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the tiredness lasted a few weeks without a clear cause, is it affecting daily life, or is it accompanied by weight loss, mood changes, or gasping/snorting/choking sounds during sleep?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a GP visit for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
+          "rationaleEn": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -8010,7 +8010,7 @@
         {
           "id": "oscg-weakness-generalized-and-fatigue-child-male-advice-106702",
           "titleEn": "Routine fatigue follow-up",
-          "instructionTextEn": "Book a routine GP appointment to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
+          "instructionTextEn": "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to investigate persistent or unexplained tiredness. Call Back If: new symptoms develop; worsening weight loss.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,

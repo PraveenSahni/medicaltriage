@@ -81,7 +81,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Is the caller worried about the hair loss and would like it assessed?",
-      "Information": "NHS.UK guidance: see a GP if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
+      "Information": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

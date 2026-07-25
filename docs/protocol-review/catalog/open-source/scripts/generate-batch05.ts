@@ -2,7 +2,10 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { batch05Protocols } from "../../../../../src/data/openSourceGuidelines/batch05.js";
-import { normalizeEmergencyAdvice } from "./shared-demographic-generator.js";
+import {
+  localizeOperationalText,
+  normalizeEmergencyAdvice,
+} from "./shared-demographic-generator.js";
 
 const root = path.resolve("docs/protocol-review/catalog/open-source/batch-05");
 for (const dir of ["json", "pdf", "evidence", "manifests", "research-gaps", "batches"]) {
@@ -87,7 +90,7 @@ for (const protocol of selected) {
       const iaqs = protocol.initialAssessmentQuestions.map((question, index) => ({
         Order: index + 1,
         Category: question.responseType,
-        Question: question.promptTextEn,
+        Question: localizeOperationalText(question.promptTextEn),
         Rationale: "Condition-relevant source assessment retained from the Batch 5 source protocol.",
         Source: protocol.titleEn,
       }));
@@ -129,8 +132,8 @@ for (const protocol of selected) {
           AlgorithmID: algorithmId,
           DispositionLevel: question.dispositionLevel ?? 50,
           QuestionOrder: question.questionOrder ?? index + 1,
-          Question: question.questionTextEn,
-          Information: question.rationaleEn,
+          Question: localizeOperationalText(question.questionTextEn),
+          Information: localizeOperationalText(question.rationaleEn),
           GotoGuideline: null,
           TelemedicineEligible: question.telemedicineEligible,
           AdviceIDs: question.careAdviceIds.map((id) => adviceIdMap.get(id)),
@@ -185,10 +188,10 @@ for (const protocol of selected) {
           Age: ageText,
           GenderAtBirth: gender,
           Acuity: protocol.acuity,
-          Definition: [protocol.clinicalDefinitionEn, `${age.label} patient.`, `${gender}.`],
+          Definition: [localizeOperationalText(protocol.clinicalDefinitionEn), `${age.label} patient.`, `${gender}.`],
           PainSeverity: [],
           Background: {
-            KeyPoints: protocol.backgroundInfoEn ? [protocol.backgroundInfoEn] : [],
+            KeyPoints: protocol.backgroundInfoEn ? [localizeOperationalText(protocol.backgroundInfoEn)] : [],
             CausesUnder50: [],
             CausesOver50: [],
             LocationTable: [],
@@ -198,7 +201,7 @@ for (const protocol of selected) {
           },
           FirstAid: protocol.careAdvice
             .filter((advice) => advice.dispositionCode === "HMC_EMERGENCY_DEPARTMENT")
-            .map((advice) => normalizeEmergencyAdvice(advice.instructionTextEn)),
+            .map((advice) => normalizeEmergencyAdvice(localizeOperationalText(advice.instructionTextEn))),
           Author:
             protocol.authorship?.authorEn ?? "IST Health Open-Source Guideline Content",
           LastRevised: "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
@@ -220,8 +223,8 @@ for (const protocol of selected) {
           Internal: false,
           Content: [
             advice.dispositionCode === "HMC_EMERGENCY_DEPARTMENT"
-              ? normalizeEmergencyAdvice(advice.instructionTextEn)
-              : advice.instructionTextEn,
+              ? normalizeEmergencyAdvice(localizeOperationalText(advice.instructionTextEn))
+              : localizeOperationalText(advice.instructionTextEn),
             `Call Back If: ${advice.warningSigns.join("; ")}.`,
           ],
         })),

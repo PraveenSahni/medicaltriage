@@ -1898,7 +1898,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the caller worried about the hair loss and would like it assessed?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: see a GP if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
+          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2073,7 +2073,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the caller worried about the hair loss and would like it assessed?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: see a GP if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
+          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2257,7 +2257,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the caller worried about the hair loss and would like it assessed?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: see a GP if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
+          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2441,7 +2441,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the caller worried about the hair loss and would like it assessed?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance: see a GP if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
+          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you're worried about your hair loss, to identify the cause before considering commercial hair clinic options.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3472,7 +3472,7 @@
           "severity": "Routine",
           "questionTextEn": "Do the tics occur very regularly or are becoming more frequent/severe, cause social or emotional problems, cause pain or accidental injury, interfere with daily activities, or come with anger, depression, or self-harm?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to see a GP about tics.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) about tics.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3488,7 +3488,7 @@
           "severity": "Self-care",
           "questionTextEn": "Are the tics mild and not causing problems, with none of the features above?",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need GP evaluation.",
+          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) evaluation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3720,7 +3720,7 @@
           "severity": "Routine",
           "questionTextEn": "Do the tics occur very regularly or are becoming more frequent/severe, cause social or emotional problems, cause pain or accidental injury, interfere with daily activities, or come with anger, depression, or self-harm?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to see a GP about tics.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) about tics.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3736,7 +3736,7 @@
           "severity": "Self-care",
           "questionTextEn": "Are the tics mild and not causing problems, with none of the features above?",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need GP evaluation.",
+          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) evaluation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3977,7 +3977,7 @@
           "severity": "Routine",
           "questionTextEn": "Do the tics occur very regularly or are becoming more frequent/severe, cause social or emotional problems, cause pain or accidental injury, interfere with daily activities, or come with anger, depression, or self-harm?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to see a GP about tics.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) about tics.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3993,7 +3993,7 @@
           "severity": "Self-care",
           "questionTextEn": "Are the tics mild and not causing problems, with none of the features above?",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need GP evaluation.",
+          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) evaluation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4234,7 +4234,7 @@
           "severity": "Routine",
           "questionTextEn": "Do the tics occur very regularly or are becoming more frequent/severe, cause social or emotional problems, cause pain or accidental injury, interfere with daily activities, or come with anger, depression, or self-harm?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance lists these as reasons to see a GP about tics.",
+          "rationaleEn": "NHS.UK guidance lists these as reasons to arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) about tics.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -4250,7 +4250,7 @@
           "severity": "Self-care",
           "questionTextEn": "Are the tics mild and not causing problems, with none of the features above?",
           "dispositionCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need GP evaluation.",
+          "rationaleEn": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) evaluation.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7830,7 +7830,7 @@
           "severity": "Urgent",
           "questionTextEn": "With emergency features excluded, is measured weight continuing to fall without intent, is there another symptom or medicine change, or is the person aged 12-17, pregnant/postpartum, medically vulnerable, possibly restricting/purging, or affected by food insecurity or safeguarding concerns?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance: see a GP as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
+          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -7999,7 +7999,7 @@
           "severity": "Urgent",
           "questionTextEn": "With emergency features excluded, is measured weight continuing to fall without intent, is there another symptom or medicine change, or is the person aged 12-17, pregnant/postpartum, medically vulnerable, possibly restricting/purging, or affected by food insecurity or safeguarding concerns?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance: see a GP as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
+          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -8177,7 +8177,7 @@
           "severity": "Urgent",
           "questionTextEn": "With emergency features excluded, is measured weight continuing to fall without intent, is there another symptom or medicine change, or is the person aged 12-17, pregnant/postpartum, medically vulnerable, possibly restricting/purging, or affected by food insecurity or safeguarding concerns?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance: see a GP as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
+          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -8355,7 +8355,7 @@
           "severity": "Urgent",
           "questionTextEn": "With emergency features excluded, is measured weight continuing to fall without intent, is there another symptom or medicine change, or is the person aged 12-17, pregnant/postpartum, medically vulnerable, possibly restricting/purging, or affected by food insecurity or safeguarding concerns?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance: see a GP as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
+          "rationaleEn": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [

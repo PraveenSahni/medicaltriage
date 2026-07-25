@@ -2,7 +2,10 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { batch07Protocols } from "../../../../../src/data/openSourceGuidelines/batch07.js";
-import { normalizeEmergencyAdvice } from "./shared-demographic-generator.js";
+import {
+  localizeOperationalText,
+  normalizeEmergencyAdvice,
+} from "./shared-demographic-generator.js";
 
 const root = path.resolve("docs/protocol-review/catalog/open-source/batch-07");
 for (const dir of ["json", "pdf", "evidence", "manifests", "research-gaps", "batches"]) {
@@ -51,23 +54,6 @@ const sha = (value: unknown) =>
   crypto.createHash("sha256").update(JSON.stringify(value)).digest("hex");
 const slugify = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-const localize = (value: string) =>
-  value
-    .replace(/\bcall-999\b/gi, "Qatar 999")
-    .replace(/\bcall-999\/A&E\b/gi, "Qatar 999/emergency-department")
-    .replace(/\bcall 999 or go to A&E\b/gi, "call Qatar 999 or go to an emergency department")
-    .replace(/\bgo to A&E\b/gi, "go to an emergency department")
-    .replace(/\bA&E\b/g, "emergency department")
-    .replace(/\bNHS 111\b/gi, "the Qatar urgent clinical review pathway")
-    .replace(/\burgent 111\b/gi, "urgent clinical review")
-    .replace(/\bcalling 111\b/gi, "urgent clinical review")
-    .replace(/\bcall 111\b/gi, "seek urgent clinical review")
-    .replace(/\b111\b/g, "Qatar urgent clinical review")
-    .replace(/\bsee a GP\b/gi, "arrange primary-care review")
-    .replace(/\bseeing a GP\b/gi, "arranging primary-care review")
-    .replace(/\bGP visit\b/gi, "primary-care review")
-    .replace(/\bbook a GP appointment\b/gi, "arrange a primary-care appointment");
-
 const entries: any[] = [];
 const gaps: any[] = [];
 let nextId = 1165;
@@ -83,7 +69,7 @@ for (const protocol of selected) {
         protocol.careAdvice.map((advice, index) => [advice.id, algorithmId * 100 + index + 1]),
       );
       const adapt = (value: string) => {
-        let result = localize(value);
+        let result = localizeOperationalText(value);
         if (!(age.label === "Adult" && gender === "Female")) {
           result = result
             .replace(/\s*\(on their side if pregnant, especially 28\+ weeks\)/gi, "")

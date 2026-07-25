@@ -14,6 +14,8 @@ const hash = (value) => crypto.createHash("sha256").update(JSON.stringify(value)
 const emergencyTransportPattern =
   /\b(?:ambulance|do not (?:allow (?:the person|patient) to |let (?:the person|patient) |self-)?drive|do not let (?:them|the caller) drive|no self-driving|await emergency transport|emergency transport)\b/i;
 const qatar999Pattern = /\bQatar(?: emergency services(?: on)?)? 999\b/i;
+const prohibitedUkOperationalPattern =
+  /\bGP\b|\b(?:NHS\s*)?111\b|\bA&E\b|\bcall-999\b|\bchemist\b|\bwalk-in centre\b|\bminor injuries unit\b/i;
 
 function canonicalSourceProtocolIds() {
   const sourceDir = path.join(REPO_ROOT, "src", "data", "openSourceGuidelines");
@@ -49,6 +51,8 @@ export function runSelfTests() {
   assert.doesNotMatch("Call emergency services now.", qatar999Pattern);
   assert.match("Do not allow self-driving; await ambulance transport.", emergencyTransportPattern);
   assert.doesNotMatch("Arrange review when convenient.", emergencyTransportPattern);
+  assert.match("Book a GP appointment.", prohibitedUkOperationalPattern);
+  assert.doesNotMatch("Arrange a primary-care review.", prohibitedUkOperationalPattern);
 
   const errors = [];
   const linked = assertAdviceLinks({
@@ -66,7 +70,7 @@ export function runSelfTests() {
   assert.ok(canonical.has("oscr-chest-pain-heart"));
   assert.ok(canonical.has("oscg-snakebite"));
   assert.ok(!canonical.has("oscg-elbow-pain-child"));
-  return { status: "PASS", assertions: 11 };
+  return { status: "PASS", assertions: 13 };
 }
 
 function sourceProtocolId(entry) {
@@ -145,6 +149,11 @@ export function validateCatalog({ requireRuntime = true, requirePdfs = true } = 
       if (hash(doc) !== entry.canonicalContentHash) {
         errors.push(`Batch ${batch} ID ${entry.algorithmId}: canonicalContentHash mismatch`);
       }
+      if (prohibitedUkOperationalPattern.test(JSON.stringify(doc))) {
+        errors.push(
+          `Batch ${batch} ID ${entry.algorithmId}: generated JSON contains prohibited UK operational routing language`,
+        );
+      }
       for (const question of doc.questions ?? []) {
         if (question.TelemedicineEligible !== false) {
           errors.push(`Batch ${batch} ID ${entry.algorithmId}: question ${question.QuestionID} is telemedicine eligible`);
@@ -219,6 +228,11 @@ export function validateCatalog({ requireRuntime = true, requirePdfs = true } = 
         for (const protocol of runtime.protocols ?? []) {
           if (!manifestTitles.has(protocol.titleEn)) {
             errors.push(`Batch ${batch} runtime ${protocol.id}: title is not covered by the manifest`);
+          }
+          if (prohibitedUkOperationalPattern.test(JSON.stringify(protocol))) {
+            errors.push(
+              `Batch ${batch} runtime ${protocol.id}: contains prohibited UK operational routing language`,
+            );
           }
           for (const question of protocol.questions ?? []) {
             if (question.telemedicineEligible !== false) {

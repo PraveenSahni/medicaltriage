@@ -99,7 +99,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Without an emergency feature, is the boil on the face, near the eye, genitals, breast, spine, hand, or over a joint; is redness spreading or fever present; or is the patient an infant, pregnant, diabetic, immunocompromised, or otherwise seriously unwell?",
-      "Information": "NHS.UK boils guidance lists these as reasons for an urgent GP appointment or 111 call.",
+      "Information": "NHS.UK boils guidance lists these as reasons for an urgent clinical review.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -112,7 +112,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Has the boil lasted 2 weeks without improving, does the caller keep getting boils, or is there a cluster of boils (carbuncle)?",
-      "Information": "NHS.UK guidance recommends a routine GP visit for a persistent boil, recurring boils, or a carbuncle.",
+      "Information": "NHS.UK guidance recommends a routine primary-care review for a persistent boil, recurring boils, or a carbuncle.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -163,7 +163,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Book a routine GP appointment for a persistent, recurring, or clustered boil.",
+        "Arrange a routine primary-care review for a persistent, recurring, or clustered boil.",
         "Call Back If: boil worsens; fever develops."
       ]
     },

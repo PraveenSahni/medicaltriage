@@ -67,10 +67,35 @@ const checkRenderedStrings = (value: unknown, location: string): void => {
 
 batches.forEach((batch, index) => checkRenderedStrings(batch, `batch${String(index + 1).padStart(2, "0")}`));
 
+let canonicalStringsChecked = 0;
+const checkCanonicalStrings = (value: unknown, location: string): void => {
+  if (typeof value === "string") {
+    assert.doesNotMatch(value, prohibited, location);
+    canonicalStringsChecked += 1;
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => checkCanonicalStrings(item, `${location}[${index}]`));
+    return;
+  }
+  if (value && typeof value === "object") {
+    Object.entries(value).forEach(([key, item]) =>
+      checkCanonicalStrings(item, `${location}.${key}`),
+    );
+  }
+};
+
+[
+  ["batch05", batch05Protocols],
+  ["batch06", batch06Protocols],
+  ["batch07", batch07Protocols],
+].forEach(([label, batch]) => checkCanonicalStrings(batch, String(label)));
+
 console.log(JSON.stringify({
   status: "PASS",
   samples: samples.length,
   batches: batches.length,
   renderedStringsChecked,
-  assertions: samples.length * 2 + renderedStringsChecked,
+  canonicalStringsChecked,
+  assertions: samples.length * 2 + renderedStringsChecked + canonicalStringsChecked,
 }, null, 2));

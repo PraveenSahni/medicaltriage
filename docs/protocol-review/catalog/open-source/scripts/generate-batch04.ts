@@ -2,7 +2,10 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { batch04Protocols } from "../../../../../src/data/openSourceGuidelines/batch04.js";
-import { normalizeEmergencyAdvice } from "./shared-demographic-generator.js";
+import {
+  localizeOperationalText,
+  normalizeEmergencyAdvice,
+} from "./shared-demographic-generator.js";
 
 const root = path.resolve("docs/protocol-review/catalog/open-source/batch-04");
 for (const dir of ["json", "pdf", "evidence", "manifests", "research-gaps", "batches"]) {
@@ -174,11 +177,12 @@ for (const protocol of batch04Protocols) {
           QuestionOrder:
             (q.questionOrder ?? index + 1) +
             (isChildSexualAssault && (q.dispositionLevel ?? 50) === 78 ? 1 : 0),
-          Question:
+          Question: localizeOperationalText(
             protocol.id === "oscg-sexual-assault-rape" && gender === "Male"
               ? q.questionTextEn.replace("pregnancy/STI risk", "STI risk")
               : q.questionTextEn,
-          Information: isChildSexualAssault
+          ),
+          Information: localizeOperationalText(isChildSexualAssault
             ? q.rationaleEn
                 .replace("pregnancy/STIs", gender === "Male" ? "STIs" : "pregnancy/STIs")
                 .replace(
@@ -187,7 +191,7 @@ for (const protocol of batch04Protocols) {
                 )
             : protocol.id === "oscg-sexual-assault-rape" && gender === "Male"
               ? q.rationaleEn.replace("pregnancy/STIs", "STIs")
-              : q.rationaleEn,
+              : q.rationaleEn),
           GotoGuideline: null,
           TelemedicineEligible: q.telemedicineEligible,
           AdviceIDs: q.careAdviceIds.map((id) => adviceIdMap.get(id)),
@@ -253,9 +257,10 @@ for (const protocol of batch04Protocols) {
                 "STI risk assessment",
               )
             : a.instructionTextEn;
+        const localizedInstruction = localizeOperationalText(instruction);
         return a.dispositionCode === "HMC_EMERGENCY_DEPARTMENT"
-          ? normalizeEmergencyAdvice(instruction)
-          : instruction;
+          ? normalizeEmergencyAdvice(localizedInstruction)
+          : localizedInstruction;
       };
       const doc = {
         _source: sourceText,
@@ -266,10 +271,10 @@ for (const protocol of batch04Protocols) {
           Age: ageText,
           GenderAtBirth: gender,
           Acuity: protocol.acuity,
-          Definition: [protocol.clinicalDefinitionEn, `${age.label} patient.`, `${gender}.`],
+          Definition: [localizeOperationalText(protocol.clinicalDefinitionEn), `${age.label} patient.`, `${gender}.`],
           PainSeverity: [],
           Background: {
-            KeyPoints: protocol.backgroundInfoEn ? [protocol.backgroundInfoEn] : [],
+            KeyPoints: protocol.backgroundInfoEn ? [localizeOperationalText(protocol.backgroundInfoEn)] : [],
             CausesUnder50: [],
             CausesOver50: [],
             LocationTable: [],

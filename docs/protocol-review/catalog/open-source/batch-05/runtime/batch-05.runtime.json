@@ -84,7 +84,7 @@
           "severity": "Urgent",
           "questionTextEn": "Without an emergency feature, is the boil on the face, near the eye, genitals, breast, spine, hand, or over a joint; is redness spreading or fever present; or is the patient an infant, pregnant, diabetic, immunocompromised, or otherwise seriously unwell?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK boils guidance lists these as reasons for an urgent GP appointment or 111 call.",
+          "rationaleEn": "NHS.UK boils guidance lists these as reasons for an urgent clinical review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -114,7 +114,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the boil lasted 2 weeks without improving, does the caller keep getting boils, or is there a cluster of boils (carbuncle)?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a routine GP visit for a persistent boil, recurring boils, or a carbuncle.",
+          "rationaleEn": "NHS.UK guidance recommends a routine primary-care review for a persistent boil, recurring boils, or a carbuncle.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -163,7 +163,7 @@
         {
           "id": "oscg-boil-skin-abscess-adult-female-advice-113803",
           "titleEn": "Routine boil follow-up",
-          "instructionTextEn": "Book a routine GP appointment for a persistent, recurring, or clustered boil. Call Back If: boil worsens; fever develops.",
+          "instructionTextEn": "Arrange a routine primary-care review for a persistent, recurring, or clustered boil. Call Back If: boil worsens; fever develops.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -301,7 +301,7 @@
           "severity": "Urgent",
           "questionTextEn": "Without an emergency feature, is the boil on the face, near the eye, genitals, breast, spine, hand, or over a joint; is redness spreading or fever present; or is the patient an infant, pregnant, diabetic, immunocompromised, or otherwise seriously unwell?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK boils guidance lists these as reasons for an urgent GP appointment or 111 call.",
+          "rationaleEn": "NHS.UK boils guidance lists these as reasons for an urgent clinical review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -331,7 +331,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the boil lasted 2 weeks without improving, does the caller keep getting boils, or is there a cluster of boils (carbuncle)?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a routine GP visit for a persistent boil, recurring boils, or a carbuncle.",
+          "rationaleEn": "NHS.UK guidance recommends a routine primary-care review for a persistent boil, recurring boils, or a carbuncle.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -380,7 +380,7 @@
         {
           "id": "oscg-boil-skin-abscess-adult-male-advice-113703",
           "titleEn": "Routine boil follow-up",
-          "instructionTextEn": "Book a routine GP appointment for a persistent, recurring, or clustered boil. Call Back If: boil worsens; fever develops.",
+          "instructionTextEn": "Arrange a routine primary-care review for a persistent, recurring, or clustered boil. Call Back If: boil worsens; fever develops.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -527,7 +527,7 @@
           "severity": "Urgent",
           "questionTextEn": "Without an emergency feature, is the boil on the face, near the eye, genitals, breast, spine, hand, or over a joint; is redness spreading or fever present; or is the patient an infant, pregnant, diabetic, immunocompromised, or otherwise seriously unwell?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK boils guidance lists these as reasons for an urgent GP appointment or 111 call.",
+          "rationaleEn": "NHS.UK boils guidance lists these as reasons for an urgent clinical review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -557,7 +557,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the boil lasted 2 weeks without improving, does the caller keep getting boils, or is there a cluster of boils (carbuncle)?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a routine GP visit for a persistent boil, recurring boils, or a carbuncle.",
+          "rationaleEn": "NHS.UK guidance recommends a routine primary-care review for a persistent boil, recurring boils, or a carbuncle.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -606,7 +606,7 @@
         {
           "id": "oscg-boil-skin-abscess-child-female-advice-114003",
           "titleEn": "Routine boil follow-up",
-          "instructionTextEn": "Book a routine GP appointment for a persistent, recurring, or clustered boil. Call Back If: boil worsens; fever develops.",
+          "instructionTextEn": "Arrange a routine primary-care review for a persistent, recurring, or clustered boil. Call Back If: boil worsens; fever develops.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -753,7 +753,7 @@
           "severity": "Urgent",
           "questionTextEn": "Without an emergency feature, is the boil on the face, near the eye, genitals, breast, spine, hand, or over a joint; is redness spreading or fever present; or is the patient an infant, pregnant, diabetic, immunocompromised, or otherwise seriously unwell?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK boils guidance lists these as reasons for an urgent GP appointment or 111 call.",
+          "rationaleEn": "NHS.UK boils guidance lists these as reasons for an urgent clinical review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -783,7 +783,7 @@
           "severity": "Routine",
           "questionTextEn": "Has the boil lasted 2 weeks without improving, does the caller keep getting boils, or is there a cluster of boils (carbuncle)?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance recommends a routine GP visit for a persistent boil, recurring boils, or a carbuncle.",
+          "rationaleEn": "NHS.UK guidance recommends a routine primary-care review for a persistent boil, recurring boils, or a carbuncle.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -832,7 +832,7 @@
         {
           "id": "oscg-boil-skin-abscess-child-male-advice-113903",
           "titleEn": "Routine boil follow-up",
-          "instructionTextEn": "Book a routine GP appointment for a persistent, recurring, or clustered boil. Call Back If: boil worsens; fever develops.",
+          "instructionTextEn": "Arrange a routine primary-care review for a persistent, recurring, or clustered boil. Call Back If: boil worsens; fever develops.",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
           "warningSigns": [],
           "displayOrder": 2,
@@ -3204,7 +3204,7 @@
           "severity": "Emergency",
           "questionTextEn": "Does the person seem very unwell or getting worse, have sudden chest pain, is so breathless they can't say short sentences at rest, are they coughing up blood, or have they collapsed, fainted, or had a first-time seizure, or developed a non-fading rash?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK COVID-19 guidance lists these as call-999/A&E criteria.",
+          "rationaleEn": "NHS.UK COVID-19 guidance lists these as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3398,7 +3398,7 @@
           "severity": "Emergency",
           "questionTextEn": "Does the person seem very unwell or getting worse, have sudden chest pain, is so breathless they can't say short sentences at rest, are they coughing up blood, or have they collapsed, fainted, or had a first-time seizure, or developed a non-fading rash?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK COVID-19 guidance lists these as call-999/A&E criteria.",
+          "rationaleEn": "NHS.UK COVID-19 guidance lists these as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3601,7 +3601,7 @@
           "severity": "Emergency",
           "questionTextEn": "Does the person seem very unwell or getting worse, have sudden chest pain, is so breathless they can't say short sentences at rest, are they coughing up blood, or have they collapsed, fainted, or had a first-time seizure, or developed a non-fading rash?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK COVID-19 guidance lists these as call-999/A&E criteria.",
+          "rationaleEn": "NHS.UK COVID-19 guidance lists these as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [
@@ -3804,7 +3804,7 @@
           "severity": "Emergency",
           "questionTextEn": "Does the person seem very unwell or getting worse, have sudden chest pain, is so breathless they can't say short sentences at rest, are they coughing up blood, or have they collapsed, fainted, or had a first-time seizure, or developed a non-fading rash?",
           "dispositionCode": "HMC_EMERGENCY_DEPARTMENT",
-          "rationaleEn": "NHS.UK COVID-19 guidance lists these as call-999/A&E criteria.",
+          "rationaleEn": "NHS.UK COVID-19 guidance lists these as emergency ambulance or Emergency Department criteria.",
           "redFlag": true,
           "keywords": [],
           "careAdviceIds": [

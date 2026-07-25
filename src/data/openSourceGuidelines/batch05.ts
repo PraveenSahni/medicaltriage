@@ -333,7 +333,7 @@ export const batch05Protocols: ProtocolInput[] = [
         severity: "Urgent",
         questionTextEn: "Without an emergency feature, is the boil on the face, near the eye, genitals, breast, spine, hand, or over a joint; is redness spreading or fever present; or is the patient an infant, pregnant, diabetic, immunocompromised, or otherwise seriously unwell?",
         dispositionCode: "HMC_URGENT_REVIEW",
-        rationaleEn: "NHS.UK boils guidance lists these as reasons for an urgent GP appointment or 111 call.",
+        rationaleEn: "NHS.UK boils guidance lists these as reasons for an urgent clinical review.",
         redFlag: false,
         keywords: ["boil on face", "spreading boil infection", "fever with boil"],
         careAdviceIds: ["oscg-boil-urgent-advice"],
@@ -347,7 +347,7 @@ export const batch05Protocols: ProtocolInput[] = [
         severity: "Routine",
         questionTextEn: "Has the boil lasted 2 weeks without improving, does the caller keep getting boils, or is there a cluster of boils (carbuncle)?",
         dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
-        rationaleEn: "NHS.UK guidance recommends a routine GP visit for a persistent boil, recurring boils, or a carbuncle.",
+        rationaleEn: "NHS.UK guidance recommends a routine primary-care review for a persistent boil, recurring boils, or a carbuncle.",
         redFlag: false,
         keywords: ["persistent boil", "recurring boils", "carbuncle"],
         careAdviceIds: ["oscg-boil-routine-advice"],
@@ -373,7 +373,7 @@ export const batch05Protocols: ProtocolInput[] = [
     careAdvice: [
       { id: "oscg-boil-emergency-advice", titleEn: "Emergency skin-infection precautions", instructionTextEn: "Call Qatar 999 now. Do not squeeze, lance, cut, or apply caustic substances. Keep the patient still, do not allow self-driving, and follow the call-handler's instructions.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["confusion, collapse, breathing change, rapidly spreading swelling, black skin, or severe pain"], displayOrder: 1, adviceCategory: "DISPOSITION" },
       { id: "oscg-boil-urgent-advice", titleEn: "Prompt in-person abscess review", instructionTextEn: "Use the Qatar governance-approved in-person service. Do not squeeze or pierce the lesion or use leftover antibiotics. Pregnancy, infant, diabetes, immune suppression, facial and genital lesions require clinician-led treatment.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["spreading redness, fever, severe pain, or swelling near eye or airway"], displayOrder: 2, adviceCategory: "DISPOSITION" },
-      { id: "oscg-boil-routine-advice", titleEn: "Routine boil follow-up", instructionTextEn: "Book a routine GP appointment for a persistent, recurring, or clustered boil.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["boil worsens", "fever develops"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
+      { id: "oscg-boil-routine-advice", titleEn: "Routine boil follow-up", instructionTextEn: "Arrange a routine primary-care review for a persistent, recurring, or clustered boil.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["boil worsens", "fever develops"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
       { id: "oscg-boil-selfcare-advice", titleEn: "Care for a localized boil pending Qatar review", instructionTextEn: "Use a clean warm compress for short periods and keep the area clean and covered if it drains. Do not pick, squeeze, pierce, or apply caustic products, and do not share towels. Medicine choice and dose require age, weight, pregnancy or breastfeeding status, allergies, kidney or liver disease, ulcer or bleeding risk, other medicines, and Qatar formulary approval. This UAT branch remains non-telemedicine pending clinical governance.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["boil lasts more than 2 weeks", "signs of spreading infection or fever", "pain or swelling rapidly worsens"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-06-20", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
@@ -425,7 +425,7 @@ export const batch05Protocols: ProtocolInput[] = [
         severity: "Routine",
         questionTextEn: "Without an emergency feature, is the lesion near the eye, not healing within 10 days, very large or painful, widespread over eczema, associated with painful gums or poor intake, or present in pregnancy, an infant, or an immunocompromised patient?",
         dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
-        rationaleEn: "NHS.UK guidance recommends a GP visit for these situations.",
+        rationaleEn: "NHS.UK guidance recommends a primary-care review for these situations.",
         redFlag: false,
         keywords: ["cold sore not healing", "large painful cold sore", "mouth ulcers with cold sore"],
         careAdviceIds: ["oscg-coldsore-routine-advice"],
@@ -450,7 +450,7 @@ export const batch05Protocols: ProtocolInput[] = [
     ],
     careAdvice: [
       { id: "oscg-coldsore-emergency-advice", titleEn: "Emergency herpes-related precautions", instructionTextEn: "Call Qatar 999 now for airway, neurologic, severe systemic, or infant emergency features. Do not allow self-driving. Do not touch the eyes and wash hands after any lesion contact.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["vision change, confusion, worsening swelling, breathing or swallowing difficulty"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-coldsore-routine-advice", titleEn: "Routine cold sore follow-up", instructionTextEn: "Book a GP appointment - antiviral tablets may be prescribed for large, painful, or recurring cold sores.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["not healing after 10 days", "spreading or worsening"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
+      { id: "oscg-coldsore-routine-advice", titleEn: "Routine cold sore follow-up", instructionTextEn: "Arrange a primary-care review; a qualified prescriber may consider antiviral tablets for large, painful, or recurring cold sores.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["not healing after 10 days", "spreading or worsening"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
       { id: "oscg-coldsore-selfcare-advice", titleEn: "Low-risk cold-sore care", instructionTextEn: "Avoid kissing, oral sex, sharing utensils, and contact with newborns or immunocompromised people until healed. Wash hands and avoid touching eyes. A pharmacist must confirm antiviral and pain medicine suitability for age, pregnancy, breastfeeding, kidney disease, and interactions.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["eye symptoms, fever, poor intake, spreading over eczema, or failure to heal"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2024-02-19", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
@@ -506,7 +506,7 @@ export const batch05Protocols: ProtocolInput[] = [
         severity: "Routine",
         questionTextEn: "Without an emergency feature, is there blood, ongoing pain, fever, weight loss, sudden bowel-habit change, faecal soiling or urinary symptoms, or is the patient a newborn/infant, pregnant or postpartum, older/frail, immunocompromised, neurologically impaired, or taking constipating medicines?",
         dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
-        rationaleEn: "NHS.UK guidance lists these as reasons to see a GP, though categorized as non-urgent rather than emergency.",
+        rationaleEn: "NHS.UK guidance lists these as reasons for a primary-care review, though categorized as non-urgent rather than emergency.",
         redFlag: false,
         keywords: ["blood in stool", "constipation not improving", "weight loss with constipation"],
         careAdviceIds: ["oscg-constipation-routine-advice"],
@@ -531,7 +531,7 @@ export const batch05Protocols: ProtocolInput[] = [
     ],
     careAdvice: [
       { id: "oscg-constipation-emergency-advice", titleEn: "Emergency abdominal precautions", instructionTextEn: "Call Qatar 999 now, do not allow self-driving, and give no laxative, enema, food, or drink when obstruction, severe illness, or unsafe swallowing is possible. Follow the call-handler's instructions.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["worsening pain, distension, vomiting, bleeding, collapse, or confusion"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-constipation-routine-advice", titleEn: "Routine constipation follow-up", instructionTextEn: "Book a GP appointment to investigate persistent constipation or associated symptoms.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["blood in stool increases", "pain worsens"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true },
+      { id: "oscg-constipation-routine-advice", titleEn: "Routine constipation follow-up", instructionTextEn: "Arrange a primary-care review to investigate persistent constipation or associated symptoms.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["blood in stool increases", "pain worsens"], displayOrder: 2, adviceCategory: "CALL_BACK_IF", patientSendable: true },
       { id: "oscg-constipation-selfcare-advice", titleEn: "Low-risk constipation care", instructionTextEn: "Maintain normal fluids, gradually increase fibre only if obstruction is not suspected, stay active, and use a regular unhurried toilet routine. A pharmacist or clinician must choose any laxative for age, pregnancy, breastfeeding, kidney or heart disease, interactions, and duration; do not use repeated enemas or adult products in children without instruction.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["pain, distension, vomiting, inability to pass gas, blood, fever, poor intake, or failure to improve"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-10-26", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
@@ -584,7 +584,7 @@ export const batch05Protocols: ProtocolInput[] = [
         severity: "Routine",
         questionTextEn: "Have pharmacy treatments failed, is acne nodular, cystic, scarring, or significantly affecting mood, or is there pregnancy or pregnancy possibility, immune suppression, endocrine symptoms, or concern about prescribed isotretinoin or another medicine?",
         dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
-        rationaleEn: "NHS.UK guidance: see a GP if pharmacy treatments aren't working, acne is affecting wellbeing, or it's moderate/severe - proper treatment for nodules/cysts avoids scarring.",
+        rationaleEn: "NHS.UK guidance recommends primary-care review if pharmacy treatments are not working, acne is affecting wellbeing, or it is moderate or severe; appropriate treatment for nodules or cysts reduces scarring risk.",
         redFlag: false,
         keywords: ["acne not improving", "severe acne", "acne affecting mood"],
         careAdviceIds: ["oscg-acne-routine-advice"],
@@ -609,7 +609,7 @@ export const batch05Protocols: ProtocolInput[] = [
     ],
     careAdvice: [
       { id: "oscg-acne-emergency-advice", titleEn: "Emergency skin or mental-health precautions", instructionTextEn: "Call Qatar 999 now for airway, severe skin-reaction, sepsis, or immediate suicide risk. Keep the patient with a safe trusted person and do not allow self-driving.", dispositionCode: "HMC_EMERGENCY_DEPARTMENT", warningSigns: ["breathing or vision change, spreading blistering or infection, confusion, or escalating self-harm risk"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-acne-routine-advice", titleEn: "Routine acne follow-up", instructionTextEn: "Book a GP appointment - moderate to severe acne needs proper treatment to avoid scarring.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["acne worsens", "significant impact on wellbeing"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
+      { id: "oscg-acne-routine-advice", titleEn: "Routine acne follow-up", instructionTextEn: "Arrange a primary-care review; moderate to severe acne needs appropriate treatment to reduce scarring risk.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["acne worsens", "significant impact on wellbeing"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
       { id: "oscg-acne-selfcare-advice", titleEn: "Pharmacy care for mild acne", instructionTextEn: "Use gentle cleansing and do not pick or squeeze lesions. A pharmacist must confirm treatment for age, pregnancy or pregnancy possibility, breastfeeding, skin sensitivity, and other medicines. Do not use another person's antibiotics, retinoids, or isotretinoin.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["scarring, nodules, worsening infection, mood decline, or failure to improve"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2023-01-03", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
@@ -687,7 +687,7 @@ export const batch05Protocols: ProtocolInput[] = [
     ],
     careAdvice: [
       { id: "oscg-athletesfoot-urgent-advice", titleEn: "Prompt in-person foot assessment", instructionTextEn: "Use the Qatar governance-approved in-person service, particularly for diabetes, poor circulation, immune suppression, pregnancy, children, ulcers, or bacterial infection signs. Do not use steroid-combination or leftover antifungal/antibiotic products without clinician or pharmacist confirmation.", dispositionCode: "HMC_URGENT_REVIEW", warningSigns: ["spreading redness, fever, ulcer, black skin, numbness, or severe pain"], displayOrder: 1, adviceCategory: "DISPOSITION" },
-      { id: "oscg-athletesfoot-routine-advice", titleEn: "Routine athlete's foot follow-up", instructionTextEn: "Book a GP appointment if pharmacy treatment hasn't worked.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["worsening pain or spreading"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
+      { id: "oscg-athletesfoot-routine-advice", titleEn: "Routine athlete's foot follow-up", instructionTextEn: "Arrange a primary-care review if pharmacy treatment has not worked.", dispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT", warningSigns: ["worsening pain or spreading"], displayOrder: 2, adviceCategory: "NOTE_TO_TRIAGER" },
       { id: "oscg-athletesfoot-selfcare-advice", titleEn: "Pharmacy self-care for athlete's foot", instructionTextEn: "A pharmacist can recommend creams, sprays, or powders. Dry feet thoroughly (especially between toes), use separate towels, wear clean cotton socks daily, and avoid scratching, walking barefoot in public areas, or sharing footwear/towels.", dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", warningSigns: ["not improving with treatment", "spreading or worsening"], displayOrder: 3, adviceCategory: "CALL_BACK_IF", patientSendable: true }
     ],
     authorship: { authorEn: "IST Health Open-Source Guideline Content", expertReviewerEn: "NHS.UK clinical editorial review (source publisher)", lastReviewedIso: "2024-04-29", versionYear: 2026, contentSet: "IST Open-Source Guideline Content | Mixed" },
@@ -728,7 +728,7 @@ export const batch05Protocols: ProtocolInput[] = [
         questionTextEn:
           "Does the person seem very unwell or getting worse, have sudden chest pain, is so breathless they can't say short sentences at rest, are they coughing up blood, or have they collapsed, fainted, or had a first-time seizure, or developed a non-fading rash?",
         dispositionCode: "HMC_EMERGENCY_DEPARTMENT",
-        rationaleEn: "NHS.UK COVID-19 guidance lists these as call-999/A&E criteria.",
+        rationaleEn: "NHS.UK COVID-19 guidance lists these as emergency ambulance or Emergency Department criteria.",
         redFlag: true,
         keywords: ["very unwell covid", "severe breathlessness", "coughing up blood", "collapsed"],
         careAdviceIds: ["oscg-covid-emergency-advice"],

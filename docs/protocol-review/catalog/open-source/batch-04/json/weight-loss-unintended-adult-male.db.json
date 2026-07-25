@@ -81,7 +81,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "With emergency features excluded, is measured weight continuing to fall without intent, is there another symptom or medicine change, or is the person aged 12-17, pregnant/postpartum, medically vulnerable, possibly restricting/purging, or affected by food insecurity or safeguarding concerns?",
-      "Information": "NHS.UK guidance: see a GP as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
+      "Information": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) as soon as possible if there is weight loss and other symptoms - the earlier the cause is found, the sooner it can be treated; weight loss without trying should always be checked.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

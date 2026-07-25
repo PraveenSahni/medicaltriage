@@ -77,7 +77,7 @@
       "DispositionLevel": 100,
       "QuestionOrder": 1,
       "Question": "Does the person seem very unwell or getting worse, have sudden chest pain, is so breathless they can't say short sentences at rest, are they coughing up blood, or have they collapsed, fainted, or had a first-time seizure, or developed a non-fading rash?",
-      "Information": "NHS.UK COVID-19 guidance lists these as call-999/A&E criteria.",
+      "Information": "NHS.UK COVID-19 guidance lists these as emergency ambulance or Emergency Department criteria.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

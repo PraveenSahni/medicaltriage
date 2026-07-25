@@ -116,7 +116,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Have symptoms of low mood, loss of interest, or hopelessness been present for most of the day, nearly every day, for more than 2 weeks?",
-      "Information": "NHS.UK guidance: see a GP if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
+      "Information": "NHS.UK guidance: arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) if you experience symptoms of depression for most of the day, every day, for more than 2 weeks.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

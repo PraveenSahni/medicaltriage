@@ -101,7 +101,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Do the tics occur very regularly or are becoming more frequent/severe, cause social or emotional problems, cause pain or accidental injury, interfere with daily activities, or come with anger, depression, or self-harm?",
-      "Information": "NHS.UK guidance lists these as reasons to see a GP about tics.",
+      "Information": "NHS.UK guidance lists these as reasons to arrange clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) about tics.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -114,7 +114,7 @@
       "DispositionLevel": 15,
       "QuestionOrder": 1,
       "Question": "Are the tics mild and not causing problems, with none of the features above?",
-      "Information": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need GP evaluation.",
+      "Information": "NHS.UK guidance: tics are not usually serious and don't damage the brain; mild tics without problems may not need a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) evaluation.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

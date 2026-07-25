@@ -81,7 +81,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Is the skin around the bites hot, red, and painful, or is pus or fluid coming out (signs of infection)?",
-      "Information": "NHS.UK guidance flags these infection signs as needing a pharmacist or GP review.",
+      "Information": "NHS.UK guidance flags these infection signs as needing pharmacist advice or a primary-care review.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

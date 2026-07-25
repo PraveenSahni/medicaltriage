@@ -2,7 +2,10 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { batch06Protocols } from "../../../../../src/data/openSourceGuidelines/batch06.js";
-import { normalizeEmergencyAdvice } from "./shared-demographic-generator.js";
+import {
+  localizeOperationalText,
+  normalizeEmergencyAdvice,
+} from "./shared-demographic-generator.js";
 
 const root = path.resolve("docs/protocol-review/catalog/open-source/batch-06");
 for (const dir of ["json", "pdf", "evidence", "manifests", "research-gaps", "batches"]) {
@@ -51,16 +54,6 @@ const sha = (value: unknown) =>
   crypto.createHash("sha256").update(JSON.stringify(value)).digest("hex");
 const slugify = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-const localizeOperationalText = (value: string) =>
-  value
-    .replace(/\bcall-999\/A&E\b/gi, "Qatar 999/emergency-department")
-    .replace(/\bcall 999 or go to A&E\b/gi, "call Qatar 999 or go to an emergency department")
-    .replace(/\bgo to A&E\b/gi, "go to an emergency department")
-    .replace(/\bA&E\b/g, "emergency department")
-    .replace(/\bNHS 111\b/gi, "the Qatar urgent clinical review pathway")
-    .replace(/\bcalling 111\b/gi, "urgent clinical review")
-    .replace(/\bcall 111\b/gi, "seek urgent clinical review")
-    .replace(/\b111 online\b/gi, "the approved Qatar urgent-care channel");
 const entries: any[] = [];
 const gaps: any[] = [];
 let nextId = 1145;

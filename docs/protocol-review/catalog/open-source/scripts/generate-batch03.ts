@@ -2,7 +2,10 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { batch03Protocols } from "../../../../../src/data/openSourceGuidelines/batch03.js";
-import { normalizeEmergencyAdvice } from "./shared-demographic-generator.js";
+import {
+  localizeOperationalText,
+  normalizeEmergencyAdvice,
+} from "./shared-demographic-generator.js";
 
 const root = path.resolve("docs/protocol-review/catalog/open-source/batch-03");
 for (const dir of ["json", "pdf", "evidence", "manifests", "research-gaps", "batches"]) {
@@ -259,8 +262,8 @@ for (const protocol of batch03Protocols) {
           AlgorithmID: algorithmId,
           DispositionLevel: q.dispositionLevel ?? 50,
           QuestionOrder: q.questionOrder ?? index + 1,
-          Question: q.questionTextEn,
-          Information: localizeQuestionInformation(q.id, q.rationaleEn),
+          Question: localizeOperationalText(q.questionTextEn),
+          Information: localizeOperationalText(localizeQuestionInformation(q.id, q.rationaleEn)),
           GotoGuideline: null,
           TelemedicineEligible: q.telemedicineEligible,
           AdviceIDs: q.careAdviceIds.map((id) => adviceIds.get(id)),
@@ -322,10 +325,10 @@ for (const protocol of batch03Protocols) {
           Age: ageText,
           GenderAtBirth: gender,
           Acuity: protocol.acuity,
-          Definition: [protocol.clinicalDefinitionEn, `${age.label} patient.`, `${gender}.`],
+          Definition: [localizeOperationalText(protocol.clinicalDefinitionEn), `${age.label} patient.`, `${gender}.`],
           PainSeverity: painSeverity,
           Background: {
-            KeyPoints: backgroundKeyPoints[protocol.id],
+            KeyPoints: backgroundKeyPoints[protocol.id].map(localizeOperationalText),
             CausesUnder50: [],
             CausesOver50: [],
             LocationTable: [],
@@ -335,7 +338,7 @@ for (const protocol of batch03Protocols) {
           },
           FirstAid: protocol.careAdvice
             .filter((a) => a.dispositionCode === "HMC_EMERGENCY_DEPARTMENT")
-            .map((a) => normalizeEmergencyAdvice(localizeAdvice(a.id, a.instructionTextEn))),
+            .map((a) => normalizeEmergencyAdvice(localizeOperationalText(localizeAdvice(a.id, a.instructionTextEn)))),
           Author:
             protocol.authorship?.authorEn ?? "IST Health Open-Source Guideline Content",
           LastRevised: "RESEARCH_REQUIRED - internal IST clinical adaptation date is not recorded",
@@ -355,8 +358,8 @@ for (const protocol of batch03Protocols) {
           Internal: false,
           Content: [
             a.dispositionCode === "HMC_EMERGENCY_DEPARTMENT"
-              ? normalizeEmergencyAdvice(localizeAdvice(a.id, a.instructionTextEn))
-              : localizeAdvice(a.id, a.instructionTextEn),
+              ? normalizeEmergencyAdvice(localizeOperationalText(localizeAdvice(a.id, a.instructionTextEn)))
+              : localizeOperationalText(localizeAdvice(a.id, a.instructionTextEn)),
             `Call Back If: ${a.warningSigns.join("; ")}.`,
           ],
         })),

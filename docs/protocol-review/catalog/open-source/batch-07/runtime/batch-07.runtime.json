@@ -92,7 +92,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the skin around the bites hot, red, and painful, or is pus or fluid coming out (signs of infection)?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance flags these infection signs as needing a pharmacist or GP review.",
+          "rationaleEn": "NHS.UK guidance flags these infection signs as needing pharmacist advice or a primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -286,7 +286,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the skin around the bites hot, red, and painful, or is pus or fluid coming out (signs of infection)?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance flags these infection signs as needing a pharmacist or GP review.",
+          "rationaleEn": "NHS.UK guidance flags these infection signs as needing pharmacist advice or a primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -489,7 +489,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the skin around the bites hot, red, and painful, or is pus or fluid coming out (signs of infection)?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance flags these infection signs as needing a pharmacist or GP review.",
+          "rationaleEn": "NHS.UK guidance flags these infection signs as needing pharmacist advice or a primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -692,7 +692,7 @@
           "severity": "Routine",
           "questionTextEn": "Is the skin around the bites hot, red, and painful, or is pus or fluid coming out (signs of infection)?",
           "dispositionCode": "PHCC_URGENT_CARE_OR_TELECONSULT",
-          "rationaleEn": "NHS.UK guidance flags these infection signs as needing a pharmacist or GP review.",
+          "rationaleEn": "NHS.UK guidance flags these infection signs as needing pharmacist advice or a primary-care review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2742,7 +2742,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are there multiple stings, symptoms worsening, or a previous serious allergic reaction to a sting?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists multiple stings and a prior serious reaction as reasons to seek urgent clinical review or arrange primary-care review urgently.",
+          "rationaleEn": "NHS.UK guidance lists multiple stings and a prior serious reaction as reasons for an urgent clinical review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -2948,7 +2948,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are there multiple stings, symptoms worsening, or a previous serious allergic reaction to a sting?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists multiple stings and a prior serious reaction as reasons to seek urgent clinical review or arrange primary-care review urgently.",
+          "rationaleEn": "NHS.UK guidance lists multiple stings and a prior serious reaction as reasons for an urgent clinical review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3163,7 +3163,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are there multiple stings, symptoms worsening, or a previous serious allergic reaction to a sting?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists multiple stings and a prior serious reaction as reasons to seek urgent clinical review or arrange primary-care review urgently.",
+          "rationaleEn": "NHS.UK guidance lists multiple stings and a prior serious reaction as reasons for an urgent clinical review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [
@@ -3378,7 +3378,7 @@
           "severity": "Urgent",
           "questionTextEn": "Are there multiple stings, symptoms worsening, or a previous serious allergic reaction to a sting?",
           "dispositionCode": "HMC_URGENT_REVIEW",
-          "rationaleEn": "NHS.UK guidance lists multiple stings and a prior serious reaction as reasons to seek urgent clinical review or arrange primary-care review urgently.",
+          "rationaleEn": "NHS.UK guidance lists multiple stings and a prior serious reaction as reasons for an urgent clinical review.",
           "redFlag": false,
           "keywords": [],
           "careAdviceIds": [

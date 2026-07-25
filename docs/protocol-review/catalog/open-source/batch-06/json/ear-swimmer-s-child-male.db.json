@@ -90,7 +90,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Does the person feel generally unwell or have a very high temperature, is there swelling around the ear, fluid coming from the ear, hearing loss or change, nausea/vomiting/dizziness, a severe sore throat, or a weakened immune system?",
-      "Information": "NHS.UK ear infection guidance lists these as urgent the Qatar urgent clinical review pathway/GP criteria.",
+      "Information": "NHS.UK ear infection guidance lists these as urgent clinical-review criteria.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -103,7 +103,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Has earache persisted beyond 3 days, or are ear infections recurring?",
-      "Information": "NHS.UK guidance recommends a GP visit for persistent or recurrent ear infections.",
+      "Information": "NHS.UK guidance recommends a primary-care review for persistent or recurrent ear infections.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -154,7 +154,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Book a GP appointment for persistent or recurring ear infections.",
+        "Arrange a primary-care review for persistent or recurring ear infections.",
         "Call Back If: symptoms worsen; new discharge."
       ]
     },

@@ -82,7 +82,7 @@
       "DispositionLevel": 100,
       "QuestionOrder": 1,
       "Question": "Is there chest pain or discomfort that does not go away, pain spreading to the arm/neck/jaw/back, or chest pain with sweating, nausea, lightheadedness, or breathlessness?",
-      "Information": "NHS.UK high blood pressure guidance lists these as call-999 criteria for a possible heart attack.",
+      "Information": "NHS.UK high blood pressure guidance lists these as Qatar 999 criteria for a possible heart attack.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -121,7 +121,7 @@
       "DispositionLevel": 70,
       "QuestionOrder": 1,
       "Question": "Are there frequent headaches or blurred vision, or chest pain that comes and goes?",
-      "Information": "NHS.UK guidance recommends calling 111 for these symptoms alongside high blood pressure.",
+      "Information": "NHS.UK guidance recommends contacting the Qatar clinical-review pathway approved by governance (GOVERNANCE_REQUIRED) for these symptoms alongside high blood pressure.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -134,7 +134,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Is the reading 140/90 or higher (professional check) or 135/85 or higher (home check), with none of the features above?",
-      "Information": "NHS.UK guidance defines these as high blood pressure readings warranting a GP or pharmacy check and follow-up.",
+      "Information": "NHS.UK guidance defines these as high blood pressure readings warranting a a clinician using the Qatar pathway approved by governance (GOVERNANCE_REQUIRED) or pharmacy check and follow-up.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

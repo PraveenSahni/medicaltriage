@@ -72,7 +72,7 @@
       "DispositionLevel": 100,
       "QuestionOrder": 1,
       "Question": "Is the person unresponsive or unconscious, AND is a glucagon injection unavailable, or has one already been given without recovery within 10 minutes, or has the person been drinking alcohol?",
-      "Information": "NHS.UK low blood sugar guidance lists these as call-999 criteria for severe hypoglycemia.",
+      "Information": "NHS.UK low blood sugar guidance lists these as Qatar 999 criteria for severe hypoglycemia.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [

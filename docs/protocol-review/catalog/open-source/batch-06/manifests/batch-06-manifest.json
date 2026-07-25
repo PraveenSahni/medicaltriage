@@ -204,7 +204,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Male",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "30a114925803fd810e68589dddb40194cda97e1885b40f180ad4a1a586bc331b",
+      "canonicalContentHash": "13a72caa01a7782112f4c3d68b7f326af90e8860d94dd539f8b51eeccd0d3eb9",
       "redirectTarget": "Ear - Foreign Body",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -226,7 +226,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Female",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "8427f24d970db486059169bb26eb168d0fb7e472e23097fc22172191bb21ce26",
+      "canonicalContentHash": "6d6b0911a0f528b57fa1f7abf622d06e3e79d9f50e961637ff59d65a70a37ae3",
       "redirectTarget": "Ear - Foreign Body",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -248,7 +248,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Male",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "722672883f2a6d8a78513f4f2e72dabaa3b9bf4fe82c55446a4cd5c0a065ed40",
+      "canonicalContentHash": "b941ff7361d21245c92afd2180fcfaf6718053dc33877d34b56899612f430263",
       "redirectTarget": "Ear - Foreign Body",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -271,7 +271,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Female",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "a3526d8889adff17d1ad44cb3ba180d07665a638192d196eb29fc6c378e9bba0",
+      "canonicalContentHash": "e614fd231c37d8870437501a1a1981f8f171e1c72d9b713e4a1bb9a59ab77e3f",
       "redirectTarget": "Ear - Foreign Body",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -384,7 +384,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Male",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "eaccdb4621f6bc7606fc05b633f8affbb61cc85d5efcfa2b5c13785bb810ce9d",
+      "canonicalContentHash": "e0f9bdf4b00389e23582777fea869642dca36e5a774622cec8b06ba32dad0fd3",
       "redirectTarget": "Earache",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -406,7 +406,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Female",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "253aa66323fd2b5cec28611280ae8f4d7f3152ad08f236a84748f3de21a15e43",
+      "canonicalContentHash": "4437bdb8f5110703b498267ee0696da1ee09f62d54b9b869e06c4df669e4da2c",
       "redirectTarget": "Earache",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -428,7 +428,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Male",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "cd999385489ef87ec2b5fbf3355de0a5c5be295737837b89b82203c07f96c5be",
+      "canonicalContentHash": "dd6e79d8553ebed57da9311df852be327ca9fb3cc7b154e634e535392b5e78b8",
       "redirectTarget": "Earache",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -451,7 +451,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Female",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "a83e41525a011620cb60fa91b0b6fa962f372d7001af88ab0c36533e6e98d2c8",
+      "canonicalContentHash": "809eed6ce759def9041734a5391d576df049123ddcb2c7f157d2c86e69e0e179",
       "redirectTarget": "Earache",
       "demographicDifferentiation": {
         "ageSpecificChanges": [

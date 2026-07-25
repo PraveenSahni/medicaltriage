@@ -297,7 +297,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Male",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "04a0be178e6d7364b029174889d4ad229d3a40e65aafc48f8a5c81796a7169a1",
+      "canonicalContentHash": "21ad96b097ab0277e2ce54be0663fbd5716799a197389a5efe348ca21a2b0943",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
@@ -318,7 +318,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Female",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "f317b39894146ef38ae46b073b0c7aa87c90addf322f9320bd4e7e1946309a04",
+      "canonicalContentHash": "9b90a05a9dfbf47b61aa5a13b88adb076bc6bc71b0c91f5ba286b682d46ec969",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Adult pathway uses direct symptom, safety, and functional-impact assessment."
@@ -339,7 +339,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Male",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "26f71e771aa74b57e29a2a464e0f05e7815d37e724adfa03e00df02e01015b1e",
+      "canonicalContentHash": "b3f835b872cdbab92ce11f58ce1fb15448bac83cbdd34b9b31ed71bf7f9f736e",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Child applicability begins at source minimum age 0.",
@@ -361,7 +361,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Female",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "f9e6e65e91dd5688760bf73a2b6e93b89ec48727f0b531bdee9c69f141b5b2df",
+      "canonicalContentHash": "d5085d47af99166e4d8f94239bc55fa90e16df326e56582b281a0d1d9204b847",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
           "Child applicability begins at source minimum age 0.",
@@ -383,7 +383,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Male",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "e550e88943178fb80f72174369a56e05b262278ba189337d6747fbdffe650d1c",
+      "canonicalContentHash": "28ec22593492898482750aa62d2739ad963976ae9c6998a58731469b232898db",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -405,7 +405,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Female",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "e4fb194d7f3995af1025a1d7e4d6ab51821daaa1f8352bd56e763a5e4a6ecf80",
+      "canonicalContentHash": "3461943d367a16a4b0a23b96114d699bd0d7955b19a4a8278612ad6484c2fcef",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -427,7 +427,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Male",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "fe9cb4156cc8f94f9408e06b57a1f5dbc312f9a8cc6469df8a5d33230c434036",
+      "canonicalContentHash": "90baa6bf14457dd3b177f85b0e72e0df9aebb4b475eb99411de874c4b9064057",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -450,7 +450,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Female",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "59c5cca64470fac362c057457fd7982bde2b369bb691929b59138855320523e0",
+      "canonicalContentHash": "0ca1fe07922148310e58cf9059f66f1a6da8a64edfc46a44b8fd044c1ed501a7",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [

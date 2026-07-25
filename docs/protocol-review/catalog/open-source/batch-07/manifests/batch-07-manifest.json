@@ -294,7 +294,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Male",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "4f527e86191bac9e6b31e689631c1143c2d899b79359ea4de248cc616962f44d",
+      "canonicalContentHash": "c013a673aa06d5f7873d83f3cefa25efb3923488f5e142c1becfc7eac9568006",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -316,7 +316,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Female",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "9cbfd3ea279ddbd3bc76c7610d37a3bf8c903ca370e3cc70ac9afde2e78cbc1b",
+      "canonicalContentHash": "612f9656197dc2c1577d70425ccdae7d8cf7f37bc89a64a9faebdd17d6766ae5",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -338,7 +338,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Male",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "2bf6adf56cf44019c46197879f40c5b63b51ad4a649b3fcb49c4609b857fd44c",
+      "canonicalContentHash": "3d0998c7891c3e158487ece84d9b72ab0cef4a0e7d5834b9679eaf1edc5e39d2",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -361,7 +361,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Female",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "13627e002f3f092b3b09563a8fc0a0b8649d6cd597a83ee8c4fe8bf99f129317",
+      "canonicalContentHash": "225a2c65aa6e8f927b1b465f8e04a4f99aa900eab41e97f46ab22ad8fc0ea9cb",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -384,7 +384,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Male",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "f4df6897eb17036a4de66b41f8112ad28d91a29f8f984a2af0cf565de646e9e6",
+      "canonicalContentHash": "6b0f681adcb81e30e4a01d0413ce1dc78f35fdb1ed2b693050cd94b6e2d8739e",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -406,7 +406,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Female",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "4761c549e3c7b1d0dce1ef640b90b7adaafb4f0cc40273d2a7d4de2139f44b5f",
+      "canonicalContentHash": "8fa3d052969b39481e5d0ca5e8be191117d21b2a4fb3f8319212763ac3cda464",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -428,7 +428,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Male",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "37bbbd3d8c24487c10bfcca0c729814267361566ced710fb0a0ea020dcc2f9c0",
+      "canonicalContentHash": "acfeeab02d70962b08df842973fa1143592ef3588d4dfee39df350828e13fa66",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [
@@ -451,7 +451,7 @@
       "sourceMinimumAge": 0,
       "genderAtBirth": "Female",
       "validationStatus": "BLOCKED_BY_RESEARCH_GAP",
-      "canonicalContentHash": "0a8df4dcb184d5151d0167109ce6d8e012e5f7606b0c6732ec9f01f5f70cea0e",
+      "canonicalContentHash": "ea1331b634dbf35ae56944f6ee0108883e59bebd4f7f9c2da259a2a47a1e8e18",
       "redirectTarget": "Anaphylaxis",
       "demographicDifferentiation": {
         "ageSpecificChanges": [

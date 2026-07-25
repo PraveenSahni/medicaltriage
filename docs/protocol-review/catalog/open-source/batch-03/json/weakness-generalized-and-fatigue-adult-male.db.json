@@ -105,7 +105,7 @@
       "DispositionLevel": 50,
       "QuestionOrder": 1,
       "Question": "Has the tiredness lasted a few weeks without a clear cause, is it affecting daily life, or is it accompanied by weight loss, mood changes, or gasping/snorting/choking sounds during sleep?",
-      "Information": "NHS.UK guidance recommends a GP visit for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
+      "Information": "NHS.UK guidance recommends a clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) for unexplained, persistent, or functionally-impairing tiredness, or tiredness with these associated symptoms.",
       "GotoGuideline": null,
       "TelemedicineEligible": false,
       "AdviceIDs": [
@@ -145,7 +145,7 @@
       "PatientHealthInfo": false,
       "Internal": false,
       "Content": [
-        "Book a routine GP appointment to investigate persistent or unexplained tiredness.",
+        "Book a routine clinical review through a Qatar pathway approved by governance (GOVERNANCE_REQUIRED) to investigate persistent or unexplained tiredness.",
         "Call Back If: new symptoms develop; worsening weight loss."
       ]
     },
