@@ -9,6 +9,7 @@ import { ReasonRuleOutStage } from "./stages/ReasonRuleOutStage";
 import { QuestionsStage } from "./stages/QuestionsStage";
 import { DispositionStage } from "./stages/DispositionStage";
 import { CompletionStage } from "./stages/CompletionStage";
+import { RagShadowRail } from "./RagShadowRail";
 
 export type CockpitStageKey = "reason" | "questions" | "disposition" | "sbar";
 
@@ -182,6 +183,8 @@ export function CockpitApp({ session, onLogout, onBack }: CockpitAppProps) {
             </>
           )}
         </main>
+
+        {activeItem && !isActiveCallHeld && <RagShadowRail item={activeItem} />}
       </div>
     </div>
   );

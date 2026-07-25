@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQueue, type QueueItem, type QueueVitals } from "../../QueueContext";
 import { InitialAssessmentQuestions } from "../InitialAssessmentQuestions";
+import { ProtocolMatchPanel } from "../ProtocolMatchPanel";
 
 const numericVitalKeys: Array<keyof Omit<QueueVitals, "consciousLevel">> = ["heartRate", "respiratoryRate", "spo2"];
 
@@ -123,6 +124,8 @@ export function ReasonRuleOutStage({
           onBlur={saveReasonNarrative}
         />
       </div>
+
+      <ProtocolMatchPanel item={item} />
 
       {item.safetyFloorActive ? (
         <div className="redflag-banner active" role="alert">

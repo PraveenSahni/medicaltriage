@@ -843,6 +843,265 @@
   border-color: var(--accent);
 }
 
+/* ---------- RAG shadow rail ---------- */
+
+#cockpit-root .cockpit-rag-rail {
+  flex: 0 0 340px !important;
+  border-left: 1px solid var(--line) !important;
+  background: var(--bg2) !important;
+  padding: 16px !important;
+  overflow-y: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+@media (max-width: 1600px) {
+  #cockpit-root .cockpit-rag-rail {
+    display: none !important;
+  }
+}
+
+#cockpit-root .rag-rail-toggle {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.4px !important;
+  color: var(--muted) !important;
+  cursor: pointer !important;
+}
+
+#cockpit-root .rag-rail-toggle-icon {
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+}
+
+#cockpit-root .rag-rail-body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+#cockpit-root .rag-rail-empty {
+  font-size: 0.85rem !important;
+  color: var(--muted) !important;
+}
+
+#cockpit-root .rag-rail-agreement {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border-radius: 8px !important;
+  padding: 8px 10px !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+}
+
+#cockpit-root .rag-rail-agreement.rag-tone-home {
+  background: var(--homebg) !important;
+  border: 1px solid var(--homebd) !important;
+  color: var(--home) !important;
+}
+
+#cockpit-root .rag-rail-agreement.rag-tone-hcp4 {
+  background: var(--hcp4bg) !important;
+  border: 1px solid var(--hcp4bd) !important;
+  color: var(--hcp4) !important;
+}
+
+#cockpit-root .rag-rail-agreement.rag-tone-ems {
+  background: var(--emsbg) !important;
+  border: 1px solid var(--emsbd) !important;
+  color: var(--ems) !important;
+}
+
+#cockpit-root .rag-rail-agreement.rag-tone-muted {
+  background: var(--card) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--muted) !important;
+}
+
+#cockpit-root .rag-rail-confidence {
+  font-weight: 500 !important;
+}
+
+#cockpit-root .rag-rail-section {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+#cockpit-root .rag-rail-section-label {
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.4px !important;
+  color: var(--muted) !important;
+}
+
+#cockpit-root .rag-rail-candidate {
+  background: var(--card) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  padding: 8px 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+#cockpit-root .rag-rail-candidate-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: var(--ink) !important;
+}
+
+#cockpit-root .rag-rail-candidate-score {
+  font-size: 0.78rem !important;
+  font-weight: 500 !important;
+  color: var(--muted) !important;
+}
+
+#cockpit-root .rag-rail-candidate-terms {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+}
+
+#cockpit-root .rag-rail-tag {
+  background: var(--bg2) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 999px !important;
+  padding: 2px 9px !important;
+  font-size: 0.78rem !important;
+  color: var(--ink) !important;
+}
+
+#cockpit-root .rag-rail-boundary-list {
+  margin: 0 !important;
+  padding-left: 18px !important;
+  font-size: 0.8rem !important;
+  color: var(--ink) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+#cockpit-root .rag-rail-note {
+  font-size: 0.78rem !important;
+  color: var(--muted) !important;
+  font-style: italic !important;
+}
+
+/* ---------- Protocol match panel ---------- */
+
+#cockpit-root .protocol-match-panel {
+  background: var(--card) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin: 8px 0 !important;
+}
+
+#cockpit-root .protocol-match-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.4px !important;
+  color: var(--muted) !important;
+}
+
+#cockpit-root .protocol-match-patient {
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  color: var(--ink) !important;
+}
+
+#cockpit-root .protocol-match-keywords,
+#cockpit-root .protocol-match-tags {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+}
+
+#cockpit-root .protocol-match-tag {
+  background: var(--bg2) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 999px !important;
+  padding: 2px 9px !important;
+  font-size: 0.78rem !important;
+  color: var(--ink) !important;
+}
+
+#cockpit-root .protocol-match-empty {
+  font-size: 0.85rem !important;
+  color: var(--muted) !important;
+}
+
+#cockpit-root .protocol-match-primary-label {
+  font-size: 0.9rem !important;
+  color: var(--ink) !important;
+}
+
+#cockpit-root .protocol-match-suggestion {
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  padding: 8px 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+#cockpit-root .protocol-match-suggestion.is-primary {
+  border-color: var(--accent) !important;
+  background: var(--bg2) !important;
+}
+
+#cockpit-root .protocol-match-suggestion-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: var(--ink) !important;
+}
+
+#cockpit-root .protocol-match-suggestion-score {
+  font-size: 0.78rem !important;
+  font-weight: 500 !important;
+  color: var(--muted) !important;
+}
+
+#cockpit-root .protocol-match-alternates {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+#cockpit-root .protocol-match-alternates-label {
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.4px !important;
+  color: var(--muted) !important;
+}
+
 /* ---------- Red-flag banner ---------- */
 
 #cockpit-root .redflag-banner {
