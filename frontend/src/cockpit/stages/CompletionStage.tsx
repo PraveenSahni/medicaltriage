@@ -96,7 +96,12 @@ export function CompletionStage({ item, isReadOnly, onCallCompleted }: Completio
         <label>SBAR Preview</label>
         <div className="cockpit-sbar-preview">
           {completed
-            ? "This call has been closed and is now read-only."
+            ? // item.sbarNoteText is the persisted bilingual note - sbarText is
+              // only local component state from an active copy/complete flow
+              // in *this* session, so it's empty when reopening an
+              // already-closed call, which previously always fell through to
+              // a generic placeholder instead of ever showing the real note.
+              item.sbarNoteText || sbarText || "This call was closed before the SBAR note text was captured."
             : sbarText || fallbackSbar}
         </div>
 
