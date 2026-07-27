@@ -72,23 +72,42 @@ type InitialAssessmentQuestion = {
 };
 type ProtocolSummary = { id: string; titleEn: string; questionCount: number };
 
+// Genuine first-person caller speech - "Reason for Call - in the caller's own
+// words" must read like something a real person actually said on the phone,
+// not a third-person narrator/system summary ("Caller reports:", "According
+// to the caller:") describing them from the outside. Each opener is a
+// colon-style lead-in that stays grammatically coherent regardless of the
+// clause fragment that follows (screening-question source text doesn't
+// always reduce cleanly to a subject-verb-agreeing sentence), rather than
+// openers like "I have..." that only work for some fragment shapes.
 const CALLER_OPENERS = [
-  "Caller reports",
-  "The patient says",
-  "According to the caller",
-  "The employee mentions",
-  "The dependent's parent describes",
-  "Caller states"
+  "I'm calling because",
+  "Here's what's going on:",
+  "I wanted to mention",
+  "I'm worried because",
+  "The reason I'm calling is",
+  "What's happening is"
 ];
 
+// Screening-question lead-ins ("Is there...", "Has there been...") read as a
+// question posed back at the caller, not something the caller would say
+// about themselves - stripped so the remaining clause reads as a first-
+// person statement instead.
+const QUESTION_LEAD_IN_PATTERN =
+  /^(is there|is the|is a|is this|has there been|has the|did the|does the|are there|was there|for the in-person clinician,?\s*)/i;
+
 function naturalizeCriteria(raw: string): string {
-  return raw
+  let text = raw
     .replace(/\[\d+\]/g, "")
     .replace(/\s+AND\s+/gi, " and ")
     .replace(/\(Exception[^)]*\)/gi, "")
     .replace(/\s{2,}/g, " ")
-    .trim()
-    .toLowerCase();
+    .trim();
+  text = text.replace(QUESTION_LEAD_IN_PATTERN, "").trim();
+  // The source text is often a screening question and may still end in "?" -
+  // a caller describing their own symptoms wouldn't end on a question mark.
+  text = text.replace(/\?+$/, "");
+  return text.toLowerCase();
 }
 
 function reasonNarrativeFor(protocolTitle: string, criteriaText: string | undefined, scenarioSeed: number): string {
@@ -96,7 +115,7 @@ function reasonNarrativeFor(protocolTitle: string, criteriaText: string | undefi
   if (!criteriaText) {
     return `${opener} mild, intermittent symptoms consistent with ${protocolTitle.toLowerCase()}, with none of the more serious warning signs present.`;
   }
-  return `${opener}: ${naturalizeCriteria(criteriaText)}.`;
+  return `${opener} ${naturalizeCriteria(criteriaText)}.`;
 }
 
 function sampleInitialAssessmentAnswer(question: InitialAssessmentQuestion): string {
