@@ -1,4 +1,5 @@
-import type { QueueItem, QueueProtocolSuggestion } from "../QueueContext";
+import { useState } from "react";
+import { useQueue, type QueueItem, type QueueProtocolSuggestion } from "../QueueContext";
 
 function formatAgeSex(item: QueueItem): string | null {
   const age = item.patientAge;
@@ -15,9 +16,21 @@ function formatAgeSex(item: QueueItem): string | null {
   return parts.length > 0 ? parts.join(" · ") : null;
 }
 
-function SuggestionRow({ suggestion, isPrimary }: { suggestion: QueueProtocolSuggestion; isPrimary: boolean }) {
+function SuggestionRow({
+  suggestion,
+  isSelected,
+  canSelect,
+  busy,
+  onSelect
+}: {
+  suggestion: QueueProtocolSuggestion;
+  isSelected: boolean;
+  canSelect: boolean;
+  busy: boolean;
+  onSelect: () => void;
+}) {
   return (
-    <div className={`protocol-match-suggestion${isPrimary ? " is-primary" : ""}`}>
+    <div className={`protocol-match-suggestion${isSelected ? " is-primary" : ""}`}>
       <div className="protocol-match-suggestion-head">
         <span className="protocol-match-suggestion-title">{suggestion.titleEn}</span>
         <span className="protocol-match-suggestion-score">Score {suggestion.score}</span>
@@ -31,23 +44,59 @@ function SuggestionRow({ suggestion, isPrimary }: { suggestion: QueueProtocolSug
           ))}
         </div>
       )}
+      {canSelect && (
+        <button
+          type="button"
+          className="protocol-match-select-btn"
+          disabled={isSelected || busy}
+          onClick={onSelect}
+        >
+          {isSelected ? "Selected" : "Use this guideline"}
+        </button>
+      )}
     </div>
   );
 }
 
-export function ProtocolMatchPanel({ item }: { item: QueueItem }) {
+export function ProtocolMatchPanel({ item, isReadOnly }: { item: QueueItem; isReadOnly: boolean }) {
+  const { updateItemContext } = useQueue();
   const prepared = item.preparedProtocol;
   const ageSexLabel = formatAgeSex(item);
+  const [busy, setBusy] = useState(false);
+  const [selectError, setSelectError] = useState("");
 
   if (!prepared) {
     return null;
   }
 
   const suggestions = prepared.suggestions ?? [];
-  const primary = prepared.primaryProtocolId
-    ? suggestions.find((suggestion) => suggestion.protocolId === prepared.primaryProtocolId)
+  // The nurse can override the auto-matched guideline (prepared.primaryProtocolId
+  // is only a keyword-search suggestion) by picking any candidate below - that
+  // choice is what QuestionsStage.tsx actually fetches/commits, not silently
+  // overridden by re-running the keyword search on a later reason-text edit.
+  const selectedProtocolId = item.matchedProtocolId ?? prepared.primaryProtocolId;
+  const questionsStarted = Boolean(item.taqResponses && Object.keys(item.taqResponses).length > 0);
+  const canSelect = !isReadOnly && !item.dispositionCode && !questionsStarted && suggestions.length > 0;
+
+  async function selectProtocol(protocolId: string) {
+    setBusy(true);
+    setSelectError("");
+    try {
+      await updateItemContext(item.id, { matchedProtocolId: protocolId });
+    } catch (caught) {
+      setSelectError(caught instanceof Error ? caught.message : "Failed to select guideline.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const selected = selectedProtocolId
+    ? suggestions.find((suggestion) => suggestion.protocolId === selectedProtocolId)
     : undefined;
-  const alternates = primary ? suggestions.filter((suggestion) => suggestion.protocolId !== primary.protocolId) : suggestions;
+  const alternates = selected
+    ? suggestions.filter((suggestion) => suggestion.protocolId !== selected.protocolId)
+    : suggestions;
+  const selectedTitle = selected?.titleEn ?? prepared.primaryProtocolTitle;
 
   return (
     <div className="protocol-match-panel">
@@ -76,23 +125,60 @@ export function ProtocolMatchPanel({ item }: { item: QueueItem }) {
 
       {prepared.status === "PREPARED" && (
         <>
-          {prepared.primaryProtocolTitle ? (
+          {selectedTitle ? (
             <div className="protocol-match-primary-label">
-              Selected guideline: <strong>{prepared.primaryProtocolTitle}</strong>
+              Selected guideline: <strong>{selectedTitle}</strong>
+              {item.matchedProtocolId && item.matchedProtocolId !== prepared.primaryProtocolId && (
+                <span className="protocol-match-override-note"> (nurse-selected, overriding the top keyword match)</span>
+              )}
             </div>
           ) : (
             <div className="protocol-match-empty">No matching guideline found for the current reason and keywords.</div>
           )}
 
-          {primary && <SuggestionRow suggestion={primary} isPrimary />}
+          {canSelect && (
+            <div className="protocol-match-select-hint">
+              Search results are based on the reason narrative, patient age, and sex. Select the guideline that
+              best matches the caller&rsquo;s presentation.
+            </div>
+          )}
+
+          {questionsStarted && !isReadOnly && (
+            <div className="protocol-match-select-hint">
+              Guideline selection is locked once triage questions have been answered for this call.
+            </div>
+          )}
+
+          {selected && (
+            <SuggestionRow
+              suggestion={selected}
+              isSelected
+              canSelect={canSelect}
+              busy={busy}
+              onSelect={() => selectProtocol(selected.protocolId)}
+            />
+          )}
 
           {alternates.length > 0 && (
             <div className="protocol-match-alternates">
               <div className="protocol-match-alternates-label">Other candidates considered</div>
               {alternates.map((suggestion) => (
-                <SuggestionRow suggestion={suggestion} isPrimary={false} key={suggestion.protocolId} />
+                <SuggestionRow
+                  suggestion={suggestion}
+                  isSelected={false}
+                  canSelect={canSelect}
+                  busy={busy}
+                  onSelect={() => selectProtocol(suggestion.protocolId)}
+                  key={suggestion.protocolId}
+                />
               ))}
             </div>
+          )}
+
+          {selectError && (
+            <p className="cockpit-action-error" role="alert">
+              {selectError}
+            </p>
           )}
         </>
       )}

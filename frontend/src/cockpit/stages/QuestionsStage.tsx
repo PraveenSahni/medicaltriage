@@ -51,7 +51,12 @@ export function QuestionsStage({
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState("");
 
-  const protocolId = item.preparedProtocol?.primaryProtocolId;
+  // A nurse can override the auto keyword-matched guideline from the Reason &
+  // Rule-Out stage's ProtocolMatchPanel (writes item.matchedProtocolId there,
+  // before any TAQ has been answered) - that choice takes precedence over the
+  // preparedProtocol's keyword-search suggestion for which question set is
+  // actually presented and committed here.
+  const protocolId = item.matchedProtocolId ?? item.preparedProtocol?.primaryProtocolId;
 
   useEffect(() => {
     let cancelled = false;
@@ -167,7 +172,7 @@ export function QuestionsStage({
         // dispositionCode in this app's 8-value enum, so filtering by that
         // code alone would show all of their advice mixed together.
         await updateItemContext(item.id, {
-          matchedProtocolId: item.preparedProtocol!.primaryProtocolId,
+          matchedProtocolId: protocolId,
           calculatedSeverity: severityMap[question.severity],
           dispositionCode: question.dispositionCode,
           // destinationName must be set in this same atomic update - the
@@ -183,7 +188,7 @@ export function QuestionsStage({
         onDispositionReached();
       } else if (Object.keys(next).length === questions!.length) {
         await updateItemContext(item.id, {
-          matchedProtocolId: item.preparedProtocol!.primaryProtocolId,
+          matchedProtocolId: protocolId,
           calculatedSeverity: "SELF_CARE",
           dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
           destinationName: QATAR_DESTINATION_BY_CODE.SELF_CARE_WITH_CALLBACK_PRECAUTIONS,
