@@ -199,14 +199,20 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
+// Vitals may be partially entered (a nurse fills them in one field at a
+// time - see QueueContextUpdateSchema's comment), so this only rejects
+// genuinely malformed values, not an incomplete-but-valid partial object.
 function isVitals(value: unknown): value is QueueVitals {
+  if (!isRecord(value)) {
+    return false;
+  }
+  const { heartRate, respiratoryRate, spo2, temperature, consciousLevel } = value;
   return (
-    isRecord(value) &&
-    typeof value.heartRate === "number" &&
-    typeof value.respiratoryRate === "number" &&
-    typeof value.spo2 === "number" &&
-    typeof value.temperature === "number" &&
-    typeof value.consciousLevel === "string"
+    (heartRate === undefined || typeof heartRate === "number") &&
+    (respiratoryRate === undefined || typeof respiratoryRate === "number") &&
+    (spo2 === undefined || typeof spo2 === "number") &&
+    (temperature === undefined || typeof temperature === "number") &&
+    (consciousLevel === undefined || typeof consciousLevel === "string")
   );
 }
 
@@ -749,17 +755,22 @@ function computePriority(record: Pick<QueueRecord, "safetyFloorActive" | "calcul
   return score;
 }
 
+function partialVitalsChanged(update: Partial<QueueVitals>, existing: QueueVitals | undefined): boolean {
+  return (Object.keys(update) as Array<keyof QueueVitals>).some((key) => update[key] !== existing?.[key]);
+}
+
 function redFloorFromVitals(vitals: QueueVitals | undefined): boolean {
   if (!vitals) {
     return false;
   }
+  // Vitals may now be partially entered (see QueueContextUpdateSchema's
+  // comment) - a field that hasn't been recorded yet must never itself
+  // count as a breach (e.g. consciousLevel undefined is not "not alert").
   return (
-    vitals.consciousLevel !== "alert" ||
-    vitals.spo2 < 92 ||
-    vitals.respiratoryRate < 10 ||
-    vitals.respiratoryRate > 30 ||
-    vitals.heartRate < 60 ||
-    vitals.heartRate > 130
+    (vitals.consciousLevel !== undefined && vitals.consciousLevel !== "alert") ||
+    (vitals.spo2 !== undefined && vitals.spo2 < 92) ||
+    (vitals.respiratoryRate !== undefined && (vitals.respiratoryRate < 10 || vitals.respiratoryRate > 30)) ||
+    (vitals.heartRate !== undefined && (vitals.heartRate < 60 || vitals.heartRate > 130))
   );
 }
 
@@ -1785,7 +1796,7 @@ export async function updateQueueContext(
   }
   if (stageIndex(record.currentStage) >= stageIndex("DISPOSITION") && record.dispositionCode) {
     const editsClinicalFields =
-      (update.vitals && JSON.stringify(update.vitals) !== JSON.stringify(record.vitals)) ||
+      (update.vitals && partialVitalsChanged(update.vitals, record.vitals)) ||
       (typeof update.vitalsUnobtainable === "boolean" && update.vitalsUnobtainable !== record.vitalsUnobtainable) ||
       (update.matchedProtocolId && update.matchedProtocolId !== record.matchedProtocolId) ||
       (update.initialAssessmentResponses &&
@@ -1820,8 +1831,11 @@ export async function updateQueueContext(
 
   if (typeof update.identityValidated === "boolean") record.identityValidated = update.identityValidated;
   if (update.vitals) {
-    record.vitals = update.vitals;
-    if (redFloorFromVitals(update.vitals)) {
+    // Merge, not replace - the nurse enters vitals one field at a time
+    // (see QueueContextUpdateSchema's comment), so each request only ever
+    // carries the fields changed so far.
+    record.vitals = { ...record.vitals, ...update.vitals } as QueueVitals;
+    if (redFloorFromVitals(record.vitals)) {
       record.safetyFloorActive = true;
       record.safetyFloorSource = "vitals";
       record.calculatedSeverity = "EMERGENCY";

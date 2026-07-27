@@ -72,7 +72,11 @@ export type QueueHandoverRequest = z.infer<typeof QueueHandoverRequestSchema>;
 
 export const QueueContextUpdateSchema = z.object({
   identityValidated: z.boolean().optional(),
-  vitals: QueueVitalsSchema.optional(),
+  // Partial, not the full QueueVitalsSchema - a nurse enters vitals one
+  // field at a time (heart rate, then respiratory rate, etc.), and
+  // requiring every field in the same request made it impossible to save
+  // any single value until all five had been typed.
+  vitals: QueueVitalsSchema.partial().optional(),
   matchedProtocolId: z.string().min(1).max(120).optional(),
   calculatedSeverity: QueueSeveritySchema.optional(),
   floorSource: SafetyFloorSourceSchema.optional(),

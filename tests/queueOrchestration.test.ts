@@ -29,6 +29,55 @@ describe("Enterprise queue orchestration", () => {
     resetRateLimitBucketsForTests();
   });
 
+  it("saves vitals one field at a time without requiring the full set", async () => {
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
+
+    const afterHeartRate = await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ vitals: { heartRate: 72 } })
+      .expect(200);
+    expect(afterHeartRate.body.item.vitals).toMatchObject({ heartRate: 72 });
+
+    const afterRespiratoryRate = await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ vitals: { respiratoryRate: 16 } })
+      .expect(200);
+    expect(afterRespiratoryRate.body.item.vitals).toMatchObject({ heartRate: 72, respiratoryRate: 16 });
+
+    const reloaded = await nurse.get("/api/v1/queue/case-10002").expect(200);
+    expect(reloaded.body.item.vitals).toMatchObject({ heartRate: 72, respiratoryRate: 16 });
+  });
+
+  it("does not trigger the emergency safety floor from a single normal-range vital entered alone", async () => {
+    const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
+    const created = await manager
+      .post("/api/v1/queue")
+      .send({
+        istStaffId: "IST-10001",
+        patientType: "Staff",
+        channel: "Phone",
+        stationCode: "DOH",
+        reasonNarrative: "Test case with no prior vitals recorded."
+      })
+      .expect(201);
+    const id = created.body.item.id as string;
+    expect(created.body.item.vitals).toBeUndefined();
+
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    await nurse.post(`/api/v1/queue/${id}/claim`).expect(200);
+
+    // A single normal-range vital entered alone (no other fields recorded
+    // yet, e.g. consciousLevel undefined) must never itself trigger the
+    // emergency safety floor.
+    const afterHeartRate = await nurse
+      .patch(`/api/v1/queue/${id}/context`)
+      .send({ vitals: { heartRate: 72 } })
+      .expect(200);
+    expect(afterHeartRate.body.item.safetyFloorActive).toBe(false);
+    expect(afterHeartRate.body.item.vitals).toMatchObject({ heartRate: 72 });
+  });
+
   it("generates a synthetic call via the shared queue-call generator (manual invocation)", async () => {
     const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
 
