@@ -42,6 +42,15 @@ export type OrganizationDirectoryRecord = {
   mophLicenseNumber: string;
 };
 
+// HMC/PHCC/SIDRA are real Qatar hospitals used as disposition/destination
+// routing targets (see dispositionCode/destinationName values throughout
+// queueOrchestration.ts and dispositionRouter.ts, e.g. HMC_EMERGENCY_
+// DEPARTMENT, SIDRA_PEDIATRIC_ED) - they are NOT tenants and must never be
+// listed as organizations here. This deployment has exactly one real tenant
+// (org_ist_tech). A second, clearly-fictional tenant is kept only so the
+// multi-tenant RBAC segregation/escalation code path has something real to
+// exercise in tests (see multiTenantRBAC.test.ts) - it is never assigned to
+// any demo user or referenced by disposition/routing logic.
 const organizationDirectory: OrganizationDirectoryRecord[] = [
   {
     id: "org_ist_tech",
@@ -50,22 +59,10 @@ const organizationDirectory: OrganizationDirectoryRecord[] = [
     mophLicenseNumber: "IST-TECH-PLATFORM"
   },
   {
-    id: "org_hmc",
-    code: "HMC",
-    name: "Hamad Medical Corporation (HMC)",
-    mophLicenseNumber: "urn:oid:2.16.634.1.1.1.hmc"
-  },
-  {
-    id: "org_phcc",
-    code: "PHCC",
-    name: "Primary Health Care Corporation (PHCC)",
-    mophLicenseNumber: "urn:oid:2.16.634.1.1.1.phcc"
-  },
-  {
-    id: "org_sidra",
-    code: "SIDRA",
-    name: "Sidra Medicine",
-    mophLicenseNumber: "urn:oid:2.16.634.1.1.1.sidra"
+    id: "org_test_tenant_b",
+    code: "TEST_TENANT_B",
+    name: "Test Tenant B (multi-tenant RBAC test fixture only)",
+    mophLicenseNumber: "TEST-TENANT-B-FIXTURE"
   }
 ];
 
