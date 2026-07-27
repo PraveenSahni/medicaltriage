@@ -11,8 +11,7 @@
  * during tests or a default dev/prod boot).
  */
 
-import { readFileSync } from "node:fs";
-import path from "node:path";
+import { buildSimulatedQueueCreateRequest, loadStaffCandidatePool, type SimulatorCandidate } from "./queueCallGenerator.js";
 
 const INTAKE_USERNAME = "intake@irisstar.tech";
 const INTAKE_PASSWORD = "Intake@2026";
@@ -24,82 +23,13 @@ const INTAKE_PASSWORD = "Intake@2026";
 // organization as the main demo nurse, so it can claim the same queue.
 const OTHER_NURSE_USERNAME = "nurse2@irisstar.tech";
 const OTHER_NURSE_PASSWORD = "Nurse2@2026";
-const SEED_DATA_PATH = path.resolve(process.cwd(), "data", "generated", "ist_qatar_seed_data.json");
 
 type CookieJar = { cookie?: string };
-
-type Candidate = {
-  istStaffId: string;
-  department: string;
-  jobTitle: string;
-};
-
-const REASON_TEMPLATES = [
-  "Severe stomach pain that started {duration} ago, {vomit}.",
-  "Bad headache for {duration}, {light}.",
-  "Twisted {joint} while playing sport {duration} ago.",
-  "Sore throat and mild fever for {duration}, no trouble breathing.",
-  "Dizziness and lightheadedness since {duration} ago, {faint}.",
-  "Cough with fever for {duration}, {breath}.",
-  "Rash on {bodyPart} that started {duration} ago, {itch}.",
-  "Lower back pain after lifting something {duration} ago.",
-  "Ankle swelling and pain after a fall {duration} ago.",
-  "Constipation for {duration}, {blood}.",
-  "Anxiety and trouble sleeping for the past {duration}.",
-  "Ear pain and reduced hearing since {duration} ago.",
-  "Mild chest tightness after exercise {duration} ago, resolved now.",
-  "Vomiting since {duration} ago, {vomit2}.",
-  "Toothache and jaw pain for {duration}."
-];
-
-function pick<T>(items: T[]): T {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
-function fillTemplate(template: string): string {
-  const duration = pick(["twenty minutes", "an hour", "two hours", "a day", "three days", "a week"]);
-  const vomit = pick(["vomited once", "no vomiting so far", "feels nauseous too"]);
-  const light = pick(["light sensitivity", "no visual changes", "worse when standing"]);
-  const joint = pick(["ankle", "knee", "wrist", "shoulder"]);
-  const faint = pick(["nearly fainted once", "no loss of consciousness", "feels weak"]);
-  const breath = pick(["no shortness of breath", "mild shortness of breath", "breathing feels normal"]);
-  const bodyPart = pick(["the arm", "the leg", "the chest", "the back"]);
-  const itch = pick(["itchy", "not itchy", "mildly itchy"]);
-  const blood = pick(["noticed a little blood", "no bleeding", "some straining"]);
-  const vomit2 = pick(["greenish in color", "just food", "with a bit of blood"]);
-  return template
-    .replace("{duration}", duration)
-    .replace("{vomit}", vomit)
-    .replace("{light}", light)
-    .replace("{joint}", joint)
-    .replace("{faint}", faint)
-    .replace("{breath}", breath)
-    .replace("{bodyPart}", bodyPart)
-    .replace("{itch}", itch)
-    .replace("{blood}", blood)
-    .replace("{vomit2}", vomit2);
-}
+type Candidate = SimulatorCandidate;
 
 function loadCandidates(): Candidate[] {
   if (!process.env.SIMULATE_INCOMING_CALLS) return [];
-  try {
-    const raw = JSON.parse(readFileSync(SEED_DATA_PATH, "utf8"));
-    const collections = raw.oracle_fusion_hcm_api.collections;
-    const publicWorkers = collections.publicWorkers.items as Array<{
-      PersonId: number;
-      PersonNumber: string;
-      AssignmentStatusType: string;
-      DepartmentName: string;
-      JobName: string;
-    }>;
-    return publicWorkers
-      .filter((worker) => worker.AssignmentStatusType === "ACTIVE")
-      .slice(0, 3000)
-      .map((worker) => ({ istStaffId: worker.PersonNumber, department: worker.DepartmentName, jobTitle: worker.JobName }));
-  } catch (error) {
-    console.error("[call-simulator] failed to load HRMS candidate pool", error);
-    return [];
-  }
+  return loadStaffCandidatePool();
 }
 
 async function request(baseUrl: string, jar: CookieJar, requestPath: string, init: RequestInit = {}): Promise<Response> {
@@ -121,23 +51,10 @@ async function login(baseUrl: string, jar: CookieJar, username: string, password
 }
 
 async function createOneCall(baseUrl: string, jar: CookieJar, candidates: Candidate[]): Promise<void> {
-  const candidate = pick(candidates);
-  const reasonNarrative = fillTemplate(pick(REASON_TEMPLATES));
-  const channel = pick(["Phone", "WhatsApp", "Callback"]);
+  const requestBody = buildSimulatedQueueCreateRequest(candidates);
   const r = await request(baseUrl, jar, "/api/v1/queue", {
     method: "POST",
-    body: JSON.stringify({
-      istStaffId: candidate.istStaffId,
-      organizationId: "org_phcc",
-      patientType: "Staff",
-      channel,
-      stationCode: "DOH",
-      department: candidate.department,
-      jobTitle: candidate.jobTitle,
-      summary: reasonNarrative,
-      reasonNarrative,
-      slaMinutes: 20
-    })
+    body: JSON.stringify({ ...requestBody, organizationId: "org_phcc" })
   });
   if (!r.ok) {
     const body = await r.json().catch(() => ({}));
@@ -145,7 +62,11 @@ async function createOneCall(baseUrl: string, jar: CookieJar, candidates: Candid
     return;
   }
   const body = await r.json();
-  console.log(`[call-simulator] created ${body.item?.id} (${candidate.istStaffId}): ${reasonNarrative}`);
+  console.log(`[call-simulator] created ${body.item?.id} (${requestBody.istStaffId}): ${requestBody.reasonNarrative}`);
+}
+
+function pick<T>(items: T[]): T {
+  return items[Math.floor(Math.random() * items.length)];
 }
 
 /**

@@ -23,6 +23,7 @@ import {
   QueueListQuerySchema,
   QueueMoveRequestSchema
 } from "../types/queue.js";
+import { buildSimulatedQueueCreateRequest, loadStaffCandidatePool } from "../services/queueCallGenerator.js";
 
 function sessionFrom(req: AuthorizedRequest) {
   const session = req.securitySession;
@@ -70,6 +71,24 @@ export function createQueueRouter(): Router {
         return res.status(400).json({ error: "Invalid queue item", details: parsed.error.flatten() });
       }
       const item = await createQueueItem(sessionFrom(req), parsed.data);
+      return res.status(201).json({ item });
+    } catch (error) {
+      return handleQueueError(error, next, res);
+    }
+  });
+
+  // Single shared synthetic-call generator (src/services/queueCallGenerator.ts),
+  // also used by the in-process background simulator (callSimulator.ts). This
+  // is the manual, on-demand invocation point (Service Manager Board's
+  // "Generate Calls" action) - same candidate/reason logic, no request body.
+  router.post("/simulate", async (req: AuthorizedRequest, res, next) => {
+    try {
+      const pool = loadStaffCandidatePool();
+      if (pool.length === 0) {
+        return res.status(503).json({ error: "No synthetic HRMS candidates available", code: "QUEUE_SIMULATE_NO_CANDIDATES" });
+      }
+      const request = buildSimulatedQueueCreateRequest(pool);
+      const item = await createQueueItem(sessionFrom(req), request);
       return res.status(201).json({ item });
     } catch (error) {
       return handleQueueError(error, next, res);

@@ -29,6 +29,26 @@ describe("Enterprise queue orchestration", () => {
     resetRateLimitBucketsForTests();
   });
 
+  it("generates a synthetic call via the shared queue-call generator (manual invocation)", async () => {
+    const manager = await agentFor("manager@irisstar.tech", "triage_service_manager");
+
+    const response = await manager.post("/api/v1/queue/simulate").send({});
+
+    if (response.status === 503) {
+      // Synthetic HRMS seed file not present in this environment - the
+      // generator degrades gracefully rather than crashing.
+      expect(response.body.code).toBe("QUEUE_SIMULATE_NO_CANDIDATES");
+      return;
+    }
+
+    expect(response.status).toBe(201);
+    expect(response.body.item).toMatchObject({
+      istStaffId: expect.any(String),
+      reasonNarrative: expect.any(String)
+    });
+    expect(["Staff", "Dependent"]).toContain(response.body.item.patientType);
+  });
+
   it("locks a board case for Step cockpit handoff", async () => {
     const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
 
