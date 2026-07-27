@@ -92,7 +92,7 @@ describe("English Voice AI initial-assessment foundation", () => {
 
   it("VOICE-OWNER-001 blocks another ordinary nurse from opening the named-user session", async () => {
     const owner = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
-    const otherNurse = await agentFor("sara@irisstar.tech", "pediatric_triage_nurse");
+    const otherNurse = await agentFor("sara@irisstar.tech", "remote_triage_nurse");
     const started = await startSession(owner);
 
     const response = await otherNurse

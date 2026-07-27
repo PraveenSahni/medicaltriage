@@ -84,7 +84,6 @@ const personas: Persona[] = [
   { roleCode: "call_intake_coordinator", username: "intake@irisstar.tech", label: "Call Intake Coordinator" },
   { roleCode: "remote_triage_nurse", username: "layla@irisstar.tech", label: "Remote Triage Nurse" },
   { roleCode: "senior_triage_nurse", username: "fatima@irisstar.tech", label: "Senior Triage Nurse" },
-  { roleCode: "pediatric_triage_nurse", username: "sara@irisstar.tech", label: "Pediatric Triage Nurse" },
   { roleCode: "teleconsult_physician", username: "physician@irisstar.tech", label: "Teleconsult Physician" },
   { roleCode: "occupational_health_clinician", username: "oh@irisstar.tech", label: "Occupational Health Clinician" },
   { roleCode: "protocol_content_manager", username: "protocols@irisstar.tech", label: "Protocol Content Manager" },
