@@ -133,7 +133,11 @@ export const ClinicalContentProvenanceSchema = z.object({
     ])
     .optional(),
   requiresClinicalValidation: z.boolean().default(true),
-  licensedContentIncluded: z.literal(false).default(false)
+  licensedContentIncluded: z.literal(false).default(false),
+  // Distinct from productionEligible/PRODUCTION_APPROVED: lets UAT-only
+  // content run in the demo deployment (APP_ENVIRONMENT=demo) without
+  // claiming production clinical approval. See assertClinicalContentAllowedInEnvironment.
+  demoEligible: z.boolean().optional()
 });
 export type ClinicalContentProvenance = z.infer<typeof ClinicalContentProvenanceSchema>;
 

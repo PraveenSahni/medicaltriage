@@ -246,9 +246,21 @@ function loadSynchronousContentPackage(): ClinicalContentPackage {
   // 1 STCC protocol, zero overlap), and both packages share the same release
   // mode ("after-hours"), so a straight protocol-array concat is safe.
   if (process.env.CLINICAL_CONTENT_SOURCE === "stcc-licensed") {
+    // None of these 229 protocols are PRODUCTION_APPROVED yet (open-source
+    // guideline drafts + one licensed-but-ungoverned STCC import), so mark
+    // them demoEligible instead - assertClinicalContentAllowedInEnvironment
+    // only honors this in APP_ENVIRONMENT=demo, never in real production.
+    const demoEligibleProtocols = [...stccLicensedContent.protocols, ...openSourceGuidelinesContent.protocols].map(
+      (protocol) => ({
+        ...protocol,
+        provenance: protocol.provenance
+          ? { ...protocol.provenance, demoEligible: true }
+          : protocol.provenance
+      })
+    );
     const mergedPackage = ClinicalContentPackageSchema.parse({
       release: stccLicensedContent.release,
-      protocols: [...stccLicensedContent.protocols, ...openSourceGuidelinesContent.protocols],
+      protocols: demoEligibleProtocols,
       localizedDispositions: [
         ...(stccLicensedContent.localizedDispositions ?? []),
         ...(openSourceGuidelinesContent.localizedDispositions ?? []).filter(

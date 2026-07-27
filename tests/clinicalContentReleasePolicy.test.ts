@@ -90,4 +90,45 @@ describe("clinical content release policy", () => {
       assertClinicalContentAllowedInEnvironment(content, { NODE_ENV: "production" })
     ).not.toThrow();
   });
+
+  test("allows demoEligible UAT-only content when APP_ENVIRONMENT=demo", () => {
+    const content = packageWithProvenance({
+      usageStatus: "UAT_ONLY",
+      productionEligible: false,
+      clinicalStatus: "READY_FOR_QATAR_CLINICAL_REVIEW",
+      requiresClinicalValidation: true,
+      demoEligible: true
+    });
+
+    expect(() =>
+      assertClinicalContentAllowedInEnvironment(content, { NODE_ENV: "production", APP_ENVIRONMENT: "demo" })
+    ).not.toThrow();
+  });
+
+  test("still rejects demoEligible content in real production (APP_ENVIRONMENT=production)", () => {
+    const content = packageWithProvenance({
+      usageStatus: "UAT_ONLY",
+      productionEligible: false,
+      clinicalStatus: "READY_FOR_QATAR_CLINICAL_REVIEW",
+      requiresClinicalValidation: true,
+      demoEligible: true
+    });
+
+    expect(() =>
+      assertClinicalContentAllowedInEnvironment(content, { NODE_ENV: "production", APP_ENVIRONMENT: "production" })
+    ).toThrow(/production gate rejected 1 protocol/);
+  });
+
+  test("rejects content without demoEligible even in demo environment", () => {
+    const content = packageWithProvenance({
+      usageStatus: "UAT_ONLY",
+      productionEligible: false,
+      clinicalStatus: "READY_FOR_QATAR_CLINICAL_REVIEW",
+      requiresClinicalValidation: true
+    });
+
+    expect(() =>
+      assertClinicalContentAllowedInEnvironment(content, { NODE_ENV: "production", APP_ENVIRONMENT: "demo" })
+    ).toThrow(/production gate rejected 1 protocol/);
+  });
 });
