@@ -29,7 +29,7 @@ type CookieJar = { cookie?: string };
 type Candidate = SimulatorCandidate;
 
 function loadCandidates(): Candidate[] {
-  if (!process.env.SIMULATE_INCOMING_CALLS) return [];
+  if (process.env.SIMULATE_INCOMING_CALLS !== "true") return [];
   return loadStaffCandidatePool();
 }
 
@@ -76,7 +76,7 @@ function pick<T>(items: T[]): T {
  * it doesn't race the server's own startup.
  */
 export function startIncomingCallSimulator(baseUrl: string, callsPerTick = 2, intervalMinutes = 5): void {
-  if (!process.env.SIMULATE_INCOMING_CALLS) {
+  if (process.env.SIMULATE_INCOMING_CALLS !== "true") {
     return;
   }
   const candidates = loadCandidates();
