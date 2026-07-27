@@ -80,6 +80,7 @@ export const QueueContextUpdateSchema = z.object({
   destinationName: z.string().min(2).max(200).optional(),
   clinicalApproval: z.record(z.unknown()).optional(),
   initialAssessmentResponses: z.record(z.string().max(400)).optional(),
+  taqResponses: z.record(z.boolean()).optional(),
   vitalsUnobtainable: z.boolean().optional(),
   sbarCopied: z.boolean().optional(),
   summary: z.string().min(1).max(500).optional(),
@@ -269,6 +270,7 @@ export type QueueItemDto = {
   safetyFloorActive: boolean;
   safetyFloorSource?: SafetyFloorSource;
   initialAssessmentResponses?: Record<string, string>;
+  taqResponses?: Record<string, boolean>;
   vitalsUnobtainable?: boolean;
   clinicalApproval?: Record<string, unknown>;
   sbarCopied: boolean;

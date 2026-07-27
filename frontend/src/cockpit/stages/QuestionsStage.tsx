@@ -149,6 +149,12 @@ export function QuestionsStage({
 
     try {
       const question = questions![index];
+      // Persist every individual TAQ answer (not just the terminal Yes) so
+      // the full question-by-question record survives a hold/resume, a
+      // handoff to another nurse, and is available for read-only review
+      // (e.g. the Service Manager Board's expanded call detail) - previously
+      // only the single terminal question id was ever recorded.
+      const updatedTaqResponses = { ...(item.taqResponses ?? {}), [question.id]: yes };
       if (yes) {
         // A Yes on any TAQ always fixes the disposition immediately - no
         // further questions are asked once one is answered Yes. The exact
@@ -170,7 +176,8 @@ export function QuestionsStage({
           // a later separate PATCH attempting to set it for the first time
           // is rejected with 409 QUEUE_DISPOSITION_LOCKED.
           destinationName: QATAR_DESTINATION_BY_CODE[question.dispositionCode] ?? question.dispositionCode,
-          clinicalApproval: { ...(item.clinicalApproval ?? {}), terminalQuestionId: question.id }
+          clinicalApproval: { ...(item.clinicalApproval ?? {}), terminalQuestionId: question.id },
+          taqResponses: updatedTaqResponses
         });
         await moveItem(item.id, "DISPOSITION");
         onDispositionReached();
@@ -179,10 +186,14 @@ export function QuestionsStage({
           matchedProtocolId: item.preparedProtocol!.primaryProtocolId,
           calculatedSeverity: "SELF_CARE",
           dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
-          destinationName: QATAR_DESTINATION_BY_CODE.SELF_CARE_WITH_CALLBACK_PRECAUTIONS
+          destinationName: QATAR_DESTINATION_BY_CODE.SELF_CARE_WITH_CALLBACK_PRECAUTIONS,
+          taqResponses: updatedTaqResponses
         });
         await moveItem(item.id, "DISPOSITION");
         onDispositionReached();
+      } else {
+        // Not yet terminal - just persist this individual No answer.
+        await updateItemContext(item.id, { taqResponses: updatedTaqResponses });
       }
     } catch (caught) {
       setActionError(caught instanceof Error ? caught.message : "Failed to record answer.");

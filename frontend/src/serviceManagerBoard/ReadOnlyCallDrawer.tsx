@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { QueueItem } from "../QueueContext";
+import { fetchProtocolDetail, type ProtocolDetail } from "../cockpit/api/protocols";
 import {
   BOARD_COLUMNS,
   friendlyProtocolLabel,
@@ -38,6 +39,30 @@ export function ReadOnlyCallDrawer({ item, onClose }: ReadOnlyCallDrawerProps) {
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [onClose]);
+
+  const [activeTab, setActiveTab] = useState<"summary" | "iaq" | "taq">("summary");
+  const [protocolDetail, setProtocolDetail] = useState<ProtocolDetail | undefined>(undefined);
+  const [protocolError, setProtocolError] = useState("");
+  const protocolId = item.matchedProtocolId ?? item.preparedProtocol?.primaryProtocolId;
+
+  useEffect(() => {
+    let cancelled = false;
+    setProtocolDetail(undefined);
+    setProtocolError("");
+    if (!protocolId) {
+      return;
+    }
+    fetchProtocolDetail(protocolId)
+      .then((detail) => {
+        if (!cancelled) setProtocolDetail(detail);
+      })
+      .catch((caught) => {
+        if (!cancelled) setProtocolError(caught instanceof Error ? caught.message : "Failed to load protocol questions.");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [protocolId]);
 
   const currentColumn = mapExistingStatusToBoardColumn(item);
   const currentIndex = BOARD_COLUMNS.findIndex((column) => column.id === currentColumn);
@@ -119,15 +144,104 @@ export function ReadOnlyCallDrawer({ item, onClose }: ReadOnlyCallDrawerProps) {
           )}
         </div>
 
-        <div className="smb-drawer-section">
-          <h3>Reason for call</h3>
-          <div className="smb-reason-box">{item.reasonNarrative ?? "Not yet captured."}</div>
+        <div className="smb-drawer-tabs" role="tablist" aria-label="Call detail tabs">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "summary"}
+            className={`smb-drawer-tab${activeTab === "summary" ? " smb-drawer-tab-active" : ""}`}
+            onClick={() => setActiveTab("summary")}
+          >
+            Summary
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "iaq"}
+            className={`smb-drawer-tab${activeTab === "iaq" ? " smb-drawer-tab-active" : ""}`}
+            onClick={() => setActiveTab("iaq")}
+          >
+            Initial Assessment
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "taq"}
+            className={`smb-drawer-tab${activeTab === "taq" ? " smb-drawer-tab-active" : ""}`}
+            onClick={() => setActiveTab("taq")}
+          >
+            TAQ
+          </button>
         </div>
 
-        <div className="smb-drawer-section">
-          <h3>Safety status</h3>
-          <div className="smb-reason-box">{safetyStatusText(item)}</div>
-        </div>
+        {activeTab === "summary" && (
+          <>
+            <div className="smb-drawer-section">
+              <h3>Reason for call</h3>
+              <div className="smb-reason-box">{item.reasonNarrative ?? "Not yet captured."}</div>
+            </div>
+
+            <div className="smb-drawer-section">
+              <h3>Safety status</h3>
+              <div className="smb-reason-box">{safetyStatusText(item)}</div>
+            </div>
+          </>
+        )}
+
+        {activeTab === "iaq" && (
+          <div className="smb-drawer-section">
+            <h3>Initial Assessment Questions</h3>
+            {!item.initialAssessmentResponses || Object.keys(item.initialAssessmentResponses).length === 0 ? (
+              <p className="smb-empty-note">No initial assessment answers recorded yet for this call.</p>
+            ) : protocolError ? (
+              <p className="smb-empty-note">{protocolError}</p>
+            ) : !protocolDetail ? (
+              <p className="smb-empty-note">Loading questions...</p>
+            ) : (
+              <ul className="smb-qa-list">
+                {[...protocolDetail.protocol.initialAssessmentQuestions]
+                  .filter((question) => question.id in (item.initialAssessmentResponses ?? {}))
+                  .sort((a, b) => a.sequence - b.sequence)
+                  .map((question) => (
+                    <li key={question.id} className="smb-qa-item">
+                      <div className="smb-qa-question">{question.promptTextEn}</div>
+                      <div className="smb-qa-answer">{item.initialAssessmentResponses?.[question.id]}</div>
+                    </li>
+                  ))}
+              </ul>
+            )}
+          </div>
+        )}
+
+        {activeTab === "taq" && (
+          <div className="smb-drawer-section">
+            <h3>Triage Assessment Questions (TAQ)</h3>
+            {!item.taqResponses || Object.keys(item.taqResponses).length === 0 ? (
+              <p className="smb-empty-note">No TAQ answers recorded yet for this call.</p>
+            ) : protocolError ? (
+              <p className="smb-empty-note">{protocolError}</p>
+            ) : !protocolDetail ? (
+              <p className="smb-empty-note">Loading questions...</p>
+            ) : (
+              <ul className="smb-qa-list">
+                {[...protocolDetail.protocol.questions]
+                  .filter((question) => question.id in (item.taqResponses ?? {}))
+                  .sort((a, b) => a.acuityOrder - b.acuityOrder)
+                  .map((question) => {
+                    const answeredYes = item.taqResponses?.[question.id];
+                    return (
+                      <li key={question.id} className="smb-qa-item">
+                        <div className="smb-qa-question">{question.questionTextEn}</div>
+                        <div className={`smb-qa-answer${answeredYes ? " smb-qa-answer-yes" : ""}`}>
+                          {answeredYes ? "Yes" : "No"}
+                        </div>
+                      </li>
+                    );
+                  })}
+              </ul>
+            )}
+          </div>
+        )}
 
         <div className="smb-readonly-note">
           <span>◉</span>

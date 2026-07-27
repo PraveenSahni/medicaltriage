@@ -787,6 +787,67 @@
   margin: 0 0 7px;
 }
 
+#service-manager-board-root .smb-drawer-tabs {
+  display: flex;
+  gap: 4px;
+  margin-top: 18px;
+  border-bottom: 1px solid var(--line, #e0dfd9) !important;
+}
+
+#service-manager-board-root .smb-drawer-tab {
+  padding: 8px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted, #6b6a66) !important;
+  background: transparent !important;
+  border: none;
+  border-bottom: 2px solid transparent !important;
+  cursor: pointer;
+}
+
+#service-manager-board-root .smb-drawer-tab-active {
+  color: var(--accent, #185fa5) !important;
+  border-bottom-color: var(--accent, #185fa5) !important;
+}
+
+#service-manager-board-root .smb-empty-note {
+  font-size: 13px;
+  color: var(--muted, #6b6a66) !important;
+  margin: 0;
+}
+
+#service-manager-board-root .smb-qa-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#service-manager-board-root .smb-qa-item {
+  background: var(--bg, #f7f6f3) !important;
+  border: 1px solid var(--line, #e0dfd9) !important;
+  border-radius: 8px !important;
+  padding: 9px 11px;
+}
+
+#service-manager-board-root .smb-qa-question {
+  font-size: 13px;
+  color: var(--ink, #1a1a19) !important;
+  margin-bottom: 4px;
+}
+
+#service-manager-board-root .smb-qa-answer {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--muted, #6b6a66) !important;
+}
+
+#service-manager-board-root .smb-qa-answer-yes {
+  color: var(--ems, #a32d2d) !important;
+}
+
 #service-manager-board-root .smb-reason-box {
   background: var(--bg, #f7f6f3) !important;
   border: 1px solid var(--line, #e0dfd9) !important;

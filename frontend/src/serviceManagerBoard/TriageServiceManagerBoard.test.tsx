@@ -36,6 +36,13 @@ jest.mock("./demoStccCallGenerator", () => ({
   generateDemoStccCall: () => generateDemoStccCall()
 }));
 
+// Real module uses import.meta.env (Vite-only syntax) which the Jest/ts-jest
+// ESM setup here can't parse - mocked out since these tests never open the
+// drawer's IAQ/TAQ tabs (which are what actually call fetchProtocolDetail).
+jest.mock("../cockpit/api/protocols", () => ({
+  fetchProtocolDetail: jest.fn().mockRejectedValue(new Error("not used in these tests"))
+}));
+
 function makeItem(overrides: Partial<QueueItem> = {}): QueueItem {
   return {
     id: `queue-item-${Math.random().toString(36).slice(2, 10)}`,
