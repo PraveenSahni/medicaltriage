@@ -230,11 +230,11 @@ def build_protocol_anchors() -> List[ProtocolAnchor]:
             vector=[0.95, 0.20, 0.10, 0.10, 0.10],
         ),
         ProtocolAnchor(
-            node="PEDIATRIC_RESPIRATORY",
-            algorithm_id="alg-synth-pediatric-respiratory-distress",
-            external_protocol_id="SYNTH-PEDIATRIC-RESPIRATORY",
-            title_en="Pediatric Breathing Difficulty",
-            clinical_definition_en="Synthetic pediatric respiratory distress anchor for Sidra routing.",
+            node="ADULT_RESPIRATORY_DISTRESS",
+            algorithm_id="alg-synth-adult-respiratory-distress",
+            external_protocol_id="SYNTH-ADULT-RESPIRATORY-DISTRESS",
+            title_en="Adult Breathing Difficulty",
+            clinical_definition_en="Synthetic adult respiratory distress anchor for HMC emergency routing.",
             vector=[0.12, 0.92, 0.05, 0.25, 0.08],
         ),
         ProtocolAnchor(
@@ -283,20 +283,20 @@ def build_clinical_profiles() -> List[ClinicalProfile]:
             aviation_tags=["fit-to-fly-review", "duty-restriction", "red-floor"],
         ),
         ClinicalProfile(
-            key="PEDIATRIC_RESPIRATORY_DISTRESS",
+            key="ADULT_RESPIRATORY_DISTRESS",
             share=0.15,
-            protocol_node="PEDIATRIC_RESPIRATORY",
-            symptom="Barking cough, stridor on inspiration, struggling for breath",
-            transcript="Parent reports barking cough, inspiratory stridor, and visible work of breathing in a young child.",
+            protocol_node="ADULT_RESPIRATORY_DISTRESS",
+            symptom="Sudden shortness of breath, audible wheeze, struggling to complete sentences",
+            transcript="Caller reports sudden shortness of breath with audible wheeze and visible work of breathing.",
             score=10,
             severity="EMERGENCY",
-            disposition_code="SIDRA_PEDIATRIC_ED",
-            destination="Sidra Medicine Emergency Department",
-            fit_to_fly_status="NOT_APPLICABLE",
+            disposition_code="HMC_EMERGENCY_DEPARTMENT",
+            destination="Hamad Medical Corporation (HMC) Emergency Department",
+            fit_to_fly_status="RESTRICTED",
             vector=[0.08, 0.98, 0.02, 0.18, 0.04],
-            patient_pool="young_dependent",
-            vitals={"heart_rate": 112, "respiratory_rate": 45, "spo2": 95, "temperature_c": 38.4, "conscious_level": "A"},
-            aviation_tags=["pediatric-red-floor", "dependent-pathway"],
+            patient_pool="any_staff",
+            vitals={"heart_rate": 112, "respiratory_rate": 32, "spo2": 91, "temperature_c": 37.6, "conscious_level": "A"},
+            aviation_tags=["adult-red-floor", "duty-restriction"],
         ),
         ClinicalProfile(
             key="CABIN_CREW_BACK_PAIN",
@@ -534,76 +534,37 @@ def generate_staff(
     return staff_members, staff_index, pools
 
 
-def dependent_distribution(count: int) -> List[int]:
-    counts = allocate_counts(count, [("one", 0.40), ("two", 0.40), ("three", 0.20)])
-    return [1] * counts["one"] + [2] * counts["two"] + [3] * counts["three"]
-
-
-def make_child_age(rng: random.Random, staff_age: int) -> int:
-    max_age = max(0, min(17, staff_age - 18))
-    if max_age <= 0:
-        return 0
-    return rng.randint(0, max_age)
-
-
 def generate_dependents(
     staff_index: Sequence[Dict[str, Any]],
     rng: random.Random,
     generated_at: datetime,
 ) -> Tuple[List[Dict[str, Any]], Dict[str, List[Dict[str, Any]]], List[Dict[str, Any]]]:
+    # Adult-only dataset: every dependent is a spouse. No child (SON/DAUGHTER)
+    # dependents are generated, consistent with the protocol catalog being
+    # adult-only. young_dependents is always empty and kept only for call-site
+    # signature compatibility.
     dependent_staff_count = int(round(len(staff_index) * 0.45))
     selected_staff = rng.sample(list(staff_index), dependent_staff_count)
-    family_sizes = dependent_distribution(dependent_staff_count)
-    rng.shuffle(family_sizes)
 
     dependents: List[Dict[str, Any]] = []
     dependents_by_staff: Dict[str, List[Dict[str, Any]]] = {}
     young_dependents: List[Dict[str, Any]] = []
 
-    for staff_meta, family_size in zip(selected_staff, family_sizes):
-        staff_dependents: List[Dict[str, Any]] = []
-        relationship_plan: List[str]
-        if family_size == 1:
-            relationship_plan = ["SPOUSE" if rng.random() < 0.55 else rng.choice(["SON", "DAUGHTER"])]
-        elif family_size == 2:
-            relationship_plan = ["SPOUSE", rng.choice(["SON", "DAUGHTER"])]
-        else:
-            relationship_plan = ["SPOUSE", "SON", "DAUGHTER"]
-
-        for relation in relationship_plan:
-            dependent_id = deterministic_uuid(rng)
-            if relation == "SPOUSE":
-                age = max(18, staff_meta["age"] + rng.randint(-5, 5))
-                sex: BiologicalSex = "FEMALE" if staff_meta["biological_sex"] == "MALE" else "MALE"
-                full_name = f"Synthetic Spouse of {staff_meta['ist_staff_id']}"
-            else:
-                age = make_child_age(rng, staff_meta["age"])
-                sex = "MALE" if relation == "SON" else "FEMALE"
-                full_name = f"Synthetic {relation.title()} of {staff_meta['ist_staff_id']}"
-
-            record = {
-                "id": dependent_id,
-                "staff_member_id": staff_meta["id"],
-                "full_name": full_name,
-                "relationship": relation,
-                "age": age,
-                "biological_sex": sex,
-                "created_at": iso(generated_at),
-                "updated_at": iso(generated_at),
-            }
-            dependents.append(record)
-            staff_dependents.append(record)
-            if age < 5 and relation in ("SON", "DAUGHTER"):
-                young_dependents.append(record)
-
-        dependents_by_staff[staff_meta["id"]] = staff_dependents
-
-    if not young_dependents:
-        for record in dependents:
-            if record["relationship"] in ("SON", "DAUGHTER"):
-                record["age"] = 3
-                young_dependents.append(record)
-                break
+    for staff_meta in selected_staff:
+        age = max(18, staff_meta["age"] + rng.randint(-5, 5))
+        sex: BiologicalSex = "FEMALE" if staff_meta["biological_sex"] == "MALE" else "MALE"
+        record = {
+            "id": deterministic_uuid(rng),
+            "staff_member_id": staff_meta["id"],
+            "full_name": f"Synthetic Spouse of {staff_meta['ist_staff_id']}",
+            "relationship": "SPOUSE",
+            "age": age,
+            "biological_sex": sex,
+            "created_at": iso(generated_at),
+            "updated_at": iso(generated_at),
+        }
+        dependents.append(record)
+        dependents_by_staff[staff_meta["id"]] = [record]
 
     return dependents, dependents_by_staff, young_dependents
 
@@ -918,10 +879,10 @@ def audit_rationale(encounter: Dict[str, Any]) -> Tuple[str, str, str]:
             "AI summary underweighted low SpO2 and tachycardia. Mandatory RED floor required HMC emergency escalation.",
             "NURSE_OVERRIDE_UP",
         )
-    if profile == "PEDIATRIC_RESPIRATORY_DISTRESS":
+    if profile == "ADULT_RESPIRATORY_DISTRESS":
         return (
             "URGENT",
-            "Pediatric respiratory rate breached the tachypnea safety floor; nurse escalated to Sidra emergency routing.",
+            "Adult respiratory rate and SpO2 breached the safety floor; nurse escalated to HMC emergency routing.",
             "NURSE_OVERRIDE_UP",
         )
     if profile == "CABIN_CREW_BACK_PAIN":

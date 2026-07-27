@@ -2,7 +2,7 @@ FROM node:20-bookworm-slim AS dependencies
 
 WORKDIR /app
 RUN apt-get update -y \
-  && apt-get install -y --no-install-recommends openssl ca-certificates \
+  && apt-get install -y --no-install-recommends openssl ca-certificates python3 \
   && rm -rf /var/lib/apt/lists/*
 RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 
@@ -15,7 +15,14 @@ FROM dependencies AS build
 COPY tsconfig.json ./
 COPY src ./src
 COPY frontend ./frontend
-COPY data/generated/ist_qatar_seed_data.json ./data/generated/ist_qatar_seed_data.json
+COPY scripts/runPython.mjs ./scripts/runPython.mjs
+COPY python ./python
+# Regenerated deterministically at build time (fixed default seed in
+# generate_synthetic_pdp_data.py) rather than COPY-ing a local, gitignored
+# file -- guarantees local/demo/simulation all validate staff ID/sex/age
+# against byte-identical synthetic HRMS data, regardless of who builds the
+# image or when.
+RUN pnpm run synthetic:employees
 RUN pnpm run build
 RUN pnpm run build:web
 RUN pnpm prune --prod
