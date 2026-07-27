@@ -35,3 +35,24 @@ export async function compileTriageCompletion(
   }
   return payload as TriageCompleteResponse;
 }
+
+/**
+ * Read-only counterpart to compileTriageCompletion() - calls /triage/preview,
+ * which compiles the same bilingual note but never persists an encounter
+ * row, so it's safe to call any number of times (e.g. every time an
+ * already-closed call whose note wasn't captured at completion time is
+ * reopened for review).
+ */
+export async function previewTriageCompletion(request: Record<string, unknown>): Promise<TriageCompleteResponse> {
+  const response = await fetch(`${apiBase}/api/v1/triage/preview`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request)
+  });
+  const payload = await response.json();
+  if (!response.ok) {
+    throw new Error(payload.error ?? payload.message ?? `SBAR preview failed with ${response.status}`);
+  }
+  return payload as TriageCompleteResponse;
+}

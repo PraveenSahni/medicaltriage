@@ -122,6 +122,28 @@ export function createTriageRouter(): Router {
     });
   });
 
+  // Read-only counterpart to /complete: compiles the same bilingual SOAP/SBAR
+  // markdown but never calls persistCompletedTriageNote, so it can be called
+  // any number of times (e.g. every time a nurse/manager reopens an already-
+  // closed call whose note wasn't captured at completion time) without ever
+  // creating a duplicate encounter row - /complete's persistence step is
+  // already known to be non-idempotent (see the 2026-07-25 backend
+  // consolidation audit), so this must stay a separate, side-effect-free path.
+  router.post("/preview", async (req, res) => {
+    const parsed = TriageCompleteRequestSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid triage preview payload", details: parsed.error.flatten() });
+    }
+    const staff = parsed.data.istStaffId ? await validateStaffMember(parsed.data.istStaffId) : undefined;
+    const ageResolution = parsed.data.istStaffId
+      ? await resolvePatientAgeFromHrms({ istStaffId: parsed.data.istStaffId, dependentId: undefined })
+      : undefined;
+    const completionData =
+      ageResolution?.ok === true ? { ...parsed.data, patientAgeYears: ageResolution.ageYears } : parsed.data;
+    const note = compileBilingualSoapSbarMarkdown(completionData);
+    return res.json(withMockFlag({ notePayload: note, staff: staff?.profile, preview: true }));
+  });
+
   router.post("/complete", async (req, res) => {
     const parsed = TriageCompleteRequestSchema.safeParse(req.body);
     if (!parsed.success) {
