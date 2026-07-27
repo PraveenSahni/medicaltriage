@@ -32,7 +32,8 @@ import type {
   QueueSeverity,
   QueueStatus,
   QueueTransitionLogDto,
-  QueueVitals
+  QueueVitals,
+  RagShadowSuggestionDto
 } from "../types/queue.js";
 
 export class QueueOrchestrationError extends Error {
@@ -353,6 +354,15 @@ function preparedProtocolFromUnknown(value: unknown): QueuePreparedProtocolDto |
       careAdvice: resourceSections.careAdvice === true,
       seeMoreAppropriateGuideline: resourceSections.seeMoreAppropriateGuideline === true
     },
+    // Trusted round-trip of our own previously-serialized output (not user
+    // input) - without this, ragShadow always comes back undefined on every
+    // read from the database, which makes ensurePreparedProtocol()'s
+    // already-prepared check (below) fail every single time and forces a
+    // full keyword-match + RAG-shadow recompute against every protocol for
+    // every queue record on every single list/get request - a real
+    // performance bug that got catastrophically worse once the protocol
+    // catalog grew from 6 sample entries to 229 real ones.
+    ragShadow: isRecord(value.ragShadow) ? (value.ragShadow as RagShadowSuggestionDto) : undefined,
     preparedAtIso
   };
 }
@@ -1432,16 +1442,20 @@ async function listDbRecords(filters: QueueListQuery): Promise<QueueRecord[]> {
   // records system-wide left zero room for the 281 completed ones, even
   // though the UI's own Completed tab should always be able to show its own
   // items regardless of how many open calls exist elsewhere).
+  // No transitionLogs relation here (unlike getDbRecord/saveDbRecord) - the
+  // frontend never reads transitionLogs from the list response (confirmed:
+  // zero references anywhere in frontend/src), so fetching up to 20 full
+  // transition rows per record here was pure dead weight. With hundreds of
+  // real records this alone was enough to balloon GET /api/v1/queue to
+  // several megabytes per poll cycle, badly degrading UI responsiveness.
   const [openRows, completedRows] = await Promise.all([
     queueClient().triageQueueItem.findMany({
       where: { status: { not: "COMPLETED" } },
-      include: { transitionLogs: { orderBy: { timestamp: "desc" }, take: 20 } },
       orderBy: [{ priorityScore: "desc" }, { slaDeadline: "asc" }],
       take: OPEN_RECORDS_QUERY_LIMIT
     }),
     queueClient().triageQueueItem.findMany({
       where: { status: "COMPLETED" },
-      include: { transitionLogs: { orderBy: { timestamp: "desc" }, take: 20 } },
       orderBy: [{ updatedAt: "desc" }],
       take: COMPLETED_RECORDS_QUERY_LIMIT
     })
@@ -1616,6 +1630,34 @@ export async function listQueueItems(session: AuthenticatedSession, filters: Que
     ? await listDbRecords(filters)
     : sorted(Array.from(store().values()).filter((record) => matchesFilter(record, filters)));
   return records.filter((record) => canSeeTenant(record, session)).map(toDto);
+}
+
+/**
+ * One-time maintenance: persists the correct preparedProtocol (including
+ * ragShadow) back to every existing queue record so ensurePreparedProtocol()'s
+ * already-prepared cache check passes on future reads. Needed only for rows
+ * saved before the preparedProtocolFromUnknown() ragShadow round-trip fix -
+ * without this, every existing record keeps recomputing its full protocol
+ * match against every protocol on every single list/get request forever,
+ * since nothing else ever re-persists it. Bypasses session/lock/role checks
+ * entirely (an internal data-repair operation, not a clinical action) and
+ * writes directly via saveRecord so status (including COMPLETED, which the
+ * normal PATCH endpoint locks) is never a blocker.
+ */
+export async function backfillPreparedProtocolCache(): Promise<{ processed: number; recomputed: number }> {
+  const records = shouldPersistQueueInDatabase()
+    ? await listDbRecords({})
+    : Array.from(store().values());
+  let recomputed = 0;
+  for (const record of records) {
+    const before = record.preparedProtocol?.ragShadow;
+    const prepared = ensurePreparedProtocol(record);
+    if (!before || prepared !== record) {
+      await saveRecord(prepared);
+      recomputed++;
+    }
+  }
+  return { processed: records.length, recomputed };
 }
 
 export async function getQueueItem(session: AuthenticatedSession, id: string): Promise<QueueItemDto> {
