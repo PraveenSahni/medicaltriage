@@ -11,6 +11,7 @@ import {
   searchClinicalProtocols
 } from "./clinicalContent.js";
 import { buildRagShadowSuggestion, buildStccProcessSnapshot } from "./ragShadow.js";
+import { captureReasonForCallAudio } from "./reasonForCallVoiceCapture.js";
 import type { AuthenticatedSession } from "../types/security.js";
 import type {
   ClinicalContentProtocol,
@@ -1750,6 +1751,12 @@ export async function createQueueItem(session: AuthenticatedSession, request: Qu
   record.reasonNarrative = preparedRecord.reasonNarrative;
   record.preparedProtocol = preparedRecord.preparedProtocol;
   record.priorityScore = computePriority(record);
+  // Every call is conceptually an IVR/call-center call - the caller's reason
+  // is always "captured from the call" even in this dry-run environment, so
+  // reasonCallCapture is populated at creation time for every call, not only
+  // ones that go through an explicit later capture step. A real STT/
+  // telephony vendor drop-in still only changes reasonForCallVoiceCapture.ts.
+  record.reasonCallCapture = await captureReasonForCallAudio({ simulatedTranscriptText: record.reasonNarrative });
 
   if (shouldPersistQueueInDatabase()) {
     const row = await queueClient().triageQueueItem.create({
@@ -1953,7 +1960,16 @@ export async function updateQueueContext(
   if (typeof update.sbarCopied === "boolean") record.sbarCopied = update.sbarCopied;
   if (update.summary) record.summary = update.summary;
   if (update.reasonNarrative) record.reasonNarrative = update.reasonNarrative;
-  if (update.reasonCallCapture) record.reasonCallCapture = update.reasonCallCapture;
+  if (update.reasonCallCapture) {
+    record.reasonCallCapture = update.reasonCallCapture;
+  } else if (update.reasonNarrative) {
+    // Every call is conceptually captured from the call itself - if the
+    // reason text changed (nurse correction, or a caller callback updating
+    // their description) without an explicit capture payload, refresh the
+    // capture to match so it never drifts out of sync with what's actually
+    // displayed/played back.
+    record.reasonCallCapture = await captureReasonForCallAudio({ simulatedTranscriptText: update.reasonNarrative });
+  }
   if (update.summary || update.reasonNarrative) {
     const preparedRecord = ensurePreparedProtocol(record);
     record.reasonNarrative = preparedRecord.reasonNarrative;

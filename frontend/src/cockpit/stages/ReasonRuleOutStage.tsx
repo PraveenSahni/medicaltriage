@@ -190,6 +190,11 @@ export function ReasonRuleOutStage({
       <div className="reason-card">
         <div className="reason-label-row">
           <label htmlFor="history-input">Reason for Call - in the caller&rsquo;s own words</label>
+          {/* Every call is conceptually an IVR/call-center call, so
+              createQueueItem() now populates reasonCallCapture at creation
+              time for every call - this stays gated on that field (not just
+              reasonNarrative) so the button accurately reflects "this call's
+              reason was captured", which is universally true in practice. */}
           {item.reasonCallCapture && (
             <button
               type="button"
