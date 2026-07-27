@@ -147,7 +147,11 @@ export const TriageCompleteRequestSchema = z
     patient_name: z.string().max(160).optional(),
     patient_age_years: z.coerce.number().int().min(0).max(120).optional(),
     nurse_id: z.string().max(64).optional(),
-    chief_complaint: z.string().min(1).max(240),
+    // Matches QueueContextUpdateSchema's reasonNarrative max (1000) - the
+    // chief complaint is typically the same text as the call's reason
+    // narrative, so this must be able to hold it verbatim rather than
+    // silently truncating a real caller's full description.
+    chief_complaint: z.string().min(1).max(1000),
     subjective: z.string().max(2000).optional(),
     objective: z.string().max(2000).optional(),
     assessment: z.string().max(2000).optional(),

@@ -267,11 +267,12 @@ async function processScenario(
   // same endpoint CompletionStage.tsx calls) rather than just flipping
   // sbarCopied - a completed call is not properly tested unless the compiled
   // note is checked to actually reference the correct disposition/destination.
+  const chiefComplaint = reasonNarrative;
   const sbarResp = await request(jar, "/api/v1/triage/complete", {
     method: "POST",
     body: JSON.stringify({
       ist_staff_id: istStaffId,
-      chief_complaint: reasonNarrative,
+      chief_complaint: chiefComplaint,
       final_disposition_code: expectedDispositionCode,
       routing_destination: expectedDestination
     })
@@ -285,7 +286,7 @@ async function processScenario(
       sbarNoteText &&
         sbarNoteText.includes(expectedDispositionCode) &&
         sbarNoteText.includes(expectedDestination) &&
-        sbarNoteText.includes(reasonNarrative)
+        sbarNoteText.includes(chiefComplaint)
     );
   }
 
