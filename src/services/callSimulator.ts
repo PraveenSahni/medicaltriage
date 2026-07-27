@@ -53,9 +53,13 @@ async function login(baseUrl: string, jar: CookieJar, username: string, password
 
 async function createOneCall(baseUrl: string, jar: CookieJar, candidates: Candidate[]): Promise<void> {
   const requestBody = buildSimulatedQueueCreateRequest(candidates);
+  // No organizationId override - defaults to the calling session's own org
+  // (single tenant, org_ist_tech), matching every other generated/claimed
+  // call. A hardcoded override here previously caused generated calls to
+  // land in a different org than the nurse claiming them could see.
   const r = await request(baseUrl, jar, "/api/v1/queue", {
     method: "POST",
-    body: JSON.stringify({ ...requestBody, organizationId: "org_phcc" })
+    body: JSON.stringify(requestBody)
   });
   if (!r.ok) {
     const body = await r.json().catch(() => ({}));

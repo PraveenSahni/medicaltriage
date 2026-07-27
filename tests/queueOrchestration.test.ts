@@ -291,7 +291,7 @@ describe("Enterprise queue orchestration", () => {
       employeeId: "IST-10004",
       email: "phcc.backup.nurse@irisstar.tech",
       fullName: "PHCC Backup Nurse",
-      organizationCode: "PHCC",
+      organizationCode: "IST_TECH",
       jobTitle: "Remote Triage Nurse",
       roles: ["remote_triage_nurse"]
     });

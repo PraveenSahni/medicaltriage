@@ -125,7 +125,7 @@ function targetOrganizationForEvent(event: CallCenterEvent): string {
     return configured;
   }
   if (isMockMode()) {
-    return "org_phcc";
+    return "org_ist_tech";
   }
   throw new CallCenterGatewayError(
     422,

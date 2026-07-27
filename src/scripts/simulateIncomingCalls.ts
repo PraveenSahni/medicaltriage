@@ -129,7 +129,6 @@ async function createOneCall(jar: CookieJar, candidates: Candidate[]): Promise<{
     method: "POST",
     body: JSON.stringify({
       istStaffId: candidate.istStaffId,
-      organizationId: "org_phcc",
       patientType: "Staff",
       channel,
       stationCode: "DOH",

@@ -69,18 +69,26 @@ const organizationDirectory: OrganizationDirectoryRecord[] = [
   }
 ];
 
+// Single-tenant deployment: every demo user shares one organization
+// (IST_TECH). Splitting demo accounts across PHCC/HMC/SIDRA previously
+// caused a manager-generated call to land in a different org than the nurse
+// claiming it could see, producing orphaned cross-org queue records that
+// never got processed. Multi-tenant RBAC (segregation/escalation across real
+// orgs) remains fully implemented and tested - see multiTenantRBAC.test.ts,
+// which now exercises it via ad hoc HRMS-synced test identities scoped to
+// distinct orgs, not these demo accounts.
 const organizationOverrideByUserId: Record<string, string> = {
   usr_platform_admin_10001: "IST_TECH",
   usr_system_admin_10001: "IST_TECH",
   usr_security_admin_10001: "IST_TECH",
   usr_org_admin_10001: "IST_TECH",
-  usr_manager_10001: "HMC",
-  usr_intake_10001: "PHCC",
-  usr_nurse_10001: "PHCC",
-  usr_senior_nurse_10001: "HMC",
-  usr_pediatric_nurse_10001: "SIDRA",
-  usr_physician_10001: "HMC",
-  usr_occ_health_10001: "HMC"
+  usr_manager_10001: "IST_TECH",
+  usr_intake_10001: "IST_TECH",
+  usr_nurse_10001: "IST_TECH",
+  usr_senior_nurse_10001: "IST_TECH",
+  usr_pediatric_nurse_10001: "IST_TECH",
+  usr_physician_10001: "IST_TECH",
+  usr_occ_health_10001: "IST_TECH"
 };
 
 const demoPasswordByEmail: Record<string, string> = {
