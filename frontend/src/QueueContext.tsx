@@ -187,6 +187,7 @@ export type QueueItem = {
   safetyFloorSource?: SafetyFloorSource;
   initialAssessmentResponses?: Record<string, string>;
   taqResponses?: Record<string, boolean>;
+  sbarNoteText?: string;
   careAdviceAcknowledgements?: Record<string, { givenNow?: boolean; sendLater?: boolean }>;
   vitalsUnobtainable?: boolean;
   clinicalApproval?: Record<string, unknown>;

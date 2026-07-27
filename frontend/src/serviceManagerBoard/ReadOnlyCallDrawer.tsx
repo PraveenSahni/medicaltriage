@@ -40,7 +40,7 @@ export function ReadOnlyCallDrawer({ item, onClose }: ReadOnlyCallDrawerProps) {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [onClose]);
 
-  const [activeTab, setActiveTab] = useState<"summary" | "iaq" | "taq">("summary");
+  const [activeTab, setActiveTab] = useState<"reason" | "iaq" | "taq" | "disposition" | "sbar">("reason");
   const [protocolDetail, setProtocolDetail] = useState<ProtocolDetail | undefined>(undefined);
   const [protocolError, setProtocolError] = useState("");
   const protocolId = item.matchedProtocolId ?? item.preparedProtocol?.primaryProtocolId;
@@ -148,11 +148,11 @@ export function ReadOnlyCallDrawer({ item, onClose }: ReadOnlyCallDrawerProps) {
           <button
             type="button"
             role="tab"
-            aria-selected={activeTab === "summary"}
-            className={`smb-drawer-tab${activeTab === "summary" ? " smb-drawer-tab-active" : ""}`}
-            onClick={() => setActiveTab("summary")}
+            aria-selected={activeTab === "reason"}
+            className={`smb-drawer-tab${activeTab === "reason" ? " smb-drawer-tab-active" : ""}`}
+            onClick={() => setActiveTab("reason")}
           >
-            Summary
+            Reason for Call
           </button>
           <button
             type="button"
@@ -172,9 +172,27 @@ export function ReadOnlyCallDrawer({ item, onClose }: ReadOnlyCallDrawerProps) {
           >
             TAQ
           </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "disposition"}
+            className={`smb-drawer-tab${activeTab === "disposition" ? " smb-drawer-tab-active" : ""}`}
+            onClick={() => setActiveTab("disposition")}
+          >
+            Disposition
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "sbar"}
+            className={`smb-drawer-tab${activeTab === "sbar" ? " smb-drawer-tab-active" : ""}`}
+            onClick={() => setActiveTab("sbar")}
+          >
+            SBAR
+          </button>
         </div>
 
-        {activeTab === "summary" && (
+        {activeTab === "reason" && (
           <>
             <div className="smb-drawer-section">
               <h3>Reason for call</h3>
@@ -239,6 +257,62 @@ export function ReadOnlyCallDrawer({ item, onClose }: ReadOnlyCallDrawerProps) {
                     );
                   })}
               </ul>
+            )}
+          </div>
+        )}
+
+        {activeTab === "disposition" && (
+          <div className="smb-drawer-section">
+            <h3>Disposition</h3>
+            {!item.dispositionCode ? (
+              <p className="smb-empty-note">Disposition has not been reached yet for this call.</p>
+            ) : (
+              <>
+                <div className="smb-detail-grid">
+                  <div className="smb-detail">
+                    <div className="smb-detail-label">Severity</div>
+                    <div className="smb-detail-value">{friendlySeverity(item.calculatedSeverity)}</div>
+                  </div>
+                  <div className="smb-detail">
+                    <div className="smb-detail-label">Disposition code</div>
+                    <div className="smb-detail-value">{item.dispositionCode}</div>
+                  </div>
+                </div>
+                <div className="smb-reason-box" style={{ marginTop: 10 }}>
+                  {item.destinationName ?? "Destination not yet recorded."}
+                </div>
+                {(() => {
+                  const terminalQuestionId = (item.clinicalApproval as { terminalQuestionId?: string } | undefined)
+                    ?.terminalQuestionId;
+                  const terminalQuestion = terminalQuestionId
+                    ? protocolDetail?.protocol.questions.find((question) => question.id === terminalQuestionId)
+                    : undefined;
+                  if (!terminalQuestion) {
+                    return null;
+                  }
+                  return (
+                    <>
+                      <h3 style={{ marginTop: 16 }}>Triggering TAQ</h3>
+                      <div className="smb-reason-box">{terminalQuestion.questionTextEn}</div>
+                    </>
+                  );
+                })()}
+              </>
+            )}
+          </div>
+        )}
+
+        {activeTab === "sbar" && (
+          <div className="smb-drawer-section">
+            <h3>SBAR</h3>
+            {item.sbarNoteText ? (
+              <pre className="smb-sbar-note">{item.sbarNoteText}</pre>
+            ) : (
+              <p className="smb-empty-note">
+                {item.sbarCopied
+                  ? "SBAR was copied for this call, but its text was not captured before this feature existed."
+                  : "SBAR has not been compiled/copied yet for this call."}
+              </p>
             )}
           </div>
         )}

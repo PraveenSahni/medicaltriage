@@ -848,6 +848,20 @@
   color: var(--ems, #a32d2d) !important;
 }
 
+#service-manager-board-root .smb-sbar-note {
+  background: var(--bg, #f7f6f3) !important;
+  border: 1px solid var(--line, #e0dfd9) !important;
+  border-radius: 8px !important;
+  padding: 10px 11px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink, #1a1a19) !important;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+  margin: 0;
+}
+
 #service-manager-board-root .smb-reason-box {
   background: var(--bg, #f7f6f3) !important;
   border: 1px solid var(--line, #e0dfd9) !important;

@@ -361,6 +361,7 @@ function queuePayloadFromUnknown(value: unknown): {
   safetyFloorSource?: QueueRecord["safetyFloorSource"];
   initialAssessmentResponses?: Record<string, string>;
   taqResponses?: Record<string, boolean>;
+  sbarNoteText?: string;
   vitalsUnobtainable?: boolean;
   matchedProtocolId?: string;
   dependentId?: string;
@@ -387,6 +388,7 @@ function queuePayloadFromUnknown(value: unknown): {
   return {
     initialAssessmentResponses: initialAssessment,
     taqResponses,
+    sbarNoteText: stringFromPayload(value.sbarNoteText),
     vitalsUnobtainable: typeof value.vitalsUnobtainable === "boolean" ? value.vitalsUnobtainable : undefined,
     identityValidationSource: source === "HRMS_AUTO" || source === "HRMS_LOOKUP_FAILED" ? source : undefined,
     identityValidationMessage: stringFromPayload(value.identityValidationMessage),
@@ -412,6 +414,7 @@ function queuePayloadFor(record: QueueRecord): Record<string, unknown> {
   if (record.safetyFloorSource) payload.safetyFloorSource = record.safetyFloorSource;
   if (record.initialAssessmentResponses) payload.initialAssessmentResponses = record.initialAssessmentResponses;
   if (record.taqResponses) payload.taqResponses = record.taqResponses;
+  if (record.sbarNoteText) payload.sbarNoteText = record.sbarNoteText;
   if (typeof record.vitalsUnobtainable === "boolean") payload.vitalsUnobtainable = record.vitalsUnobtainable;
   // The app-facing matchedProtocolId is the file-based external protocol id
   // (e.g. "stcc-abdominal-pain-male"), not the Algorithm table's internal
@@ -670,6 +673,7 @@ function dbRowToRecord(row: QueueDbRow): QueueRecord {
     safetyFloorSource: queuePayload.safetyFloorSource,
     initialAssessmentResponses: queuePayload.initialAssessmentResponses,
     taqResponses: queuePayload.taqResponses,
+    sbarNoteText: queuePayload.sbarNoteText,
     vitalsUnobtainable: queuePayload.vitalsUnobtainable,
     clinicalApproval: approvalFromUnknown(row.clinicalApproval),
     sbarCopied: row.sbarCopied,
@@ -1840,6 +1844,7 @@ export async function updateQueueContext(
   if (update.destinationName && !floorBlocksDowngrade) record.destinationName = update.destinationName;
   if (update.initialAssessmentResponses) record.initialAssessmentResponses = update.initialAssessmentResponses;
   if (update.taqResponses) record.taqResponses = update.taqResponses;
+  if (update.sbarNoteText) record.sbarNoteText = update.sbarNoteText;
   if (typeof update.vitalsUnobtainable === "boolean") record.vitalsUnobtainable = update.vitalsUnobtainable;
   if (update.clinicalApproval) record.clinicalApproval = update.clinicalApproval;
   if (typeof update.sbarCopied === "boolean") record.sbarCopied = update.sbarCopied;

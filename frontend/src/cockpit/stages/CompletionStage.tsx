@@ -48,8 +48,11 @@ export function CompletionStage({ item, isReadOnly, onCallCompleted }: Completio
       await navigator.clipboard.writeText(text);
       setCopied(true);
       // sbarCopied is only set true after the clipboard copy has actually
-      // succeeded - never optimistically before this point.
-      await updateItemContext(item.id, { sbarCopied: true });
+      // succeeded - never optimistically before this point. sbarNoteText is
+      // persisted here too so the compiled note survives past this session
+      // (previously only ever held in local component state, lost on reload -
+      // e.g. for the Service Manager Board's read-only SBAR review tab).
+      await updateItemContext(item.id, { sbarCopied: true, sbarNoteText: text });
     } catch (caught) {
       setActionError(caught instanceof Error ? caught.message : "Copy failed.");
     } finally {
