@@ -49,7 +49,10 @@ export function ActiveCallHeader({
   return (
     <div className="active-call-hdr">
       <div>
-        <h1>{item.summary}</h1>
+        {/* reasonNarrative is the field that actually gets edited (nurse
+            typing or IVR audio capture) - item.summary is only ever set once
+            at creation and goes stale the moment reasonNarrative changes. */}
+        <h1>{item.reasonNarrative || item.summary}</h1>
         <div className="sub">
           {item.matchedProtocolId ?? item.preparedProtocol?.primaryProtocolId ?? "No protocol matched"} &middot; Case{" "}
           {item.id}

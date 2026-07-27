@@ -467,7 +467,11 @@ export function Sidebar({
                   <span className={`state-pill state-${tag}`}>{stateLabel}</span>
                   <span className="call-wait-time">{waitClock(item)}</span>
                 </div>
-                <div className="title">{item.summary}</div>
+                {/* reasonNarrative is the field that actually gets edited
+                    (nurse typing or IVR audio capture) - item.summary is only
+                    ever set once at creation and goes stale the moment
+                    reasonNarrative changes. */}
+                <div className="title">{item.reasonNarrative || item.summary}</div>
                 <div className="call-item-meta">
                   {item.identityValidated ? (
                     <>
