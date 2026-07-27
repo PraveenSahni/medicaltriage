@@ -51,6 +51,34 @@ const SEVERITY_MAP: Record<string, string> = {
 
 type CookieJar = { cookie?: string };
 type Question = { id: string; acuityOrder: number; severity: string; dispositionCode: string };
+type InitialAssessmentQuestion = {
+  id: string;
+  sequence: number;
+  responseType: "LOCATION" | "DURATION" | "YES_NO" | "TEMPERATURE" | "PAIN_SCALE" | "OPEN_TEXT";
+  promptTextEn: string;
+};
+
+// A plausible answer per response type, matching the real widget choices a
+// nurse would pick in InitialAssessmentQuestions.tsx - not fabricated
+// clinical findings, just deterministic representative values so every
+// initial assessment question in the protocol has a recorded answer.
+function sampleInitialAssessmentAnswer(question: InitialAssessmentQuestion): string {
+  switch (question.responseType) {
+    case "YES_NO":
+      return "No";
+    case "PAIN_SCALE":
+      return "Moderate (4-7)";
+    case "TEMPERATURE":
+      return "37.2";
+    case "DURATION":
+      return "Since yesterday";
+    case "LOCATION":
+      return "Localized, one side";
+    case "OPEN_TEXT":
+    default:
+      return "No additional findings reported by caller.";
+  }
+}
 
 async function request(jar: CookieJar, path: string, init: RequestInit = {}, attempt = 1): Promise<Response> {
   const headers = new Headers(init.headers);
@@ -126,6 +154,21 @@ async function processCall(jar: CookieJar, id: string): Promise<RunResult> {
     return { id, outcome: "no-questions", protocolId, protocolTitle };
   }
 
+  // Record an answer for every Initial Assessment Question the protocol
+  // defines, matching what InitialAssessmentQuestions.tsx persists in the
+  // real UI (one PATCH per question, building up the same accumulated map).
+  const initialAssessmentQuestions: InitialAssessmentQuestion[] = [...(detail.protocol?.initialAssessmentQuestions ?? [])].sort(
+    (a, b) => a.sequence - b.sequence
+  );
+  let initialAssessmentResponses: Record<string, string> = {};
+  for (const iaq of initialAssessmentQuestions) {
+    initialAssessmentResponses = { ...initialAssessmentResponses, [iaq.id]: sampleInitialAssessmentAnswer(iaq) };
+    await request(jar, `/api/v1/queue/${id}/context`, {
+      method: "PATCH",
+      body: JSON.stringify({ initialAssessmentResponses })
+    });
+  }
+
   // Randomly chosen "Yes" position across the protocol's real question list -
   // not always first or last - so the 10-record run exercises a spread of
   // acuity levels, matching how a real caller could answer "Yes" at any point.
@@ -135,6 +178,20 @@ async function processCall(jar: CookieJar, id: string): Promise<RunResult> {
   const expectedSeverity = SEVERITY_MAP[question.severity] ?? question.severity;
   const expectedDestination = QATAR_DESTINATION_BY_CODE[question.dispositionCode] ?? question.dispositionCode;
 
+  // Record every TAQ answer up to and including the terminal one - "No" for
+  // each question skipped over, matching exactly what QuestionsStage.tsx
+  // persists via taqResponses in the real Cockpit UI, not just the single
+  // terminal question id.
+  let taqResponses: Record<string, boolean> = {};
+  for (let i = 0; i < yesIndex; i++) {
+    taqResponses = { ...taqResponses, [questions[i].id]: false };
+    await request(jar, `/api/v1/queue/${id}/context`, {
+      method: "PATCH",
+      body: JSON.stringify({ taqResponses })
+    });
+  }
+  taqResponses = { ...taqResponses, [question.id]: true };
+
   const update = await request(jar, `/api/v1/queue/${id}/context`, {
     method: "PATCH",
     body: JSON.stringify({
@@ -142,7 +199,8 @@ async function processCall(jar: CookieJar, id: string): Promise<RunResult> {
       calculatedSeverity: expectedSeverity,
       dispositionCode: question.dispositionCode,
       destinationName: expectedDestination,
-      clinicalApproval: { terminalQuestionId: question.id }
+      clinicalApproval: { terminalQuestionId: question.id },
+      taqResponses
     })
   });
   if (!update.ok) {
