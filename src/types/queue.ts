@@ -90,6 +90,18 @@ export const QueueContextUpdateSchema = z.object({
   sbarCopied: z.boolean().optional(),
   summary: z.string().min(1).max(500).optional(),
   reasonNarrative: z.string().min(1).max(1000).optional(),
+  // Provenance of the reason narrative when it came from an IVR audio
+  // capture + speech-to-text conversion rather than the nurse typing it
+  // directly - see src/services/reasonForCallVoiceCapture.ts.
+  reasonCallCapture: z
+    .object({
+      audioReference: z.string().max(500).optional(),
+      transcriptText: z.string().min(1).max(1000),
+      confidence: z.number().min(0).max(1),
+      provider: z.string().min(1).max(60),
+      capturedAtIso: z.string().datetime()
+    })
+    .optional(),
   assignedNurseId: z.string().min(1).max(120).optional()
 });
 export type QueueContextUpdate = z.infer<typeof QueueContextUpdateSchema>;
@@ -260,6 +272,13 @@ export type QueueItemDto = {
   jobTitle?: string;
   summary: string;
   reasonNarrative?: string;
+  reasonCallCapture?: {
+    audioReference?: string;
+    transcriptText: string;
+    confidence: number;
+    provider: string;
+    capturedAtIso: string;
+  };
   preparedProtocol?: QueuePreparedProtocolDto;
   stccProcess: StccProcessSnapshotDto;
   vitals?: QueueVitals;

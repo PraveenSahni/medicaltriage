@@ -357,12 +357,33 @@ function preparedProtocolFromUnknown(value: unknown): QueuePreparedProtocolDto |
   };
 }
 
+function reasonCallCaptureFromUnknown(value: unknown): QueueRecord["reasonCallCapture"] {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+  const transcriptText = stringFromPayload(value.transcriptText);
+  const provider = stringFromPayload(value.provider);
+  const capturedAtIso = stringFromPayload(value.capturedAtIso);
+  const confidence = typeof value.confidence === "number" ? value.confidence : undefined;
+  if (!transcriptText || !provider || !capturedAtIso || confidence === undefined) {
+    return undefined;
+  }
+  return {
+    audioReference: stringFromPayload(value.audioReference),
+    transcriptText,
+    confidence,
+    provider,
+    capturedAtIso
+  };
+}
+
 function queuePayloadFromUnknown(value: unknown): {
   identityValidationSource?: QueueRecord["identityValidationSource"];
   identityValidationMessage?: string;
   identityValidatedAtIso?: string;
   patientAge?: QueuePatientAgeSnapshotDto;
   reasonNarrative?: string;
+  reasonCallCapture?: QueueRecord["reasonCallCapture"];
   preparedProtocol?: QueuePreparedProtocolDto;
   safetyFloorSource?: QueueRecord["safetyFloorSource"];
   initialAssessmentResponses?: Record<string, string>;
@@ -401,6 +422,7 @@ function queuePayloadFromUnknown(value: unknown): {
     identityValidatedAtIso: stringFromPayload(value.identityValidatedAtIso),
     patientAge: patientAgeFromUnknown(value.patientAge),
     reasonNarrative: stringFromPayload(value.reasonNarrative),
+    reasonCallCapture: reasonCallCaptureFromUnknown(value.reasonCallCapture),
     preparedProtocol: preparedProtocolFromUnknown(value.preparedProtocol),
     safetyFloorSource:
       floorSource === "vitals" || floorSource === "symptom" || floorSource === "judgment" ? floorSource : undefined,
@@ -416,6 +438,7 @@ function queuePayloadFor(record: QueueRecord): Record<string, unknown> {
   if (record.identityValidatedAtIso) payload.identityValidatedAtIso = record.identityValidatedAtIso;
   if (record.patientAge) payload.patientAge = record.patientAge;
   if (record.reasonNarrative) payload.reasonNarrative = record.reasonNarrative;
+  if (record.reasonCallCapture) payload.reasonCallCapture = record.reasonCallCapture;
   if (record.preparedProtocol) payload.preparedProtocol = record.preparedProtocol;
   if (record.safetyFloorSource) payload.safetyFloorSource = record.safetyFloorSource;
   if (record.initialAssessmentResponses) payload.initialAssessmentResponses = record.initialAssessmentResponses;
@@ -664,6 +687,7 @@ function dbRowToRecord(row: QueueDbRow): QueueRecord {
     jobTitle: row.jobTitle ?? undefined,
     summary: row.summary ?? "Tele-triage queue item",
     reasonNarrative: queuePayload.reasonNarrative ?? row.summary ?? "Tele-triage queue item",
+    reasonCallCapture: queuePayload.reasonCallCapture,
     preparedProtocol: queuePayload.preparedProtocol,
     vitals: isVitals(row.vitals) ? row.vitals : undefined,
     matchedProtocolId: queuePayload.matchedProtocolId ?? row.matchedProtocolId ?? undefined,
@@ -1364,6 +1388,19 @@ function isRealStccProtocolMatch(record: QueueRecord): boolean {
 
 function sorted(records: QueueRecord[]): QueueRecord[] {
   return [...records].sort((left, right) => {
+    const leftCompleted = left.status === "COMPLETED";
+    const rightCompleted = right.status === "COMPLETED";
+    if (leftCompleted !== rightCompleted) {
+      // Open records first, completed ones after - priority/SLA ordering is
+      // meaningless once a case is closed.
+      return leftCompleted ? 1 : -1;
+    }
+    if (leftCompleted && rightCompleted) {
+      // Most recently closed call first, so the Service Manager Board's
+      // Closed column reads newest-to-oldest instead of an arbitrary
+      // priority-score order left over from before completion.
+      return new Date(right.updatedAtIso).getTime() - new Date(left.updatedAtIso).getTime();
+    }
     const leftIsStcc = isRealStccProtocolMatch(left);
     const rightIsStcc = isRealStccProtocolMatch(right);
     if (leftIsStcc !== rightIsStcc) {
@@ -1376,11 +1413,21 @@ function sorted(records: QueueRecord[]): QueueRecord[] {
   });
 }
 
+// Both windows are generous rather than tightly tuned - this is a query-result
+// cap to protect the request from an unbounded table scan, not a product
+// pagination limit. Neither open nor completed calls should silently vanish
+// from the board/cockpit just because more test/real data accumulated than a
+// small hardcoded number anticipated (previously 250/100, which capped the
+// visible "Completed" count at 100 regardless of how many rows actually
+// existed - a real gap, not deliberate pagination).
+const OPEN_RECORDS_QUERY_LIMIT = 5000;
+const COMPLETED_RECORDS_QUERY_LIMIT = 5000;
+
 async function listDbRecords(filters: QueueListQuery): Promise<QueueRecord[]> {
   // Open and completed records are fetched with separate take() windows so
   // neither bucket can starve the other: a single combined query - even with
-  // COMPLETED sorted last - still hits one shared take(250) cap, so once
-  // total open records across all orgs exceeds 250, completed calls vanish
+  // COMPLETED sorted last - still hits one shared take() cap, so once total
+  // open records across all orgs exceeds that cap, completed calls vanish
   // from the list entirely (found via bulk end-to-end testing: 440 open
   // records system-wide left zero room for the 281 completed ones, even
   // though the UI's own Completed tab should always be able to show its own
@@ -1390,13 +1437,13 @@ async function listDbRecords(filters: QueueListQuery): Promise<QueueRecord[]> {
       where: { status: { not: "COMPLETED" } },
       include: { transitionLogs: { orderBy: { timestamp: "desc" }, take: 20 } },
       orderBy: [{ priorityScore: "desc" }, { slaDeadline: "asc" }],
-      take: 250
+      take: OPEN_RECORDS_QUERY_LIMIT
     }),
     queueClient().triageQueueItem.findMany({
       where: { status: "COMPLETED" },
       include: { transitionLogs: { orderBy: { timestamp: "desc" }, take: 20 } },
       orderBy: [{ updatedAt: "desc" }],
-      take: 100
+      take: COMPLETED_RECORDS_QUERY_LIMIT
     })
   ]);
   const rows = [...openRows, ...completedRows];
@@ -1864,6 +1911,7 @@ export async function updateQueueContext(
   if (typeof update.sbarCopied === "boolean") record.sbarCopied = update.sbarCopied;
   if (update.summary) record.summary = update.summary;
   if (update.reasonNarrative) record.reasonNarrative = update.reasonNarrative;
+  if (update.reasonCallCapture) record.reasonCallCapture = update.reasonCallCapture;
   if (update.summary || update.reasonNarrative) {
     const preparedRecord = ensurePreparedProtocol(record);
     record.reasonNarrative = preparedRecord.reasonNarrative;

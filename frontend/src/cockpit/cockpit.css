@@ -843,6 +843,37 @@
   border-color: var(--accent);
 }
 
+#cockpit-root .reason-capture-note {
+  font-size: 0.78rem !important;
+  color: var(--muted) !important;
+  font-style: italic !important;
+}
+
+#cockpit-root .reason-label-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+}
+
+#cockpit-root .reason-audio-play-btn {
+  border: 1px solid var(--accent) !important;
+  background: var(--card) !important;
+  color: var(--accent) !important;
+  border-radius: 6px !important;
+  padding: 3px 10px !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  cursor: pointer !important;
+}
+
+#cockpit-root .reason-audio-play-btn:disabled {
+  opacity: 0.7 !important;
+  cursor: default !important;
+}
+
 /* ---------- RAG shadow rail ---------- */
 
 #cockpit-root .cockpit-rag-rail {
@@ -1100,6 +1131,41 @@
   text-transform: uppercase !important;
   letter-spacing: 0.4px !important;
   color: var(--muted) !important;
+}
+
+#cockpit-root .protocol-match-select-hint {
+  font-size: 0.78rem !important;
+  color: var(--muted) !important;
+  font-style: italic !important;
+}
+
+#cockpit-root .protocol-match-override-note {
+  font-size: 0.78rem !important;
+  font-weight: 400 !important;
+  font-style: italic !important;
+  color: var(--muted) !important;
+}
+
+#cockpit-root .protocol-match-select-btn {
+  align-self: flex-start !important;
+  border: 1px solid var(--accent) !important;
+  background: var(--card) !important;
+  color: var(--accent) !important;
+  border-radius: 6px !important;
+  padding: 4px 10px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+
+#cockpit-root .protocol-match-select-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: default !important;
+}
+
+#cockpit-root .protocol-match-suggestion.is-primary .protocol-match-select-btn {
+  background: var(--accent) !important;
+  color: #fff !important;
 }
 
 /* ---------- Red-flag banner ---------- */

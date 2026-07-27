@@ -171,6 +171,13 @@ export type QueueItem = {
   jobTitle?: string;
   summary: string;
   reasonNarrative?: string;
+  reasonCallCapture?: {
+    audioReference?: string;
+    transcriptText: string;
+    confidence: number;
+    provider: string;
+    capturedAtIso: string;
+  };
   preparedProtocol?: QueuePreparedProtocol;
   stccProcess: StccProcessSnapshot;
   vitals?: QueueVitals;
@@ -238,6 +245,7 @@ type QueueContextValue = {
   releaseItem: (id: string) => Promise<QueueItem>;
   moveItem: (id: string, toStage: QueueClinicalStage, toStatus?: QueueStatus, reason?: string) => Promise<QueueItem>;
   updateItemContext: (id: string, update: Record<string, unknown>) => Promise<QueueItem>;
+  captureReasonAudio: (id: string, input: { audioReference?: string; simulatedTranscriptText?: string }) => Promise<QueueItem>;
   openItemInStep: (id: string) => Promise<void>;
   setActiveItemById: (id: string) => void;
   clearActiveItem: () => void;
@@ -394,6 +402,25 @@ export function QueueProvider({ children }: { children: ReactNode }) {
     [updateOne]
   );
 
+  // Captures the caller's spoken reason-for-call from the IVR leg (any
+  // call-center vendor) and converts it to text via a pluggable
+  // speech-to-text provider, saving the result as this call's
+  // reasonNarrative - see src/routes/queueRouter.ts's /reason-audio route.
+  const captureReasonAudio = useCallback(
+    async (id: string, input: { audioReference?: string; simulatedTranscriptText?: string }) => {
+      const payload = await readJson<{ item: QueueItem }>(
+        await fetch(`${apiBase}/api/v1/queue/${encodeURIComponent(id)}/reason-audio`, {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input)
+        })
+      );
+      return updateOne(payload.item);
+    },
+    [updateOne]
+  );
+
   const setActiveItemById = useCallback(
     (id: string) => {
       const next = queue.find((item) => item.id === id);
@@ -456,6 +483,7 @@ export function QueueProvider({ children }: { children: ReactNode }) {
       releaseItem,
       moveItem,
       updateItemContext,
+      captureReasonAudio,
       openItemInStep,
       setActiveItemById,
       clearActiveItem
@@ -463,6 +491,7 @@ export function QueueProvider({ children }: { children: ReactNode }) {
     [
       activeItem,
       callCenterSessionsByQueueItemId,
+      captureReasonAudio,
       claimItem,
       clearActiveItem,
       connectCall,

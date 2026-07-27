@@ -24,6 +24,7 @@ import {
   QueueMoveRequestSchema
 } from "../types/queue.js";
 import { buildSimulatedQueueCreateRequest, loadStaffCandidatePool } from "../services/queueCallGenerator.js";
+import { captureReasonForCallAudio, ReasonForCallVoiceCaptureError } from "../services/reasonForCallVoiceCapture.js";
 
 function sessionFrom(req: AuthorizedRequest) {
   const session = req.securitySession;
@@ -36,6 +37,12 @@ function sessionFrom(req: AuthorizedRequest) {
 function handleQueueError(error: unknown, next: (error: unknown) => void, res: { status: (code: number) => { json: (body: unknown) => void } }) {
   if (error instanceof QueueOrchestrationError) {
     return res.status(error.statusCode).json({
+      error: error.message,
+      code: error.code
+    });
+  }
+  if (error instanceof ReasonForCallVoiceCaptureError) {
+    return res.status(error.status).json({
       error: error.message,
       code: error.code
     });
@@ -185,6 +192,29 @@ export function createQueueRouter(): Router {
       }
       const item = await updateQueueContext(sessionFrom(req), req.params.id, parsed.data);
       return res.json({ item });
+    } catch (error) {
+      return handleQueueError(error, next, res);
+    }
+  });
+
+  // Captures the caller's spoken "reason for call" from the IVR leg (any
+  // call-center vendor - the capture service is provider-agnostic) and
+  // converts it to text via a pluggable speech-to-text provider, then saves
+  // the result as this call's reasonNarrative - same as if the nurse had
+  // typed it, but sourced from the recorded audio instead. No real
+  // telephony/STT vendor is wired in yet; see reasonForCallVoiceCapture.ts.
+  router.post("/:id/reason-audio", async (req: AuthorizedRequest, res, next) => {
+    try {
+      const capture = await captureReasonForCallAudio({
+        audioReference: typeof req.body?.audioReference === "string" ? req.body.audioReference : undefined,
+        simulatedTranscriptText:
+          typeof req.body?.simulatedTranscriptText === "string" ? req.body.simulatedTranscriptText : undefined
+      });
+      const item = await updateQueueContext(sessionFrom(req), req.params.id, {
+        reasonNarrative: capture.transcriptText,
+        reasonCallCapture: capture
+      });
+      return res.status(201).json({ item, capture });
     } catch (error) {
       return handleQueueError(error, next, res);
     }
