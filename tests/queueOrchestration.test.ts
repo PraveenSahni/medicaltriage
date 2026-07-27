@@ -30,7 +30,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("generates a synthetic call via the shared queue-call generator (manual invocation)", async () => {
-    const manager = await agentFor("manager@irisstar.tech", "triage_service_manager");
+    const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
 
     const response = await manager.post("/api/v1/queue/simulate").send({});
 
@@ -50,7 +50,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("locks a board case for Step cockpit handoff", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 
     const claim = await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
 
@@ -67,7 +67,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("auto-validates dependent identity and age before nurse workflow", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 
     const loaded = await nurse.get("/api/v1/queue/case-10002").expect(200);
 
@@ -87,7 +87,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("prepares protocol suggestions from the reason narrative before nurse pickup", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 
     const loaded = await nurse.get("/api/v1/queue/case-10002").expect(200);
 
@@ -143,7 +143,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("searches the clinical content packet for a new ankle injury call without auto-approving a protocol", async () => {
-    const manager = await agentFor("manager@irisstar.tech", "triage_service_manager");
+    const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
 
     const created = await manager
       .post("/api/v1/queue")
@@ -231,7 +231,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("rejects direct completion when clinical prerequisites are missing", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
 
     const response = await nurse
@@ -247,7 +247,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("allows the nurse to enter SBAR before recording final approval and copied-note evidence", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
     await nurse
       .patch("/api/v1/queue/case-10002/context")
@@ -286,7 +286,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("prevents another nurse from taking an active lock", async () => {
-    const nurseA = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurseA = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     upsertDirectoryUserFromHrms({
       employeeId: "IST-10004",
       email: "phcc.backup.nurse@irisstar.tech",
@@ -304,7 +304,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("moves a new emergency vital-sign case to the top of the active queue", async () => {
-    const manager = await agentFor("manager@irisstar.tech", "triage_service_manager");
+    const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
 
     const created = await manager
       .post("/api/v1/queue")
@@ -353,7 +353,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("activates the emergency floor from triager judgment without any vitals", async () => {
-    const manager = await agentFor("manager@irisstar.tech", "triage_service_manager");
+    const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
 
     const created = await manager
       .post("/api/v1/queue")
@@ -391,7 +391,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("blocks severity and route downgrades through context patches while the floor is active", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
 
     const attempted = await nurse
@@ -419,7 +419,7 @@ describe("Enterprise queue orchestration", () => {
       .expect(403);
     expect(denied.body.code).toBe("QUEUE_ROLE_DENIED");
 
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
 
     const answers = {
@@ -437,7 +437,7 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("labels the seeded symptom-reported red-floor cases with their floor source", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 
     const loaded = await nurse.get("/api/v1/queue/case-10002").expect(200);
     expect(loaded.body.item).toMatchObject({

@@ -111,7 +111,7 @@ describe("Provider-neutral call-center gateway integration", () => {
     });
     expect(response.body.receipt.session.queueItemId).toEqual(expect.any(String));
 
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const queue = await nurse.get("/api/v1/queue").expect(200);
     expect(queue.body.queue).toEqual(
       expect.arrayContaining([
@@ -254,7 +254,7 @@ describe("Provider-neutral call-center gateway integration", () => {
   });
 
   it("CCG-CMD-001 atomically claims and answers an incoming queue call", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const response = await nurse
       .post("/api/v1/call-center/queue/case-10002/command")
       .send({ action: "ANSWER", provider: "dry-run" })
@@ -278,7 +278,7 @@ describe("Provider-neutral call-center gateway integration", () => {
       callbackTargetRef: "employee-contact-primary"
     });
     const offered = await postSignedEvent(payload).expect(202);
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const response = await nurse
       .post(`/api/v1/call-center/queue/${offered.body.receipt.session.queueItemId}/command`)
       .send({ action: "START_CALLBACK", provider: "dry-run" })
@@ -292,7 +292,7 @@ describe("Provider-neutral call-center gateway integration", () => {
   });
 
   it("CCG-FAIL-001 does not take a queue lock when the requested adapter is not configured", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const rejected = await nurse
       .post("/api/v1/call-center/queue/case-10002/command")
       .send({ action: "ANSWER", provider: "not-configured" })
@@ -322,7 +322,7 @@ describe("Provider-neutral call-center gateway integration", () => {
     };
     registerCallCenterAdapter(rejectingAdapter);
 
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const rejected = await nurse
       .post("/api/v1/call-center/queue/case-10002/command")
       .send({ action: "ANSWER", provider: "rejecting" })

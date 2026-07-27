@@ -9,8 +9,8 @@
  */
 
 const API_BASE = process.env.API_BASE ?? "http://localhost:8080";
-const USERNAME = "nurse@irisstar.tech";
-const PASSWORD = "Nurse@2026";
+const USERNAME = "layla@irisstar.tech";
+const PASSWORD = "Layla@2026";
 
 type CookieJar = { cookie?: string };
 

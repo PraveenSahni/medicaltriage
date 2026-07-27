@@ -10,8 +10,8 @@ export const personas = {
   },
   nurse: {
     simulationUserId: "remote-triage-nurse",
-    username: "nurse@irisstar.tech",
-    password: "Nurse@2026",
+    username: "layla@irisstar.tech",
+    password: "Layla@2026",
     role: "remote_triage_nurse",
     redirectTo: "workspace"
   },

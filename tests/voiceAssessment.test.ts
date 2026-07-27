@@ -68,7 +68,7 @@ describe("English Voice AI initial-assessment foundation", () => {
   });
 
   it("VOICE-START-001 pins the English prompt and recording-governance boundary", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const response = await startSession(nurse);
 
     expect(response.body.session).toMatchObject({
@@ -91,8 +91,8 @@ describe("English Voice AI initial-assessment foundation", () => {
   });
 
   it("VOICE-OWNER-001 blocks another ordinary nurse from opening the named-user session", async () => {
-    const owner = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
-    const otherNurse = await agentFor("pediatric.nurse@irisstar.tech", "pediatric_triage_nurse");
+    const owner = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    const otherNurse = await agentFor("sara@irisstar.tech", "pediatric_triage_nurse");
     const started = await startSession(owner);
 
     const response = await otherNurse
@@ -103,7 +103,7 @@ describe("English Voice AI initial-assessment foundation", () => {
   });
 
   it("VOICE-FLOW-001 advances deterministically and completes only after nurse validation", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const started = await startSession(nurse);
     const sessionId = started.body.session.id as string;
 
@@ -147,7 +147,7 @@ describe("English Voice AI initial-assessment foundation", () => {
   });
 
   it("VOICE-UNCERTAIN-001 allows one clarification and then requires nurse takeover", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const started = await startSession(nurse);
     const sessionId = started.body.session.id as string;
 
@@ -170,7 +170,7 @@ describe("English Voice AI initial-assessment foundation", () => {
   });
 
   it("VOICE-INTERRUPT-001 treats caller barge-in as interruption instead of an answer", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const started = await startSession(nurse);
 
     const response = await nurse
@@ -186,7 +186,7 @@ describe("English Voice AI initial-assessment foundation", () => {
   });
 
   it("VOICE-EMERGENCY-001 hands emergency language to the nurse without selecting a disposition", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const started = await startSession(nurse, "sample-chest-pain-adult");
 
     const response = await nurse
@@ -202,7 +202,7 @@ describe("English Voice AI initial-assessment foundation", () => {
   });
 
   it("VOICE-NEGATION-001 does not turn a contracted negative mobility answer into Yes", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const started = await startSession(nurse);
     const sessionId = started.body.session.id as string;
 
@@ -223,7 +223,7 @@ describe("English Voice AI initial-assessment foundation", () => {
   });
 
   it("VOICE-TAKEOVER-001 supports an explicit nurse takeover command", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const started = await startSession(nurse);
 
     const response = await nurse
@@ -238,7 +238,7 @@ describe("English Voice AI initial-assessment foundation", () => {
   });
 
   it("VOICE-RBAC-001 exports only nurse-approved examples to an authorized reviewer", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const governance = await agentFor("governance@irisstar.tech", "clinical_governance_lead");
     const started = await startSession(nurse);
     const sessionId = started.body.session.id as string;

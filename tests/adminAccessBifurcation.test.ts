@@ -51,7 +51,7 @@ describe("Role-based Control Center bifurcation", () => {
         purpose: "Privacy investigation for named-user access review"
       })
       .expect(200);
-    expect(reveal.body).toMatchObject({ decision: "approved", value: "nurse@irisstar.tech" });
+    expect(reveal.body).toMatchObject({ decision: "approved", value: "layla@irisstar.tech" });
   });
 
   it("allows Integration Administrator connector status without user administration", async () => {
@@ -74,7 +74,7 @@ describe("Role-based Control Center bifurcation", () => {
   });
 
   it("keeps Remote Triage Nurse out of the Control Center despite reveal permission", async () => {
-    const remoteNurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const remoteNurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 
     await remoteNurse.get("/api/v1/admin/control-modules").expect(403);
     await remoteNurse.get("/api/v1/admin/reveal-directory").expect(403);

@@ -33,8 +33,8 @@ describe("Multi-tenant named-user queue and HRMS directory controls", () => {
   });
 
   it("segregates queue cards by authenticated organization", async () => {
-    const phccNurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
-    const hmcNurse = await agentFor("senior.nurse@irisstar.tech", "senior_triage_nurse");
+    const phccNurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    const hmcNurse = await agentFor("fatima@irisstar.tech", "senior_triage_nurse");
 
     const phccQueue = await phccNurse.get("/api/v1/queue").expect(200);
     const hmcQueue = await hmcNurse.get("/api/v1/queue").expect(200);
@@ -47,7 +47,7 @@ describe("Multi-tenant named-user queue and HRMS directory controls", () => {
   });
 
   it("uses HRMS status to revoke sessions, release locks, and block login", async () => {
-    const manager = await agentFor("manager@irisstar.tech", "triage_service_manager");
+    const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
     await manager
       .post("/api/v1/hrms/sync-users")
       .send({
@@ -110,8 +110,8 @@ describe("Multi-tenant named-user queue and HRMS directory controls", () => {
   });
 
   it("allows a PHCC nurse to hand over an escalated card to HMC with a signed audit log", async () => {
-    const phccNurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
-    const hmcNurse = await agentFor("senior.nurse@irisstar.tech", "senior_triage_nurse");
+    const phccNurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    const hmcNurse = await agentFor("fatima@irisstar.tech", "senior_triage_nurse");
 
     await phccNurse.post("/api/v1/queue/case-10002/claim").expect(200);
     const handover = await phccNurse

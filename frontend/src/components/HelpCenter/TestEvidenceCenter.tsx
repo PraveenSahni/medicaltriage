@@ -142,7 +142,7 @@ const initialTestCases: TestCase[] = [
     module: "RBAC",
     objective: "Verify the simulated nurse identity is bound to one effective role and masked session data.",
     preconditions: ["Remote Triage Nurse directory user active"],
-    testData: ["nurse@irisstar.tech", "remote_triage_nurse"],
+    testData: ["layla@irisstar.tech", "remote_triage_nurse"],
     steps: [
       passedStep("Authenticate the named nurse", "Workspace redirect with nurse role", "Authenticated and redirected to workspace"),
       passedStep("Read session", "Stable user ID and masked email", "usr_nurse_10001 and n****@irisstar.tech returned")

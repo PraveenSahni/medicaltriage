@@ -15,14 +15,15 @@ import { buildSimulatedQueueCreateRequest, loadStaffCandidatePool, type Simulato
 
 const INTAKE_USERNAME = "intake@irisstar.tech";
 const INTAKE_PASSWORD = "Intake@2026";
-// A second, real PHCC-scoped nurse identity (usr_nurse2_10001) - a
-// HMC/SIDRA-scoped identity (e.g. Senior Triage Nurse) can't see or claim
-// PHCC-org calls at all due to real multi-tenant RBAC boundaries, so it
-// could only ever grab the one pre-existing cross-org edge-case record
-// (confirmed while testing this). This identity shares the same PHCC
-// organization as the main demo nurse, so it can claim the same queue.
-const OTHER_NURSE_USERNAME = "nurse2@irisstar.tech";
-const OTHER_NURSE_PASSWORD = "Nurse2@2026";
+// Must be a real PHCC-scoped nurse identity - a HMC/SIDRA-scoped identity
+// (e.g. Senior/Pediatric Triage Nurse) can't see or claim PHCC-org calls at
+// all due to real multi-tenant RBAC boundaries (confirmed while testing
+// this). The system only has one PHCC-scoped nurse account (layla@), so this
+// loop reuses it rather than a dedicated second identity - a human logged in
+// as the same account concurrently would share this session's lock/claim
+// activity, which is an acceptable demo-only tradeoff.
+const OTHER_NURSE_USERNAME = "layla@irisstar.tech";
+const OTHER_NURSE_PASSWORD = "Layla@2026";
 
 type CookieJar = { cookie?: string };
 type Candidate = SimulatorCandidate;

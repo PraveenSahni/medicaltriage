@@ -40,7 +40,7 @@ describe("Help & Library access", () => {
   });
 
   it("serves the Help page for any signed-in nurse without any secondary password prompt required to load it", async () => {
-    const nurse = await agentFor("nurse@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const response = await nurse.get("/help").expect(200);
     expect(response.text).toContain("Help &amp; Clinical Library");
     expect(response.text).toContain("Nurse Cockpit");
@@ -49,7 +49,7 @@ describe("Help & Library access", () => {
   });
 
   it("serves the Help page for the Triage Service Manager and does not render the restricted vault", async () => {
-    const manager = await agentFor("manager@irisstar.tech", "triage_service_manager");
+    const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
     const response = await manager.get("/help").expect(200);
     expect(response.text).toContain("Triage Service Manager Board");
     expect(response.text).not.toContain("Restricted Operations Vault");
@@ -63,7 +63,7 @@ describe("Help & Library access", () => {
   });
 
   it("rejects restricted-vault verification for a role without vault access, even with the correct password", async () => {
-    const nurse = await agentFor("nurse2@irisstar.tech", "remote_triage_nurse");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     const response = await nurse
       .post("/api/v1/help/restricted-access/verify")
       .send({ password: VAULT_PLAINTEXT_PASSWORD });
@@ -125,7 +125,7 @@ describe("Help & Library access", () => {
   });
 
   it("does not require restricted-vault verification to affect the general Help content or any other route", async () => {
-    const manager = await agentFor("manager@irisstar.tech", "triage_service_manager");
+    const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
     await manager.get("/help").expect(200);
     // Queue access (used by the Service Manager Board) is unaffected by Help being open.
     await manager.get("/api/v1/queue").expect(200);

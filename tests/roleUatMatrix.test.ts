@@ -80,11 +80,11 @@ const personas: Persona[] = [
   { roleCode: "privacy_officer", username: "privacy@irisstar.tech", label: "Privacy Officer / DPO" },
   { roleCode: "compliance_auditor", username: "audit@irisstar.tech", label: "Compliance Auditor" },
   { roleCode: "clinical_governance_lead", username: "governance@irisstar.tech", label: "Clinical Governance Lead" },
-  { roleCode: "triage_service_manager", username: "manager@irisstar.tech", label: "Triage Service Manager" },
+  { roleCode: "triage_service_manager", username: "khalid@irisstar.tech", label: "Triage Service Manager" },
   { roleCode: "call_intake_coordinator", username: "intake@irisstar.tech", label: "Call Intake Coordinator" },
-  { roleCode: "remote_triage_nurse", username: "nurse@irisstar.tech", label: "Remote Triage Nurse" },
-  { roleCode: "senior_triage_nurse", username: "senior.nurse@irisstar.tech", label: "Senior Triage Nurse" },
-  { roleCode: "pediatric_triage_nurse", username: "pediatric.nurse@irisstar.tech", label: "Pediatric Triage Nurse" },
+  { roleCode: "remote_triage_nurse", username: "layla@irisstar.tech", label: "Remote Triage Nurse" },
+  { roleCode: "senior_triage_nurse", username: "fatima@irisstar.tech", label: "Senior Triage Nurse" },
+  { roleCode: "pediatric_triage_nurse", username: "sara@irisstar.tech", label: "Pediatric Triage Nurse" },
   { roleCode: "teleconsult_physician", username: "physician@irisstar.tech", label: "Teleconsult Physician" },
   { roleCode: "occupational_health_clinician", username: "oh@irisstar.tech", label: "Occupational Health Clinician" },
   { roleCode: "protocol_content_manager", username: "protocols@irisstar.tech", label: "Protocol Content Manager" },
@@ -102,11 +102,11 @@ const demoPasswordsByUsername: Record<string, string> = {
   "privacy@irisstar.tech": "Privacy@2026",
   "audit@irisstar.tech": "Audit@2026",
   "governance@irisstar.tech": "Governance@2026",
-  "manager@irisstar.tech": "Manager@2026",
+  "khalid@irisstar.tech": "Khalid@2026",
   "intake@irisstar.tech": "Intake@2026",
-  "nurse@irisstar.tech": "Nurse@2026",
-  "senior.nurse@irisstar.tech": "SeniorNurse@2026",
-  "pediatric.nurse@irisstar.tech": "PediatricNurse@2026",
+  "layla@irisstar.tech": "Layla@2026",
+  "fatima@irisstar.tech": "Fatima@2026",
+  "sara@irisstar.tech": "Sara@2026",
   "physician@irisstar.tech": "Physician@2026",
   "oh@irisstar.tech": "OccupationalHealth@2026",
   "protocols@irisstar.tech": "Protocols@2026",
@@ -412,7 +412,7 @@ describe("Comprehensive role-based UAT matrix", () => {
 
   it("rejects role override when the selected user is not assigned that role", async () => {
     const result = await authenticateLocal({
-      username: "nurse@irisstar.tech",
+      username: "layla@irisstar.tech",
       password: TEST_ADMIN_PASSWORD,
       rememberMe: false,
       simulateRole: "platform_super_administrator",
@@ -428,8 +428,8 @@ describe("Comprehensive role-based UAT matrix", () => {
 
   it("accepts the selected user's simulation password and rejects another user's password", async () => {
     const seniorNurseLogin = await authenticateLocal({
-      username: "senior.nurse@irisstar.tech",
-      password: demoPasswordsByUsername["senior.nurse@irisstar.tech"],
+      username: "fatima@irisstar.tech",
+      password: demoPasswordsByUsername["fatima@irisstar.tech"],
       rememberMe: false,
       ipAddress: "uat-matrix",
       device: "jest-role-uat"
@@ -441,8 +441,8 @@ describe("Comprehensive role-based UAT matrix", () => {
     }
 
     const wrongPasswordLogin = await authenticateLocal({
-      username: "senior.nurse@irisstar.tech",
-      password: demoPasswordsByUsername["nurse@irisstar.tech"],
+      username: "fatima@irisstar.tech",
+      password: demoPasswordsByUsername["layla@irisstar.tech"],
       rememberMe: false,
       ipAddress: "uat-matrix",
       device: "jest-role-uat"

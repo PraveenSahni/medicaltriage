@@ -70,7 +70,7 @@ const session: AuthenticatedSession = {
   user: {
     id: "user-1",
     fullName: "Test Manager",
-    email: "manager@irisstar.tech",
+    email: "khalid@irisstar.tech",
     department: "Operations",
     facility: "DOH",
     roles: ["triage_service_manager"],
