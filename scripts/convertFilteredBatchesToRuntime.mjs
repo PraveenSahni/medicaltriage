@@ -13,6 +13,12 @@ const CATALOG_ROOT = path.resolve("docs/protocol-review/catalog/open-source");
 const REDIRECT_REGISTRY_PATH = path.join(CATALOG_ROOT, "redirect-alias-registry.json");
 
 const BATCH_CONFIGS = {
+  "1": {
+    label: "Batch 1",
+    root: CATALOG_ROOT,
+    manifest: "manifests/batch-01-manifest.json",
+    version: "batch01-demographic-revision-2-2026-07-25"
+  },
   "2": {
     label: "Batch 2",
     root: path.join(CATALOG_ROOT, "batch-02"),
@@ -33,7 +39,7 @@ const BATCH_CONFIGS = {
   }
 };
 
-const OUTPUT_PATH = path.join(CATALOG_ROOT, "runtime/batches-2-3-4-filtered.runtime.json");
+const OUTPUT_PATH = path.join(CATALOG_ROOT, "runtime/batches-1-2-3-4-filtered.runtime.json");
 
 const LEVEL_TO_SEVERITY = { 100: "Emergency", 78: "Urgent", 70: "Urgent", 50: "Routine", 15: "Self-care" };
 
@@ -70,6 +76,31 @@ function parsePainSeverityRow(raw) {
   const lower = level.toLowerCase();
   const cls = lower.includes("severe") ? "severe" : lower.includes("moderate") ? "moderate" : "mild";
   return { level, cls, textEn };
+}
+
+// The runtime schema caps each keyPointsEn entry at 600 chars. Some source
+// KeyPoints paragraphs run slightly over that as a single string; split at
+// sentence boundaries rather than truncating, so no clinical content is lost.
+function splitLongKeyPoints(points) {
+  const result = [];
+  for (const point of points) {
+    if (point.length <= 600) {
+      result.push(point);
+      continue;
+    }
+    const sentences = point.split(/(?<=\. )/);
+    let chunk = "";
+    for (const sentence of sentences) {
+      if ((chunk + sentence).length > 600 && chunk) {
+        result.push(chunk.trim());
+        chunk = sentence;
+      } else {
+        chunk += sentence;
+      }
+    }
+    if (chunk.trim()) result.push(chunk.trim());
+  }
+  return result;
 }
 
 function isRedirectResolved(alias, isAdult, redirectAliases) {
@@ -178,7 +209,7 @@ function buildProtocol(raw, manifestEntry, protocolId, redirectAliases) {
     guidelineRedirects,
     painSeverity: (algorithm.PainSeverity ?? []).map(parsePainSeverityRow),
     backgroundDetail: {
-      keyPointsEn: algorithm.Background.KeyPoints,
+      keyPointsEn: splitLongKeyPoints(algorithm.Background.KeyPoints ?? []),
       causesUnder50En: algorithm.Background.CausesUnder50 ?? [],
       causesOver50En: algorithm.Background.CausesOver50 ?? [],
       locationTable: (algorithm.Background.LocationTable ?? []).map((row) => ({
@@ -254,8 +285,8 @@ function main() {
 
   const runtimePackage = {
     release: {
-      name: "IST Open-Source Guideline Content - Batches 2-4 (Filtered, UAT)",
-      version: "batches-2-3-4-filtered-2026-07-25",
+      name: "IST Open-Source Guideline Content - Batches 1-4 (Filtered, UAT)",
+      version: "batches-1-2-3-4-filtered-2026-07-25",
       sourceType: "open-source-guideline",
       region: "QA",
       mode: "after-hours"

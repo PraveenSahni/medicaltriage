@@ -1,0 +1,118 @@
+{
+  "_source": {
+    "sourceType": "open-source-guideline",
+    "sourceName": "NHS.UK \"Sunburn\" and NHS.UK \"Heat exhaustion and heatstroke\"",
+    "licenseType": "Open Government Licence v3.0 (Crown copyright, reused per NHS.UK content reuse terms)",
+    "importSource": "src/data/openSourceGuidelines/batch01.ts (id: oscg-sunburn)",
+    "transformationNote": "Reshaped from IST Health's runtime ClinicalContentProtocolSchema TypeScript record into the canonical STCC-shaped Algorithm/Disposition/Question/Advice JSON format for the 229-protocol baseline. Clinical wording is unchanged from the existing, already NHS-sourced runtime record; this transformation only restructures field names/shape and adds researched metadata fields that did not previously exist (GenderAtBirth, PainSeverity applicability decision, Background, FirstAid, references, numeric AlgorithmID). No clinical meaning was altered, added, or removed beyond what NHS.UK's own published pages state.",
+    "protocolVersion": "2026",
+    "importBatch": "229-protocol-baseline-sample-001",
+    "generatedDate": "2026-07-25",
+    "validationStatus": "Structural validation pending automated schema check; clinical review pending designated clinical reviewer sign-off",
+    "contentHash": "PENDING - compute at final approval, not before content is frozen",
+    "restrictions": "Open-source content, not licensed STCC. Requires local clinical governance validation before production use (per existing provenance.contentNotice in the runtime record)."
+  },
+
+  "algorithm": {
+    "AlgorithmID": 1010,
+    "Title": "Sunburn",
+    "ContentSet": "IST Open-Source Guideline Content | Mixed",
+    "Age": "All Ages (Adult, Child, and Infant)",
+    "GenderAtBirth": "Male and Female",
+    "Acuity": 2,
+    "Definition": [
+      "Damage to the skin caused by too much sun exposure.",
+      "Usually resolves within about a week and can be managed independently at home, but severe cases can progress to heat exhaustion or heatstroke."
+    ],
+    "PainSeverity": [],
+    "Background": {
+      "KeyPoints": [
+        "Affected skin may feel hot, sore, or painful, and typically flakes or peels a few days after the sunburn occurs.",
+        "Fair skin usually reddens or turns pink; darker skin tones may show minimal colour change.",
+        "Severe sunburn can blister.",
+        "Getting sunburnt increases the risk of skin cancer."
+      ],
+      "CausesUnder50": [],
+      "CausesOver50": [],
+      "LocationTable": [],
+      "ExpertReviewer": "NHS.UK clinical editorial review (source publisher)"
+    },
+    "FirstAid": [
+      "Get out of the sun immediately.",
+      "Cool the skin using a cool shower, bath, or damp towels.",
+      "Apply aftersun cream or unperfumed moisturiser.",
+      "Stay hydrated; avoid alcohol.",
+      "Take paracetamol or ibuprofen as directed if needed.",
+      "Avoid petroleum jelly, ice packs, scratching, removing peeling skin, or popping blisters."
+    ],
+    "Author": "IST Health Open-Source Guideline Content",
+    "LastRevised": "RESEARCH_REQUIRED - internal IST adaptation date not recorded in the source runtime record; only the source publisher's review date is known",
+    "LastReviewed": "2025-11-24",
+    "VersionYear": 2026,
+    "Company": "IST Health Open-Source Guideline Content",
+    "Copyright": "Crown copyright (NHS.UK content), reused under the Open Government Licence v3.0. IST Health adaptation layer is not separately copyrighted licensed STCC content."
+  },
+
+  "dispositions": [
+    { "LevelID": 100, "DispositionHeading": "Call Emergency Services Now", "DispositionHeading_Telemedicine": "Call Emergency Services Now", "Video": false, "CssVar": "--ems", "DestinationCode": "HMC_EMERGENCY_DEPARTMENT" },
+    { "LevelID": 70, "DispositionHeading": "See Urgent Care Today", "DispositionHeading_Telemedicine": "See Urgent Care or Video Visit Today", "Video": true, "CssVar": "--pcp24", "DestinationCode": "HMC_URGENT_REVIEW" },
+    { "LevelID": 15, "DispositionHeading": "Home Care", "DispositionHeading_Telemedicine": "Home Care", "Video": false, "CssVar": "--home", "DestinationCode": "SELF_CARE_WITH_CALLBACK_PRECAUTIONS" }
+  ],
+
+  "questions": [
+    {
+      "QuestionID": 1,
+      "AlgorithmID": 1010,
+      "DispositionLevel": 100,
+      "QuestionOrder": 1,
+      "Question": "Is there confusion, fainting, a very high temperature with no sweating, or a rapid heartbeat suggesting heatstroke rather than simple sunburn?",
+      "Information": "R/O: heatstroke. NHS.UK heat-exhaustion/heatstroke guidance lists confusion and lack of coordination, hot skin without sweating, fast heartbeat or breathing difficulty, seizures, or loss of consciousness as 999-emergency criteria; NHS.UK sunburn guidance notes severe sunburn can progress to heat exhaustion and heatstroke.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": false,
+      "AdviceIDs": [1]
+    },
+    {
+      "QuestionID": 2,
+      "AlgorithmID": 1010,
+      "DispositionLevel": 70,
+      "QuestionOrder": 1,
+      "Question": "Is the skin blistered or swollen, is the temperature very high or does the caller feel hot, cold, or shivery, does the caller feel very tired, dizzy, or sick, is there a headache or muscle cramps, or is the patient a baby or young child?",
+      "Information": "NHS.UK sunburn guidance lists these as reasons to contact NHS 111 or request an urgent GP appointment.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": true,
+      "AdviceIDs": [2]
+    },
+    {
+      "QuestionID": 3,
+      "AlgorithmID": 1010,
+      "DispositionLevel": 15,
+      "QuestionOrder": 1,
+      "Question": "Is this mild-to-moderate sunburn without blistering or the features above?",
+      "Information": "NHS.UK guidance describes most sunburn as resolving within about a week with home care.",
+      "GotoGuideline": null,
+      "TelemedicineEligible": true,
+      "AdviceIDs": [3]
+    }
+  ],
+
+  "advice": [
+    { "AdviceID": 1, "AlgorithmOrder": 1, "Title": "Emergency heat-illness precautions", "PatientHealthInfo": true, "Internal": false, "Content": ["Move to a cool place, cool the skin, and arrange emergency transport immediately.", "Call Back If: worsening confusion, loss of consciousness."] },
+    { "AdviceID": 2, "AlgorithmOrder": 2, "Title": "Urgent sunburn review", "PatientHealthInfo": true, "Internal": false, "Content": ["Cool the skin, stay hydrated, and arrange same-day medical review, especially for blistering or a young child.", "Call Back If: fever worsens, increasing dizziness."] },
+    { "AdviceID": 3, "AlgorithmOrder": 3, "Title": "Home care for sunburn", "PatientHealthInfo": true, "Internal": false, "Content": ["Get out of the sun, cool the skin with a cool shower or damp towels, apply aftersun or unperfumed moisturiser, stay hydrated, and take paracetamol or ibuprofen as needed.", "Avoid alcohol and further sun exposure.", "Call Back If: blistering develops, or fever, dizziness, or feeling very unwell develops."] }
+  ],
+
+  "references": [
+    "NHS.UK. \"Sunburn.\" https://www.nhs.uk/conditions/sunburn/ (page last reviewed 24 November 2025).",
+    "NHS.UK. \"Heat exhaustion and heatstroke.\" https://www.nhs.uk/conditions/heat-exhaustion-heatstroke/ (page last reviewed 28 May 2026, next review 28 May 2029)."
+  ],
+
+  "searchwords": [
+    "SUNBURN", "SUNBURNED", "SUN BURN", "TOO MUCH SUN", "SUN EXPOSURE", "HEAT EXHAUSTION"
+  ],
+
+  "initialAssessmentQuestions": [
+    { "Category": "Exposure", "Question": "How much sun exposure, and which areas are affected?", "Prompts": [], "Choices": [], "Multi": false, "Placeholder": "e.g., face, shoulders, and back after 3 hours at the beach" },
+    { "Category": "Blistering", "Question": "Is the skin blistered?", "Prompts": [], "Choices": ["Yes", "No"], "Multi": false, "Placeholder": "Details..." },
+    { "Category": "Temperature", "Question": "Has a temperature been measured? If so, what was it?", "Prompts": [], "Choices": [], "Multi": false, "Placeholder": "Exact reading if known" }
+  ]
+}
