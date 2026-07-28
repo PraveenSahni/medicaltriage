@@ -104,7 +104,7 @@ export function InitialAssessmentQuestions({ item, isReadOnly }: { item: QueueIt
     return <p className="action-sub-note">Loading initial assessment questions...</p>;
   }
 
-  async function save(questionId: string, value: string, allQuestions: InitialAssessmentQuestion[]) {
+  async function save(questionId: string, value: string, allQuestions: InitialAssessmentQuestion[], advance = true) {
     if (isReadOnly) {
       return;
     }
@@ -116,11 +116,30 @@ export function InitialAssessmentQuestions({ item, isReadOnly }: { item: QueueIt
     } catch (caught) {
       setSaveError(caught instanceof Error ? caught.message : "Failed to save answer.");
     }
-    const next_unanswered = allQuestions.find((question) => !(question.id in next));
-    setOpenId(next_unanswered?.id);
+    if (advance) {
+      const next_unanswered = allQuestions.find((question) => !(question.id in next));
+      setOpenId(next_unanswered?.id);
+    }
   }
 
+  const TEXT_RESPONSE_TYPES = new Set(["TEMPERATURE", "DURATION", "LOCATION", "OPEN_TEXT"]);
+
+  // A typed-but-unsaved draft in the currently open text question should not
+  // be silently lost just because the nurse clicked ahead to another
+  // question without pressing Save first - auto-save it here, without
+  // stealing the open panel away from the question the nurse actually
+  // clicked (advance=false leaves openId alone; the explicit setOpenId
+  // below is what actually moves it).
   function toggle(id: string) {
+    if (openId && openId !== id && questions) {
+      const currentQuestion = questions.find((question) => question.id === openId);
+      if (currentQuestion && TEXT_RESPONSE_TYPES.has(currentQuestion.responseType)) {
+        const draft = (draftText[openId] ?? answers[openId] ?? "").trim();
+        if (draft && draft !== answers[openId]) {
+          save(openId, draft, questions, false);
+        }
+      }
+    }
     setOpenId((current) => (current === id ? undefined : id));
   }
 
