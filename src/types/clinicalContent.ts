@@ -250,8 +250,14 @@ export const ClinicalContentProtocolSchema = z.object({
   // truncating it.
   clinicalDefinitionEn: z.string().max(12000).optional(),
   clinicalDefinitionAr: z.string().max(12000).optional(),
+  // Sanitized (server-side, via sanitize-html) rendering of the real
+  // Algorithm.DefinitionXHTML/BackgroundXHTML vendor columns - optional
+  // because not every protocol source has rich text (the plain *En fields
+  // above, stripped of all markup, remain the safe fallback).
+  clinicalDefinitionSanitizedHtmlEn: z.string().max(20000).optional(),
   backgroundInfoEn: z.string().max(12000).optional(),
   backgroundInfoAr: z.string().max(12000).optional(),
+  backgroundInfoSanitizedHtmlEn: z.string().max(20000).optional(),
   ageMin: z.number().int().min(0).max(120).optional(),
   ageMax: z.number().int().min(0).max(120).optional(),
   genderRestriction: z.enum(["female", "male", "other", "unknown"]).optional(),

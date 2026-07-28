@@ -61,7 +61,9 @@ async function loadCanonicalExtractFromMdbMirror(): Promise<CanonicalExtract> {
       Author: a.author,
       Copyright: a.copyright,
       Definition: a.definition,
+      DefinitionXHTML: a.definitionXhtml,
       Background: a.background,
+      BackgroundXHTML: a.backgroundXhtml,
       FirstAid: a.firstAid,
       InitialAssessmentQuestions: a.initialAssessmentQuestions,
       Category: a.category,
@@ -106,6 +108,7 @@ async function loadCanonicalExtractFromMdbMirror(): Promise<CanonicalExtract> {
       AdviceID: a.adviceId,
       AlgorithmID: a.algorithmId,
       Advice: a.advice,
+      Advice_XHTML: a.adviceXhtml,
       PatientHealthInfo: a.patientHealthInfo,
       AdviceSnap: a.adviceSnap,
       AlgorithmOrder: a.algorithmOrder
@@ -123,6 +126,7 @@ async function loadCanonicalExtractFromMdbMirror(): Promise<CanonicalExtract> {
       SupplementalID: s.supplementalId,
       Title: s.title,
       Content: s.content,
+      Content_XHTML: s.contentXhtml,
       Category: s.category
     })),
     algorithmSupplementals: algorithmSupplementals.map((row: any) => ({

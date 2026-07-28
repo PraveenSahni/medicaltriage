@@ -1,3 +1,4 @@
+import sanitizeHtml from "sanitize-html";
 import type { ClinicalContentPackageInput, InitialAssessmentResponseType } from "../types/clinicalContent.js";
 import type { DispositionCode, Severity } from "../types/triage.js";
 import { prisma } from "../db.js";
@@ -29,7 +30,9 @@ export type RawAlgorithm = {
   Author: string | null;
   Copyright: string | null;
   Definition: string | null;
+  DefinitionXHTML: string | null;
   Background: string | null;
+  BackgroundXHTML: string | null;
   FirstAid: string | null;
   InitialAssessmentQuestions: string | null;
   Category: string | null;
@@ -77,6 +80,7 @@ export type RawAdvice = {
   AdviceID: number;
   AlgorithmID: number;
   Advice: string | null;
+  Advice_XHTML: string | null;
   PatientHealthInfo: boolean | null;
   AdviceSnap: string | null;
   AlgorithmOrder: number | null;
@@ -97,6 +101,7 @@ export type RawSupplemental = {
   SupplementalID: number;
   Title: string | null;
   Content: string | null;
+  Content_XHTML: string | null;
   Category: string | null;
 };
 
@@ -170,6 +175,22 @@ function stripHtml(value: string): string {
     .replace(/&rsquo;/g, "'")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+// The real vendor *_XHTML columns are licensed content, not user input - but
+// "licensed" does not mean "safe to render as-is". This app's security
+// posture (see the plain-text-only rendering this replaces) never trusted
+// vendor markup by default, so this is never skipped even though the source
+// is a paid data feed rather than an anonymous user. Only a narrow set of
+// structural/formatting tags survive; anything else (script, style, iframe,
+// event handler attributes, javascript: URLs) is stripped entirely.
+function sanitizeXhtml(value: string): string {
+  return sanitizeHtml(value, {
+    allowedTags: ["p", "br", "ul", "ol", "li", "strong", "b", "em", "i", "u", "sub", "sup", "h1", "h2", "h3", "h4", "table", "thead", "tbody", "tr", "th", "td", "span"],
+    allowedAttributes: {},
+    allowedSchemes: [],
+    disallowedTagsMode: "discard"
+  }).trim();
 }
 
 function genderRestrictionFor(gender: string | null): ProtocolInput["genderRestriction"] {
@@ -322,6 +343,7 @@ function buildProtocol(
         titleEn: supplemental?.Title?.trim() || `Reference ${link.SupplementalID}`,
         supplementalType: supplemental?.Category?.trim() || "reference",
         plainTextEn: supplemental?.Content ? stripHtml(supplemental.Content) : "See guideline for details.",
+        sanitizedHtmlEn: supplemental?.Content_XHTML ? sanitizeXhtml(supplemental.Content_XHTML) : undefined,
         displayOrder: index
       };
     });
@@ -337,6 +359,7 @@ function buildProtocol(
         id: `${protocolId}-advice-${advice.AdviceID}`,
         titleEn: advice.AdviceSnap?.trim() || `Care advice ${advice.AdviceID}`,
         instructionTextEn: advice.Advice ? stripHtml(advice.Advice) : advice.AdviceSnap?.trim() || "See guideline.",
+        sanitizedHtmlEn: advice.Advice_XHTML ? sanitizeXhtml(advice.Advice_XHTML) : undefined,
         dispositionCode: level ? LEVEL_TO_DISPOSITION_CODE[level] : undefined,
         warningSigns: [],
         displayOrder: advice.AlgorithmOrder ?? 0,
@@ -359,7 +382,9 @@ function buildProtocol(
     id: protocolId,
     titleEn: algorithm.Title,
     clinicalDefinitionEn: algorithm.Definition ? stripHtml(algorithm.Definition) : undefined,
+    clinicalDefinitionSanitizedHtmlEn: algorithm.DefinitionXHTML ? sanitizeXhtml(algorithm.DefinitionXHTML) : undefined,
     backgroundInfoEn: algorithm.Background ? stripHtml(algorithm.Background) : undefined,
+    backgroundInfoSanitizedHtmlEn: algorithm.BackgroundXHTML ? sanitizeXhtml(algorithm.BackgroundXHTML) : undefined,
     ageMin: algorithm.Min_Age_Years ?? undefined,
     ageMax: algorithm.Max_Age_Years ?? undefined,
     genderRestriction: genderRestrictionFor(algorithm.Gender),

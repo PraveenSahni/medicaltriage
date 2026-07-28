@@ -1648,6 +1648,38 @@
   color: var(--ink) !important;
 }
 
+#cockpit-root .care-advice-rich-text {
+  font-size: inherit !important;
+}
+
+#cockpit-root .care-advice-rich-text p {
+  margin: 0 0 6px !important;
+}
+
+#cockpit-root .care-advice-rich-text ul,
+#cockpit-root .care-advice-rich-text ol {
+  margin: 0 0 6px !important;
+  padding-left: 18px !important;
+}
+
+#cockpit-root .care-advice-rich-text li {
+  margin-bottom: 2px !important;
+}
+
+#cockpit-root .care-advice-rich-text table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin: 6px 0 !important;
+}
+
+#cockpit-root .care-advice-rich-text th,
+#cockpit-root .care-advice-rich-text td {
+  border: 1px solid var(--line) !important;
+  padding: 4px 6px !important;
+  text-align: left !important;
+  font-size: 0.78rem !important;
+}
+
 #cockpit-root .fc b {
   display: block !important;
   color: var(--gc, var(--accent)) !important;

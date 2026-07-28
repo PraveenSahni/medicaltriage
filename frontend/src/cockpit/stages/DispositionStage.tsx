@@ -168,7 +168,11 @@ export function DispositionStage({
           {careAdvice.map((advice) => (
             <div key={advice.id} className="fc">
               <b>{advice.titleEn}</b>
-              {advice.instructionTextEn}
+              {advice.sanitizedHtmlEn ? (
+                <div className="care-advice-rich-text" dangerouslySetInnerHTML={{ __html: advice.sanitizedHtmlEn }} />
+              ) : (
+                advice.instructionTextEn
+              )}
               <div style={{ marginTop: 8 }}>
                 <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "0.8rem", marginRight: 18 }}>
                   <input type="checkbox" checked disabled /> Given Now
@@ -198,7 +202,11 @@ export function DispositionStage({
               <div key={supplemental.id} className="fc">
                 <b>{supplemental.titleEn}</b>
                 <div className="disposition-reference-type">{supplemental.supplementalType}</div>
-                <div style={{ whiteSpace: "pre-wrap" }}>{supplemental.plainTextEn}</div>
+                {supplemental.sanitizedHtmlEn ? (
+                  <div className="care-advice-rich-text" dangerouslySetInnerHTML={{ __html: supplemental.sanitizedHtmlEn }} />
+                ) : (
+                  <div style={{ whiteSpace: "pre-wrap" }}>{supplemental.plainTextEn}</div>
+                )}
               </div>
             ))}
           </div>

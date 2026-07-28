@@ -38,6 +38,7 @@ export type ProtocolCareAdvice = {
   id: string;
   titleEn: string;
   instructionTextEn: string;
+  sanitizedHtmlEn?: string;
   dispositionCode?: string;
   patientSendable?: boolean;
   displayOrder?: number;
@@ -48,6 +49,7 @@ export type ProtocolSupplemental = {
   titleEn: string;
   supplementalType: string;
   plainTextEn: string;
+  sanitizedHtmlEn?: string;
   displayOrder?: number;
 };
 
