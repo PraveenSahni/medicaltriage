@@ -125,6 +125,14 @@ export function TriageServiceManagerBoard({ session, onLogout, onOpenNurseCockpi
     for (const item of sortedQueue) {
       byColumn[mapExistingStatusToBoardColumn(item)].push(item);
     }
+    // The Closed column is a completed-for-the-day audit list, not an active
+    // triage queue - "most recently closed first" is what a manager actually
+    // wants there regardless of the longest-wait/priority sort mode applied
+    // to the still-active columns above (updatedAtIso is the last time the
+    // record changed, which for a COMPLETED call is the completion moment).
+    byColumn.closed = [...byColumn.closed].sort(
+      (a, b) => new Date(b.updatedAtIso).getTime() - new Date(a.updatedAtIso).getTime()
+    );
     return byColumn;
   }, [sortedQueue]);
 
