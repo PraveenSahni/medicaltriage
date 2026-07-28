@@ -30,6 +30,18 @@
   --okbg: #e1f5ee;
   --okbd: #5dcaa5;
 
+  /* Aliases matching cockpit.css's token names exactly (--hcp4/--home vs.
+     this file's own --urgent/--ok, same values) - the shared FitToFlyBadge
+     component (frontend/src/cockpit/FitToFlyBadge.tsx) references --hcp4/
+     --home/--ems by name regardless of which surface renders it, so those
+     exact names must resolve here too, not just their equivalents. */
+  --hcp4: var(--urgent);
+  --hcp4bg: var(--urgentbg);
+  --hcp4bd: var(--urgentbd);
+  --home: var(--ok);
+  --homebg: var(--okbg);
+  --homebd: var(--okbd);
+
   width: 100%;
   max-width: none;
   min-height: 100vh;
@@ -668,6 +680,21 @@
 
 #service-manager-board-root .smb-card-fit-to-fly {
   margin-top: 8px;
+}
+
+/* FitToFlyBadge (shared with the Nurse Cockpit) sets --gc/--gcbg/--gcbd via
+   inline style, referencing --ems/--hcp4/--home/--muted - all defined only
+   on #cockpit-root, not here. Every other color rule in this file already
+   works around that with a hex fallback (var(--ems, #a32d2d) etc.) - this
+   mirrors that same convention so the badge is actually colored instead of
+   rendering unstyled black text. */
+#service-manager-board-root .fit-to-fly-badge {
+  background: var(--gc, #6b6a66) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
 }
 
 #service-manager-board-root .smb-card-fit-to-fly .fit-to-fly-badge {
