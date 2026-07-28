@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueue, type QueueItem, type QueueVitals } from "../../QueueContext";
 import { InitialAssessmentQuestions } from "../InitialAssessmentQuestions";
 import { ProtocolMatchPanel } from "../ProtocolMatchPanel";
@@ -60,14 +60,33 @@ export function ReasonRuleOutStage({
 }) {
   const { updateItemContext } = useQueue();
   const [saving, setSaving] = useState(false);
-  const [vitalsUnobtainable, setVitalsUnobtainable] = useState(Boolean(item.vitalsUnobtainable));
+  // Vitals are almost never obtainable on a phone/tele-triage call, so this
+  // defaults to checked for a fresh call (item.vitalsUnobtainable === undefined)
+  // - it only reads as false if a nurse has explicitly unchecked it before.
+  const [vitalsUnobtainable, setVitalsUnobtainable] = useState(item.vitalsUnobtainable ?? true);
   const [reasonNarrative, setReasonNarrative] = useState(item.reasonNarrative ?? "");
   const [saveError, setSaveError] = useState("");
   const [captureError, setCaptureError] = useState("");
   const [playingAudio, setPlayingAudio] = useState(false);
-  const [vitalsExpanded, setVitalsExpanded] = useState(true);
+  // Vital Taking is optional and rarely needed on a tele-triage call, so it
+  // always starts collapsed - the nurse can still expand it manually.
+  const [vitalsExpanded, setVitalsExpanded] = useState(false);
 
   const temperature = item.vitals?.temperature ?? 37;
+
+  // Persist the checked-by-default state the first time this stage is
+  // opened for a call that has never had this field saved before, so the
+  // default is real server state, not just a visual default the nurse could
+  // silently disagree with by never touching the checkbox.
+  useEffect(() => {
+    if (!isReadOnly && item.vitalsUnobtainable === undefined) {
+      updateItemContext(item.id, { vitalsUnobtainable: true }).catch(() => {
+        // Non-critical - the checkbox still reflects the intended default
+        // locally, and any subsequent manual toggle will retry the save.
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item.id]);
 
   async function saveVitalsUnobtainable(next: boolean) {
     setVitalsUnobtainable(next);
