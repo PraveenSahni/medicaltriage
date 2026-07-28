@@ -666,6 +666,15 @@
   color: var(--muted, #6b6a66) !important;
 }
 
+#service-manager-board-root .smb-card-fit-to-fly {
+  margin-top: 8px;
+}
+
+#service-manager-board-root .smb-card-fit-to-fly .fit-to-fly-badge {
+  font-size: 0.68rem !important;
+  padding: 3px 9px !important;
+}
+
 #service-manager-board-root .smb-owner {
   max-width: 120px;
   white-space: nowrap;

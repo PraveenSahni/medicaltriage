@@ -1,4 +1,5 @@
 import type { QueueItem } from "../QueueContext";
+import { FitToFlyBadge } from "../cockpit/FitToFlyBadge";
 import { colorStyleForSeverity } from "../cockpit/severityColors";
 import { cardTitle, deriveWaitTime, friendlySeverity, maskId, type BoardColumnId } from "./boardMapping";
 
@@ -70,6 +71,9 @@ export function ManagerCallCard({ item, column, onClick }: ManagerCallCardProps)
         ) : (
           <span>{item.stationCode ?? ""}</span>
         )}
+      </div>
+      <div className="smb-card-fit-to-fly">
+        <FitToFlyBadge item={item} />
       </div>
     </article>
   );
