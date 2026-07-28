@@ -1,27 +1,26 @@
 /**
  * Exhaustive live test run for the single licensed STCC protocol
- * (stcc-abdominal-pain-male, 30 TAQ questions) - generates one real call per
- * possible terminal outcome: a "Yes" landing at every question index 0..29,
- * plus the all-"No" self-care path, for 31 test cases total that cover every
+ * (stcc-diarrhea, 29 TAQ questions) - generates one real call per possible
+ * terminal outcome: a "Yes" landing at every question index 0..28, plus the
+ * all-"No" self-care path, for 30 test cases total that cover every
  * disposition this protocol can produce.
  *
  * Each call is created with a genuine "Reason for Call" narrative that is
- * actually about abdominal pain (male) - the real keyword search
+ * actually about diarrhea - the real keyword search
  * (searchClinicalProtocols) must auto-match it to this protocol on its own
  * merit, exactly like a real intake call. No nurse guideline-override is
- * used here (an earlier version of this script forced matchedProtocolId
- * directly, which let the reason narrative be completely unrelated to the
- * protocol under test - clinically wrong, since real callers only reach
- * this protocol via a genuinely matching complaint). If a scenario's
- * auto-match doesn't resolve to this protocol, that's reported as a real
- * failure, not silently overridden.
+ * used (see the abdominal-pain-male sibling script for why: forcing the
+ * match while using an unrelated reason validates a scenario that could
+ * never happen for a real patient). If a scenario's auto-match doesn't
+ * resolve to this protocol, that's reported as a real failure, not silently
+ * overridden.
  *
  * After each call completes, its persisted dispositionCode/calculatedSeverity/
  * destinationName are independently re-checked against the same protocol
  * question's own data (fetched fresh) to confirm the backend recorded
  * exactly what that question defines.
  *
- * Usage: npx tsx src/scripts/simulateAbdominalPainMaleExhaustive.ts
+ * Usage: npx tsx src/scripts/simulateDiarrheaExhaustive.ts
  */
 
 const API_BASE = process.env.API_BASE ?? "http://localhost:8080";
@@ -29,18 +28,19 @@ const GENERATOR_USERNAME = "intake@irisstar.tech";
 const GENERATOR_PASSWORD = "Intake@2026";
 const NURSE_USERNAME = "layla@irisstar.tech";
 const NURSE_PASSWORD = "Layla@2026";
-const PROTOCOL_ID = "stcc-abdominal-pain-male";
+const PROTOCOL_ID = "stcc-diarrhea";
 
-// A real male IST staff member (confirmed via HRMS: biologicalSex "male",
-// age 36 - within this protocol's real 18-120 age range) - reused across all
-// 31 scenarios since the protocol match must hold for the same
-// employee/reason regardless of which TAQ question later resolves Yes.
+// A real IST staff member (Diarrhea's real STCC Gender is "B" - both sexes -
+// so any valid adult candidate works) - reused across all scenarios since
+// the protocol match must hold for the same employee/reason regardless of
+// which TAQ question later resolves Yes.
 const CANDIDATE_IST_STAFF_ID = "IST-00014";
 // Confirmed via live testing (see clinicalContent.ts's real scoreProtocol())
-// to score decisively higher for stcc-abdominal-pain-male than any other
-// real protocol - not a generic phrase, a genuine caller-style complaint.
+// to score decisively higher for stcc-diarrhea than any other real protocol -
+// not a generic phrase, a genuine caller-style complaint using the vendor's
+// own real SearchWords ("watery stools", "food poisoning", "recent travel").
 const REASON_NARRATIVE =
-  "Severe abdominal pain and stomach pain for two hours, epigastric pain that comes and goes.";
+  "Watery stools and loose bowel movements for a day, feeling weak and dizzy, possibly food poisoning from recent travel.";
 
 const QATAR_DESTINATION_BY_CODE: Record<string, string> = {
   SIDRA_PEDIATRIC_ED: "Sidra Medicine Emergency Department",
@@ -150,6 +150,7 @@ type CaseResult = {
   sbarAligned?: boolean;
   careAdviceCount?: number;
   supplementalCount?: number;
+  fitToFlyStatus?: string;
   outcome: string;
 };
 
@@ -365,6 +366,7 @@ async function processScenario(
     sbarAligned,
     careAdviceCount,
     supplementalCount,
+    fitToFlyStatus: finalItem?.fitToFlyStatus,
     terminalQuestionText: yesIndex === -1 ? undefined : questions[yesIndex].questionTextEn,
     expectedDispositionCode: expectedFromSource.dispositionCode,
     expectedSeverity: expectedFromSource.severity,
@@ -437,6 +439,7 @@ async function main() {
           dispositionCode: r.actualDispositionCode,
           severity: r.actualSeverity,
           destination: r.actualDestination,
+          fitToFlyStatus: r.fitToFlyStatus,
           validated: r.validated,
           outcome: r.outcome
         },

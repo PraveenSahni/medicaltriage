@@ -198,6 +198,7 @@ export type QueueItem = {
   initialAssessmentResponses?: Record<string, string>;
   taqResponses?: Record<string, boolean>;
   sbarNoteText?: string;
+  fitToFlyStatus?: "CLEARED" | "RESTRICTED" | "MEDICAL_REVIEW_REQUIRED";
   careAdviceAcknowledgements?: Record<string, { givenNow?: boolean; sendLater?: boolean }>;
   vitalsUnobtainable?: boolean;
   clinicalApproval?: Record<string, unknown>;

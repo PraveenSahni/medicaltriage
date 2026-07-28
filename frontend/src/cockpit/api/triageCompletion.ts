@@ -15,7 +15,7 @@ const apiBase = import.meta.env.VITE_API_BASE_URL || "";
  */
 export type TriageCompleteResponse = {
   notePayload: unknown;
-  fitToFlyStatus?: unknown;
+  fitToFlyStatus?: "CLEARED" | "RESTRICTED" | "MEDICAL_REVIEW_REQUIRED";
   clipboardOptimized: true;
 };
 

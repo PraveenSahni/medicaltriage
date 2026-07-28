@@ -1623,6 +1623,15 @@
   margin-bottom: 12px !important;
 }
 
+#cockpit-root .fit-to-fly-value {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  color: var(--gc, var(--ink)) !important;
+}
+
 #cockpit-root .file-grid {
   display: grid !important;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)) !important;

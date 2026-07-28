@@ -12,6 +12,9 @@ export type QueueSeverity = z.infer<typeof QueueSeveritySchema>;
 export const SafetyFloorSourceSchema = z.enum(["vitals", "symptom", "judgment"]);
 export type SafetyFloorSource = z.infer<typeof SafetyFloorSourceSchema>;
 
+export const FitToFlyStatusSchema = z.enum(["CLEARED", "RESTRICTED", "MEDICAL_REVIEW_REQUIRED"]);
+export type FitToFlyStatus = z.infer<typeof FitToFlyStatusSchema>;
+
 export const QueueVitalsSchema = z.object({
   heartRate: z.number().int().min(20).max(260),
   respiratoryRate: z.number().int().min(4).max(80),
@@ -86,6 +89,7 @@ export const QueueContextUpdateSchema = z.object({
   initialAssessmentResponses: z.record(z.string().max(400)).optional(),
   taqResponses: z.record(z.boolean()).optional(),
   sbarNoteText: z.string().min(1).max(8000).optional(),
+  fitToFlyStatus: FitToFlyStatusSchema.optional(),
   vitalsUnobtainable: z.boolean().optional(),
   sbarCopied: z.boolean().optional(),
   summary: z.string().min(1).max(500).optional(),
@@ -297,6 +301,7 @@ export type QueueItemDto = {
   initialAssessmentResponses?: Record<string, string>;
   taqResponses?: Record<string, boolean>;
   sbarNoteText?: string;
+  fitToFlyStatus?: FitToFlyStatus;
   vitalsUnobtainable?: boolean;
   clinicalApproval?: Record<string, unknown>;
   sbarCopied: boolean;

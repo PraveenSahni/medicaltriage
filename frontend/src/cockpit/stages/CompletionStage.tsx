@@ -1,6 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
+import { Plane } from "lucide-react";
 import { useQueue, type QueueItem } from "../../QueueContext";
-import { compileTriageCompletion, previewTriageCompletion } from "../api/triageCompletion";
+import { compileTriageCompletion, previewTriageCompletion, type TriageCompleteResponse } from "../api/triageCompletion";
+
+type FitToFlyStatus = NonNullable<TriageCompleteResponse["fitToFlyStatus"]>;
+
+const FIT_TO_FLY_LABEL: Record<FitToFlyStatus, string> = {
+  CLEARED: "Cleared",
+  RESTRICTED: "Restricted",
+  MEDICAL_REVIEW_REQUIRED: "Medical Review Required"
+};
+
+const FIT_TO_FLY_RATIONALE: Record<FitToFlyStatus, string> = {
+  CLEARED: "No disposition or role-based factor requires duty restriction.",
+  RESTRICTED:
+    "Final disposition or safety-sensitive crew role requires this staff member to remain off duty. A fit-to-fly clearance must be obtained by visiting a clinic or hospital before returning to duty.",
+  MEDICAL_REVIEW_REQUIRED: "Flagged for clinical review before a duty decision can be made."
+};
+
+// Mirrors colorStyleForSeverity()'s --gc/--gcbg/--gcbd token pattern
+// (severityColors.ts) rather than a literal inline color - this app routes
+// every visible text color through a CSS-variable-driven `!important` rule
+// (e.g. .r-title, .fit-to-fly-value), so a plain style={{color: hex}} loses
+// to that cascade. Reuses the same real red/amber/green tokens already used
+// for clinical severity (--ems/--hcp4/--home) rather than inventing new hex
+// values, so Fit-to-Fly matches the rest of the app's color language.
+function colorStyleForFitToFly(status: FitToFlyStatus | undefined): CSSProperties {
+  const tokens =
+    status === "RESTRICTED"
+      ? { gc: "var(--ems)", gcbg: "var(--emsbg)", gcbd: "var(--emsbd)" }
+      : status === "MEDICAL_REVIEW_REQUIRED"
+        ? { gc: "var(--hcp4)", gcbg: "var(--hcp4bg)", gcbd: "var(--hcp4bd)" }
+        : { gc: "var(--home)", gcbg: "var(--homebg)", gcbd: "var(--homebd)" };
+  return {
+    ["--gc" as string]: tokens.gc,
+    ["--gcbg" as string]: tokens.gcbg,
+    ["--gcbd" as string]: tokens.gcbd
+  } as CSSProperties;
+}
 
 type CompletionStageProps = {
   item: QueueItem;
@@ -16,6 +53,7 @@ export function CompletionStage({ item, isReadOnly, onCallCompleted }: Completio
   const [actionError, setActionError] = useState("");
   const [completed, setCompleted] = useState(item.status === "COMPLETED");
   const [previewText, setPreviewText] = useState<string>("");
+  const [fitToFlyStatus, setFitToFlyStatus] = useState<FitToFlyStatus | undefined>(item.fitToFlyStatus);
 
   // For an already-closed call that never had its note captured (e.g. an
   // older record from before sbarNoteText was persisted, or one closed via
@@ -39,6 +77,7 @@ export function CompletionStage({ item, isReadOnly, onCallCompleted }: Completio
         const text =
           typeof result.notePayload === "string" ? result.notePayload : JSON.stringify(result.notePayload, null, 2);
         setPreviewText(text);
+        if (result.fitToFlyStatus) setFitToFlyStatus(result.fitToFlyStatus);
       })
       .catch(() => {
         // Leave previewText empty - the render falls back to the existing
@@ -65,21 +104,22 @@ export function CompletionStage({ item, isReadOnly, onCallCompleted }: Completio
     routing_destination: item.destinationName ?? "Pending routing"
   };
 
-  async function compileSbarIfNeeded(): Promise<string> {
+  async function compileSbarIfNeeded(): Promise<{ text: string; fitToFlyStatus?: FitToFlyStatus }> {
     if (sbarText) {
       // Already compiled once this session - do not re-call the non-idempotent
       // /triage/complete endpoint; reuse the cached display text.
-      return sbarText;
+      return { text: sbarText, fitToFlyStatus };
     }
     try {
       const result = await compileTriageCompletion(item.id, completionRequestBody);
       const text =
         typeof result.notePayload === "string" ? result.notePayload : JSON.stringify(result.notePayload, null, 2);
       setSbarText(text);
-      return text;
+      if (result.fitToFlyStatus) setFitToFlyStatus(result.fitToFlyStatus);
+      return { text, fitToFlyStatus: result.fitToFlyStatus };
     } catch {
       setSbarText(fallbackSbar);
-      return fallbackSbar;
+      return { text: fallbackSbar };
     }
   }
 
@@ -87,15 +127,20 @@ export function CompletionStage({ item, isReadOnly, onCallCompleted }: Completio
     setBusy(true);
     setActionError("");
     try {
-      const text = await compileSbarIfNeeded();
+      const { text, fitToFlyStatus: compiledFitToFlyStatus } = await compileSbarIfNeeded();
       await navigator.clipboard.writeText(text);
       setCopied(true);
       // sbarCopied is only set true after the clipboard copy has actually
-      // succeeded - never optimistically before this point. sbarNoteText is
-      // persisted here too so the compiled note survives past this session
-      // (previously only ever held in local component state, lost on reload -
-      // e.g. for the Service Manager Board's read-only SBAR review tab).
-      await updateItemContext(item.id, { sbarCopied: true, sbarNoteText: text });
+      // succeeded - never optimistically before this point. sbarNoteText and
+      // fitToFlyStatus are persisted here too so both survive past this
+      // session (previously only ever held in local component state, lost on
+      // reload - e.g. for the Service Manager Board's read-only SBAR review
+      // tab, or for this same call reopened by another nurse/manager).
+      await updateItemContext(item.id, {
+        sbarCopied: true,
+        sbarNoteText: text,
+        ...(compiledFitToFlyStatus ? { fitToFlyStatus: compiledFitToFlyStatus } : {})
+      });
     } catch (caught) {
       setActionError(caught instanceof Error ? caught.message : "Copy failed.");
     } finally {
@@ -131,9 +176,34 @@ export function CompletionStage({ item, isReadOnly, onCallCompleted }: Completio
     }
   }
 
+  // item.fitToFlyStatus (the persisted, server-confirmed value for THIS item) always
+  // wins over local `fitToFlyStatus` state - state alone would go stale when the
+  // nurse switches between calls without this component remounting (useState's
+  // initializer only runs once, so it kept showing the previously-viewed call's
+  // status until this fell back to the live prop first, same pattern already used
+  // for sbarNoteText below).
+  const displayFitToFlyStatus = item.fitToFlyStatus ?? fitToFlyStatus;
+
   return (
     <section aria-label="SBAR / Complete">
       <div className="action-sub-note">Copy the SBAR handoff, deliver callback instructions, and close the call.</div>
+
+      <div className="reason-card" style={{ marginBottom: 14 }}>
+        <label>Fit-to-Fly Recommendation</label>
+        {displayFitToFlyStatus ? (
+          <div style={colorStyleForFitToFly(displayFitToFlyStatus)}>
+            <div className="fit-to-fly-value">
+              <Plane size={16} strokeWidth={2.5} />
+              {FIT_TO_FLY_LABEL[displayFitToFlyStatus]}
+            </div>
+            <div className="action-sub-note" style={{ marginTop: 4 }}>
+              {FIT_TO_FLY_RATIONALE[displayFitToFlyStatus]}
+            </div>
+          </div>
+        ) : (
+          <div className="action-sub-note">Determined once the SBAR note is compiled (Copy SBAR, below).</div>
+        )}
+      </div>
 
       <div className="reason-card">
         <label>SBAR Preview</label>
