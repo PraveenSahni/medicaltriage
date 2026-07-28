@@ -216,6 +216,20 @@ export function InitialAssessmentQuestions({ item, isReadOnly }: { item: QueueIt
                       type="text"
                       defaultValue={answers[question.id] ?? ""}
                       onChange={(event) => setDraftText((current) => ({ ...current, [question.id]: event.target.value }))}
+                      onBlur={() => {
+                        // Losing focus for ANY reason (clicking another
+                        // question, clicking "Triage Questions ->", clicking
+                        // anywhere else on the page) must not silently drop
+                        // an unsaved draft - this is a stronger, general
+                        // safety net than the toggle()-only autosave below,
+                        // since toggle() has no visibility into clicks on
+                        // buttons outside this component (e.g. the stage's
+                        // own Continue button).
+                        const value = (draftText[question.id] ?? answers[question.id] ?? "").trim();
+                        if (value && value !== answers[question.id]) {
+                          save(question.id, value, questions, false);
+                        }
+                      }}
                       disabled={isReadOnly}
                     />
                     <button
