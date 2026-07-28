@@ -2,8 +2,8 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { prisma } from "../db.js";
 import { samplePhase1ClinicalContent } from "../data/samplePhase1ClinicalContent.js";
-import { openSourceGuidelinesContent } from "../data/openSourceGuidelines/index.js";
 import { stccLicensedContent } from "../data/stccLicensedContent/index.js";
+import { mapCanonicalExtractToPackage, type CanonicalExtract } from "./stccMdbMapper.js";
 import {
   ClinicalContentPackageSchema,
   type ClinicalContentCareAdvice,
@@ -27,246 +27,152 @@ const DEFAULT_GENERATED_CONTENT_PACKAGE_PATH = path.resolve(
   "clinical_content_package.json"
 );
 
-function dbSourceTypeToZod(sourceType: string): ClinicalContentPackageInput["release"]["sourceType"] {
-  if (sourceType === "LICENSED_STCC") {
-    return "licensed-stcc";
-  }
-
-  if (sourceType === "LOCAL_QATAR_OVERRIDE") {
-    return "local-qatar-override";
-  }
-
-  return "synthetic-sample";
-}
-
-function dbModeToZod(mode: string): ProtocolMode {
-  if (mode === "OFFICE_HOURS") {
-    return "office-hours";
-  }
-
-  if (mode === "AFTER_HOURS") {
-    return "after-hours";
-  }
-
-  return "both";
-}
-
-function dbSeverityToZod(severity: string): Severity {
-  switch (severity) {
-    case "EMERGENCY":
-      return "Emergency";
-    case "URGENT":
-      return "Urgent";
-    case "SELF_CARE":
-      return "Self-care";
-    default:
-      return "Routine";
-  }
-}
-
-function dbPatientGroupToZod(patientGroup: string): ClinicalContentProtocol["patientGroup"] {
-  const lowered = patientGroup.toLowerCase();
-  return (lowered === "adult" || lowered === "pediatric" || lowered === "mixed" ? lowered : "unknown") as ClinicalContentProtocol["patientGroup"];
-}
-
-function dbGenderToZod(gender: string | null): ClinicalContentProtocol["genderRestriction"] {
-  if (!gender) {
-    return undefined;
-  }
-
-  const lowered = gender.toLowerCase();
-  return (lowered === "female" || lowered === "male" || lowered === "other" ? lowered : "unknown") as ClinicalContentProtocol["genderRestriction"];
-}
-
-function dbDateToIso(value: Date | null | undefined): string | undefined {
-  return value ? value.toISOString() : undefined;
-}
-
 /**
- * Reconstructs the in-memory content package from the STCC-compatible Prisma
- * tables (Algorithm/TriageQuestion/CareAdvice/Disposition/...), the mirror
- * image of what `src/scripts/importClinicalContent.ts` writes. Used only when
- * `CLINICAL_CONTENT_SOURCE=database` - every other source stays file-based.
+ * Reads the real STCC vendor-mirror tables (MdbAlgorithm/MdbQuestion/MdbAdvice/
+ * MdbQuestionAdvice/MdbDisposition - see prisma/schema.prisma and the STCC
+ * realignment plan) and shapes them into the same CanonicalExtract row shape
+ * `scripts/extractStccMdb.ps1` produces from the file, so both the file-based
+ * and database-backed content sources go through the identical
+ * `mapCanonicalExtractToPackage()` mapper in stccMdbMapper.ts.
  *
- * Known, accepted lossy spots (both pre-existing in the importer, not
- * introduced here): (1) question-level `keywords` are indexed in
- * `ProtocolKeywordIndex` at the algorithm level only (no per-question FK), so
- * they cannot be reattached to individual questions on read-back - this only
- * degrades search-relevance scoring, not clinical correctness, since
- * protocol-level keywords round-trip fully; (2) `release.sourceType` collapses
- * to whatever `ProtocolRelease.sourceType` the importer wrote, which itself
- * collapses `open-source-clinical-rule`/`open-source-guideline` down to
- * `SYNTHETIC_SAMPLE` (`sourceToDb()` in the importer) since the DB enum has no
- * dedicated value for those two sourceTypes yet.
+ * These are the real, faithfully-mirrored vendor tables. The old app-facing
+ * Algorithm/TriageQuestion/CareAdvice content domain has been removed
+ * entirely - TriageQueueItem.matchedProtocolId and similar operational FKs
+ * now reference MdbAlgorithm.algorithmId directly (see
+ * resolveMdbAlgorithmId() in stccMdbMapper.ts).
  */
+async function loadCanonicalExtractFromMdbMirror(): Promise<CanonicalExtract> {
+  const [algorithms, questions, questionAdvice, advice, dispositions, algorithmSearchWords, supplementals, algorithmSupplementals] =
+    await Promise.all([
+      (prisma as any).mdbAlgorithm.findMany(),
+      (prisma as any).mdbQuestion.findMany(),
+      (prisma as any).mdbQuestionAdvice.findMany(),
+      (prisma as any).mdbAdvice.findMany(),
+      (prisma as any).mdbDisposition.findMany(),
+      (prisma as any).mdbAlgorithmSearchWord.findMany(),
+      (prisma as any).mdbSupplemental.findMany(),
+      (prisma as any).mdbAlgorithmSupplemental.findMany()
+    ]);
+
+  return {
+    algorithms: algorithms.map((a: any) => ({
+      AlgorithmID: a.algorithmId,
+      Title: a.title ?? "",
+      Author: a.author,
+      Copyright: a.copyright,
+      Definition: a.definition,
+      Background: a.background,
+      FirstAid: a.firstAid,
+      InitialAssessmentQuestions: a.initialAssessmentQuestions,
+      Category: a.category,
+      Group: a.group,
+      Type: a.typeName,
+      System: a.systemName,
+      Anatomy: a.anatomy,
+      VersionYear: a.versionYear,
+      Status: a.status,
+      Acuity: a.acuity,
+      Gender: a.gender,
+      AgeGroup: a.ageGroup,
+      Min_Age_Years: a.minAgeYears,
+      Max_Age_Years: a.maxAgeYears,
+      LastUpDate: a.lastUpDate ? a.lastUpDate.toISOString() : null,
+      LastReviewDate: a.lastReviewDate ? a.lastReviewDate.toISOString() : null,
+      WH: a.wh,
+      BH: a.bh,
+      OA: a.oa,
+      CD: a.cd,
+      Hospice: a.hospice,
+      Oncology: a.oncology,
+      Prescription_Option: a.prescriptionOption,
+      CMS_PRIVATE: a.cmsPrivate,
+      SampleGuidelines: a.sampleGuidelines
+    })),
+    questions: questions.map((q: any) => ({
+      QuestionID: q.questionId,
+      AlgorithmID: q.algorithmId,
+      QuestionOrder: q.questionOrder ?? 0,
+      Question: q.question ?? "",
+      DispositionLevel: q.dispositionLevel,
+      Information: q.information,
+      TelemedicineEligible: q.telemedicineEligible
+    })),
+    questionAdvice: questionAdvice.map((qa: any) => ({
+      QuestionID: qa.questionId,
+      AdviceID: qa.adviceId,
+      QuestionAdviceOrder: qa.questionAdviceOrder
+    })),
+    advice: advice.map((a: any) => ({
+      AdviceID: a.adviceId,
+      AlgorithmID: a.algorithmId,
+      Advice: a.advice,
+      PatientHealthInfo: a.patientHealthInfo,
+      AdviceSnap: a.adviceSnap,
+      AlgorithmOrder: a.algorithmOrder
+    })),
+    dispositions: dispositions.map((d: any) => ({
+      LevelID: d.levelId,
+      DispositionHeading: d.dispositionHeading ?? "",
+      DispositionHeading_Telemedicine: d.dispositionHeadingTelemedicine
+    })),
+    algorithmSearchWords: algorithmSearchWords.map((row: any) => ({
+      AlgorithmID: row.algorithmId,
+      SearchWord: row.searchWord
+    })),
+    supplementals: supplementals.map((s: any) => ({
+      SupplementalID: s.supplementalId,
+      Title: s.title,
+      Content: s.content,
+      Category: s.category
+    })),
+    algorithmSupplementals: algorithmSupplementals.map((row: any) => ({
+      AlgorithmID: row.algorithmId,
+      SupplementalID: row.supplementalId
+    }))
+  };
+}
+
 async function loadContentPackageFromDatabase(): Promise<ClinicalContentPackage> {
-  const algorithms = await (prisma as any).algorithm.findMany({
-    where: { active: true },
-    include: {
-      release: true,
-      questions: {
-        include: {
-          dispositionLevel: true,
-          careAdviceLinks: { include: { advice: true } }
-        }
-      },
-      initialAssessmentQuestions: true,
-      careAdviceLinks: { include: { careAdvice: true }, orderBy: { displayOrder: "asc" } },
-      keywordIndexes: true
-    }
-  });
+  const extract = await loadCanonicalExtractFromMdbMirror();
+  const mapped = mapCanonicalExtractToPackage(extract);
 
-  const localizedDispositionRows = await (prisma as any).localizedDisposition.findMany({
-    where: { active: true }
-  });
-
-  const firstRelease = algorithms.find((algorithm: any) => algorithm.release)?.release;
-
-  const protocols: ClinicalContentPackageInput["protocols"] = algorithms.map((algorithm: any) => {
-    const protocolLevelKeywords = (algorithm.keywordIndexes ?? []).filter((row: any) => row.source !== "question");
-
-    const questions: ClinicalContentPackageInput["protocols"][number]["questions"] = algorithm.questions
-      .sort((left: any, right: any) => left.acuityOrder - right.acuityOrder)
-      .map((question: any) => ({
-        id: question.externalQuestionId ?? question.id,
-        acuityOrder: question.acuityOrder,
-        severity: dbSeverityToZod(question.severityGrade),
-        questionTextEn: question.questionTextEn,
-        questionTextAr: question.questionTextAr ?? undefined,
-        dispositionCode: question.acuityDispositionCode as DispositionCode,
-        rationaleEn: question.rationaleEn ?? "",
-        redFlag: question.redFlag,
-        keywords: [],
-        careAdviceIds: (question.careAdviceLinks ?? []).map(
-          (link: any) => link.advice.externalCareAdviceId ?? link.advice.id
-        ),
-        telemedicineEligible: question.telemedicineEligible ?? undefined,
-        telemedicineNotesEn: question.telemedicineNotesEn ?? undefined,
-        dispositionLevel: question.dispositionLevel?.levelId ?? undefined,
-        questionOrder: question.questionOrder ?? undefined
-      }));
-
-    const careAdvice: ClinicalContentPackageInput["protocols"][number]["careAdvice"] = (algorithm.careAdviceLinks ?? []).map(
-      (link: any) => ({
-        id: link.careAdvice.externalCareAdviceId ?? link.careAdvice.id,
-        titleEn: link.careAdvice.adviceTitleEn,
-        titleAr: link.careAdvice.adviceTitleAr ?? undefined,
-        instructionTextEn: link.careAdvice.instructionTextEn,
-        instructionTextAr: link.careAdvice.instructionTextAr ?? undefined,
-        contentFormat: link.careAdvice.contentFormat,
-        sanitizedHtmlEn: link.careAdvice.sanitizedHtmlEn ?? undefined,
-        sanitizedHtmlAr: link.careAdvice.sanitizedHtmlAr ?? undefined,
-        dispositionCode: (link.careAdvice.dispositionCode as DispositionCode) ?? undefined,
-        warningSigns: (link.careAdvice.warningSigns as string[] | null) ?? [],
-        displayOrder: link.displayOrder,
-        patientSendable: link.careAdvice.patientSendable,
-        adviceCategory: link.careAdvice.adviceCategory ?? undefined
-      })
-    );
-
-    return {
-      id: algorithm.externalProtocolId ?? algorithm.id,
-      titleEn: algorithm.titleEn,
-      titleAr: algorithm.titleAr ?? undefined,
-      clinicalDefinitionEn: algorithm.clinicalDefinitionEn ?? undefined,
-      clinicalDefinitionAr: algorithm.clinicalDefinitionAr ?? undefined,
-      backgroundInfoEn: algorithm.backgroundInfoEn ?? undefined,
-      backgroundInfoAr: algorithm.backgroundInfoAr ?? undefined,
-      ageMin: algorithm.ageMin ?? undefined,
-      ageMax: algorithm.ageMax ?? undefined,
-      genderRestriction: dbGenderToZod(algorithm.genderRestriction),
-      mode: dbModeToZod(algorithm.mode),
-      patientGroup: dbPatientGroupToZod(algorithm.patientGroup),
-      acuity: algorithm.acuity ?? undefined,
-      keywords: protocolLevelKeywords.map((row: any) => ({
-        phrase: row.phrase,
-        language: row.language,
-        weight: row.weight,
-        source: row.source
-      })),
-      initialAssessmentQuestions: (algorithm.initialAssessmentQuestions ?? [])
-        .sort((left: any, right: any) => left.sequence - right.sequence)
-        .map((iaq: any) => ({
-          id: iaq.externalQuestionId ?? iaq.id,
-          sequence: iaq.sequence,
-          responseType: iaq.responseType,
-          promptTextEn: iaq.promptTextEn,
-          clarificationPromptEn: iaq.clarificationPromptEn ?? undefined,
-          required: iaq.required,
-          emergencyKeywords: (iaq.emergencyKeywords as string[] | null) ?? []
-        })),
-      questions,
-      careAdvice,
-      guidelineRedirects: (algorithm.guidelineRedirects as ClinicalContentProtocol["guidelineRedirects"]) ?? [],
-      painSeverity: (algorithm.painSeverityTable as ClinicalContentProtocol["painSeverity"]) ?? [],
-      backgroundDetail: (algorithm.backgroundDetail as ClinicalContentProtocol["backgroundDetail"]) ?? undefined,
-      authorship: algorithm.authorEn || algorithm.expertReviewerEn || algorithm.contentSet
-        ? {
-            authorEn: algorithm.authorEn ?? undefined,
-            expertReviewerEn: algorithm.expertReviewerEn ?? undefined,
-            lastRevisedIso: dbDateToIso(algorithm.lastRevisedAt),
-            lastReviewedIso: dbDateToIso(algorithm.lastReviewedAt),
-            versionYear: algorithm.versionYear ?? undefined,
-            contentSet: algorithm.contentSet ?? undefined
-          }
-        : undefined,
-      provenance: (algorithm.provenance as ClinicalContentProtocol["provenance"]) ?? undefined
-    };
-  });
+  // None of this content is PRODUCTION_APPROVED yet (real STCC content still
+  // pending clinical governance sign-off) - mark it demoEligible so it can run
+  // in the demo deployment without claiming production clinical approval, same
+  // gating already applied to the file-based stcc-licensed source below.
+  const demoEligibleProtocols = mapped.protocols.map((protocol) => ({
+    ...protocol,
+    provenance: protocol.provenance ? { ...protocol.provenance, demoEligible: true } : protocol.provenance
+  }));
 
   const parsedPackage = ClinicalContentPackageSchema.parse({
-    release: {
-      name: firstRelease?.name ?? "IST Health Database-Backed Clinical Content",
-      version: firstRelease?.version ?? "database-live",
-      sourceType: dbSourceTypeToZod(firstRelease?.sourceType ?? "SYNTHETIC_SAMPLE"),
-      region: firstRelease?.region ?? "QA",
-      mode: dbModeToZod(firstRelease?.mode ?? "BOTH")
-    },
-    protocols,
-    localizedDispositions: localizedDispositionRows.map((row: any) => ({
-      code: row.code,
-      destinationNameEn: row.destinationNameEn,
-      destinationNameAr: row.destinationNameAr ?? undefined,
-      routingNotesEn: row.routingNotesEn,
-      routingNotesAr: row.routingNotesAr ?? undefined,
-      region: row.region
-    }))
+    release: mapped.release,
+    protocols: demoEligibleProtocols,
+    localizedDispositions: mapped.localizedDispositions ?? []
   });
   assertClinicalContentAllowedInEnvironment(parsedPackage);
   return parsedPackage;
 }
 
 function loadSynchronousContentPackage(): ClinicalContentPackage {
-  // Highest priority: real, licensed STCC content (see src/data/stccLicensedContent),
-  // merged with the open-source guideline set rather than replacing it - the
-  // STCC import only covers one real topic (adult male abdominal pain), so
-  // every other call reason (fever, dizziness, sore throat, etc.) still needs
-  // the open-source protocols to have anything to match against. Protocol ids
-  // don't collide between the two sets (verified: 228 open-source protocols,
-  // 1 STCC protocol, zero overlap), and both packages share the same release
-  // mode ("after-hours"), so a straight protocol-array concat is safe.
+  // Highest priority: real, licensed STCC content only (see
+  // src/data/stccLicensedContent) - the hand-authored open-source-guideline
+  // protocol set has been removed entirely per explicit product decision: the
+  // app works only with real records sourced from the actual STCC Access
+  // database, not synthetic approximations.
   if (process.env.CLINICAL_CONTENT_SOURCE === "stcc-licensed") {
-    // None of these 229 protocols are PRODUCTION_APPROVED yet (open-source
-    // guideline drafts + one licensed-but-ungoverned STCC import), so mark
-    // them demoEligible instead - assertClinicalContentAllowedInEnvironment
-    // only honors this in APP_ENVIRONMENT=demo, never in real production.
-    const demoEligibleProtocols = [...stccLicensedContent.protocols, ...openSourceGuidelinesContent.protocols].map(
-      (protocol) => ({
-        ...protocol,
-        provenance: protocol.provenance
-          ? { ...protocol.provenance, demoEligible: true }
-          : protocol.provenance
-      })
-    );
+    // None of these protocols are PRODUCTION_APPROVED yet (real STCC content
+    // still pending clinical governance sign-off), so mark them demoEligible
+    // instead - assertClinicalContentAllowedInEnvironment only honors this in
+    // APP_ENVIRONMENT=demo, never in real production.
+    const demoEligibleProtocols = stccLicensedContent.protocols.map((protocol) => ({
+      ...protocol,
+      provenance: protocol.provenance ? { ...protocol.provenance, demoEligible: true } : protocol.provenance
+    }));
     const mergedPackage = ClinicalContentPackageSchema.parse({
       release: stccLicensedContent.release,
       protocols: demoEligibleProtocols,
-      localizedDispositions: [
-        ...(stccLicensedContent.localizedDispositions ?? []),
-        ...(openSourceGuidelinesContent.localizedDispositions ?? []).filter(
-          (row) => !stccLicensedContent.localizedDispositions?.some((stccRow) => stccRow.code === row.code)
-        )
-      ]
+      localizedDispositions: stccLicensedContent.localizedDispositions ?? []
     });
     assertClinicalContentAllowedInEnvironment(mergedPackage);
     return mergedPackage;
@@ -294,12 +200,6 @@ function loadSynchronousContentPackage(): ClinicalContentPackage {
     );
     assertClinicalContentAllowedInEnvironment(licensedPackage);
     return licensedPackage;
-  }
-
-  if (process.env.CLINICAL_CONTENT_SOURCE === "open-source-rules") {
-    const openSourcePackage = ClinicalContentPackageSchema.parse(openSourceGuidelinesContent);
-    assertClinicalContentAllowedInEnvironment(openSourcePackage);
-    return openSourcePackage;
   }
 
   // Also the temporary placeholder for CLINICAL_CONTENT_SOURCE=database until
@@ -341,7 +241,7 @@ function normalize(value: string): string {
 }
 
 function queryTerms(query: string): string[] {
-  return [...new Set(normalize(query).split(" ").filter((part) => part.length >= 2))];
+  return [...new Set(normalize(query).split(" ").filter((part) => part.length >= 3))];
 }
 
 function modeMatches(protocolMode: ProtocolMode, requestedMode: ProtocolMode): boolean {
@@ -420,7 +320,13 @@ function scoreProtocol(protocol: ClinicalContentProtocol, query: string): { scor
     let bestMatch: { weight: number; phrase: string } | undefined;
     for (const keyword of protocol.keywords) {
       const phrase = normalize(keyword.phrase);
-      if (phrase.includes(term) && (!bestMatch || keyword.weight > bestMatch.weight)) {
+      // Whole-word match only - a raw substring check let short terms like
+      // "an" false-positive-match inside unrelated phrases (e.g. "an" is a
+      // literal substring of "pregnancy"), awarding credit to a completely
+      // irrelevant protocol from generic connector words in the caller's
+      // sentence (confirmed live: "an hour ago" falsely matched "pregnancy").
+      const phraseWords = phrase.split(" ");
+      if (phraseWords.includes(term) && (!bestMatch || keyword.weight > bestMatch.weight)) {
         bestMatch = { weight: keyword.weight, phrase: keyword.phrase };
       }
     }
@@ -478,13 +384,29 @@ export function searchClinicalProtocols(query: ProtocolSearchQuery): ProtocolSea
         matchedTerms: scored.matchedTerms,
         questionCount: protocol.questions.length,
         highestSeverity: highestSeverityForQuestions(protocol.questions),
-        releaseVersion: contentPackage.release.version
+        releaseVersion: contentPackage.release.version,
+        acuity: protocol.acuity
       };
     })
     .filter((result) => !query.q.trim() || result.score > 0)
     .sort((left, right) => {
+      // Keyword relevance ranks first - the auto-match pipeline
+      // (buildPreparedProtocol in queueOrchestration.ts) picks index [0] as
+      // the primary match, so acuity must never outrank an actually strong
+      // keyword match (confirmed live: a noise-level score-18 match on
+      // "pregnancy" was outranking a genuine score-402 Ankle Injury match
+      // purely because Pregnancy's acuity was more urgent). Acuity (1 = most
+      // urgent) only breaks a tie between two candidates that scored
+      // identically - e.g. resolving a real tie between Ankle Pain and Ankle
+      // Injury in the caller's favor of the more urgent one. Missing acuity
+      // sorts last (treated as least urgent) rather than first.
       if (right.score !== left.score) {
         return right.score - left.score;
+      }
+      const leftAcuity = left.acuity ?? 6;
+      const rightAcuity = right.acuity ?? 6;
+      if (leftAcuity !== rightAcuity) {
+        return leftAcuity - rightAcuity;
       }
 
       return left.titleEn.localeCompare(right.titleEn);

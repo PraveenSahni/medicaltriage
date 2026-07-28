@@ -161,12 +161,26 @@ async function main() {
 
   const results: Array<{ id: string; outcome: string; dispositionCode?: string }> = [];
   let processed = 0;
+  // processCall() releases a call back to INCOMING (unlocked) when it can't
+  // find a matching protocol (e.g. a child dependent against our adult-only
+  // STCC content), so without this it would be picked right back up by the
+  // next iteration's .find() and loop forever on the same unresolvable call
+  // instead of moving on to the other genuinely completable ones behind it.
+  const skipIds = new Set<string>();
 
   while (processed < limit) {
     const listResp = await request(jar, "/api/v1/queue", {});
     const list = await listResp.json();
+    // layla@irisstar.tech is scoped to IST_TECH (securityAdmin.ts), not PHCC -
+    // the PHCC filter here was stale from an earlier org scheme and silently
+    // matched zero calls against the real seed/simulated data, which is
+    // always organizationCode="IST_TECH".
     const next = list.queue.find(
-      (i: any) => (i.status === "INCOMING" || i.status === "IN_PROCESS") && !i.lockedBy && i.organizationCode === "PHCC"
+      (i: any) =>
+        (i.status === "INCOMING" || i.status === "IN_PROCESS") &&
+        !i.lockedBy &&
+        i.organizationCode === "IST_TECH" &&
+        !skipIds.has(i.id)
     );
     if (!next) {
       results.push({ id: "", outcome: "no-more-claimable" });
@@ -182,6 +196,9 @@ async function main() {
       // remaining hundreds of calls still get processed.
       result = { id: next.id, outcome: `exception:${error instanceof Error ? error.message : String(error)}` };
       await request(jar, `/api/v1/queue/${next.id}/release`, { method: "POST" }).catch(() => {});
+    }
+    if (result.outcome !== "completed") {
+      skipIds.add(next.id);
     }
     results.push(result);
     processed++;

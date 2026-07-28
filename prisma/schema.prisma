@@ -217,455 +217,21 @@ enum ClinicalAudioAssetStatus {
   RETIRED
 }
 
-model ProtocolRelease {
-  id                    String                     @id @default(cuid())
-  name                  String
-  version               String
-  sourceType            ClinicalContentSourceType  @map("source_type")
-  region                String                     @default("QA")
-  mode                  ProtocolMode               @default(BOTH)
-  active                Boolean                    @default(false)
-  importedAt            DateTime?                  @map("imported_at")
-  algorithms            Algorithm[]
-  clinicalReferences    ClinicalReference[]
-  clinicalSupplementals ClinicalSupplemental[]
-  importJobs            ClinicalContentImportJob[]
-  createdAt             DateTime                   @default(now()) @map("created_at")
-  updatedAt             DateTime                   @updatedAt @map("updated_at")
-
-  @@unique([sourceType, version])
-  @@index([region, active])
-  @@map("protocol_releases")
-}
-
-model Algorithm {
-  id                         String                      @id @default(cuid())
-  releaseId                  String?                     @map("release_id")
-  release                    ProtocolRelease?            @relation(fields: [releaseId], references: [id], onDelete: SetNull)
-  externalProtocolId         String?                     @unique @map("external_protocol_id")
-  mode                       ProtocolMode                @default(BOTH)
-  titleEn                    String                      @map("title_en")
-  titleAr                    String?                     @map("title_ar")
-  clinicalDefinitionEn       String?                     @map("clinical_definition_en")
-  clinicalDefinitionAr       String?                     @map("clinical_definition_ar")
-  backgroundInfoEn           String?                     @map("background_info_en")
-  backgroundInfoAr           String?                     @map("background_info_ar")
-  genderRestriction          BiologicalSex?              @map("gender_restriction")
-  patientGroup               PatientGroup                @default(UNKNOWN) @map("patient_group")
-  /// Synthetic/heuristic 1-5 guideline-level acuity approximation. Not real
-  /// STCC AcuityRating and never consulted by the deterministic safety kernel.
-  acuity                     Int?                        @map("acuity")
-  ageMin                     Int?                        @map("age_min")
-  ageMax                     Int?                        @map("age_max")
-  /// Pre-screen questions with no disposition that route to a different
-  /// protocol (STCC's GotoGuideline pattern). Array of
-  /// {promptTextEn, targetProtocolTitleEn, targetProtocolId?, hintEn?, questionOrder}.
-  guidelineRedirects         Json?                       @map("guideline_redirects")
-  /// Per-protocol Mild/Moderate/Severe descriptive rows: {level, cls, textEn}[].
-  painSeverityTable          Json?                       @map("pain_severity_table")
-  /// {keyPointsEn[], causesUnder50En[], causesOver50En[], locationTable[]}.
-  /// Not every protocol type has all of these; empty arrays are expected.
-  backgroundDetail           Json?                       @map("background_detail")
-  authorEn                   String?                     @map("author_en")
-  /// Attribute to the source organization's editorial process only
-  /// (e.g. "NHS.UK clinical editorial review") - never an invented named clinician.
-  expertReviewerEn           String?                     @map("expert_reviewer_en")
-  lastRevisedAt              DateTime?                   @map("last_revised_at")
-  lastReviewedAt             DateTime?                   @map("last_reviewed_at")
-  versionYear                Int?                        @map("version_year")
-  contentSet                 String?                     @map("content_set")
-  /// {generated, sourceKind, sourceDocuments[], contentNotice, requiresClinicalValidation,
-  /// licensedContentIncluded} - without this column, importing a protocol into the DB and
-  /// then serving it back from the DB would silently drop its citations and
-  /// requiresClinicalValidation flag. Never consulted by the deterministic safety kernel.
-  provenance                 Json?                       @map("provenance")
-  /// @deprecated Use ProtocolRelease.version through releaseId for canonical release lineage.
-  stccVersion                String?                     @map("stcc_version")
-  sourceRecordHash           String?                     @map("source_record_hash")
-  sourceRecordChecksum       String?                     @map("source_record_checksum")
-  sourceEffectiveFrom        DateTime?                   @map("source_effective_from")
-  sourceEffectiveTo          DateTime?                   @map("source_effective_to")
-  annualReconciliationStatus String?                     @map("annual_reconciliation_status")
-  active                     Boolean                     @default(true)
-  questions                  TriageQuestion[]
-  initialAssessmentQuestions InitialAssessmentQuestion[]
-  careAdviceLinks            AlgorithmCareAdvice[]
-  keywordIndexes             ProtocolKeywordIndex[]
-  synonyms                   ProtocolSynonym[]
-  dispositionMaps            ProtocolDispositionMap[]
-  clinicalReferenceLinks     AlgorithmReference[]
-  clinicalSupplementalLinks  AlgorithmSupplemental[]
-  taxonomy                   ProtocolTaxonomy[]
-  firstAidItems              ProtocolFirstAid[]
-  encounters                 AviationTriageEncounter[]
-  matchedQueueItems          TriageQueueItem[]
-  voiceSessions              VoiceCallSession[]
-  createdAt                  DateTime                    @default(now()) @map("created_at")
-  updatedAt                  DateTime                    @updatedAt @map("updated_at")
-
-  @@index([titleEn])
-  @@index([releaseId, active])
-  @@index([mode])
-  @@map("algorithms")
-}
-
-/// STCC-shaped history-taking prompt used before the acuity-ordered triage
-/// assessment. It intentionally has no severity or disposition columns.
-model InitialAssessmentQuestion {
-  id                    String                        @id @default(cuid())
-  algorithmId           String                        @map("algorithm_id")
-  algorithm             Algorithm                     @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  externalQuestionId    String?                       @map("external_question_id")
-  sequence              Int
-  responseType          InitialAssessmentResponseType @map("response_type")
-  promptTextEn          String                        @map("prompt_text_en") @db.Text
-  clarificationPromptEn String?                       @map("clarification_prompt_en") @db.Text
-  required              Boolean                       @default(true)
-  emergencyKeywords     Json?                         @map("emergency_keywords")
-  sourceRecordHash      String?                       @map("source_record_hash")
-  sourceRecordChecksum  String?                       @map("source_record_checksum")
-  audioAssets           ClinicalAudioAsset[]
-  voiceTurns            VoiceAssessmentTurn[]
-  currentVoiceSessions  VoiceCallSession[]            @relation("VoiceSessionCurrentQuestion")
-  createdAt             DateTime                      @default(now()) @map("created_at")
-  updatedAt             DateTime                      @updatedAt @map("updated_at")
-
-  @@unique([algorithmId, sequence])
-  @@index([externalQuestionId])
-  @@map("initial_assessment_questions")
-}
-
-model ClinicalAudioAsset {
-  id                          String                    @id @default(cuid())
-  initialAssessmentQuestionId String                    @map("initial_assessment_question_id")
-  initialAssessmentQuestion   InitialAssessmentQuestion @relation(fields: [initialAssessmentQuestionId], references: [id], onDelete: Cascade)
-  language                    String                    @default("en")
-  releaseVersion              String                    @map("release_version")
-  voiceName                   String                    @map("voice_name")
-  storageUri                  String                    @map("storage_uri")
-  checksum                    String
-  status                      ClinicalAudioAssetStatus  @default(DRAFT)
-  approvedBy                  String?                   @map("approved_by")
-  approvedAt                  DateTime?                 @map("approved_at")
-  voiceTurns                  VoiceAssessmentTurn[]
-  createdAt                   DateTime                  @default(now()) @map("created_at")
-  updatedAt                   DateTime                  @updatedAt @map("updated_at")
-
-  @@unique([initialAssessmentQuestionId, language, releaseVersion, checksum])
-  @@index([status, language])
-  @@map("clinical_audio_assets")
-}
-
-model TriageQuestion {
-  id                    String                 @id @default(cuid())
-  algorithmId           String                 @map("algorithm_id")
-  algorithm             Algorithm              @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  externalQuestionId    String?                @map("external_question_id")
-  acuityOrder           Int                    @map("acuity_order")
-  severityGrade         TriageSeverity         @map("severity_grade")
-  questionTextEn        String                 @map("question_text_en")
-  questionTextAr        String?                @map("question_text_ar")
-  acuityDispositionCode AcuityDispositionCode  @map("acuity_disposition_code")
-  rationaleEn           String?                @map("rationale_en")
-  redFlag               Boolean                @default(false) @map("red_flag")
-  branching             Json?                  @map("branching")
-  telemedicineEligible  Boolean?               @map("telemedicine_eligible")
-  telemedicineNotesEn   String?                @map("telemedicine_notes_en") @db.Text
-  /// STCC-shaped numeric disposition-level FK (100->15 ladder). Additive
-  /// metadata only; the deterministic safety kernel never reads this.
-  dispositionLevelId    String?                @map("disposition_level_id")
-  dispositionLevel      Disposition?           @relation(fields: [dispositionLevelId], references: [id], onDelete: SetNull)
-  /// Second sort key within a disposition level (STCC: QuestionOrder ASC).
-  questionOrder         Int?                   @map("question_order")
-  sourceRecordHash      String?                @map("source_record_hash")
-  sourceRecordChecksum  String?                @map("source_record_checksum")
-  careAdviceLinks       QuestionAdviceBridge[]
-  createdAt             DateTime               @default(now()) @map("created_at")
-  updatedAt             DateTime               @updatedAt @map("updated_at")
-
-  @@index([algorithmId, acuityOrder])
-  @@index([algorithmId, dispositionLevelId, questionOrder])
-  @@index([externalQuestionId])
-  @@map("triage_questions")
-}
-
-model CareAdvice {
-  id                   String                 @id @default(cuid())
-  externalCareAdviceId String?                @unique @map("external_care_advice_id")
-  adviceTitleEn        String                 @map("advice_title_en")
-  adviceTitleAr        String?                @map("advice_title_ar")
-  instructionTextEn    String                 @map("instruction_text_en")
-  instructionTextAr    String?                @map("instruction_text_ar")
-  contentFormat        String                 @default("plain_text") @map("content_format")
-  sanitizedHtmlEn      String?                @map("sanitized_html_en") @db.Text
-  sanitizedHtmlAr      String?                @map("sanitized_html_ar") @db.Text
-  sourceRecordHash     String?                @map("source_record_hash")
-  sourceRecordChecksum String?                @map("source_record_checksum")
-  dispositionCode      AcuityDispositionCode? @map("disposition_code")
-  warningSigns         Json?                  @map("warning_signs")
-  /// Approximates STCC's Advice.PatientHealthInfo flag.
-  patientSendable      Boolean                @default(false) @map("patient_sendable")
-  adviceCategory       CareAdviceCategory?    @map("advice_category")
-  algorithmLinks       AlgorithmCareAdvice[]
-  questionLinks        QuestionAdviceBridge[]
-  createdAt            DateTime               @default(now()) @map("created_at")
-  updatedAt            DateTime               @updatedAt @map("updated_at")
-
-  @@map("care_advice")
-}
-
-model AlgorithmCareAdvice {
-  algorithmId  String     @map("algorithm_id")
-  careAdviceId String     @map("care_advice_id")
-  algorithm    Algorithm  @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  careAdvice   CareAdvice @relation(fields: [careAdviceId], references: [id], onDelete: Cascade)
-  displayOrder Int        @default(0) @map("display_order")
-
-  @@id([algorithmId, careAdviceId])
-  @@map("algorithm_care_advice")
-}
-
-/// Bridge between a positive triage question and targeted care advice.
-/// This is intentionally named close to the Phase I manual's
-/// Question_Advice_Bridge contract so licensed STCC/Schmitt-Thompson imports can
-/// map the same relationship without touching backend triage logic.
-model QuestionAdviceBridge {
-  questionId    String         @map("question_id")
-  adviceId      String         @map("advice_id")
-  triggerAnswer String         @default("YES") @map("trigger_answer")
-  question      TriageQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  advice        CareAdvice     @relation(fields: [adviceId], references: [id], onDelete: Cascade)
-
-  @@id([questionId, adviceId, triggerAnswer])
-  @@map("question_advice_bridge")
-}
-
-model ProtocolKeywordIndex {
-  id               String    @id @default(cuid())
-  algorithmId      String    @map("algorithm_id")
-  algorithm        Algorithm @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  phrase           String
-  normalizedPhrase String    @map("normalized_phrase")
-  language         String    @default("en")
-  weight           Int       @default(50)
-  source           String    @default("release")
-  createdAt        DateTime  @default(now()) @map("created_at")
-
-  @@index([normalizedPhrase])
-  @@index([algorithmId, weight])
-  @@map("protocol_keyword_indexes")
-}
-
-model ProtocolSynonym {
-  id            String     @id @default(cuid())
-  algorithmId   String?    @map("algorithm_id")
-  algorithm     Algorithm? @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  canonicalTerm String     @map("canonical_term")
-  synonym       String
-  language      String     @default("en")
-  region        String     @default("QA")
-  createdAt     DateTime   @default(now()) @map("created_at")
-
-  @@index([canonicalTerm, synonym])
-  @@map("protocol_synonyms")
-}
-
-model ProtocolDispositionMap {
-  id                    String                @id @default(cuid())
-  algorithmId           String?               @map("algorithm_id")
-  algorithm             Algorithm?            @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  severity              TriageSeverity
-  dispositionCode       AcuityDispositionCode @map("disposition_code")
-  ageMin                Int?                  @map("age_min")
-  ageMax                Int?                  @map("age_max")
-  aviationContext       Json?                 @map("aviation_context")
-  routeLabelEn          String                @map("route_label_en")
-  routeLabelAr          String?               @map("route_label_ar")
-  routeRationaleEn      String                @map("route_rationale_en")
-  routeRationaleAr      String?               @map("route_rationale_ar")
-  telemedicineHeadingEn String?               @map("telemedicine_heading_en")
-  telemedicineHeadingAr String?               @map("telemedicine_heading_ar")
-  sourceOfCareEn        String?               @map("source_of_care_en")
-  sourceOfCareAr        String?               @map("source_of_care_ar")
-  dispositionLevelId    String?               @map("disposition_level_id")
-  dispositionLevel      Disposition?          @relation(fields: [dispositionLevelId], references: [id], onDelete: SetNull)
-  active                Boolean               @default(true)
-  createdAt             DateTime              @default(now()) @map("created_at")
-  updatedAt             DateTime              @updatedAt @map("updated_at")
-
-  @@index([severity, dispositionCode])
-  @@index([algorithmId, active])
-  @@map("protocol_disposition_maps")
-}
-
-model LocalizedDisposition {
-  id                String                @id @default(cuid())
-  code              AcuityDispositionCode @unique
-  destinationNameEn String                @map("destination_name_en")
-  destinationNameAr String?               @map("destination_name_ar")
-  routingNotesEn    String                @map("routing_notes_en")
-  routingNotesAr    String?               @map("routing_notes_ar")
-  region            String                @default("QA")
-  active            Boolean               @default(true)
-  createdAt         DateTime              @default(now()) @map("created_at")
-  updatedAt         DateTime              @updatedAt @map("updated_at")
-
-  @@index([region, active])
-  @@map("localized_dispositions")
-}
-
-/// STCC's numeric disposition-level ladder (100 = Call EMS 911 Now down to
-/// 15 = Home Care). Structural/administrative reference data only (level
-/// numbers and heading labels), never the licensed clinical question/advice
-/// content itself. Purely additive: nothing in the deterministic safety
-/// kernel (severityMax/severityRank, dispositionRouter.ts) reads this model.
-model Disposition {
-  id                    String                   @id @default(cuid())
-  levelId               Int                      @unique @map("level_id")
-  headingEn             String                   @map("heading_en")
-  headingTelemedicineEn String?                  @map("heading_telemedicine_en")
-  videoEligible         Boolean                  @default(false) @map("video_eligible")
-  createdAt             DateTime                 @default(now()) @map("created_at")
-  updatedAt             DateTime                 @updatedAt @map("updated_at")
-  triageQuestions       TriageQuestion[]
-  dispositionMappings   ProtocolDispositionMap[]
-
-  @@map("dispositions")
-}
-
-model ClinicalContentImportJob {
-  id              String                       @id @default(cuid())
-  releaseId       String?                      @map("release_id")
-  release         ProtocolRelease?             @relation(fields: [releaseId], references: [id], onDelete: SetNull)
-  sourceUri       String                       @map("source_uri")
-  sourceChecksum  String?                      @map("source_checksum")
-  status          ClinicalContentImportStatus  @default(PENDING)
-  importerVersion String                       @default("phase1-importer") @map("importer_version")
-  rowsRead        Int                          @default(0) @map("rows_read")
-  rowsInserted    Int                          @default(0) @map("rows_inserted")
-  rowsSkipped     Int                          @default(0) @map("rows_skipped")
-  errorCount      Int                          @default(0) @map("error_count")
-  startedAt       DateTime                     @default(now()) @map("started_at")
-  finishedAt      DateTime?                    @map("finished_at")
-  errors          ClinicalContentImportError[]
-
-  @@index([status, startedAt])
-  @@map("clinical_content_import_jobs")
-}
-
-model ClinicalContentImportError {
-  id             String                   @id @default(cuid())
-  importJobId    String                   @map("import_job_id")
-  importJob      ClinicalContentImportJob @relation(fields: [importJobId], references: [id], onDelete: Cascade)
-  sourceRecordId String?                  @map("source_record_id")
-  tableName      String?                  @map("table_name")
-  message        String
-  severity       String                   @default("error")
-  createdAt      DateTime                 @default(now()) @map("created_at")
-
-  @@index([importJobId])
-  @@map("clinical_content_import_errors")
-}
-
-model ClinicalReference {
-  id                  String               @id @default(cuid())
-  releaseId           String?              @map("release_id")
-  release             ProtocolRelease?     @relation(fields: [releaseId], references: [id], onDelete: SetNull)
-  externalReferenceId String?              @map("external_reference_id")
-  title               String
-  sourceName          String?              @map("source_name")
-  citationText        String?              @map("citation_text") @db.Text
-  url                 String?
-  referenceType       String?              @map("reference_type")
-  sourceRecordHash    String?              @map("source_record_hash")
-  algorithmLinks      AlgorithmReference[]
-  createdAt           DateTime             @default(now()) @map("created_at")
-  updatedAt           DateTime             @updatedAt @map("updated_at")
-
-  @@unique([releaseId, externalReferenceId])
-  @@index([releaseId])
-  @@map("clinical_references")
-}
-
-model AlgorithmReference {
-  algorithmId  String            @map("algorithm_id")
-  referenceId  String            @map("reference_id")
-  algorithm    Algorithm         @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  reference    ClinicalReference @relation(fields: [referenceId], references: [id], onDelete: Cascade)
-  displayOrder Int               @default(0) @map("display_order")
-  sectionLabel String?           @map("section_label")
-
-  @@id([algorithmId, referenceId])
-  @@map("algorithm_references")
-}
-
-model ClinicalSupplemental {
-  id                     String                  @id @default(cuid())
-  releaseId              String?                 @map("release_id")
-  release                ProtocolRelease?        @relation(fields: [releaseId], references: [id], onDelete: SetNull)
-  externalSupplementalId String?                 @map("external_supplemental_id")
-  titleEn                String                  @map("title_en")
-  titleAr                String?                 @map("title_ar")
-  supplementalType       String                  @map("supplemental_type")
-  plainTextEn            String?                 @map("plain_text_en") @db.Text
-  plainTextAr            String?                 @map("plain_text_ar") @db.Text
-  sanitizedHtmlEn        String?                 @map("sanitized_html_en") @db.Text
-  sanitizedHtmlAr        String?                 @map("sanitized_html_ar") @db.Text
-  sourceRecordHash       String?                 @map("source_record_hash")
-  algorithmLinks         AlgorithmSupplemental[]
-  createdAt              DateTime                @default(now()) @map("created_at")
-  updatedAt              DateTime                @updatedAt @map("updated_at")
-
-  @@unique([releaseId, externalSupplementalId])
-  @@index([releaseId, supplementalType])
-  @@map("clinical_supplementals")
-}
-
-model AlgorithmSupplemental {
-  algorithmId    String               @map("algorithm_id")
-  supplementalId String               @map("supplemental_id")
-  algorithm      Algorithm            @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  supplemental   ClinicalSupplemental @relation(fields: [supplementalId], references: [id], onDelete: Cascade)
-  displayOrder   Int                  @default(0) @map("display_order")
-  sectionLabel   String?              @map("section_label")
-
-  @@id([algorithmId, supplementalId])
-  @@map("algorithm_supplementals")
-}
-
-model ProtocolTaxonomy {
-  id           String    @id @default(cuid())
-  algorithmId  String    @map("algorithm_id")
-  algorithm    Algorithm @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  category     String
-  value        String
-  source       String    @default("STCC")
-  displayOrder Int       @default(0) @map("display_order")
-  createdAt    DateTime  @default(now()) @map("created_at")
-
-  @@unique([algorithmId, category, value])
-  @@index([category, value])
-  @@map("protocol_taxonomy")
-}
-
-model ProtocolFirstAid {
-  id                String    @id @default(cuid())
-  algorithmId       String    @map("algorithm_id")
-  algorithm         Algorithm @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
-  titleEn           String?   @map("title_en")
-  titleAr           String?   @map("title_ar")
-  instructionTextEn String    @map("instruction_text_en") @db.Text
-  instructionTextAr String?   @map("instruction_text_ar") @db.Text
-  sanitizedHtmlEn   String?   @map("sanitized_html_en") @db.Text
-  sanitizedHtmlAr   String?   @map("sanitized_html_ar") @db.Text
-  displayOrder      Int       @default(0) @map("display_order")
-  sourceRecordHash  String?   @map("source_record_hash")
-  createdAt         DateTime  @default(now()) @map("created_at")
-  updatedAt         DateTime  @updatedAt @map("updated_at")
-
-  @@index([algorithmId])
-  @@map("protocol_first_aid")
-}
+// =============================================================================
+// The old app-facing STCC clinical-content domain (ProtocolRelease, Algorithm,
+// InitialAssessmentQuestion, ClinicalAudioAsset, TriageQuestion, CareAdvice,
+// AlgorithmCareAdvice, QuestionAdviceBridge, ProtocolKeywordIndex,
+// ProtocolSynonym, ProtocolDispositionMap, LocalizedDisposition, Disposition,
+// AcuityRating, StccSystem, StccType, ClinicalContentImportJob/Error,
+// ClinicalReference, AlgorithmReference, ClinicalSupplemental,
+// AlgorithmSupplemental, ProtocolTaxonomy, ProtocolFirstAid - ~28 models) has
+// been removed entirely. Real STCC content is now read exclusively from the
+// Mdb* vendor-mirror tables further down this file via
+// src/services/stccMdbMapper.ts; the operational FKs that used to anchor into
+// Algorithm/InitialAssessmentQuestion (TriageQueueItem.matchedProtocolId,
+// AviationTriageEncounter.protocolUsedId, VoiceCallSession.protocolId) now
+// point directly at MdbAlgorithm.algorithmId instead.
+// =============================================================================
 
 model StaffMember {
   id                         String                     @id @default(cuid())
@@ -712,8 +278,8 @@ model AviationTriageEncounter {
   staffMember          StaffMember              @relation(fields: [staffMemberId], references: [id], onDelete: Restrict)
   dependentId          String?                  @map("dependent_id")
   dependent            Dependent?               @relation(fields: [dependentId], references: [id], onDelete: SetNull)
-  protocolUsedId       String?                  @map("protocol_used_id")
-  protocolUsed         Algorithm?               @relation(fields: [protocolUsedId], references: [id], onDelete: SetNull)
+  protocolUsedId       Int?                     @map("protocol_used_id")
+  protocolUsed         MdbAlgorithm?            @relation(fields: [protocolUsedId], references: [algorithmId], onDelete: SetNull)
   /// @deprecated Use finalDispositionCode plus safetyLog.explainabilityTrace for deterministic acuity lineage.
   initialAcuityScore   Int                      @map("initial_acuity_score")
   finalDispositionCode AcuityDispositionCode    @map("final_disposition_code")
@@ -790,8 +356,8 @@ model TriageQueueItem {
   jobTitle                 String?                   @map("job_title")
   summary                  String?                   @db.Text
   vitals                   Json?
-  matchedProtocolId        String?                   @map("matched_protocol_id")
-  matchedProtocol          Algorithm?                @relation(fields: [matchedProtocolId], references: [id], onDelete: SetNull)
+  matchedProtocolId        Int?                      @map("matched_protocol_id")
+  matchedProtocol          MdbAlgorithm?             @relation(fields: [matchedProtocolId], references: [algorithmId], onDelete: SetNull)
   calculatedSeverity       TriageSeverity?           @map("calculated_severity")
   dispositionCode          AcuityDispositionCode?    @map("disposition_code")
   destinationName          String?                   @map("destination_name")
@@ -885,31 +451,34 @@ model CallCenterSession {
 }
 
 model VoiceCallSession {
-  id                           String                     @id @default(cuid())
-  callCenterSessionId          String?                    @map("call_center_session_id")
-  callCenterSession            CallCenterSession?         @relation(fields: [callCenterSessionId], references: [id], onDelete: SetNull)
-  queueItemId                  String?                    @map("queue_item_id")
-  queueItem                    TriageQueueItem?           @relation(fields: [queueItemId], references: [id], onDelete: SetNull)
-  protocolId                   String                     @map("protocol_id")
-  protocol                     Algorithm                  @relation(fields: [protocolId], references: [id], onDelete: Restrict)
-  releaseVersion               String                     @map("release_version")
-  language                     String                     @default("en")
-  status                       VoiceSessionStatus         @default(CREATED)
-  currentQuestionId            String?                    @map("current_question_id")
-  currentQuestion              InitialAssessmentQuestion? @relation("VoiceSessionCurrentQuestion", fields: [currentQuestionId], references: [id], onDelete: SetNull)
-  clarificationAttempts        Int                        @default(0) @map("clarification_attempts")
-  maxClarificationAttempts     Int                        @default(1) @map("max_clarification_attempts")
-  createdByUserId              String                     @map("created_by_user_id")
-  recordingNoticePlayed        Boolean                    @default(false) @map("recording_notice_played")
-  recordingAuthorizationStatus String                     @map("recording_authorization_status")
-  rawRecordingRagEligible      Boolean                    @default(false) @map("raw_recording_rag_eligible")
-  recordingStorageRegion       String                     @default("me-central1") @map("recording_storage_region")
-  takeoverReason               String?                    @map("takeover_reason") @db.Text
-  startedAt                    DateTime?                  @map("started_at")
-  completedAt                  DateTime?                  @map("completed_at")
+  id                           String                @id @default(cuid())
+  callCenterSessionId          String?               @map("call_center_session_id")
+  callCenterSession            CallCenterSession?    @relation(fields: [callCenterSessionId], references: [id], onDelete: SetNull)
+  queueItemId                  String?               @map("queue_item_id")
+  queueItem                    TriageQueueItem?      @relation(fields: [queueItemId], references: [id], onDelete: SetNull)
+  protocolId                   Int                   @map("protocol_id")
+  protocol                     MdbAlgorithm          @relation(fields: [protocolId], references: [algorithmId], onDelete: Restrict)
+  releaseVersion               String                @map("release_version")
+  language                     String                @default("en")
+  status                       VoiceSessionStatus    @default(CREATED)
+  // No real per-row IAQ table exists in the vendor schema (InitialAssessmentQuestions
+  // is one free-text blob per Algorithm, verified via ODBC) - this stays a plain,
+  // non-relational id (the same synthetic "{protocolId}-iaq-{n}" ids
+  // stccMdbMapper.ts already generates) rather than a fabricated FK.
+  currentQuestionId            String?               @map("current_question_id")
+  clarificationAttempts        Int                   @default(0) @map("clarification_attempts")
+  maxClarificationAttempts     Int                   @default(1) @map("max_clarification_attempts")
+  createdByUserId              String                @map("created_by_user_id")
+  recordingNoticePlayed        Boolean               @default(false) @map("recording_notice_played")
+  recordingAuthorizationStatus String                @map("recording_authorization_status")
+  rawRecordingRagEligible      Boolean               @default(false) @map("raw_recording_rag_eligible")
+  recordingStorageRegion       String                @default("me-central1") @map("recording_storage_region")
+  takeoverReason               String?               @map("takeover_reason") @db.Text
+  startedAt                    DateTime?             @map("started_at")
+  completedAt                  DateTime?             @map("completed_at")
   turns                        VoiceAssessmentTurn[]
-  createdAt                    DateTime                   @default(now()) @map("created_at")
-  updatedAt                    DateTime                   @updatedAt @map("updated_at")
+  createdAt                    DateTime              @default(now()) @map("created_at")
+  updatedAt                    DateTime              @updatedAt @map("updated_at")
 
   @@index([queueItemId, status])
   @@index([callCenterSessionId, status])
@@ -921,10 +490,12 @@ model VoiceAssessmentTurn {
   id                   String                     @id @default(cuid())
   sessionId            String                     @map("session_id")
   session              VoiceCallSession           @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  // Neither InitialAssessmentQuestion nor ClinicalAudioAsset exist as real
+  // per-row vendor tables (IAQ is one free-text blob per Algorithm; audio
+  // assets were an app-only concept) - both stay plain, non-relational ids
+  // rather than fabricated FKs. No code creates VoiceAssessmentTurn rows today.
   questionId           String                     @map("question_id")
-  question             InitialAssessmentQuestion  @relation(fields: [questionId], references: [id], onDelete: Restrict)
   audioAssetId         String?                    @map("audio_asset_id")
-  audioAsset           ClinicalAudioAsset?        @relation(fields: [audioAssetId], references: [id], onDelete: SetNull)
   sequence             Int
   attempt              Int                        @default(1)
   promptTextSnapshot   String                     @map("prompt_text_snapshot") @db.Text
@@ -1768,4 +1339,308 @@ model AuditEvent {
   @@index([timestamp])
   @@index([userId, action])
   @@map("audit_events")
+}
+
+// =============================================================================
+// STCC vendor-mirror layer - a faithful 1:1 copy of the real After-Hours
+// Telehealth Triage Guidelines Access database schema, verified this session
+// via ODBC + ADOX/COM against a real sample .mdb (Table/Column names, types,
+// primary keys, and foreign-key cascade rules all confirmed directly against
+// the vendor file, not approximated from documentation). Populated by
+// scripts/extractStccMdb.ps1 + a loader that upserts this raw shape verbatim.
+//
+// This is intentionally separate from the app-facing Algorithm/TriageQuestion/
+// CareAdvice models above: those use cuid() surrogate keys, bilingual fields,
+// and app-specific concepts (provenance, demoEligible, DispositionCode enum)
+// that have no equivalent in the vendor schema. This mirror exists so every
+// annual STCC delivery can be diffed/re-synced mechanically against a stable,
+// honestly-typed staging copy, then mapped into the app-facing models by
+// src/data/stccLicensedContent - never read directly by application logic.
+// =============================================================================
+
+/// Mirrors AcuityRating (PK: AcuityRating_Numeric).
+model MdbAcuityRating {
+  acuityRatingNumeric           Int     @id @map("AcuityRating_Numeric")
+  acuityRatingText              String? @map("AcuityRating_Text") @db.VarChar(50)
+  acuityRatingColor             String? @map("AcuityRating_Color") @db.VarChar(50)
+  acuityRatingColorAlternate    String? @map("AcuityRating_Color_Alternate") @db.VarChar(50)
+  acuityRatingTitle             String? @map("AcuityRating_Title") @db.VarChar(50)
+  /// Binary image columns exist in the real schema but are not imported by
+  /// scripts/extractStccMdb.ps1 (no current UI consumes them) - always null.
+  acuityRatingBullet            Bytes?  @map("AcuityRating_Bullet")
+  acuityRatingColorAlternateImg Bytes?  @map("AcuityRating_Color_Alternate_Img")
+
+  algorithms   MdbAlgorithm[]
+  dispositions MdbDisposition[]
+
+  @@map("Mdb_AcuityRating")
+}
+
+/// Mirrors System (PK: System). Real FK target of Algorithm.System.
+model MdbSystem {
+  system        String  @id @map("System") @db.VarChar(50)
+  systemOrder   Int?    @map("System_Order")
+  systemExample String? @map("System_Example") @db.VarChar(50)
+
+  algorithms MdbAlgorithm[]
+
+  @@map("Mdb_System")
+}
+
+/// Mirrors Type (PK: Type). Real FK target of Algorithm.Type.
+model MdbType {
+  type      String  @id @map("Type") @db.VarChar(50)
+  typeTopic String? @map("Type_Topic") @db.VarChar(50)
+
+  algorithms MdbAlgorithm[]
+
+  @@map("Mdb_Type")
+}
+
+/// Mirrors Disposition (PK: LevelID). Real FK: AcuityRating -> AcuityRating.AcuityRating_Numeric
+/// (UpdateRule=NONE, DeleteRule=NONE - restrict, matches the real .mdb).
+model MdbDisposition {
+  levelId                                       Int              @id @map("LevelID")
+  createdDate                                   DateTime?        @map("CreatedDate")
+  lastUpDate                                    DateTime?        @map("LastUpDate")
+  dispositionHeading                            String?          @map("DispositionHeading") @db.VarChar(75)
+  dispositionHeadingTelemedicine                String?          @map("DispositionHeading_Telemedicine") @db.VarChar(100)
+  adultCareAdviceNumber                         Int?             @map("Adult_CareAdvice_Number")
+  adultCareAdviceStatement                      String?          @map("Adult_CareAdvice_Statement") @db.Text
+  adultCareAdviceStatementXhtml                 String?          @map("Adult_CareAdvice_Statement_XHTML") @db.Text
+  adultCareAdviceStatementTelemedicine          String?          @map("Adult_CareAdvice_Statement_Telemedicine") @db.Text
+  adultCareAdviceStatementXhtmlTelemedicine     String?          @map("Adult_CareAdvice_Statement_XHTML_Telemedicine") @db.Text
+  pediatricCareAdviceNumber                     Int?             @map("Pediatric_CareAdvice_Number")
+  pediatricCareAdviceStatement                  String?          @map("Pediatric_CareAdvice_Statement") @db.Text
+  pediatricCareAdviceStatementXhtml             String?          @map("Pediatric_CareAdvice_Statement_XHTML") @db.Text
+  pediatricCareAdviceStatementTelemedicine      String?          @map("Pediatric_CareAdvice_Statement_Telemedicine") @db.Text
+  pediatricCareAdviceStatementXhtmlTelemedicine String?          @map("Pediatric_CareAdvice_Statement_XHTML_Telemedicine") @db.Text
+  acuityRatingNumeric                           Int?             @map("AcuityRating")
+  acuityRating                                  MdbAcuityRating? @relation(fields: [acuityRatingNumeric], references: [acuityRatingNumeric], onDelete: NoAction, onUpdate: NoAction)
+
+  questions MdbQuestion[]
+
+  @@map("Mdb_Disposition")
+}
+
+/// Mirrors Algorithm (PK: AlgorithmID). Real FKs: Acuity -> AcuityRating.AcuityRating_Numeric,
+/// System -> System.System, Type -> Type.Type (all UpdateRule=CASCADE/NONE, DeleteRule=NONE
+/// per the real .mdb - a lookup value can't be deleted while referenced, but renaming a
+/// System/Type cascades).
+model MdbAlgorithm {
+  algorithmId                          Int       @id @map("AlgorithmID")
+  author                               String?   @map("Author") @db.Text
+  copyright                            String?   @map("Copyright") @db.Text
+  createdDate                          DateTime? @map("CreatedDate")
+  lastUpDate                           DateTime? @map("LastUpDate")
+  lastReviewDate                       DateTime? @map("LastReviewDate")
+  title                                String?   @map("Title") @db.VarChar(75)
+  titleUpperCase                       String?   @map("Title_UpperCase") @db.VarChar(75)
+  titleLastUpdate                      DateTime? @map("Title_LastUpdate")
+  definition                           String?   @map("Definition") @db.Text
+  definitionXhtml                      String?   @map("DefinitionXHTML") @db.Text
+  definitionLastUpdate                 DateTime? @map("Definition_LastUpdate")
+  initialAssessmentQuestions           String?   @map("InitialAssessmentQuestions") @db.Text
+  initialAssessmentQuestionsLastUpdate DateTime? @map("InitalAssessmentQuestions_LastUpdate")
+  background                           String?   @map("Background") @db.Text
+  backgroundXhtml                      String?   @map("BackgroundXHTML") @db.Text
+  backgroundLastUpdate                 DateTime? @map("BackGround_LastUpdate")
+  firstAid                             String?   @map("FirstAid") @db.Text
+  firstAidXhtml                        String?   @map("FirstAidXHTML") @db.Text
+  firstAidLastUpdate                   DateTime? @map("FirstAid_LastUpdate")
+  referenceLastUpdate                  DateTime? @map("Reference_LastUpdate")
+  searchWordsLastUpdate                DateTime? @map("SearchWords_LastUpdate")
+  questionsLastUpdate                  DateTime? @map("Questions_LastUpdate")
+  caLastUpdate                         DateTime? @map("CA_LastUpdate")
+  ahDescriptors                        Boolean?  @map("AH_DESCRIPTORS")
+  category                             String?   @map("Category") @db.VarChar(20)
+  group                                String?   @map("Group") @db.VarChar(30)
+  typeName                             String?   @map("Type") @db.VarChar(50)
+  systemName                           String?   @map("System") @db.VarChar(50)
+  anatomy                              String?   @map("Anatomy") @db.VarChar(50)
+  versionYear                          String?   @map("VersionYear") @db.VarChar(4)
+  status                               String?   @map("Status") @db.VarChar(15)
+  acuity                               Int?      @map("Acuity")
+  gender                               String?   @map("Gender") @db.VarChar(1)
+  ageGroup                             String?   @map("AgeGroup") @db.VarChar(10)
+  minAgeYears                          Int?      @map("Min_Age_Years")
+  maxAgeYears                          Int?      @map("Max_Age_Years")
+  minAgeMonths                         Int?      @map("Min_Age_Months")
+  maxAgeMonths                         Int?      @map("Max_Age_Months")
+  wh                                   Boolean?  @map("WH")
+  bh                                   Boolean?  @map("BH")
+  oa                                   Boolean?  @map("OA")
+  cd                                   Boolean?  @map("CD")
+  hospice                              Boolean?  @map("Hospice")
+  oncology                             Boolean?  @map("Oncology")
+  prescriptionOption                   Boolean?  @map("Prescription_Option")
+  cmsPrivate                           Boolean?  @map("CMS_PRIVATE")
+  sampleGuidelines                     Boolean?  @map("SampleGuidelines")
+
+  acuityRating MdbAcuityRating? @relation(fields: [acuity], references: [acuityRatingNumeric], onDelete: NoAction, onUpdate: NoAction)
+  systemRef    MdbSystem?       @relation(fields: [systemName], references: [system], onDelete: NoAction, onUpdate: Cascade)
+  typeRef      MdbType?         @relation(fields: [typeName], references: [type], onDelete: NoAction, onUpdate: Cascade)
+
+  questions              MdbQuestion[]
+  advice                 MdbAdvice[]
+  algorithmReferences    MdbAlgorithmReference[]
+  algorithmSearchWords   MdbAlgorithmSearchWord[]
+  algorithmSupplementals MdbAlgorithmSupplemental[]
+
+  // Operational app tables that reference this real vendor protocol id
+  // directly (see resolveMdbAlgorithmId() in stccMdbMapper.ts).
+  matchedByQueueItems TriageQueueItem[]
+  usedInEncounters    AviationTriageEncounter[]
+  voiceCallSessions   VoiceCallSession[]
+
+  @@map("Mdb_Algorithm")
+}
+
+/// Mirrors Question (PK: QuestionID). Real FKs: AlgorithmID -> Algorithm.AlgorithmID
+/// (CASCADE delete), DispositionLevel -> Disposition.LevelID (NONE - restrict).
+model MdbQuestion {
+  questionId           Int       @id @map("QuestionID")
+  algorithmId          Int?      @map("AlgorithmID")
+  questionOrder        Int?      @map("QuestionOrder")
+  dateCreated          DateTime? @map("DateCreated")
+  lastUpDate           DateTime? @map("LastUpDate")
+  question             String?   @map("Question") @db.Text
+  dispositionLevel     Int?      @map("DispositionLevel")
+  information          String?   @map("Information") @db.Text
+  smagLinkId           Int?      @map("SMAG_LINK_ID")
+  cmsNew               Boolean?  @map("CMS_NEW")
+  telemedicineEligible Boolean?  @map("TelemedicineEligible")
+
+  algorithm      MdbAlgorithm?       @relation(fields: [algorithmId], references: [algorithmId], onDelete: Cascade, onUpdate: Cascade)
+  disposition    MdbDisposition?     @relation(fields: [dispositionLevel], references: [levelId], onDelete: NoAction, onUpdate: NoAction)
+  questionAdvice MdbQuestionAdvice[]
+
+  @@map("Mdb_Question")
+}
+
+/// Mirrors Advice (PK: AdviceID). Real FK: AlgorithmID -> Algorithm.AlgorithmID (CASCADE).
+model MdbAdvice {
+  adviceId          Int       @id @map("AdviceID")
+  algorithmId       Int?      @map("AlgorithmID")
+  dateCreated       DateTime? @map("DateCreated")
+  lastUpDate        DateTime? @map("LastUpDate")
+  lastUpDateXhtml   DateTime? @map("LastUpDate_XHTML")
+  advice            String?   @map("Advice") @db.Text
+  adviceXhtml       String?   @map("Advice_XHTML") @db.Text
+  patientHealthInfo Boolean?  @map("PatientHealthInfo")
+  adviceSnap        String?   @map("AdviceSnap") @db.VarChar(30)
+  algorithmOrder    Int?      @map("AlgorithmOrder")
+
+  algorithm      MdbAlgorithm?       @relation(fields: [algorithmId], references: [algorithmId], onDelete: Cascade, onUpdate: Cascade)
+  questionAdvice MdbQuestionAdvice[]
+
+  @@map("Mdb_Advice")
+}
+
+/// Mirrors QuestionAdvice (composite PK: QuestionID, AdviceID). Real FKs: both CASCADE.
+model MdbQuestionAdvice {
+  questionId          Int       @map("QuestionID")
+  adviceId            Int       @map("AdviceID")
+  lastUpdate          DateTime? @map("LastUpdate")
+  questionAdviceOrder Int?      @map("QuestionAdviceOrder")
+
+  question MdbQuestion @relation(fields: [questionId], references: [questionId], onDelete: Cascade, onUpdate: Cascade)
+  advice   MdbAdvice   @relation(fields: [adviceId], references: [adviceId], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([questionId, adviceId])
+  @@map("Mdb_QuestionAdvice")
+}
+
+/// Mirrors Reference (PK: ReferenceID).
+model MdbReference {
+  referenceId      Int       @id @map("ReferenceID")
+  topicReferenceId Int?      @map("TopicReferenceID")
+  referenceTitle   String?   @map("ReferenceTitle") @db.VarChar(175)
+  referenceSource  String?   @map("ReferenceSource") @db.VarChar(150)
+  referenceAuthor  String?   @map("ReferenceAuthor") @db.VarChar(150)
+  lastUpdate       DateTime? @map("LastUpdate")
+  dateAdded        DateTime? @map("DateAdded")
+  pmid             String?   @map("PMID") @db.VarChar(20)
+  pubMedUrl        String?   @map("PubMedURL") @db.Text
+  publicUrl        String?   @map("PublicURL") @db.Text
+
+  algorithmReferences MdbAlgorithmReference[]
+
+  @@map("Mdb_Reference")
+}
+
+/// Mirrors AlgorithmReference (composite PK: AlgorithmID, ReferenceID). Real FKs: both CASCADE.
+model MdbAlgorithmReference {
+  algorithmId Int       @map("AlgorithmID")
+  referenceId Int       @map("ReferenceID")
+  dateUsed    DateTime? @map("DateUSed")
+  lastUpdate  DateTime? @map("LastUpdate")
+
+  algorithm MdbAlgorithm @relation(fields: [algorithmId], references: [algorithmId], onDelete: Cascade, onUpdate: Cascade)
+  reference MdbReference @relation(fields: [referenceId], references: [referenceId], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([algorithmId, referenceId])
+  @@map("Mdb_AlgorithmReference")
+}
+
+/// Mirrors SearchWord (PK: SearchWord).
+model MdbSearchWord {
+  searchWord  String    @id @map("SearchWord") @db.VarChar(50)
+  dateCreated DateTime? @map("DateCreated")
+
+  algorithmSearchWords MdbAlgorithmSearchWord[]
+
+  @@map("Mdb_SearchWord")
+}
+
+/// Mirrors AlgorithmSearchWords (composite PK: AlgorithmID, SearchWord). Real FKs:
+/// AlgorithmID CASCADE, SearchWord NONE (restrict - can't delete a word still in use).
+model MdbAlgorithmSearchWord {
+  algorithmId Int       @map("AlgorithmID")
+  searchWord  String    @map("SearchWord") @db.VarChar(50)
+  createDate  DateTime? @map("CreateDate")
+  lastUpDate  DateTime? @map("LastUpDate")
+
+  algorithm     MdbAlgorithm  @relation(fields: [algorithmId], references: [algorithmId], onDelete: Cascade, onUpdate: Cascade)
+  searchWordRef MdbSearchWord @relation(fields: [searchWord], references: [searchWord], onDelete: NoAction, onUpdate: Cascade)
+
+  @@id([algorithmId, searchWord])
+  @@map("Mdb_AlgorithmSearchWords")
+}
+
+/// Mirrors Supplemental (PK: SupplementalID).
+model MdbSupplemental {
+  supplementalId    Int       @id @map("SupplementalID")
+  topicId           Int?      @map("TopicID")
+  author            String?   @map("Author") @db.VarChar(50)
+  filename          String?   @map("Filename") @db.VarChar(60)
+  createDate        DateTime? @map("CreateDate")
+  lastUpDate        DateTime? @map("LastUpDate")
+  lastReviewDate    DateTime? @map("LastReviewDate")
+  title             String?   @map("Title") @db.VarChar(70)
+  titleLastUpdate   DateTime? @map("Title_LastUpdate")
+  contentXhtml      String?   @map("Content_XHTML") @db.Text
+  content           String?   @map("Content") @db.Text
+  contentLastUpdate DateTime? @map("Content_LastUpdate")
+  category          String?   @map("Category") @db.VarChar(50)
+  group             String?   @map("Group") @db.VarChar(30)
+  status            String?   @map("Status") @db.VarChar(15)
+  versionYear       String?   @map("VersionYear") @db.VarChar(4)
+
+  algorithmSupplementals MdbAlgorithmSupplemental[]
+
+  @@map("Mdb_Supplemental")
+}
+
+/// Mirrors AlgorithmSupplemental (composite PK: AlgorithmID, SupplementalID). Real FKs: both CASCADE.
+model MdbAlgorithmSupplemental {
+  algorithmId    Int       @map("AlgorithmID")
+  supplementalId Int       @map("SupplementalID")
+  createdDate    DateTime? @map("CreatedDate")
+
+  algorithm    MdbAlgorithm    @relation(fields: [algorithmId], references: [algorithmId], onDelete: Cascade, onUpdate: Cascade)
+  supplemental MdbSupplemental @relation(fields: [supplementalId], references: [supplementalId], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([algorithmId, supplementalId])
+  @@map("Mdb_AlgorithmSupplemental")
 }

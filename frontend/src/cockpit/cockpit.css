@@ -1119,6 +1119,15 @@
   color: var(--muted) !important;
 }
 
+#cockpit-root .protocol-match-acuity-chip {
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  padding: 1px 7px !important;
+  border-radius: 999px !important;
+  border: 1px solid !important;
+  background: var(--card) !important;
+}
+
 #cockpit-root .protocol-match-alternates {
   display: flex !important;
   flex-direction: column !important;
@@ -1356,6 +1365,42 @@
 #cockpit-root .step-title {
   font-weight: 600 !important;
   margin-top: 2px !important;
+}
+
+#cockpit-root .step-rationale {
+  font-size: 0.72rem !important;
+  font-style: italic !important;
+  color: var(--muted) !important;
+  margin-top: 4px !important;
+}
+
+#cockpit-root .telemedicine-badge {
+  margin-left: 8px !important;
+  font-size: 0.62rem !important;
+  font-weight: 600 !important;
+  color: var(--accent) !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+#cockpit-root .taq-level-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  margin-bottom: 8px !important;
+}
+
+#cockpit-root .no-to-all-btn {
+  font-size: 0.72rem !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--card) !important;
+  color: var(--ink) !important;
+  cursor: pointer !important;
+}
+
+#cockpit-root .no-to-all-btn:hover {
+  background: var(--bg2) !important;
 }
 
 #cockpit-root .choices {
@@ -1667,6 +1712,26 @@
 #cockpit-root .input-control:focus {
   outline: none !important;
   border-color: var(--accent);
+}
+
+#cockpit-root .disposition-reference-section {
+  margin-top: 18px !important;
+}
+
+#cockpit-root .disposition-reference-heading {
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  color: var(--muted) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+  margin-bottom: 8px !important;
+}
+
+#cockpit-root .disposition-reference-type {
+  font-size: 0.72rem !important;
+  color: var(--tx3) !important;
+  text-transform: uppercase !important;
+  margin: 2px 0 6px !important;
 }
 
 #cockpit-root .cockpit-sbar-preview {

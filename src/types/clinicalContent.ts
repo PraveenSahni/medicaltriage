@@ -244,10 +244,14 @@ export const ClinicalContentProtocolSchema = z.object({
   id: z.string().min(1).max(120),
   titleEn: z.string().min(1).max(240),
   titleAr: z.string().max(240).optional(),
-  clinicalDefinitionEn: z.string().max(3000).optional(),
-  clinicalDefinitionAr: z.string().max(3000).optional(),
-  backgroundInfoEn: z.string().max(3000).optional(),
-  backgroundInfoAr: z.string().max(3000).optional(),
+  // Real STCC Background/Definition text (verified via ODBC against a real
+  // sample .mdb) can run past 9000 chars for some guidelines (e.g. Diarrhea) -
+  // raised from the original 3000 to fit the honest full text rather than
+  // truncating it.
+  clinicalDefinitionEn: z.string().max(12000).optional(),
+  clinicalDefinitionAr: z.string().max(12000).optional(),
+  backgroundInfoEn: z.string().max(12000).optional(),
+  backgroundInfoAr: z.string().max(12000).optional(),
   ageMin: z.number().int().min(0).max(120).optional(),
   ageMax: z.number().int().min(0).max(120).optional(),
   genderRestriction: z.enum(["female", "male", "other", "unknown"]).optional(),
@@ -323,4 +327,7 @@ export type ProtocolSearchResult = {
   questionCount: number;
   highestSeverity: z.infer<typeof SeveritySchema>;
   releaseVersion: string;
+  // Real STCC Algorithm.Acuity (1-5, 1 = most urgent) - used to rank/color
+  // search results by urgency, not just keyword relevance.
+  acuity?: number;
 };

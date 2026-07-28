@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQueue, type QueueItem } from "../../QueueContext";
 import { colorStyleForSeverity } from "../severityColors";
-import { fetchProtocolDetail, type ProtocolCareAdvice } from "../api/protocols";
+import { fetchProtocolDetail, type ProtocolCareAdvice, type ProtocolSupplemental } from "../api/protocols";
 import { QATAR_DESTINATION_BY_CODE } from "../qatarDestinations";
 
 const severityForDispositionCode: Record<string, string> = {
@@ -47,6 +47,7 @@ export function DispositionStage({
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState("");
   const [careAdvice, setCareAdvice] = useState<ProtocolCareAdvice[]>([]);
+  const [supplementals, setSupplementals] = useState<ProtocolSupplemental[]>([]);
   const [headingOverride, setHeadingOverride] = useState<string | undefined>(undefined);
   const [loadError, setLoadError] = useState("");
 
@@ -78,6 +79,7 @@ export function DispositionStage({
           ? detail.protocol.careAdvice.filter((advice) => terminalQuestion.careAdviceIds?.includes(advice.id))
           : detail.protocol.careAdvice.filter((advice) => advice.dispositionCode === item.dispositionCode);
         setCareAdvice(matched);
+        setSupplementals(detail.protocol.supplementals ?? []);
         // The first matched advice item's own title is the real STCC
         // disposition heading text (e.g. "Call EMS 911 Now") when a precise
         // terminal question was resolved - more specific than the collapsed
@@ -185,6 +187,21 @@ export function DispositionStage({
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {supplementals.length > 0 && (
+        <div className="disposition-reference-section">
+          <div className="disposition-reference-heading">Reference &amp; Patient Education</div>
+          <div className="file-grid">
+            {supplementals.map((supplemental) => (
+              <div key={supplemental.id} className="fc">
+                <b>{supplemental.titleEn}</b>
+                <div className="disposition-reference-type">{supplemental.supplementalType}</div>
+                <div style={{ whiteSpace: "pre-wrap" }}>{supplemental.plainTextEn}</div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

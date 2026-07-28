@@ -12,8 +12,6 @@
     "build:web": "vite build --config frontend/vite.config.ts",
     "preview:web": "vite preview --host 127.0.0.1 --config frontend/vite.config.ts",
     "typecheck:web": "npx prisma generate && tsc -p frontend/tsconfig.json --noEmit",
-    "content:dry-run": "tsx src/scripts/importClinicalContent.ts --dry-run",
-    "content:import": "tsx src/scripts/importClinicalContent.ts",
     "catalog:validate": "node scripts/validateOpenSourceCatalog.mjs",
     "catalog:library": "node scripts/generateProtocolLibrary.mjs",
     "catalog:preflight": "node scripts/preflightOpenSourceCatalog.mjs",

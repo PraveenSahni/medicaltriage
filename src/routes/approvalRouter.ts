@@ -385,7 +385,7 @@ async function liveApprovalQueue() {
           safetyLog?.rulesEngineSeverity === "EMERGENCY" || safetyLog?.overrideStatusFlag === "NURSE_OVERRIDE_DOWN_BLOCKED"
             ? "senior_triage_nurse"
             : "remote_triage_nurse",
-        protocol: encounter.protocolUsed?.titleEn ?? "Phase I clinical triage protocol",
+        protocol: encounter.protocolUsed?.title ?? "Phase I clinical triage protocol",
         patient:
           encounter.dependent?.fullName ??
           `${encounter.staffMember.department} employee ${encounter.staffMember.istStaffId}`,
@@ -489,7 +489,7 @@ async function liveSafetyDashboard() {
     explainabilityLog: safetyLogs.slice(0, 50).map((log) => ({
       encounterId: log.encounterId,
       submittedAtIso: log.createdAt.toISOString(),
-      protocol: log.encounter.protocolUsed?.titleEn ?? "Phase I clinical triage protocol",
+      protocol: log.encounter.protocolUsed?.title ?? "Phase I clinical triage protocol",
       vitalsSummary: `Disposition ${log.encounter.finalDispositionCode}`,
       rulesEngineSeverity: displaySeverity(log.rulesEngineSeverity),
       aiRecommendation: log.originalAiRecommendation,

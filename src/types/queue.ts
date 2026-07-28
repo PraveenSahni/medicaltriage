@@ -140,6 +140,7 @@ export type QueueProtocolSuggestionDto = {
   questionCount: number;
   highestSeverity: "Emergency" | "Urgent" | "Routine" | "Self-care";
   releaseVersion: string;
+  acuity?: number;
 };
 
 export type QueueProtocolQuestionPreviewDto = {

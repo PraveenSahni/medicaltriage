@@ -26,6 +26,12 @@ export type ProtocolTaqQuestion = {
   rationaleEn?: string;
   redFlag?: boolean;
   careAdviceIds?: string[];
+  telemedicineEligible?: boolean;
+  telemedicineNotesEn?: string;
+  // Real STCC disposition-level ladder value (e.g. 100/90/85/80...) - already
+  // in the backend ClinicalContentQuestionSchema, used here to group
+  // contiguous not-yet-answered questions for a scoped "No to all".
+  dispositionLevel?: number;
 };
 
 export type ProtocolCareAdvice = {
@@ -37,6 +43,14 @@ export type ProtocolCareAdvice = {
   displayOrder?: number;
 };
 
+export type ProtocolSupplemental = {
+  id: string;
+  titleEn: string;
+  supplementalType: string;
+  plainTextEn: string;
+  displayOrder?: number;
+};
+
 export type ProtocolDetail = {
   release: unknown;
   protocol: {
@@ -44,6 +58,7 @@ export type ProtocolDetail = {
     initialAssessmentQuestions: InitialAssessmentQuestion[];
     questions: ProtocolTaqQuestion[];
     careAdvice: ProtocolCareAdvice[];
+    supplementals?: ProtocolSupplemental[];
     [key: string]: unknown;
   };
 };

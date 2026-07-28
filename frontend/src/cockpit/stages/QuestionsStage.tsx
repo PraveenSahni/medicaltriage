@@ -19,12 +19,14 @@ const displaySeverityByQueueSeverity: Record<QueueSeverity, string> = {
 };
 
 /**
- * The backend has no field to persist individual TAQ Yes/No answers - only
- * the resulting disposition (matchedProtocolId/calculatedSeverity/
- * dispositionCode) round-trips through QueueContextUpdateSchema. This is a
- * real backend gap: per-answer state does not survive a hold/resume or a
- * handoff to another nurse. Answers are kept in local component state during
- * this walkthrough; only the terminal disposition is persisted.
+ * item.taqResponses (a real, persisted Record<questionId, boolean> - see
+ * QueueContextUpdateSchema) is the source of truth for which TAQ questions
+ * have been answered and how. Local `answers` state (keyed by index into the
+ * sorted question list, since choose()/rendering work off position) is
+ * hydrated from it once the question list loads, so reopening a held,
+ * handed-off, or already-completed call rebuilds the real answer trail and
+ * progress bar instead of starting blank from the current browser tab's own
+ * click history.
  *
  * The full question list is fetched from GET /api/v1/protocols/:protocolId
  * rather than read from item.preparedProtocol.acuityQuestionPreview - that
@@ -80,6 +82,31 @@ export function QuestionsStage({
       cancelled = true;
     };
   }, [protocolId]);
+
+  useEffect(() => {
+    if (!questions || questions.length === 0 || !item.taqResponses) {
+      return;
+    }
+    setAnswers((current) => {
+      if (Object.keys(current).length > 0) {
+        // Already hydrated (or the nurse has started answering live in this
+        // tab) - never clobber in-progress local state on a later re-render.
+        return current;
+      }
+      const hydrated: Record<number, boolean> = {};
+      questions.forEach((question, index) => {
+        const persisted = item.taqResponses?.[question.id];
+        if (typeof persisted === "boolean") {
+          hydrated[index] = persisted;
+        }
+      });
+      return Object.keys(hydrated).length > 0 ? hydrated : current;
+    });
+    // Only re-run when the question list itself changes - item.taqResponses
+    // updates on every local answer too, and re-running this against a
+    // stale closure would fight with choose()'s own setAnswers calls.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questions]);
 
   if (!item.preparedProtocol) {
     return (
@@ -214,6 +241,72 @@ export function QuestionsStage({
     setReviewOpenIndex((current) => (current === index ? null : index));
   }
 
+  // Scoped "No to all": clears every not-yet-answered question at the SAME
+  // real STCC disposition level as the current frontier question only - never
+  // past it, unlike a blanket "answer everything No" button, which would
+  // silently skip lower-acuity questions the nurse hasn't actually ruled out
+  // (a real safety regression). Mirrors the per-level grouping already used
+  // in the other nurse workspace (NurseWorkspaceRedesign.tsx), computed here
+  // on the fly against the flat question list rather than requiring a
+  // restructured grouped UI.
+  function frontierLevelGroup(): number[] {
+    const start = frontierIndex();
+    if (start >= questions!.length) {
+      return [];
+    }
+    const level = questions![start].dispositionLevel;
+    const group: number[] = [];
+    for (let i = start; i < questions!.length; i++) {
+      if (questions![i].dispositionLevel !== level) {
+        break;
+      }
+      group.push(i);
+    }
+    return group;
+  }
+
+  async function noToAllAtLevel() {
+    if (isReadOnly || alreadyDecided || busy) {
+      return;
+    }
+    const group = frontierLevelGroup();
+    if (group.length === 0) {
+      return;
+    }
+    const next: Record<number, boolean> = { ...answers };
+    for (const idx of group) {
+      next[idx] = false;
+    }
+    setAnswers(next);
+    setReviewOpenIndex(null);
+    setBusy(true);
+    setActionError("");
+
+    try {
+      const updatedTaqResponses = { ...(item.taqResponses ?? {}) };
+      for (const idx of group) {
+        updatedTaqResponses[questions![idx].id] = false;
+      }
+      if (Object.keys(next).length === questions!.length) {
+        await updateItemContext(item.id, {
+          matchedProtocolId: protocolId,
+          calculatedSeverity: "SELF_CARE",
+          dispositionCode: "SELF_CARE_WITH_CALLBACK_PRECAUTIONS",
+          destinationName: QATAR_DESTINATION_BY_CODE.SELF_CARE_WITH_CALLBACK_PRECAUTIONS,
+          taqResponses: updatedTaqResponses
+        });
+        await moveItem(item.id, "DISPOSITION");
+        onDispositionReached();
+      } else {
+        await updateItemContext(item.id, { taqResponses: updatedTaqResponses });
+      }
+    } catch (caught) {
+      setActionError(caught instanceof Error ? caught.message : "Failed to record answers.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   const terminalQuestion = yesAt !== -1 ? questions[yesAt] : undefined;
   const dispositionReached = yesAt !== -1 || allAnsweredNo || alreadyDecided;
 
@@ -234,9 +327,16 @@ export function QuestionsStage({
         </div>
       </div>
 
+      {!alreadyDecided && !dispositionReached && frontierLevelGroup().length > 1 && (
+        <div className="taq-level-actions">
+          <button type="button" className="no-to-all-btn" onClick={noToAllAtLevel} disabled={busy}>
+            No to all at this level ({frontierLevelGroup().length} questions)
+          </button>
+        </div>
+      )}
+
       <div id="flow">
-        {!alreadyDecided &&
-          questions.slice(0, lastVisible + 1).map((question, index) => {
+        {questions.slice(0, lastVisible + 1).map((question, index) => {
             const answered = index in answers;
             if (!answered) {
               return (
@@ -244,8 +344,16 @@ export function QuestionsStage({
                   <div className="step-hdr">
                     <div className="step-num">{index + 1}</div>
                     <div>
-                      <div className="gtag">{question.severity}</div>
+                      <div className="gtag">
+                        {question.severity}
+                        {question.telemedicineEligible && (
+                          <span className="telemedicine-badge" title="Telemedicine eligible">
+                            &#128249; Video
+                          </span>
+                        )}
+                      </div>
                       <div className="step-title">{question.questionTextEn}</div>
+                      {question.rationaleEn && <div className="step-rationale">{question.rationaleEn}</div>}
                     </div>
                   </div>
                   <div className="choices">

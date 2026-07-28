@@ -12,6 +12,7 @@ import {
 } from "./clinicalContent.js";
 import { buildRagShadowSuggestion, buildStccProcessSnapshot } from "./ragShadow.js";
 import { captureReasonForCallAudio } from "./reasonForCallVoiceCapture.js";
+import { resolveMdbAlgorithmId } from "./stccMdbMapper.js";
 import type { AuthenticatedSession } from "../types/security.js";
 import type {
   ClinicalContentProtocol,
@@ -572,7 +573,8 @@ function suggestionFromSearchResult(result: ProtocolSearchResult): QueueProtocol
     matchedTerms: result.matchedTerms,
     questionCount: result.questionCount,
     highestSeverity: result.highestSeverity,
-    releaseVersion: result.releaseVersion
+    releaseVersion: result.releaseVersion,
+    acuity: result.acuity
   };
 }
 
@@ -1356,11 +1358,24 @@ function validateClinicalSequence(record: QueueRecord, request: QueueMoveRequest
   }
   if (
     completing &&
-    (!record.calculatedSeverity || !record.dispositionCode || !record.destinationName || !record.clinicalApproval || !record.sbarCopied)
+    (!record.calculatedSeverity ||
+      !record.dispositionCode ||
+      !record.destinationName ||
+      !record.clinicalApproval ||
+      !record.sbarCopied ||
+      // sbarCopied is only a boolean flag - checking it alone let a caller of
+      // the context-update PATCH mark it true without ever actually
+      // persisting the compiled note text, reaching COMPLETED with no SBAR
+      // content at all (confirmed live: a call closed this way permanently
+      // shows "closed before the SBAR note text was captured"). The real
+      // "Copy SBAR" button always sets both together, but the backend gate
+      // must enforce that pairing itself, not rely on the frontend's
+      // cooperation.
+      !record.sbarNoteText)
   ) {
     throw new QueueOrchestrationError(
       400,
-      "Clinical approval, final route, and copied SBAR are required before completion.",
+      "Clinical approval, final route, and a captured SBAR note are required before completion.",
       "QUEUE_SEQUENCE_BLOCKED"
     );
   }
@@ -1473,21 +1488,16 @@ async function getDbRecord(id: string): Promise<QueueRecord | undefined> {
   return row ? dbRowToRecord(row) : undefined;
 }
 
-// TriageQueueItem.matchedProtocolId is an FK to Algorithm.id (an internal
-// cuid), but every in-app consumer of matchedProtocolId deals in the
-// file-based external protocol id (e.g. "stcc-abdominal-pain-male") used by
-// searchClinicalProtocols()/getClinicalProtocolById(). Resolve the external
-// id to its DB row here so we never write a value the FK constraint would
-// reject; the external id itself still round-trips via queuePayload.
-async function resolveAlgorithmDbId(externalProtocolId: string | undefined): Promise<string | null> {
-  if (!externalProtocolId) {
-    return null;
-  }
-  const algorithm = await prisma.algorithm.findUnique({
-    where: { externalProtocolId },
-    select: { id: true }
-  });
-  return algorithm?.id ?? null;
+// TriageQueueItem.matchedProtocolId is a real FK to MdbAlgorithm.algorithmId
+// (the vendor's actual integer AlgorithmID), but every in-app consumer of
+// matchedProtocolId deals in the app-facing string protocol id (e.g.
+// "stcc-abdominal-pain-male") used by
+// searchClinicalProtocols()/getClinicalProtocolById(). Resolve the string id
+// to its real vendor integer id here so we never write a value the FK
+// constraint would reject; the string id itself still round-trips via
+// queuePayload.
+async function resolveAlgorithmDbId(externalProtocolId: string | undefined): Promise<number | null> {
+  return resolveMdbAlgorithmId(externalProtocolId);
 }
 
 async function saveDbRecord(record: QueueRecord): Promise<QueueRecord> {

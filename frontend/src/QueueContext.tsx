@@ -30,6 +30,9 @@ export type QueueProtocolSuggestion = {
   questionCount: number;
   highestSeverity: "Emergency" | "Urgent" | "Routine" | "Self-care";
   releaseVersion: string;
+  // Real STCC Algorithm.Acuity (1-5, 1 = most urgent) - candidates already
+  // arrive acuity-sorted from the backend; this is used only for the chip.
+  acuity?: number;
 };
 
 export type QueueProtocolQuestionPreview = {

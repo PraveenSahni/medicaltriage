@@ -1,6 +1,29 @@
 import { useState } from "react";
 import { useQueue, type QueueItem, type QueueProtocolSuggestion } from "../QueueContext";
 
+// Real STCC Algorithm.Acuity is 1 (most urgent) to 5 (least urgent) - color
+// scale mirrors that direction, reusing this app's existing severity palette
+// (red -> amber -> blue -> green) rather than inventing a new one.
+const ACUITY_COLOR: Record<number, string> = {
+  1: "#a32d2d",
+  2: "#c0552b",
+  3: "#7a5d00",
+  4: "#185fa5",
+  5: "#0f6e56"
+};
+
+function acuityChip(acuity: number | undefined) {
+  if (typeof acuity !== "number") {
+    return null;
+  }
+  const color = ACUITY_COLOR[acuity] ?? "#6b6a66";
+  return (
+    <span className="protocol-match-acuity-chip" style={{ color, borderColor: color }} title={`Acuity ${acuity} of 5`}>
+      Acuity {acuity}
+    </span>
+  );
+}
+
 function formatAgeSex(item: QueueItem): string | null {
   const age = item.patientAge;
   if (!age) {
@@ -33,6 +56,7 @@ function SuggestionRow({
     <div className={`protocol-match-suggestion${isSelected ? " is-primary" : ""}`}>
       <div className="protocol-match-suggestion-head">
         <span className="protocol-match-suggestion-title">{suggestion.titleEn}</span>
+        {acuityChip(suggestion.acuity)}
         <span className="protocol-match-suggestion-score">Score {suggestion.score}</span>
       </div>
       {suggestion.matchedTerms.length > 0 && (
