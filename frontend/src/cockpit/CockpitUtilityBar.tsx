@@ -1,5 +1,6 @@
 import { ArrowLeft, HelpCircle, LogOut } from "lucide-react";
 import type { AuthenticatedSession } from "../auth/session";
+import { getAccessToken } from "../authToken";
 
 type CockpitUtilityBarProps = {
   session: AuthenticatedSession;
@@ -47,10 +48,14 @@ export function CockpitUtilityBar({ session, onLogout, onBack }: CockpitUtilityB
         {/* Opens the standalone Help & Library page in a new tab (server-
             rendered at GET /help, outside the SPA bundle) - a plain link, not
             a client-side action, so this workspace's own state is never
-            touched by clicking it. */}
+            touched by clicking it. The access token is appended as a query
+            param because a plain top-level navigation can't carry a custom
+            Authorization header, and Firebase Hosting's rewrite-to-Cloud-Run
+            proxy on the custom domain does not forward the Cookie header
+            either - see helpRouter.ts's /help handler. */}
         <a
           className="cockpit-utility-btn"
-          href="/help"
+          href={`/help${getAccessToken() ? `?token=${encodeURIComponent(getAccessToken()!)}` : ""}`}
           target="_blank"
           rel="noopener noreferrer"
           title="Help"

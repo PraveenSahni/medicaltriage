@@ -105,6 +105,21 @@ export function shouldPersistQueueInDatabase(): boolean {
   return envFlag("QUEUE_DB_PERSISTENCE", false);
 }
 
+// Session persistence is opt-in independently of MOCK_MODE for the same
+// reason as the queue store above. Without this, a mock-mode deployment
+// (e.g. the demo/UAT Cloud Run service) only ever keeps sessions in the
+// handling instance's in-memory Map (securityAdmin.ts's `sessions`), which
+// is invisible to every other instance of the same service. Cloud Run
+// routinely runs more than one instance, so any request that lands on a
+// different instance than the one that processed login sees no session at
+// all - even with a perfectly valid, unexpired cookie. Confirmed live: this
+// is exactly why /help (a plain top-level navigation, its own new request)
+// intermittently reported "Sign in required" right after a successful login
+// on the demo environment.
+export function shouldPersistSessionsInDatabase(): boolean {
+  return envFlag("SESSION_DB_PERSISTENCE", false);
+}
+
 export function getAdminPassword(): string {
   return process.env.ADMIN_PASSWORD ?? (isMockMode() ? MOCK_LOCAL_ADMIN_PASSWORD : "");
 }

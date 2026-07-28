@@ -452,9 +452,20 @@ function renderRestrictedVaultSection(): string {
   </section>`;
 }
 
-export function renderHelpLibraryHtml(session: AuthenticatedSession, hasRestrictedVaultAccess: boolean): string {
+export function renderHelpLibraryHtml(
+  session: AuthenticatedSession,
+  hasRestrictedVaultAccess: boolean,
+  accessToken: string
+): string {
   const userName = escapeHtml(session.user.fullName ?? session.user.id);
   const roleLabel = escapeHtml(session.activeRole.replace(/_/g, " "));
+  // Embedded so help.js can attach it as an Authorization header on its own
+  // fetch calls (restricted vault verify/read) - Firebase Hosting's rewrite
+  // proxy to Cloud Run does not forward the Cookie header (see authToken.ts),
+  // so `credentials: "include"` alone never authenticates on the custom
+  // domain. Kept alongside credentials:"include" as a harmless fallback for
+  // any deployment where cookies do work.
+  const escapedAccessToken = escapeHtml(accessToken);
 
   return `<!doctype html>
 <html lang="en">
@@ -509,7 +520,7 @@ export function renderHelpLibraryHtml(session: AuthenticatedSession, hasRestrict
   .vault-content th { background: var(--bg-soft); }
 </style>
 </head>
-<body>
+<body data-token="${escapedAccessToken}">
   <header class="topbar">
     <div class="brand"><strong>IST Health</strong><span>Teletriage — Help &amp; Library</span></div>
     <div class="session-chip">${userName} · ${roleLabel}</div>
@@ -583,6 +594,9 @@ export const HELP_LIBRARY_CLIENT_JS = `(function () {
     if (firstMatch) activate(firstMatch.id);
   });
 
+  var authToken = document.body.dataset.token;
+  var authHeader = authToken ? { "Authorization": "Bearer " + authToken } : {};
+
   var unlockButton = document.getElementById("vault-unlock-button");
   if (unlockButton) {
     unlockButton.addEventListener("click", function () {
@@ -592,12 +606,12 @@ export const HELP_LIBRARY_CLIENT_JS = `(function () {
       fetch("/api/v1/help/restricted-access/verify", {
         method: "POST",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: Object.assign({ "Content-Type": "application/json" }, authHeader),
         body: JSON.stringify({ password: password })
       })
         .then(function (response) {
           if (!response.ok) return response.json().then(function (body) { throw new Error(body.error || "Access denied"); });
-          return fetch("/api/v1/help/restricted-vault", { credentials: "include" });
+          return fetch("/api/v1/help/restricted-vault", { credentials: "include", headers: authHeader });
         })
         .then(function (response) { return response.json(); })
         .then(function (data) {

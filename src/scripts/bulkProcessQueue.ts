@@ -12,7 +12,10 @@ const API_BASE = process.env.API_BASE ?? "http://localhost:8080";
 const USERNAME = "layla@irisstar.tech";
 const PASSWORD = "Layla@2026";
 
-type CookieJar = { cookie?: string };
+// Bearer token attached alongside the cookie - Firebase Hosting's rewrite-
+// to-Cloud-Run proxy does not forward the Cookie header on the custom
+// domain (triaged.irisstar.tech), so cookie-only auth silently fails there.
+type CookieJar = { cookie?: string; token?: string };
 
 // The Cloud SQL Auth Proxy periodically recycles idle connections
 // (~every 18 minutes in practice), which surfaces here as a transient
@@ -25,6 +28,7 @@ async function request(jar: CookieJar, path: string, init: RequestInit = {}, att
   const headers = new Headers(init.headers);
   headers.set("Content-Type", "application/json");
   if (jar.cookie) headers.set("Cookie", jar.cookie);
+  if (jar.token) headers.set("Authorization", `Bearer ${jar.token}`);
   try {
     const response = await fetch(`${API_BASE}${path}`, { ...init, headers });
     const setCookie = response.headers.get("set-cookie");
@@ -45,6 +49,8 @@ async function login(jar: CookieJar): Promise<void> {
     body: JSON.stringify({ username: USERNAME, password: PASSWORD })
   });
   if (!r.ok) throw new Error(`Login failed: ${r.status}`);
+  const body = (await r.json()) as { accessToken?: string };
+  jar.token = body.accessToken;
 }
 
 async function processCall(jar: CookieJar, id: string): Promise<{ id: string; outcome: string; dispositionCode?: string }> {

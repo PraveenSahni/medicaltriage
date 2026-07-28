@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
-import { readAuthenticatedSession } from "../middleware/auth.js";
+import { readAuthenticatedSession, sessionFromTokenString } from "../middleware/auth.js";
 import { rateLimit } from "../middleware/rateLimit.js";
 import {
   auditVaultAccess,
@@ -51,7 +51,18 @@ export function createHelpPageRouter(): Router {
 
   router.get("/help", async (req, res, next) => {
     try {
-      const session = await readAuthenticatedSession(req);
+      // A plain `<a href target="_blank">` click is a genuine top-level
+      // browser navigation - it can carry cookies but never a custom
+      // Authorization header (unlike the SPA's own fetch calls, which
+      // installBearerTokenFetch already patches). On the custom domain,
+      // Firebase Hosting's rewrite-to-Cloud-Run proxy does not forward the
+      // Cookie request header at all (confirmed live), so cookie-based auth
+      // silently fails here even immediately after a successful login. The
+      // query-string token is the one thing a plain navigation CAN carry -
+      // the frontend link is built with it (CockpitUtilityBar.tsx /
+      // TriageServiceManagerBoard.tsx) whenever an access token is available.
+      const queryToken = typeof req.query.token === "string" ? req.query.token : undefined;
+      const session = (await readAuthenticatedSession(req)) ?? (await sessionFromTokenString(queryToken));
       if (!session) {
         res.status(401).type("html").send(
           "<!doctype html><title>Sign in required</title><body style=\"font-family:system-ui;padding:40px\">" +
@@ -59,7 +70,7 @@ export function createHelpPageRouter(): Router {
         );
         return;
       }
-      const html = renderHelpLibraryHtml(session, hasRestrictedVaultAccess(session.permissions));
+      const html = renderHelpLibraryHtml(session, hasRestrictedVaultAccess(session.permissions), queryToken ?? "");
       res.type("html").send(html);
     } catch (error) {
       next(error);

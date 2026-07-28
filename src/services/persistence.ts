@@ -4,7 +4,7 @@ import type {
   Prisma,
   TriageSeverity
 } from "@prisma/client";
-import { shouldUseDatabasePersistence } from "../config/runtime.js";
+import { shouldPersistSessionsInDatabase, shouldUseDatabasePersistence } from "../config/runtime.js";
 import { prisma } from "../db.js";
 import type { SafetyAuditDraft } from "../services/auditLog.js";
 import type {
@@ -156,7 +156,7 @@ export async function persistUserSession(args: {
   ipAddress: string;
   device: string;
 }): Promise<PersistenceResult> {
-  if (!shouldUseDatabasePersistence()) {
+  if (!shouldPersistSessionsInDatabase()) {
     return { persisted: false, reason: "mock-mode" };
   }
 
@@ -178,7 +178,7 @@ export async function persistUserSession(args: {
 }
 
 export async function getPersistedUserSession(sessionId?: string): Promise<AuthenticatedSession | undefined> {
-  if (!sessionId || !shouldUseDatabasePersistence()) {
+  if (!sessionId || !shouldPersistSessionsInDatabase()) {
     return undefined;
   }
 
@@ -200,7 +200,7 @@ export async function getPersistedUserSession(sessionId?: string): Promise<Authe
 }
 
 export async function revokePersistedSession(sessionId?: string): Promise<void> {
-  if (!sessionId || !shouldUseDatabasePersistence()) {
+  if (!sessionId || !shouldPersistSessionsInDatabase()) {
     return;
   }
 

@@ -2,6 +2,7 @@ import "./serviceManagerBoard.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueue, type QueueItem } from "../QueueContext";
 import type { AuthenticatedSession } from "../auth/session";
+import { getAccessToken } from "../authToken";
 import { canAccessNurseCockpit } from "../cockpit/roles";
 import {
   BOARD_COLUMNS,
@@ -199,8 +200,18 @@ export function TriageServiceManagerBoard({ session, onLogout, onOpenNurseCockpi
           {/* Opens the standalone Help & Library page in a new tab (server-
               rendered at GET /help) - a plain link, not a client-side action,
               so this board's own state (filters, drawer, generator toggle)
-              is never touched by clicking it. */}
-          <a className="smb-soft-btn" href="/help" target="_blank" rel="noopener noreferrer" title="Help">
+              is never touched by clicking it. The access token is appended as
+              a query param because a plain top-level navigation can't carry a
+              custom Authorization header, and Firebase Hosting's rewrite-to-
+              Cloud-Run proxy on the custom domain does not forward the Cookie
+              header either - see helpRouter.ts's /help handler. */}
+          <a
+            className="smb-soft-btn"
+            href={`/help${getAccessToken() ? `?token=${encodeURIComponent(getAccessToken()!)}` : ""}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Help"
+          >
             Help
           </a>
         </div>

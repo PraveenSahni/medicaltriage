@@ -20,12 +20,16 @@ const SEED_DATA_PATH = path.resolve(process.cwd(), "data", "generated", "ist_qat
 const CALLS_PER_TICK = Number(process.argv[2] ?? 2);
 const INTERVAL_MINUTES = Number(process.argv[3] ?? 5);
 
-type CookieJar = { cookie?: string };
+// Bearer token attached alongside the cookie - Firebase Hosting's rewrite-
+// to-Cloud-Run proxy does not forward the Cookie header on the custom
+// domain (triaged.irisstar.tech), so cookie-only auth silently fails there.
+type CookieJar = { cookie?: string; token?: string };
 
 async function request(jar: CookieJar, path: string, init: RequestInit = {}, attempt = 1): Promise<Response> {
   const headers = new Headers(init.headers);
   headers.set("Content-Type", "application/json");
   if (jar.cookie) headers.set("Cookie", jar.cookie);
+  if (jar.token) headers.set("Authorization", `Bearer ${jar.token}`);
   try {
     const response = await fetch(`${API_BASE}${path}`, { ...init, headers });
     const setCookie = response.headers.get("set-cookie");
@@ -46,6 +50,8 @@ async function login(jar: CookieJar): Promise<void> {
     body: JSON.stringify({ username: INTAKE_USERNAME, password: INTAKE_PASSWORD })
   });
   if (!r.ok) throw new Error(`Login failed: ${r.status}`);
+  const body = (await r.json()) as { accessToken?: string };
+  jar.token = body.accessToken;
 }
 
 type Candidate = {

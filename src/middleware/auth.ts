@@ -52,13 +52,15 @@ export function signSessionJwt(session: AuthenticatedSession): string {
   return `${unsignedToken}.${sign(unsignedToken)}`;
 }
 
-async function sessionFromBearerToken(req: Request): Promise<AuthenticatedSession | undefined> {
-  const authorization = req.headers.authorization;
-  if (!authorization?.startsWith("Bearer ")) {
+// Shared by both the Authorization header path (sessionFromBearerToken) and
+// the query-string path (sessionFromTokenString, used by the standalone
+// /help page - see its comment for why a plain top-level navigation can
+// carry a token here but not as a header).
+export async function sessionFromTokenString(token: string | undefined): Promise<AuthenticatedSession | undefined> {
+  if (!token) {
     return undefined;
   }
 
-  const token = authorization.slice("Bearer ".length).trim();
   const [header, payload, signature] = token.split(".");
   if (!header || !payload || !signature) {
     return undefined;
@@ -75,6 +77,14 @@ async function sessionFromBearerToken(req: Request): Promise<AuthenticatedSessio
   }
 
   return getSessionFromStore(decoded.sid);
+}
+
+async function sessionFromBearerToken(req: Request): Promise<AuthenticatedSession | undefined> {
+  const authorization = req.headers.authorization;
+  if (!authorization?.startsWith("Bearer ")) {
+    return undefined;
+  }
+  return sessionFromTokenString(authorization.slice("Bearer ".length).trim());
 }
 
 export async function readAuthenticatedSession(req: Request): Promise<AuthenticatedSession | undefined> {

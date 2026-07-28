@@ -60,7 +60,10 @@ const SEVERITY_MAP: Record<string, string> = {
   "Self-care": "SELF_CARE"
 };
 
-type CookieJar = { cookie?: string };
+// Bearer token attached alongside the cookie - Firebase Hosting's rewrite-
+// to-Cloud-Run proxy does not forward the Cookie header on the custom
+// domain (triaged.irisstar.tech), so cookie-only auth silently fails there.
+type CookieJar = { cookie?: string; token?: string };
 type Question = { id: string; acuityOrder: number; severity: string; dispositionCode: string; questionTextEn: string };
 type InitialAssessmentQuestion = {
   id: string;
@@ -91,6 +94,7 @@ async function request(jar: CookieJar, path: string, init: RequestInit = {}, att
   const headers = new Headers(init.headers);
   headers.set("Content-Type", "application/json");
   if (jar.cookie) headers.set("Cookie", jar.cookie);
+  if (jar.token) headers.set("Authorization", `Bearer ${jar.token}`);
   try {
     const response = await fetch(`${API_BASE}${path}`, { ...init, headers });
     const setCookie = response.headers.get("set-cookie");
@@ -108,6 +112,8 @@ async function request(jar: CookieJar, path: string, init: RequestInit = {}, att
 async function login(jar: CookieJar, username: string, password: string): Promise<void> {
   const r = await request(jar, "/api/v1/auth/login", { method: "POST", body: JSON.stringify({ username, password }) });
   if (!r.ok) throw new Error(`Login failed for ${username}: ${r.status}`);
+  const body = (await r.json()) as { accessToken?: string };
+  jar.token = body.accessToken;
 }
 
 async function generateOneCall(
