@@ -425,6 +425,7 @@ export function QuestionsStage({
                   <div style={{ flex: 1 }}>
                     <div className="gtag">{question.severity}</div>
                     <QuestionTitle text={question.questionTextEn} />
+                    {question.rationaleEn && <div className="step-rationale">{question.rationaleEn}</div>}
                     <div className="ans">&#10132; {answers[index] ? "Yes" : "No"}</div>
                   </div>
                   <div className="chev">&#9654;</div>
