@@ -44,7 +44,7 @@ node_modules
 /docs/protocol-review/*
 !/docs/protocol-review/data/
 /docs/protocol-review/data/*
-!/docs/protocol-review/data/abdominal-pain-male.db.json
+!/docs/protocol-review/data/stcc-sample-extract.json
 # The Dockerfile COPYs the entire python/ directory (the runtime Python
 # engine) and scripts/runPython.mjs (the Node shim that shells out to it) -
 # only their local dev-only byproducts are excluded, mirroring .dockerignore.
