@@ -56,3 +56,31 @@ export async function previewTriageCompletion(request: Record<string, unknown>):
   }
   return payload as TriageCompleteResponse;
 }
+
+export type FitToFlyPreviewResponse = {
+  fitToFlyStatus: "CLEARED" | "RESTRICTED" | "MEDICAL_REVIEW_REQUIRED";
+};
+
+/**
+ * Side-effect-free fit-to-fly computation, callable as soon as a disposition
+ * is reached - unlike compileTriageCompletion(), this never persists an
+ * encounter row, so the Disposition & Advice stage can call it automatically
+ * without waiting for (or requiring) the SBAR compile/complete flow.
+ */
+export async function fetchFitToFlyPreview(request: {
+  jobTitle?: string;
+  finalDispositionCode: string;
+  customAviationTags: string[];
+}): Promise<FitToFlyPreviewResponse> {
+  const response = await fetch(`${apiBase}/api/v1/triage/fit-to-fly-preview`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request)
+  });
+  const payload = await response.json();
+  if (!response.ok) {
+    throw new Error(payload.error ?? payload.message ?? `Fit-to-fly preview failed with ${response.status}`);
+  }
+  return payload as FitToFlyPreviewResponse;
+}

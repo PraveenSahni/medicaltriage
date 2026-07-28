@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ProtocolMatchPanel } from "./ProtocolMatchPanel";
 import type { QueueItem, QueuePreparedProtocol } from "../QueueContext";
@@ -95,6 +95,9 @@ describe("ProtocolMatchPanel", () => {
     expect(screen.getByText("29 years · Male")).toBeInTheDocument();
     expect(screen.getAllByText("sore throat").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Sore Throat").length).toBeGreaterThan(0);
+
+    // "Other candidates considered" starts collapsed - expand it first.
+    fireEvent.click(screen.getByText(/Other candidates considered/));
     expect(screen.getByText("Cold and Flu")).toBeInTheDocument();
     expect(screen.getByText("Score 5")).toBeInTheDocument();
     expect(screen.getByText("Score 2")).toBeInTheDocument();
@@ -117,26 +120,32 @@ describe("ProtocolMatchPanel", () => {
   it("never renders a selection control in read-only mode", () => {
     const item = makeItem({ preparedProtocol: makePrepared() });
     render(<ProtocolMatchPanel item={item} isReadOnly />);
-    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    // The "Other candidates considered" disclosure toggle is a legitimate
+    // always-present UI control (not a selection control) - only guideline
+    // selection buttons ("Use this guideline") are asserted absent here.
+    expect(screen.queryByText("Use this guideline")).not.toBeInTheDocument();
   });
 
   it("never renders a selection control once TAQ questions have already been answered", () => {
     const item = makeItem({ preparedProtocol: makePrepared(), taqResponses: { "oscg-sore-throat-q1": false } });
     render(<ProtocolMatchPanel item={item} isReadOnly={false} />);
-    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(screen.queryByText("Use this guideline")).not.toBeInTheDocument();
     expect(screen.getByText(/Guideline selection is locked/)).toBeInTheDocument();
   });
 
   it("never renders a selection control once disposition has been reached", () => {
     const item = makeItem({ preparedProtocol: makePrepared(), dispositionCode: "HMC_URGENT_REVIEW" });
     render(<ProtocolMatchPanel item={item} isReadOnly={false} />);
-    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(screen.queryByText("Use this guideline")).not.toBeInTheDocument();
   });
 
   it("lets the nurse select an alternate candidate, calling updateItemContext with its protocolId", async () => {
     const user = userEvent.setup();
     const item = makeItem({ preparedProtocol: makePrepared() });
     render(<ProtocolMatchPanel item={item} isReadOnly={false} />);
+
+    // "Other candidates considered" starts collapsed - expand it first.
+    await user.click(screen.getByText(/Other candidates considered/));
 
     const selectButtons = screen.getAllByRole("button", { name: "Use this guideline" });
     expect(selectButtons).toHaveLength(1);

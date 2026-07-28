@@ -38,7 +38,7 @@ function CandidateRow({ candidate }: { candidate: QueueProtocolSuggestion }) {
 }
 
 export function RagShadowRail({ item }: { item: QueueItem }) {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const ragShadow = item.preparedProtocol?.ragShadow;
 
   return (
@@ -53,42 +53,38 @@ export function RagShadowRail({ item }: { item: QueueItem }) {
         <span className="rag-rail-toggle-icon">{expanded ? "−" : "+"}</span>
       </button>
 
-      {expanded && (
+      {!ragShadow && <div className="rag-rail-empty">No shadow comparison available for this call yet.</div>}
+
+      {expanded && ragShadow && (
         <div className="rag-rail-body">
-          {!ragShadow ? (
-            <div className="rag-rail-empty">No shadow comparison available for this call yet.</div>
-          ) : (
-            <>
-              <div className={`rag-rail-agreement ${agreementTone[ragShadow.comparison.agreement] ?? "rag-tone-muted"}`}>
-                <span>{agreementLabels[ragShadow.comparison.agreement] ?? ragShadow.comparison.agreement}</span>
-                <span className="rag-rail-confidence">{Math.round(ragShadow.retrieval.confidence * 100)}% confidence</span>
-              </div>
+          <div className={`rag-rail-agreement ${agreementTone[ragShadow.comparison.agreement] ?? "rag-tone-muted"}`}>
+            <span>{agreementLabels[ragShadow.comparison.agreement] ?? ragShadow.comparison.agreement}</span>
+            <span className="rag-rail-confidence">{Math.round(ragShadow.retrieval.confidence * 100)}% confidence</span>
+          </div>
 
-              {ragShadow.suggestedProtocolCandidates.length > 0 && (
-                <div className="rag-rail-section">
-                  <div className="rag-rail-section-label">Shadow candidates</div>
-                  {ragShadow.suggestedProtocolCandidates.map((candidate) => (
-                    <CandidateRow candidate={candidate} key={candidate.protocolId} />
-                  ))}
-                </div>
-              )}
-
-              {ragShadow.prohibitedActionAcknowledgement.length > 0 && (
-                <div className="rag-rail-section">
-                  <div className="rag-rail-section-label">Boundary</div>
-                  <ul className="rag-rail-boundary-list">
-                    {ragShadow.prohibitedActionAcknowledgement.map((note) => (
-                      <li key={note}>{note}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              <div className="rag-rail-note">
-                Advisory only - this comparison cannot decide disposition and always requires nurse review.
-              </div>
-            </>
+          {ragShadow.suggestedProtocolCandidates.length > 0 && (
+            <div className="rag-rail-section">
+              <div className="rag-rail-section-label">Shadow candidates</div>
+              {ragShadow.suggestedProtocolCandidates.map((candidate) => (
+                <CandidateRow candidate={candidate} key={candidate.protocolId} />
+              ))}
+            </div>
           )}
+
+          {ragShadow.prohibitedActionAcknowledgement.length > 0 && (
+            <div className="rag-rail-section">
+              <div className="rag-rail-section-label">Boundary</div>
+              <ul className="rag-rail-boundary-list">
+                {ragShadow.prohibitedActionAcknowledgement.map((note) => (
+                  <li key={note}>{note}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="rag-rail-note">
+            Advisory only - this comparison cannot decide disposition and always requires nurse review.
+          </div>
         </div>
       )}
     </aside>

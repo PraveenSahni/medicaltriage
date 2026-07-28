@@ -914,6 +914,20 @@
   font-weight: 700 !important;
 }
 
+#cockpit-root .sub-hdr-toggle,
+#cockpit-root .sub-hdr-toggle-label {
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  color: var(--muted) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.4px !important;
+}
+
+#cockpit-root .sub-hdr-toggle .vitals-unobtainable {
+  margin: 0 !important;
+  text-transform: none !important;
+}
+
 #cockpit-root .rag-rail-body {
   display: flex !important;
   flex-direction: column !important;
@@ -1325,7 +1339,7 @@
 /* ---------- Step / question cards ---------- */
 
 #cockpit-root .step {
-  background: var(--card) !important;
+  background: var(--gcbg, var(--card)) !important;
   border: 1px solid var(--line) !important;
   border-left: 4px solid var(--gcbd, var(--line)) !important;
   border-radius: 10px !important;
@@ -1372,6 +1386,24 @@
   font-style: italic !important;
   color: var(--muted) !important;
   margin-top: 4px !important;
+}
+
+#cockpit-root .taq-criteria-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+#cockpit-root .taq-criteria-item {
+  display: block !important;
+}
+
+#cockpit-root .taq-criteria-and {
+  display: inline-block !important;
+  font-weight: 700 !important;
+  font-size: 0.7rem !important;
+  color: var(--muted) !important;
+  margin-right: 6px !important;
 }
 
 #cockpit-root .telemedicine-badge {
@@ -1630,6 +1662,26 @@
   font-weight: 700 !important;
   font-size: 0.95rem !important;
   color: var(--gc, var(--ink)) !important;
+}
+
+#cockpit-root .active-call-hdr-right {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  gap: 8px !important;
+}
+
+#cockpit-root .fit-to-fly-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: var(--gc, var(--tx3)) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
 }
 
 #cockpit-root .file-grid {

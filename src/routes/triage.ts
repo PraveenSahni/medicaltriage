@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { Router } from "express";
+import { z } from "zod";
 import { withMockFlag } from "../config/runtime.js";
 import { buildSafetyAuditDraft } from "../services/auditLog.js";
 import { evaluateAviationRules } from "../services/aviationRules.js";
@@ -50,8 +51,28 @@ function deriveCompletionFitToFlyStatus(args: {
   return "CLEARED";
 }
 
+const FitToFlyPreviewRequestSchema = z.object({
+  jobTitle: z.string().optional(),
+  finalDispositionCode: z.string(),
+  customAviationTags: z.array(z.string()).default([])
+});
+
 export function createTriageRouter(): Router {
   const router = Router();
+
+  // Lightweight, side-effect-free preview so the nurse-facing Disposition &
+  // Advice stage can show the fit-to-fly color/icon as soon as a disposition
+  // is reached, instead of waiting for the full /complete compile-and-persist
+  // flow (which also writes the completed note and is not appropriate to call
+  // before the call has actually reached SBAR/completion).
+  router.post("/fit-to-fly-preview", (req, res) => {
+    const parsed = FitToFlyPreviewRequestSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid fit-to-fly preview payload", details: parsed.error.flatten() });
+    }
+    const fitToFlyStatus = deriveCompletionFitToFlyStatus(parsed.data);
+    return res.json({ fitToFlyStatus });
+  });
 
   router.post("/start", async (req, res) => {
     const parsed = TriageStartRequestSchema.safeParse(req.body);

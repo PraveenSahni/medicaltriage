@@ -85,14 +85,21 @@ describe("CompletionStage", () => {
     expect(compileTriageCompletion).not.toHaveBeenCalled();
   });
 
-  it("sends the correct snake_case field names to compileTriageCompletion for an active (not yet completed) call", async () => {
+  it("sends the correct snake_case field names to compileTriageCompletion when completing an active call, with no manual Copy SBAR step", async () => {
     compileTriageCompletion.mockResolvedValue({ notePayload: "# Active note", clipboardOptimized: true });
-    Object.assign(navigator, { clipboard: { writeText: jest.fn().mockResolvedValue(undefined) } });
-    const item = makeItem({ status: "IN_PROCESS", sbarNoteText: undefined });
+    const item = makeItem({
+      status: "IN_PROCESS",
+      sbarNoteText: undefined,
+      sbarCopied: false,
+      dispositionCode: "HMC_URGENT_REVIEW",
+      destinationName: "HMC urgent review pathway"
+    });
     render(<CompletionStage item={item} isReadOnly={false} onCallCompleted={jest.fn()} />);
 
-    const copyButton = screen.getByRole("button", { name: /Copy SBAR/ });
-    copyButton.click();
+    expect(screen.queryByRole("button", { name: /Copy SBAR/ })).not.toBeInTheDocument();
+
+    const completeButton = screen.getByRole("button", { name: /Complete Call/ });
+    completeButton.click();
 
     await waitFor(() => expect(compileTriageCompletion).toHaveBeenCalledTimes(1));
     expect(compileTriageCompletion).toHaveBeenCalledWith(

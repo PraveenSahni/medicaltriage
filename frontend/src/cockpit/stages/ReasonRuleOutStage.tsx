@@ -23,6 +23,24 @@ const vitalPlaceholders: Record<string, string> = {
 // consistently while different calls sound like different callers.
 const ENGLISH_ACCENT_LOCALES = ["en-US", "en-GB", "en-AU", "en-IN", "en-ZA", "en-CA", "en-IE", "en-NZ"];
 
+// Same sex-label convention as Sidebar.tsx's genderWord() - "Not set" for a
+// missing/other value rather than silently omitting it, since a nurse acting
+// on this opening script should never have to guess whether sex data exists.
+function sexAgeLabel(patientAge: QueueItem["patientAge"]): string {
+  if (!patientAge) {
+    return "Age/sex not yet available";
+  }
+  const sex =
+    patientAge.biologicalSex === "female"
+      ? "Female"
+      : patientAge.biologicalSex === "male"
+        ? "Male"
+        : patientAge.biologicalSex === "other"
+          ? "Other"
+          : "Sex not set";
+  return `${patientAge.ageYears} yrs · ${sex}`;
+}
+
 function hashStringToIndex(value: string, modulo: number): number {
   let hash = 0;
   for (let i = 0; i < value.length; i++) {
@@ -47,6 +65,7 @@ export function ReasonRuleOutStage({
   const [saveError, setSaveError] = useState("");
   const [captureError, setCaptureError] = useState("");
   const [playingAudio, setPlayingAudio] = useState(false);
+  const [vitalsExpanded, setVitalsExpanded] = useState(true);
 
   const temperature = item.vitals?.temperature ?? 37;
 
@@ -160,7 +179,7 @@ export function ReasonRuleOutStage({
         </div>
         <div>
           <div className="os-script">
-            Greet caller, confirm role <span>({item.reasonNarrative ?? "reason not yet captured"})</span>
+            Greet caller, confirm role <span>({sexAgeLabel(item.patientAge)})</span>
           </div>
           <div className="os-facts">
             <span>{item.channel}</span>
@@ -248,20 +267,43 @@ export function ReasonRuleOutStage({
         </div>
       )}
 
-      <div className="sub-hdr">
-        Vital Taking <span className="optional-tag">Optional</span>
+      <div
+        className="rag-rail-toggle sub-hdr-toggle"
+        role="button"
+        tabIndex={0}
+        onClick={() => setVitalsExpanded((current) => !current)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            setVitalsExpanded((current) => !current);
+          }
+        }}
+        aria-expanded={vitalsExpanded}
+        style={{ cursor: "pointer" }}
+      >
+        <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span className="sub-hdr-toggle-label">
+            Vital Taking <span className="optional-tag">Optional</span>
+          </span>
+          <label
+            className="vitals-unobtainable"
+            style={{ flexShrink: 0 }}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <input
+              type="checkbox"
+              checked={vitalsUnobtainable}
+              disabled={isReadOnly || saving}
+              onChange={(event) => saveVitalsUnobtainable(event.target.checked)}
+            />
+            Vitals cannot be obtained on this call
+          </label>
+        </span>
+        <span className="rag-rail-toggle-icon">{vitalsExpanded ? "−" : "+"}</span>
       </div>
-      <div className={`vitals-card${vitalsUnobtainable ? " disabled" : ""}`}>
-        <label className="vitals-unobtainable">
-          <input
-            type="checkbox"
-            checked={vitalsUnobtainable}
-            disabled={isReadOnly || saving}
-            onChange={(event) => saveVitalsUnobtainable(event.target.checked)}
-          />
-          Vitals cannot be obtained on this call
-        </label>
 
+      {vitalsExpanded && (
+      <div className={`vitals-card${vitalsUnobtainable ? " disabled" : ""}`}>
         <div className="vitals-grid">
           {numericVitalKeys.map((key) => (
             <div className="vfield" key={key}>
@@ -311,6 +353,7 @@ export function ReasonRuleOutStage({
           </p>
         )}
       </div>
+      )}
 
       <InitialAssessmentQuestions item={item} isReadOnly={isReadOnly} />
 

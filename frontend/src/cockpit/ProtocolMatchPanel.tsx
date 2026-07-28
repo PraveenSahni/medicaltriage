@@ -88,6 +88,7 @@ export function ProtocolMatchPanel({ item, isReadOnly }: { item: QueueItem; isRe
   const ageSexLabel = formatAgeSex(item);
   const [busy, setBusy] = useState(false);
   const [selectError, setSelectError] = useState("");
+  const [alternatesExpanded, setAlternatesExpanded] = useState(false);
 
   if (!prepared) {
     return null;
@@ -185,17 +186,26 @@ export function ProtocolMatchPanel({ item, isReadOnly }: { item: QueueItem; isRe
 
           {alternates.length > 0 && (
             <div className="protocol-match-alternates">
-              <div className="protocol-match-alternates-label">Other candidates considered</div>
-              {alternates.map((suggestion) => (
-                <SuggestionRow
-                  suggestion={suggestion}
-                  isSelected={false}
-                  canSelect={canSelect}
-                  busy={busy}
-                  onSelect={() => selectProtocol(suggestion.protocolId)}
-                  key={suggestion.protocolId}
-                />
-              ))}
+              <button
+                type="button"
+                className="rag-rail-toggle"
+                onClick={() => setAlternatesExpanded((current) => !current)}
+                aria-expanded={alternatesExpanded}
+              >
+                <span>Other candidates considered ({alternates.length})</span>
+                <span className="rag-rail-toggle-icon">{alternatesExpanded ? "−" : "+"}</span>
+              </button>
+              {alternatesExpanded &&
+                alternates.map((suggestion) => (
+                  <SuggestionRow
+                    suggestion={suggestion}
+                    isSelected={false}
+                    canSelect={canSelect}
+                    busy={busy}
+                    onSelect={() => selectProtocol(suggestion.protocolId)}
+                    key={suggestion.protocolId}
+                  />
+                ))}
             </div>
           )}
 

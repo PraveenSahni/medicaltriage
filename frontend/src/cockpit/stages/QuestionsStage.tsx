@@ -18,6 +18,51 @@ const displaySeverityByQueueSeverity: Record<QueueSeverity, string> = {
   SELF_CARE: "Self-care"
 };
 
+// Real STCC question text often bundles several clinical criteria into one
+// bracket-numbered sentence, e.g. "[1] SEVERE pain AND [2] age > 60 years" -
+// confirmed via direct DB query as a widespread vendor convention (72 of 152
+// real questions across all 5 protocols), always AND-joined at the top level
+// (0 real top-level ORs found). Rendered as one run-on sentence, the nurse has
+// to visually parse out "this is really N separate things that must ALL be
+// true" herself, mid-call. This splits it into distinct clauses for display
+// only - questionTextEn itself is never touched, and any string without a
+// "[1]" marker (the majority of real questions) passes through unchanged.
+const TRAILING_NOTE = /\s*\(((?:Exception|Reason)\s*:[^)]*)\)\s*$/i;
+
+function splitCompoundCriteria(text: string): { clauses: string[]; note?: string } {
+  if (!/\[\d+\]/.test(text)) {
+    return { clauses: [text] };
+  }
+  const clauses = text.split(/\sAND\s(?=\[\d+\])/);
+  const lastIndex = clauses.length - 1;
+  const noteMatch = clauses[lastIndex].match(TRAILING_NOTE);
+  if (noteMatch) {
+    clauses[lastIndex] = clauses[lastIndex].slice(0, noteMatch.index).trim();
+    return { clauses, note: noteMatch[1].trim() };
+  }
+  return { clauses };
+}
+
+function QuestionTitle({ text }: { text: string }) {
+  const { clauses, note } = splitCompoundCriteria(text);
+  if (clauses.length === 1) {
+    return <div className="step-title">{text}</div>;
+  }
+  return (
+    <>
+      <div className="step-title taq-criteria-list">
+        {clauses.map((clause, index) => (
+          <span className="taq-criteria-item" key={index}>
+            {index > 0 && <span className="taq-criteria-and">AND</span>}
+            {clause.trim()}
+          </span>
+        ))}
+      </div>
+      {note && <div className="step-rationale">{note}</div>}
+    </>
+  );
+}
+
 /**
  * item.taqResponses (a real, persisted Record<questionId, boolean> - see
  * QueueContextUpdateSchema) is the source of truth for which TAQ questions
@@ -352,7 +397,7 @@ export function QuestionsStage({
                           </span>
                         )}
                       </div>
-                      <div className="step-title">{question.questionTextEn}</div>
+                      <QuestionTitle text={question.questionTextEn} />
                       {question.rationaleEn && <div className="step-rationale">{question.rationaleEn}</div>}
                     </div>
                   </div>
@@ -379,7 +424,7 @@ export function QuestionsStage({
                   <div className="step-num">&#10003;</div>
                   <div style={{ flex: 1 }}>
                     <div className="gtag">{question.severity}</div>
-                    <div className="step-title">{question.questionTextEn}</div>
+                    <QuestionTitle text={question.questionTextEn} />
                     <div className="ans">&#10132; {answers[index] ? "Yes" : "No"}</div>
                   </div>
                   <div className="chev">&#9654;</div>

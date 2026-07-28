@@ -1,11 +1,53 @@
 import { useEffect, useState } from "react";
 import { useQueue, type QueueItem } from "../QueueContext";
 import { fetchProtocolDetail, type InitialAssessmentQuestion } from "./api/protocols";
+import { colorStyleForSeverity } from "./severityColors";
+
+// IAQ questions carry no severity (they're pure history-taking, not
+// triage-tier), so they get this app's own existing "no severity" neutral
+// tint (colorStyleForSeverity(undefined) - already used elsewhere, e.g. the
+// "no criteria met" card in QuestionsStage.tsx) rather than a new invented
+// color. This gives IAQ cards their own consistent, recognizable identity
+// distinct from every TAQ severity tier (red/amber/blue/green all already
+// taken), without colliding with any of them.
+const iaqCardStyle = colorStyleForSeverity(undefined);
 
 const painScaleChips = ["Mild (1-3)", "Moderate (4-7)", "Severe (8-10)"];
 
 function widgetLabel(responseType: string) {
   return responseType.replace(/_/g, " ");
+}
+
+// Splits a real STCC IAQ prompt line into the literal caller-facing script
+// (the first quoted question - what the nurse actually reads aloud) and
+// everything else (numbering prefix, additional quoted follow-ups,
+// "(Note: ...)"/"(e.g., ...)" parentheticals, "- If X:" branch labels) as a
+// muted secondary guidance line, mirroring the TAQ question card's bold
+// title + italic rationale structure (QuestionsStage.tsx). Falls back to the
+// whole line as the headline when there's no quoted segment at all (a real,
+// confirmed case: Diarrhea's bare-prose severity bullets) rather than
+// guessing at structure that isn't there.
+// Every real STCC IAQ line leads with its own numbered category label (e.g.
+// "1. LOCATION:", "9. RELIEVING/AGGRAVATING FACTORS:") - purely redundant
+// once split out, since the same category already shows in the gtag badge
+// above (widgetLabel(question.responseType)). Stripped here so a question
+// with no real guidance beyond that label (e.g. "1. LOCATION:" alone) hides
+// the guidance line entirely, matching TAQ's rationale only showing when
+// there's genuine content - not noise repeating what's already displayed.
+const LEADING_CATEGORY_LABEL = /^\d+\.\s*[A-Za-z][A-Za-z\s/-]*:\s*/;
+
+function splitPromptForDisplay(text: string): { headline: string; guidance?: string } {
+  const match = text.match(/"[^"]*"/);
+  if (!match || match.index === undefined) {
+    return { headline: text };
+  }
+  const headline = match[0].slice(1, -1).trim();
+  const guidance = (text.slice(0, match.index) + text.slice(match.index + match[0].length))
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(LEADING_CATEGORY_LABEL, "")
+    .trim();
+  return { headline, guidance: guidance.length > 0 ? guidance : undefined };
 }
 
 export function InitialAssessmentQuestions({ item, isReadOnly }: { item: QueueItem; isReadOnly: boolean }) {
@@ -95,13 +137,15 @@ export function InitialAssessmentQuestions({ item, isReadOnly }: { item: QueueIt
       {questions.map((question, index) => {
         const answered = question.id in answers;
         const isOpen = openId === question.id;
+        const { headline, guidance } = splitPromptForDisplay(question.promptTextEn);
         return (
-          <div key={question.id} className={`step${answered ? " asked" : ""}${isOpen ? " open" : ""}`}>
+          <div key={question.id} className={`step${answered ? " asked" : ""}${isOpen ? " open" : ""}`} style={iaqCardStyle}>
             <div className="step-hdr" onClick={() => toggle(question.id)} style={{ cursor: "pointer" }}>
               <div className="step-num">{answered ? "✓" : index + 1}</div>
               <div style={{ flex: 1 }}>
                 <div className="gtag">{widgetLabel(question.responseType)}</div>
-                <div className="step-title">{question.promptTextEn}</div>
+                <div className="step-title">{headline}</div>
+                {guidance && <div className="step-rationale">{guidance}</div>}
                 {answered && <div className="ans">&#10132; {answers[question.id]}</div>}
               </div>
               <div className="chev">&#9654;</div>

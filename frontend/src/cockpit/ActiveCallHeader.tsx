@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQueue, type QueueItem } from "../QueueContext";
 import type { AuthenticatedSession } from "../auth/session";
+import { FitToFlyBadge } from "./FitToFlyBadge";
 
 type ActiveCallHeaderProps = {
   item: QueueItem;
@@ -59,36 +60,40 @@ export function ActiveCallHeader({
         </div>
       </div>
 
-      {!isReadOnly && (
-        <div className="active-call-actions">
-          {actionError && (
-            <span className="cockpit-action-error" role="alert">
-              {actionError}
-            </span>
-          )}
-          {canEscalate && (
-            <button type="button" className="escalate-btn" onClick={onEscalate} disabled={busy || isEscalated}>
-              {escalateLabel}
-            </button>
-          )}
-          {canHold && (
-            <button
-              type="button"
-              className={isHeld ? "answer-btn resume-btn" : "hold-btn"}
-              onClick={toggleHold}
-              disabled={busy}
-            >
-              {isHeld ? "↻ Resume" : "❚❚ Hold Call"}
-            </button>
-          )}
-        </div>
-      )}
+      <div className="active-call-hdr-right">
+        {!isReadOnly && (
+          <div className="active-call-actions">
+            {actionError && (
+              <span className="cockpit-action-error" role="alert">
+                {actionError}
+              </span>
+            )}
+            {canEscalate && (
+              <button type="button" className="escalate-btn" onClick={onEscalate} disabled={busy || isEscalated}>
+                {escalateLabel}
+              </button>
+            )}
+            {canHold && (
+              <button
+                type="button"
+                className={isHeld ? "answer-btn resume-btn" : "hold-btn"}
+                onClick={toggleHold}
+                disabled={busy}
+              >
+                {isHeld ? "↻ Resume" : "❚❚ Hold Call"}
+              </button>
+            )}
+          </div>
+        )}
 
-      {isReadOnly && (
-        <div className="ist-readonly-badge" role="status">
-          &#128274; Closed - Read Only
-        </div>
-      )}
+        {isReadOnly && (
+          <div className="ist-readonly-badge" role="status">
+            &#128274; Closed - Read Only
+          </div>
+        )}
+
+        <FitToFlyBadge item={item} />
+      </div>
     </div>
   );
 }

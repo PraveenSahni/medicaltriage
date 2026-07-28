@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+import { Plane } from "lucide-react";
 import { useQueue, type QueueItem } from "../../QueueContext";
 import { colorStyleForSeverity } from "../severityColors";
 import { fetchProtocolDetail, type ProtocolCareAdvice, type ProtocolSupplemental } from "../api/protocols";
+import { fetchFitToFlyPreview } from "../api/triageCompletion";
+import { colorStyleForFitToFly, FIT_TO_FLY_LABEL, FIT_TO_FLY_RATIONALE, type FitToFlyStatus } from "../fitToFlyDisplay";
 import { QATAR_DESTINATION_BY_CODE } from "../qatarDestinations";
 
 const severityForDispositionCode: Record<string, string> = {
@@ -50,6 +53,8 @@ export function DispositionStage({
   const [supplementals, setSupplementals] = useState<ProtocolSupplemental[]>([]);
   const [headingOverride, setHeadingOverride] = useState<string | undefined>(undefined);
   const [loadError, setLoadError] = useState("");
+  const [referenceExpanded, setReferenceExpanded] = useState(false);
+  const [fitToFlyStatus, setFitToFlyStatus] = useState<FitToFlyStatus | undefined>(item.fitToFlyStatus);
 
   const protocolId = item.preparedProtocol?.primaryProtocolId;
   const severity = severityForDispositionCode[item.dispositionCode ?? ""] ?? item.calculatedSeverity;
@@ -96,6 +101,40 @@ export function DispositionStage({
     };
   }, [protocolId, item.dispositionCode, terminalQuestionId]);
 
+  // Fit-to-fly should be automatic and visible as soon as a disposition is
+  // reached - no manual step required. Skips the call entirely once a value
+  // is already persisted on the item (avoids re-deriving/re-saving on every
+  // render for a call that's already been through this).
+  useEffect(() => {
+    if (!item.dispositionCode || item.fitToFlyStatus) {
+      return;
+    }
+    let cancelled = false;
+    fetchFitToFlyPreview({
+      jobTitle: item.jobTitle,
+      finalDispositionCode: item.dispositionCode,
+      customAviationTags: item.customAviationTags
+    })
+      .then(async (result) => {
+        if (cancelled) {
+          return;
+        }
+        setFitToFlyStatus(result.fitToFlyStatus);
+        await updateItemContext(item.id, { fitToFlyStatus: result.fitToFlyStatus });
+      })
+      .catch(() => {
+        // Leave fitToFlyStatus unset - the render falls back to a plain
+        // "not yet determined" message rather than a hard error, since this
+        // is a supplementary recommendation, not a blocking clinical field.
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item.id, item.dispositionCode, item.fitToFlyStatus]);
+
+  const displayFitToFlyStatus = item.fitToFlyStatus ?? fitToFlyStatus;
+
   async function approveAndContinue() {
     setBusy(true);
     setActionError("");
@@ -136,6 +175,23 @@ export function DispositionStage({
 
   return (
     <section aria-label="Disposition and Advice">
+      <div className="reason-card" style={{ marginBottom: 14 }}>
+        <label>Fit-to-Fly Recommendation</label>
+        {displayFitToFlyStatus ? (
+          <div style={colorStyleForFitToFly(displayFitToFlyStatus)}>
+            <div className="fit-to-fly-value">
+              <Plane size={16} strokeWidth={2.5} />
+              {FIT_TO_FLY_LABEL[displayFitToFlyStatus]}
+            </div>
+            <div className="action-sub-note" style={{ marginTop: 4 }}>
+              {FIT_TO_FLY_RATIONALE[displayFitToFlyStatus]}
+            </div>
+          </div>
+        ) : (
+          <div className="action-sub-note">Not yet determined.</div>
+        )}
+      </div>
+
       <div className="action-sub-note">
         The clinical disposition is determined by rules and nurse-confirmed answers. Care advice
         is mapped from approved content.
@@ -161,6 +217,20 @@ export function DispositionStage({
         <p className="cockpit-action-error" role="alert">
           {loadError}
         </p>
+      )}
+
+      {actionError && (
+        <p className="cockpit-action-error" role="alert">
+          {actionError}
+        </p>
+      )}
+
+      {!isReadOnly && (
+        <div className="flow-actions">
+          <button type="button" className="complete-btn" onClick={approveAndContinue} disabled={busy}>
+            Continue to SBAR &rarr;
+          </button>
+        </div>
       )}
 
       {careAdvice.length > 0 && (
@@ -196,34 +266,30 @@ export function DispositionStage({
 
       {supplementals.length > 0 && (
         <div className="disposition-reference-section">
-          <div className="disposition-reference-heading">Reference &amp; Patient Education</div>
-          <div className="file-grid">
-            {supplementals.map((supplemental) => (
-              <div key={supplemental.id} className="fc">
-                <b>{supplemental.titleEn}</b>
-                <div className="disposition-reference-type">{supplemental.supplementalType}</div>
-                {supplemental.sanitizedHtmlEn ? (
-                  <div className="care-advice-rich-text" dangerouslySetInnerHTML={{ __html: supplemental.sanitizedHtmlEn }} />
-                ) : (
-                  <div style={{ whiteSpace: "pre-wrap" }}>{supplemental.plainTextEn}</div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {actionError && (
-        <p className="cockpit-action-error" role="alert">
-          {actionError}
-        </p>
-      )}
-
-      {!isReadOnly && (
-        <div className="flow-actions">
-          <button type="button" className="complete-btn" onClick={approveAndContinue} disabled={busy}>
-            Continue to SBAR &rarr;
+          <button
+            type="button"
+            className="rag-rail-toggle"
+            onClick={() => setReferenceExpanded((current) => !current)}
+            aria-expanded={referenceExpanded}
+          >
+            <span>Reference &amp; Patient Education ({supplementals.length})</span>
+            <span className="rag-rail-toggle-icon">{referenceExpanded ? "−" : "+"}</span>
           </button>
+          {referenceExpanded && (
+            <div className="file-grid">
+              {supplementals.map((supplemental) => (
+                <div key={supplemental.id} className="fc">
+                  <b>{supplemental.titleEn}</b>
+                  <div className="disposition-reference-type">{supplemental.supplementalType}</div>
+                  {supplemental.sanitizedHtmlEn ? (
+                    <div className="care-advice-rich-text" dangerouslySetInnerHTML={{ __html: supplemental.sanitizedHtmlEn }} />
+                  ) : (
+                    <div style={{ whiteSpace: "pre-wrap" }}>{supplemental.plainTextEn}</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </section>

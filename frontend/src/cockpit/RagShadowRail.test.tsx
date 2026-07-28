@@ -80,6 +80,8 @@ describe("RagShadowRail", () => {
     const item = makeItem({ preparedProtocol: { ragShadow: makeRagShadow() } as QueueItem["preparedProtocol"] });
     render(<RagShadowRail item={item} />);
 
+    // Starts collapsed - expand it first.
+    fireEvent.click(screen.getByRole("button", { name: /RAG Shadow \(Advisory\)/ }));
     expect(screen.getByText("Full agreement")).toBeInTheDocument();
     expect(screen.getByText("82% confidence")).toBeInTheDocument();
     expect(screen.getByText("Sore Throat")).toBeInTheDocument();
@@ -92,11 +94,12 @@ describe("RagShadowRail", () => {
     const item = makeItem({ preparedProtocol: { ragShadow: makeRagShadow() } as QueueItem["preparedProtocol"] });
     render(<RagShadowRail item={item} />);
 
-    expect(screen.getByText("Full agreement")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: /RAG Shadow \(Advisory\)/ }));
+    // Starts collapsed.
     expect(screen.queryByText("Full agreement")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /RAG Shadow \(Advisory\)/ }));
     expect(screen.getByText("Full agreement")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /RAG Shadow \(Advisory\)/ }));
+    expect(screen.queryByText("Full agreement")).not.toBeInTheDocument();
   });
 
   it("never renders a mutating control beyond the collapse toggle", () => {
