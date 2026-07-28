@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { QueueItem } from "../QueueContext";
 import { fetchProtocolDetail, type ProtocolDetail } from "../cockpit/api/protocols";
+import { FitToFlyBadge } from "../cockpit/FitToFlyBadge";
 import {
   BOARD_COLUMNS,
   friendlyProtocolLabel,
@@ -135,6 +136,12 @@ export function ReadOnlyCallDrawer({ item, onClose }: ReadOnlyCallDrawerProps) {
           <div className="smb-detail">
             <div className="smb-detail-label">Priority</div>
             <div className="smb-detail-value">{friendlySeverity(item.calculatedSeverity)}</div>
+          </div>
+          <div className="smb-detail">
+            <div className="smb-detail-label">Fit-to-fly</div>
+            <div className="smb-detail-value">
+              <FitToFlyBadge item={item} />
+            </div>
           </div>
           {item.status === "COMPLETED" && (
             <div className="smb-detail">
