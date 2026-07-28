@@ -122,6 +122,17 @@
   color: var(--ink) !important;
 }
 
+#cockpit-root .cockpit-utility-btn-active {
+  background: var(--ems) !important;
+  border-color: var(--ems) !important;
+  color: #fff !important;
+}
+
+#cockpit-root .cockpit-utility-btn-active:hover {
+  background: var(--ems) !important;
+  color: #fff !important;
+}
+
 #cockpit-root .cockpit-sidebar-body {
   padding: 16px 0 !important;
   flex: 1;

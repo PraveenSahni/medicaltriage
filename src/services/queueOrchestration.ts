@@ -1702,8 +1702,12 @@ export async function deleteQueueItem(session: AuthenticatedSession, id: string)
 
 export async function createQueueItem(session: AuthenticatedSession, request: QueueCreateRequest): Promise<QueueItemDto> {
   requireQueueAccess(session);
-  if (!isCallIntake(session) && !hasManagerControl(session)) {
-    throw new QueueOrchestrationError(403, "Only intake or queue manager roles can create queue items.", "QUEUE_ROLE_DENIED");
+  if (!isCallIntake(session) && !hasManagerControl(session) && !isClinicalOperator(session)) {
+    throw new QueueOrchestrationError(
+      403,
+      "Only intake, queue manager, or clinical operator roles can create queue items.",
+      "QUEUE_ROLE_DENIED"
+    );
   }
   const createdAtIso = request.seedCreatedAtIso && isMockMode() ? request.seedCreatedAtIso : nowIso();
   const organizationId = request.organizationId ?? session.user.organizationId ?? "org_ist_tech";

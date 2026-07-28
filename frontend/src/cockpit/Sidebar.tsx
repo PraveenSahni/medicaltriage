@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueue, type QueueItem, type QueueSeverity } from "../QueueContext";
 import { CockpitUtilityBar } from "./CockpitUtilityBar";
+import { generateDemoStccCall } from "../serviceManagerBoard/demoStccCallGenerator";
 import type { AuthenticatedSession } from "../auth/session";
 
 type SidebarProps = {
@@ -129,8 +130,39 @@ export function Sidebar({
   onLogout,
   onBack
 }: SidebarProps) {
-  const { claimItem, connectCall } = useQueue();
+  const { claimItem, connectCall, refreshQueue } = useQueue();
   const [claimError, setClaimError] = useState("");
+  const [autoGenerateOn, setAutoGenerateOn] = useState(false);
+  const [, setGenerateError] = useState<string | undefined>();
+  const generatingRef = useRef(false);
+
+  // While toggled on, keeps generating one new demo call every 20 seconds
+  // until toggled off, reusing the same generator/pattern as the Service
+  // Manager Board's "Generate Calls" toggle. A generation already in flight
+  // is never overlapped.
+  useEffect(() => {
+    if (!autoGenerateOn) {
+      return;
+    }
+    async function tick() {
+      if (generatingRef.current) {
+        return;
+      }
+      generatingRef.current = true;
+      try {
+        await generateDemoStccCall();
+        await refreshQueue();
+        setGenerateError(undefined);
+      } catch (caught) {
+        setGenerateError(caught instanceof Error ? caught.message : "Failed to generate call.");
+      } finally {
+        generatingRef.current = false;
+      }
+    }
+    void tick();
+    const handle = window.setInterval(() => void tick(), 20_000);
+    return () => window.clearInterval(handle);
+  }, [autoGenerateOn, refreshQueue]);
   const [activeTab, setActiveTab] = useState<"open" | "completed">("open");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortMode, setSortMode] = useState<SortMode>("smart");
@@ -239,7 +271,13 @@ export function Sidebar({
 
   return (
     <aside className="cockpit-sidebar" aria-label="Open calls">
-      <CockpitUtilityBar session={session} onLogout={onLogout} onBack={onBack} />
+      <CockpitUtilityBar
+        session={session}
+        onLogout={onLogout}
+        onBack={onBack}
+        autoGenerateOn={autoGenerateOn}
+        onToggleGenerate={() => setAutoGenerateOn((current) => !current)}
+      />
       <div className="cockpit-sidebar-body">
       <div className="cockpit-sidebar-tabs" role="tablist" aria-label="Call list">
         <button

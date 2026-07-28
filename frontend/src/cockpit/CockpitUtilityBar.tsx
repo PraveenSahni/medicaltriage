@@ -1,4 +1,4 @@
-import { ArrowLeft, HelpCircle, LogOut } from "lucide-react";
+import { ArrowLeft, HelpCircle, LogOut, Play, Square } from "lucide-react";
 import type { AuthenticatedSession } from "../auth/session";
 import { getAccessToken } from "../authToken";
 
@@ -6,6 +6,8 @@ type CockpitUtilityBarProps = {
   session: AuthenticatedSession;
   onLogout: () => void;
   onBack?: () => void;
+  autoGenerateOn: boolean;
+  onToggleGenerate: () => void;
 };
 
 /**
@@ -18,13 +20,27 @@ type CockpitUtilityBarProps = {
  * without it there is no way back once a user enters here. The caller
  * decides the actual destination; this button is destination-agnostic.
  */
-export function CockpitUtilityBar({ session, onLogout, onBack }: CockpitUtilityBarProps) {
+export function CockpitUtilityBar({ session, onLogout, onBack, autoGenerateOn, onToggleGenerate }: CockpitUtilityBarProps) {
   return (
     <div className="cockpit-utility-bar">
       <div className="cockpit-utility-user">
         <span className="cockpit-utility-name">{session.user.fullName}</span>
       </div>
       <div className="cockpit-utility-actions">
+        <button
+          type="button"
+          className={`cockpit-utility-btn${autoGenerateOn ? " cockpit-utility-btn-active" : ""}`}
+          onClick={onToggleGenerate}
+          aria-pressed={autoGenerateOn}
+          title={
+            autoGenerateOn
+              ? "Stop generating demo incoming calls"
+              : "Continuously generate demo incoming calls across the available protocol content"
+          }
+          aria-label={autoGenerateOn ? "Stop generating calls" : "Generate calls"}
+        >
+          {autoGenerateOn ? <Square size={14} /> : <Play size={14} />}
+        </button>
         {onBack && (
           <button
             type="button"
