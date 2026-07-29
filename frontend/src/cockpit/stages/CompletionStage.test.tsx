@@ -98,6 +98,9 @@ describe("CompletionStage", () => {
 
     expect(screen.queryByRole("button", { name: /Copy SBAR/ })).not.toBeInTheDocument();
 
+    const completeButton = screen.getByRole("button", { name: /Complete Call/ });
+    completeButton.click();
+
     await waitFor(() => expect(compileTriageCompletion).toHaveBeenCalledTimes(1));
     expect(compileTriageCompletion).toHaveBeenCalledWith(
       item.id,
@@ -110,8 +113,7 @@ describe("CompletionStage", () => {
     );
   });
 
-  it("auto-completes as soon as a disposition and destination are already set, with no manual Complete Call click needed", async () => {
-    compileTriageCompletion.mockResolvedValue({ notePayload: "# Auto note", clipboardOptimized: true });
+  it("does NOT auto-complete on mount even when disposition and destination are already set - the nurse must review and click Complete Call herself", async () => {
     const item = makeItem({
       status: "IN_PROCESS",
       sbarNoteText: undefined,
@@ -119,11 +121,11 @@ describe("CompletionStage", () => {
       dispositionCode: "HMC_URGENT_REVIEW",
       destinationName: "HMC urgent review pathway"
     });
-    const onCallCompleted = jest.fn();
-    render(<CompletionStage item={item} isReadOnly={false} onCallCompleted={onCallCompleted} />);
+    render(<CompletionStage item={item} isReadOnly={false} onCallCompleted={jest.fn()} />);
 
-    await waitFor(() => expect(moveItem).toHaveBeenCalledWith(item.id, "SBAR", "COMPLETED"));
-    await waitFor(() => expect(onCallCompleted).toHaveBeenCalledTimes(1));
+    expect(screen.getByRole("button", { name: /Complete Call/ })).toBeEnabled();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(moveItem).not.toHaveBeenCalled();
   });
 
   it("does not auto-complete (and shows the manual button) when disposition/destination are not yet set", () => {

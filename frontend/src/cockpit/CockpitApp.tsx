@@ -10,6 +10,7 @@ import { QuestionsStage } from "./stages/QuestionsStage";
 import { DispositionStage } from "./stages/DispositionStage";
 import { CompletionStage } from "./stages/CompletionStage";
 import { RagShadowRail } from "./RagShadowRail";
+import { completeQueueItem } from "./completeQueueItem";
 
 export type CockpitStageKey = "reason" | "questions" | "disposition" | "sbar";
 
@@ -71,6 +72,26 @@ export function CockpitApp({ session, onLogout, onBack }: CockpitAppProps) {
   const isReadOnly = activeItem?.status === "COMPLETED";
 
   function openCall(item: QueueItem) {
+    // A nurse who has already reached a disposition on the call she's
+    // leaving shouldn't have to remember to come back and click "Complete
+    // Call" - moving on to answer a different call is itself a clear signal
+    // she's done reviewing this one. This never fires mid-review (Reason,
+    // Questions, or Disposition & Advice stages have no dispositionCode/
+    // destinationName yet, or the nurse hasn't reached SBAR), only once
+    // she's already navigating away from a fully-triaged, still-open call.
+    if (
+      activeItem &&
+      activeItem.id !== item.id &&
+      activeItem.status !== "COMPLETED" &&
+      activeItem.dispositionCode &&
+      activeItem.destinationName
+    ) {
+      void completeQueueItem(activeItem, updateItemContext, moveItem).catch(() => {
+        // Non-critical - the outgoing call simply stays open for the nurse
+        // (or another nurse) to complete manually later; nothing here should
+        // block switching to the newly-selected call.
+      });
+    }
     setActiveItemById(item.id);
     setStage(stageKeyForQueueItem(item));
   }

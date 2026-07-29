@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueue, type QueueItem } from "../../QueueContext";
 import { compileTriageCompletion, previewTriageCompletion } from "../api/triageCompletion";
 
@@ -124,30 +124,6 @@ export function CompletionStage({ item, isReadOnly, onCallCompleted }: Completio
     }
   }
 
-  // Reaching this stage with a disposition and destination already set means
-  // there is nothing left for the nurse to decide - the call closes itself
-  // automatically instead of waiting on a manual "Complete Call" click, so a
-  // fully-triaged case can never sit open indefinitely just because nobody
-  // pressed a button. autoCompleteAttempted guards against double-firing
-  // across re-renders (e.g. when item/busy state updates mid-flight) - only
-  // one automatic attempt is ever made per mount; a failed attempt still
-  // surfaces the manual button below so the nurse can retry by hand.
-  const autoCompleteAttempted = useRef(false);
-  useEffect(() => {
-    if (
-      isReadOnly ||
-      completed ||
-      autoCompleteAttempted.current ||
-      !item.dispositionCode ||
-      !item.destinationName
-    ) {
-      return;
-    }
-    autoCompleteAttempted.current = true;
-    void completeCall();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReadOnly, completed, item.dispositionCode, item.destinationName]);
-
   return (
     <section aria-label="SBAR / Complete">
       <div className="action-sub-note">
@@ -182,9 +158,7 @@ export function CompletionStage({ item, isReadOnly, onCallCompleted }: Completio
             &#128274; This call is closed - SBAR is shown for reference only.
           </div>
         ) : busy && !actionError ? (
-          <div style={{ marginTop: 12, fontSize: "0.8rem", color: "var(--muted)" }}>
-            Closing this call automatically...
-          </div>
+          <div style={{ marginTop: 12, fontSize: "0.8rem", color: "var(--muted)" }}>Completing this call...</div>
         ) : (
           <div className="flow-actions">
             <button
