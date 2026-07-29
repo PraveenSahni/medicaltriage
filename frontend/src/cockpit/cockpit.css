@@ -854,6 +854,28 @@
   border-color: var(--accent);
 }
 
+#cockpit-root .reason-confirm-btn {
+  display: inline-block !important;
+  width: auto !important;
+  align-self: flex-start !important;
+  margin-top: 8px !important;
+  border: 1px solid var(--accent) !important;
+  background: var(--card) !important;
+  color: var(--accent) !important;
+  border-radius: 6px !important;
+  padding: 3px 10px !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  cursor: pointer !important;
+}
+
+#cockpit-root .reason-confirm-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: default !important;
+}
+
 #cockpit-root .reason-capture-note {
   font-size: 0.78rem !important;
   color: var(--muted) !important;

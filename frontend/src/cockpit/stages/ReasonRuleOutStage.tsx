@@ -253,6 +253,16 @@ export function ReasonRuleOutStage({
           onChange={(event) => setReasonNarrative(event.target.value)}
           onBlur={saveReasonNarrative}
         />
+        {!isReadOnly && (
+          <button
+            type="button"
+            className="reason-confirm-btn"
+            disabled={saving || reasonNarrative === (item.reasonNarrative ?? "")}
+            onClick={saveReasonNarrative}
+          >
+            {saving ? "Saving..." : "Confirm"}
+          </button>
+        )}
         {item.reasonCallCapture && (
           <div className="reason-capture-note">
             Auto-filled from call audio via {item.reasonCallCapture.provider}
