@@ -118,10 +118,20 @@ export function ProtocolMatchPanel({ item, isReadOnly }: { item: QueueItem; isRe
   const selected = selectedProtocolId
     ? suggestions.find((suggestion) => suggestion.protocolId === selectedProtocolId)
     : undefined;
-  const alternates = selected
-    ? suggestions.filter((suggestion) => suggestion.protocolId !== selected.protocolId)
-    : suggestions;
-  const selectedTitle = selected?.titleEn ?? prepared.primaryProtocolTitle;
+  // Exclude the selected guideline from "other candidates" by id, not just
+  // when a matching suggestion object was found - otherwise a nurse's
+  // override that has since fallen out of the (re-scored) suggestions list
+  // still leaves the top keyword match's own entry duplicated below, since
+  // it was never actually excluded in that case.
+  const alternates = suggestions.filter((suggestion) => suggestion.protocolId !== selectedProtocolId);
+  // Only fall back to the top keyword match's title when that IS what's
+  // selected (no override, or an override that happens to equal it) -
+  // falling back unconditionally previously showed the top match's name
+  // under "Selected guideline" even when the nurse had chosen a different
+  // protocol no longer present in the current suggestions list, which
+  // silently misrepresented her actual choice.
+  const selectedTitle =
+    selected?.titleEn ?? (selectedProtocolId === prepared.primaryProtocolId ? prepared.primaryProtocolTitle : undefined);
 
   return (
     <div className="protocol-match-panel">

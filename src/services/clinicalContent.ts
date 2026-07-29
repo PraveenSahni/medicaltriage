@@ -301,12 +301,28 @@ function scoreProtocol(protocol: ClinicalContentProtocol, query: string): { scor
     score += 25;
   }
 
+  // Best-match-only, same reasoning as the per-term loop below: a protocol
+  // whose own keyword bank repeats one generic word (e.g. "pain") across
+  // several authored phrases (abdomen pain, abdominal pain, bladder pain...)
+  // must not stack credit for each one - that rewards keyword-bank density
+  // for a common word rather than actual relevance to the caller's reason,
+  // and can make a protocol with more "pain"-containing phrases outscore a
+  // genuinely more specific match by 10x+ on a short/generic query like the
+  // bare word "Pain" (confirmed live). Only the single highest-weight
+  // matching phrase counts, mirroring how the per-term loop already handles
+  // this same failure mode for individual words.
+  let bestPhraseMatch: { weight: number; phrase: string } | undefined;
   for (const keyword of protocol.keywords) {
     const phrase = normalize(keyword.phrase);
     if (normalizedQuery.includes(phrase) || phrase.includes(normalizedQuery)) {
-      score += keyword.weight + 40;
-      matchedTerms.add(keyword.phrase);
+      if (!bestPhraseMatch || keyword.weight > bestPhraseMatch.weight) {
+        bestPhraseMatch = { weight: keyword.weight, phrase: keyword.phrase };
+      }
     }
+  }
+  if (bestPhraseMatch) {
+    score += bestPhraseMatch.weight + 40;
+    matchedTerms.add(bestPhraseMatch.phrase);
   }
 
   // Per-term partial credit is awarded at most once per query term, not once
