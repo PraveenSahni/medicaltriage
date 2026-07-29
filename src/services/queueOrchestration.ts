@@ -403,6 +403,7 @@ function queuePayloadFromUnknown(value: unknown): {
   sbarNoteText?: string;
   fitToFlyStatus?: QueueRecord["fitToFlyStatus"];
   vitalsUnobtainable?: boolean;
+  reasonNarrativeConfirmed?: boolean;
   matchedProtocolId?: string;
   dependentId?: string;
 } {
@@ -434,6 +435,8 @@ function queuePayloadFromUnknown(value: unknown): {
         ? value.fitToFlyStatus
         : undefined,
     vitalsUnobtainable: typeof value.vitalsUnobtainable === "boolean" ? value.vitalsUnobtainable : undefined,
+    reasonNarrativeConfirmed:
+      typeof value.reasonNarrativeConfirmed === "boolean" ? value.reasonNarrativeConfirmed : undefined,
     identityValidationSource: source === "HRMS_AUTO" || source === "HRMS_LOOKUP_FAILED" ? source : undefined,
     identityValidationMessage: stringFromPayload(value.identityValidationMessage),
     identityValidatedAtIso: stringFromPayload(value.identityValidatedAtIso),
@@ -463,6 +466,8 @@ function queuePayloadFor(record: QueueRecord): Record<string, unknown> {
   if (record.sbarNoteText) payload.sbarNoteText = record.sbarNoteText;
   if (record.fitToFlyStatus) payload.fitToFlyStatus = record.fitToFlyStatus;
   if (typeof record.vitalsUnobtainable === "boolean") payload.vitalsUnobtainable = record.vitalsUnobtainable;
+  if (typeof record.reasonNarrativeConfirmed === "boolean")
+    payload.reasonNarrativeConfirmed = record.reasonNarrativeConfirmed;
   // The app-facing matchedProtocolId is the file-based external protocol id
   // (e.g. "stcc-abdominal-pain-male"), not the Algorithm table's internal
   // cuid that the FK column of the same name actually stores - stash the
@@ -725,6 +730,7 @@ function dbRowToRecord(row: QueueDbRow): QueueRecord {
     sbarNoteText: queuePayload.sbarNoteText,
     fitToFlyStatus: queuePayload.fitToFlyStatus,
     vitalsUnobtainable: queuePayload.vitalsUnobtainable,
+    reasonNarrativeConfirmed: queuePayload.reasonNarrativeConfirmed,
     clinicalApproval: approvalFromUnknown(row.clinicalApproval),
     sbarCopied: row.sbarCopied,
     assignedNurseId: row.assignedNurseId ?? undefined,
@@ -1981,7 +1987,18 @@ export async function updateQueueContext(
   if (update.clinicalApproval) record.clinicalApproval = update.clinicalApproval;
   if (typeof update.sbarCopied === "boolean") record.sbarCopied = update.sbarCopied;
   if (update.summary) record.summary = update.summary;
-  if (update.reasonNarrative) record.reasonNarrative = update.reasonNarrative;
+  if (update.reasonNarrative) {
+    // A later edit to the Reason for Call always invalidates any earlier
+    // "I heard the audio, this is accurate" attestation - never let a stale
+    // confirmation survive a change to the very text it was confirming.
+    // This request may also carry a fresh confirmation of its own (handled
+    // below), which takes precedence over this reset.
+    record.reasonNarrative = update.reasonNarrative;
+    record.reasonNarrativeConfirmed = false;
+  }
+  if (typeof update.reasonNarrativeConfirmed === "boolean") {
+    record.reasonNarrativeConfirmed = update.reasonNarrativeConfirmed;
+  }
   if (update.reasonCallCapture) {
     record.reasonCallCapture = update.reasonCallCapture;
   } else if (update.reasonNarrative) {

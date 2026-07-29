@@ -896,6 +896,47 @@
   gap: 10px !important;
 }
 
+#cockpit-root .reason-label-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+#cockpit-root .reason-changed-flag {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  color: #a32d2d !important;
+  border: 1px solid #a32d2d !important;
+  border-radius: 6px !important;
+  padding: 3px 10px !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+}
+
+#cockpit-root .reason-heard-confirm-btn {
+  border: 1px solid #0f6e56 !important;
+  background: var(--card) !important;
+  color: #0f6e56 !important;
+  border-radius: 6px !important;
+  padding: 3px 10px !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  cursor: pointer !important;
+}
+
+#cockpit-root .reason-heard-confirm-btn.confirmed {
+  background: #0f6e56 !important;
+  color: #fff !important;
+}
+
+#cockpit-root .reason-heard-confirm-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: default !important;
+}
+
 #cockpit-root .reason-audio-play-btn {
   border: 1px solid var(--accent) !important;
   background: var(--card) !important;

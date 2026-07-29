@@ -78,6 +78,12 @@ export function ReasonRuleOutStage({
   // (and therefore disposition path) were already answered against the
   // previous wording.
   const questionsStarted = Boolean(item.taqResponses && Object.keys(item.taqResponses).length > 0);
+  const [confirmingTranscript, setConfirmingTranscript] = useState(false);
+  // True whenever the textarea has a draft that differs from what's actually
+  // saved - the same condition the Confirm-save button already gates on.
+  // Shown as a "Changed" flag next to Play call audio so the nurse can see
+  // at a glance that her edit hasn't been saved yet.
+  const hasUnsavedReasonEdit = reasonNarrative !== (item.reasonNarrative ?? "");
 
   const temperature = item.vitals?.temperature ?? 37;
 
@@ -127,11 +133,32 @@ export function ReasonRuleOutStage({
     setSaving(true);
     setSaveError("");
     try {
+      // Saving a changed reasonNarrative always clears any earlier "heard &
+      // confirmed" attestation server-side (see updateQueueItemContext) -
+      // a stale confirmation must never survive editing the very text it
+      // was confirming.
       await updateItemContext(item.id, { reasonNarrative });
     } catch (caught) {
       setSaveError(caught instanceof Error ? caught.message : "Failed to save.");
     } finally {
       setSaving(false);
+    }
+  }
+
+  // Explicit nurse attestation that she has listened to the call audio and
+  // the saved Reason for Call text accurately reflects it - a distinct,
+  // affirmative action from just saving an edit, since a saved transcript
+  // may still be inaccurate if nobody has actually checked it against the
+  // audio.
+  async function confirmTranscript() {
+    setConfirmingTranscript(true);
+    setSaveError("");
+    try {
+      await updateItemContext(item.id, { reasonNarrativeConfirmed: true });
+    } catch (caught) {
+      setSaveError(caught instanceof Error ? caught.message : "Failed to save.");
+    } finally {
+      setConfirmingTranscript(false);
     }
   }
 
@@ -240,27 +267,58 @@ export function ReasonRuleOutStage({
               time for every call - this stays gated on that field (not just
               reasonNarrative) so the button accurately reflects "this call's
               reason was captured", which is universally true in practice. */}
-          {item.reasonCallCapture && (
-            <button
-              type="button"
-              className="reason-audio-play-btn"
-              onClick={playReasonAudio}
-              disabled={playingAudio}
-              aria-label="Play call audio"
-              title="Play call audio"
-            >
-              {playingAudio ? "\u{1F50A} Playing..." : "▶ Play call audio"}
-            </button>
-          )}
+          <div className="reason-label-actions">
+            {item.reasonCallCapture && (
+              <button
+                type="button"
+                className="reason-audio-play-btn"
+                onClick={playReasonAudio}
+                disabled={playingAudio}
+                aria-label="Play call audio"
+                title="Play call audio"
+              >
+                {playingAudio ? "\u{1F50A} Playing..." : "▶ Play call audio"}
+              </button>
+            )}
+            {!isReadOnly && !questionsStarted && hasUnsavedReasonEdit && (
+              <span className="reason-changed-flag" title="This edit hasn't been saved yet - click Confirm below.">
+                &#10007; Changed
+              </span>
+            )}
+            {!isReadOnly && !questionsStarted && !hasUnsavedReasonEdit && (
+              <button
+                type="button"
+                className={`reason-heard-confirm-btn${item.reasonNarrativeConfirmed ? " confirmed" : ""}`}
+                onClick={confirmTranscript}
+                // Once confirmed, this is frozen - a nurse who wants to
+                // change the wording again has to edit the text (which
+                // clears the confirmation server-side) rather than being
+                // able to just re-click this as a no-op toggle.
+                disabled={confirmingTranscript || item.reasonNarrativeConfirmed}
+                title={
+                  item.reasonNarrativeConfirmed
+                    ? "Confirmed - you've verified this text against the call audio. Edit the text above to change it."
+                    : "Confirm you've listened to the audio and this text is accurate."
+                }
+              >
+                &#10003; {item.reasonNarrativeConfirmed ? "Confirmed" : "Confirm heard"}
+              </button>
+            )}
+          </div>
         </div>
         <textarea
           id="history-input"
           value={reasonNarrative}
-          disabled={isReadOnly || saving || questionsStarted}
+          disabled={isReadOnly || saving || questionsStarted || item.reasonNarrativeConfirmed}
           onChange={(event) => setReasonNarrative(event.target.value)}
           onBlur={saveReasonNarrative}
         />
-        {!isReadOnly && !questionsStarted && (
+        {!isReadOnly && !questionsStarted && item.reasonNarrativeConfirmed && (
+          <p className="reason-locked-note">
+            Reason for Call is locked - it has been confirmed as heard and accurate.
+          </p>
+        )}
+        {!isReadOnly && !questionsStarted && !item.reasonNarrativeConfirmed && (
           <button
             type="button"
             className="reason-confirm-btn"

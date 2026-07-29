@@ -181,6 +181,13 @@ export type QueueItem = {
     provider: string;
     capturedAtIso: string;
   };
+  // Explicit nurse attestation that she has listened to the call audio and
+  // the Reason for Call text above accurately reflects it - distinct from
+  // merely saving an edit, since a saved transcript may still be wrong if
+  // nobody has actually reviewed it against the audio. Resets to false
+  // server-side any time reasonNarrative changes again, so a stale
+  // confirmation can never survive a later edit.
+  reasonNarrativeConfirmed?: boolean;
   preparedProtocol?: QueuePreparedProtocol;
   stccProcess: StccProcessSnapshot;
   vitals?: QueueVitals;

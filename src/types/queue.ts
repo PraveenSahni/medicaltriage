@@ -106,7 +106,12 @@ export const QueueContextUpdateSchema = z.object({
       capturedAtIso: z.string().datetime()
     })
     .optional(),
-  assignedNurseId: z.string().min(1).max(120).optional()
+  assignedNurseId: z.string().min(1).max(120).optional(),
+  // Explicit nurse attestation ("I heard the audio, this text is accurate")
+  // distinct from just saving an edited reasonNarrative - see
+  // queueOrchestration.ts's updateQueueItemContext, which resets this to
+  // false any time reasonNarrative itself changes.
+  reasonNarrativeConfirmed: z.boolean().optional()
 });
 export type QueueContextUpdate = z.infer<typeof QueueContextUpdateSchema>;
 
@@ -303,6 +308,7 @@ export type QueueItemDto = {
   sbarNoteText?: string;
   fitToFlyStatus?: FitToFlyStatus;
   vitalsUnobtainable?: boolean;
+  reasonNarrativeConfirmed?: boolean;
   clinicalApproval?: Record<string, unknown>;
   sbarCopied: boolean;
   assignedNurseId?: string;
