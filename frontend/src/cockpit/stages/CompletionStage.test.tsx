@@ -98,9 +98,6 @@ describe("CompletionStage", () => {
 
     expect(screen.queryByRole("button", { name: /Copy SBAR/ })).not.toBeInTheDocument();
 
-    const completeButton = screen.getByRole("button", { name: /Complete Call/ });
-    completeButton.click();
-
     await waitFor(() => expect(compileTriageCompletion).toHaveBeenCalledTimes(1));
     expect(compileTriageCompletion).toHaveBeenCalledWith(
       item.id,
@@ -111,5 +108,35 @@ describe("CompletionStage", () => {
         routing_destination: item.destinationName
       })
     );
+  });
+
+  it("auto-completes as soon as a disposition and destination are already set, with no manual Complete Call click needed", async () => {
+    compileTriageCompletion.mockResolvedValue({ notePayload: "# Auto note", clipboardOptimized: true });
+    const item = makeItem({
+      status: "IN_PROCESS",
+      sbarNoteText: undefined,
+      sbarCopied: false,
+      dispositionCode: "HMC_URGENT_REVIEW",
+      destinationName: "HMC urgent review pathway"
+    });
+    const onCallCompleted = jest.fn();
+    render(<CompletionStage item={item} isReadOnly={false} onCallCompleted={onCallCompleted} />);
+
+    await waitFor(() => expect(moveItem).toHaveBeenCalledWith(item.id, "SBAR", "COMPLETED"));
+    await waitFor(() => expect(onCallCompleted).toHaveBeenCalledTimes(1));
+  });
+
+  it("does not auto-complete (and shows the manual button) when disposition/destination are not yet set", () => {
+    const item = makeItem({
+      status: "IN_PROCESS",
+      sbarNoteText: undefined,
+      sbarCopied: false,
+      dispositionCode: undefined,
+      destinationName: undefined
+    });
+    render(<CompletionStage item={item} isReadOnly={false} onCallCompleted={jest.fn()} />);
+
+    expect(moveItem).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: /Complete Call/ })).toBeDisabled();
   });
 });
