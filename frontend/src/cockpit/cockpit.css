@@ -857,7 +857,7 @@
 #cockpit-root .reason-confirm-btn {
   display: inline-block !important;
   width: auto !important;
-  align-self: flex-start !important;
+  align-self: flex-end !important;
   margin-top: 8px !important;
   border: 1px solid var(--accent) !important;
   background: var(--card) !important;
