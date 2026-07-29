@@ -134,7 +134,7 @@ export function ReadOnlyCallDrawer({ item, onClose }: ReadOnlyCallDrawerProps) {
             <div className="smb-detail-value">{friendlyProtocolLabel(item)}</div>
           </div>
           <div className="smb-detail">
-            <div className="smb-detail-label">Priority</div>
+            <div className="smb-detail-label">Severity</div>
             <div className="smb-detail-value">{friendlySeverity(item.calculatedSeverity)}</div>
           </div>
           <div className="smb-detail">

@@ -1,7 +1,7 @@
 export type SortMode = "priority" | "longest" | "recent";
 
 const SORT_LABELS: Record<SortMode, string> = {
-  priority: "Smart priority",
+  priority: "By severity",
   longest: "Longest waiting",
   recent: "Recently added"
 };
