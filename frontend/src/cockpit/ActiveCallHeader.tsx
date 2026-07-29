@@ -28,6 +28,13 @@ export function ActiveCallHeader({
 
   const canEscalate = session.permissions.includes("triage.queue.manage");
   const canHold = session.permissions.includes("triage.workspace.view");
+  // Once a disposition has been reached, the call must be finished through
+  // SBAR/Complete rather than parked on Hold indefinitely - stepping away at
+  // that point (e.g. to answer a fresh incoming call) would otherwise leave
+  // an already-triaged patient's case open with no forcing function to ever
+  // close it. Resuming an already-held call is still allowed either way, so
+  // a nurse who held before disposition was reached can still get back in.
+  const holdBlockedByDisposition = !isHeld && Boolean(item.dispositionCode);
 
   async function toggleHold() {
     setBusy(true);
@@ -78,7 +85,12 @@ export function ActiveCallHeader({
                 type="button"
                 className={isHeld ? "answer-btn resume-btn" : "hold-btn"}
                 onClick={toggleHold}
-                disabled={busy}
+                disabled={busy || holdBlockedByDisposition}
+                title={
+                  holdBlockedByDisposition
+                    ? "A disposition has been reached - finish this call through SBAR/Complete instead of holding it."
+                    : undefined
+                }
               >
                 {isHeld ? "↻ Resume" : "❚❚ Hold Call"}
               </button>

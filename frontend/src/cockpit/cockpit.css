@@ -876,6 +876,13 @@
   cursor: default !important;
 }
 
+#cockpit-root .reason-locked-note {
+  margin: 4px 0 0 !important;
+  font-size: 0.78rem !important;
+  color: var(--muted) !important;
+  font-style: italic !important;
+}
+
 #cockpit-root .reason-capture-note {
   font-size: 0.78rem !important;
   color: var(--muted) !important;

@@ -71,6 +71,13 @@ export function ReasonRuleOutStage({
   // Vital Taking is optional and rarely needed on a tele-triage call, so it
   // always starts collapsed - the nurse can still expand it manually.
   const [vitalsExpanded, setVitalsExpanded] = useState(false);
+  // Same signal ProtocolMatchPanel already uses to lock guideline selection
+  // once Triage Questions have been answered - the Reason for Call must not
+  // be editable after that point either, since changing it would silently
+  // re-score the protocol match underneath a call whose clinical questions
+  // (and therefore disposition path) were already answered against the
+  // previous wording.
+  const questionsStarted = Boolean(item.taqResponses && Object.keys(item.taqResponses).length > 0);
 
   const temperature = item.vitals?.temperature ?? 37;
 
@@ -249,11 +256,11 @@ export function ReasonRuleOutStage({
         <textarea
           id="history-input"
           value={reasonNarrative}
-          disabled={isReadOnly || saving}
+          disabled={isReadOnly || saving || questionsStarted}
           onChange={(event) => setReasonNarrative(event.target.value)}
           onBlur={saveReasonNarrative}
         />
-        {!isReadOnly && (
+        {!isReadOnly && !questionsStarted && (
           <button
             type="button"
             className="reason-confirm-btn"
@@ -262,6 +269,11 @@ export function ReasonRuleOutStage({
           >
             {saving ? "Saving..." : "Confirm"}
           </button>
+        )}
+        {!isReadOnly && questionsStarted && (
+          <p className="reason-locked-note">
+            Reason for Call is locked once Triage Questions have been answered for this call.
+          </p>
         )}
         {item.reasonCallCapture && (
           <div className="reason-capture-note">
