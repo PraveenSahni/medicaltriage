@@ -37,14 +37,19 @@ RUN apt-get update -y \
   && apt-get install -y --no-install-recommends openssl ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/prisma ./prisma
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/dist-web ./dist-web
-COPY --from=build /app/data ./data
-COPY docs/protocol-review/data ./docs/protocol-review/data
+COPY --from=build --chown=node:node /app/package.json ./package.json
+COPY --from=build --chown=node:node /app/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/prisma ./prisma
+COPY --from=build --chown=node:node /app/dist ./dist
+COPY --from=build --chown=node:node /app/dist-web ./dist-web
+COPY --from=build --chown=node:node /app/data ./data
+COPY --chown=node:node docs/protocol-review/data ./docs/protocol-review/data
 
 EXPOSE 8080
+
+# Run as the non-root `node` user (built into the base image, UID 1000)
+# rather than the default root - container escapes/RCE against this process
+# should not grant root inside the container.
+USER node
 
 CMD ["node", "dist/index.js"]
