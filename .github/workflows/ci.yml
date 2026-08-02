@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  typecheck-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Backend typecheck
+        run: npx prisma generate && npx tsc -p tsconfig.json --noEmit
+
+      - name: Frontend typecheck
+        run: pnpm run typecheck:web
+
+      - name: Backend tests
+        run: pnpm run test
+
+      - name: Frontend tests
+        run: pnpm run test:frontend
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Fails the build on any newly-introduced HIGH or CRITICAL vulnerability
+      # in a direct or transitive dependency - the concrete SOC2 gap this
+      # closes ("no dependency vulnerability scanning" from the gap analysis).
+      # Moderate/low findings are reported but don't block, since blocking on
+      # every low-severity advisory would make this noisy enough to get
+      # ignored or disabled outright.
+      - name: pnpm audit (high/critical)
+        run: pnpm audit --audit-level high
