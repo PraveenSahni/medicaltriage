@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import type { Prisma } from "@prisma/client";
 import { isMockMode, shouldPersistQueueInDatabase } from "../config/runtime.js";
 import { prisma } from "../db.js";
 import { auditSignatureFor } from "./safetyKernel.js";
@@ -1275,6 +1276,45 @@ function requireTenantAccess(record: QueueRecord, session: AuthenticatedSession)
   }
 }
 
+function jsonValue(value: unknown): Prisma.InputJsonValue {
+  return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+}
+
+// Real audit-trail coverage for routine clinical queue actions (claim,
+// disposition/status moves, deletion) - previously only FHIR writeback and
+// completed-encounter persistence wrote AuditEvent rows, leaving the far more
+// common day-to-day actions unaudited. Mirrors fhirWriteback.ts's direct
+// prisma.auditEvent.create pattern rather than the stricter, HTTP-request-only
+// persistSecurityAuditEvent() helper, since no request/IP/device context is
+// available here.
+async function recordQueueAuditEvent(args: {
+  session: AuthenticatedSession;
+  action: string;
+  recordId: string;
+  success: boolean;
+  riskLevel?: string;
+  metadata?: Record<string, unknown>;
+}): Promise<void> {
+  if (!shouldPersistQueueInDatabase()) {
+    return;
+  }
+  await prisma.auditEvent.create({
+    data: {
+      timestamp: new Date(),
+      userId: args.session.user.id,
+      activeRole: args.session.activeRole,
+      organization: args.session.user.organizationId ?? undefined,
+      action: args.action,
+      module: "Queue",
+      resource: "TriageQueueItem",
+      recordReference: args.recordId,
+      success: args.success,
+      riskLevel: args.riskLevel ?? "medium",
+      metadata: args.metadata ? jsonValue(args.metadata) : undefined
+    }
+  });
+}
+
 function canSeeTenant(record: QueueRecord, session: AuthenticatedSession): boolean {
   return isGlobalTenantExempt(session) || effectiveTargetOrganizationId(record) === session.user.organizationId;
 }
@@ -1733,6 +1773,7 @@ export async function deleteQueueItem(session: AuthenticatedSession, id: string)
 
   if (shouldPersistQueueInDatabase()) {
     await queueClient().triageQueueItem.delete({ where: { id } });
+    await recordQueueAuditEvent({ session, action: "QUEUE_ITEM_DELETE", recordId: id, success: true, riskLevel: "high" });
     return;
   }
   store().delete(id);
@@ -1874,6 +1915,13 @@ export async function claimQueueItem(session: AuthenticatedSession, id: string):
   const saved = await saveRecord(record);
   if (shouldPersistQueueInDatabase()) {
     await addDbTransition(saved, transition);
+    await recordQueueAuditEvent({
+      session,
+      action: "QUEUE_ITEM_CLAIM",
+      recordId: record.id,
+      success: true,
+      metadata: { fromStatus: previous.status, fromStage: previous.currentStage }
+    });
   }
   return toDto(saved);
 }
@@ -2092,6 +2140,20 @@ export async function moveQueueItem(
   const saved = await saveRecord(record);
   if (shouldPersistQueueInDatabase()) {
     await addDbTransition(saved, transition);
+    await recordQueueAuditEvent({
+      session,
+      action: record.status === "COMPLETED" && previous.status !== "COMPLETED" ? "QUEUE_ITEM_COMPLETE" : "QUEUE_ITEM_MOVE",
+      recordId: record.id,
+      success: true,
+      riskLevel: record.status === "COMPLETED" ? "high" : "medium",
+      metadata: {
+        fromStatus: previous.status,
+        fromStage: previous.currentStage,
+        toStatus: record.status,
+        toStage: record.currentStage,
+        reason: request.reason
+      }
+    });
   }
   return toDto(saved);
 }
