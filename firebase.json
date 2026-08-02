@@ -1,53 +1,6 @@
 {
   "hosting": [
     {
-      "target": "simulation",
-      "public": "dist-web",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "headers": [
-        {
-          "source": "/assets/**",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "public,max-age=31536000,immutable"
-            }
-          ]
-        },
-        {
-          "source": "/index.html",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "no-cache"
-            }
-          ]
-        },
-        {
-          "source": "/test-evidence/**",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "no-cache"
-            }
-          ]
-        }
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "run": {
-            "serviceId": "ist-triage-simulation",
-            "region": "me-central1"
-          }
-        }
-      ]
-    },
-    {
       "target": "demo",
       "public": "dist-web",
       "ignore": [
@@ -80,6 +33,44 @@
           "source": "**",
           "run": {
             "serviceId": "ist-triage-demo",
+            "region": "me-central1"
+          }
+        }
+      ]
+    },
+    {
+      "target": "soc2",
+      "public": "dist-web",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "headers": [
+        {
+          "source": "/assets/**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public,max-age=31536000,immutable"
+            }
+          ]
+        },
+        {
+          "source": "/index.html",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
+            }
+          ]
+        }
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "run": {
+            "serviceId": "ist-triage-soc2",
             "region": "me-central1"
           }
         }

@@ -5,13 +5,14 @@
   "targets": {
     "triage-502706": {
       "hosting": {
-        "simulation": [
-          "ist-triage-sim-502706"
-        ],
         "demo": [
           "ist-triage-demo-502706-6a0c5"
+        ],
+        "soc2": [
+          "ist-triage-soc2-502706"
         ]
       }
     }
-  }
+  },
+  "etags": {}
 }
