@@ -1279,6 +1279,29 @@ function canSeeTenant(record: QueueRecord, session: AuthenticatedSession): boole
   return isGlobalTenantExempt(session) || effectiveTargetOrganizationId(record) === session.user.organizationId;
 }
 
+// Real, query-level tenant scoping - mirrors canSeeTenant()/effectiveTargetOrganizationId()'s
+// exact semantics (targetOrganizationId wins when set, organizationId is the
+// fallback) but as a Prisma where-clause fragment, not a post-fetch filter.
+// Previously tenant isolation was enforced only in application code after
+// fetching every row regardless of organization - a real gap (confirmed via
+// SOC 2 gap analysis: zero `WHERE organizationId` clauses existed anywhere in
+// this file). Returns undefined for globally-exempt roles so callers can spread
+// it into a `where` object without adding a no-op empty filter.
+function tenantWhereClause(session: AuthenticatedSession): Record<string, unknown> | undefined {
+  if (isGlobalTenantExempt(session)) {
+    return undefined;
+  }
+  const organizationId = session.user.organizationId;
+  if (!organizationId) {
+    // No org bound to this user - matches requireTenantAccess()'s own denial
+    // for this case; the query should return nothing rather than everything.
+    return { id: "__no_organization_bound__" };
+  }
+  return {
+    OR: [{ targetOrganizationId: organizationId }, { targetOrganizationId: null, organizationId }]
+  };
+}
+
 function canTakeOverLock(session: AuthenticatedSession): boolean {
   return isSupervisor(session);
 }
@@ -1462,7 +1485,12 @@ function sorted(records: QueueRecord[]): QueueRecord[] {
 const OPEN_RECORDS_QUERY_LIMIT = 5000;
 const COMPLETED_RECORDS_QUERY_LIMIT = 5000;
 
-async function listDbRecords(filters: QueueListQuery): Promise<QueueRecord[]> {
+async function listDbRecords(filters: QueueListQuery, session?: AuthenticatedSession): Promise<QueueRecord[]> {
+  // session is optional only for backfillPreparedProtocolCache(), an internal
+  // system-level maintenance job with no user session - it must see every
+  // record across all organizations to repair cached data, unlike every real
+  // user-facing caller of this function which always passes a session.
+  const tenantWhere = session ? tenantWhereClause(session) : undefined;
   // Open and completed records are fetched with separate take() windows so
   // neither bucket can starve the other: a single combined query - even with
   // COMPLETED sorted last - still hits one shared take() cap, so once total
@@ -1479,12 +1507,12 @@ async function listDbRecords(filters: QueueListQuery): Promise<QueueRecord[]> {
   // several megabytes per poll cycle, badly degrading UI responsiveness.
   const [openRows, completedRows] = await Promise.all([
     queueClient().triageQueueItem.findMany({
-      where: { status: { not: "COMPLETED" } },
+      where: tenantWhere ? { status: { not: "COMPLETED" }, ...tenantWhere } : { status: { not: "COMPLETED" } },
       orderBy: [{ priorityScore: "desc" }, { slaDeadline: "asc" }],
       take: OPEN_RECORDS_QUERY_LIMIT
     }),
     queueClient().triageQueueItem.findMany({
-      where: { status: "COMPLETED" },
+      where: tenantWhere ? { status: "COMPLETED", ...tenantWhere } : { status: "COMPLETED" },
       orderBy: [{ updatedAt: "desc" }],
       take: COMPLETED_RECORDS_QUERY_LIMIT
     })
@@ -1493,9 +1521,13 @@ async function listDbRecords(filters: QueueListQuery): Promise<QueueRecord[]> {
   return sorted(rows.map(dbRowToRecord).filter((record) => matchesFilter(record, filters)));
 }
 
-async function getDbRecord(id: string): Promise<QueueRecord | undefined> {
-  const row = await queueClient().triageQueueItem.findUnique({
-    where: { id },
+async function getDbRecord(id: string, session: AuthenticatedSession): Promise<QueueRecord | undefined> {
+  const tenantWhere = tenantWhereClause(session);
+  // findFirst (not findUnique) so the tenant filter can be combined with id -
+  // findUnique only accepts the model's unique fields in `where`, with no room
+  // to also scope by organization at the query level.
+  const row = await queueClient().triageQueueItem.findFirst({
+    where: tenantWhere ? { id, ...tenantWhere } : { id },
     include: { transitionLogs: { orderBy: { timestamp: "desc" }, take: 20 } }
   });
   return row ? dbRowToRecord(row) : undefined;
@@ -1592,8 +1624,8 @@ function saveMockRecord(record: QueueRecord): QueueRecord {
   return record;
 }
 
-async function getRecord(id: string): Promise<QueueRecord> {
-  const record = shouldPersistQueueInDatabase() ? await getDbRecord(id) : getMockRecord(id);
+async function getRecord(id: string, session: AuthenticatedSession): Promise<QueueRecord> {
+  const record = shouldPersistQueueInDatabase() ? await getDbRecord(id, session) : getMockRecord(id);
   if (!record) {
     throw new QueueOrchestrationError(404, `Queue item ${id} was not found.`, "QUEUE_NOT_FOUND");
   }
@@ -1651,7 +1683,7 @@ function appendTransition(
 export async function listQueueItems(session: AuthenticatedSession, filters: QueueListQuery = {}): Promise<QueueItemDto[]> {
   requireQueueAccess(session);
   const records = shouldPersistQueueInDatabase()
-    ? await listDbRecords(filters)
+    ? await listDbRecords(filters, session)
     : sorted(Array.from(store().values()).filter((record) => matchesFilter(record, filters)));
   return records.filter((record) => canSeeTenant(record, session)).map(toDto);
 }
@@ -1686,7 +1718,7 @@ export async function backfillPreparedProtocolCache(): Promise<{ processed: numb
 
 export async function getQueueItem(session: AuthenticatedSession, id: string): Promise<QueueItemDto> {
   requireQueueAccess(session);
-  const record = await getRecord(id);
+  const record = await getRecord(id, session);
   requireTenantAccess(record, session);
   return toDto(record);
 }
@@ -1696,7 +1728,7 @@ export async function deleteQueueItem(session: AuthenticatedSession, id: string)
   if (!hasManagerControl(session)) {
     throw new QueueOrchestrationError(403, "Only queue manager roles can delete queue items.", "QUEUE_ROLE_DENIED");
   }
-  const record = await getRecord(id);
+  const record = await getRecord(id, session);
   requireTenantAccess(record, session);
 
   if (shouldPersistQueueInDatabase()) {
@@ -1824,7 +1856,7 @@ export async function claimQueueItem(session: AuthenticatedSession, id: string):
     throw new QueueOrchestrationError(403, "Active role cannot claim clinical queue items.", "QUEUE_ROLE_DENIED");
   }
 
-  const record = await getRecord(id);
+  const record = await getRecord(id, session);
   requireTenantAccess(record, session);
   requireUnlockedOrOwned(record, session);
   const previous = { status: record.status, currentStage: record.currentStage };
@@ -1865,7 +1897,7 @@ function itemToRecord(item: QueueItemDto): QueueRecord {
 
 export async function releaseQueueItem(session: AuthenticatedSession, id: string): Promise<QueueItemDto> {
   requireQueueAccess(session);
-  const record = await getRecord(id);
+  const record = await getRecord(id, session);
   requireTenantAccess(record, session);
   // Releasing is idempotent: a record with no active lock has nothing to
   // protect, so a second/duplicate release call should be a harmless no-op
@@ -1890,7 +1922,7 @@ export async function releaseQueueItem(session: AuthenticatedSession, id: string
 
 export async function heartbeatQueueItem(session: AuthenticatedSession, id: string): Promise<QueueItemDto> {
   requireQueueAccess(session);
-  const record = await getRecord(id);
+  const record = await getRecord(id, session);
   requireTenantAccess(record, session);
   if (record.lockedBy !== session.user.id && !canTakeOverLock(session)) {
     throw new QueueOrchestrationError(423, "Only the lock owner can refresh this queue item.", "QUEUE_ITEM_LOCKED");
@@ -1907,7 +1939,7 @@ export async function updateQueueContext(
   update: QueueContextUpdate
 ): Promise<QueueItemDto> {
   requireQueueAccess(session);
-  const record = await getRecord(id);
+  const record = await getRecord(id, session);
   requireTenantAccess(record, session);
   requireUnlockedOrOwned(record, session);
   if (record.status === "COMPLETED") {
@@ -2029,7 +2061,7 @@ export async function moveQueueItem(
   request: QueueMoveRequest
 ): Promise<QueueItemDto> {
   requireQueueAccess(session);
-  const record = await getRecord(id);
+  const record = await getRecord(id, session);
   requireTenantAccess(record, session);
   if (record.status === "COMPLETED" && request.toStatus !== "COMPLETED") {
     throw new QueueOrchestrationError(
@@ -2070,7 +2102,7 @@ export async function escalateQueueItemToOrganization(
   request: QueueHandoverRequest
 ): Promise<QueueItemDto> {
   requireQueueAccess(session);
-  const record = await getRecord(id);
+  const record = await getRecord(id, session);
   requireTenantAccess(record, session);
   requireUnlockedOrOwned(record, session);
   if (!isClinicalOperator(session) && !hasManagerControl(session)) {
