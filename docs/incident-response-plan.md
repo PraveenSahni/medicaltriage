@@ -28,16 +28,18 @@ filed away.
 | Incident Commander | Owns the incident end-to-end: coordinates response, makes the call on customer/stakeholder communication, declares resolution | _TBD_ |
 | Technical Lead | Diagnoses and directs the actual fix; the person with `gcloud`/Cloud SQL/GitHub admin access | _TBD_ |
 | Communications Owner | Notifies affected stakeholders (customer contacts, internal leadership) with accurate, non-technical status updates | _TBD_ |
-| On-call rotation | Who gets paged first, and their escalation chain | _TBD - no on-call rotation currently exists; this system has no alerting/monitoring wired up yet (see Wave A/C gap: "no structured logging/monitoring/alerting")_ |
+| On-call rotation | Who gets paged first, and their escalation chain | _TBD - no staffed rotation exists; today the single email channel below is the entire "on-call"._ |
 
-**Known gap, explicitly flagged:** there is currently no automated alerting
-of any kind (no uptime monitor, no error-rate alert, no paging integration).
-Today, an incident is only discovered when someone notices manually (a user
-reports it, or someone happens to run a health check). Standing up basic
-uptime monitoring (e.g. a GCP Cloud Monitoring uptime check on
-`/api/v1/runtime/environment` for each service, alerting to email/Slack) is
-the single highest-value next step to make this plan actually actionable in
-real time rather than after the fact.
+**Update 2026-08-02:** basic automated alerting is now live. GCP Cloud
+Monitoring uptime checks (`ist-triage-demo-uptime`, `ist-triage-soc2-uptime`)
+poll `/api/v1/runtime/environment` on both `triaged.irisstar.tech` and
+`triagedsoc2.irisstar.tech` every 5 minutes over HTTPS. Each has a bound
+alert policy (`ist-triage-demo uptime failure`, `ist-triage-soc2 uptime
+failure`) that fires to an email notification channel ("Triage Ops Email")
+after ~5 minutes of continuous failure, auto-closing 30 minutes after
+recovery. This closes the "no alerting exists" gap noted below, but remains
+a single-person email channel, not a staffed/paged rotation - see the
+remaining gap in "Explicitly out of scope."
 
 ## Response procedure
 
@@ -111,5 +113,7 @@ environment):
 - Formal legal/regulatory breach-notification timelines (needs legal review,
   not something to be decided unilaterally in this document).
 - A staffed, drilled on-call rotation (the roles table above is a template,
-  not a functioning process yet).
-- Automated alerting/monitoring (flagged above as the top follow-up item).
+  not a functioning process yet) - today's alerting goes to one email
+  address, not a rotation with escalation.
+- Broader observability beyond uptime (structured application logging,
+  error-rate/latency alerting) - only binary up/down is monitored today.
