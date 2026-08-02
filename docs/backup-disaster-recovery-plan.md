@@ -50,12 +50,26 @@ Both databases live on the same shared Cloud SQL instance:
   reproducible script.
 
 **What is NOT backed up / has no recovery path today:**
-- Secret Manager secret values (`DATABASE_URL` is actually a plain Cloud Run
-  env var today, not a Secret Manager secret, despite the README's documented
-  intent - see `docs/day-handover-*.md` discrepancy noted this session).
+- Secret Manager secret values in general (GCP does not back these up
+  independently of whatever redundancy the secret's replication policy
+  provides - `ist-triage-soc2-database-url` uses `automatic` replication).
 - Any data held only in application memory (mock-mode in-memory queue store,
   when `QUEUE_DB_PERSISTENCE=false`) - by design, this is synthetic/ephemeral
   data and not expected to survive a restart.
+
+**Update 2026-08-03:** `ist-triage-soc2`'s `DATABASE_URL` is now a Secret
+Manager secret (`ist-triage-soc2-database-url`), no longer a plain Cloud Run
+env var - closes the gap previously noted here. Verified via canary-then-
+cutover deploy (health-checked the canary directly before routing 100%
+traffic), with `triaged.irisstar.tech` confirmed untouched throughout.
+**`ist-triage-demo`'s `DATABASE_URL` is still a plain env var** - out of
+scope for this pass per the standing rule not to touch `triaged.irisstar.tech`;
+promoting this same fix to demo is a distinct future step. Note also: a
+Secret Manager secret literally named `DATABASE_URL` already existed in this
+project before this fix (created 2026-07-22) but is unused by either live
+service - it points at a different, older database/user pair and appears to
+be leftover from an earlier setup attempt. Left in place rather than deleted
+unprompted; flagged here so it isn't mistaken for the secret actually in use.
 
 ## Recovery Point Objective (RPO) and Recovery Time Objective (RTO)
 

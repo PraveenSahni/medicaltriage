@@ -65,7 +65,7 @@ live-infra citation, not a description of intent). Status values:
 | Control | Status | Evidence |
 |---|---|---|
 | Tenant-scoped data isolation | **Implemented** | Same evidence as the Security-section tenant-isolation row - listed here too since it is fundamentally a Confidentiality control. |
-| Secrets (JWT signing key, audit HMAC key) not committed to source | **Implemented, with a known gap** | Managed via GCP Secret Manager per `README.md`'s documented pattern. **Gap:** `DATABASE_URL` itself is currently a plain Cloud Run environment variable, not a Secret Manager secret, despite the README's stated intent - noted in `docs/backup-disaster-recovery-plan.md`, not yet fixed. |
+| Secrets (JWT signing key, audit HMAC key, database URL) not committed to source | **Implemented on soc2; gap remains on demo** | Managed via GCP Secret Manager per `README.md`'s documented pattern. `ist-triage-soc2`'s `DATABASE_URL` moved from a plain Cloud Run env var to the `ist-triage-soc2-database-url` secret 2026-08-03 (canary-verified, `triaged.irisstar.tech` untouched). **`ist-triage-demo`'s `DATABASE_URL` is still a plain env var** - promoting this fix to demo is a distinct future step, out of scope for this remediation pass. |
 | Field-level masking / controlled reveal of sensitive data | **Documented accepted risk** | `docs/soc2-data-governance-schema-status.md` - no field in either nurse UI is masked-by-default today; a nurse with queue access sees full values. |
 
 ## Privacy
@@ -123,8 +123,9 @@ that promotion is a distinct, later step, not implied by this document.
    fix requires first resolving the pre-existing `@babel/core@^8.0.1` peer
    conflict in `package.json`, ideally in its own dedicated session given the
    demonstrated instability risk.
-2. `DATABASE_URL` should move from a plain Cloud Run env var to Secret
-   Manager, matching the README's already-stated intent.
+2. `DATABASE_URL` on `ist-triage-demo` should move from a plain Cloud Run env
+   var to Secret Manager, matching the README's already-stated intent (done
+   for `ist-triage-soc2` on 2026-08-03; promoting to demo is separate).
 3. No Infrastructure-as-Code; no backup-restore drill has ever been run.
 4. Field-level masking/reveal, DSAR intake, and retention-driven deletion
    remain unimplemented (accepted risk, not silently absent - see the
