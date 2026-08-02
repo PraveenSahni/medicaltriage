@@ -2917,7 +2917,12 @@ function AssessmentQuestionsStage({
         ? firstPendingIndex
         : Math.max(flow.length - 1, 0);
   const activeQuestion = flow[activeIndex];
-  const selectedQuestion = mandatoryQuestion ?? (firstYesIndex >= 0 ? flow[firstYesIndex] : undefined);
+  // The mandatory question comes back as a bare preview without flow-group
+  // metadata; run it through the same grouping used for the main flow so
+  // selectedQuestion is always an AssessmentFlowItem (groupTitle is rendered).
+  const selectedQuestion =
+    (mandatoryQuestion ? assessmentFlowItems([mandatoryQuestion])[0] : undefined) ??
+    (firstYesIndex >= 0 ? flow[firstYesIndex] : undefined);
   const progress =
     flow.length === 0
       ? 0
