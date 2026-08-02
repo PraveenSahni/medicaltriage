@@ -144,12 +144,13 @@ export function createTriageRouter(): Router {
   });
 
   // Read-only counterpart to /complete: compiles the same bilingual SOAP/SBAR
-  // markdown but never calls persistCompletedTriageNote, so it can be called
-  // any number of times (e.g. every time a nurse/manager reopens an already-
-  // closed call whose note wasn't captured at completion time) without ever
-  // creating a duplicate encounter row - /complete's persistence step is
-  // already known to be non-idempotent (see the 2026-07-25 backend
-  // consolidation audit), so this must stay a separate, side-effect-free path.
+  // markdown but never calls persistCompletedTriageNote at all, so it remains
+  // the right choice for read-only re-renders (e.g. reopening an already-
+  // closed call whose note wasn't captured at completion time) regardless of
+  // /complete's own idempotency - /complete is now idempotent on queueItemId
+  // (see persistCompletedTriageNote's sourceQueueItemId check), but /preview
+  // still has zero persistence side effects at all, which is a strictly
+  // stronger guarantee for a pure read path.
   router.post("/preview", async (req, res) => {
     const parsed = TriageCompleteRequestSchema.safeParse(req.body);
     if (!parsed.success) {

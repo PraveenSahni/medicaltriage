@@ -420,6 +420,20 @@ export async function persistCompletedTriageNote(
     return { persisted: false, reason: "invalid-disposition-code" };
   }
 
+  // Real idempotency check: a queue item can only be completed once, so a
+  // retried/duplicated request carrying the same queueItemId must return the
+  // already-persisted encounter instead of creating a second row (previously
+  // this endpoint had no dedup key at all - every call created a brand-new
+  // aviationTriageEncounter regardless of whether it was a genuine retry).
+  if (request.queueItemId) {
+    const existing = await prisma.aviationTriageEncounter.findUnique({
+      where: { sourceQueueItemId: request.queueItemId }
+    });
+    if (existing) {
+      return { persisted: true, recordId: existing.id };
+    }
+  }
+
   const created = await prisma.aviationTriageEncounter.create({
     data: {
       staffMember: {
@@ -438,7 +452,8 @@ export async function persistCompletedTriageNote(
         safetyRationale: request.safetyRationale
       }),
       nurseId: request.nurseId ?? "unknown",
-      completedAt: new Date()
+      completedAt: new Date(),
+      sourceQueueItemId: request.queueItemId
     }
   });
 

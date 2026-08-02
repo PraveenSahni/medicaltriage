@@ -67,8 +67,10 @@ export function CompletionStage({ item, isReadOnly, onCallCompleted }: Completio
 
   async function compileSbarIfNeeded(): Promise<string> {
     if (sbarText) {
-      // Already compiled once this session - do not re-call the non-idempotent
-      // /triage/complete endpoint; reuse the cached display text.
+      // Already compiled once this session - reuse the cached display text
+      // rather than re-calling /triage/complete unnecessarily (it's now
+      // idempotent on queueItemId, but there's still no reason to make an
+      // extra network call for content we already have).
       return sbarText;
     }
     try {

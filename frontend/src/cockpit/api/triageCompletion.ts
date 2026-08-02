@@ -1,17 +1,15 @@
 const apiBase = import.meta.env.VITE_API_BASE_URL || "";
 
 /**
- * POST /api/v1/triage/complete is NOT confirmed idempotent - the backend
- * handler calls persistCompletedTriageNote(), which (when database
- * persistence is enabled) creates a brand-new aviationTriageEncounter row on
- * every call, with no dedup key. Two calls with identical input produce two
- * distinct rows. This is a genuine backend gap (see plan section 3, item 5) -
- * the frontend must not paper over it by treating a client-side cache as a
- * substitute for real idempotency. We call it at most once per completion
- * attempt and never automatically retry it; a failed attempt requires an
- * explicit user-initiated retry, and even then step B is only re-run if we
- * have no prior successful response cached for THIS in-memory session (a
- * display cache, not a durability guarantee).
+ * POST /api/v1/triage/complete is now idempotent on queueItemId - the backend
+ * (persistCompletedTriageNote) checks for an existing aviationTriageEncounter
+ * with the same sourceQueueItemId before creating a new one, so a genuine
+ * retry with the same queueItemId returns the already-persisted encounter
+ * instead of creating a duplicate row. The frontend still calls it at most
+ * once per completion attempt and never automatically retries, and a failed
+ * attempt requires an explicit user-initiated retry - not because the backend
+ * can't handle a retry safely now, but because there's no reason to retry
+ * automatically on a genuine failure without the nurse's awareness.
  */
 export type TriageCompleteResponse = {
   notePayload: unknown;

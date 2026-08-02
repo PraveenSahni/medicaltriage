@@ -142,6 +142,14 @@ export type TriageCalculateScoreRequest = z.infer<typeof TriageCalculateScoreReq
 export const TriageCompleteRequestSchema = z
   .object({
     encounter_id: z.string().max(120).optional(),
+    // The frontend's compileTriageCompletion() already sends this on every
+    // call (see frontend/src/cockpit/api/triageCompletion.ts) - previously
+    // silently dropped since this schema didn't recognize the field, which is
+    // exactly why /triage/complete was non-idempotent: nothing distinguished
+    // a genuine retry from a brand-new completion. A queue item can only be
+    // completed once, so its id is a natural, already-available idempotency
+    // key requiring no new client-side plumbing.
+    queueItemId: z.string().max(160).optional(),
     ist_staff_id: z.string().min(3).max(64).optional(),
     istStaffId: z.string().min(3).max(64).optional(),
     patient_name: z.string().max(160).optional(),
@@ -164,6 +172,7 @@ export const TriageCompleteRequestSchema = z
   })
   .transform((value) => ({
     encounterId: value.encounter_id,
+    queueItemId: value.queueItemId,
     istStaffId: value.istStaffId ?? value.ist_staff_id,
     patientName: value.patient_name,
     patientAgeYears: value.patient_age_years,

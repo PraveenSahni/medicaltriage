@@ -658,6 +658,7 @@ export function runSimulation(payload: SimulationPayload): SimulationResult {
 
   const sbarNote = compileBilingualSoapSbarMarkdown({
     encounterId,
+    queueItemId: undefined,
     istStaffId: payload.istStaffId,
     patientName: payload.dependentName ?? "Synthetic employee",
     patientAgeYears: payload.ageYears,

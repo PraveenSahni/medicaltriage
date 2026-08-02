@@ -290,6 +290,11 @@ model AviationTriageEncounter {
   clipboardPayload     Json?                    @map("clipboard_payload")
   nurseId              String                   @map("nurse_id")
   completedAt          DateTime?                @map("completed_at")
+  // Idempotency key for /triage/complete - the queue item being completed
+  // (a queue item can only ever be completed once). Nullable/unique rather
+  // than required so existing rows created before this column existed remain
+  // valid; every new completion going forward is expected to set it.
+  sourceQueueItemId    String?                  @unique @map("source_queue_item_id")
   createdAt            DateTime                 @default(now()) @map("created_at")
   updatedAt            DateTime                 @updatedAt @map("updated_at")
   safetyLog            SafetyAuditDeviationLog?
