@@ -93,7 +93,7 @@ they cluster, largest first:
 |---|---|---|
 | Cloud CSQ (various domains, mostly single-row) | ~45 | Documentation/process gaps (asset inventory, third-party agreements, audit-tool access controls) - many are one-line policy statements away from Partial->Yes |
 | Observability, Monitoring & Alerts (NFR + AI) | ~18 | Distributed tracing/APM, QR-facing dashboards, business-KPI alerting, log-search/deep-dive tooling |
-| UX tab | ~15 | Personalization, feedback collection, global search, onboarding/tooltips |
+| UX tab | ~15 | Personalization, ~~feedback collection~~ (done), ~~global search~~ (done, backend-only), onboarding/tooltips |
 | Performance | ~10 | Caching layer, response compression, async transactions, formal perf-test-in-pipeline |
 | Integration | ~9 | Event-driven/async integration, admin-configurable integration events, retry/backoff, common gateway |
 | Security Controls | ~8 | Login URL randomization, per-request context validation, CORS verb/header hardening |
