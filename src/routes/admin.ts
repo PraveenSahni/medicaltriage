@@ -105,6 +105,9 @@ export function createAdminRouter(): Router {
   });
 
   router.get("/roles", requirePermission("admin.roles.manage"), (_req, res) => {
+    // Closes NFR-140 - the role/permission set is hardcoded in source and
+    // only changes on a deploy, never per request.
+    res.set("Cache-Control", "private, max-age=300");
     return res.json({ roles: listRoles() });
   });
 

@@ -66,6 +66,10 @@ export function createProtocolsRouter(): Router {
     const hasLimit = Number.isInteger(limit) && limit > 0;
     const protocols = hasLimit ? all.slice(offset, offset + limit) : all;
 
+    // Closes NFR-140 (caching for master/seed/configuration data) - protocol
+    // metadata changes only on a new STCC content release, not per request.
+    // `private` since this is behind session auth, not a shared/CDN cache.
+    res.set("Cache-Control", "private, max-age=300");
     return res.json({
       release: getCurrentClinicalContentPackage().release,
       protocols,

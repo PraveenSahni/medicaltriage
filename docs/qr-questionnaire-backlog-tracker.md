@@ -92,34 +92,57 @@ they cluster, largest first:
 | Security Controls | ~8 | Login URL randomization, per-request context validation, CORS verb/header hardening |
 | Authentication / API Management / Auditing / Authorization / Availability / Extensibility | ~6 each | Mostly sub-items of the "major initiatives" above (SSO, certification) plus smaller standalone asks |
 
-### Concrete quick-win candidates already identified
+### Concrete quick-win candidates - outcome (2026-08-04)
 
-These look like small, genuinely closeable engineering tasks (a
-config flip or small addition), not part of a large initiative:
-
-1. **Enable GCP Security Command Center** for the project (NFR-010,
-   IS.45) - a GCP console/API setting, not a code change.
-2. **Add a response-compression middleware** (e.g. `compression` npm
-   package) to `src/app.ts` (NFR-140/143) - small, low-risk addition.
-3. **Add a caching layer** for master/seed/configuration data
-   (NFR-140) - scope depends on what's worth caching; smallest version
-   could be an in-memory TTL cache for protocol/role data.
-4. **Add a license-compliance check** to CI (NFR-056/163) - e.g.
-   `license-checker` npm package, alongside the existing `pnpm audit` step.
-5. **Enable Cloud Armor (WAF)** in front of the Cloud Run services -
-   a real GCP feature, moderate setup effort, closes ~2 rows directly and
-   strengthens several "no WAF" mentions elsewhere.
+1. ✅ **Response-compression middleware** (NFR-140/143) - `compression`
+   added to `src/app.ts`, closes real response payloads for the
+   large-payload endpoints flagged in the load-test baseline.
+2. ✅ **Cache-Control headers** for rarely-changing data (NFR-140) -
+   `GET /api/v1/protocols` and `GET /api/v1/admin/roles` now send
+   `private, max-age=300`, since both only change on a content
+   release/deploy, never per-request.
+3. ✅ **License-compliance check in CI** (NFR-056/163) -
+   `license-checker-rseidelsohn` added, wired into the
+   `dependency-audit` CI job with a real, tested allowlist (MIT, ISC,
+   Apache-2.0, BSD-2/3-Clause, BlueOak-1.0.0, MIT-0, MPL-2.0, CC0-1.0,
+   CC-BY-3.0/4.0) - confirmed passing against the real current
+   dependency tree before wiring it in.
+4. ⚠️ **GCP Security Command Center** - **not achievable as a quick win**.
+   Investigated directly: this GCP account has **no Organization
+   resource at all** (`gcloud organizations list` returns zero) - SCC's
+   actual functionality (asset inventory, security findings, health
+   analytics) requires a GCP Organization to attach to; a standalone
+   project cannot get real SCC coverage. The API was enabled (harmless,
+   real), but no dashboard/findings will populate without restructuring
+   the GCP account under an Organization - out of scope for this pass.
+5. ⚠️ **Cloud Armor (WAF)** - **not achievable as a quick win**.
+   Investigated directly: Cloud Armor security policies only attach to
+   HTTP(S) Load Balancers, not directly to Cloud Run - closing this gap
+   properly means provisioning a full external Load Balancer + serverless
+   NEG + static IP and re-pointing both custom domains away from their
+   current Firebase Hosting rewrite setup. That's a real infrastructure
+   migration with real risk to `triaged.irisstar.tech`, not a quick win -
+   correctly re-scoped as a separate, larger initiative.
 
 ## Recommended order of attack
 
-1. Knock out the 5 quick wins above first (cheap, real, no dependencies).
+1. ~~Knock out the 5 quick wins~~ - **done for 3 of 5** (compression,
+   caching headers, license compliance); the other 2 (SCC, WAF) turned
+   out to be blocked/large on investigation and are re-scoped below.
 2. Pick one major initiative to actually start - **SAST tooling** is the
    best next candidate: medium effort, no external dependency, closes ~9
    rows, and directly strengthens the "no SAST" gap repeated across NFR/
    CSQ/AI tabs.
-3. Route the "Blocked" and "Organizational/process" items to their real
+3. **WAF** is now a real initiative, not a quick win: requires an external
+   HTTPS Load Balancer + serverless NEG migration for both Cloud Run
+   services - scope and schedule deliberately, don't fold into a quick pass.
+4. **Security Command Center** requires restructuring this GCP account
+   under an Organization first - a business/account-structure decision,
+   not an engineering task; route to whoever manages the GCP billing/org
+   relationship.
+5. Route the "Blocked" and "Organizational/process" items to their real
    owners (you, IST HR/legal, whoever holds Billing Admin) rather than
    letting them sit unassigned.
-4. Treat SSO/MFA, masking/reveal, and formal certification as separate,
+6. Treat SSO/MFA, masking/reveal, and formal certification as separate,
    explicitly-scoped future engagements - each is too large to fold into
    an incremental "next batch" pass.

@@ -62,6 +62,15 @@ jobs:
       - name: pnpm audit (high/critical)
         run: pnpm audit --audit-level high
 
+      # License compliance (NFR-056/163) - fails the build if any dependency
+      # carries a license outside this allowlist of commercially-clean OSS
+      # licenses. Excludes this project's own root package (which has no
+      # published "license" field and would otherwise be flagged as
+      # UNLICENSED against itself, a false positive, not a real dependency
+      # license issue).
+      - name: License compliance check
+        run: npx license-checker-rseidelsohn --onlyAllow "MIT;ISC;Apache-2.0;BSD-3-Clause;BSD-2-Clause;BlueOak-1.0.0;MIT-0;MPL-2.0;CC0-1.0;CC-BY-4.0;CC-BY-3.0" --excludePackages "$(node -p "require('./package.json').name")@$(node -p "require('./package.json').version")"
+
       # SBOM (CycloneDX) generated at every push, published as a build
       # artifact - closes NFR-177. --ignore-npm-errors is required because
       # this repo uses pnpm (pnpm-lock.yaml), not npm; cyclonedx-npm's

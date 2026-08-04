@@ -1,3 +1,4 @@
+import compression from "compression";
 import cors, { type CorsOptions, type CorsOptionsDelegate } from "cors";
 import express, { type Request } from "express";
 import helmet from "helmet";
@@ -125,6 +126,11 @@ export function createApp() {
   );
   app.use(cors(corsOptions));
   app.use(corsRejectionHandler);
+  // Closes NFR-143 - compresses response payloads (the queue/protocols
+  // endpoints were flagged in the load-test baseline as large-payload
+  // hotspots) to reduce network transfer time, especially for slower
+  // client connections.
+  app.use(compression());
   app.use(requestDurationLogger());
   // Optional IP allowlisting (NFR-027) - a no-op unless IP_ALLOWLIST is set,
   // so it never affects an existing deployment that hasn't opted in.
