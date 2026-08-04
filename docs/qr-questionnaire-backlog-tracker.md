@@ -92,7 +92,7 @@ they cluster, largest first:
 | Area | Approx. rows | Flavor |
 |---|---|---|
 | Cloud CSQ (various domains, mostly single-row) | ~45 | Documentation/process gaps (asset inventory, third-party agreements, audit-tool access controls) - many are one-line policy statements away from Partial->Yes |
-| Observability, Monitoring & Alerts (NFR + AI) | ~18 | Distributed tracing/APM, QR-facing dashboards, business-KPI alerting, log-search/deep-dive tooling |
+| Observability, Monitoring & Alerts (NFR + AI) | ~18 | ⚠️ Partial (2026-08-04) - real X-Request-Id correlation-id middleware now threads a request id through every request and the structured request-duration log (closes part of NFR-116/117/150). Still open: a full distributed-tracing/APM span model + trace-visualization dashboard (needs a Cloud Trace/OpenTelemetry integration, a separate larger initiative), QR-facing dashboards, and business-KPI alerting (blocked on a real expected-volume baseline, a business/data decision not an engineering task). |
 | UX tab | ~15 | Personalization, ~~feedback collection~~ (done), ~~global search~~ (done, backend-only), onboarding/tooltips |
 | Performance | ~10 | Caching layer, response compression, async transactions, formal perf-test-in-pipeline |
 | Integration | ~9 | Event-driven/async integration, admin-configurable integration events, retry/backoff, common gateway |

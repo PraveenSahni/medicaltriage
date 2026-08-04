@@ -16,6 +16,7 @@ import { requireAuthenticatedSession } from "./middleware/auth.js";
 import { corsRejectionHandler, globalErrorHandler } from "./middleware/error.js";
 import { ipAllowlist } from "./middleware/ipAllowlist.js";
 import { requestDurationLogger } from "./middleware/requestDuration.js";
+import { requestIdMiddleware } from "./middleware/requestId.js";
 import { rateLimit } from "./middleware/rateLimit.js";
 import { createAdminRouter } from "./routes/admin.js";
 import { createApprovalRouter } from "./routes/approvalRouter.js";
@@ -142,6 +143,7 @@ export function createApp() {
   // hotspots) to reduce network transfer time, especially for slower
   // client connections.
   app.use(compression());
+  app.use(requestIdMiddleware());
   app.use(requestDurationLogger());
   // Optional IP allowlisting (NFR-027) - a no-op unless IP_ALLOWLIST is set,
   // so it never affects an existing deployment that hasn't opted in.

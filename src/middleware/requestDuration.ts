@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import type { RequestWithId } from "./requestId.js";
 
 // The two endpoints docs/sli-slo-definitions.md names explicitly as the
 // Latency SLI's target ("critical clinical-workflow endpoints (queue claim,
@@ -28,6 +29,7 @@ export function requestDurationLogger() {
       console.log(
         JSON.stringify({
           type: "request_duration",
+          requestId: (req as RequestWithId).requestId,
           method: req.method,
           path: req.path,
           statusCode: res.statusCode,
