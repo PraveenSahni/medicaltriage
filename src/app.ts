@@ -99,7 +99,16 @@ export function createApp() {
 
     const options: CorsOptions = {
       credentials: true,
-      origin: origin || false
+      origin: origin || false,
+      // Closes NFR-171 - without an explicit list, the `cors` package
+      // reflects back whatever the browser's preflight requests, which is
+      // not a real whitelist. Only the verbs/headers this API actually
+      // uses are allowed: GET/POST/PATCH/DELETE (confirmed via the real
+      // router method usage) and Content-Type/Authorization (JSON bodies
+      // + Bearer-token auth; session-cookie auth needs neither, since
+      // `credentials: true` already covers cookies).
+      methods: ["GET", "POST", "PATCH", "DELETE"],
+      allowedHeaders: ["Content-Type", "Authorization"]
     };
     return callback(null, options);
   };
