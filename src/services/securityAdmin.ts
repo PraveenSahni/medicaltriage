@@ -2348,6 +2348,106 @@ export function resetSecurityStoreForTests(): void {
   sessionContextBySessionId.clear();
   revealRequestsById.clear();
   revealValuesById.clear();
+  elevatedSessions.clear();
+}
+
+// Real JIT privileged-access elevation (closes NFR-180's PAM capability gap:
+// just-in-time elevation + MFA + a real, queryable audit trail). A small,
+// explicit set of the highest-risk mutation permissions built this session
+// require a second, time-boxed elevation step (fresh TOTP re-verification)
+// on top of the standing session-permission model - everything else is
+// untouched. No dedicated third-party PAM tool exists here; this closes the
+// underlying capability, not the "own a commercial PAM product" ask.
+export const PRIVILEGED_PERMISSIONS = new Set([
+  "admin.users.manage",
+  "admin.roles.manage",
+  "crypto.policy.manage",
+  "security.sso.manage",
+  "privacy.reveal.approve"
+]);
+
+const PAM_ELEVATION_TTL_MS = 15 * 60 * 1000;
+
+type ElevationState = { expiresAt: number; elevationId: string };
+const elevatedSessions = new Map<string, ElevationState>();
+
+export class MfaNotEnrolledError extends Error {}
+export class InvalidElevationCodeError extends Error {}
+
+export async function requestElevation(
+  session: AuthenticatedSession,
+  code: string
+): Promise<{ elevated: true; elevationId: string; expiresAt: string }> {
+  const credential = mfaCredentials.get(session.user.id);
+  if (credential?.status !== "enabled") {
+    throw new MfaNotEnrolledError("Privileged elevation requires TOTP MFA to already be enrolled and enabled.");
+  }
+  // Same real TOTP verification call already used by confirmMfaEnrollment/
+  // verifyMfaChallenge - elevation reuses this exact second factor, not a
+  // new one.
+  const isValid = authenticator.verify({ token: code, secret: credential.secret });
+  if (!isValid) {
+    throw new InvalidElevationCodeError("Invalid authentication code.");
+  }
+
+  const elevationId = `elevation-${Date.now()}-${randomBytes(6).toString("hex")}`;
+  const expiresAt = Date.now() + PAM_ELEVATION_TTL_MS;
+  elevatedSessions.set(session.sessionId, { expiresAt, elevationId });
+
+  await recordAuditEvent({
+    id: randomUUID(),
+    timestampIso: new Date().toISOString(),
+    userId: session.user.id,
+    activeRole: session.activeRole,
+    organization: "",
+    facility: "",
+    department: "",
+    action: "PAM_ELEVATION_GRANTED",
+    module: "AccessGovernance",
+    resource: elevationId,
+    ipAddress: "",
+    device: "",
+    success: true,
+    risk: "medium"
+  });
+
+  return { elevated: true, elevationId, expiresAt: new Date(expiresAt).toISOString() };
+}
+
+export async function endElevation(session: AuthenticatedSession): Promise<void> {
+  const state = elevatedSessions.get(session.sessionId);
+  elevatedSessions.delete(session.sessionId);
+  if (!state) {
+    return;
+  }
+  await recordAuditEvent({
+    id: randomUUID(),
+    timestampIso: new Date().toISOString(),
+    userId: session.user.id,
+    activeRole: session.activeRole,
+    organization: "",
+    facility: "",
+    department: "",
+    action: "PAM_ELEVATION_ENDED",
+    module: "AccessGovernance",
+    resource: state.elevationId,
+    ipAddress: "",
+    device: "",
+    success: true,
+    risk: "low"
+  });
+}
+
+export function isElevated(sessionId: string): { elevated: boolean; expiresAt?: string; elevationId?: string } {
+  const state = elevatedSessions.get(sessionId);
+  if (!state) {
+    return { elevated: false };
+  }
+  if (state.expiresAt < Date.now()) {
+    elevatedSessions.delete(sessionId);
+    return { elevated: false };
+  }
+  return { elevated: true, expiresAt: new Date(state.expiresAt).toISOString(), elevationId: state.elevationId };
 }
 
 export function listSsoProviders(): SsoProvider[] {
@@ -2362,8 +2462,21 @@ export function listEncryptionPolicies(): EncryptionPolicy[] {
   return encryptionPolicies;
 }
 
-export function listAuditEvents(): AuditEvent[] {
-  return [...auditEvents].sort((left, right) => right.timestampIso.localeCompare(left.timestampIso));
+export function listAuditEvents(filter?: { userId?: string; since?: string; until?: string }): AuditEvent[] {
+  return [...auditEvents]
+    .filter((event) => {
+      if (filter?.userId && event.userId !== filter.userId) {
+        return false;
+      }
+      if (filter?.since && event.timestampIso < filter.since) {
+        return false;
+      }
+      if (filter?.until && event.timestampIso > filter.until) {
+        return false;
+      }
+      return true;
+    })
+    .sort((left, right) => right.timestampIso.localeCompare(left.timestampIso));
 }
 
 export function getSecurityDashboard(): SecurityDashboard {

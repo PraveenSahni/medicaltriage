@@ -1,16 +1,24 @@
 import { Router } from "express";
 import { requireAnyPermission } from "../middleware/rbac.js";
 import { getFeedbackSummary } from "../services/feedbackSummary.js";
-import { requirePermission, type AuthorizedRequest } from "../services/authorization.js";
+import {
+  getRequestSession,
+  requirePermission,
+  requireElevatedPermission,
+  type AuthorizedRequest
+} from "../services/authorization.js";
 import { shouldUseDatabasePersistence } from "../config/runtime.js";
 import { listPersistedAuditEvents } from "../services/persistence.js";
 import { rateLimit } from "../middleware/rateLimit.js";
 import {
   decideReveal,
+  endElevation,
   fetchApprovedRevealValue,
   FieldNotRevealableError,
   getSecurityDashboard,
   grantPermissionToRole,
+  InvalidElevationCodeError,
+  isElevated,
   listAuditEvents,
   listControlCenterModules,
   listEncryptionPolicies,
@@ -26,7 +34,9 @@ import {
   listSsoProviders,
   listSupportQueueItems,
   listUsers,
+  MfaNotEnrolledError,
   PermissionNotFoundError,
+  requestElevation,
   requestReveal,
   RevealAlreadyFulfilledError,
   RevealExpiredError,
@@ -97,7 +107,7 @@ export function createAdminRouter(): Router {
   // Real remediation action for access-entitlement review findings (CSQ
   // IS.18: "are all remediation actions recorded?") - suspends/reactivates
   // an account, writing a real AuditEvent for the change itself.
-  router.patch("/users/:id/status", requirePermission("admin.users.manage"), userStatusRateLimit, async (req: AuthorizedRequest, res, next) => {
+  router.patch("/users/:id/status", requireElevatedPermission("admin.users.manage"), userStatusRateLimit, async (req: AuthorizedRequest, res, next) => {
     try {
       const parsed = UpdateUserStatusRequestSchema.safeParse(req.body);
       if (!parsed.success) {
@@ -146,7 +156,7 @@ export function createAdminRouter(): Router {
 
   router.post(
     "/roles/:code/permissions",
-    requirePermission("admin.roles.manage"),
+    requireElevatedPermission("admin.roles.manage"),
     rolePermissionRateLimit,
     async (req: AuthorizedRequest, res, next) => {
       try {
@@ -173,7 +183,7 @@ export function createAdminRouter(): Router {
 
   router.delete(
     "/roles/:code/permissions/:permissionCode",
-    requirePermission("admin.roles.manage"),
+    requireElevatedPermission("admin.roles.manage"),
     rolePermissionRateLimit,
     async (req: AuthorizedRequest, res, next) => {
       try {
@@ -371,6 +381,83 @@ export function createAdminRouter(): Router {
       return next(error);
     }
   });
+
+  // Real JIT privileged-access elevation (closes NFR-180's PAM capability
+  // gap). Available to any authenticated session (elevation itself never
+  // requires an already-privileged permission - it's the gate that grants
+  // one).
+  const elevationRateLimit = rateLimit({
+    name: "admin-elevation",
+    windowMs: 60_000,
+    maxRequests: 10
+  });
+
+  router.post("/elevate", elevationRateLimit, async (req: AuthorizedRequest, res, next) => {
+    try {
+      const session = await getRequestSession(req);
+      if (!session) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+      const parsed = z.object({ code: z.string().min(1) }).safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid elevation request", details: parsed.error.flatten() });
+      }
+      const result = await requestElevation(session, parsed.data.code);
+      return res.json(result);
+    } catch (error) {
+      if (error instanceof MfaNotEnrolledError) {
+        return res.status(403).json({ error: error.message });
+      }
+      if (error instanceof InvalidElevationCodeError) {
+        return res.status(401).json({ error: error.message });
+      }
+      return next(error);
+    }
+  });
+
+  router.post("/de-elevate", async (req: AuthorizedRequest, res, next) => {
+    try {
+      const session = await getRequestSession(req);
+      if (!session) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+      await endElevation(session);
+      return res.json({ elevated: false });
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  router.get("/elevation/status", async (req: AuthorizedRequest, res, next) => {
+    try {
+      const session = await getRequestSession(req);
+      if (!session) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+      return res.json(isElevated(session.sessionId));
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  // The "session recording" evidence for NFR-180 - a real, queryable audit
+  // trail bounded by an elevation's grant/end events, not video/keystroke
+  // capture.
+  router.get(
+    "/elevation/:elevationId/audit-trail",
+    requirePermission("audit.events.view"),
+    async (req: AuthorizedRequest, res, next) => {
+      try {
+        const events = shouldUseDatabasePersistence()
+          ? await listPersistedAuditEvents(200, { userId: req.query.userId as string | undefined })
+          : listAuditEvents({ userId: req.query.userId as string | undefined });
+        const filtered = events.filter((event) => event.resource === req.params.elevationId);
+        return res.json({ events: filtered });
+      } catch (error) {
+        return next(error);
+      }
+    }
+  );
 
   return router;
 }

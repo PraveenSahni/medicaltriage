@@ -1,7 +1,8 @@
+import { authenticator } from "otplib";
 import request from "supertest";
 import { createApp } from "../src/app.js";
 import { resetRateLimitBucketsForTests } from "../src/middleware/rateLimit.js";
-import { resetSecurityStoreForTests } from "../src/services/securityAdmin.js";
+import { confirmMfaEnrollment, enrollMfa, resetSecurityStoreForTests } from "../src/services/securityAdmin.js";
 
 const TEST_ADMIN_PASSWORD = "TestAdminPassword!2026";
 process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
@@ -19,6 +20,15 @@ async function agentFor(username: string, simulateRole: string) {
     })
     .expect(200);
   return agent;
+}
+
+// PATCH /users/:id/status now requires PAM elevation (closes NFR-180) -
+// tests that mutate account status must elevate first, same real TOTP flow
+// tests/pamElevation.test.ts exercises directly.
+async function elevate(agent: request.Agent, userId: string) {
+  const { secret } = enrollMfa(userId);
+  confirmMfaEnrollment(userId, authenticator.generate(secret));
+  await agent.post("/api/v1/admin/elevate").send({ code: authenticator.generate(secret) }).expect(200);
 }
 
 describe("Role-based Control Center bifurcation", () => {
@@ -141,6 +151,7 @@ describe("Role-based Control Center bifurcation", () => {
 
     it("suspends a real account and records an auditable status change", async () => {
       const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+      await elevate(sysAdmin, "usr_system_admin_10001");
 
       const updated = await sysAdmin
         .patch("/api/v1/admin/users/usr_nurse_10001/status")
@@ -155,6 +166,7 @@ describe("Role-based Control Center bifurcation", () => {
 
     it("revokes the account's already-active session when suspended - not just a cosmetic status flip", async () => {
       const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+      await elevate(sysAdmin, "usr_system_admin_10001");
       const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 
       // Confirm the nurse's session works before suspension.
@@ -171,6 +183,7 @@ describe("Role-based Control Center bifurcation", () => {
 
     it("blocks an account from suspending itself (self-lockout protection)", async () => {
       const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+      await elevate(sysAdmin, "usr_system_admin_10001");
 
       await sysAdmin
         .patch("/api/v1/admin/users/usr_system_admin_10001/status")
@@ -180,6 +193,7 @@ describe("Role-based Control Center bifurcation", () => {
 
     it("allows an account to reactivate itself back to active (not a lockout risk)", async () => {
       const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+      await elevate(sysAdmin, "usr_system_admin_10001");
 
       await sysAdmin
         .patch("/api/v1/admin/users/usr_system_admin_10001/status")
@@ -189,6 +203,7 @@ describe("Role-based Control Center bifurcation", () => {
 
     it("returns 404 for a non-existent user id", async () => {
       const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+      await elevate(sysAdmin, "usr_system_admin_10001");
       await sysAdmin
         .patch("/api/v1/admin/users/usr_does_not_exist/status")
         .send({ status: "suspended", reason: "test" })
@@ -197,6 +212,7 @@ describe("Role-based Control Center bifurcation", () => {
 
     it("rejects an invalid status value", async () => {
       const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+      await elevate(sysAdmin, "usr_system_admin_10001");
       await sysAdmin
         .patch("/api/v1/admin/users/usr_nurse_10001/status")
         .send({ status: "not-a-real-status", reason: "test" })

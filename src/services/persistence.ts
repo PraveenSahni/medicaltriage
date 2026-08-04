@@ -327,12 +327,26 @@ function toRiskClassification(riskLevel: string | null): AuditEvent["risk"] {
  * API. Falls back to an empty array (not the mock) when DB persistence is
  * off, since there is no real data to show in that mode.
  */
-export async function listPersistedAuditEvents(limit = 200): Promise<AuditEvent[]> {
+export async function listPersistedAuditEvents(
+  limit = 200,
+  filter?: { userId?: string; since?: string; until?: string }
+): Promise<AuditEvent[]> {
   if (!shouldUseDatabasePersistence()) {
     return [];
   }
 
   const rows = await prisma.auditEvent.findMany({
+    where: {
+      ...(filter?.userId ? { userId: filter.userId } : {}),
+      ...(filter?.since || filter?.until
+        ? {
+            timestamp: {
+              ...(filter?.since ? { gte: new Date(filter.since) } : {}),
+              ...(filter?.until ? { lte: new Date(filter.until) } : {})
+            }
+          }
+        : {})
+    },
     orderBy: { timestamp: "desc" },
     take: limit
   });

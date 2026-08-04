@@ -1,7 +1,8 @@
+import { authenticator } from "otplib";
 import request from "supertest";
 import { createApp } from "../src/app.js";
 import { resetRateLimitBucketsForTests } from "../src/middleware/rateLimit.js";
-import { resetSecurityStoreForTests } from "../src/services/securityAdmin.js";
+import { confirmMfaEnrollment, enrollMfa, resetSecurityStoreForTests } from "../src/services/securityAdmin.js";
 
 const TEST_ADMIN_PASSWORD = "TestAdminPassword!2026";
 process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
@@ -19,6 +20,14 @@ async function agentFor(username: string, simulateRole: string) {
     })
     .expect(200);
   return agent;
+}
+
+// POST/DELETE /roles/:code/permissions now require PAM elevation (closes
+// NFR-180) - tests that mutate role permissions must elevate first.
+async function elevate(agent: request.Agent, userId: string) {
+  const { secret } = enrollMfa(userId);
+  confirmMfaEnrollment(userId, authenticator.generate(secret));
+  await agent.post("/api/v1/admin/elevate").send({ code: authenticator.generate(secret) }).expect(200);
 }
 
 describe("Role-permission mutation (Admin RBAC)", () => {
@@ -41,6 +50,7 @@ describe("Role-permission mutation (Admin RBAC)", () => {
 
   it("grants a permission to a role, visible immediately via GET /roles", async () => {
     const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    await elevate(sysAdmin, "usr_system_admin_10001");
 
     const before = await sysAdmin.get("/api/v1/admin/roles").expect(200);
     const nurseBefore = before.body.roles.find((r: { code: string }) => r.code === "remote_triage_nurse");
@@ -59,6 +69,7 @@ describe("Role-permission mutation (Admin RBAC)", () => {
 
   it("revokes a permission from a role, reflected via GET /roles", async () => {
     const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    await elevate(sysAdmin, "usr_system_admin_10001");
 
     const revoked = await sysAdmin
       .delete("/api/v1/admin/roles/remote_triage_nurse/permissions/triage.workspace.view")
@@ -73,6 +84,7 @@ describe("Role-permission mutation (Admin RBAC)", () => {
 
   it("revokes already-active sessions of the affected role - not just a cosmetic change", async () => {
     const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    await elevate(sysAdmin, "usr_system_admin_10001");
     const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 
     // Confirm the nurse's session works before the mutation.
@@ -90,6 +102,7 @@ describe("Role-permission mutation (Admin RBAC)", () => {
 
   it("blocks revoking admin.roles.manage from the actor's own currently-active role (self-lockout)", async () => {
     const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    await elevate(sysAdmin, "usr_system_admin_10001");
 
     await sysAdmin
       .delete("/api/v1/admin/roles/system_administrator/permissions/admin.roles.manage")
@@ -99,6 +112,7 @@ describe("Role-permission mutation (Admin RBAC)", () => {
 
   it("returns 404 for an unknown role code", async () => {
     const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    await elevate(sysAdmin, "usr_system_admin_10001");
     await sysAdmin
       .post("/api/v1/admin/roles/not_a_real_role/permissions")
       .send({ permissionCode: "reports.view", reason: "test" })
@@ -107,6 +121,7 @@ describe("Role-permission mutation (Admin RBAC)", () => {
 
   it("returns 404 for an unknown permission code", async () => {
     const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    await elevate(sysAdmin, "usr_system_admin_10001");
     await sysAdmin
       .post("/api/v1/admin/roles/remote_triage_nurse/permissions")
       .send({ permissionCode: "not.a.real.permission", reason: "test" })
@@ -115,6 +130,7 @@ describe("Role-permission mutation (Admin RBAC)", () => {
 
   it("rejects an invalid request body", async () => {
     const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    await elevate(sysAdmin, "usr_system_admin_10001");
     await sysAdmin
       .post("/api/v1/admin/roles/remote_triage_nurse/permissions")
       .send({ permissionCode: "", reason: "" })
