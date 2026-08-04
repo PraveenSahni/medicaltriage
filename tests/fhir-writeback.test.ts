@@ -4,6 +4,7 @@ import {
   buildCernerDocumentReference,
   buildEpicDocumentReference,
   encodeSbarNote,
+  postDocumentReference,
   verifyPatientConsent
 } from "../src/integration/fhirWriteback.js";
 
@@ -79,6 +80,43 @@ describe("EMR/FHIR writeback gateway", () => {
         headers: expect.objectContaining({ authorization: "Bearer token" })
       })
     );
+  });
+
+  it("retries a transient (5xx/network) failure with backoff, then succeeds", async () => {
+    let calls = 0;
+    global.fetch = jest.fn(async () => {
+      calls += 1;
+      if (calls < 3) {
+        return { ok: false, status: 503, text: async (): Promise<string> => "Service Unavailable" };
+      }
+      return {
+        ok: true,
+        status: 201,
+        text: async (): Promise<string> => JSON.stringify({ id: "doc-ref-1" }),
+        headers: new Headers()
+      };
+    }) as unknown as typeof fetch;
+
+    const payload = buildCernerDocumentReference("28163400000", "enc-100", "triage-nurse-1", "YmFzZTY0");
+    const result = await postDocumentReference("https://emr.example/DocumentReference", "token", payload);
+
+    expect(calls).toBe(3);
+    expect(result).toMatchObject({ status: 201, resourceId: "doc-ref-1" });
+  });
+
+  it("does not retry a 4xx (client error) failure", async () => {
+    let calls = 0;
+    global.fetch = jest.fn(async () => {
+      calls += 1;
+      return { ok: false, status: 400, text: async () => "Bad Request" };
+    }) as unknown as typeof fetch;
+
+    const payload = buildCernerDocumentReference("28163400000", "enc-100", "triage-nurse-1", "YmFzZTY0");
+    await expect(
+      postDocumentReference("https://emr.example/DocumentReference", "token", payload)
+    ).rejects.toThrow(/HTTP 400/);
+
+    expect(calls).toBe(1);
   });
 
   it("exposes an authenticated dry-run writeback endpoint in mock mode", async () => {

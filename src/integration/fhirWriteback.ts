@@ -576,7 +576,18 @@ function writebackMode(options: ExecuteWritebackOptions): "dry-run" | "live" {
   return (process.env.FHIR_WRITEBACK_MODE ?? "dry-run").toLowerCase() === "live" ? "live" : "dry-run";
 }
 
-async function postDocumentReference(endpoint: string, token: string, payload: FhirDocumentReference) {
+const WRITEBACK_MAX_ATTEMPTS = 3;
+const WRITEBACK_RETRY_BASE_DELAY_MS = 250;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Closes NFR-112 (Resiliency) - retries a transient failure (network error or
+// 5xx, e.g. the EMR endpoint briefly unavailable) with exponential backoff.
+// Never retries a 4xx: a bad token or malformed payload will fail identically
+// on every attempt, so retrying it only delays surfacing a real error.
+async function postDocumentReferenceOnce(endpoint: string, token: string, payload: FhirDocumentReference) {
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
@@ -588,7 +599,11 @@ async function postDocumentReference(endpoint: string, token: string, payload: F
   });
   const body = (await response.text()).trim();
   if (!response.ok) {
-    throw new Error(`FHIR DocumentReference POST failed with HTTP ${response.status}: ${body}`);
+    const error = new Error(`FHIR DocumentReference POST failed with HTTP ${response.status}: ${body}`) as Error & {
+      status?: number;
+    };
+    error.status = response.status;
+    throw error;
   }
   let resourceId: string | undefined;
   try {
@@ -598,6 +613,24 @@ async function postDocumentReference(endpoint: string, token: string, payload: F
     resourceId = response.headers.get("location") ?? undefined;
   }
   return { status: response.status, resourceId };
+}
+
+export async function postDocumentReference(endpoint: string, token: string, payload: FhirDocumentReference) {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= WRITEBACK_MAX_ATTEMPTS; attempt++) {
+    try {
+      return await postDocumentReferenceOnce(endpoint, token, payload);
+    } catch (error) {
+      lastError = error;
+      const status = (error as { status?: number }).status;
+      const isTransient = status === undefined || status >= 500;
+      if (!isTransient || attempt === WRITEBACK_MAX_ATTEMPTS) {
+        throw error;
+      }
+      await sleep(WRITEBACK_RETRY_BASE_DELAY_MS * 2 ** (attempt - 1));
+    }
+  }
+  throw lastError;
 }
 
 export async function executeWriteback(
