@@ -1,0 +1,33 @@
+name: Performance test
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # Weekly, so latency regressions surface even between releases -
+    # not tied to every push, since hitting a live service on every PR
+    # would be noisy and wasteful.
+    - cron: "0 6 * * 1"
+
+jobs:
+  load-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Closes NFR-147 ("performance test capability as part of the release
+      # pipeline") - reuses the same scripts/loadTest.mjs baseline tool
+      # already used for docs/load-test-baseline-2026-08-04.md, now runnable
+      # on demand (right after a deploy) or on a weekly cadence, not just as
+      # a one-off manual invocation. Deliberately non-blocking: this targets
+      # a live service (ist-triage-soc2), and the known Cloud SQL
+      # connection-contention finding in the baseline doc means latency
+      # alone isn't yet a reliable pass/fail signal - this publishes real
+      # numbers for a human to read, not a hard gate.
+      - name: Run load test against ist-triage-soc2
+        run: node scripts/loadTest.mjs https://triagedsoc2.irisstar.tech 10 20 | tee load-test-results.json
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: load-test-results
+          path: load-test-results.json
+          retention-days: 90
