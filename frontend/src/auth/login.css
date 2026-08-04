@@ -249,7 +249,10 @@
 }
 
 #login-root .login-links a {
-  color: var(--tx3) !important;
+  /* --tx3 (#9c9a92) fails WCAG AA contrast (~2.5:1) against the card
+     background at this font-size; --muted (#6b6a66, already used on
+     :hover) passes comfortably (~5.3:1). */
+  color: var(--muted) !important;
   text-decoration: none;
 }
 
