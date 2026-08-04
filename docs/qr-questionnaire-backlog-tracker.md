@@ -30,7 +30,7 @@ roughly by how many rows they'd move to Yes/Partial-to-better.
 | Initiative | Rows it touches | Scope | Status |
 |---|---|---|---|
 | **SSO/MFA** (enterprise IdP: AD/OIDC/SAML + MFA) | ~9 rows (NFR-016/018/020/022/025/028, AI/CSQ auth rows) | Large - real IdP integration, session model changes | Not started (R-02) |
-| **SAST tooling** (static code security scanning) | ~9 rows | Medium - add a SAST tool (e.g. Semgrep/CodeQL) to CI | Not started |
+| **SAST tooling** (static code security scanning) | ~9 rows | Medium - add a SAST tool (e.g. Semgrep/CodeQL) to CI | ✅ Done (2026-08-04) - CodeQL via GitHub Actions, verified green |
 | **Formal certification** (SOC 2 Type II / ISO 27001) | ~8 rows | Large, external - requires an accredited auditor | Readiness work done (this engagement); certification itself not started (R-05) |
 | **Masking/Reveal/DLP** (field-level PII masking, approval-gated reveal) | ~4 rows | Large - UI + MFA + approval workflow (deliberately deferred, R-04) | Not started |
 | **Independent penetration test** | ~4 rows | External - needs a commissioned third-party pentest | Not started |
@@ -123,6 +123,20 @@ they cluster, largest first:
    current Firebase Hosting rewrite setup. That's a real infrastructure
    migration with real risk to `triaged.irisstar.tech`, not a quick win -
    correctly re-scoped as a separate, larger initiative.
+6. ✅ **SAST tooling** (major initiative, promoted from the list above) -
+   `.github/workflows/codeql.yml` runs `github/codeql-action` against
+   `javascript-typescript` on every push/PR to `main` plus a weekly
+   schedule. Verified live end-to-end on GitHub Actions (run succeeded,
+   real extraction + query evaluation over the whole codebase). Uploading
+   results to GitHub's Security/code-scanning tab is unavailable on this
+   private repo's current plan (same GitHub Advanced Security gate as
+   branch protection/rulesets - confirmed via the identical "Code scanning
+   is not enabled for this repository... requires GitHub Pro"-class
+   error); worked around by setting `upload: false` and publishing the raw
+   SARIF findings as a downloadable build artifact (`codeql-sarif-results`)
+   instead, so the scan itself is real and results are inspectable even
+   without the paid Security tab. Closes the "no SAST" gap repeated across
+   NFR/CSQ/AI rows.
 
 ## Recommended order of attack
 
