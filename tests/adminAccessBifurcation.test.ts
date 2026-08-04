@@ -113,6 +113,22 @@ describe("Role-based Control Center bifurcation", () => {
       expect(nurse.accountStatus).toBe("suspended");
     });
 
+    it("revokes the account's already-active session when suspended - not just a cosmetic status flip", async () => {
+      const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+      const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+
+      // Confirm the nurse's session works before suspension.
+      await nurse.get("/api/v1/queue").expect(200);
+
+      await sysAdmin
+        .patch("/api/v1/admin/users/usr_nurse_10001/status")
+        .send({ status: "suspended", reason: "regression test: session must be revoked" })
+        .expect(200);
+
+      // The nurse's pre-existing session must no longer be usable.
+      await nurse.get("/api/v1/queue").expect(401);
+    });
+
     it("blocks an account from suspending itself (self-lockout protection)", async () => {
       const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
 

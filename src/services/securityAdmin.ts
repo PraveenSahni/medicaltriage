@@ -1892,6 +1892,15 @@ export async function updateUserAccountStatus(
   }
   user.accountStatus = status;
 
+  // A suspended/locked/deactivated account must not be able to keep using
+  // an already-established session - without this, the status change is
+  // cosmetic until that session naturally expires. Mirrors the same
+  // revocation already triggered by HRMS-driven deactivation.
+  let sessionsRevoked = 0;
+  if (status !== "active") {
+    sessionsRevoked = await revokeSessionsForUser(user.id);
+  }
+
   await recordAuditEvent({
     id: `audit-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     timestampIso: new Date().toISOString(),
@@ -1903,7 +1912,7 @@ export async function updateUserAccountStatus(
     action: "USER_ACCOUNT_STATUS_CHANGED",
     module: "AccessGovernance",
     resource: `UserAccount:${user.id}`,
-    purpose: actor.reason,
+    purpose: sessionsRevoked > 0 ? `${actor.reason} (${sessionsRevoked} active session(s) revoked)` : actor.reason,
     ipAddress: "",
     device: "",
     success: true,
