@@ -2100,7 +2100,28 @@ export async function updateQueueContext(
 
   record.priorityScore = computePriority(record);
   record.updatedAtIso = nowIso();
-  return toDto(await saveRecord(record));
+  const saved = await saveRecord(record);
+  if (shouldPersistQueueInDatabase()) {
+    // This is the riskiest routine mutation (severity/disposition/vitals/SBAR
+    // edits) and was previously the one queue-context write path with no
+    // audit trail at all - the other mutations (claim/move/delete) already
+    // had one.
+    const changedFields = (Object.keys(update) as Array<keyof QueueContextUpdate>).filter(
+      (key) => update[key] !== undefined
+    );
+    const clinicalFieldsChanged = ["calculatedSeverity", "dispositionCode", "vitals", "matchedProtocolId"].some(
+      (field) => changedFields.includes(field as keyof QueueContextUpdate)
+    );
+    await recordQueueAuditEvent({
+      session,
+      action: "QUEUE_CONTEXT_UPDATE",
+      recordId: record.id,
+      success: true,
+      riskLevel: clinicalFieldsChanged ? "high" : "medium",
+      metadata: { changedFields }
+    });
+  }
+  return toDto(saved);
 }
 
 export async function moveQueueItem(
