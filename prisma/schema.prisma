@@ -845,6 +845,28 @@ model UserRole {
   @@map("user_roles")
 }
 
+// Persistent grant/revoke overrides layered on top of the hardcoded role
+// baseline in src/services/securityAdmin.ts - closes NFR-030/031/032
+// ("Administrators add/remove access to screens/data/API endpoints for
+// roles"), which previously required a source change + redeploy. The
+// baseline itself stays source-controlled/reviewable; this table only
+// records explicit deltas from it.
+model RolePermission {
+  id             String    @id @default(cuid())
+  roleCode       String    @map("role_code")
+  permissionCode String    @map("permission_code")
+  action         String // "GRANT" | "REVOKE"
+  effectiveFrom  DateTime  @default(now()) @map("effective_from")
+  effectiveTo    DateTime? @map("effective_to")
+  grantedBy      String    @map("granted_by")
+  reason         String
+  status         String    @default("active")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  @@index([roleCode, status])
+  @@map("role_permissions")
+}
+
 model UserResponsibility {
   id                 String    @id @default(cuid())
   userId             String    @map("user_id")

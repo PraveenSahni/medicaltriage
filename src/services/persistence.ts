@@ -151,6 +151,32 @@ export async function persistSecurityAuditEvent(event: AuditEvent): Promise<Pers
   return { persisted: true, recordId: created.id };
 }
 
+export type RolePermissionOverride = {
+  roleCode: string;
+  permissionCode: string;
+  action: "GRANT" | "REVOKE";
+  grantedBy: string;
+  reason: string;
+};
+
+export async function persistRolePermissionOverride(override: RolePermissionOverride): Promise<PersistenceResult> {
+  if (!shouldUseDatabasePersistence()) {
+    return { persisted: false, reason: "mock-mode" };
+  }
+
+  const created = await prisma.rolePermission.create({
+    data: {
+      roleCode: override.roleCode,
+      permissionCode: override.permissionCode,
+      action: override.action,
+      grantedBy: override.grantedBy,
+      reason: override.reason
+    }
+  });
+
+  return { persisted: true, recordId: created.id };
+}
+
 const VALID_RISK_CLASSIFICATIONS = new Set(["low", "medium", "high", "critical"]);
 
 function toRiskClassification(riskLevel: string | null): AuditEvent["risk"] {

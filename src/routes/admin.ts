@@ -7,6 +7,7 @@ import { listPersistedAuditEvents } from "../services/persistence.js";
 import { rateLimit } from "../middleware/rateLimit.js";
 import {
   getSecurityDashboard,
+  grantPermissionToRole,
   listAuditEvents,
   listControlCenterModules,
   listEncryptionPolicies,
@@ -21,7 +22,11 @@ import {
   listSsoProviders,
   listSupportQueueItems,
   listUsers,
+  PermissionNotFoundError,
   recordReveal,
+  revokePermissionFromRole,
+  RoleNotFoundError,
+  SelfPermissionRevocationError,
   updateUserAccountStatus,
   UserNotFoundError,
   SelfStatusChangeError
@@ -106,11 +111,85 @@ export function createAdminRouter(): Router {
   });
 
   router.get("/roles", requirePermission("admin.roles.manage"), (_req, res) => {
-    // Closes NFR-140 - the role/permission set is hardcoded in source and
-    // only changes on a deploy, never per request.
+    // Closes NFR-140 (caching) - the role/permission baseline itself only
+    // changes on a deploy, but grant/revoke overrides via the endpoints
+    // below (closing NFR-030/031/032) apply immediately; this short cache
+    // window just means a change may take up to 5 minutes to show up here.
     res.set("Cache-Control", "private, max-age=300");
     return res.json({ roles: listRoles() });
   });
+
+  // Closes NFR-030/031/032 - real, permission-gated, audited role-permission
+  // mutation, no source change or redeploy required. Mirrors the PATCH
+  // /users/:id/status endpoint's shape (dedicated error classes, rate
+  // limiting, audit trail).
+  const rolePermissionRateLimit = rateLimit({
+    name: "admin-role-permission",
+    windowMs: 60_000,
+    maxRequests: 20
+  });
+
+  const RolePermissionMutationRequestSchema = z.object({
+    permissionCode: z.string().min(1),
+    reason: z.string().min(1).max(500)
+  });
+
+  router.post(
+    "/roles/:code/permissions",
+    requirePermission("admin.roles.manage"),
+    rolePermissionRateLimit,
+    async (req: AuthorizedRequest, res, next) => {
+      try {
+        const parsed = RolePermissionMutationRequestSchema.safeParse(req.body);
+        if (!parsed.success) {
+          return res.status(400).json({ error: "Invalid role-permission grant", details: parsed.error.flatten() });
+        }
+        const actorUserId = req.securitySession?.user.id ?? "unknown";
+        const actorActiveRole = req.securitySession?.activeRole ?? "unknown";
+        const role = await grantPermissionToRole(req.params.code, parsed.data.permissionCode, {
+          userId: actorUserId,
+          activeRole: actorActiveRole,
+          reason: parsed.data.reason
+        });
+        return res.json({ role });
+      } catch (error) {
+        if (error instanceof RoleNotFoundError || error instanceof PermissionNotFoundError) {
+          return res.status(404).json({ error: error.message });
+        }
+        return next(error);
+      }
+    }
+  );
+
+  router.delete(
+    "/roles/:code/permissions/:permissionCode",
+    requirePermission("admin.roles.manage"),
+    rolePermissionRateLimit,
+    async (req: AuthorizedRequest, res, next) => {
+      try {
+        const parsed = z.object({ reason: z.string().min(1).max(500) }).safeParse(req.body);
+        if (!parsed.success) {
+          return res.status(400).json({ error: "Invalid role-permission revocation", details: parsed.error.flatten() });
+        }
+        const actorUserId = req.securitySession?.user.id ?? "unknown";
+        const actorActiveRole = req.securitySession?.activeRole ?? "unknown";
+        const role = await revokePermissionFromRole(req.params.code, req.params.permissionCode, {
+          userId: actorUserId,
+          activeRole: actorActiveRole,
+          reason: parsed.data.reason
+        });
+        return res.json({ role });
+      } catch (error) {
+        if (error instanceof RoleNotFoundError || error instanceof PermissionNotFoundError) {
+          return res.status(404).json({ error: error.message });
+        }
+        if (error instanceof SelfPermissionRevocationError) {
+          return res.status(409).json({ error: error.message });
+        }
+        return next(error);
+      }
+    }
+  );
 
   router.get("/responsibilities", requirePermission("admin.roles.manage"), (_req, res) => {
     return res.json({ responsibilities: listResponsibilities() });

@@ -25,6 +25,7 @@ import type {
 } from "../types/security.js";
 import {
   getPersistedUserSession,
+  persistRolePermissionOverride,
   persistSecurityAuditEvent,
   persistUserSession,
   revokePersistedSession,
@@ -1866,7 +1867,7 @@ export function listResponsibilities(): Responsibility[] {
 }
 
 export function listRoles(): Role[] {
-  return roles;
+  return roles.map(applyRolePermissionOverrides);
 }
 
 export function listUsers(): SafeAdminUser[] {
@@ -1930,6 +1931,88 @@ export async function updateUserAccountStatus(
   });
 
   return maskUser(user);
+}
+
+export class RoleNotFoundError extends Error {}
+export class PermissionNotFoundError extends Error {}
+export class SelfPermissionRevocationError extends Error {}
+
+async function mutateRolePermission(
+  roleCode: string,
+  permissionCode: string,
+  action: "GRANT" | "REVOKE",
+  actor: { userId: string; activeRole: string; reason: string }
+): Promise<Role> {
+  const baseRole = roles.find((candidate) => candidate.code === roleCode);
+  if (!baseRole) {
+    throw new RoleNotFoundError(`No role found with code ${roleCode}`);
+  }
+  if (!permissions.some((candidate) => candidate.code === permissionCode)) {
+    throw new PermissionNotFoundError(`No permission found with code ${permissionCode}`);
+  }
+  // Prevents an admin from revoking admin.roles.manage from their own
+  // currently-active role, which would lock them out of the Control
+  // Center's role administration entirely through this same endpoint -
+  // same reasoning as SelfStatusChangeError above.
+  if (action === "REVOKE" && actor.activeRole === roleCode && permissionCode === "admin.roles.manage") {
+    throw new SelfPermissionRevocationError(
+      "Cannot revoke admin.roles.manage from your own currently-active role."
+    );
+  }
+
+  rolePermissionOverrides.push({ roleCode, permissionCode, action });
+  try {
+    await persistRolePermissionOverride({
+      roleCode,
+      permissionCode,
+      action,
+      grantedBy: actor.userId,
+      reason: actor.reason
+    });
+  } catch (error) {
+    console.error("Failed to persist role-permission override (change still applies in-memory):", error);
+  }
+
+  // session.permissions is a snapshot taken at login (see toSession()) and
+  // is never re-derived - without this, a grant/revoke here would be
+  // invisible to anyone already logged in under the affected role.
+  const sessionsRevoked = await revokeSessionsForRole(roleCode);
+
+  await recordAuditEvent({
+    id: `audit-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    timestampIso: new Date().toISOString(),
+    userId: actor.userId,
+    activeRole: actor.activeRole,
+    organization: "",
+    facility: "",
+    department: "",
+    action: action === "GRANT" ? "ROLE_PERMISSION_GRANTED" : "ROLE_PERMISSION_REVOKED",
+    module: "AccessGovernance",
+    resource: `Role:${roleCode}:${permissionCode}`,
+    purpose: sessionsRevoked > 0 ? `${actor.reason} (${sessionsRevoked} active session(s) revoked)` : actor.reason,
+    ipAddress: "",
+    device: "",
+    success: true,
+    risk: "medium"
+  });
+
+  return roleByCode(roleCode) as Role;
+}
+
+export async function grantPermissionToRole(
+  roleCode: string,
+  permissionCode: string,
+  actor: { userId: string; activeRole: string; reason: string }
+): Promise<Role> {
+  return mutateRolePermission(roleCode, permissionCode, "GRANT", actor);
+}
+
+export async function revokePermissionFromRole(
+  roleCode: string,
+  permissionCode: string,
+  actor: { userId: string; activeRole: string; reason: string }
+): Promise<Role> {
+  return mutateRolePermission(roleCode, permissionCode, "REVOKE", actor);
 }
 
 export function listControlCenterModules(): ControlCenterModule[] {
@@ -2089,6 +2172,22 @@ export async function revokeSessionsForUser(userId: string): Promise<number> {
   return revoked;
 }
 
+export async function revokeSessionsForRole(roleCode: string): Promise<number> {
+  let revoked = 0;
+  const affectedUserIds = new Set<string>();
+  for (const [sessionId, session] of sessions.entries()) {
+    if (session.activeRole === roleCode) {
+      sessions.delete(sessionId);
+      affectedUserIds.add(session.user.id);
+      revoked += 1;
+    }
+  }
+  for (const userId of affectedUserIds) {
+    await revokePersistedSessionsForUser(userId);
+  }
+  return revoked;
+}
+
 export async function setDirectoryStatusForEmployee(
   employeeId: string,
   directoryStatus: DirectoryStatus
@@ -2109,6 +2208,7 @@ export function resetSecurityStoreForTests(): void {
   users = cloneInitialUsers();
   sessions.clear();
   failedLoginAttempts.clear();
+  rolePermissionOverrides = [];
 }
 
 export function listSsoProviders(): SsoProvider[] {
@@ -2158,8 +2258,50 @@ function safeCompare(left: string, right: string): boolean {
   return timingSafeEqual(leftBuffer, rightBuffer);
 }
 
+// Persistent grant/revoke overrides layered on top of the hardcoded role
+// baseline above - closes NFR-030/031/032 ("Administrators add/remove
+// access to screens/data/API endpoints for roles"), which previously
+// required a source change + redeploy (see the historical comment on the
+// GET /roles route this replaces). The baseline `roles` array stays the
+// source-controlled default; this only records explicit deltas from it.
+// In-memory first (read on every roleByCode()/listRoles() call), with
+// best-effort DB persistence - same shape as recordAuditEvent().
+type RolePermissionOverrideRecord = {
+  roleCode: string;
+  permissionCode: string;
+  action: "GRANT" | "REVOKE";
+};
+
+let rolePermissionOverrides: RolePermissionOverrideRecord[] = [];
+
+function applyRolePermissionOverrides(role: Role): Role {
+  const grants = new Set<string>();
+  const revokes = new Set<string>();
+  for (const override of rolePermissionOverrides) {
+    if (override.roleCode !== role.code) {
+      continue;
+    }
+    if (override.action === "GRANT") {
+      grants.add(override.permissionCode);
+      revokes.delete(override.permissionCode);
+    } else {
+      revokes.add(override.permissionCode);
+      grants.delete(override.permissionCode);
+    }
+  }
+  if (grants.size === 0 && revokes.size === 0) {
+    return role;
+  }
+  const merged = new Set([...role.permissions, ...grants]);
+  for (const revoked of revokes) {
+    merged.delete(revoked);
+  }
+  return { ...role, permissions: [...merged] };
+}
+
 function roleByCode(roleCode: string): Role | undefined {
-  return roles.find((role) => role.code === roleCode);
+  const role = roles.find((candidate) => candidate.code === roleCode);
+  return role ? applyRolePermissionOverrides(role) : undefined;
 }
 
 function toSession(user: AdminUser, authMethod: AuthMethod, rememberMe: boolean, simulateRole?: string): AuthenticatedSession {
