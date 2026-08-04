@@ -86,14 +86,19 @@ async function main() {
   const { cookie, durationMs: loginLatencyMs } = await login();
   console.log(`Login latency (single request): ${Math.round(loginLatencyMs)}ms`);
 
-  const queueScenario = await runScenario("Queue list (authenticated, real DB read)", "/api/v1/queue", cookie);
+  const queueScenario = await runScenario("Queue list (authenticated, real DB read, unpaginated)", "/api/v1/queue", cookie);
+  const queuePaginatedScenario = await runScenario(
+    "Queue list (authenticated, real DB read, paginated limit=50)",
+    "/api/v1/queue?limit=50",
+    cookie
+  );
   const protocolsScenario = await runScenario(
     "Protocol list (authenticated, real DB read)",
     "/api/v1/protocols?limit=1000",
     cookie
   );
 
-  const summary = { baseUrl: BASE_URL, scenarios: [publicScenario, queueScenario, protocolsScenario] };
+  const summary = { baseUrl: BASE_URL, scenarios: [publicScenario, queueScenario, queuePaginatedScenario, protocolsScenario] };
   console.log(JSON.stringify(summary, null, 2));
 }
 
