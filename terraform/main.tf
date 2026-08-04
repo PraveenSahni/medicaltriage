@@ -78,11 +78,34 @@ resource "google_sql_database" "soc2" {
   instance = data.google_sql_database_instance.shared.name
 }
 
+# Pub/Sub topic Secret Manager notifies when a secret's rotation reminder
+# fires (NFR-182: secrets rotation). Notification only, not automated
+# rotation - GCP has no generic auto-rotation mechanism for arbitrary
+# secret values; this creates the reminder infrastructure so a rotation is
+# never simply forgotten, without pretending rotation itself is automated.
+resource "google_pubsub_topic" "secret_rotation_notifications" {
+  name = "secret-rotation-notifications"
+}
+
+resource "google_pubsub_topic_iam_member" "secret_manager_publisher" {
+  topic  = google_pubsub_topic.secret_rotation_notifications.name
+  role   = "roles/pubsub.publisher"
+  member = "serviceAccount:service-1096520215793@gcp-sa-secretmanager.iam.gserviceaccount.com"
+}
+
 resource "google_secret_manager_secret" "soc2_database_url" {
   secret_id = "ist-triage-soc2-database-url"
 
   replication {
     auto {}
+  }
+
+  rotation {
+    rotation_period    = "7776000s" # 90 days
+    next_rotation_time = "2026-11-02T09:04:23Z"
+  }
+  topics {
+    name = google_pubsub_topic.secret_rotation_notifications.id
   }
 }
 
@@ -98,6 +121,14 @@ resource "google_secret_manager_secret" "soc2_auth_jwt_secret" {
   replication {
     auto {}
   }
+
+  rotation {
+    rotation_period    = "7776000s" # 90 days
+    next_rotation_time = "2026-11-02T09:04:23Z"
+  }
+  topics {
+    name = google_pubsub_topic.secret_rotation_notifications.id
+  }
 }
 
 resource "google_secret_manager_secret" "soc2_audit_hmac_secret" {
@@ -105,6 +136,14 @@ resource "google_secret_manager_secret" "soc2_audit_hmac_secret" {
 
   replication {
     auto {}
+  }
+
+  rotation {
+    rotation_period    = "7776000s" # 90 days
+    next_rotation_time = "2026-11-02T09:04:23Z"
+  }
+  topics {
+    name = google_pubsub_topic.secret_rotation_notifications.id
   }
 }
 

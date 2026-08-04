@@ -41,6 +41,22 @@ retention lifecycle policy (auto-deletes objects older than 365 days).
 This runs alongside Cloud Logging's own default retention (30 days in the
 live console) - the bucket is the durable long-term copy.
 
+## Secret rotation reminders (added 2026-08-04)
+
+Closes part of NFR-182 ("secrets rotation must be automated"). GCP Secret Manager has no
+generic mechanism to auto-rotate an arbitrary secret's *value* (there's nothing to
+regenerate a DB password or JWT signing key on its own) - what it does provide is a
+rotation reminder: a Pub/Sub notification fired on a schedule so a rotation is never
+simply forgotten. All 3 soc2 secrets (`ist-triage-soc2-database-url`,
+`ist-triage-soc2-auth-jwt-secret`, `ist-triage-soc2-audit-hmac-secret`) now have a
+90-day rotation period configured, publishing to the `secret-rotation-notifications`
+Pub/Sub topic, first reminder due `2026-11-02T09:04:23Z`. This is reminder
+infrastructure, not automated rotation - actually rotating a secret (generating a new
+value, updating the Cloud Run revision, verifying, then disabling the old version)
+remains a manual, verified operation each time the reminder fires. Declared in
+`terraform/main.tf` (zero-diff verified) alongside the pubsub topic and its
+`roles/pubsub.publisher` IAM binding for the Secret Manager service agent.
+
 ## Reporting cadence
 
 Not yet established. Once the metrics above are actually being collected,
