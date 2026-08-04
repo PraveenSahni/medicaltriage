@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      security-events: write
 
     strategy:
       fail-fast: false
@@ -25,10 +24,24 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: github/codeql-action/init@v3
+      - uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
 
-      - uses: github/codeql-action/analyze@v3
+      # upload: false - this repo's plan doesn't have GitHub Advanced
+      # Security/code-scanning UI enabled (confirmed: the upload step fails
+      # with "Code scanning is not enabled for this repository... requires
+      # GitHub Pro"). The scan itself still runs for real; results are
+      # saved as a downloadable build artifact instead of the (unavailable)
+      # Security tab UI.
+      - uses: github/codeql-action/analyze@v4
         with:
           category: "/language:${{ matrix.language }}"
+          upload: false
+          output: sarif-results
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: codeql-sarif-results
+          path: sarif-results
+          retention-days: 90
