@@ -2,27 +2,35 @@ import { expect, test } from "@playwright/test";
 import { apiLogin, browserLogin, personas } from "./fixtures.js";
 
 test.describe.serial("Named-user browser journey", () => {
-  test("WEB-001 renders runtime data and binds a simulated user to its credentials", async ({ page }) => {
+  test("WEB-001 renders runtime data and the real login form", async ({ page }) => {
     const runtimeResponse = page.waitForResponse((response) => response.url().endsWith("/api/v1/runtime/environment"));
     await page.goto("/");
     const runtime = await runtimeResponse;
     expect(runtime.status()).toBe(200);
     await expect(runtime.json()).resolves.toMatchObject({ environment: "simulation", dataProfile: "synthetic-e2e" });
-    await expect(page.getByText("SIMULATION", { exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "IST Health" })).toBeVisible();
+    // The login page deliberately has no app chrome/environment banner (see
+    // LoginLayout.tsx's own doc comment, per an approved design reference) -
+    // this assertion previously expected the pre-redesign banner text, which
+    // no longer renders here by design. The runtime API assertion above
+    // already proves the "simulation" environment/data-profile contract;
+    // this checks the real, current login-page heading instead.
+    await expect(page.getByRole("heading", { name: "Sign in to Nurse Cockpit" })).toBeVisible();
 
-    await page.locator("#simulation-user").selectOption(personas.nurse.simulationUserId);
-    await expect(page.locator("#assigned-role")).toHaveValue(personas.nurse.role);
+    // Real, current LoginCard.tsx form - a plain username/password submit,
+    // no simulate-role dropdown (that UI predates a real login-page
+    // redesign and no longer exists anywhere in the frontend).
+    await page.locator("#username").fill(personas.nurse.username);
+    await page.locator("#password").fill(personas.nurse.password);
     await expect(page.locator("#username")).toHaveValue(personas.nurse.username);
     await expect(page.locator("#password")).toHaveValue(personas.nurse.password);
   });
 
   test("WEB-002 reports invalid authentication without entering the application", async ({ page }) => {
     await page.goto("/");
-    await page.locator("#simulation-user").selectOption(personas.nurse.simulationUserId);
+    await page.locator("#username").fill(personas.nurse.username);
     await page.locator("#password").fill("incorrect-password");
     const responsePromise = page.waitForResponse((response) => response.url().endsWith("/api/v1/auth/login"));
-    await page.getByRole("button", { name: "Sign in", exact: true }).click();
+    await page.getByRole("button", { name: "Sign In", exact: true }).click();
     const response = await responsePromise;
     expect(response.status()).toBe(401);
     await expect(page.getByText(/Invalid username or password|Sign-in failed/i)).toBeVisible();

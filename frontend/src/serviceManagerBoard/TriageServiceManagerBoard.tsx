@@ -269,7 +269,9 @@ export function TriageServiceManagerBoard({ session, onLogout, onOpenNurseCockpi
         {error && <p className="smb-status smb-status-error">Unable to load the triage service board.</p>}
         {generateError && <p className="smb-status smb-status-error">{generateError}</p>}
 
-        <section className="smb-board" ref={boardRef} aria-label="Triage clinical flow board">
+        {/* tabIndex=0 closes a real axe-core finding (scrollable-region-focusable) -
+            this section scrolls horizontally but had no way to reach it via keyboard. */}
+        <section className="smb-board" ref={boardRef} tabIndex={0} aria-label="Triage clinical flow board">
           {BOARD_COLUMNS.map((column) => (
             <WorkflowColumn
               key={column.id}

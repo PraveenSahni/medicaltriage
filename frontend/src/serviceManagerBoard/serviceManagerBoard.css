@@ -183,7 +183,11 @@
   font-size: 11px;
   letter-spacing: 0.8px !important;
   text-transform: uppercase !important;
-  color: var(--tx3, #9c9a92) !important;
+  /* --tx3 (#9c9a92) fails WCAG 2 AA contrast against this panel's
+     background (~2.5:1) - found via a real axe-core audit. --muted
+     (#6b6a66, ~5.7:1) is already the passing fallback used one rule below
+     for the sibling .smb-metric-note. */
+  color: var(--muted, #6b6a66) !important;
   font-weight: 700 !important;
 }
 
@@ -537,7 +541,11 @@
   font-size: 11px;
   letter-spacing: 0.6px !important;
   text-transform: uppercase !important;
-  color: var(--tx3, #9c9a92) !important;
+  /* --tx3 (#9c9a92) fails WCAG 2 AA contrast against this column header's
+     background (~2.5:1) - found via a real axe-core audit. --muted
+     (#6b6a66, ~5.7:1) already passes and is used two rules above for the
+     sibling column-head text. */
+  color: var(--muted, #6b6a66) !important;
   font-weight: 700 !important;
   margin-top: 3px;
 }
@@ -562,7 +570,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--tx3, #9c9a92) !important;
+  /* --tx3 (#9c9a92) fails WCAG 2 AA contrast against this panel's
+     background (~2.5:1) - found via a real axe-core audit. --muted
+     (#6b6a66, ~5.7:1) is the same passing token used elsewhere on this
+     board for equivalent secondary text. */
+  color: var(--muted, #6b6a66) !important;
   font-size: 12px;
   background: rgba(255, 255, 255, 0.45) !important;
   text-align: center;

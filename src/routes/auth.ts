@@ -59,15 +59,25 @@ function finalizeLoginResponse(req: AuthenticatedRequest, res: Response, session
 
 export function createAuthRouter(): Router {
   const router = Router();
+  // The real, production-strict limit is 10/min per bucket. The Playwright
+  // e2e harness (scripts/startE2eServer.ts, the only place that sets
+  // APP_DATA_PROFILE=synthetic-e2e) runs several browser-engine projects
+  // sequentially against one shared backend server/rate-limit bucket (see
+  // playwright.config.ts's shared-server rationale) - real login attempts
+  // across those projects legitimately exceed 10/min even though each one
+  // individually is a normal, intentional test login, not abuse. Loosening
+  // this only for the synthetic e2e profile keeps the real security behavior
+  // untouched in mock/production/demo modes.
+  const isSyntheticE2e = process.env.APP_DATA_PROFILE === "synthetic-e2e";
   const loginRateLimit = rateLimit({
     name: "auth-login",
     windowMs: 60_000,
-    maxRequests: 10
+    maxRequests: isSyntheticE2e ? 200 : 10
   });
   const mfaVerifyRateLimit = rateLimit({
     name: "auth-mfa-verify",
     windowMs: 60_000,
-    maxRequests: 10
+    maxRequests: isSyntheticE2e ? 200 : 10
   });
 
   router.get("/session", async (req, res, next) => {

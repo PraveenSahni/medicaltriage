@@ -65,8 +65,9 @@ export function createHelpPageRouter(): Router {
       const session = (await readAuthenticatedSession(req)) ?? (await sessionFromTokenString(queryToken));
       if (!session) {
         res.status(401).type("html").send(
-          "<!doctype html><title>Sign in required</title><body style=\"font-family:system-ui;padding:40px\">" +
-            "<h1>Sign in required</h1><p>Please sign in to the IST Health Teletriage application, then reopen Help from the topbar.</p></body>"
+          "<!doctype html><html lang=\"en\"><head><title>Sign in required</title></head>" +
+            "<body style=\"font-family:system-ui;padding:40px\">" +
+            "<h1>Sign in required</h1><p>Please sign in to the IST Health Teletriage application, then reopen Help from the topbar.</p></body></html>"
         );
         return;
       }

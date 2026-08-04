@@ -104,7 +104,11 @@ test.describe.serial("API contracts from login through clinical completion", () 
       authenticated: true,
       session: {
         activeRole: "remote_triage_nurse",
-        user: { id: "usr_nurse_10001", email: "n****@irisstar.tech" }
+        // Was asserting a stale masked email ("n****@...") that predates the
+        // nurse persona's real username (layla@irisstar.tech, see
+        // fixtures.ts) - maskEmail() masks all but the first character, so
+        // this is the real, current expected value.
+        user: { id: "usr_nurse_10001", email: "l****@irisstar.tech" }
       }
     });
   });
