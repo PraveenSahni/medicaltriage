@@ -31,6 +31,16 @@ today versus what's only a defined target.
   gaps to close, since it doesn't require new instrumentation, only a
   dashboard/alert policy on metrics GCP already collects.
 
+## Log archival (added 2026-08-04)
+
+Closes NFR-127 ("historical log data to be purged/archived as per
+application requirement"). A Cloud Logging sink (`ist-triage-log-archive`)
+now exports both services' request/application logs to a Cloud Storage
+bucket (`gs://triage-502706-log-archive`, `me-central1`) with a 1-year
+retention lifecycle policy (auto-deletes objects older than 365 days).
+This runs alongside Cloud Logging's own default retention (30 days in the
+live console) - the bucket is the durable long-term copy.
+
 ## Reporting cadence
 
 Not yet established. Once the metrics above are actually being collected,

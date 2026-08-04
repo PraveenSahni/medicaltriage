@@ -44,6 +44,35 @@ resource "google_bigquery_dataset" "billing_export" {
   description = "GCP billing export destination for cost visibility (NFR-134)"
 }
 
+# Long-term log archive (NFR-127) - a durable copy alongside Cloud
+# Logging's own default (shorter) retention window.
+resource "google_storage_bucket" "log_archive" {
+  name                        = "triage-502706-log-archive"
+  location                    = "me-central1"
+  uniform_bucket_level_access = true
+
+  lifecycle_rule {
+    condition {
+      age = 365
+    }
+    action {
+      type = "Delete"
+    }
+  }
+}
+
+resource "google_logging_project_sink" "triage_log_archive" {
+  name        = "ist-triage-log-archive"
+  destination = "storage.googleapis.com/${google_storage_bucket.log_archive.name}"
+  filter      = "resource.type=\"cloud_run_revision\" AND (resource.labels.service_name=\"ist-triage-demo\" OR resource.labels.service_name=\"ist-triage-soc2\")"
+}
+
+resource "google_storage_bucket_iam_member" "log_archive_writer" {
+  bucket = google_storage_bucket.log_archive.name
+  role   = "roles/storage.objectCreator"
+  member = google_logging_project_sink.triage_log_archive.writer_identity
+}
+
 resource "google_sql_database" "soc2" {
   name     = "ist_triage_soc2"
   instance = data.google_sql_database_instance.shared.name
