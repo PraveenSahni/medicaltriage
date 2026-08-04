@@ -61,3 +61,21 @@ jobs:
       # ignored or disabled outright.
       - name: pnpm audit (high/critical)
         run: pnpm audit --audit-level high
+
+      # SBOM (CycloneDX) generated at every push, published as a build
+      # artifact - closes NFR-177. --ignore-npm-errors is required because
+      # this repo uses pnpm (pnpm-lock.yaml), not npm; cyclonedx-npm's
+      # underlying `npm ls` reports the peer/dev dependencies of *other
+      # packages'* optional dev tooling as "missing" (they were never
+      # installed by pnpm and aren't part of this project's own dependency
+      # tree) - those warnings don't affect the accuracy of the generated SBOM
+      # for packages actually shipped in this app.
+      - name: Generate SBOM (CycloneDX)
+        run: npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --output-file sbom.json
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
+          retention-days: 90
