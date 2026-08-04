@@ -1814,7 +1814,17 @@ const failedLoginAttempts = new Map<string, number>();
 
 async function recordAuditEvent(event: AuditEvent): Promise<void> {
   auditEvents.push(event);
-  await persistSecurityAuditEvent(event);
+  // A failure to persist the audit record (DB outage, network blip, a
+  // misconfigured DATABASE_URL) must never block the primary action this
+  // event describes (e.g. authentication) - audit logging is best-effort,
+  // not a hard dependency of the action itself. Found via a real CI
+  // failure: this previously unhandled rejection made login itself fail
+  // whenever the audit-event DB write failed.
+  try {
+    await persistSecurityAuditEvent(event);
+  } catch (error) {
+    console.error("Failed to persist audit event (action itself still succeeds):", error);
+  }
 }
 
 function maskLast(value: string, visible = 4, mask = "*"): string {
