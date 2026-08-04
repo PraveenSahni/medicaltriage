@@ -31,6 +31,19 @@ data "google_sql_database_instance" "shared" {
   name = "ist-triage-postgres-uat"
 }
 
+# Receiving dataset for GCP's standard billing export (NFR-134 cost
+# visibility). Creating the dataset is API/Terraform-able; linking it as
+# the billing account's export destination is NOT - GCP only exposes that
+# one step through the Cloud Billing Console UI (Billing > Billing export),
+# requiring the billing account admin to click "Edit settings" once. This
+# resource prepares the destination so that one remaining manual step is
+# all that's needed - see docs/cost-visibility-setup.md.
+resource "google_bigquery_dataset" "billing_export" {
+  dataset_id  = "billing_export"
+  location    = "me-central1"
+  description = "GCP billing export destination for cost visibility (NFR-134)"
+}
+
 resource "google_sql_database" "soc2" {
   name     = "ist_triage_soc2"
   instance = data.google_sql_database_instance.shared.name
