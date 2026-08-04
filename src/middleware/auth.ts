@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
 import type { AuthenticatedSession } from "../types/security.js";
-import { getSessionFromStore, parseSessionCookie } from "../services/securityAdmin.js";
+import { getSessionFromStore, parseSessionCookie, validateSessionContext } from "../services/securityAdmin.js";
 
 const JWT_TTL_SECONDS = 30 * 60;
 
@@ -91,11 +91,30 @@ export async function readAuthenticatedSession(req: Request): Promise<Authentica
   return (await getSessionFromStore(parseSessionCookie(req.headers))) ?? (await sessionFromBearerToken(req));
 }
 
+// Closes NFR-169 - re-validates the session's bound IP/User-Agent on every
+// authenticated request, not just at login. Applies only to cookie-based
+// browser sessions (the Nurse Cockpit/admin UI) - a Bearer JWT is a
+// portable credential by design, legitimately used across different HTTP
+// clients/tools (integrations, scripts, API consumers), so binding it to a
+// single User-Agent would reject real, intended usage, not just replay.
+// A User-Agent mismatch on a cookie session is rejected outright (a
+// session token used from a different client strongly suggests
+// theft/replay, and User-Agent essentially never changes mid-session for
+// a genuine browser); an IP change alone is allowed through (mobile/CGNAT/
+// VPN users legitimately change IP) but is recorded as a real audit event
+// by validateSessionContext(), not silently ignored.
 export async function requireAuthenticatedSession(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const session = await readAuthenticatedSession(req);
     if (!session) {
       return res.status(401).json({ error: "Authentication required" });
+    }
+    if (parseSessionCookie(req.headers)) {
+      const userAgent = req.headers["user-agent"] ?? "unknown";
+      const contextCheck = await validateSessionContext(session.sessionId, req.ip ?? "unknown", userAgent);
+      if (contextCheck === "user-agent-mismatch") {
+        return res.status(401).json({ error: "Session context mismatch" });
+      }
     }
     req.securitySession = session;
     return next();

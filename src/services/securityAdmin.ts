@@ -1865,6 +1865,64 @@ type OidcPendingLogin = {
 const oidcStateStore = new Map<string, OidcPendingLogin>();
 const OIDC_STATE_TTL_MS = 10 * 60 * 1000;
 
+// Closes NFR-169 - binds each session to the IP/User-Agent that created it,
+// re-validated on every authenticated request (see middleware/auth.ts).
+// User-Agent rarely changes mid-session (low false-positive risk), so a
+// mismatch there is rejected outright as likely session-token theft/replay.
+// IP alone is NOT rejected - mobile/CGNAT/VPN users legitimately change IP
+// mid-session - but a real IP change IS recorded as an audit event so it's
+// visible, not silently ignored.
+type SessionContext = { ipAddress: string; userAgent: string };
+const sessionContextBySessionId = new Map<string, SessionContext>();
+
+export type SessionContextCheck = "ok" | "user-agent-mismatch" | "ip-changed";
+
+export function recordSessionContext(sessionId: string, ipAddress: string, userAgent: string): void {
+  sessionContextBySessionId.set(sessionId, { ipAddress, userAgent });
+}
+
+export async function validateSessionContext(
+  sessionId: string,
+  ipAddress: string,
+  userAgent: string
+): Promise<SessionContextCheck> {
+  const bound = sessionContextBySessionId.get(sessionId);
+  if (!bound) {
+    // No context was ever recorded for this session (e.g. a session
+    // restored from a different process/restart) - nothing to compare
+    // against, so this is not itself a rejection reason.
+    return "ok";
+  }
+  if (bound.userAgent !== userAgent) {
+    return "user-agent-mismatch";
+  }
+  if (bound.ipAddress !== ipAddress) {
+    const session = sessions.get(sessionId);
+    await recordAuditEvent({
+      id: randomUUID(),
+      timestampIso: new Date().toISOString(),
+      userId: session?.user.id ?? "unknown",
+      activeRole: session?.activeRole ?? "unknown",
+      organization: "",
+      facility: "",
+      department: "",
+      action: "SESSION_IP_CHANGED",
+      module: "Authentication",
+      resource: sessionId,
+      purpose: `IP changed from ${bound.ipAddress} to ${ipAddress} mid-session`,
+      ipAddress,
+      device: userAgent,
+      success: true,
+      risk: "medium"
+    });
+    // Update the bound IP so this doesn't re-fire on every subsequent
+    // request from the same (new) IP for the rest of the session.
+    sessionContextBySessionId.set(sessionId, { ipAddress, userAgent });
+    return "ip-changed";
+  }
+  return "ok";
+}
+
 async function recordAuditEvent(event: AuditEvent): Promise<void> {
   auditEvents.push(event);
   // A failure to persist the audit record (DB outage, network blip, a
@@ -2217,6 +2275,7 @@ export async function revokeSessionsForUser(userId: string): Promise<number> {
   for (const [sessionId, session] of sessions.entries()) {
     if (session.user.id === userId) {
       sessions.delete(sessionId);
+      sessionContextBySessionId.delete(sessionId);
       revoked += 1;
     }
   }
@@ -2230,6 +2289,7 @@ export async function revokeSessionsForRole(roleCode: string): Promise<number> {
   for (const [sessionId, session] of sessions.entries()) {
     if (session.activeRole === roleCode) {
       sessions.delete(sessionId);
+      sessionContextBySessionId.delete(sessionId);
       affectedUserIds.add(session.user.id);
       revoked += 1;
     }
@@ -2264,6 +2324,7 @@ export function resetSecurityStoreForTests(): void {
   mfaCredentials.clear();
   pendingMfaChallenges.clear();
   oidcStateStore.clear();
+  sessionContextBySessionId.clear();
 }
 
 export function listSsoProviders(): SsoProvider[] {
@@ -2501,6 +2562,7 @@ export async function authenticateLocal(args: {
 
   const session = toSession(user, "local", args.rememberMe, args.simulateRole);
   sessions.set(session.sessionId, session);
+  recordSessionContext(session.sessionId, args.ipAddress, args.device);
   await persistUserSession({
     session,
     ipAddress: args.ipAddress,
@@ -2610,6 +2672,7 @@ export async function verifyMfaChallenge(
   }
   const session = toSession(user, "local", challenge.rememberMe, challenge.simulateRole, true);
   sessions.set(session.sessionId, session);
+  recordSessionContext(session.sessionId, challenge.ipAddress, challenge.device);
   await persistUserSession({ session, ipAddress: challenge.ipAddress, device: challenge.device });
   await recordAuditEvent({
     id: randomUUID(),
@@ -2663,6 +2726,7 @@ export async function getSessionFromStore(sessionId?: string): Promise<Authentic
 export async function revokeSession(sessionId?: string): Promise<void> {
   if (sessionId) {
     sessions.delete(sessionId);
+    sessionContextBySessionId.delete(sessionId);
     await revokePersistedSession(sessionId);
   }
 }
@@ -2943,6 +3007,7 @@ export async function completeSsoLogin(
 
   const session = toSession(user, config.provider.protocol === "oidc" ? "oidc" : "entra-id", false, undefined, true);
   sessions.set(session.sessionId, session);
+  recordSessionContext(session.sessionId, ipAddress, device);
   await persistUserSession({ session, ipAddress, device });
   await recordAuditEvent({
     id: randomUUID(),
