@@ -31,6 +31,7 @@ import { createHelpApiRouter, createHelpPageRouter } from "./routes/helpRouter.j
 import { createHrmsRouter } from "./routes/hrms.js";
 import { createProtocolsRouter } from "./routes/protocols.js";
 import { createQueueRouter } from "./routes/queueRouter.js";
+import { createSearchRouter } from "./routes/search.js";
 import { createSimulationRouter } from "./routes/simulation.js";
 import { createStaffRouter } from "./routes/staff.js";
 import { createTriageRouter } from "./routes/triage.js";
@@ -193,6 +194,7 @@ export function createApp() {
   app.use("/api/v1/staff", requireAuthenticatedSession, createStaffRouter());
   app.use("/api/v1/protocols", requireAuthenticatedSession, createProtocolsRouter());
   app.use("/api/v1/queue", requireAuthenticatedSession, createQueueRouter());
+  app.use("/api/v1/search", requireAuthenticatedSession, createSearchRouter());
   app.use("/api/v1/call-center", requireAuthenticatedSession, createCallCenterRouter());
   app.use("/api/v1/simulation", requireAuthenticatedSession, createSimulationRouter());
   app.use("/api/v1/triage", requireAuthenticatedSession, createTriageRouter());

@@ -256,6 +256,12 @@ const endpointSpecs: EndpointSpec[] = [
     allows: alwaysAllowed
   },
   {
+    name: "global search across protocols and queue",
+    method: "get",
+    path: "/api/v1/search?q=chest&limit=5",
+    allows: alwaysAllowed
+  },
+  {
     name: "list protocol library summaries",
     method: "get",
     path: "/api/v1/protocols",
