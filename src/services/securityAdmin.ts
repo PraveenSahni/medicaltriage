@@ -32,8 +32,15 @@ import {
 } from "./persistence.js";
 
 const SESSION_COOKIE = "ist_triage_session";
-const SESSION_TTL_MS = 30 * 60 * 1000;
-const EXTENDED_SESSION_TTL_MS = 8 * 60 * 60 * 1000;
+// Configurable via env var per deployment (e.g. QR's required inactivity
+// timeout) rather than a fixed constant. Falls back to the previous
+// defaults (30 min / 8 hr) when unset or invalid.
+function minutesFromEnv(name: string, fallbackMinutes: number): number {
+  const raw = Number(process.env[name]);
+  return Number.isFinite(raw) && raw > 0 ? raw : fallbackMinutes;
+}
+const SESSION_TTL_MS = minutesFromEnv("SESSION_TIMEOUT_MINUTES", 30) * 60 * 1000;
+const EXTENDED_SESSION_TTL_MS = minutesFromEnv("EXTENDED_SESSION_TIMEOUT_MINUTES", 8 * 60) * 60 * 1000;
 
 export type OrganizationDirectoryRecord = {
   id: string;
