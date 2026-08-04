@@ -339,6 +339,61 @@ resource "google_cloud_run_v2_job" "access_entitlement_review" {
   }
 }
 
+resource "google_cloud_run_v2_job" "fulfill_privacy_requests" {
+  name     = "fulfill-privacy-requests-soc2"
+  location = "me-central1"
+
+  template {
+    template {
+      service_account = "1096520215793-compute@developer.gserviceaccount.com"
+      max_retries     = 1
+      timeout         = "300s"
+
+      containers {
+        image   = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:dsar-fulfillment-20260804"
+        command = ["node"]
+        args    = ["dist/scripts/fulfillPrivacyRequests.js"]
+
+        env {
+          name = "DATABASE_URL"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.soc2_database_url.secret_id
+              version = "latest"
+            }
+          }
+        }
+
+        volume_mounts {
+          name       = "cloudsql"
+          mount_path = "/cloudsql"
+        }
+      }
+
+      volumes {
+        name = "cloudsql"
+        cloud_sql_instance {
+          instances = [data.google_sql_database_instance.shared.connection_name]
+        }
+      }
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [client, client_version]
+  }
+}
+
+# On-demand only (no Cloud Scheduler trigger) - DSAR requests arrive ad hoc,
+# driven by a legal/compliance event, not a fixed cadence like the purge or
+# access-review jobs above.
+resource "google_cloud_run_v2_job_iam_member" "fulfill_privacy_requests_invoker" {
+  name     = google_cloud_run_v2_job.fulfill_privacy_requests.name
+  location = "me-central1"
+  role     = "roles/run.invoker"
+  member   = "serviceAccount:1096520215793-compute@developer.gserviceaccount.com"
+}
+
 resource "google_cloud_run_v2_job_iam_member" "purge_invoker" {
   name     = google_cloud_run_v2_job.purge_expired_queue_data.name
   location = "me-central1"
