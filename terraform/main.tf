@@ -264,3 +264,157 @@ resource "google_cloud_run_v2_service" "soc2" {
     ]
   }
 }
+
+# --- Scheduled operational jobs (R-04/R-09/R-10) ---
+# Both jobs reuse the same soc2 image, overriding command/args to run a
+# specific script instead of starting the server. Declared here (rather
+# than left as gcloud-only state) for the same reason every other piece of
+# this session's infra is in Terraform - a `terraform plan` zero-diff is
+# objective proof the config matches reality.
+resource "google_cloud_run_v2_job" "purge_expired_queue_data" {
+  name     = "purge-expired-queue-data-soc2"
+  location = "me-central1"
+
+  template {
+    template {
+      service_account = "1096520215793-compute@developer.gserviceaccount.com"
+      max_retries     = 1
+      timeout         = "600s"
+
+      containers {
+        image   = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:retention-policy-20260804"
+        command = ["node"]
+        args    = ["dist/scripts/purgeExpiredQueueData.js"]
+
+        env {
+          name = "DATABASE_URL"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.soc2_database_url.secret_id
+              version = "latest"
+            }
+          }
+        }
+
+        volume_mounts {
+          name       = "cloudsql"
+          mount_path = "/cloudsql"
+        }
+      }
+
+      volumes {
+        name = "cloudsql"
+        cloud_sql_instance {
+          instances = [data.google_sql_database_instance.shared.connection_name]
+        }
+      }
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [client, client_version]
+  }
+}
+
+resource "google_cloud_run_v2_job" "access_entitlement_review" {
+  name     = "access-entitlement-review-soc2"
+  location = "me-central1"
+
+  template {
+    template {
+      service_account = "1096520215793-compute@developer.gserviceaccount.com"
+      max_retries     = 1
+      timeout         = "300s"
+
+      containers {
+        image   = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:ops-scripts-20260804"
+        command = ["node"]
+        args    = ["scripts/accessEntitlementReview.mjs", "https://triagedsoc2.irisstar.tech"]
+      }
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [client, client_version]
+  }
+}
+
+resource "google_cloud_run_v2_job_iam_member" "purge_invoker" {
+  name     = google_cloud_run_v2_job.purge_expired_queue_data.name
+  location = "me-central1"
+  role     = "roles/run.invoker"
+  member   = "serviceAccount:1096520215793-compute@developer.gserviceaccount.com"
+}
+
+resource "google_cloud_run_v2_job_iam_member" "access_review_invoker" {
+  name     = google_cloud_run_v2_job.access_entitlement_review.name
+  location = "me-central1"
+  role     = "roles/run.invoker"
+  member   = "serviceAccount:1096520215793-compute@developer.gserviceaccount.com"
+}
+
+resource "google_cloud_scheduler_job" "purge_expired_queue_data_trigger" {
+  name        = "purge-expired-queue-data-soc2-trigger"
+  region      = "me-central1"
+  schedule    = "0 3 * * 0"
+  time_zone   = "Etc/UTC"
+  description = "Weekly dry-run of the TriageQueueItem retention/purge script (NFR-067/068/069, R-10). Runs in DRY RUN mode only (--execute not passed) until a real retention period is formally approved - see docs/risk-register-2026-08-04.md R-10."
+
+  retry_config {
+    retry_count = 0
+  }
+
+  http_target {
+    uri         = "https://me-central1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/triage-502706/jobs/${google_cloud_run_v2_job.purge_expired_queue_data.name}:run"
+    http_method = "POST"
+    oauth_token {
+      service_account_email = "1096520215793-compute@developer.gserviceaccount.com"
+    }
+  }
+}
+
+resource "google_cloud_scheduler_job" "access_entitlement_review_trigger" {
+  name        = "access-entitlement-review-soc2-trigger"
+  region      = "me-central1"
+  schedule    = "0 4 1 1,4,7,10 *"
+  time_zone   = "Etc/UTC"
+  description = "Quarterly access-entitlement review report (NFR-036, CSQ IS.17-19, risk register R-09). Produces a report only - certification/sign-off remains a manual process."
+
+  retry_config {
+    retry_count = 0
+  }
+
+  http_target {
+    uri         = "https://me-central1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/triage-502706/jobs/${google_cloud_run_v2_job.access_entitlement_review.name}:run"
+    http_method = "POST"
+    oauth_token {
+      service_account_email = "1096520215793-compute@developer.gserviceaccount.com"
+    }
+  }
+}
+
+resource "google_pubsub_topic" "restore_drill_reminders" {
+  name = "restore-drill-reminders"
+}
+
+resource "google_pubsub_subscription" "restore_drill_reminders_pull" {
+  name  = "restore-drill-reminders-pull"
+  topic = google_pubsub_topic.restore_drill_reminders.name
+}
+
+resource "google_cloud_scheduler_job" "restore_drill_quarterly_reminder" {
+  name        = "restore-drill-quarterly-reminder"
+  region      = "me-central1"
+  schedule    = "0 5 1 1,4,7,10 *"
+  time_zone   = "Etc/UTC"
+  description = "Quarterly reminder to re-run the backup restore drill (R-06) - a Pub/Sub notification, not an automated drill (the drill itself creates/destroys a real Cloud SQL clone and should stay a deliberate, supervised action)."
+
+  retry_config {
+    retry_count = 0
+  }
+
+  pubsub_target {
+    topic_name = google_pubsub_topic.restore_drill_reminders.id
+    data       = base64encode("{\"reminder\":\"Quarterly Cloud SQL PITR restore drill is due. See docs/restore-drill-2026-08-04.md for the procedure. Risk register R-06.\"}")
+  }
+}
