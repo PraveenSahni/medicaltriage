@@ -75,6 +75,12 @@ at IST, not to engineering.
 | Retention period approval (R-10) | Needs a business/compliance decision on the actual retention window | Get a real retention period approved, then flip `--execute` on the purge job |
 | Data-sovereignty/regulatory alignment (several NFR/CSQ rows) | Needs legal/compliance confirmation, not a code determination | Route to legal/compliance owner |
 
+## 4a. Deliberately declined (explicit product decision, not a gap to close)
+
+| Item | Decision | Date |
+|---|---|---|
+| Multi-level approval workflow for auth/authz changes (NFR-035) | Will not be built - the existing immediate-change-plus-audit-trail model (admin API changes apply immediately, are recorded via AuditEvent after the fact) is accepted as-is | 2026-08-04 |
+
 ## 5. Engineering backlog (long tail, ~240 rows, needs individual triage)
 
 This is intentionally not exhaustively listed row-by-row here (see the
