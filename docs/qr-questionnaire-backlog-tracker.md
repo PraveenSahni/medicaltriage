@@ -1,5 +1,28 @@
 # QR Questionnaire Backlog Tracker
 
+## Session status (2026-08-05, latest)
+
+Batch of real, closable-to-Yes engineering wins across Non Functional Req's
+88 Partial rows (identified by triaging what's genuinely completable via
+code alone, vs. blocked externally or a large initiative - see the
+conversation history for the full triage). Closed 2026-08-05: **NFR-002**
+(self-hosted API-discovery portal, `/api-docs`, no new dependency),
+**NFR-004** (real per-consumer/tier throttling, `src/middleware/
+rateLimit.ts`), **NFR-020** (configurable max-concurrent-sessions cap,
+oldest-session eviction), **NFR-021** (single-session termination, distinct
+from revoke-all), **NFR-047** (a default rate limit now covers the whole
+API, not just 3 endpoints), **NFR-123** (monthly SLI report now emails via
+the existing Graph adapter when configured), **NFR-176** (real integration-
+connectivity-touchpoints doc), **NFR-192** (self-service `/api/v1/me/export`
+data export). NFR-083/084 (non-prod environment labeling/SLA) strengthened
+but stays Partial - no separate SIT/Training environment exists. Two items
+from the original small-item list were explicitly skipped as judgment calls
+rather than forced through: NFR-147 (making perf-test CI-blocking would
+immediately redden the pipeline, since NFR-138's real p95/p99 regressions
+aren't fixed yet) and NFR-169 (viewport-dimension session binding needs new
+frontend+backend wiring, closer to medium than small). All verified: 689/689
+backend tests green, `tsc --noEmit` clean.
+
 ## Session status (2026-08-04, consolidated)
 
 All work below is committed locally (17 commits ahead of `origin/main` as of

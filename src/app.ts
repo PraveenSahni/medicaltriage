@@ -29,6 +29,8 @@ import { createCcpRouter } from "./routes/ccp.js";
 import { createEmrRouter } from "./routes/emr.js";
 import { createFeedbackRouter } from "./routes/feedback.js";
 import { createHelpApiRouter, createHelpPageRouter } from "./routes/helpRouter.js";
+import { createApiDocsRouter } from "./routes/apiDocsRouter.js";
+import { createMeRouter } from "./routes/meRouter.js";
 import { createHrmsRouter } from "./routes/hrms.js";
 import { createProtocolsRouter } from "./routes/protocols.js";
 import { createQueueRouter } from "./routes/queueRouter.js";
@@ -208,6 +210,7 @@ export function createApp() {
   app.use("/api/v1/ccp", requireAuthenticatedSession, createCcpRouter());
   app.use("/api/v1/staff/validate", staffValidateRateLimit);
   app.use("/api/v1/staff", requireAuthenticatedSession, createStaffRouter());
+  app.use("/api/v1/me", requireAuthenticatedSession, createMeRouter());
   app.use("/api/v1/protocols", requireAuthenticatedSession, createProtocolsRouter());
   app.use("/api/v1/queue", requireAuthenticatedSession, createQueueRouter());
   app.use("/api/v1/search", requireAuthenticatedSession, createSearchRouter());
@@ -224,6 +227,10 @@ export function createApp() {
   // new tab never touches the Nurse Cockpit's or Service Manager Board's live
   // state in the other tab.
   app.use(createHelpPageRouter());
+  // Closes NFR-002 (API Discovery) - a real, self-hosted portal for the
+  // existing docs/openapi.json spec, top-level like /help since it's a
+  // developer-facing reference page, not part of the Vite SPA bundle.
+  app.use(createApiDocsRouter());
 
   if (spaIndexHtml) {
     app.use(express.static(staticRoot, { index: false }));
