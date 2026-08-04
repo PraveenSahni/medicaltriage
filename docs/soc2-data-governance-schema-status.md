@@ -23,6 +23,41 @@ because it signals the gap wasn't understood rather than that it was deferred
 with judgment. This document exists to make that distinction explicit and
 correct the record.
 
+## Update 2026-08-04: three of these tables now have real enforcement
+
+The plan below ("Recommended path forward") has been partially executed.
+Real, verified enforcement code now exists for three of the nine table
+groups listed - the status table further down still reflects each table's
+*original* fully-unenforced state for historical accuracy, but is superseded
+for these three by what follows:
+
+- **`RetentionPolicy`**: `src/scripts/purgeExpiredQueueData.ts` reads its
+  retention window from a real active policy row (code
+  `TRIAGE_QUEUE_ITEM_COMPLETED`), deployed as a weekly scheduled Cloud Run
+  Job (`purge-expired-queue-data-soc2`).
+- **`LegalHold`**: both the purge job above and the new DSAR job below
+  exclude/preserve any `TriageQueueItem` under an active hold, verified with
+  a synthetic held record against the real database.
+- **`PrivacyRequest`**: `src/scripts/fulfillPrivacyRequests.ts` handles real
+  "access" (record summary) and "erasure" (deletion, respecting legal holds)
+  requests, deployed as an on-demand Cloud Run Job
+  (`fulfill-privacy-requests-soc2`), verified end-to-end with synthetic
+  request data.
+
+**`SensitiveExportRequest` was deliberately left unenforced** - unlike the
+three above, there is no existing bulk-export feature anywhere in this app
+for it to gate. Building enforcement here would mean inventing an export
+feature solely to have something to check the approval against, which would
+be fabricated scope rather than a real fix (the same principle this session
+applied to `VoiceCallSession.currentQuestionId` - never invent structure the
+real system doesn't have). This table should stay explicitly deferred until
+a real export feature exists to gate.
+
+**`MaskingPolicy`/`RevealPolicy`/`EncryptionPolicy` families remain fully
+unenforced** - correctly deferred per the original priority order below (item
+3 requires UI/MFA/approval-workflow work well beyond this pass's scope; item
+4 has the lowest near-term urgency given platform-level encryption at rest).
+
 ## Tables and their real status
 
 | Table(s) | What it models | Read/written by app code? |
