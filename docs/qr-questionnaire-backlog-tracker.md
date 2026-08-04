@@ -1,5 +1,27 @@
 # QR Questionnaire Backlog Tracker
 
+## Session status (2026-08-04, consolidated)
+
+All work below is committed locally (17 commits ahead of `origin/main` as of
+this consolidation - none deployed to any Cloud Run environment, per the
+standing "local only" instruction for this session). Every commit was made
+only after a green `tsc --noEmit` + full `jest --runInBand` run (681 backend
+tests passing as of the last code change). Closed or strengthened this
+session: SAST (CodeQL), real TOTP MFA + OIDC SSO (mock-IdP verified), RTL/
+i18n Phase 1, Admin RBAC (role-permission grant/revoke), two-step approval-
+gated PII reveal, cross-application global search, PAM/JIT privileged-access
+elevation, request-ID correlation-id propagation, retry/backoff for the
+remaining outbound integrations (Twilio, MS Graph), a consolidated change-
+management policy document (Cloud CSQ SD.02), and one accuracy correction
+(NFR-145). The questionnaire workbook, `docs/risk-register-2026-08-04.md`,
+and this tracker have all been updated in lockstep with the code after each
+fix - nothing here is stale relative to the commits. Remaining open items are
+either genuinely external/organizational (formal certification, pentest,
+GitHub plan upgrade for branch protection, HR/legal policy items) or large
+future initiatives explicitly scoped as separate engagements (full i18n
+string translation, WAF/Load-Balancer migration, real UX personalization/
+onboarding work) - see sections 3 and 4 below, and section 1's status column.
+
 _Built 2026-08-04 from the completed row-by-row review of all 459 questionnaire
 rows (NFR, UX, AI, Cloud CSQ tabs) - `docs/qr-nfr-cots-csq-mapping-review*.md`
 are the narrative reviews; the workbook itself has every row's real
