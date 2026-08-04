@@ -1,8 +1,15 @@
 /**
  * Retention/purge job for completed queue items past a configurable
  * retention window - closes part of NFR-067/068/069 (per-subsystem purge
- * capability) and the RetentionPolicy accepted-risk item in
+ * capability) and part of the RetentionPolicy accepted-risk item in
  * docs/soc2-data-governance-schema-status.md.
+ *
+ * The retention window is read from the real `RetentionPolicy` table (code
+ * `TRIAGE_QUEUE_ITEM_COMPLETED`) when a row exists - this is the first real
+ * enforcement code path for that previously schema-only table. `--retention-days`
+ * remains as an explicit override/fallback for when no policy row exists yet,
+ * so this script still works standalone (e.g. in an environment that hasn't
+ * seeded a policy row) rather than hard-failing.
  *
  * This is intentionally narrow: it purges only TriageQueueItem rows in
  * COMPLETED status whose updatedAt is older than the retention window. It
@@ -15,25 +22,44 @@
  * Writes a summary AuditEvent for the purge run itself either way.
  *
  * Usage:
- *   npx tsx src/scripts/purgeExpiredQueueData.ts --retention-days=90
+ *   npx tsx src/scripts/purgeExpiredQueueData.ts
  *   npx tsx src/scripts/purgeExpiredQueueData.ts --retention-days=90 --execute
  */
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+const RETENTION_POLICY_CODE = "TRIAGE_QUEUE_ITEM_COMPLETED";
+
 function jsonValue(value: unknown) {
   return JSON.parse(JSON.stringify(value));
 }
 
+async function resolveRetentionDays(cliOverride: number | undefined): Promise<{ days: number; source: string }> {
+  if (cliOverride !== undefined) {
+    return { days: cliOverride, source: "--retention-days flag" };
+  }
+  const policy = await prisma.retentionPolicy.findUnique({ where: { code: RETENTION_POLICY_CODE } });
+  if (policy && policy.status === "active") {
+    const period = policy.retentionPeriod as { days?: number } | null;
+    if (period && typeof period.days === "number" && period.days > 0) {
+      return { days: period.days, source: `RetentionPolicy row (${policy.code})` };
+    }
+  }
+  return { days: 90, source: "hardcoded default (no active RetentionPolicy row found)" };
+}
+
 async function main() {
   const retentionArg = process.argv.find((a) => a.startsWith("--retention-days="));
-  const retentionDays = retentionArg ? Number(retentionArg.split("=")[1]) : 90;
+  const cliOverride = retentionArg ? Number(retentionArg.split("=")[1]) : undefined;
   const execute = process.argv.includes("--execute");
 
-  if (!Number.isFinite(retentionDays) || retentionDays < 1) {
+  if (cliOverride !== undefined && (!Number.isFinite(cliOverride) || cliOverride < 1)) {
     throw new Error("retention-days must be a positive number");
   }
+
+  const { days: retentionDays, source: retentionSource } = await resolveRetentionDays(cliOverride);
+  console.log(`Retention period source: ${retentionSource} (${retentionDays} days)`);
 
   const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
 
@@ -66,7 +92,7 @@ async function main() {
       resource: "TriageQueueItem",
       success: true,
       riskLevel: execute ? "high" : "medium",
-      metadata: jsonValue({ retentionDays, cutoffIso: cutoff.toISOString(), candidateCount: candidates.length })
+      metadata: jsonValue({ retentionDays, retentionSource, cutoffIso: cutoff.toISOString(), candidateCount: candidates.length })
     }
   });
 

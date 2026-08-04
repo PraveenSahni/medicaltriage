@@ -44,6 +44,10 @@ COPY --from=build --chown=node:node /app/dist ./dist
 COPY --from=build --chown=node:node /app/dist-web ./dist-web
 COPY --from=build --chown=node:node /app/data ./data
 COPY --chown=node:node docs/protocol-review/data ./docs/protocol-review/data
+# Scheduled operational scripts that run as Cloud Run Jobs against this same
+# image (accessEntitlementReview.mjs - NFR-036/CSQ IS.17-19) - plain Node
+# scripts with no build step, included as source rather than compiled.
+COPY --chown=node:node scripts/accessEntitlementReview.mjs ./scripts/accessEntitlementReview.mjs
 
 EXPOSE 8080
 
