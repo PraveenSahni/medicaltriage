@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
 import { executeWriteback } from "../integration/fhirWriteback.js";
-import { requirePermission } from "../services/authorization.js";
+import { requirePermission, type AuthorizedRequest } from "../services/authorization.js";
 
 const ExecuteWritebackRequestSchema = z
   .object({
@@ -15,19 +15,23 @@ const ExecuteWritebackRequestSchema = z
 export function createEmrRouter(): Router {
   const router = Router();
 
-  router.post("/writeback/:encounterId", requirePermission("triage.workspace.view"), async (req, res, next) => {
+  router.post("/writeback/:encounterId", requirePermission("triage.workspace.view"), async (req: AuthorizedRequest, res, next) => {
     try {
       const parsed = ExecuteWritebackRequestSchema.safeParse(req.body ?? {});
       if (!parsed.success) {
         return res.status(400).json({ error: "Invalid EMR/FHIR writeback payload", details: parsed.error.flatten() });
       }
 
-      const result = await executeWriteback(req.params.encounterId, {
-        isDraft: parsed.data.isDraft,
-        dryRun: parsed.data.dryRun,
-        patientId: parsed.data.patientId,
-        practitionerId: parsed.data.practitionerId
-      });
+      const result = await executeWriteback(
+        req.params.encounterId,
+        {
+          isDraft: parsed.data.isDraft,
+          dryRun: parsed.data.dryRun,
+          patientId: parsed.data.patientId,
+          practitionerId: parsed.data.practitionerId
+        },
+        req.securitySession
+      );
       return res.json(result);
     } catch (error) {
       return next(error);

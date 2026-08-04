@@ -8,6 +8,7 @@ import { resolveDisposition } from "../services/dispositionRouter.js";
 import { findDependent, resolvePatientAgeFromHrms, validateStaffMember } from "../services/hrms.js";
 import { verifyInsuranceEligibility } from "../services/insurance.js";
 import { calculateTriageScore } from "../services/news2Scoring.js";
+import { getRequestSession } from "../services/authorization.js";
 import { persistCompletedTriageNote, persistEvaluatedEncounter } from "../services/persistence.js";
 import { compileSbarClipboardPayload } from "../services/sbarCompiler.js";
 import { compileBilingualSoapSbarMarkdown } from "../services/triageNoteCompiler.js";
@@ -189,7 +190,15 @@ export function createTriageRouter(): Router {
         ? { ...parsed.data, patientAgeYears: ageResolution.ageYears }
         : parsed.data;
     const note = compileBilingualSoapSbarMarkdown(completionData);
-    const persistence = await persistCompletedTriageNote(completionData, note, fitToFlyStatus);
+    // Tenant attribution: the encounter row belongs to the acting user's
+    // organization (session is guaranteed by the app-wide auth middleware).
+    const session = await getRequestSession(req);
+    const persistence = await persistCompletedTriageNote(
+      completionData,
+      note,
+      fitToFlyStatus,
+      session?.user.organizationId ?? undefined
+    );
     if (req.accepts(["json", "text"]) === "json") {
       return res.json(withMockFlag({
         notePayload: note,
@@ -275,12 +284,14 @@ export function createTriageRouter(): Router {
       aviation: finalAviation
     });
     const safetyAudit = buildSafetyAuditDraft(request, decision);
+    const session = await getRequestSession(req);
     const persistence = await persistEvaluatedEncounter({
       request,
       decision,
       aviation: finalAviation,
       clipboardPayload,
-      safetyAudit
+      safetyAudit,
+      organizationId: session?.user.organizationId ?? undefined
     });
 
     return res.json(withMockFlag({

@@ -31,6 +31,9 @@ async function main() {
       where: { istStaffId },
       create: {
         istStaffId,
+        // Synthetic HRMS directory is single-org today; matches
+        // createQueueItem's default organization.
+        organizationId: "org_ist_tech",
         department: profile.department ?? "Unknown",
         jobTitle: profile.jobTitle ?? "Unknown",
         dutyStatus: (profile.dutyStatus?.toUpperCase().replace(/-/g, "_") as

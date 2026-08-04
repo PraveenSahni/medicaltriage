@@ -236,6 +236,9 @@ enum ClinicalAudioAssetStatus {
 model StaffMember {
   id                         String                     @id @default(cuid())
   istStaffId                 String                     @unique @map("ist_staff_id")
+  // Multi-tenant scoping. Nullable so pre-existing rows stay valid; every new
+  // row is expected to set it. Dependents inherit tenancy via staffMember.
+  organizationId             String?                    @map("organization_id")
   department                 String
   jobTitle                   String                     @map("job_title")
   dutyStatus                 DutyStatus                 @default(ACTIVE) @map("duty_status")
@@ -250,6 +253,7 @@ model StaffMember {
   updatedAt                  DateTime                   @updatedAt @map("updated_at")
 
   @@index([department])
+  @@index([organizationId])
   @@map("staff_members")
 }
 
@@ -274,6 +278,12 @@ model Dependent {
 
 model AviationTriageEncounter {
   id                   String                   @id @default(cuid())
+  // Multi-tenant scoping (SOC 2 review finding: this table previously had no
+  // org column at all, so approval queue / safety dashboard / EMR writeback
+  // were cross-tenant). Nullable so pre-existing rows stay valid; every new
+  // encounter is expected to set it. SafetyAuditDeviationLog inherits tenancy
+  // via this parent.
+  organizationId       String?                  @map("organization_id")
   staffMemberId        String                   @map("staff_member_id")
   staffMember          StaffMember              @relation(fields: [staffMemberId], references: [id], onDelete: Restrict)
   dependentId          String?                  @map("dependent_id")
@@ -301,6 +311,7 @@ model AviationTriageEncounter {
 
   @@index([staffMemberId, createdAt])
   @@index([finalDispositionCode])
+  @@index([organizationId, createdAt])
   @@map("aviation_triage_encounters")
 }
 
@@ -428,6 +439,8 @@ model CallCenterSession {
   id                         String             @id
   queueItemId                String?            @map("queue_item_id")
   queueItem                  TriageQueueItem?   @relation(fields: [queueItemId], references: [id], onDelete: SetNull)
+  // Multi-tenant scoping - nullable, expected to be set on every new row.
+  organizationId             String?            @map("organization_id")
   provider                   String
   externalCallId             String             @map("external_call_id")
   direction                  String
@@ -452,11 +465,14 @@ model CallCenterSession {
   @@unique([provider, externalCallId])
   @@index([queueItemId, status])
   @@index([agentId, status])
+  @@index([organizationId])
   @@map("call_center_sessions")
 }
 
 model VoiceCallSession {
   id                           String                @id @default(cuid())
+  // Multi-tenant scoping - nullable, expected to be set on every new row.
+  organizationId               String?               @map("organization_id")
   callCenterSessionId          String?               @map("call_center_session_id")
   callCenterSession            CallCenterSession?    @relation(fields: [callCenterSessionId], references: [id], onDelete: SetNull)
   queueItemId                  String?               @map("queue_item_id")
@@ -488,6 +504,7 @@ model VoiceCallSession {
   @@index([queueItemId, status])
   @@index([callCenterSessionId, status])
   @@index([protocolId, releaseVersion])
+  @@index([organizationId])
   @@map("voice_call_sessions")
 }
 
@@ -1045,29 +1062,35 @@ model UserSession {
 }
 
 model CcpDraft {
-  id            String   @id
-  istStaffId    String   @map("ist_staff_id")
-  threadId      String   @map("thread_id")
-  linkedGoalId  String?  @map("linked_goal_id")
-  channel       String
-  recipientTo   String   @map("recipient_to")
-  originalTo    String   @map("original_to")
-  subject       String
-  body          String   @db.Text
-  status        String
-  draftedByRole String   @map("drafted_by_role")
-  approval      Json
-  sendResult    Json?    @map("send_result")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id             String   @id
+  // Multi-tenant scoping - nullable, expected to be set on every new row.
+  organizationId String?  @map("organization_id")
+  istStaffId     String   @map("ist_staff_id")
+  threadId       String   @map("thread_id")
+  linkedGoalId   String?  @map("linked_goal_id")
+  channel        String
+  recipientTo    String   @map("recipient_to")
+  originalTo     String   @map("original_to")
+  subject        String
+  body           String   @db.Text
+  status         String
+  draftedByRole  String   @map("drafted_by_role")
+  approval       Json
+  sendResult     Json?    @map("send_result")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   @@index([istStaffId, threadId])
   @@index([status, createdAt])
+  @@index([organizationId])
   @@map("ccp_drafts")
 }
 
 model CcpWebhookRecord {
   id                String   @id
+  // Multi-tenant scoping - nullable; inbound provider webhooks may arrive
+  // before org attribution is resolvable, so this is best-effort at ingest.
+  organizationId    String?  @map("organization_id")
   inboundId         String   @map("inbound_id")
   provider          String
   providerMessageId String?  @map("provider_message_id")
@@ -1083,6 +1106,7 @@ model CcpWebhookRecord {
 
   @@index([provider, persistedAt])
   @@index([sender, channel])
+  @@index([organizationId])
   @@map("ccp_webhook_records")
 }
 

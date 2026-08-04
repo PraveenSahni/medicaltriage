@@ -231,7 +231,7 @@ export async function revokePersistedSessionsForUser(userId: string): Promise<vo
   });
 }
 
-export async function persistCcpOutboundDraft(draft: CcpOutboundDraft): Promise<PersistenceResult> {
+export async function persistCcpOutboundDraft(draft: CcpOutboundDraft, organizationId?: string): Promise<PersistenceResult> {
   if (!shouldUseDatabasePersistence()) {
     return { persisted: false, reason: "mock-mode" };
   }
@@ -242,6 +242,7 @@ export async function persistCcpOutboundDraft(draft: CcpOutboundDraft): Promise<
     },
     create: {
       id: draft.id,
+      organizationId,
       istStaffId: draft.istStaffId,
       threadId: draft.threadId,
       linkedGoalId: draft.linkedGoalId,
@@ -301,7 +302,7 @@ export async function listPersistedCcpOutboundDrafts(): Promise<CcpOutboundDraft
     .filter((draft): draft is CcpOutboundDraft => Boolean(draft));
 }
 
-export async function persistInboundWebhookRecord(record: InboundWebhookRecord): Promise<PersistenceResult> {
+export async function persistInboundWebhookRecord(record: InboundWebhookRecord, organizationId?: string): Promise<PersistenceResult> {
   if (!shouldUseDatabasePersistence()) {
     return { persisted: false, reason: "mock-mode" };
   }
@@ -312,6 +313,7 @@ export async function persistInboundWebhookRecord(record: InboundWebhookRecord):
     },
     create: {
       id: record.id,
+      organizationId,
       inboundId: record.inbound.id,
       provider: record.inbound.provider,
       providerMessageId: record.inbound.providerMessageId,
@@ -360,6 +362,7 @@ export async function persistEvaluatedEncounter(args: {
   aviation: AviationEvaluation;
   clipboardPayload: ClipboardPayload;
   safetyAudit: SafetyAuditDraft;
+  organizationId?: string;
 }): Promise<PersistenceResult> {
   if (!shouldUseDatabasePersistence()) {
     return { persisted: false, reason: "mock-mode" };
@@ -367,6 +370,7 @@ export async function persistEvaluatedEncounter(args: {
 
   const created = await prisma.aviationTriageEncounter.create({
     data: {
+      organizationId: args.organizationId,
       staffMember: {
         connect: {
           istStaffId: args.request.istStaffId
@@ -406,7 +410,8 @@ export async function persistEvaluatedEncounter(args: {
 export async function persistCompletedTriageNote(
   request: TriageCompleteRequest,
   notePayload: string,
-  fitToFlyStatus: string
+  fitToFlyStatus: string,
+  organizationId?: string
 ): Promise<PersistenceResult> {
   if (!shouldUseDatabasePersistence()) {
     return { persisted: false, reason: "mock-mode" };
@@ -436,6 +441,7 @@ export async function persistCompletedTriageNote(
 
   const created = await prisma.aviationTriageEncounter.create({
     data: {
+      organizationId,
       staffMember: {
         connect: {
           istStaffId: request.istStaffId

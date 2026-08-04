@@ -4,7 +4,9 @@ import { z } from "zod";
 import { shouldUseDatabasePersistence } from "../config/runtime.js";
 import { prisma } from "../db.js";
 import { requirePermission, type AuthorizedRequest } from "../services/authorization.js";
+import { organizationWhereClause } from "../services/tenantScope.js";
 import { auditSignatureFor, isSignedHumanApprovalTrace, traceObjects } from "../services/safetyKernel.js";
+import type { AuthenticatedSession } from "../types/security.js";
 import { isSeverityDowngrade } from "../types/triage.js";
 
 const ApprovalDecisionSchema = z.enum(["approve", "modify", "override"]);
@@ -265,7 +267,8 @@ async function recordApprovalReview(
     userId?: string;
     activeRole?: string;
     fullName?: string;
-  }
+  },
+  session?: AuthenticatedSession
 ) {
   const timestampIso = new Date().toISOString();
   const isCriticalFloorBreach = isSeverityDowngrade(request.finalApprovedSeverity, request.rulesEngineSeverity);
@@ -299,7 +302,14 @@ async function recordApprovalReview(
     };
   }
 
-  const encounter = await prisma.aviationTriageEncounter.findUnique({ where: { id: encounterId } });
+  // Tenant-scoped lookup: a reviewer can only approve encounters belonging to
+  // their own organization (previously findUnique by id alone - cross-tenant
+  // approval writes were possible, per the SOC 2 review). findFirst so the
+  // tenant filter can be combined with the id. A cross-tenant id returns the
+  // same 404 as a nonexistent one - no existence oracle.
+  const encounter = await prisma.aviationTriageEncounter.findFirst({
+    where: { id: encounterId, ...(organizationWhereClause(session) ?? {}) }
+  });
   if (!encounter) {
     throw Object.assign(new Error(`Encounter ${encounterId} was not found for clinical approval.`), { status: 404 });
   }
@@ -351,8 +361,9 @@ async function recordApprovalReview(
   };
 }
 
-async function liveApprovalQueue() {
+async function liveApprovalQueue(session: AuthenticatedSession | undefined) {
   const encounters = await prisma.aviationTriageEncounter.findMany({
+    where: organizationWhereClause(session),
     include: {
       staffMember: true,
       dependent: true,
@@ -428,12 +439,21 @@ function trendBuckets(encounters: Array<{ createdAt: Date; safetyLog: { override
     });
 }
 
-async function liveSafetyDashboard() {
+async function liveSafetyDashboard(session: AuthenticatedSession | undefined) {
+  // Tenant scoping applied to every query in the dashboard; the
+  // SafetyAuditDeviationLog has no org column of its own - it inherits
+  // tenancy through its parent encounter relation.
+  const tenantWhere = organizationWhereClause(session);
   const [totalCallVolume, hmcEscalations, sidraEscalations, encounters, safetyLogs] = await Promise.all([
-    prisma.aviationTriageEncounter.count(),
-    prisma.aviationTriageEncounter.count({ where: { finalDispositionCode: "HMC_EMERGENCY_DEPARTMENT" } }),
-    prisma.aviationTriageEncounter.count({ where: { finalDispositionCode: "SIDRA_PEDIATRIC_ED" } }),
+    prisma.aviationTriageEncounter.count({ where: tenantWhere }),
+    prisma.aviationTriageEncounter.count({
+      where: { finalDispositionCode: "HMC_EMERGENCY_DEPARTMENT", ...(tenantWhere ?? {}) }
+    }),
+    prisma.aviationTriageEncounter.count({
+      where: { finalDispositionCode: "SIDRA_PEDIATRIC_ED", ...(tenantWhere ?? {}) }
+    }),
     prisma.aviationTriageEncounter.findMany({
+      where: tenantWhere,
       include: {
         protocolUsed: true,
         safetyLog: true
@@ -442,6 +462,7 @@ async function liveSafetyDashboard() {
       take: 500
     }),
     prisma.safetyAuditDeviationLog.findMany({
+      where: tenantWhere ? { encounter: tenantWhere } : undefined,
       include: {
         encounter: {
           include: {
@@ -509,10 +530,10 @@ async function liveSafetyDashboard() {
 export function createApprovalRouter(): Router {
   const router = Router();
 
-  router.get("/queue", requirePermission("triage.workspace.view"), async (_req, res, next) => {
+  router.get("/queue", requirePermission("triage.workspace.view"), async (req: AuthorizedRequest, res, next) => {
     try {
       return res.json({
-        queue: shouldUseDatabasePersistence() ? await liveApprovalQueue() : mockApprovalQueue(),
+        queue: shouldUseDatabasePersistence() ? await liveApprovalQueue(req.securitySession) : mockApprovalQueue(),
         checkpoint:
           "AI summaries, care plans, employee messages, and EMR writeback remain blocked until authenticated clinician review."
       });
@@ -521,9 +542,9 @@ export function createApprovalRouter(): Router {
     }
   });
 
-  router.get("/dashboard", requirePermission("audit.events.view"), async (_req, res, next) => {
+  router.get("/dashboard", requirePermission("audit.events.view"), async (req: AuthorizedRequest, res, next) => {
     try {
-      return res.json(shouldUseDatabasePersistence() ? await liveSafetyDashboard() : mockSafetyDashboard());
+      return res.json(shouldUseDatabasePersistence() ? await liveSafetyDashboard(req.securitySession) : mockSafetyDashboard());
     } catch (error) {
       return next(error);
     }
@@ -542,11 +563,16 @@ export function createApprovalRouter(): Router {
           });
         }
 
-        const result = await recordApprovalReview(req.params.encounterId, parsed.data, {
-          userId: req.securitySession?.user.id,
-          activeRole: req.securitySession?.activeRole,
-          fullName: req.securitySession?.user.fullName
-        });
+        const result = await recordApprovalReview(
+          req.params.encounterId,
+          parsed.data,
+          {
+            userId: req.securitySession?.user.id,
+            activeRole: req.securitySession?.activeRole,
+            fullName: req.securitySession?.user.fullName
+          },
+          req.securitySession
+        );
 
         return res.json({
           approved: true,

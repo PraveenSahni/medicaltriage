@@ -7,6 +7,8 @@ import type {
 import { isMockMode, shouldUseDatabasePersistence } from "../config/runtime.js";
 import { prisma } from "../db.js";
 import { assertHumanApprovalForExport } from "../services/safetyKernel.js";
+import { organizationWhereClause } from "../services/tenantScope.js";
+import type { AuthenticatedSession } from "../types/security.js";
 
 export const MOPH_ADDRESS_BUILDING_NUMBER_EXTENSION =
   "https://fhir.moph.gov.qa/StructureDefinition/AddressBuildingNumber";
@@ -364,13 +366,17 @@ export async function verifyPatientConsent(patientId: string, accessToken: strin
 
 export const checkQHIEConsent = verifyPatientConsent;
 
-async function loadEncounterForWriteback(encounterId: string) {
+async function loadEncounterForWriteback(encounterId: string, session?: AuthenticatedSession) {
   if (!shouldUseDatabasePersistence()) {
     return undefined;
   }
 
-  return prisma.aviationTriageEncounter.findUnique({
-    where: { id: encounterId },
+  // Tenant-scoped: a user can only trigger EMR writeback for encounters in
+  // their own organization (previously findUnique by id alone - cross-tenant
+  // writeback was possible, per the SOC 2 review). A cross-tenant id fails
+  // identically to a nonexistent one.
+  return prisma.aviationTriageEncounter.findFirst({
+    where: { id: encounterId, ...(organizationWhereClause(session) ?? {}) },
     include: {
       staffMember: true,
       dependent: true
@@ -596,9 +602,10 @@ async function postDocumentReference(endpoint: string, token: string, payload: F
 
 export async function executeWriteback(
   encounterId: string,
-  options: ExecuteWritebackOptions = {}
+  options: ExecuteWritebackOptions = {},
+  session?: AuthenticatedSession
 ): Promise<WritebackResult> {
-  const persistedEncounter = await loadEncounterForWriteback(encounterId);
+  const persistedEncounter = await loadEncounterForWriteback(encounterId, session);
   if (!persistedEncounter && shouldUseDatabasePersistence()) {
     throw new Error(`Encounter ${encounterId} was not found for EMR/FHIR writeback.`);
   }
