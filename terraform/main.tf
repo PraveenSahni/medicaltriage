@@ -159,7 +159,7 @@ resource "google_cloud_run_v2_service" "soc2" {
     }
 
     containers {
-      image = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:quickwins-20260804"
+      image = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:latency-logging-fix-20260804"
 
       env {
         name  = "NODE_ENV"
@@ -327,9 +327,31 @@ resource "google_cloud_run_v2_job" "access_entitlement_review" {
       timeout         = "300s"
 
       containers {
-        image   = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:ops-scripts-20260804"
+        image   = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:access-review-certify-20260804"
         command = ["node"]
         args    = ["scripts/accessEntitlementReview.mjs", "https://triagedsoc2.irisstar.tech"]
+
+        env {
+          name = "DATABASE_URL"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.soc2_database_url.secret_id
+              version = "latest"
+            }
+          }
+        }
+
+        volume_mounts {
+          name       = "cloudsql"
+          mount_path = "/cloudsql"
+        }
+      }
+
+      volumes {
+        name = "cloudsql"
+        cloud_sql_instance {
+          instances = [data.google_sql_database_instance.shared.connection_name]
+        }
       }
     }
   }

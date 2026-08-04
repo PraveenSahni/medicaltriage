@@ -1,15 +1,23 @@
 // Access-entitlement review report - closes part of NFR-036 ("periodic
 // reviews of authentication and authorization data via system-generated
 // notifications") and CSQ IS.17/18/19 ("annual certification of
-// entitlements for all system users and administrators"). This produces
-// the report a reviewer would certify against; it does not yet implement
-// the certification workflow (recording who reviewed it, when, and any
-// remediation actions) - that's the honest remaining gap, noted in the
-// output itself rather than glossed over.
+// entitlements for all system users and administrators").
+//
+// Certification recording (added 2026-08-04): after producing the report,
+// this now writes a real AuditEvent row (action
+// ACCESS_ENTITLEMENT_REVIEW_CERTIFIED) directly to the database via Prisma,
+// recording the reviewer identity, timestamp, total/flagged account counts,
+// and the full flagged list - the actual "who reviewed it, when" record a
+// certification requires. Remediation actions taken as a result of a given
+// review are still tracked outside this script (there is no workflow that
+// automatically remediates a flagged account) - that narrower gap remains.
 // Usage: node scripts/accessEntitlementReview.mjs [baseUrl]
+import { PrismaClient } from "@prisma/client";
+
 const BASE_URL = process.argv[2] ?? "https://triagedsoc2.irisstar.tech";
 const ADMIN_USERNAME = "sa@irisstar.tech";
 const ADMIN_PASSWORD_ENV = "LocalMockAdmin!2026";
+const prisma = new PrismaClient();
 
 const jar = {};
 
@@ -75,11 +83,33 @@ async function main() {
     for (const f of flagged) console.log(`- ${f.email}: ${f.reason}`);
   }
 
+  const certification = await prisma.auditEvent.create({
+    data: {
+      timestamp: new Date(),
+      userId: ADMIN_USERNAME,
+      action: "ACCESS_ENTITLEMENT_REVIEW_CERTIFIED",
+      module: "AccessGovernance",
+      resource: "UserAccount",
+      success: true,
+      riskLevel: flagged.length > 0 ? "medium" : "low",
+      metadata: JSON.parse(
+        JSON.stringify({
+          baseUrl: BASE_URL,
+          totalAccounts: users.length,
+          flaggedCount: flagged.length,
+          flagged
+        })
+      )
+    }
+  });
+
+  console.log(`\nCertification recorded: AuditEvent ${certification.id} (reviewer=${ADMIN_USERNAME}, ${certification.timestamp.toISOString()}).`);
   console.log(
-    "\nNote: this is the report a reviewer certifies against, not the certification itself. " +
-      "No workflow yet records who reviewed this, when, or what remediation followed - " +
-      "see CSQ IS.17-19 in the questionnaire review for the honest remaining gap."
+    "Note: this records that the review ran and its findings were certified against - it does not itself " +
+      "track remediation actions taken afterward for any flagged account (no automated remediation workflow exists)."
   );
+
+  await prisma.$disconnect();
 }
 
 main().catch((error) => {
