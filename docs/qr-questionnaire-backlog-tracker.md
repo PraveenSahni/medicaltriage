@@ -91,7 +91,7 @@ they cluster, largest first:
 
 | Area | Approx. rows | Flavor |
 |---|---|---|
-| Cloud CSQ (various domains, mostly single-row) | ~45 | Documentation/process gaps (asset inventory, third-party agreements, audit-tool access controls) - many are one-line policy statements away from Partial->Yes |
+| Cloud CSQ (various domains, mostly single-row) | ~45 | Documentation/process gaps (asset inventory, third-party agreements, audit-tool access controls) - many are one-line policy statements away from Partial->Yes. ✅ SD.02 (change management, 2026-08-04) closed: `docs/change-management-policy.md` consolidates CI gating, canary-then-cutover deploys, and the AuditEvent change trail into one document - honestly flags that branch-protection enforcement is blocked by this private repo's GitHub plan tier (confirmed via a real 403 from the branch-protection API). |
 | Observability, Monitoring & Alerts (NFR + AI) | ~18 | ⚠️ Partial (2026-08-04) - real X-Request-Id correlation-id middleware now threads a request id through every request and the structured request-duration log (closes part of NFR-116/117/150). Still open: a full distributed-tracing/APM span model + trace-visualization dashboard (needs a Cloud Trace/OpenTelemetry integration, a separate larger initiative), QR-facing dashboards, and business-KPI alerting (blocked on a real expected-volume baseline, a business/data decision not an engineering task). |
 | UX tab | ~15 | Personalization, ~~feedback collection~~ (done), ~~global search~~ (done, backend-only), onboarding/tooltips |
 | Performance | ~10 | Caching layer, response compression, async transactions, formal perf-test-in-pipeline |

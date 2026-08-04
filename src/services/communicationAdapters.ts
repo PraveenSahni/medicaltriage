@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { randomUUID } from "node:crypto";
+import { fetchWithRetry } from "../utils/httpRetry.js";
 import type {
   CcpOutboundChannel,
   CcpSendResult,
@@ -184,7 +185,7 @@ export class TwilioMessagingAdapter implements MessagingAdapter {
       form.set("MediaUrl", message.mediaUrl);
     }
 
-    const response = await fetch(
+    const response = await fetchWithRetry(
       `https://api.twilio.com/2010-04-01/Accounts/${this.config.accountSid}/Messages.json`,
       {
         method: "POST",
@@ -303,7 +304,7 @@ export class MicrosoftGraphEmailAdapter implements EmailAdapter {
       saveToSentItems: true
     };
 
-    const response = await fetch(
+    const response = await fetchWithRetry(
       `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(mailbox)}/sendMail`,
       {
         method: "POST",
@@ -354,7 +355,7 @@ async function getGraphToken(config: GraphConfig): Promise<string> {
     scope: "https://graph.microsoft.com/.default"
   });
 
-  const response = await fetch(`https://login.microsoftonline.com/${config.tenantId}/oauth2/v2.0/token`, {
+  const response = await fetchWithRetry(`https://login.microsoftonline.com/${config.tenantId}/oauth2/v2.0/token`, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
