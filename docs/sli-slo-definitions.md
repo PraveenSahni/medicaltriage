@@ -15,16 +15,18 @@ today versus what's only a defined target.
 | SLI | Definition | Target (SLO) | Measured today? |
 |---|---|---|---|
 | Availability | `/api/v1/runtime/environment` responds 200 | 99.5% per calendar month | **Yes** - GCP Cloud Monitoring uptime checks (`ist-triage-demo-uptime`, `ist-triage-soc2-uptime`), 5-minute polling interval, added this remediation pass |
-| Latency | p95 response time for critical clinical-workflow endpoints (queue claim, triage complete) | ≤ 3 seconds | **Partial** (added 2026-08-04) - `src/middleware/requestDuration.ts` now emits a structured JSON log line (method, path, status, durationMs) per request, verified flowing into Cloud Logging in real time on soc2. This is the raw instrumentation a p95/p99 metric needs; a log-based metric + dashboard/alert on top of these log lines has not yet been built |
+| Latency | p95 response time for critical clinical-workflow endpoints (queue claim, triage complete) | ≤ 3 seconds | **Yes** (completed 2026-08-04) - a Cloud Logging-based distribution metric (`request_duration_ms`) parses `durationMs` from every request's structured log line, and a real alert policy (`soc2 p95 request latency > 3s`) fires on `ALIGN_PERCENTILE_95 > 3000ms` over a 5-minute window. Verified with real traffic: the metric shows live distribution data (e.g. 16 requests, mean 0.83ms, in one 60s window) - this is site-wide latency, not yet broken out per-endpoint for the two specific clinical-workflow endpoints named in the target |
 | Error rate | 5xx responses as a percentage of total requests | < 1% per calendar month | **Partial** - real alert policies now exist for both services (`ist-triage-demo 5xx error rate`, `ist-triage-soc2 5xx error rate`, added 2026-08-04), firing when >5 5xx responses occur in a 5-minute window using Cloud Run's built-in `request_count` metric (no new instrumentation). This is count-based alerting, not yet a formal percentage-of-total-traffic SLO calculation or monthly report. |
 | Saturation | Cloud SQL connection pool utilization, Cloud Run instance count vs. max | Alert at 80% of configured limits | **Yes** (added 2026-08-04) - real alert policies (`Cloud SQL connection saturation (ist-triage-postgres-uat)`, `Cloud Run instance count saturation (soc2 + demo)`) using Cloud Monitoring's built-in `cloudsql.googleapis.com/database/postgresql/num_backends` and `run.googleapis.com/container/instance_count` metrics - no new instrumentation needed, both were already collected natively by GCP |
 
 ## What closing the "measured today" gap would require
 
-- **Latency:** structured request logging with duration capture now exists
-  (added 2026-08-04) - what remains is exporting it to a metrics backend
-  (a Cloud Monitoring log-based metric, or an APM tool) plus a p95/p99
-  dashboard/alert on top of it.
+- **Latency:** closed 2026-08-04 - structured logging, a log-based p95
+  metric, and an alert are all real and verified. Remaining refinement (not
+  a gap, an enhancement): break the metric out per-endpoint so the two
+  specific clinical-workflow endpoints named in the target (queue claim,
+  triage complete) can be tracked individually rather than as one
+  site-wide p95.
 - **Error rate:** the same logging infrastructure, aggregated by status
   code.
 - **Saturation:** Cloud SQL and Cloud Run both expose utilization metrics
