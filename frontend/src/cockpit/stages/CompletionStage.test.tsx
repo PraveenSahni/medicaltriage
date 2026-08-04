@@ -17,6 +17,10 @@ jest.mock("../api/triageCompletion", () => ({
   compileTriageCompletion: (...args: unknown[]) => compileTriageCompletion(...args)
 }));
 
+jest.mock("../api/feedback", () => ({
+  submitFeedback: jest.fn().mockResolvedValue(undefined)
+}));
+
 function makeItem(overrides: Partial<QueueItem> = {}): QueueItem {
   return {
     id: "queue-item-abc",

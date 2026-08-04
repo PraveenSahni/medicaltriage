@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQueue, type QueueItem } from "../../QueueContext";
 import { compileTriageCompletion, previewTriageCompletion } from "../api/triageCompletion";
+import { FeedbackWidget } from "../FeedbackWidget";
 
 type CompletionStageProps = {
   item: QueueItem;
@@ -181,6 +182,8 @@ export function CompletionStage({ item, isReadOnly, onCallCompleted }: Completio
           </div>
         )}
       </div>
+
+      {completed && <FeedbackWidget context="cockpit-completion" />}
     </section>
   );
 }

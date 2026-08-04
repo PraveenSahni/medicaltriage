@@ -1370,6 +1370,24 @@ model AuditEvent {
   @@map("audit_events")
 }
 
+// Closes NFR-011 (UX tab) - no user-feedback collection mechanism existed
+// previously. Deliberately minimal: a rating plus optional free-text
+// comment tied to where in the app it was given, not a full analytics
+// platform (session-replay, behavior tracking, etc. remain out of scope).
+model UserFeedback {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  userId    String?  @map("user_id")
+  role      String?
+  context   String
+  rating    Int
+  comment   String?
+
+  @@index([createdAt])
+  @@index([context])
+  @@map("user_feedback")
+}
+
 // =============================================================================
 // STCC vendor-mirror layer - a faithful 1:1 copy of the real After-Hours
 // Telehealth Triage Guidelines Access database schema, verified this session
