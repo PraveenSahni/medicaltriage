@@ -2120,10 +2120,23 @@ export async function authenticateLocal(args: {
     return { ok: false, message: "Account is temporarily locked. Contact the helpdesk.", locked: true };
   }
 
-  // Local credential gate for development and UAT scaffolding. Live mode must
-  // provide ADMIN_PASSWORD through the deployment environment or Secret Manager.
+  // Local credential gate for development and UAT scaffolding. In mock mode
+  // (synthetic demo/test data), ADMIN_PASSWORD is deliberately allowed to log
+  // in as any seeded demo user - a testing convenience relied on throughout
+  // this suite and the demo environment. In live mode it must NOT do that:
+  // it is a break-glass credential for the platform/system admin bootstrap
+  // accounts only. Previously this restriction didn't exist at all, so a live
+  // deployment's shared ADMIN_PASSWORD could authenticate as any real user
+  // (nurse/doctor/manager) just by typing their username - the fix scopes
+  // that down to admin bootstrap accounts specifically once MOCK_MODE=false.
   const configuredPassword = getAdminPassword();
-  const adminPasswordOk = configuredPassword.length > 0 && safeCompare(args.password, configuredPassword);
+  const isAdminBootstrapAccount = Boolean(
+    user?.roles.includes("platform_super_administrator") || user?.roles.includes("system_administrator")
+  );
+  const adminPasswordOk =
+    (isMockMode() || isAdminBootstrapAccount) &&
+    configuredPassword.length > 0 &&
+    safeCompare(args.password, configuredPassword);
   const demoPassword = user ? demoPasswordByEmail[user.email.toLowerCase()] : undefined;
   const demoPasswordOk = Boolean(isMockMode() && demoPassword && safeCompare(args.password, demoPassword));
   const passwordOk = adminPasswordOk || demoPasswordOk;
