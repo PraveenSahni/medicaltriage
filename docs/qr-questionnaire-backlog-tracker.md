@@ -263,3 +263,33 @@ separately-decided retention reasoning documented in
 trail that must outlive what it describes); adding a second generic
 policy row without a real decided retention period would be a
 fabricated number, not a fix.
+
+## 2026-08-05 follow-up: 2 more mandatory-Partial Non Functional Req rows closed
+
+Investigated all 18 mandatory-Partial rows in the Non Functional Req tab
+and triaged into 3 engineering-closable, 15 blocked (external QR
+confirmation, real DR/infra migration, formal external assessment, or a
+genuine load-test perf regression needing its own scoped effort). Closed
+the 3 engineering-closable ones:
+
+- ✅ **NFR-010** (DML audit completeness) - investigation found 2 real
+  gaps in otherwise-solid audit coverage: `createQueueItem` (initial call
+  intake) and `enrollMfa`/`confirmMfaEnrollment` had no audit event. Both
+  now write one, closing the full-lifecycle audit-trail gap.
+- ✅ **NFR-116** (observability/tracing) - the existing request-ID
+  correlation middleware (`src/middleware/requestId.ts`) is now
+  propagated as an `X-Request-Id` header on both outbound QHIE/EMR FHIR
+  calls in `src/integration/fhirWriteback.ts`, closing the
+  cross-service-boundary correlation gap for the app's one real outbound
+  integration.
+
+**NFR-189 flagged, not closed**: task #102 ("email the monthly SLI
+report") was marked complete earlier this engagement, but investigation
+found no such script exists anywhere in the repo -
+`docs/sli-slo-definitions.md` itself says "Reporting cadence: Not yet
+established." Closing this for real means adding a new GCP Monitoring
+API dependency and building a live metric-query + email path - a
+separate, properly-scoped effort, not a quick engineering win to fold
+into this batch.
+
+Verified: `npx tsc --noEmit` clean, full backend suite green (692/692).

@@ -2847,6 +2847,22 @@ export function enrollMfa(userId: string): { secret: string; otpauthUrl: string 
   void persistMfaCredential({ userId, secretCiphertext: encryptMfaSecret(secret), status: "pending" }).catch(
     (error) => console.error("Failed to persist MFA credential (change still applies in-memory):", error)
   );
+  void recordAuditEvent({
+    id: randomUUID(),
+    timestampIso: new Date().toISOString(),
+    userId: user.id,
+    activeRole: "self-service",
+    organization: user.organization,
+    facility: user.facility,
+    department: user.department,
+    action: "MFA_ENROLLMENT_STARTED",
+    module: "Authentication",
+    resource: "UserMfaCredential",
+    ipAddress: "n/a",
+    device: "n/a",
+    success: true,
+    risk: "medium"
+  }).catch((error) => console.error("Failed to record MFA enrollment audit event:", error));
   const otpauthUrl = authenticator.keyuri(user.email, "IST Health Tele-Triage", secret);
   return { secret, otpauthUrl };
 }
@@ -2877,6 +2893,23 @@ export function confirmMfaEnrollment(userId: string, code: string): boolean {
     status: "enabled",
     enrolledAt: new Date().toISOString()
   }).catch((error) => console.error("Failed to persist MFA credential (change still applies in-memory):", error));
+  const enrolledUser = users.find((candidate) => candidate.id === userId);
+  void recordAuditEvent({
+    id: randomUUID(),
+    timestampIso: new Date().toISOString(),
+    userId,
+    activeRole: "self-service",
+    organization: enrolledUser?.organization ?? "unknown",
+    facility: enrolledUser?.facility ?? "unknown",
+    department: enrolledUser?.department ?? "unknown",
+    action: "MFA_ENROLLMENT_CONFIRMED",
+    module: "Authentication",
+    resource: "UserMfaCredential",
+    ipAddress: "n/a",
+    device: "n/a",
+    success: true,
+    risk: "medium"
+  }).catch((error) => console.error("Failed to record MFA enrollment audit event:", error));
   return true;
 }
 

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { executeWriteback } from "../integration/fhirWriteback.js";
 import { requirePermission, type AuthorizedRequest } from "../services/authorization.js";
+import type { RequestWithId } from "../middleware/requestId.js";
 
 const ExecuteWritebackRequestSchema = z
   .object({
@@ -28,7 +29,8 @@ export function createEmrRouter(): Router {
           isDraft: parsed.data.isDraft,
           dryRun: parsed.data.dryRun,
           patientId: parsed.data.patientId,
-          practitionerId: parsed.data.practitionerId
+          practitionerId: parsed.data.practitionerId,
+          requestId: (req as AuthorizedRequest & RequestWithId).requestId
         },
         req.securitySession
       );

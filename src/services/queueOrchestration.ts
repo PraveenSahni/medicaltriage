@@ -1931,6 +1931,13 @@ export async function createQueueItem(session: AuthenticatedSession, request: Qu
       },
       include: { transitionLogs: true }
     });
+    await recordQueueAuditEvent({
+      session,
+      action: "QUEUE_ITEM_CREATE",
+      recordId: record.id,
+      success: true,
+      metadata: { channel: record.channel, patientType: record.patientType, stationCode: record.stationCode }
+    });
     return toDto(dbRowToRecord(row));
   }
 

@@ -76,6 +76,12 @@ export type ExecuteWritebackOptions = {
   qhieAccessToken?: string;
   emrAccessToken?: string;
   dryRun?: boolean;
+  // Closes part of NFR-116/117/150 (request-ID propagation across service
+  // boundaries): threaded from the inbound request's own correlation id
+  // (src/middleware/requestId.ts) into the outbound QHIE/EMR calls below, so
+  // a single request can be traced through this app's own logs AND into
+  // whatever the downstream FHIR endpoint logs against the same header.
+  requestId?: string;
 };
 
 export type WritebackResult = {
@@ -328,7 +334,7 @@ export function buildEpicDocumentReference(
   };
 }
 
-export async function verifyPatientConsent(patientId: string, accessToken: string): Promise<boolean> {
+export async function verifyPatientConsent(patientId: string, accessToken: string, requestId?: string): Promise<boolean> {
   const baseUrl = qhieBaseUrl();
   if (!baseUrl || !accessToken) {
     if (isMockMode()) {
@@ -343,7 +349,8 @@ export async function verifyPatientConsent(patientId: string, accessToken: strin
     method: "GET",
     headers: {
       accept: FHIR_JSON_CONTENT_TYPE,
-      authorization: `Bearer ${accessToken}`
+      authorization: `Bearer ${accessToken}`,
+      ...(requestId ? { "x-request-id": requestId } : {})
     }
   });
 
@@ -587,13 +594,14 @@ function sleep(ms: number): Promise<void> {
 // 5xx, e.g. the EMR endpoint briefly unavailable) with exponential backoff.
 // Never retries a 4xx: a bad token or malformed payload will fail identically
 // on every attempt, so retrying it only delays surfacing a real error.
-async function postDocumentReferenceOnce(endpoint: string, token: string, payload: FhirDocumentReference) {
+async function postDocumentReferenceOnce(endpoint: string, token: string, payload: FhirDocumentReference, requestId?: string) {
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
       authorization: `Bearer ${token}`,
       accept: FHIR_JSON_CONTENT_TYPE,
-      "content-type": FHIR_JSON_CONTENT_TYPE
+      "content-type": FHIR_JSON_CONTENT_TYPE,
+      ...(requestId ? { "x-request-id": requestId } : {})
     },
     body: JSON.stringify(payload)
   });
@@ -615,11 +623,11 @@ async function postDocumentReferenceOnce(endpoint: string, token: string, payloa
   return { status: response.status, resourceId };
 }
 
-export async function postDocumentReference(endpoint: string, token: string, payload: FhirDocumentReference) {
+export async function postDocumentReference(endpoint: string, token: string, payload: FhirDocumentReference, requestId?: string) {
   let lastError: unknown;
   for (let attempt = 1; attempt <= WRITEBACK_MAX_ATTEMPTS; attempt++) {
     try {
-      return await postDocumentReferenceOnce(endpoint, token, payload);
+      return await postDocumentReferenceOnce(endpoint, token, payload, requestId);
     } catch (error) {
       lastError = error;
       const status = (error as { status?: number }).status;
@@ -662,7 +670,7 @@ export async function executeWriteback(
   const payloadSummary = summarizePayload(payload);
   const mode = writebackMode(options);
   const qhieToken = options.qhieAccessToken ?? process.env.QHIE_ACCESS_TOKEN ?? "";
-  const consentGranted = await verifyPatientConsent(patientId, qhieToken);
+  const consentGranted = await verifyPatientConsent(patientId, qhieToken, options.requestId);
 
   if (!consentGranted) {
     const auditPersisted = await recordTransmissionAudit({
@@ -717,7 +725,7 @@ export async function executeWriteback(
   }
 
   try {
-    const providerResponse = await postDocumentReference(endpoint, emrToken, payload);
+    const providerResponse = await postDocumentReference(endpoint, emrToken, payload, options.requestId);
     const auditPersisted = await recordTransmissionAudit({
       encounterId,
       target,
