@@ -100,6 +100,31 @@ In priority order, if/when picked back up:
    (e.g. a specific regulatory mandate beyond what platform encryption
    satisfies).
 
+## Customer-managed encryption keys (CMEK) - explicit decision, 2026-08-04
+
+Investigated as part of this remediation pass (CSQ IS.33-35, AI-tab NFR-020):
+Cloud SQL and Secret Manager currently use Google-managed encryption keys,
+not customer-managed keys. **CMEK cannot be enabled on an existing Cloud SQL
+instance** - GCP only supports setting it at instance creation time, meaning
+adopting CMEK here would require creating a brand-new instance and migrating
+data across, not a configuration flag.
+
+Since `ist-triage-postgres-uat` is the single shared instance also hosting
+`ist_triage_demo` (the live customer-facing database), a full CMEK migration
+was explicitly decided against for this pass - the risk of touching the live
+demo's database is not justified for what is, for a demo/staging workload,
+already covered by Google-managed encryption at rest. **This is a conscious,
+documented accepted risk, not an oversight**: platform-level encryption at
+rest is real and active; the gap is specifically the absence of
+customer-controlled key material and rotation, which matters mainly for a
+production workload with a specific regulatory or contractual requirement
+for CMEK.
+
+If this is ever required (e.g. a specific client contract term), the correct
+path is a new, CMEK-enabled Cloud SQL instance provisioned specifically for
+that requirement - most cleanly done as part of a planned migration rather
+than an in-place change to shared infrastructure.
+
 ## Explicitly out of scope for this document
 
 - Actually implementing any of the above - this is a status/accepted-risk
