@@ -79,3 +79,16 @@ jobs:
           name: sbom
           path: sbom.json
           retention-days: 90
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Build-only validation (no push, no registry credentials involved) -
+      # catches a broken Dockerfile/build stage on every PR. Image builds
+      # that actually deploy remain manual `gcloud builds submit` runs today
+      # (see docs/container-image-signing.md) - this step only proves the
+      # image still builds, it does not publish or sign anything.
+      - name: Build image (validation only, not pushed)
+        run: docker build -t ist-triage-ci-build-check:${{ github.sha }} .
