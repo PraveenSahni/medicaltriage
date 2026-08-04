@@ -120,6 +120,19 @@ export function createApp() {
     windowMs: 60_000,
     maxRequests: 30
   });
+  // Closes NFR-047 (universal request throttling) - previously only a
+  // handful of especially sensitive endpoints (login, staff-validate, admin
+  // user-status) had any rate limit; every other endpoint had none at all.
+  // This is a generous default ceiling applied to the whole API, layered
+  // underneath the tighter, endpoint-specific limits above (both apply to
+  // the same request - this doesn't replace them) - closes the gap that
+  // most endpoints had zero throttling, without meaningfully constraining
+  // real usage.
+  const defaultApiRateLimit = rateLimit({
+    name: "api-default",
+    windowMs: 60_000,
+    maxRequests: 600
+  });
 
   app.use(
     helmet({
@@ -186,6 +199,7 @@ export function createApp() {
     res.json(publicRuntimeEnvironment());
   });
 
+  app.use("/api/v1", defaultApiRateLimit);
   app.use("/api/v1/auth", createAuthRouter());
   app.use("/api/v1/hrms", createHrmsRouter());
   app.use("/api/v1/integrations/call-center", createCallCenterInboundRouter());

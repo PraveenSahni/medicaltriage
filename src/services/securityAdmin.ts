@@ -61,6 +61,15 @@ function minutesFromEnv(name: string, fallbackMinutes: number): number {
 const SESSION_TTL_MS = minutesFromEnv("SESSION_TIMEOUT_MINUTES", 30) * 60 * 1000;
 const EXTENDED_SESSION_TTL_MS = minutesFromEnv("EXTENDED_SESSION_TIMEOUT_MINUTES", 8 * 60) * 60 * 1000;
 
+// Closes NFR-020 ("ability to restrict max number of concurrent sessions") -
+// configurable per deployment; falls back to a reasonable default. Multiple
+// concurrent sessions per user remain supported (unchanged) - this only
+// caps how many can be active at once, evicting the oldest beyond the cap.
+function maxConcurrentSessionsFromEnv(): number {
+  const raw = Number(process.env.MAX_CONCURRENT_SESSIONS_PER_USER);
+  return Number.isFinite(raw) && raw > 0 ? raw : 5;
+}
+
 export type OrganizationDirectoryRecord = {
   id: string;
   code: string;
@@ -2291,6 +2300,106 @@ export function upsertDirectoryUserFromHrms(input: DirectoryUserUpsert): { user:
   return { user: maskUser(created), created: true };
 }
 
+// Enforces MAX_CONCURRENT_SESSIONS_PER_USER after a new session is issued -
+// `sessions` is a Map, so iteration order is insertion order; the oldest
+// sessions for this user are the ones still earliest in that order.
+async function enforceMaxConcurrentSessions(userId: string): Promise<void> {
+  const maxConcurrentSessions = maxConcurrentSessionsFromEnv();
+  const userSessionIds = [...sessions.entries()]
+    .filter(([, session]) => session.user.id === userId)
+    .map(([sessionId]) => sessionId);
+  const excess = userSessionIds.length - maxConcurrentSessions;
+  if (excess <= 0) {
+    return;
+  }
+  for (const sessionId of userSessionIds.slice(0, excess)) {
+    sessions.delete(sessionId);
+    sessionContextBySessionId.delete(sessionId);
+    elevatedSessions.delete(sessionId);
+    await revokePersistedSession(sessionId);
+    await recordAuditEvent({
+      id: randomUUID(),
+      timestampIso: new Date().toISOString(),
+      userId,
+      activeRole: "system",
+      organization: "",
+      facility: "",
+      department: "",
+      action: "SESSION_EVICTED_CONCURRENT_LIMIT",
+      module: "AccessGovernance",
+      resource: `Session:${sessionId}`,
+      purpose: `Oldest session evicted - exceeded MAX_CONCURRENT_SESSIONS_PER_USER (${maxConcurrentSessions})`,
+      ipAddress: "",
+      device: "",
+      success: true,
+      risk: "low"
+    });
+  }
+}
+
+export class SessionNotFoundError extends Error {}
+
+export type ActiveSessionSummary = {
+  sessionId: string;
+  userId: string;
+  activeRole: string;
+  authMethod: AuthMethod;
+  mfaVerified: boolean;
+  expiresAtIso: string;
+};
+
+// Closes NFR-021's "terminate this one specific session" gap -
+// revokeSessionsForUser()/revokeSessionsForRole() above only ever revoke
+// every session for a user/role at once. This lists/terminates exactly one.
+export function listActiveSessionsForUser(userId: string): ActiveSessionSummary[] {
+  const summaries: ActiveSessionSummary[] = [];
+  for (const [sessionId, session] of sessions.entries()) {
+    if (session.user.id === userId) {
+      summaries.push({
+        sessionId,
+        userId,
+        activeRole: session.activeRole,
+        authMethod: session.authMethod,
+        mfaVerified: session.mfaVerified,
+        expiresAtIso: session.expiresAtIso
+      });
+    }
+  }
+  return summaries;
+}
+
+export async function revokeSessionById(
+  sessionId: string,
+  actor: { userId: string; activeRole: string }
+): Promise<{ userId: string; activeRole: string }> {
+  const session = sessions.get(sessionId);
+  if (!session) {
+    throw new SessionNotFoundError(`No active session found with id ${sessionId}`);
+  }
+  sessions.delete(sessionId);
+  sessionContextBySessionId.delete(sessionId);
+  elevatedSessions.delete(sessionId);
+  await revokePersistedSession(sessionId);
+  await recordAuditEvent({
+    id: randomUUID(),
+    timestampIso: new Date().toISOString(),
+    userId: actor.userId,
+    activeRole: actor.activeRole,
+    organization: "",
+    facility: "",
+    department: "",
+    action: "SESSION_TERMINATED",
+    module: "AccessGovernance",
+    resource: `Session:${sessionId}`,
+    purpose: `Terminated session belonging to user ${session.user.id}`,
+    ipAddress: "",
+    device: "",
+    success: true,
+    risk: "medium"
+  });
+  return { userId: session.user.id, activeRole: session.activeRole };
+}
+
 export async function revokeSessionsForUser(userId: string): Promise<number> {
   let revoked = 0;
   for (const [sessionId, session] of sessions.entries()) {
@@ -2698,6 +2807,7 @@ export async function authenticateLocal(args: {
 
   const session = toSession(user, "local", args.rememberMe, args.simulateRole);
   sessions.set(session.sessionId, session);
+  await enforceMaxConcurrentSessions(session.user.id);
   recordSessionContext(session.sessionId, args.ipAddress, args.device);
   await persistUserSession({
     session,
@@ -2808,6 +2918,7 @@ export async function verifyMfaChallenge(
   }
   const session = toSession(user, "local", challenge.rememberMe, challenge.simulateRole, true);
   sessions.set(session.sessionId, session);
+  await enforceMaxConcurrentSessions(session.user.id);
   recordSessionContext(session.sessionId, challenge.ipAddress, challenge.device);
   await persistUserSession({ session, ipAddress: challenge.ipAddress, device: challenge.device });
   await recordAuditEvent({
@@ -3305,6 +3416,7 @@ export async function completeSsoLogin(
 
   const session = toSession(user, config.provider.protocol === "oidc" ? "oidc" : "entra-id", false, undefined, true);
   sessions.set(session.sessionId, session);
+  await enforceMaxConcurrentSessions(session.user.id);
   recordSessionContext(session.sessionId, ipAddress, device);
   await persistUserSession({ session, ipAddress, device });
   await recordAuditEvent({

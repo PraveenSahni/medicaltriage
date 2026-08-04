@@ -19,6 +19,7 @@ import {
   grantPermissionToRole,
   InvalidElevationCodeError,
   isElevated,
+  listActiveSessionsForUser,
   listAuditEvents,
   listControlCenterModules,
   listEncryptionPolicies,
@@ -44,9 +45,11 @@ import {
   RevealNotApprovedError,
   RevealRequestNotFoundError,
   revokePermissionFromRole,
+  revokeSessionById,
   RoleNotFoundError,
   SelfApprovalError,
   SelfPermissionRevocationError,
+  SessionNotFoundError,
   updateUserAccountStatus,
   UserNotFoundError,
   SelfStatusChangeError
@@ -103,6 +106,36 @@ export function createAdminRouter(): Router {
   router.get("/users", requirePermission("admin.users.manage"), (_req, res) => {
     return res.json({ users: listUsers() });
   });
+
+  // Closes NFR-021's "terminate this one specific session" gap -
+  // PATCH .../status revokes every session for a user at once; these two
+  // routes list/terminate exactly one, without affecting the user's other
+  // active sessions (e.g. on a different device).
+  router.get("/users/:id/sessions", requirePermission("admin.users.manage"), (req, res) => {
+    return res.json({ sessions: listActiveSessionsForUser(req.params.id) });
+  });
+
+  router.delete(
+    "/sessions/:sessionId",
+    requireElevatedPermission("admin.users.manage"),
+    userStatusRateLimit,
+    async (req: AuthorizedRequest, res, next) => {
+      try {
+        const actorUserId = req.securitySession?.user.id ?? "unknown";
+        const actorActiveRole = req.securitySession?.activeRole ?? "unknown";
+        const result = await revokeSessionById(req.params.sessionId, {
+          userId: actorUserId,
+          activeRole: actorActiveRole
+        });
+        return res.json({ terminated: true, ...result });
+      } catch (error) {
+        if (error instanceof SessionNotFoundError) {
+          return res.status(404).json({ error: error.message });
+        }
+        return next(error);
+      }
+    }
+  );
 
   // Real remediation action for access-entitlement review findings (CSQ
   // IS.18: "are all remediation actions recorded?") - suspends/reactivates

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { requireAnyPermission } from "../middleware/rbac.js";
+import { rateLimit } from "../middleware/rateLimit.js";
 import type { AuthorizedRequest } from "../services/authorization.js";
 import {
   claimQueueItem,
@@ -50,9 +51,27 @@ function handleQueueError(error: unknown, next: (error: unknown) => void, res: {
   return next(error);
 }
 
+// Closes NFR-004 (Throttling by product/consumer) - a consumer-tier budget
+// on top of the flat per-IP default: the roles that legitimately drive the
+// queue at volume (managers/admins running dashboards, bulk operations)
+// get a higher request budget than the flat default, rather than one
+// one-size-fits-all limit for every caller.
+const queueTierRateLimit = rateLimit({
+  name: "queue-api",
+  windowMs: 60_000,
+  maxRequests: 120,
+  tierResolver: (req) => (req as AuthorizedRequest).securitySession?.activeRole,
+  tierMaxRequests: {
+    triage_service_manager: 300,
+    platform_super_administrator: 300,
+    system_administrator: 300
+  }
+});
+
 export function createQueueRouter(): Router {
   const router = Router();
   router.use(requireAnyPermission(["triage.workspace.view", "triage.queue.manage", "admin.users.manage"]));
+  router.use(queueTierRateLimit);
 
   router.get("/", async (req: AuthorizedRequest, res, next) => {
     try {
