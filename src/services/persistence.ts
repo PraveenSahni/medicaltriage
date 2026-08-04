@@ -151,6 +151,47 @@ export async function persistSecurityAuditEvent(event: AuditEvent): Promise<Pers
   return { persisted: true, recordId: created.id };
 }
 
+export type MfaCredentialSnapshot = {
+  userId: string;
+  secretCiphertext: string;
+  status: "pending" | "enabled" | "disabled";
+  enrolledAt?: string;
+};
+
+export async function persistMfaCredential(snapshot: MfaCredentialSnapshot): Promise<PersistenceResult> {
+  if (!shouldUseDatabasePersistence()) {
+    return { persisted: false, reason: "mock-mode" };
+  }
+
+  const upserted = await prisma.userMfaCredential.upsert({
+    where: { userId: snapshot.userId },
+    create: {
+      userId: snapshot.userId,
+      secretCiphertext: snapshot.secretCiphertext,
+      status: snapshot.status,
+      enrolledAt: snapshot.enrolledAt ? new Date(snapshot.enrolledAt) : undefined
+    },
+    update: {
+      secretCiphertext: snapshot.secretCiphertext,
+      status: snapshot.status,
+      enrolledAt: snapshot.enrolledAt ? new Date(snapshot.enrolledAt) : undefined
+    }
+  });
+
+  return { persisted: true, recordId: upserted.id };
+}
+
+// Reads the real, previously-orphaned AuthenticationProvider row for a real
+// OIDC login/callback flow (closes the "OAuth Provider Integration" gap) -
+// null in mock mode or when no row exists, so callers fall back to the
+// static/disabled in-memory ssoProviders entries.
+export async function getAuthenticationProviderConfig(providerKey: string) {
+  if (!shouldUseDatabasePersistence()) {
+    return null;
+  }
+  return prisma.authenticationProvider.findUnique({ where: { providerKey } });
+}
+
 export type RolePermissionOverride = {
   roleCode: string;
   permissionCode: string;

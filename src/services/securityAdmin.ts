@@ -1,6 +1,19 @@
 import { randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import type { IncomingHttpHeaders } from "node:http";
+import {
+  allowInsecureRequests,
+  authorizationCodeGrant,
+  buildAuthorizationUrl,
+  calculatePKCECodeChallenge,
+  discovery,
+  enableNonRepudiationChecks,
+  randomNonce,
+  randomPKCECodeVerifier,
+  randomState
+} from "openid-client";
+import { authenticator } from "otplib";
 import { getAdminPassword, isMockMode } from "../config/runtime.js";
+import { decryptMfaSecret, encryptMfaSecret } from "./mfaCrypto.js";
 import type {
   AdminUser,
   AuditEvent,
@@ -24,7 +37,9 @@ import type {
   Responsibility
 } from "../types/security.js";
 import {
+  getAuthenticationProviderConfig,
   getPersistedUserSession,
+  persistMfaCredential,
   persistRolePermissionOverride,
   persistSecurityAuditEvent,
   persistUserSession,
@@ -1813,6 +1828,43 @@ const auditEvents: AuditEvent[] = [
 const sessions = new Map<string, AuthenticatedSession>();
 const failedLoginAttempts = new Map<string, number>();
 
+// Real TOTP MFA state (closes AR.06/AR.13) - in-memory first (mock-mode
+// tests, and the primary read path for an already-running process), with
+// best-effort DB persistence via persistMfaCredential(), same dual-layer
+// shape as sessions/failedLoginAttempts above.
+type MfaCredentialState = {
+  secret: string;
+  status: "pending" | "enabled" | "disabled";
+  failedAttempts: number;
+  lockedUntil?: number;
+};
+const mfaCredentials = new Map<string, MfaCredentialState>();
+
+type PendingMfaChallenge = {
+  userId: string;
+  rememberMe: boolean;
+  simulateRole?: string;
+  expiresAt: number;
+  ipAddress: string;
+  device: string;
+};
+const pendingMfaChallenges = new Map<string, PendingMfaChallenge>();
+const MFA_CHALLENGE_TTL_MS = 5 * 60 * 1000;
+const MFA_ENROLLMENT_CONFIRM_MAX_ATTEMPTS = 5;
+
+// Real OIDC SSO state (closes the OAuth-provider-integration gap). Keyed by
+// the OIDC `state` parameter - CSRF/replay protection is a core, non-optional
+// part of the authorization-code flow, not an extra.
+type OidcPendingLogin = {
+  providerId: string;
+  nonce: string;
+  codeVerifier: string;
+  redirectUri: string;
+  expiresAt: number;
+};
+const oidcStateStore = new Map<string, OidcPendingLogin>();
+const OIDC_STATE_TTL_MS = 10 * 60 * 1000;
+
 async function recordAuditEvent(event: AuditEvent): Promise<void> {
   auditEvents.push(event);
   // A failure to persist the audit record (DB outage, network blip, a
@@ -2209,6 +2261,9 @@ export function resetSecurityStoreForTests(): void {
   sessions.clear();
   failedLoginAttempts.clear();
   rolePermissionOverrides = [];
+  mfaCredentials.clear();
+  pendingMfaChallenges.clear();
+  oidcStateStore.clear();
 }
 
 export function listSsoProviders(): SsoProvider[] {
@@ -2304,7 +2359,13 @@ function roleByCode(roleCode: string): Role | undefined {
   return role ? applyRolePermissionOverrides(role) : undefined;
 }
 
-function toSession(user: AdminUser, authMethod: AuthMethod, rememberMe: boolean, simulateRole?: string): AuthenticatedSession {
+function toSession(
+  user: AdminUser,
+  authMethod: AuthMethod,
+  rememberMe: boolean,
+  simulateRole?: string,
+  mfaVerified = false
+): AuthenticatedSession {
   const sessionId = randomBytes(32).toString("base64url");
   const ttlMs = rememberMe ? EXTENDED_SESSION_TTL_MS : SESSION_TTL_MS;
   const activeRole = simulateRole && user.roles.includes(simulateRole) ? simulateRole : user.roles[0] ?? "read_only";
@@ -2317,9 +2378,18 @@ function toSession(user: AdminUser, authMethod: AuthMethod, rememberMe: boolean,
     responsibilities: [...new Set(activeRoleDefinition?.responsibilities ?? user.responsibilities)],
     expiresAtIso: new Date(Date.now() + ttlMs).toISOString(),
     authMethod,
-    mfaVerified: user.mfaStatus === "enabled"
+    // Real verification status (closes AR.06/AR.13's cosmetic-only gap):
+    // true only when this session was actually issued after a verified TOTP
+    // challenge (verifyMfaChallenge) or a real SSO assertion - never copied
+    // from a static user-profile label.
+    mfaVerified
   };
 }
+
+export type AuthenticateLocalResult =
+  | { ok: true; session: AuthenticatedSession }
+  | { ok: true; mfaRequired: true; challengeId: string }
+  | { ok: false; message: string; locked?: boolean; forbidden?: boolean };
 
 export async function authenticateLocal(args: {
   username: string;
@@ -2328,7 +2398,7 @@ export async function authenticateLocal(args: {
   simulateRole?: string;
   ipAddress: string;
   device: string;
-}): Promise<{ ok: true; session: AuthenticatedSession } | { ok: false; message: string; locked?: boolean; forbidden?: boolean }> {
+}): Promise<AuthenticateLocalResult> {
   const username = args.username.trim().toLowerCase();
   const user = users.find((candidate) => candidate.email.toLowerCase() === username || candidate.employeeId.toLowerCase() === username);
   const genericMessage = "Invalid username or password.";
@@ -2408,6 +2478,27 @@ export async function authenticateLocal(args: {
   }
 
   failedLoginAttempts.delete(username);
+
+  // Real MFA gate (closes AR.06/AR.13) - opt-in per user, not org-mandated
+  // in this phase (the questionnaire rows require the capability to exist
+  // and be enforceable, not a forced global rollout). A user with
+  // status "enabled" must complete a second, TOTP-verified step before a
+  // real session is issued; users without MFA enrolled (or still
+  // "pending"/"disabled") proceed exactly as before.
+  const mfaCredential = mfaCredentials.get(user.id);
+  if (mfaCredential?.status === "enabled") {
+    const challengeId = randomBytes(32).toString("base64url");
+    pendingMfaChallenges.set(challengeId, {
+      userId: user.id,
+      rememberMe: args.rememberMe,
+      simulateRole: args.simulateRole,
+      expiresAt: Date.now() + MFA_CHALLENGE_TTL_MS,
+      ipAddress: args.ipAddress,
+      device: args.device
+    });
+    return { ok: true, mfaRequired: true, challengeId };
+  }
+
   const session = toSession(user, "local", args.rememberMe, args.simulateRole);
   sessions.set(session.sessionId, session);
   await persistUserSession({
@@ -2430,6 +2521,111 @@ export async function authenticateLocal(args: {
     device: args.device,
     success: true,
     risk: "medium"
+  });
+  return { ok: true, session };
+}
+
+export class MfaChallengeNotFoundError extends Error {}
+export class MfaChallengeExpiredError extends Error {}
+
+export function enrollMfa(userId: string): { secret: string; otpauthUrl: string } {
+  const user = users.find((candidate) => candidate.id === userId);
+  if (!user) {
+    throw new UserNotFoundError(`No user found with id ${userId}`);
+  }
+  const secret = authenticator.generateSecret();
+  mfaCredentials.set(userId, { secret, status: "pending", failedAttempts: 0 });
+  void persistMfaCredential({ userId, secretCiphertext: encryptMfaSecret(secret), status: "pending" }).catch(
+    (error) => console.error("Failed to persist MFA credential (change still applies in-memory):", error)
+  );
+  const otpauthUrl = authenticator.keyuri(user.email, "IST Health Tele-Triage", secret);
+  return { secret, otpauthUrl };
+}
+
+// The enrollment-confirmation guard is deliberately separate from, and
+// lighter-weight than, the login-time failedLoginAttempts lockout (see
+// verifyMfaChallenge below) - this is a self-service setup step, not a
+// login gate, so a spent enrollment attempt just requires restarting
+// enrollment rather than a helpdesk-mediated account unlock.
+export function confirmMfaEnrollment(userId: string, code: string): boolean {
+  const credential = mfaCredentials.get(userId);
+  if (!credential) {
+    throw new UserNotFoundError(`No pending MFA enrollment for user ${userId}`);
+  }
+  const isValid = authenticator.verify({ token: code, secret: credential.secret });
+  if (!isValid) {
+    credential.failedAttempts += 1;
+    if (credential.failedAttempts >= MFA_ENROLLMENT_CONFIRM_MAX_ATTEMPTS) {
+      mfaCredentials.delete(userId);
+    }
+    return false;
+  }
+  credential.status = "enabled";
+  credential.failedAttempts = 0;
+  void persistMfaCredential({
+    userId,
+    secretCiphertext: encryptMfaSecret(credential.secret),
+    status: "enabled",
+    enrolledAt: new Date().toISOString()
+  }).catch((error) => console.error("Failed to persist MFA credential (change still applies in-memory):", error));
+  return true;
+}
+
+export async function verifyMfaChallenge(
+  challengeId: string,
+  code: string
+): Promise<{ ok: true; session: AuthenticatedSession } | { ok: false; message: string; locked?: boolean }> {
+  const challenge = pendingMfaChallenges.get(challengeId);
+  if (!challenge) {
+    throw new MfaChallengeNotFoundError("MFA challenge not found or already used.");
+  }
+  if (challenge.expiresAt < Date.now()) {
+    pendingMfaChallenges.delete(challengeId);
+    throw new MfaChallengeExpiredError("MFA challenge has expired - sign in again.");
+  }
+
+  const user = users.find((candidate) => candidate.id === challenge.userId);
+  const credential = mfaCredentials.get(challenge.userId);
+  const username = user?.email.toLowerCase() ?? challenge.userId;
+
+  // A wrong TOTP code reuses the same username-keyed failedLoginAttempts
+  // lockout as a wrong password, rather than a second, differently-behaved
+  // counter for the same account - one consistent lockout semantic, not two.
+  const isValid = Boolean(credential && authenticator.verify({ token: code, secret: credential.secret }));
+  if (!isValid) {
+    const currentFailures = failedLoginAttempts.get(username) ?? 0;
+    failedLoginAttempts.set(username, currentFailures + 1);
+    if (currentFailures + 1 >= 5) {
+      pendingMfaChallenges.delete(challengeId);
+      return { ok: false, message: "Account is temporarily locked. Contact the helpdesk.", locked: true };
+    }
+    return { ok: false, message: "Invalid authentication code." };
+  }
+
+  pendingMfaChallenges.delete(challengeId);
+  failedLoginAttempts.delete(username);
+
+  if (!user) {
+    throw new UserNotFoundError(`No user found with id ${challenge.userId}`);
+  }
+  const session = toSession(user, "local", challenge.rememberMe, challenge.simulateRole, true);
+  sessions.set(session.sessionId, session);
+  await persistUserSession({ session, ipAddress: challenge.ipAddress, device: challenge.device });
+  await recordAuditEvent({
+    id: randomUUID(),
+    timestampIso: new Date().toISOString(),
+    userId: user.id,
+    activeRole: session.activeRole,
+    organization: user.organization,
+    facility: user.facility,
+    department: user.department,
+    action: "LOGIN_MFA_VERIFIED",
+    module: "Authentication",
+    resource: "local",
+    ipAddress: challenge.ipAddress,
+    device: challenge.device,
+    success: true,
+    risk: "low"
   });
   return { ok: true, session };
 }
@@ -2525,15 +2721,246 @@ export async function recordReveal(request: RevealRequest, session: Authenticate
   return { decision: "approved", value, audit };
 }
 
-export function testSsoProvider(providerId: string): { ok: boolean; message: string } {
-  const provider = ssoProviders.find((item) => item.id === providerId);
-  if (!provider) {
-    return { ok: false, message: "Provider not found." };
+// http:// issuers only occur in this repo's own local mock-IdP test harness
+// (tests/helpers/mockOidcIdp.ts) - a real deployment's issuerUrl is always
+// https:// and never takes this branch.
+//
+// enableNonRepudiationChecks is deliberately turned on: oauth4webapi (which
+// openid-client uses internally) does NOT verify the ID token's JWS
+// signature by default for the authorization-code/token-endpoint flow -
+// per spec this is optional there, since the token endpoint response is
+// already delivered over a TLS- and client-authenticated channel. This
+// gap was found and confirmed the hard way (a hand-tampered ID token, with
+// a completely different signing key, was accepted and JIT-provisioned a
+// real session before this flag was added - see
+// tests/ssoOidcFlow.test.ts's tamper-signature test). Enabling this closes
+// it and forces an explicit cryptographic signature check against the
+// provider's real JWKS on every login.
+async function discoverProvider(issuerUrl: string, clientId: string, clientSecret: string) {
+  const isInsecure = issuerUrl.startsWith("http://");
+  const config = await discovery(
+    new URL(issuerUrl),
+    clientId,
+    clientSecret,
+    undefined,
+    isInsecure ? { execute: [allowInsecureRequests] } : undefined
+  );
+  enableNonRepudiationChecks(config);
+  return config;
+}
+
+type LoadedSsoProviderConfig = {
+  provider: SsoProvider;
+  issuerUrl: string;
+  clientId: string;
+  clientSecret: string;
+};
+
+// Reads a real, DB-backed AuthenticationProvider row (closes the
+// "OAuth Provider Integration" gap) when one exists and is enabled -
+// otherwise falls back to the static in-memory ssoProviders entries, which
+// are always disabled placeholders with no real config to build a live
+// flow from. clientIdCiphertext is decrypted with the same generic
+// AES-256-GCM helper used for MFA secrets; clientSecretRef holds the
+// plaintext secret directly for this dev/test scope, mirroring how
+// demoPasswordByEmail stores plaintext credentials for mock-mode testing
+// elsewhere in this file - a real deployment would resolve this via a
+// real secret manager reference instead.
+async function loadSsoProviderConfig(providerId: string): Promise<LoadedSsoProviderConfig | undefined> {
+  const dbConfig = await getAuthenticationProviderConfig(providerId);
+  if (dbConfig && dbConfig.enabled && dbConfig.issuerUrl && dbConfig.clientIdCiphertext) {
+    return {
+      provider: {
+        id: dbConfig.providerKey,
+        name: dbConfig.name,
+        protocol: dbConfig.protocol as SsoProvider["protocol"],
+        enabled: dbConfig.enabled,
+        issuerUrl: dbConfig.issuerUrl,
+        tenantId: "",
+        redirectUri: dbConfig.redirectUri ?? "",
+        allowedDomains: (dbConfig.allowedDomains as string[] | null) ?? [],
+        attributeMappings: (dbConfig.attributeMappings as Record<string, string> | null) ?? {},
+        groupRoleMappings: (dbConfig.groupMappings as Record<string, string> | null) ?? {},
+        jitProvisioning: dbConfig.jitProvisioning,
+        localLoginEnabled: dbConfig.localLoginEnabled,
+        secretStorage: "database"
+      },
+      issuerUrl: dbConfig.issuerUrl,
+      clientId: decryptMfaSecret(dbConfig.clientIdCiphertext),
+      clientSecret: dbConfig.clientSecretRef ?? ""
+    };
   }
-  if (!provider.enabled) {
-    return { ok: false, message: "Provider is configured but disabled pending secrets and metadata approval." };
+  return undefined;
+}
+
+export async function testSsoProvider(providerId: string): Promise<{ ok: boolean; message: string }> {
+  const config = await loadSsoProviderConfig(providerId);
+  if (!config) {
+    const fallback = ssoProviders.find((item) => item.id === providerId);
+    if (!fallback) {
+      return { ok: false, message: "Provider not found." };
+    }
+    if (!fallback.enabled) {
+      return { ok: false, message: "Provider is configured but disabled pending secrets and metadata approval." };
+    }
+    return { ok: false, message: "Provider is enabled but has no real configuration to test." };
   }
-  return { ok: true, message: "Provider metadata is reachable." };
+  try {
+    await discoverProvider(config.issuerUrl, config.clientId, config.clientSecret);
+    return { ok: true, message: "Provider metadata is reachable." };
+  } catch (error) {
+    return { ok: false, message: `Discovery failed: ${(error as Error).message}` };
+  }
+}
+
+export class SsoProviderNotConfiguredError extends Error {}
+export class SsoStateInvalidError extends Error {}
+
+export async function buildSsoAuthorizationUrl(providerId: string, redirectUri: string): Promise<string> {
+  const config = await loadSsoProviderConfig(providerId);
+  if (!config) {
+    throw new SsoProviderNotConfiguredError(`No enabled SSO provider configuration for ${providerId}`);
+  }
+  const openidConfig = await discoverProvider(config.issuerUrl, config.clientId, config.clientSecret);
+  const state = randomState();
+  const nonce = randomNonce();
+  const codeVerifier = randomPKCECodeVerifier();
+  const codeChallenge = await calculatePKCECodeChallenge(codeVerifier);
+
+  oidcStateStore.set(state, {
+    providerId,
+    nonce,
+    codeVerifier,
+    redirectUri,
+    expiresAt: Date.now() + OIDC_STATE_TTL_MS
+  });
+
+  const url = buildAuthorizationUrl(openidConfig, {
+    redirect_uri: redirectUri,
+    scope: "openid email profile",
+    state,
+    nonce,
+    code_challenge: codeChallenge,
+    code_challenge_method: "S256"
+  });
+  return url.toString();
+}
+
+function roleForOidcGroups(provider: SsoProvider, groups: string[]): string {
+  for (const group of groups) {
+    const mapped = provider.groupRoleMappings[group];
+    if (mapped) {
+      return mapped;
+    }
+  }
+  return "read_only";
+}
+
+// Completes a real authorization-code + PKCE exchange, verifies the ID
+// token (signature/iss/aud/nonce/exp - enforced by openid-client itself),
+// and JIT-provisions or looks up the user from its claims via the
+// provider's real attributeMappings/groupMappings. Never issues a session
+// from an unverified token - authorizationCodeGrant throws on any mismatch.
+export async function completeSsoLogin(
+  providerId: string,
+  callbackUrl: URL,
+  ipAddress: string,
+  device: string
+): Promise<{ ok: true; session: AuthenticatedSession } | { ok: false; message: string }> {
+  const state = callbackUrl.searchParams.get("state");
+  if (!state) {
+    throw new SsoStateInvalidError("Missing state parameter.");
+  }
+  const pending = oidcStateStore.get(state);
+  // Single-use: delete immediately so a replayed callback with the same
+  // state can never succeed twice.
+  oidcStateStore.delete(state);
+  if (!pending || pending.providerId !== providerId) {
+    throw new SsoStateInvalidError("Unknown or already-used state parameter.");
+  }
+  if (pending.expiresAt < Date.now()) {
+    throw new SsoStateInvalidError("SSO login attempt has expired - sign in again.");
+  }
+
+  const config = await loadSsoProviderConfig(providerId);
+  if (!config) {
+    throw new SsoProviderNotConfiguredError(`No enabled SSO provider configuration for ${providerId}`);
+  }
+  const openidConfig = await discoverProvider(config.issuerUrl, config.clientId, config.clientSecret);
+
+  const tokenResponse = await authorizationCodeGrant(openidConfig, callbackUrl, {
+    expectedNonce: pending.nonce,
+    expectedState: state,
+    pkceCodeVerifier: pending.codeVerifier
+  });
+  const claims = tokenResponse.claims();
+  if (!claims?.email || typeof claims.email !== "string") {
+    return { ok: false, message: "ID token did not contain a usable email claim." };
+  }
+
+  const email = claims.email.toLowerCase();
+  const groups = Array.isArray(claims.groups) ? (claims.groups as string[]) : [];
+  let user = users.find((candidate) => candidate.email.toLowerCase() === email);
+
+  if (!user) {
+    if (!config.provider.jitProvisioning) {
+      return { ok: false, message: "No existing account for this identity, and just-in-time provisioning is disabled." };
+    }
+    const nowIso = new Date().toISOString();
+    user = {
+      id: `usr_sso_${randomBytes(8).toString("hex")}`,
+      employeeId: email,
+      hrmsId: email,
+      fullName: typeof claims.name === "string" ? claims.name : email,
+      email,
+      mobile: "",
+      organization: "IST Health",
+      facility: "",
+      department: "",
+      clinicalSpecialty: "",
+      jobTitle: "",
+      professionalCategory: "",
+      manager: "",
+      country: "",
+      preferredLanguage: "en",
+      timeZone: "Asia/Qatar",
+      authenticationMethod: config.provider.protocol === "oidc" ? "oidc" : "entra-id",
+      // SSO is itself the strong second factor - a JIT-provisioned account
+      // isn't additionally gated behind the separate local TOTP flow.
+      mfaStatus: "disabled",
+      accountStatus: "active",
+      roles: [roleForOidcGroups(config.provider, groups)],
+      responsibilities: [],
+      queues: [],
+      accessProfiles: [],
+      createdBy: `sso:${providerId}`,
+      createdAtIso: nowIso,
+      updatedBy: `sso:${providerId}`,
+      updatedAtIso: nowIso
+    };
+    users.push(user);
+  }
+
+  const session = toSession(user, config.provider.protocol === "oidc" ? "oidc" : "entra-id", false, undefined, true);
+  sessions.set(session.sessionId, session);
+  await persistUserSession({ session, ipAddress, device });
+  await recordAuditEvent({
+    id: randomUUID(),
+    timestampIso: new Date().toISOString(),
+    userId: user.id,
+    activeRole: session.activeRole,
+    organization: user.organization,
+    facility: user.facility,
+    department: user.department,
+    action: "LOGIN_SSO",
+    module: "Authentication",
+    resource: providerId,
+    ipAddress,
+    device,
+    success: true,
+    risk: "low"
+  });
+  return { ok: true, session };
 }
 
 export { SESSION_COOKIE };

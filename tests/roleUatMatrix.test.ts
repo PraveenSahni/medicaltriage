@@ -370,6 +370,9 @@ describe("Comprehensive role-based UAT matrix", () => {
       if (!result.ok) {
         throw new Error(`Unable to authenticate ${persona.label}: ${result.message}`);
       }
+      if ("mfaRequired" in result) {
+        throw new Error(`Unexpected MFA challenge authenticating ${persona.label}`);
+      }
 
       expect(result.session.activeRole).toBe(persona.roleCode);
       tokensByRole.set(persona.roleCode, `Bearer ${signSessionJwt(result.session)}`);
@@ -435,7 +438,7 @@ describe("Comprehensive role-based UAT matrix", () => {
     });
 
     expect(seniorNurseLogin.ok).toBe(true);
-    if (seniorNurseLogin.ok) {
+    if (seniorNurseLogin.ok && !("mfaRequired" in seniorNurseLogin)) {
       expect(seniorNurseLogin.session.activeRole).toBe("senior_triage_nurse");
     }
 

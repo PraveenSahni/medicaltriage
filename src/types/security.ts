@@ -33,6 +33,17 @@ export const SsoTestRequestSchema = z.object({
 });
 export type SsoTestRequest = z.infer<typeof SsoTestRequestSchema>;
 
+export const MfaEnrollConfirmRequestSchema = z.object({
+  code: z.string().length(6).regex(/^\d+$/, "Code must be 6 digits")
+});
+export type MfaEnrollConfirmRequest = z.infer<typeof MfaEnrollConfirmRequestSchema>;
+
+export const MfaVerifyRequestSchema = z.object({
+  challengeId: z.string().min(1),
+  code: z.string().length(6).regex(/^\d+$/, "Code must be 6 digits")
+});
+export type MfaVerifyRequest = z.infer<typeof MfaVerifyRequestSchema>;
+
 export const RevealRequestSchema = z.object({
   userId: z.string().min(1).max(80),
   resourceType: z.string().min(2).max(80),
