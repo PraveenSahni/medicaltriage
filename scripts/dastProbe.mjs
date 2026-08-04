@@ -102,6 +102,14 @@ async function main() {
   if (findings.length === 0) {
     console.log("No findings from this specific check set - not a guarantee of no vulnerabilities.");
   }
+
+  // Exits non-zero on any high/critical finding so a scheduled run's own
+  // Cloud Run Job execution failure (visible in Cloud Monitoring/Scheduler)
+  // is the alert signal, without needing a separate notification channel.
+  const hasHighOrCritical = findings.some((f) => f.severity === "high" || f.severity === "critical");
+  if (hasHighOrCritical) {
+    process.exitCode = 1;
+  }
 }
 
 main().catch((error) => {

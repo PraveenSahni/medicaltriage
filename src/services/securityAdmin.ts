@@ -1863,6 +1863,49 @@ export function listUsers(): SafeAdminUser[] {
   return users.map(maskUser);
 }
 
+export class UserNotFoundError extends Error {}
+
+/**
+ * Real account-status mutation (suspend/reactivate/deactivate) - closes
+ * part of the access-entitlement remediation gap (CSQ IS.18: "if users are
+ * found to have inappropriate entitlements, are all remediation actions
+ * recorded?"). Writes a real AuditEvent (via recordAuditEvent, which also
+ * persists to the database in DB-persistence mode) so a status change is
+ * itself an auditable action, not a silent mutation.
+ */
+export async function updateUserAccountStatus(
+  userId: string,
+  status: AccountStatus,
+  actor: { userId: string; reason: string }
+): Promise<SafeAdminUser> {
+  const user = users.find((candidate) => candidate.id === userId);
+  if (!user) {
+    throw new UserNotFoundError(`No user found with id ${userId}`);
+  }
+  const previousStatus = user.accountStatus;
+  user.accountStatus = status;
+
+  await recordAuditEvent({
+    id: `audit-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    timestampIso: new Date().toISOString(),
+    userId: actor.userId,
+    activeRole: "system_administrator",
+    organization: user.organization ?? "",
+    facility: "",
+    department: "",
+    action: "USER_ACCOUNT_STATUS_CHANGED",
+    module: "AccessGovernance",
+    resource: `UserAccount:${user.id}`,
+    purpose: actor.reason,
+    ipAddress: "",
+    device: "",
+    success: true,
+    risk: status === "suspended" || status === "deactivated" ? "medium" : "low"
+  });
+
+  return maskUser(user);
+}
+
 export function listControlCenterModules(): ControlCenterModule[] {
   return controlCenterModules.map((module) => ({ ...module }));
 }

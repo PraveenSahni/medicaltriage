@@ -159,7 +159,7 @@ resource "google_cloud_run_v2_service" "soc2" {
     }
 
     containers {
-      image = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:batch-20260804"
+      image = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:batch2-20260804"
 
       env {
         name  = "NODE_ENV"
@@ -493,5 +493,106 @@ resource "google_cloud_scheduler_job" "restore_drill_quarterly_reminder" {
   pubsub_target {
     topic_name = google_pubsub_topic.restore_drill_reminders.id
     data       = base64encode("{\"reminder\":\"Quarterly Cloud SQL PITR restore drill is due. See docs/restore-drill-2026-08-04.md for the procedure. Risk register R-06.\"}")
+  }
+}
+
+# --- Weekly DAST probe + monthly SLI/SLO report (NFR-002/AI-002, NFR-189) ---
+resource "google_cloud_run_v2_job" "dast_probe" {
+  name     = "dast-probe-soc2"
+  location = "me-central1"
+
+  template {
+    template {
+      service_account = "1096520215793-compute@developer.gserviceaccount.com"
+      max_retries     = 0
+      timeout         = "180s"
+
+      containers {
+        image   = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:batch2-20260804"
+        command = ["node"]
+        args    = ["scripts/dastProbe.mjs", "https://triagedsoc2.irisstar.tech"]
+      }
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [client, client_version]
+  }
+}
+
+resource "google_cloud_run_v2_job_iam_member" "dast_probe_invoker" {
+  name     = google_cloud_run_v2_job.dast_probe.name
+  location = "me-central1"
+  role     = "roles/run.invoker"
+  member   = "serviceAccount:1096520215793-compute@developer.gserviceaccount.com"
+}
+
+resource "google_cloud_scheduler_job" "dast_probe_trigger" {
+  name        = "dast-probe-soc2-trigger"
+  region      = "me-central1"
+  schedule    = "0 6 * * 1"
+  time_zone   = "Etc/UTC"
+  description = "Weekly lightweight DAST-style probe against soc2 (NFR-002/AI-002). Job failure (non-zero exit) is the alert signal for any high/critical finding."
+
+  retry_config {
+    retry_count = 0
+  }
+
+  http_target {
+    uri         = "https://me-central1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/triage-502706/jobs/${google_cloud_run_v2_job.dast_probe.name}:run"
+    http_method = "POST"
+    oauth_token {
+      service_account_email = "1096520215793-compute@developer.gserviceaccount.com"
+    }
+  }
+}
+
+resource "google_cloud_run_v2_job" "generate_monthly_sli_report" {
+  name     = "generate-monthly-sli-report-soc2"
+  location = "me-central1"
+
+  template {
+    template {
+      service_account = "1096520215793-compute@developer.gserviceaccount.com"
+      max_retries     = 0
+      timeout         = "180s"
+
+      containers {
+        image   = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:batch2-20260804"
+        command = ["node"]
+        args    = ["scripts/generateMonthlySliReport.mjs", "triage-502706"]
+      }
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [client, client_version]
+  }
+}
+
+resource "google_cloud_run_v2_job_iam_member" "generate_monthly_sli_report_invoker" {
+  name     = google_cloud_run_v2_job.generate_monthly_sli_report.name
+  location = "me-central1"
+  role     = "roles/run.invoker"
+  member   = "serviceAccount:1096520215793-compute@developer.gserviceaccount.com"
+}
+
+resource "google_cloud_scheduler_job" "monthly_sli_report_trigger" {
+  name        = "monthly-sli-report-soc2-trigger"
+  region      = "me-central1"
+  schedule    = "0 7 1 * *"
+  time_zone   = "Etc/UTC"
+  description = "Monthly SLI/SLO report generation (NFR-189). Produces report content in Cloud Logging; delivery to QR is a separate, not-yet-automated process step."
+
+  retry_config {
+    retry_count = 0
+  }
+
+  http_target {
+    uri         = "https://me-central1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/triage-502706/jobs/${google_cloud_run_v2_job.generate_monthly_sli_report.name}:run"
+    http_method = "POST"
+    oauth_token {
+      service_account_email = "1096520215793-compute@developer.gserviceaccount.com"
+    }
   }
 }

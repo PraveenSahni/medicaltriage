@@ -47,18 +47,29 @@ export function createProtocolsRouter(): Router {
     });
   });
 
-  router.get("/", (_req, res) => {
+  router.get("/", (req, res) => {
+    const all = listClinicalProtocols().map((protocol) => ({
+      id: protocol.id,
+      titleEn: protocol.titleEn,
+      clinicalDefinitionEn: protocol.clinicalDefinitionEn,
+      ageMin: protocol.ageMin,
+      ageMax: protocol.ageMax,
+      mode: protocol.mode,
+      questionCount: protocol.questions.length
+    }));
+
+    // Opt-in only (closes the remainder of R-03's pagination recommendation,
+    // docs/load-test-baseline-2026-08-04.md) - omitted, response is the full
+    // unpaginated list exactly as before.
+    const limit = Number(req.query.limit);
+    const offset = Number(req.query.offset) || 0;
+    const hasLimit = Number.isInteger(limit) && limit > 0;
+    const protocols = hasLimit ? all.slice(offset, offset + limit) : all;
+
     return res.json({
       release: getCurrentClinicalContentPackage().release,
-      protocols: listClinicalProtocols().map((protocol) => ({
-        id: protocol.id,
-        titleEn: protocol.titleEn,
-        clinicalDefinitionEn: protocol.clinicalDefinitionEn,
-        ageMin: protocol.ageMin,
-        ageMax: protocol.ageMax,
-        mode: protocol.mode,
-        questionCount: protocol.questions.length
-      }))
+      protocols,
+      totalCount: all.length
     });
   });
 

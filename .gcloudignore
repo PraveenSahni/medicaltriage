@@ -55,6 +55,8 @@ python/*.sqlite3-wal
 /scripts/*
 !/scripts/runPython.mjs
 !/scripts/accessEntitlementReview.mjs
+!/scripts/dastProbe.mjs
+!/scripts/generateMonthlySliReport.mjs
 /tests/
 /docker-compose.yml
 /jest.config.cjs

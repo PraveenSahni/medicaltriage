@@ -48,6 +48,8 @@ COPY --chown=node:node docs/protocol-review/data ./docs/protocol-review/data
 # image (accessEntitlementReview.mjs - NFR-036/CSQ IS.17-19) - plain Node
 # scripts with no build step, included as source rather than compiled.
 COPY --chown=node:node scripts/accessEntitlementReview.mjs ./scripts/accessEntitlementReview.mjs
+COPY --chown=node:node scripts/dastProbe.mjs ./scripts/dastProbe.mjs
+COPY --chown=node:node scripts/generateMonthlySliReport.mjs ./scripts/generateMonthlySliReport.mjs
 
 EXPOSE 8080
 

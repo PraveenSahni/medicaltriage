@@ -19,9 +19,17 @@ import {
   listSsoProviders,
   listSupportQueueItems,
   listUsers,
-  recordReveal
+  recordReveal,
+  updateUserAccountStatus,
+  UserNotFoundError
 } from "../services/securityAdmin.js";
-import { RevealRequestSchema } from "../types/security.js";
+import { AccountStatusSchema, RevealRequestSchema } from "../types/security.js";
+import { z } from "zod";
+
+const UpdateUserStatusRequestSchema = z.object({
+  status: AccountStatusSchema,
+  reason: z.string().min(1).max(500)
+});
 
 const controlCenterPermissions = [
   "admin.users.manage",
@@ -56,6 +64,29 @@ export function createAdminRouter(): Router {
 
   router.get("/users", requirePermission("admin.users.manage"), (_req, res) => {
     return res.json({ users: listUsers() });
+  });
+
+  // Real remediation action for access-entitlement review findings (CSQ
+  // IS.18: "are all remediation actions recorded?") - suspends/reactivates
+  // an account, writing a real AuditEvent for the change itself.
+  router.patch("/users/:id/status", requirePermission("admin.users.manage"), async (req: AuthorizedRequest, res, next) => {
+    try {
+      const parsed = UpdateUserStatusRequestSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid status update", details: parsed.error.flatten() });
+      }
+      const actorUserId = req.securitySession?.user.id ?? "unknown";
+      const user = await updateUserAccountStatus(req.params.id, parsed.data.status, {
+        userId: actorUserId,
+        reason: parsed.data.reason
+      });
+      return res.json({ user });
+    } catch (error) {
+      if (error instanceof UserNotFoundError) {
+        return res.status(404).json({ error: error.message });
+      }
+      return next(error);
+    }
   });
 
   router.get("/roles", requirePermission("admin.roles.manage"), (_req, res) => {
