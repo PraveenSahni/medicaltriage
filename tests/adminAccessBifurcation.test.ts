@@ -43,17 +43,47 @@ describe("Role-based Control Center bifurcation", () => {
     await privacyOfficer.get("/api/v1/admin/reveal-directory").expect(200);
     await privacyOfficer.get("/api/v1/admin/users").expect(403);
 
-    const reveal = await privacyOfficer
-      .post("/api/v1/admin/reveal")
+    // Real two-step approval-gated reveal: request -> a DISTINCT second
+    // account approves -> the original requester fetches the value once.
+    const requested = await privacyOfficer
+      .post("/api/v1/admin/reveal/request")
       .send({
-        userId: "usr_privacy_10001",
         resourceType: "ApplicationUser",
         resourceId: "usr_nurse_10001",
         field: "email",
         purpose: "Privacy investigation for named-user access review"
       })
-      .expect(200);
-    expect(reveal.body).toMatchObject({ decision: "approved", value: "layla@irisstar.tech" });
+      .expect(202);
+    expect(requested.body).toMatchObject({ status: "pending" });
+    const revealId = requested.body.id;
+
+    const complianceAuditor = await agentFor("audit@irisstar.tech", "compliance_auditor");
+    await complianceAuditor.post(`/api/v1/admin/reveal/${revealId}/decision`).send({ decision: "approved" }).expect(200);
+
+    const fetched = await privacyOfficer.get(`/api/v1/admin/reveal/${revealId}/value`).expect(200);
+    expect(fetched.body.value).toBe("layla@irisstar.tech");
+
+    // Single-use: fetching again is rejected.
+    await privacyOfficer.get(`/api/v1/admin/reveal/${revealId}/value`).expect(409);
+  });
+
+  it("blocks a Privacy Officer from approving their own reveal request", async () => {
+    const privacyOfficer = await agentFor("privacy@irisstar.tech", "privacy_officer");
+
+    const requested = await privacyOfficer
+      .post("/api/v1/admin/reveal/request")
+      .send({
+        resourceType: "ApplicationUser",
+        resourceId: "usr_nurse_10001",
+        field: "email",
+        purpose: "Self-approval attempt"
+      })
+      .expect(202);
+
+    await privacyOfficer
+      .post(`/api/v1/admin/reveal/${requested.body.id}/decision`)
+      .send({ decision: "approved" })
+      .expect(409);
   });
 
   it("allows Integration Administrator connector status without user administration", async () => {

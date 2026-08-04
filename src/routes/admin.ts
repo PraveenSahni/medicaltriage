@@ -6,6 +6,9 @@ import { shouldUseDatabasePersistence } from "../config/runtime.js";
 import { listPersistedAuditEvents } from "../services/persistence.js";
 import { rateLimit } from "../middleware/rateLimit.js";
 import {
+  decideReveal,
+  fetchApprovedRevealValue,
+  FieldNotRevealableError,
   getSecurityDashboard,
   grantPermissionToRole,
   listAuditEvents,
@@ -13,6 +16,7 @@ import {
   listEncryptionPolicies,
   listGovernanceWorkItems,
   listIntegrationConnectors,
+  listPendingRevealRequests,
   listPermissions,
   listProtocolLibraryItems,
   listReportCatalogItems,
@@ -23,9 +27,15 @@ import {
   listSupportQueueItems,
   listUsers,
   PermissionNotFoundError,
-  recordReveal,
+  requestReveal,
+  RevealAlreadyFulfilledError,
+  RevealExpiredError,
+  RevealForbiddenError,
+  RevealNotApprovedError,
+  RevealRequestNotFoundError,
   revokePermissionFromRole,
   RoleNotFoundError,
+  SelfApprovalError,
   SelfPermissionRevocationError,
   updateUserAccountStatus,
   UserNotFoundError,
@@ -277,24 +287,89 @@ export function createAdminRouter(): Router {
     }
   );
 
-  router.post("/reveal", requirePermission("privacy.reveal.request"), async (req: AuthorizedRequest, res) => {
-    const parsed = RevealRequestSchema.safeParse(req.body);
-    if (!parsed.success) {
-      return res.status(400).json({ error: "Invalid reveal payload", details: parsed.error.flatten() });
+  // Real two-step approval-gated reveal (closes R-04) - a request is never
+  // fulfilled in the same call that created it; a distinct second account
+  // must separately approve it before the original requester can fetch the
+  // value, once, within a short TTL.
+  router.post("/reveal/request", requirePermission("privacy.reveal.request"), async (req: AuthorizedRequest, res, next) => {
+    try {
+      const parsed = RevealRequestSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid reveal payload", details: parsed.error.flatten() });
+      }
+      if (!req.securitySession) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+      const result = await requestReveal(req.securitySession.user.id, parsed.data);
+      return res.status(202).json(result);
+    } catch (error) {
+      if (error instanceof FieldNotRevealableError) {
+        return res.status(400).json({ error: error.message });
+      }
+      return next(error);
     }
-    if (!req.securitySession) {
-      return res.status(401).json({ error: "Authentication required" });
+  });
+
+  router.get("/reveal/pending", requirePermission("privacy.reveal.approve"), (_req, res) => {
+    return res.json({ requests: listPendingRevealRequests() });
+  });
+
+  router.post(
+    "/reveal/:id/decision",
+    requirePermission("privacy.reveal.approve"),
+    async (req: AuthorizedRequest, res, next) => {
+      try {
+        const parsed = z.object({ decision: z.enum(["approved", "denied"]), comments: z.string().max(500).optional() }).safeParse(
+          req.body
+        );
+        if (!parsed.success) {
+          return res.status(400).json({ error: "Invalid reveal decision", details: parsed.error.flatten() });
+        }
+        if (!req.securitySession) {
+          return res.status(401).json({ error: "Authentication required" });
+        }
+        const result = await decideReveal(
+          req.params.id,
+          req.securitySession.user.id,
+          parsed.data.decision,
+          parsed.data.comments
+        );
+        return res.json(result);
+      } catch (error) {
+        if (error instanceof RevealRequestNotFoundError) {
+          return res.status(404).json({ error: error.message });
+        }
+        if (error instanceof SelfApprovalError) {
+          return res.status(409).json({ error: error.message });
+        }
+        return next(error);
+      }
     }
-    const result = await recordReveal(parsed.data, req.securitySession);
-    if (result.decision === "denied") {
-      return res.status(403).json({ decision: result.decision, audit: result.audit });
+  );
+
+  router.get("/reveal/:id/value", requirePermission("privacy.reveal.request"), async (req: AuthorizedRequest, res, next) => {
+    try {
+      if (!req.securitySession) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+      const value = await fetchApprovedRevealValue(req.params.id, req.securitySession.user.id);
+      return res.json({ value, remaskAfterSeconds: 0 });
+    } catch (error) {
+      if (error instanceof RevealRequestNotFoundError) {
+        return res.status(404).json({ error: error.message });
+      }
+      if (error instanceof RevealForbiddenError) {
+        return res.status(403).json({ error: error.message });
+      }
+      if (
+        error instanceof RevealNotApprovedError ||
+        error instanceof RevealAlreadyFulfilledError ||
+        error instanceof RevealExpiredError
+      ) {
+        return res.status(409).json({ error: error.message });
+      }
+      return next(error);
     }
-    return res.json({
-      decision: result.decision,
-      value: result.value,
-      remaskAfterSeconds: 60,
-      audit: result.audit
-    });
   });
 
   return router;

@@ -45,7 +45,6 @@ export const MfaVerifyRequestSchema = z.object({
 export type MfaVerifyRequest = z.infer<typeof MfaVerifyRequestSchema>;
 
 export const RevealRequestSchema = z.object({
-  userId: z.string().min(1).max(80),
   resourceType: z.string().min(2).max(80),
   resourceId: z.string().min(1).max(120),
   field: z.string().min(1).max(80),

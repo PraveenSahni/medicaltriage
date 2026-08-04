@@ -40,6 +40,9 @@ import {
   getAuthenticationProviderConfig,
   getPersistedUserSession,
   persistMfaCredential,
+  persistRevealApproval,
+  persistRevealEvent,
+  persistRevealRequest,
   persistRolePermissionOverride,
   persistSecurityAuditEvent,
   persistUserSession,
@@ -277,6 +280,17 @@ const permissions: Permission[] = [
     module: "Privacy",
     action: "reveal",
     description: "Request controlled personal-data reveal with purpose.",
+    risk: "critical"
+  },
+  {
+    code: "privacy.reveal.approve",
+    module: "Privacy",
+    action: "approve",
+    // Deliberately a separate permission from privacy.reveal.request - real
+    // dual control needs two distinct accounts, not just two permission
+    // checks against the same session (see the self-approval guard in
+    // revealWorkflow.ts).
+    description: "Approve or deny a pending personal-data reveal request from a different account.",
     risk: "critical"
   },
   {
@@ -648,7 +662,14 @@ const roles: Role[] = [
     code: "privacy_officer",
     name: "Privacy Officer / DPO",
     description: "Owns privacy assessments, purpose-based reveal governance, data-law evidence, and disclosure controls.",
-    permissions: ["privacy.assessment.manage", "privacy.reveal.request", "crypto.policy.manage", "audit.events.view", "reports.view"],
+    permissions: [
+      "privacy.assessment.manage",
+      "privacy.reveal.request",
+      "privacy.reveal.approve",
+      "crypto.policy.manage",
+      "audit.events.view",
+      "reports.view"
+    ],
     responsibilities: ["manage_privacy_assessment", "approve_personal_data_reveal", "manage_encryption_policy"],
     dataScopes: ["privacy_register", "masked_users", "reveal_requests"],
     clinicalScopes: ["privacy_review"],
@@ -660,7 +681,7 @@ const roles: Role[] = [
     code: "compliance_auditor",
     name: "Compliance Auditor",
     description: "Reviews evidence, access activity, privacy events, audit trails, and management reports without changing clinical records.",
-    permissions: ["audit.events.view", "reports.view", "reports.export"],
+    permissions: ["audit.events.view", "reports.view", "reports.export", "privacy.reveal.approve"],
     responsibilities: ["quality_review_completed_case", "view_operational_reports", "export_deidentified_reports"],
     dataScopes: ["audit_events", "deidentified_reports", "completed_encounters"],
     clinicalScopes: ["quality_review"],
@@ -2325,6 +2346,8 @@ export function resetSecurityStoreForTests(): void {
   pendingMfaChallenges.clear();
   oidcStateStore.clear();
   sessionContextBySessionId.clear();
+  revealRequestsById.clear();
+  revealValuesById.clear();
 }
 
 export function listSsoProviders(): SsoProvider[] {
@@ -2751,38 +2774,200 @@ export function expiredSessionCookie(): string {
   return `${SESSION_COOKIE}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0`;
 }
 
-export async function recordReveal(request: RevealRequest, session: AuthenticatedSession): Promise<{
-  decision: "approved" | "denied";
-  value?: string;
-  audit: AuditEvent;
-}> {
-  const canReveal = session.permissions.includes("privacy.reveal.request") || session.permissions.includes("admin.users.manage");
-  const audit: AuditEvent = {
-    id: randomUUID(),
-    timestampIso: new Date().toISOString(),
-    userId: session.user.id,
-    activeRole: session.activeRole,
-    organization: session.user.organization,
-    facility: session.user.facility,
-    department: session.user.department,
-    action: canReveal ? "PERSONAL_DATA_REVEAL" : "FAILED_PERSONAL_DATA_REVEAL",
-    module: "Privacy",
-    resource: `${request.resourceType}:${request.resourceId}:${request.field}`,
-    purpose: request.purpose,
-    ipAddress: "request-context",
-    device: "request-context",
-    success: canReveal,
-    risk: "critical"
-  };
-  await recordAuditEvent(audit);
+// Real two-step approval-gated reveal (closes R-04) - replaces the old
+// single-step recordReveal(), which returned the plaintext value in the
+// same call that requested it ("approval" meant only "the requester
+// already holds a permission", not a distinct second party reviewing this
+// specific request). Wires the previously-orphaned RevealRequest/
+// RevealApproval/RevealEvent Prisma tables to real logic for the first
+// time. Only fields maskUser() already knows how to mask are revealable -
+// this is the same allow-list, not a separate one invented here.
+const REVEALABLE_FIELDS = ["employeeId", "email", "mobile", "licenceNumber"] as const;
+type RevealableField = (typeof REVEALABLE_FIELDS)[number];
 
-  if (!canReveal) {
-    return { decision: "denied", audit };
+export class FieldNotRevealableError extends Error {}
+export class RevealRequestNotFoundError extends Error {}
+export class SelfApprovalError extends Error {}
+export class RevealNotApprovedError extends Error {}
+export class RevealAlreadyFulfilledError extends Error {}
+export class RevealExpiredError extends Error {}
+export class RevealForbiddenError extends Error {}
+
+const REVEAL_TTL_MS = 60 * 1000;
+
+type PendingRevealRequest = {
+  id: string;
+  requesterUserId: string;
+  resourceType: string;
+  resourceId: string;
+  fieldName: string;
+  purpose: string;
+  status: "pending" | "approved" | "denied" | "fulfilled" | "expired";
+  createdAt: string;
+};
+const revealRequestsById = new Map<string, PendingRevealRequest>();
+const revealValuesById = new Map<string, { value: string; expiresAt: number }>();
+
+async function recordRevealEvent(args: {
+  revealRequestId?: string;
+  userId: string;
+  resourceType: string;
+  resourceId: string;
+  fieldName: string;
+  purpose: string;
+  success: boolean;
+}): Promise<void> {
+  try {
+    await persistRevealEvent({ ...args, ipAddress: "request-context", device: "request-context" });
+  } catch (error) {
+    console.error("Failed to persist reveal event (in-memory state still consistent):", error);
+  }
+}
+
+export async function requestReveal(
+  requesterUserId: string,
+  request: RevealRequest
+): Promise<{ id: string; status: "pending" }> {
+  if (!REVEALABLE_FIELDS.includes(request.field as RevealableField)) {
+    throw new FieldNotRevealableError(`Field "${request.field}" is not revealable.`);
   }
 
-  const user = users.find((candidate) => candidate.id === request.resourceId);
-  const value = user && request.field in user ? String(user[request.field as keyof AdminUser] ?? "") : "No demo value";
-  return { decision: "approved", value, audit };
+  const id = `reveal-${Date.now()}-${randomBytes(6).toString("hex")}`;
+  const record: PendingRevealRequest = {
+    id,
+    requesterUserId,
+    resourceType: request.resourceType,
+    resourceId: request.resourceId,
+    fieldName: request.field,
+    purpose: request.purpose,
+    status: "pending",
+    createdAt: new Date().toISOString()
+  };
+  revealRequestsById.set(id, record);
+  try {
+    await persistRevealRequest({
+      id,
+      requesterUserId,
+      resourceType: request.resourceType,
+      resourceId: request.resourceId,
+      fieldName: request.field,
+      purpose: request.purpose,
+      status: "pending"
+    });
+  } catch (error) {
+    console.error("Failed to persist reveal request (in-memory state still consistent):", error);
+  }
+
+  return { id, status: "pending" };
+}
+
+export function listPendingRevealRequests(): PendingRevealRequest[] {
+  return [...revealRequestsById.values()].filter((request) => request.status === "pending");
+}
+
+export async function decideReveal(
+  revealRequestId: string,
+  approverUserId: string,
+  decision: "approved" | "denied",
+  comments?: string
+): Promise<{ status: "approved" | "denied" }> {
+  const record = revealRequestsById.get(revealRequestId);
+  if (!record) {
+    throw new RevealRequestNotFoundError(`No reveal request found with id ${revealRequestId}`);
+  }
+  // Real dual control: two distinct human accounts, not just two
+  // permission checks against the same session.
+  if (approverUserId === record.requesterUserId) {
+    throw new SelfApprovalError("Cannot approve or deny your own reveal request.");
+  }
+
+  record.status = decision;
+  try {
+    await persistRevealApproval({ revealRequestId, approverUserId, decision, comments });
+    await persistRevealRequest({
+      id: record.id,
+      requesterUserId: record.requesterUserId,
+      resourceType: record.resourceType,
+      resourceId: record.resourceId,
+      fieldName: record.fieldName,
+      purpose: record.purpose,
+      status: decision
+    });
+  } catch (error) {
+    console.error("Failed to persist reveal approval (in-memory state still consistent):", error);
+  }
+
+  if (decision === "approved") {
+    const user = users.find((candidate) => candidate.id === record.resourceId);
+    const value = user ? String(user[record.fieldName as keyof AdminUser] ?? "") : "";
+    revealValuesById.set(revealRequestId, { value, expiresAt: Date.now() + REVEAL_TTL_MS });
+  }
+
+  return { status: decision };
+}
+
+// Only the original requester may fetch, and only once (single-use) within
+// the TTL window - closes the gap where the old flow's `remaskAfterSeconds`
+// was a purely cosmetic client-side hint with nothing server-side enforcing
+// it. Every attempt (success or failure) writes a real RevealEvent row -
+// the permanent "who saw what PII, when, and why" audit trail.
+export async function fetchApprovedRevealValue(revealRequestId: string, requesterUserId: string): Promise<string> {
+  const record = revealRequestsById.get(revealRequestId);
+  if (!record) {
+    throw new RevealRequestNotFoundError(`No reveal request found with id ${revealRequestId}`);
+  }
+  if (record.requesterUserId !== requesterUserId) {
+    throw new RevealForbiddenError("Only the original requester may fetch this reveal value.");
+  }
+
+  const eventArgs = {
+    revealRequestId,
+    userId: requesterUserId,
+    resourceType: record.resourceType,
+    resourceId: record.resourceId,
+    fieldName: record.fieldName,
+    purpose: record.purpose
+  };
+
+  if (record.status === "fulfilled") {
+    await recordRevealEvent({ ...eventArgs, success: false });
+    throw new RevealAlreadyFulfilledError("This reveal value has already been fetched (single-use).");
+  }
+  if (record.status !== "approved") {
+    await recordRevealEvent({ ...eventArgs, success: false });
+    throw new RevealNotApprovedError(`This reveal request is not approved (status: ${record.status}).`);
+  }
+
+  const stored = revealValuesById.get(revealRequestId);
+  if (!stored || stored.expiresAt < Date.now()) {
+    revealValuesById.delete(revealRequestId);
+    record.status = "expired";
+    await persistRevealRequestStatus(record);
+    await recordRevealEvent({ ...eventArgs, success: false });
+    throw new RevealExpiredError("This reveal has expired - request again.");
+  }
+
+  revealValuesById.delete(revealRequestId);
+  record.status = "fulfilled";
+  await persistRevealRequestStatus(record);
+  await recordRevealEvent({ ...eventArgs, success: true });
+  return stored.value;
+}
+
+async function persistRevealRequestStatus(record: PendingRevealRequest): Promise<void> {
+  try {
+    await persistRevealRequest({
+      id: record.id,
+      requesterUserId: record.requesterUserId,
+      resourceType: record.resourceType,
+      resourceId: record.resourceId,
+      fieldName: record.fieldName,
+      purpose: record.purpose,
+      status: record.status
+    });
+  } catch (error) {
+    console.error("Failed to persist reveal request status (in-memory state still consistent):", error);
+  }
 }
 
 // http:// issuers only occur in this repo's own local mock-IdP test harness

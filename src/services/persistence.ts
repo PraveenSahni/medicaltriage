@@ -181,6 +181,98 @@ export async function persistMfaCredential(snapshot: MfaCredentialSnapshot): Pro
   return { persisted: true, recordId: upserted.id };
 }
 
+// Closes R-04 - real, previously-orphaned RevealRequest/RevealApproval/
+// RevealEvent tables now genuinely record the two-step approval-gated
+// reveal workflow in src/services/revealWorkflow.ts.
+export type RevealRequestSnapshot = {
+  id: string;
+  requesterUserId: string;
+  resourceType: string;
+  resourceId: string;
+  fieldName: string;
+  purpose: string;
+  status: string;
+  expiresAt?: string;
+};
+
+export async function persistRevealRequest(snapshot: RevealRequestSnapshot): Promise<PersistenceResult> {
+  if (!shouldUseDatabasePersistence()) {
+    return { persisted: false, reason: "mock-mode" };
+  }
+  const upserted = await prisma.revealRequest.upsert({
+    where: { id: snapshot.id },
+    create: {
+      id: snapshot.id,
+      requesterUserId: snapshot.requesterUserId,
+      resourceType: snapshot.resourceType,
+      resourceId: snapshot.resourceId,
+      fieldName: snapshot.fieldName,
+      purpose: snapshot.purpose,
+      status: snapshot.status,
+      expiresAt: snapshot.expiresAt ? new Date(snapshot.expiresAt) : undefined
+    },
+    update: {
+      status: snapshot.status,
+      expiresAt: snapshot.expiresAt ? new Date(snapshot.expiresAt) : undefined
+    }
+  });
+  return { persisted: true, recordId: upserted.id };
+}
+
+export type RevealApprovalSnapshot = {
+  revealRequestId: string;
+  approverUserId: string;
+  decision: string;
+  comments?: string;
+};
+
+export async function persistRevealApproval(snapshot: RevealApprovalSnapshot): Promise<PersistenceResult> {
+  if (!shouldUseDatabasePersistence()) {
+    return { persisted: false, reason: "mock-mode" };
+  }
+  const created = await prisma.revealApproval.create({
+    data: {
+      revealRequestId: snapshot.revealRequestId,
+      approverUserId: snapshot.approverUserId,
+      decision: snapshot.decision,
+      comments: snapshot.comments
+    }
+  });
+  return { persisted: true, recordId: created.id };
+}
+
+export type RevealEventSnapshot = {
+  revealRequestId?: string;
+  userId: string;
+  resourceType: string;
+  resourceId: string;
+  fieldName: string;
+  purpose: string;
+  success: boolean;
+  ipAddress?: string;
+  device?: string;
+};
+
+export async function persistRevealEvent(snapshot: RevealEventSnapshot): Promise<PersistenceResult> {
+  if (!shouldUseDatabasePersistence()) {
+    return { persisted: false, reason: "mock-mode" };
+  }
+  const created = await prisma.revealEvent.create({
+    data: {
+      revealRequestId: snapshot.revealRequestId,
+      userId: snapshot.userId,
+      resourceType: snapshot.resourceType,
+      resourceId: snapshot.resourceId,
+      fieldName: snapshot.fieldName,
+      purpose: snapshot.purpose,
+      success: snapshot.success,
+      ipAddress: snapshot.ipAddress,
+      device: snapshot.device
+    }
+  });
+  return { persisted: true, recordId: created.id };
+}
+
 // Reads the real, previously-orphaned AuthenticationProvider row for a real
 // OIDC login/callback flow (closes the "OAuth Provider Integration" gap) -
 // null in mock mode or when no row exists, so callers fall back to the
