@@ -34,7 +34,7 @@ roughly by how many rows they'd move to Yes/Partial-to-better.
 | **Formal certification** (SOC 2 Type II / ISO 27001) | ~8 rows | Large, external - requires an accredited auditor | Readiness work done (this engagement); certification itself not started (R-05) |
 | **Masking/Reveal/DLP** (field-level PII masking, approval-gated reveal) | ~4 rows | Large - UI + MFA + approval workflow (deliberately deferred, R-04) | Not started |
 | **Independent penetration test** | ~4 rows | External - needs a commissioned third-party pentest | Not started |
-| **SIEM integration** | ~3 rows | Medium - log-streaming connector to an external SIEM | Not started |
+| **SIEM integration** | ~3 rows | Medium - log-streaming connector to an external SIEM | ⚠️ Partial (2026-08-04) - real Cloud Logging → Pub/Sub export path built and verified live; no actual SIEM subscribed yet (needs QR's real ingestion endpoint). See `docs/siem-integration-readiness.md` |
 | **CMEK/BYOK** (customer-managed encryption keys) | ~3 rows | Blocked - Cloud SQL/Secret Manager only support CMEK at instance creation; would require a disruptive migration | Investigated, deliberately deferred (accepted risk) |
 | **WAF** (Cloud Armor or equivalent) | ~2 rows | Small-medium - a real, addable GCP feature | Not started |
 | **PAM** (Privileged Access Management with JIT) | ~1 row | Large - a dedicated PAM tool | Not started |
