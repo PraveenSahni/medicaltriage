@@ -13,6 +13,7 @@ import {
 } from "./config/runtime.js";
 import { requireAuthenticatedSession } from "./middleware/auth.js";
 import { corsRejectionHandler, globalErrorHandler } from "./middleware/error.js";
+import { ipAllowlist } from "./middleware/ipAllowlist.js";
 import { rateLimit } from "./middleware/rateLimit.js";
 import { createAdminRouter } from "./routes/admin.js";
 import { createApprovalRouter } from "./routes/approvalRouter.js";
@@ -123,6 +124,9 @@ export function createApp() {
   );
   app.use(cors(corsOptions));
   app.use(corsRejectionHandler);
+  // Optional IP allowlisting (NFR-027) - a no-op unless IP_ALLOWLIST is set,
+  // so it never affects an existing deployment that hasn't opted in.
+  app.use(ipAllowlist(process.env.IP_ALLOWLIST));
   app.use(express.json({ limit: "1mb" }));
   app.use(express.urlencoded({ extended: false, limit: "1mb" }));
   app.use((_req, res, next) => {
