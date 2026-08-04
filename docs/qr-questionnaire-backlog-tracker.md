@@ -29,7 +29,7 @@ roughly by how many rows they'd move to Yes/Partial-to-better.
 
 | Initiative | Rows it touches | Scope | Status |
 |---|---|---|---|
-| **SSO/MFA** (enterprise IdP: AD/OIDC/SAML + MFA) | ~9 rows (NFR-016/018/020/022/025/028, AI/CSQ auth rows) | Large - real IdP integration, session model changes | Not started (R-02) |
+| **SSO/MFA** (enterprise IdP: AD/OIDC/SAML + MFA) | ~9 rows (NFR-016/018/020/022/025/028, AI/CSQ auth rows) | Large - real IdP integration, session model changes | ⚠️ Partial (2026-08-04) - real TOTP MFA (Yes on AR.06) and real OIDC SSO built and verified against a local mock IdP (Partial on NFR-016/022/033, AR.02/AR.03/AR.13). Target IdP confirmed as Microsoft Entra ID (matches the existing `entra-qa` config scaffold) - not yet connected to a real tenant (no credentials in this environment) or QR's Thales 2FA solution. SAML not implemented. |
 | **SAST tooling** (static code security scanning) | ~9 rows | Medium - add a SAST tool (e.g. Semgrep/CodeQL) to CI | ✅ Done (2026-08-04) - CodeQL via GitHub Actions, verified green |
 | **Formal certification** (SOC 2 Type II / ISO 27001) | ~8 rows | Large, external - requires an accredited auditor | Readiness work done (this engagement); certification itself not started (R-05) |
 | **Masking/Reveal/DLP** (field-level PII masking, approval-gated reveal) | ~4 rows | Large - UI + MFA + approval workflow (deliberately deferred, R-04) | Not started |
