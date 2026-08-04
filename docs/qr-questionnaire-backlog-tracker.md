@@ -38,7 +38,7 @@ roughly by how many rows they'd move to Yes/Partial-to-better.
 | **CMEK/BYOK** (customer-managed encryption keys) | ~3 rows | Blocked - Cloud SQL/Secret Manager only support CMEK at instance creation; would require a disruptive migration | Investigated, deliberately deferred (accepted risk) |
 | **WAF** (Cloud Armor or equivalent) | ~2 rows | Small-medium - a real, addable GCP feature | Not started |
 | **PAM** (Privileged Access Management with JIT) | ~1 row | Large - a dedicated PAM tool | Not started |
-| **Arabic/RTL i18n** | ~1 row | Large - full i18n framework + translated content | Not started |
+| **Arabic/RTL i18n** | ~1 row | Large - full i18n framework + translated content | ⚠️ Partial (2026-08-04) - Phase 1 foundation shipped: LocaleContext, RTL stylesheet, login language toggle, and per-section dir handling for the existing bilingual SBAR note. Full UI-string translation across ~51 components remains a separate future phase. |
 
 ## 2. Not Applicable (~26 rows) - no action needed
 

@@ -1,6 +1,7 @@
 import { Eye, EyeOff } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { setAccessToken } from "../authToken";
+import { useLocale } from "../i18n/LocaleContext";
 import type { AuthenticatedSession } from "./session";
 
 function BrandMark({ className }: { className?: string }) {
@@ -58,6 +59,7 @@ function messageForError(kind: LoginErrorKind, serverMessage?: string): string {
 const SSO_AVAILABLE = false;
 
 export function LoginCard({ onAuthenticated }: LoginCardProps) {
+  const { locale, setLocale } = useLocale();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -82,7 +84,7 @@ export function LoginCard({ onAuthenticated }: LoginCardProps) {
           username,
           password,
           tenant: "ist-tech",
-          language: "en",
+          language: locale,
           rememberMe
         })
       });
@@ -126,6 +128,25 @@ export function LoginCard({ onAuthenticated }: LoginCardProps) {
       <div className="login-brand">
         <BrandMark className="login-brand-mark" />
         <span className="login-brand-word">IST Health</span>
+      </div>
+
+      <div className="login-language-switch" role="group" aria-label="Language">
+        <button
+          type="button"
+          className={locale === "en" ? "is-active" : ""}
+          onClick={() => setLocale("en")}
+          disabled={busy}
+        >
+          EN
+        </button>
+        <button
+          type="button"
+          className={locale === "ar" ? "is-active" : ""}
+          onClick={() => setLocale("ar")}
+          disabled={busy}
+        >
+          عربي
+        </button>
       </div>
 
       <div>

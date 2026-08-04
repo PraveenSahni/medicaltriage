@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQueue, type QueueItem } from "../../QueueContext";
+import { splitBilingualSbarNote } from "../../utils/splitBilingualSbarNote";
 import { compileTriageCompletion, previewTriageCompletion } from "../api/triageCompletion";
 import { FeedbackWidget } from "../FeedbackWidget";
 
@@ -143,10 +144,23 @@ export function CompletionStage({ item, isReadOnly, onCallCompleted }: Completio
               // preview (see the effect above) for older records that never
               // had a note captured at all. Only fall through to the plain
               // message if none of those produced anything.
-              item.sbarNoteText ||
-              sbarText ||
-              previewText ||
-              "This call was closed before the SBAR note text was captured."
+              (() => {
+                const noteText = item.sbarNoteText || sbarText || previewText;
+                if (!noteText) {
+                  return "This call was closed before the SBAR note text was captured.";
+                }
+                const { english, arabic } = splitBilingualSbarNote(noteText);
+                return (
+                  <>
+                    <div dir="ltr">{english}</div>
+                    {arabic && (
+                      <div dir="rtl" lang="ar">
+                        {arabic}
+                      </div>
+                    )}
+                  </>
+                );
+              })()
             : sbarText || fallbackSbar}
         </div>
 

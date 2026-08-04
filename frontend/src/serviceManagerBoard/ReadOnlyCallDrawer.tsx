@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { QueueItem } from "../QueueContext";
 import { fetchProtocolDetail, type ProtocolDetail } from "../cockpit/api/protocols";
 import { FitToFlyBadge } from "../cockpit/FitToFlyBadge";
+import { splitBilingualSbarNote } from "../utils/splitBilingualSbarNote";
 import {
   BOARD_COLUMNS,
   friendlyProtocolLabel,
@@ -313,7 +314,21 @@ export function ReadOnlyCallDrawer({ item, onClose }: ReadOnlyCallDrawerProps) {
           <div className="smb-drawer-section">
             <h3>SBAR</h3>
             {item.sbarNoteText ? (
-              <pre className="smb-sbar-note">{item.sbarNoteText}</pre>
+              (() => {
+                const { english, arabic } = splitBilingualSbarNote(item.sbarNoteText);
+                return (
+                  <>
+                    <pre className="smb-sbar-note" dir="ltr">
+                      {english}
+                    </pre>
+                    {arabic && (
+                      <pre className="smb-sbar-note" dir="rtl" lang="ar">
+                        {arabic}
+                      </pre>
+                    )}
+                  </>
+                );
+              })()
             ) : (
               <p className="smb-empty-note">
                 {item.sbarCopied

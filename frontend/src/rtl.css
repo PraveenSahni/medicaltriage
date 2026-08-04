@@ -1,0 +1,54 @@
+/* Real-time-direction (RTL) support for Arabic locale - closes the
+   "Multilingual Support / RTL" questionnaire gap (UX tab, NFR-012).
+
+   Kept as one shared file rather than following the per-stylesheet
+   dark-mode pattern: dark mode is a color-token remap that naturally
+   lives beside the tokens it overrides in each file, but RTL is a
+   structural/layout concern that cuts uniformly across every stylesheet
+   (global.css, cockpit.css, serviceManagerBoard.css, login.css) - one
+   feature, not four theme variants. Keeping it in one file makes the
+   whole RTL surface auditable in one place. Reuses each stylesheet's own
+   existing tokens - no new colors are introduced here. */
+
+html[dir="rtl"] .login-language-switch {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .cockpit-sbar-preview {
+  text-align: start;
+}
+
+html[dir="rtl"] .smb-sbar-note {
+  text-align: start;
+}
+
+.smb-sbar-note[dir="rtl"] {
+  text-align: start;
+}
+
+/* Direction-aware utility classes - opt-in only, not applied app-wide
+   in this phase. */
+.text-start {
+  text-align: start;
+}
+
+.text-end {
+  text-align: end;
+}
+
+.ms-auto {
+  margin-inline-start: auto;
+}
+
+.me-auto {
+  margin-inline-end: auto;
+}
+
+html[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+.preserve-ltr {
+  direction: ltr;
+  unicode-bidi: embed;
+}
