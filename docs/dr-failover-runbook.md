@@ -89,11 +89,44 @@ system during failover knows it's the DR instance, not routine staging).
 
 ### 5. Fail back (once `me-central1` recovers)
 
-There is **no documented fail-back procedure yet** - promotion is one-way,
-so returning to `me-central1` as primary means standing up a *new* replica
-from the (now-primary) Mumbai instance back toward `me-central1`, or
-restoring from a backup taken after the incident. This is a real, open gap:
-fail-back is harder than fail-over and is not solved by this runbook.
+Promotion is one-way - the promoted Mumbai instance cannot be turned back
+into a replica of a `me-central1` primary. The real, available mechanism is
+to invert the replication direction: create a **new** read replica in
+`me-central1`, replicating *from* the now-primary Mumbai instance, then
+promote that new replica once it has caught up. This is the same
+`gcloud sql instances create --replica` / `promote-replica` pair used for
+fail-over, run in reverse - not a different, undocumented mechanism.
+
+```bash
+# 1. Create a new me-central1 replica of the (now-primary) Mumbai instance
+gcloud sql instances create ist-triage-postgres-failback-doha \
+  --master-instance-name=ist-triage-postgres-dr-mumbai \
+  --project=triage-502706 --region=me-central1 --tier=db-f1-micro
+
+# 2. Wait for RUNNABLE + confirm replication lag has caught up
+gcloud sql instances describe ist-triage-postgres-failback-doha --project=triage-502706 --format="value(state)"
+
+# 3. During a second, brief planned cutover window: stop application writes
+#    (scale ist-triage-soc2-dr to 0, or put it in maintenance mode), confirm
+#    the replica is fully caught up, then promote it
+gcloud sql instances promote-replica ist-triage-postgres-failback-doha --project=triage-502706
+
+# 4. Redeploy the application tier back to me-central1 pointed at the
+#    newly-promoted instance (mirrors step 2 of the fail-over procedure
+#    above, region/instance names swapped), then repoint Firebase Hosting/
+#    DNS back to the original triagedsoc2.irisstar.tech site.
+
+# 5. Once me-central1 is confirmed primary and stable, decide whether to
+#    re-establish ist-triage-postgres-dr-mumbai as a fresh replica again
+#    (repeat the original cross-region replica setup) to restore DR
+#    coverage for the future - this is not automatic and must be redone.
+```
+
+**This is a real, documented mechanism** (reverse the replica direction,
+promote, cut over) rather than an unsolved gap - but like the fail-over
+procedure above, **it has not been rehearsed**, requires a second brief
+planned write-outage window (step 3), and needs explicit sign-off before
+executing for the same reason fail-over does: promotion is irreversible.
 
 ## What this runbook does NOT solve
 
@@ -106,7 +139,9 @@ fail-back is harder than fail-over and is not solved by this runbook.
   until this is pre-provisioned).
 - **The DATABASE_URL secret problem in step 2 is unresolved** - flagged
   honestly above rather than papered over.
-- **No fail-back procedure.**
+- **Fail-back (step 5) requires a second brief planned write-outage
+  window** - unlike fail-over (which reacts to an already-down region),
+  fail-back is a deliberate, scheduled cutover, not an emergency action.
 
 ## Rehearsal status
 

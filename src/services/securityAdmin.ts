@@ -1864,6 +1864,7 @@ export function listUsers(): SafeAdminUser[] {
 }
 
 export class UserNotFoundError extends Error {}
+export class SelfStatusChangeError extends Error {}
 
 /**
  * Real account-status mutation (suspend/reactivate/deactivate) - closes
@@ -1882,7 +1883,13 @@ export async function updateUserAccountStatus(
   if (!user) {
     throw new UserNotFoundError(`No user found with id ${userId}`);
   }
-  const previousStatus = user.accountStatus;
+  // Prevents an admin from locking themselves out (accidentally or via a
+  // compromised session) by suspending/deactivating/locking their own
+  // account through this endpoint - self-reactivation to "active" is
+  // harmless and stays allowed.
+  if (user.id === actor.userId && status !== "active") {
+    throw new SelfStatusChangeError("Cannot suspend, lock, or deactivate your own account.");
+  }
   user.accountStatus = status;
 
   await recordAuditEvent({

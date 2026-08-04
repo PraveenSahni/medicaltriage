@@ -106,6 +106,8 @@ async function main() {
       if (r.ok) {
         remediated.push(f.email);
         console.log(`Suspended: ${f.email}`);
+      } else if (r.status === 409) {
+        console.log(`Skipped ${f.email}: cannot suspend the account running this review (self-protection guard).`);
       } else {
         console.log(`Failed to suspend ${f.email}: HTTP ${r.status}`);
       }

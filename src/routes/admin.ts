@@ -3,6 +3,7 @@ import { requireAnyPermission } from "../middleware/rbac.js";
 import { requirePermission, type AuthorizedRequest } from "../services/authorization.js";
 import { shouldUseDatabasePersistence } from "../config/runtime.js";
 import { listPersistedAuditEvents } from "../services/persistence.js";
+import { rateLimit } from "../middleware/rateLimit.js";
 import {
   getSecurityDashboard,
   listAuditEvents,
@@ -21,7 +22,8 @@ import {
   listUsers,
   recordReveal,
   updateUserAccountStatus,
-  UserNotFoundError
+  UserNotFoundError,
+  SelfStatusChangeError
 } from "../services/securityAdmin.js";
 import { AccountStatusSchema, RevealRequestSchema } from "../types/security.js";
 import { z } from "zod";
@@ -50,6 +52,16 @@ const controlCenterPermissions = [
 export function createAdminRouter(): Router {
   const router = Router();
 
+  // A compromised or scripted session shouldn't be able to mass-suspend
+  // accounts arbitrarily fast - this is a sensitive, high-impact action
+  // (account lockout), same reasoning as the existing login/staff-validate
+  // rate limits.
+  const userStatusRateLimit = rateLimit({
+    name: "admin-user-status",
+    windowMs: 60_000,
+    maxRequests: 20
+  });
+
   router.get("/control-modules", requireAnyPermission(controlCenterPermissions), (req: AuthorizedRequest, res) => {
     const sessionPermissions = req.securitySession?.permissions ?? [];
     const modules = listControlCenterModules().filter((module) =>
@@ -69,7 +81,7 @@ export function createAdminRouter(): Router {
   // Real remediation action for access-entitlement review findings (CSQ
   // IS.18: "are all remediation actions recorded?") - suspends/reactivates
   // an account, writing a real AuditEvent for the change itself.
-  router.patch("/users/:id/status", requirePermission("admin.users.manage"), async (req: AuthorizedRequest, res, next) => {
+  router.patch("/users/:id/status", requirePermission("admin.users.manage"), userStatusRateLimit, async (req: AuthorizedRequest, res, next) => {
     try {
       const parsed = UpdateUserStatusRequestSchema.safeParse(req.body);
       if (!parsed.success) {
@@ -84,6 +96,9 @@ export function createAdminRouter(): Router {
     } catch (error) {
       if (error instanceof UserNotFoundError) {
         return res.status(404).json({ error: error.message });
+      }
+      if (error instanceof SelfStatusChangeError) {
+        return res.status(409).json({ error: error.message });
       }
       return next(error);
     }

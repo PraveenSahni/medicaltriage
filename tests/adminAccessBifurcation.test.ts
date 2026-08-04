@@ -1,5 +1,6 @@
 import request from "supertest";
 import { createApp } from "../src/app.js";
+import { resetRateLimitBucketsForTests } from "../src/middleware/rateLimit.js";
 import { resetSecurityStoreForTests } from "../src/services/securityAdmin.js";
 
 const TEST_ADMIN_PASSWORD = "TestAdminPassword!2026";
@@ -23,6 +24,7 @@ async function agentFor(username: string, simulateRole: string) {
 describe("Role-based Control Center bifurcation", () => {
   beforeEach(() => {
     resetSecurityStoreForTests();
+    resetRateLimitBucketsForTests();
   });
 
   afterEach(() => {
@@ -86,5 +88,63 @@ describe("Role-based Control Center bifurcation", () => {
     const support = await helpdesk.get("/api/v1/admin/support").expect(200);
     expect(support.body.tickets.length).toBeGreaterThan(0);
     await helpdesk.get("/api/v1/admin/audit-events").expect(403);
+  });
+
+  describe("PATCH /api/v1/admin/users/:id/status", () => {
+    it("requires admin.users.manage - a role without it is forbidden", async () => {
+      const helpdesk = await agentFor("helpdesk@irisstar.tech", "helpdesk_support");
+      await helpdesk
+        .patch("/api/v1/admin/users/usr_nurse_10001/status")
+        .send({ status: "suspended", reason: "test" })
+        .expect(403);
+    });
+
+    it("suspends a real account and records an auditable status change", async () => {
+      const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+
+      const updated = await sysAdmin
+        .patch("/api/v1/admin/users/usr_nurse_10001/status")
+        .send({ status: "suspended", reason: "test-driven suspension" })
+        .expect(200);
+      expect(updated.body.user.accountStatus).toBe("suspended");
+
+      const usersRes = await sysAdmin.get("/api/v1/admin/users").expect(200);
+      const nurse = usersRes.body.users.find((u: { id: string }) => u.id === "usr_nurse_10001");
+      expect(nurse.accountStatus).toBe("suspended");
+    });
+
+    it("blocks an account from suspending itself (self-lockout protection)", async () => {
+      const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+
+      await sysAdmin
+        .patch("/api/v1/admin/users/usr_system_admin_10001/status")
+        .send({ status: "suspended", reason: "attempting self-suspend" })
+        .expect(409);
+    });
+
+    it("allows an account to reactivate itself back to active (not a lockout risk)", async () => {
+      const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+
+      await sysAdmin
+        .patch("/api/v1/admin/users/usr_system_admin_10001/status")
+        .send({ status: "active", reason: "self-reactivation is harmless" })
+        .expect(200);
+    });
+
+    it("returns 404 for a non-existent user id", async () => {
+      const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+      await sysAdmin
+        .patch("/api/v1/admin/users/usr_does_not_exist/status")
+        .send({ status: "suspended", reason: "test" })
+        .expect(404);
+    });
+
+    it("rejects an invalid status value", async () => {
+      const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+      await sysAdmin
+        .patch("/api/v1/admin/users/usr_nurse_10001/status")
+        .send({ status: "not-a-real-status", reason: "test" })
+        .expect(400);
+    });
   });
 });

@@ -494,4 +494,32 @@ describe("Enterprise queue orchestration", () => {
       safetyFloorSource: "symptom"
     });
   });
+
+  describe("GET /api/v1/queue pagination (opt-in, additive)", () => {
+    it("returns the full unpaginated list and a matching totalCount when no limit/offset is given", async () => {
+      const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+      const res = await nurse.get("/api/v1/queue").expect(200);
+      expect(res.body.count).toBe(res.body.queue.length);
+      expect(res.body.totalCount).toBe(res.body.queue.length);
+    });
+
+    it("slices the response when limit/offset are provided, without changing totalCount", async () => {
+      const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+      const full = await nurse.get("/api/v1/queue").expect(200);
+      const totalCount = full.body.totalCount as number;
+      expect(totalCount).toBeGreaterThan(0);
+
+      const paged = await nurse.get("/api/v1/queue?limit=1&offset=0").expect(200);
+      expect(paged.body.queue).toHaveLength(1);
+      expect(paged.body.totalCount).toBe(totalCount);
+      expect(paged.body.queue[0].id).toBe(full.body.queue[0].id);
+    });
+
+    it("rejects an invalid limit (non-positive or non-integer) as a 400", async () => {
+      const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+      await nurse.get("/api/v1/queue?limit=0").expect(400);
+      await nurse.get("/api/v1/queue?limit=-1").expect(400);
+      await nurse.get("/api/v1/queue?limit=abc").expect(400);
+    });
+  });
 });
