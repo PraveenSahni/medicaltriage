@@ -45,6 +45,31 @@ At the end of the contract, on written request:
    automated capability** - this would need to be a manually-prepared
    attestation unless/until a formal process is built.
 
+## Sanitization of computing resources (closes CSQ IG.12's "sanitize all computing resources" clause)
+
+Beyond the data destruction above, the compute/infrastructure resources this
+engagement provisions are also fully destroyable, with no residual customer
+data left behind:
+
+1. **Cloud Run services** (application containers) - deleting the service
+   removes all running/idle container instances; Cloud Run containers hold
+   no persistent local state between requests (this app writes nothing to
+   local disk that survives a request), so there is no container-local data
+   to separately wipe.
+2. **Artifact Registry images** - the built Docker images themselves contain
+   only application code, never customer data (confirmed - `MOCK_MODE`/
+   `DATABASE_URL`/secrets are injected at deploy time via
+   `--set-env-vars`/`--set-secrets`, never baked into the image) - deleting
+   the repository removes them entirely.
+3. **Firebase Hosting** - the deployed static frontend bundle contains no
+   customer data (confirmed - it is compiled client-side code only);
+   deleting the hosting site removes it.
+4. **Cloud SQL instance/database** - covered above under data destruction.
+
+A written confirmation of resource deletion will be provided alongside the
+data-destruction confirmation above; as noted there, an automated
+cryptographically-signed destruction certificate is not currently built.
+
 ## Exit pricing
 
 Not addressed in this document - exit pricing is a commercial/contractual

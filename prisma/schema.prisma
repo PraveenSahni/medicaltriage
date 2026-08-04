@@ -398,6 +398,12 @@ model TriageQueueItem {
   voiceSessions            VoiceCallSession[]
   createdAt                DateTime                  @default(now()) @map("created_at")
   updatedAt                DateTime                  @updatedAt @map("updated_at")
+  // Closes NFR-011 (audit lifecycle retention) - deleteQueueItem() now soft-
+  // deletes (sets these two fields) instead of removing the row, so the
+  // record a queue-item AuditEvent describes still exists to be traced back
+  // to, throughout its entire lifecycle including after "deletion".
+  deletedAt                DateTime?                 @map("deleted_at")
+  deletedBy                String?                   @map("deleted_by")
 
   @@index([status, currentStage])
   @@index([priorityScore, slaDeadline])
@@ -406,6 +412,7 @@ model TriageQueueItem {
   @@index([organizationId, status])
   @@index([targetOrganizationId, status])
   @@index([istStaffId, createdAt])
+  @@index([deletedAt])
   @@map("triage_queue_items")
 }
 

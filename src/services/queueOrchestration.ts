@@ -1547,12 +1547,12 @@ async function listDbRecords(filters: QueueListQuery, session?: AuthenticatedSes
   // several megabytes per poll cycle, badly degrading UI responsiveness.
   const [openRows, completedRows] = await Promise.all([
     queueClient().triageQueueItem.findMany({
-      where: tenantWhere ? { status: { not: "COMPLETED" }, ...tenantWhere } : { status: { not: "COMPLETED" } },
+      where: { status: { not: "COMPLETED" }, deletedAt: null, ...(tenantWhere ?? {}) },
       orderBy: [{ priorityScore: "desc" }, { slaDeadline: "asc" }],
       take: OPEN_RECORDS_QUERY_LIMIT
     }),
     queueClient().triageQueueItem.findMany({
-      where: tenantWhere ? { status: "COMPLETED", ...tenantWhere } : { status: "COMPLETED" },
+      where: { status: "COMPLETED", deletedAt: null, ...(tenantWhere ?? {}) },
       orderBy: [{ updatedAt: "desc" }],
       take: COMPLETED_RECORDS_QUERY_LIMIT
     })
@@ -1567,7 +1567,7 @@ async function getDbRecord(id: string, session: AuthenticatedSession): Promise<Q
   // findUnique only accepts the model's unique fields in `where`, with no room
   // to also scope by organization at the query level.
   const row = await queueClient().triageQueueItem.findFirst({
-    where: tenantWhere ? { id, ...tenantWhere } : { id },
+    where: { id, deletedAt: null, ...(tenantWhere ?? {}) },
     include: { transitionLogs: { orderBy: { timestamp: "desc" }, take: 20 } }
   });
   return row ? dbRowToRecord(row) : undefined;
@@ -1720,6 +1720,34 @@ function appendTransition(
   return transition;
 }
 
+// Closes Cloud CSQ CO.13/LG.04 ("logically segment, isolate and recover data
+// for a specific customer" / "data portability... to port data from one
+// data center to another") - an explicit, admin-gated export of every real
+// queue record belonging to one specific organization, independent of the
+// calling admin's own tenant scope (the caller is expected to already be
+// gated by requireElevatedPermission at the route level, since this
+// deliberately bypasses the normal per-session tenant restriction - the
+// whole point is a privileged, audited cross-tenant action). Excludes
+// soft-deleted records (see deleteQueueItem's deletedAt) - a genuinely
+// deleted record should not resurface via export.
+export async function exportOrganizationQueueData(organizationId: string): Promise<QueueItemDto[]> {
+  if (!shouldPersistQueueInDatabase()) {
+    const records = Array.from(store().values()).filter(
+      (record) => record.organizationId === organizationId || record.targetOrganizationId === organizationId
+    );
+    return sorted(records).map(toDto);
+  }
+  const rows = await queueClient().triageQueueItem.findMany({
+    where: {
+      deletedAt: null,
+      OR: [{ organizationId }, { targetOrganizationId: organizationId }]
+    },
+    include: { transitionLogs: { orderBy: { timestamp: "desc" }, take: 20 } },
+    orderBy: [{ createdAt: "desc" }]
+  });
+  return sorted(rows.map(dbRowToRecord)).map(toDto);
+}
+
 export async function listQueueItems(
   session: AuthenticatedSession,
   filters: QueueListQuery = {}
@@ -1781,7 +1809,16 @@ export async function deleteQueueItem(session: AuthenticatedSession, id: string)
   requireTenantAccess(record, session);
 
   if (shouldPersistQueueInDatabase()) {
-    await queueClient().triageQueueItem.delete({ where: { id } });
+    // Closes NFR-011 (audit lifecycle retention) - soft-delete (set
+    // deletedAt/deletedBy) instead of removing the row, so the record this
+    // action's own AuditEvent describes still exists to be traced back to.
+    // Every real read path (listDbRecords/getDbRecord above) excludes
+    // deletedAt != null by default, so this is behaviorally a deletion from
+    // every existing caller's perspective.
+    await queueClient().triageQueueItem.update({
+      where: { id },
+      data: { deletedAt: new Date(), deletedBy: session.user.id }
+    });
     await recordQueueAuditEvent({ session, action: "QUEUE_ITEM_DELETE", recordId: id, success: true, riskLevel: "high" });
     return;
   }

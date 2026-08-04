@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { requireAnyPermission } from "../middleware/rbac.js";
 import { getFeedbackSummary } from "../services/feedbackSummary.js";
+import { exportOrganizationQueueData } from "../services/queueOrchestration.js";
 import {
   getRequestSession,
   requirePermission,
@@ -106,6 +107,29 @@ export function createAdminRouter(): Router {
   router.get("/users", requirePermission("admin.users.manage"), (_req, res) => {
     return res.json({ users: listUsers() });
   });
+
+  // Closes CSQ CO.13 ("isolate and recover data for a specific customer")
+  // and LG.04 ("data portability... port data from one data center to
+  // another") - a real, admin-gated export of every queue record belonging
+  // to one specific tenant, independent of the requesting admin's own
+  // tenant scope. PAM-elevation-gated since this is a privileged,
+  // cross-tenant bulk-data action.
+  router.get(
+    "/organizations/:orgId/export",
+    requireElevatedPermission("admin.users.manage"),
+    async (req, res, next) => {
+      try {
+        const items = await exportOrganizationQueueData(req.params.orgId);
+        res.setHeader(
+          "Content-Disposition",
+          `attachment; filename="ist-health-org-export-${req.params.orgId}.json"`
+        );
+        return res.json({ exportedAtIso: new Date().toISOString(), organizationId: req.params.orgId, queueItems: items });
+      } catch (error) {
+        return next(error);
+      }
+    }
+  );
 
   // Closes NFR-021's "terminate this one specific session" gap -
   // PATCH .../status revokes every session for a user at once; these two

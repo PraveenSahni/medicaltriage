@@ -40,6 +40,20 @@ async function heldIdsFor(itemIds: string[]): Promise<Set<string>> {
   return new Set(holds.map((h) => h.resourceId));
 }
 
+// Closes CSQ IS.54 ("litigation holds... freeze of data from a specific
+// point in time for a specific customer") - a per-record hold alone can't
+// express "freeze everything for this whole tenant"; an org-level hold
+// (resourceType "Organization") excludes every record belonging to that
+// organization regardless of individual per-record hold rows. Mirrors
+// purgeExpiredQueueData.ts's identical org-level hold check.
+async function heldOrganizationIds(): Promise<Set<string>> {
+  const holds = await prisma.legalHold.findMany({
+    where: { resourceType: "Organization", status: "active" },
+    select: { resourceId: true }
+  });
+  return new Set(holds.map((h) => h.resourceId));
+}
+
 async function main() {
   const execute = process.argv.includes("--execute");
 
@@ -49,7 +63,7 @@ async function main() {
   for (const request of openRequests) {
     const items = await prisma.triageQueueItem.findMany({
       where: { istStaffId: request.requesterRef },
-      select: { id: true, status: true, createdAt: true, updatedAt: true }
+      select: { id: true, status: true, createdAt: true, updatedAt: true, organizationId: true }
     });
 
     if (request.requestType === "access") {
@@ -87,11 +101,12 @@ async function main() {
 
     if (request.requestType === "erasure") {
       const itemIds = items.map((i) => i.id);
-      const held = await heldIdsFor(itemIds);
-      const eligible = items.filter((i) => !held.has(i.id));
+      const [held, heldOrgIds] = await Promise.all([heldIdsFor(itemIds), heldOrganizationIds()]);
+      const eligible = items.filter((i) => !held.has(i.id) && !(i.organizationId && heldOrgIds.has(i.organizationId)));
+      const heldCount = items.length - eligible.length;
 
       console.log(
-        `[erasure] ${request.id} (${request.requesterRef}): ${items.length} record(s), ${held.size} excluded by legal hold, ` +
+        `[erasure] ${request.id} (${request.requesterRef}): ${items.length} record(s), ${heldCount} excluded by legal hold, ` +
           `${eligible.length} eligible for deletion`
       );
 
@@ -105,7 +120,7 @@ async function main() {
           where: { id: request.id },
           data: {
             status: "fulfilled",
-            notes: `Erasure completed ${new Date().toISOString()}: ${eligible.length} record(s) deleted, ${held.size} retained under active legal hold.`
+            notes: `Erasure completed ${new Date().toISOString()}: ${eligible.length} record(s) deleted, ${heldCount} retained under active legal hold.`
           }
         });
       }
@@ -122,7 +137,7 @@ async function main() {
             requestId: request.id,
             requesterRef: request.requesterRef,
             totalRecords: items.length,
-            excludedByLegalHoldCount: held.size,
+            excludedByLegalHoldCount: heldCount,
             eligibleForDeletionCount: eligible.length
           })
         }

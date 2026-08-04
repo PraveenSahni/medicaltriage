@@ -79,7 +79,21 @@ async function main() {
   });
   const heldIds = new Set(activeHolds.map((h) => h.resourceId));
 
-  const candidates = allExpired.filter((c) => !heldIds.has(c.id));
+  // Closes CSQ IS.54 ("litigation holds... freeze of data from a specific
+  // point in time for a specific customer") - a per-record hold alone can't
+  // express "freeze everything for this whole tenant"; an org-level hold
+  // (resourceType "Organization", resourceId the organizationId) now excludes
+  // every one of that organization's records regardless of individual
+  // per-record hold rows.
+  const activeOrgHolds = await prisma.legalHold.findMany({
+    where: { resourceType: "Organization", status: "active" },
+    select: { resourceId: true }
+  });
+  const heldOrgIds = new Set(activeOrgHolds.map((h) => h.resourceId));
+
+  const candidates = allExpired.filter(
+    (c) => !heldIds.has(c.id) && !(c.organizationId && heldOrgIds.has(c.organizationId))
+  );
   const heldCount = allExpired.length - candidates.length;
 
   console.log(

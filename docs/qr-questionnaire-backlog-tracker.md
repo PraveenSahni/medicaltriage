@@ -213,3 +213,53 @@ they cluster, largest first:
 6. Treat SSO/MFA, masking/reveal, and formal certification as separate,
    explicitly-scoped future engagements - each is too large to fold into
    an incremental "next batch" pass.
+
+## 2026-08-05 batch: mandatory-Partial closures (doc + engineering)
+
+Closed per explicit instruction to complete all mandatory-Partial rows
+except the genuinely blocked ones:
+
+**Doc batch** (no code change, real docs consolidating already-built
+controls): CSQ IG.12 (exit-plan sanitization section), IS.01 (ISMS index
+doc), IS.30 (data-management-policy.md), IS.05/IS.23/AR.23
+(regulatory-due-diligence-mapping.md), HR.03
+(hr-access-termination-procedure.md), RM.03/RM.04/RM.05/RM.06
+(risk-register review-cadence section).
+
+**Engineering batch** (real code, tested, DB-verified):
+- ✅ **NFR-011** (audit lifecycle) - `TriageQueueItem.deletedAt`/
+  `deletedBy` soft-delete; every real read path excludes soft-deleted
+  rows; the scheduled purge job still genuinely hard-deletes past the
+  retention window.
+- ✅ **CO.13 / LG.04** (isolate/recover and port one customer's data) -
+  `GET /api/v1/admin/organizations/:orgId/export` (PAM-elevation-gated).
+- ✅ **IS.54** (per-customer litigation hold without freezing others) -
+  `LegalHold.resourceType: "Organization"`, checked by both the purge job
+  and the DSAR-erasure job alongside per-record holds.
+- ✅ **IS.61** (privacy-breach monitoring) - `checkRevealAnomalyRate()` in
+  `src/services/securityAdmin.ts`: a real rolling-5-minute per-user
+  request-rate counter that writes a high-risk `AuditEvent` when a
+  threshold is exceeded. Honestly scoped as detection + a real audit
+  trail, not a live external-paging/notification system.
+
+Verified: `npx tsc --noEmit` clean, full backend suite green (692/692),
+plus a direct DB-backed scratch-script check for soft-delete/org-export
+against real local Postgres (the standard test suite runs in mock mode
+and never exercises that code path).
+
+**Reclassified from engineering-closable to blocked** (not attempted):
+- **NFR-119** (QR-facing configurable alert thresholds) and **IS.07**
+  (continuous Terraform drift detection) - both require either live
+  writes to production GCP Monitoring alert policies on the shared
+  Cloud Run/Cloud SQL project, or new CI credentials that don't exist
+  (confirmed via grep) - a real, hard-to-reverse action on shared
+  infrastructure, not something to fake with unverifiable code.
+
+**Explicitly skipped**: **IG.09** (extend `RetentionPolicy` beyond the
+single `TriageQueueItem`/`COMPLETED` policy) - every other candidate
+entity (`AviationTriageEncounter`, `AuditEvent`) already has its own
+separately-decided retention reasoning documented in
+`purgeExpiredQueueData.ts`'s comments (clinical/legal record vs. audit
+trail that must outlive what it describes); adding a second generic
+policy row without a real decided retention period would be a
+fabricated number, not a fix.

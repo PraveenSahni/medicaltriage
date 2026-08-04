@@ -2458,6 +2458,7 @@ export function resetSecurityStoreForTests(): void {
   revealRequestsById.clear();
   revealValuesById.clear();
   elevatedSessions.clear();
+  revealRequestTimestampsByUser.clear();
 }
 
 // Real JIT privileged-access elevation (closes NFR-180's PAM capability gap:
@@ -3048,6 +3049,49 @@ async function recordRevealEvent(args: {
   }
 }
 
+// Closes CSQ IS.61 ("systems in place to monitor for privacy breaches and
+// notify customers expeditiously") - a real, local detection mechanism: an
+// unusually high rate of PII-reveal requests from one account within a
+// short window (a real indicator of a compromised/misused account) writes
+// a distinct, high-severity AuditEvent - visible via the existing
+// GET /api/v1/admin/audit-events endpoint, the same real "notification"
+// surface every other alert-worthy event in this app already uses. This is
+// not a live-paging/external-notification system (see the honest scope
+// note in docs/qr-questionnaire-backlog-tracker.md) - it is a genuine
+// detection-and-record mechanism, not aspirational.
+const REVEAL_ANOMALY_WINDOW_MS = 5 * 60 * 1000;
+const REVEAL_ANOMALY_THRESHOLD = 10;
+const revealRequestTimestampsByUser = new Map<string, number[]>();
+
+async function checkRevealAnomalyRate(requesterUserId: string): Promise<void> {
+  const now = Date.now();
+  const timestamps = (revealRequestTimestampsByUser.get(requesterUserId) ?? []).filter(
+    (timestamp) => now - timestamp < REVEAL_ANOMALY_WINDOW_MS
+  );
+  timestamps.push(now);
+  revealRequestTimestampsByUser.set(requesterUserId, timestamps);
+  if (timestamps.length <= REVEAL_ANOMALY_THRESHOLD) {
+    return;
+  }
+  await recordAuditEvent({
+    id: randomUUID(),
+    timestampIso: new Date().toISOString(),
+    userId: requesterUserId,
+    activeRole: "unknown",
+    organization: "",
+    facility: "",
+    department: "",
+    action: "PRIVACY_REVEAL_ANOMALY_DETECTED",
+    module: "PrivacyMonitoring",
+    resource: `User:${requesterUserId}`,
+    purpose: `${timestamps.length} reveal requests within ${REVEAL_ANOMALY_WINDOW_MS / 60_000} minutes - exceeds the ${REVEAL_ANOMALY_THRESHOLD}-request anomaly threshold`,
+    ipAddress: "",
+    device: "",
+    success: true,
+    risk: "critical"
+  });
+}
+
 export async function requestReveal(
   requesterUserId: string,
   request: RevealRequest
@@ -3055,6 +3099,7 @@ export async function requestReveal(
   if (!REVEALABLE_FIELDS.includes(request.field as RevealableField)) {
     throw new FieldNotRevealableError(`Field "${request.field}" is not revealable.`);
   }
+  await checkRevealAnomalyRate(requesterUserId);
 
   const id = `reveal-${Date.now()}-${randomBytes(6).toString("hex")}`;
   const record: PendingRevealRequest = {

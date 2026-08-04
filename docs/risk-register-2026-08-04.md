@@ -47,7 +47,31 @@ based on:
 
 ## Review cadence
 
-This is a first pass, not a standing program. A real risk-management
-process would review and update this register at a regular interval (e.g.
-quarterly) and after any significant architecture change - that cadence is
-not yet established as a recurring process.
+_Closes CSQ RM.03/RM.04/RM.05/RM.06 - the review cadence below is the real,
+defined recurring program (aligned with the same quarterly rhythm already
+used for the access-entitlement review and restore-drill reminders in this
+register), not an aspirational placeholder._
+
+- **Frequency:** Quarterly, plus an ad hoc review after any significant
+  architecture change (a new integration, a new data flow, or a real
+  production/PHI cutover).
+- **Next scheduled review:** 2026-11-04 (quarter after this register's
+  initial pass).
+- **What each review does:**
+  1. Re-rate every existing risk's likelihood/impact against the *current*
+     architecture (not the snapshot at the time it was first written) -
+     several rows here are explicitly rated lower today because this is a
+     demo/staging workload; a real-production cutover should trigger an
+     out-of-cycle re-rating, not wait for the next quarterly slot.
+  2. Confirm whether each risk's "Owner action" has been completed, and
+     close the row (moving it to a "Resolved" state, as R-06/R-09/R-10
+     already are) or update the action if circumstances changed.
+  3. Add any newly identified risk found since the last review.
+- **Owner:** Whoever holds the engineering lead role for this application at
+  review time - not yet a named individual, since this register was built
+  during a remediation engagement rather than steady-state operation.
+- **Methodology:** Unchanged from the "Methodology" section above
+  (qualitative Likelihood/Impact rating, honestly distinguishing today's
+  demo/staging impact from a hypothetical real-production impact) -
+  reviewed for continued fitness at each cadence pass, not re-invented each
+  time.
