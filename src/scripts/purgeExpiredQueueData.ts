@@ -18,6 +18,11 @@
  * operational queue record it describes) - those need their own, separately
  * decided retention periods, not bundled into this first pass.
  *
+ * Legal-hold enforcement: any TriageQueueItem row with an active LegalHold
+ * (resourceType "TriageQueueItem", status "active") is excluded from the
+ * purge candidate set entirely, regardless of age - this is the first real
+ * enforcement code path for the previously schema-only LegalHold table.
+ *
  * Safety: dry-run by default. Requires --execute to actually delete.
  * Writes a summary AuditEvent for the purge run itself either way.
  *
@@ -63,14 +68,24 @@ async function main() {
 
   const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
 
-  const candidates = await prisma.triageQueueItem.findMany({
+  const allExpired = await prisma.triageQueueItem.findMany({
     where: { status: "COMPLETED", updatedAt: { lt: cutoff } },
     select: { id: true, updatedAt: true, organizationId: true }
   });
 
+  const activeHolds = await prisma.legalHold.findMany({
+    where: { resourceType: "TriageQueueItem", status: "active" },
+    select: { resourceId: true }
+  });
+  const heldIds = new Set(activeHolds.map((h) => h.resourceId));
+
+  const candidates = allExpired.filter((c) => !heldIds.has(c.id));
+  const heldCount = allExpired.length - candidates.length;
+
   console.log(
     `Retention window: ${retentionDays} days (cutoff ${cutoff.toISOString()}). ` +
-      `${candidates.length} COMPLETED queue item(s) eligible for purge. ` +
+      `${allExpired.length} COMPLETED queue item(s) past retention, ${heldCount} excluded by an active legal hold, ` +
+      `${candidates.length} eligible for purge. ` +
       `Mode: ${execute ? "EXECUTE (will delete)" : "DRY RUN (no changes)"}`
   );
 
@@ -92,7 +107,13 @@ async function main() {
       resource: "TriageQueueItem",
       success: true,
       riskLevel: execute ? "high" : "medium",
-      metadata: jsonValue({ retentionDays, retentionSource, cutoffIso: cutoff.toISOString(), candidateCount: candidates.length })
+      metadata: jsonValue({
+        retentionDays,
+        retentionSource,
+        cutoffIso: cutoff.toISOString(),
+        candidateCount: candidates.length,
+        excludedByLegalHoldCount: heldCount
+      })
     }
   });
 

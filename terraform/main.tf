@@ -282,7 +282,7 @@ resource "google_cloud_run_v2_job" "purge_expired_queue_data" {
       timeout         = "600s"
 
       containers {
-        image   = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:retention-policy-20260804"
+        image   = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:legal-hold-20260804"
         command = ["node"]
         args    = ["dist/scripts/purgeExpiredQueueData.js"]
 
