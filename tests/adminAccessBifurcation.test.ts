@@ -75,6 +75,16 @@ describe("Role-based Control Center bifurcation", () => {
     await reportingAnalyst.get("/api/v1/admin/roles").expect(403);
   });
 
+  it("reports feedback-summary as honestly unmeasured in mock mode", async () => {
+    const reportingAnalyst = await agentFor("reports@irisstar.tech", "reporting_analyst");
+
+    const summary = await reportingAnalyst.get("/api/v1/admin/feedback-summary").expect(200);
+    expect(summary.body).toMatchObject({ measured: false, totalResponses: 0, averageRating: null });
+
+    const remoteNurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    await remoteNurse.get("/api/v1/admin/feedback-summary").expect(403);
+  });
+
   it("keeps Remote Triage Nurse out of the Control Center despite reveal permission", async () => {
     const remoteNurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 

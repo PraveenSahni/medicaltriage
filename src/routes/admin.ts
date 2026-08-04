@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { requireAnyPermission } from "../middleware/rbac.js";
+import { getFeedbackSummary } from "../services/feedbackSummary.js";
 import { requirePermission, type AuthorizedRequest } from "../services/authorization.js";
 import { shouldUseDatabasePersistence } from "../config/runtime.js";
 import { listPersistedAuditEvents } from "../services/persistence.js";
@@ -175,6 +176,17 @@ export function createAdminRouter(): Router {
     requireAnyPermission(["reports.view", "operations.dashboard.view"]),
     (_req, res) => {
       return res.json({ reports: listReportCatalogItems() });
+    }
+  );
+
+  // Closes part of NFR-008 (Learnability) - a real, if partial, usability
+  // signal (average nurse-submitted rating over time) where none existed
+  // before. Not a formal usability study - see docs for that caveat.
+  router.get(
+    "/feedback-summary",
+    requireAnyPermission(["reports.view", "operations.dashboard.view"]),
+    async (_req, res) => {
+      return res.json(await getFeedbackSummary());
     }
   );
 
