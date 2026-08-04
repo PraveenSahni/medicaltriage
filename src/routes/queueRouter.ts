@@ -60,10 +60,11 @@ export function createQueueRouter(): Router {
       if (!parsed.success) {
         return res.status(400).json({ error: "Invalid queue filters", details: parsed.error.flatten() });
       }
-      const items = await listQueueItems(sessionFrom(req), parsed.data);
+      const { items, totalCount } = await listQueueItems(sessionFrom(req), parsed.data);
       return res.json({
         queue: items,
         count: items.length,
+        totalCount,
         source: "unified-queue-orchestration"
       });
     } catch (error) {

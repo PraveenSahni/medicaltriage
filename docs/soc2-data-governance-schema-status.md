@@ -53,10 +53,20 @@ applied to `VoiceCallSession.currentQuestionId` - never invent structure the
 real system doesn't have). This table should stay explicitly deferred until
 a real export feature exists to gate.
 
-**`MaskingPolicy`/`RevealPolicy`/`EncryptionPolicy` families remain fully
-unenforced** - correctly deferred per the original priority order below (item
-3 requires UI/MFA/approval-workflow work well beyond this pass's scope; item
-4 has the lowest near-term urgency given platform-level encryption at rest).
+**`MaskingPolicy`/`RevealPolicy` families remain fully unenforced** -
+correctly deferred per the original priority order below (item 3 requires
+UI/MFA/approval-workflow work well beyond this pass's scope).
+
+**`CryptographicKeyReference` now has real data** (added 2026-08-04, still
+via a manual sync, not automatic): `src/scripts/syncCryptographicKeyReferences.ts`
+mirrors the actual current GCP Secret Manager version/metadata for the 3
+soc2 secrets into this table via `gcloud` - real inventory data, not
+fabricated. `KeyRotationRecord` is deliberately left empty: it models real
+rotation *events*, and no secret has ever actually been rotated yet (only
+its initial version exists) - writing a fake "rotation" row for a version
+that was simply created would misrepresent history. `EncryptionPolicy`/
+`EncryptionPolicyVersion` remain fully unenforced (lowest near-term urgency
+given platform-level encryption at rest is already active).
 
 ## Tables and their real status
 

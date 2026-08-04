@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { requireAnyPermission } from "../middleware/rbac.js";
 import { requirePermission, type AuthorizedRequest } from "../services/authorization.js";
+import { shouldUseDatabasePersistence } from "../config/runtime.js";
+import { listPersistedAuditEvents } from "../services/persistence.js";
 import {
   getSecurityDashboard,
   listAuditEvents,
@@ -76,8 +78,15 @@ export function createAdminRouter(): Router {
     return res.json({ policies: listEncryptionPolicies() });
   });
 
-  router.get("/audit-events", requirePermission("audit.events.view"), (_req, res) => {
-    return res.json({ events: listAuditEvents() });
+  router.get("/audit-events", requirePermission("audit.events.view"), async (_req, res, next) => {
+    try {
+      if (shouldUseDatabasePersistence()) {
+        return res.json({ events: await listPersistedAuditEvents() });
+      }
+      return res.json({ events: listAuditEvents() });
+    } catch (error) {
+      return next(error);
+    }
   });
 
   router.get(

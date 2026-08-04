@@ -151,6 +151,52 @@ export async function persistSecurityAuditEvent(event: AuditEvent): Promise<Pers
   return { persisted: true, recordId: created.id };
 }
 
+const VALID_RISK_CLASSIFICATIONS = new Set(["low", "medium", "high", "critical"]);
+
+function toRiskClassification(riskLevel: string | null): AuditEvent["risk"] {
+  return (VALID_RISK_CLASSIFICATIONS.has(riskLevel ?? "") ? riskLevel : "low") as AuditEvent["risk"];
+}
+
+/**
+ * Reads real, persisted AuditEvent rows - the actual production audit
+ * trail written by persistSecurityAuditEvent() above, plus the operational
+ * jobs (purgeExpiredQueueData.ts, fulfillPrivacyRequests.ts,
+ * accessEntitlementReview.mjs) that write directly via Prisma. Previously
+ * GET /api/v1/admin/audit-events only ever returned securityAdmin.ts's
+ * static 2-row in-memory mock array, even in database-persistence mode -
+ * meaning none of these real entries were ever visible through the admin
+ * API. Falls back to an empty array (not the mock) when DB persistence is
+ * off, since there is no real data to show in that mode.
+ */
+export async function listPersistedAuditEvents(limit = 200): Promise<AuditEvent[]> {
+  if (!shouldUseDatabasePersistence()) {
+    return [];
+  }
+
+  const rows = await prisma.auditEvent.findMany({
+    orderBy: { timestamp: "desc" },
+    take: limit
+  });
+
+  return rows.map((row) => ({
+    id: row.id,
+    timestampIso: row.timestamp.toISOString(),
+    userId: row.userId ?? "",
+    activeRole: row.activeRole ?? "",
+    organization: row.organization ?? "",
+    facility: row.facility ?? "",
+    department: row.department ?? "",
+    action: row.action,
+    module: row.module,
+    resource: row.resource ?? "",
+    purpose: row.purpose ?? undefined,
+    ipAddress: row.ipAddress ?? "",
+    device: row.device ?? "",
+    success: row.success,
+    risk: toRiskClassification(row.riskLevel)
+  }));
+}
+
 export async function persistUserSession(args: {
   session: AuthenticatedSession;
   ipAddress: string;

@@ -34,7 +34,16 @@ export const QueueListQuerySchema = z.object({
   channel: z.string().optional(),
   stage: z.string().optional(),
   owner: z.string().optional(),
-  safety_floor_status: z.string().optional()
+  safety_floor_status: z.string().optional(),
+  // Opt-in only (closes part of the pagination gap noted in
+  // docs/load-test-baseline-2026-08-04.md) - omitted entirely, the response
+  // is the full unpaginated list exactly as before, since the live nurse
+  // cockpit board genuinely needs to see every active queue item at once,
+  // not one page of it. limit/offset only apply when a caller explicitly
+  // opts in (e.g. a future reporting view, or an API consumer that doesn't
+  // need the whole live board).
+  limit: z.coerce.number().int().min(1).max(1000).optional(),
+  offset: z.coerce.number().int().min(0).optional()
 });
 export type QueueListQuery = z.infer<typeof QueueListQuerySchema>;
 

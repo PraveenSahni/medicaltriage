@@ -1720,12 +1720,21 @@ function appendTransition(
   return transition;
 }
 
-export async function listQueueItems(session: AuthenticatedSession, filters: QueueListQuery = {}): Promise<QueueItemDto[]> {
+export async function listQueueItems(
+  session: AuthenticatedSession,
+  filters: QueueListQuery = {}
+): Promise<{ items: QueueItemDto[]; totalCount: number }> {
   requireQueueAccess(session);
   const records = shouldPersistQueueInDatabase()
     ? await listDbRecords(filters, session)
     : sorted(Array.from(store().values()).filter((record) => matchesFilter(record, filters)));
-  return records.filter((record) => canSeeTenant(record, session)).map(toDto);
+  const visible = records.filter((record) => canSeeTenant(record, session));
+  const totalCount = visible.length;
+  const paged =
+    filters.limit !== undefined
+      ? visible.slice(filters.offset ?? 0, (filters.offset ?? 0) + filters.limit)
+      : visible;
+  return { items: paged.map(toDto), totalCount };
 }
 
 /**
@@ -1928,7 +1937,7 @@ export async function claimQueueItem(session: AuthenticatedSession, id: string):
 
 export async function nextBestCall(session: AuthenticatedSession): Promise<QueueItemDto> {
   requireQueueAccess(session);
-  const candidates = await listQueueItems(session, {});
+  const { items: candidates } = await listQueueItems(session, {});
   const candidate = candidates.find((item) => item.status !== "COMPLETED" && !isActiveForeignLock(itemToRecord(item), session));
   if (!candidate) {
     throw new QueueOrchestrationError(404, "No claimable queue item is available.", "QUEUE_EMPTY");

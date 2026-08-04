@@ -159,7 +159,7 @@ resource "google_cloud_run_v2_service" "soc2" {
     }
 
     containers {
-      image = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:latency-logging-fix-20260804"
+      image = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:batch-20260804"
 
       env {
         name  = "NODE_ENV"
