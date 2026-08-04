@@ -57,6 +57,28 @@ resource "google_secret_manager_secret" "soc2_database_url" {
   }
 }
 
+# Discovered during this remediation pass: ist-triage-soc2 previously had NO
+# AUTH_JWT_SECRET/AUDIT_HMAC_SECRET set at all, silently running on the
+# hardcoded fallback values in src/middleware/auth.ts / src/services/
+# safetyKernel.ts (unenforced because MOCK_MODE=true skips the required-env
+# check in assertRuntimeConfiguration). Fixed 2026-08-04 with real generated
+# secrets.
+resource "google_secret_manager_secret" "soc2_auth_jwt_secret" {
+  secret_id = "ist-triage-soc2-auth-jwt-secret"
+
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret" "soc2_audit_hmac_secret" {
+  secret_id = "ist-triage-soc2-audit-hmac-secret"
+
+  replication {
+    auto {}
+  }
+}
+
 resource "google_cloud_run_v2_service" "soc2" {
   name     = "ist-triage-soc2"
   location = "me-central1"
@@ -120,6 +142,24 @@ resource "google_cloud_run_v2_service" "soc2" {
         value_source {
           secret_key_ref {
             secret  = google_secret_manager_secret.soc2_database_url.secret_id
+            version = "latest"
+          }
+        }
+      }
+      env {
+        name = "AUTH_JWT_SECRET"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.soc2_auth_jwt_secret.secret_id
+            version = "latest"
+          }
+        }
+      }
+      env {
+        name = "AUDIT_HMAC_SECRET"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.soc2_audit_hmac_secret.secret_id
             version = "latest"
           }
         }
