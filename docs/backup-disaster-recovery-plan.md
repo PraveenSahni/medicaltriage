@@ -1,6 +1,6 @@
 # Backup & Disaster Recovery Plan
 
-_Last updated: 2026-08-02. Written as part of the SOC 2 remediation roadmap
+_Last updated: 2026-08-04. Written as part of the SOC 2 remediation roadmap
 (Wave A). Reflects the real, current infrastructure - not an aspirational
 target state._
 
@@ -31,6 +31,11 @@ Both databases live on the same shared Cloud SQL instance:
   cross-zone failover today. This is an accepted risk for a demo/staging
   workload, not appropriate as-is if this instance ever serves real production
   traffic with real PHI.
+- **Cross-region read replica: `ist-triage-postgres-dr-mumbai`** (region
+  `asia-south1`, Mumbai, India) - created 2026-08-04, continuously
+  replicating from the primary. This is a genuine cross-region copy of the
+  data, not just a same-region backup - closes the "no cross-region backup
+  replication" gap noted below, with the caveats in the next section.
 
 **Application code & configuration:**
 - Source code: version-controlled in GitHub (`PraveenSahni/medicaltriage`),
@@ -78,9 +83,41 @@ unprompted; flagged here so it isn't mistaken for the secret actually in use.
 | Accidental data deletion/corruption in Postgres | Up to a few seconds (point-in-time recovery) | 1-4 hours (manual PITR restore + validation) | Cloud SQL PITR, now enabled |
 | Cloud SQL instance failure (non-zone-wide) | Up to 24 hours (last daily backup) if PITR restore isn't viable | 1-4 hours | Daily automated backup |
 | Zone outage taking the Cloud SQL instance down | Up to 24 hours | Hours (manual restore into a new zone/instance - no automatic failover configured) | ZONAL availability, no HA replica |
+| **Regional outage taking down `me-central1` entirely** | Seconds to low minutes of replication lag (not yet measured - see caveats below) | **Not yet a measured number.** Today this means: manually promote `ist-triage-postgres-dr-mumbai` to a standalone primary, then manually stand up a Cloud Run service + Firebase Hosting pointing at it in a new region, since no standby app tier exists in Mumbai yet. Realistically hours, not minutes, until the standby app tier below is built. | New: `ist-triage-postgres-dr-mumbai` read replica (asia-south1), created 2026-08-04. This is a genuine improvement over "unrecoverable," but is **not yet a tested, automated failover** - see explicit caveats below. |
 | Cloud Run service deleted/misconfigured | Zero (code is in Git, image is in Artifact Registry) | 30-60 minutes (manual redeploy following the recipe in `README.md`, or faster once the service is reproducible as code - see gaps below) | Confirmed working this session: redeploying a known-good image + env vars takes well under an hour by hand |
 | Firebase Hosting site/domain misconfigured | Zero (config is in Git) | 15-30 minutes (`firebase deploy --only hosting:<target>`) | Confirmed working this session |
-| Full GCP project loss (extreme) | Up to 24 hours for data; zero for code | Days (recreate project, all infra, restore from last backup) | No cross-project/cross-region backup replication configured today |
+| Full GCP project loss (extreme) | Up to 24 hours for data; zero for code | Days (recreate project, all infra, restore from last backup) | No cross-project backup replication configured today (the cross-region replica above is within the same project) |
+
+### Cross-region replica - what it does and doesn't cover today
+
+`ist-triage-postgres-dr-mumbai` is a **read replica only**, not a full DR
+environment. Being honest about exactly what exists and what doesn't:
+
+- **What's real:** a continuously-replicating standby copy of the primary
+  database, physically in a different country/region (Mumbai) from the
+  primary (Doha). A regional outage in `me-central1` no longer means total,
+  unrecoverable data loss - the replica has a near-real-time copy.
+- **What's not built yet:**
+  - **No standby Cloud Run service in Mumbai.** Even with a healthy DB
+    replica, there is nothing to serve application traffic from that region
+    today - the app tier would need to be deployed there from scratch during
+    a real regional outage.
+  - **No automated or tested failover/promotion procedure.** Promoting a
+    read replica to a standalone writable primary is a manual, one-way
+    operation (it cannot be un-done back into a replica) - this has not been
+    rehearsed, so the actual time it takes is unverified.
+  - **No measured replication lag.** The replica is confirmed `RUNNABLE` and
+    correctly attached to the primary, but the actual steady-state
+    replication lag (seconds? sub-second?) has not been measured under this
+    app's real write load.
+  - **Cost is real and ongoing.** This is a second billable Cloud SQL
+    instance (`db-f1-micro`, matching the primary's tier), not a one-time
+    setup cost.
+- **Recommended next steps, in order:** (1) measure replication lag under
+  load, (2) write and rehearse a promotion runbook, (3) decide whether a
+  standby Cloud Run + Hosting deployment in Mumbai is worth the additional
+  ongoing cost given this is still a demo/staging workload, not real
+  production PHI traffic.
 
 These are the plan's **current, honest** targets given today's infrastructure
 - not yet formally reviewed or signed off by a business stakeholder as
@@ -101,10 +138,13 @@ These are the plan's **current, honest** targets given today's infrastructure
    one." A quarterly restore drill (restore the latest backup into a
    scratch instance, verify data integrity, tear it down) should be
    scheduled once this plan is adopted.
-3. **No cross-region/cross-project backup replication** - a full-region GCP
-   outage in `me-central1` would be unrecoverable under the current setup.
-   Out of scope for the demo/staging environments; would need to be revisited
-   before any real production PHI workload.
+3. **Partially closed 2026-08-04:** a cross-region read replica
+   (`ist-triage-postgres-dr-mumbai`, asia-south1) now exists, so a
+   `me-central1` regional outage is no longer unrecoverable - but promotion
+   is manual/untested and there is no standby application tier in that
+   region yet (see the dedicated section above). Cross-*project* replication
+   still does not exist - a full GCP project loss remains a "restore from
+   the last backup" scenario, not "already replicated elsewhere."
 4. **DATABASE_URL is a plain env var, not a Secret Manager secret** - noted
    above; fixing this is a small, separate hardening item (not blocking this
    DR plan, but worth doing alongside the encryption/masking Wave C items).
