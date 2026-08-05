@@ -582,6 +582,68 @@ Verified: `npx tsc --noEmit` clean, 688/692 (same known environment gap,
 no new regressions). Register regenerated: 193 rows now closed (was
 192).
 
+## 2026-08-05 (continued): Monthly SLI reporting - NFR-123/NFR-189 real closure
+
+Task #102's earlier finding ("no monthly SLI report script exists") was
+itself found to be **incomplete this pass**: `scripts/generateMonthlySliReport.mjs`
+did exist and was real - it queried live Cloud Monitoring data for
+latency/saturation and had a real email-delivery path - but deliberately
+never computed availability/error-rate percentages or an SLO pass/fail
+verdict (its own comment explains why: "not shown numerically here to
+avoid a partial/misleading figure"), and had no audit trail or
+idempotency. A real Cloud Run Job + Cloud Scheduler already existed too
+(`terraform/main.tf`), pointed at the old script.
+
+**Built for real** (superseding the .mjs script, not just patching it):
+`src/services/sliReportService.ts` using the official
+`@google-cloud/monitoring` client (new dependency, `pnpm audit` clean) -
+queries all 4 SLIs, calculates each against its real SLO target
+(`docs/sli-slo-definitions.md`), generates a report, emails it via the
+existing `getEmailAdapter()`, writes a full audit trail
+(`SLI_REPORT_GENERATION_STARTED/GENERATED/FAILED`,
+`SLI_REPORT_EMAILED/EMAIL_FAILED`, `SLI_REPORT_DUPLICATE_SKIPPED`), and
+enforces one delivery per environment+month unless `--force`d. 15 tests
+(`tests/sliReportService.test.ts`) cover SLI calculation, SLO pass/fail,
+missing/partial data, idempotency, and email failure - all mocked at the
+GCP-client/Prisma/email-adapter boundary.
+
+**Real end-to-end validation performed** (not just unit tests): built
+and pushed a new soc2 image, updated `terraform/main.tf`'s
+`generate_monthly_sli_report` job to run the compiled TS entry point
+with real config, applied via Terraform, then executed the real Cloud
+Run Job (`gcloud run jobs execute --wait`) - completed successfully
+(`exit 0`). Real data returned for all 4 SLIs: Availability 100.00%,
+Latency p95 67.81ms, Error rate 0.03%, Saturation 56.00%, all PASS,
+complete data. No database error this run (unlike an earlier local
+dry-run without Cloud SQL Proxy access) - the audit-event write
+succeeded for real via the job's Cloud SQL Proxy sidecar.
+
+**Integrity correction found along the way**: a real, pre-existing
+`pnpm-lock.yaml`/`pnpm-workspace.yaml` version-skew issue (local pnpm
+11.20.0 vs. the Dockerfile's pinned pnpm 9.15.9 reading the `overrides`
+config from different locations) blocked the Docker build - fixed by
+keeping the overrides declared in both `package.json` and
+`pnpm-workspace.yaml` for compatibility, not by changing the pinned
+version (out of this batch's scope).
+
+**Closure decision**:
+- ✅ **NFR-123** (capability to generate scheduled reports via email) -
+  closed to Yes. The literal ask is about capability, which is now real,
+  tested, deployed, and proven working end-to-end.
+- **NFR-189** (SLIs/SLOs monitored AND reported monthly **to Qatar
+  Airways**) - retained Partial. Monitoring is now genuinely real for
+  all 4 SLIs (proven above). The literal wording specifically names "to
+  Qatar Airways" as the report recipient - no real QR email address or
+  live email secrets are configured anywhere (by design, no customer
+  email is hardcoded into code or infrastructure). Exact remaining
+  action documented in
+  `docs/operations/monthly-sli-report-runbook.md`.
+
+Verified: `npx tsc --noEmit` clean, `npx pnpm audit --audit-level high`
+clean (new dependency), 703/707 backend tests passing (15 new,
+688 baseline unchanged, same known Cloud SQL tunnel gap in
+`ssoOidcFlow.test.ts`).
+
 ## 2026-08-05 (continued): Performance remediation - NFR-138/152/156
 
 Real root-cause investigation and fix, per the dedicated performance

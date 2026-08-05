@@ -558,9 +558,67 @@ resource "google_cloud_run_v2_job" "generate_monthly_sli_report" {
       timeout         = "180s"
 
       containers {
-        image   = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:batch2-20260804"
+        # Superseded 2026-08-05 (NFR-123/NFR-189 real closure batch):
+        # replaces the earlier scripts/generateMonthlySliReport.mjs (which
+        # only queried latency/saturation and deliberately never computed
+        # an availability/error-rate percentage or SLO pass/fail verdict)
+        # with the real TS service (src/services/sliReportService.ts) -
+        # all 4 SLIs, SLO comparison, audit trail, idempotency.
+        image   = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:sli-report-20260805"
         command = ["node"]
-        args    = ["scripts/generateMonthlySliReport.mjs", "triage-502706"]
+        args    = ["dist/scripts/generateMonthlySliReport.js"]
+
+        env {
+          name  = "GCP_PROJECT_ID"
+          value = "triage-502706"
+        }
+        env {
+          name  = "SLI_REPORT_ENVIRONMENT_LABEL"
+          value = "soc2-staging"
+        }
+        env {
+          name  = "SLI_REPORT_SERVICE_NAME"
+          value = "ist-triage-soc2"
+        }
+        env {
+          name  = "SLI_REPORT_UPTIME_CHECK_ID"
+          value = "ist-triage-soc2-uptime-0ezfab_LZ7I"
+        }
+        env {
+          name  = "SLI_REPORT_CLOUDSQL_DATABASE_ID"
+          value = "triage-502706:ist-triage-postgres-uat"
+        }
+        env {
+          name  = "SLI_REPORT_CLOUDSQL_MAX_CONNECTIONS"
+          value = "25"
+        }
+        # SLI_REPORT_RECIPIENT_EMAIL is deliberately NOT set here - no
+        # customer email address is hardcoded into infrastructure config.
+        # Until a real Qatar Airways recipient and MS_GRAPH_* live-mode
+        # secrets are configured, this job safely generates and audits the
+        # report without emailing it (the same dry-run-by-default posture
+        # every other integration in this app already follows).
+        env {
+          name = "DATABASE_URL"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.soc2_database_url.secret_id
+              version = "latest"
+            }
+          }
+        }
+
+        volume_mounts {
+          name       = "cloudsql"
+          mount_path = "/cloudsql"
+        }
+      }
+
+      volumes {
+        name = "cloudsql"
+        cloud_sql_instance {
+          instances = [data.google_sql_database_instance.shared.connection_name]
+        }
       }
     }
   }

@@ -6,6 +6,20 @@ Batches 4-5; this document does not repeat them). For each row, this
 classifies whether it can be advanced to one of the 5 target states, or
 whether it genuinely cannot advance further without new investigation._
 
+## Update 2026-08-05: NFR-189 (monthly SLI reporting) substantially advanced
+
+NFR-189 was not one of the original 23 "existing control" candidates
+(it was tracked separately as an "engineering closure" needing new code,
+per task #102). Built for real this pass:
+`src/services/sliReportService.ts` (real GCP Monitoring queries, all 4
+SLIs, SLO comparison, audit trail, idempotency), validated end-to-end
+via a real Cloud Run Job execution. **Retained Partial** - the literal
+wording requires reporting "to Qatar Airways" specifically, and no real
+QR recipient/live email secrets are configured (by design). This moves
+NFR-189 from "Not yet advanced" to **State: Implementation complete,
+awaiting a real recipient + live-mode secrets** - see
+`docs/operations/monthly-sli-report-runbook.md`'s "Remaining action".
+
 ## Honest scope note
 
 Advancing a row to one of the 5 target states below requires a real

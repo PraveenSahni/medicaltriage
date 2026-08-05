@@ -102,6 +102,22 @@ contradictory evidence found (each has a genuine, real gap - see
 list and reasoning per row). **No integrity discrepancies found this
 sub-batch.**
 
+## Monthly SLI reporting - NFR-123 real closure, NFR-189 real progress (2026-08-05)
+
+| Requirement ID | Control | Code/config reference | Test reference | Operational evidence | Validation date | Validator | Remaining limitation |
+|---|---|---|---|---|---|---|---|
+| NFR-123 | Real monthly SLI/SLO report + email capability | `src/services/sliReportService.ts`, `src/scripts/generateMonthlySliReport.ts`, `terraform/main.tf` (`generate_monthly_sli_report` job + `monthly_sli_report_trigger` scheduler) | `tests/sliReportService.test.ts` (15 tests) | Real `gcloud run jobs execute --wait` run, `exit(0)`, all 4 SLIs returned with complete data | 2026-08-05 | This engagement | None known for the capability itself |
+| NFR-189 | SLIs/SLOs monitored (all 4, real data) | Same as above | Same as above | Same real execution: 100.00% availability, 67.81ms p95 latency, 0.03% error rate, 56.00% saturation, all PASS | 2026-08-05 | This engagement | "Reported monthly **to Qatar Airways**" specifically not yet demonstrated - no real QR recipient/live email secrets configured (by design, no customer email hardcoded) |
+
+**Integrity note**: NFR-123 was previously marked "Yes" citing
+`scripts/generateMonthlySliReport.mjs`, which was real but incomplete
+(only queried 2 of 4 SLIs, computed no SLO pass/fail verdict, had no
+audit trail or idempotency). The row's status (Yes) did not change as a
+result of this batch, but the *evidence backing that Yes* was
+substantially incomplete before this pass and is now genuinely accurate
+- not counted as a new closure in the register's totals since the bucket
+value was already "Yes," but flagged here for transparency.
+
 ## Everything else scored "Yes" (94 rows, prior to Batch 1/2/3/4)
 
 Sourced from earlier passes of this same engagement (prior to 2026-08-05).

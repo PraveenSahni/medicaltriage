@@ -60,12 +60,26 @@ remains a manual, verified operation each time the reminder fires. Declared in
 `terraform/main.tf` (zero-diff verified) alongside the pubsub topic and its
 `roles/pubsub.publisher` IAM binding for the Secret Manager service agent.
 
-## Reporting cadence
+## Reporting cadence (real, built and executed 2026-08-05)
 
-Not yet established. Once the metrics above are actually being collected,
-a monthly summary (even a simple exported report from Cloud Monitoring)
-could be shared with QR - this is a process decision to make once the
-underlying measurement gap is closed, not a technical blocker itself.
+A real monthly SLI/SLO report now exists -
+`src/services/sliReportService.ts`, deployed as the
+`generate-monthly-sli-report-soc2` Cloud Run Job, triggered monthly by
+Cloud Scheduler (`monthly-sli-report-soc2-trigger`, `0 7 1 * *`). It
+queries real GCP Cloud Monitoring data for all 4 SLIs above, calculates
+each against its SLO target, and emails the result via the existing
+`getEmailAdapter()`. Manually executed end-to-end 2026-08-05 (confirmed
+success, `exit(0)`, all 4 SLIs returned `complete` data with real
+values - see `docs/operations/monthly-sli-report-runbook.md` for the
+exact result and full operational detail).
+
+**What is NOT yet closed**: no email has been sent to a real Qatar
+Airways recipient - no customer email address is hardcoded anywhere in
+this codebase or infrastructure config, by design. The capability is
+real and proven; the actual monthly delivery *to Qatar Airways*
+specifically requires a real recipient address and live email secrets to
+be configured once QR provides them (see the runbook's "Remaining
+action" section).
 
 ## Explicitly out of scope for this document
 

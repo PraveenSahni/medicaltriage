@@ -1,8 +1,18 @@
 packages:
   - "."
 
+# protobufjs (a real, legitimate transitive dependency of the new
+# @google-cloud/monitoring client added for NFR-123/NFR-189's monthly SLI
+# report) runs a postinstall build script to compile its bundled .proto
+# definitions - allowed to run, same trust level as the other GCP/Prisma
+# native builds already allowed below.
 allowBuilds:
   '@prisma/client': true
   '@prisma/engines': true
   esbuild: true
   prisma: true
+  protobufjs: true
+
+overrides:
+  brace-expansion: ">=1.1.17"
+  undici: ">=7.29.0"
