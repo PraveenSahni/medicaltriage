@@ -191,3 +191,19 @@ pass. PA.05 is now normalized to exact `"Yes"` alongside the other 4.
 **Corrected, mechanically-verified figures**: mandatory 78/149 =
 52.35%; overall 133/391 = 34.02%. See `management-summary.md` for the
 full per-tab breakdown and row-level delta table.
+
+## Update 2026-08-05 (continued): AR.13 production-activation validation
+
+Attempted, per explicit instruction, to activate `MFA_MANDATORY=true`
+in the live soc2 environment. Validated entirely on `--no-traffic`
+canaries (live traffic never touched). Found and fixed 2 real defects
+(MFA-credential DB persistence was silently disabled by
+`MOCK_MODE=true`; the live revision predated the MFA feature entirely
+and had to be redeployed). Deliberately **not cut over** - only 2 of
+~19 real accounts are enrolled and there is no self-service enrollment
+path once enforcement is on, which would lock out most accounts with
+no in-app recovery. **AR.13 remains Partial**, now backed by real
+canary-validated evidence. See `docs/qr-questionnaire-backlog-tracker.md`
+for full detail, and the secondary finding that AuditEvent persistence
+is also currently non-functional on soc2 (same root cause, separate
+future batch).

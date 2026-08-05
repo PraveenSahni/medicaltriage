@@ -341,3 +341,23 @@ dependent.
    NFR-015, NFR-004 UX) all use the established canary-then-cutover/
    read-only-detection patterns already proven safe this engagement -
    low production risk, hence placed in the fast Phase 1/2 tiers.
+
+## Update 2026-08-05 (continued): AR.13 production-activation attempt - not cut over
+
+Attempted per explicit instruction. Validated entirely on `--no-traffic`
+canaries (live traffic on `triagedsoc2.irisstar.tech` unaffected
+throughout, confirmed 200 OK afterward). Found and fixed 2 real defects
+(live revision predated the MFA feature; MFA-credential DB persistence
+silently disabled by `MOCK_MODE=true`, same class of bug as the earlier
+session cross-instance issue). **Not cut over**: only 2 of ~19 real
+accounts enrolled, no self-service enrollment path once enforcement is
+on - a genuine, disclosed gap. AR.13 remains Partial. Mandatory and
+overall compliance percentages are unchanged by this task (78/149 =
+52.35%, 133/391 = 34.02%) - no row moved to Yes.
+
+**Secondary finding, new highest-leverage item**: AuditEvent
+persistence to the real soc2 database is currently non-functional
+(same `MOCK_MODE`-gating root cause) - every row citing AuditEvent DB
+evidence on soc2 should be re-verified once fixed. Recommend this as a
+priority item alongside the previously-identified NFR-189/NFR-015/
+IS.07 activations.

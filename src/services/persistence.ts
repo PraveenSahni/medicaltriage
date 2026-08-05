@@ -4,8 +4,13 @@ import type {
   Prisma,
   TriageSeverity
 } from "@prisma/client";
-import { shouldPersistSessionsInDatabase, shouldUseDatabasePersistence } from "../config/runtime.js";
+import {
+  shouldPersistMfaCredentialsInDatabase,
+  shouldPersistSessionsInDatabase,
+  shouldUseDatabasePersistence
+} from "../config/runtime.js";
 import { prisma } from "../db.js";
+import { decryptMfaSecret } from "./mfaCrypto.js";
 import type { SafetyAuditDraft } from "../services/auditLog.js";
 import type {
   AviationEvaluation,
@@ -159,7 +164,7 @@ export type MfaCredentialSnapshot = {
 };
 
 export async function persistMfaCredential(snapshot: MfaCredentialSnapshot): Promise<PersistenceResult> {
-  if (!shouldUseDatabasePersistence()) {
+  if (!shouldPersistMfaCredentialsInDatabase()) {
     return { persisted: false, reason: "mock-mode" };
   }
 
@@ -179,6 +184,39 @@ export async function persistMfaCredential(snapshot: MfaCredentialSnapshot): Pro
   });
 
   return { persisted: true, recordId: upserted.id };
+}
+
+export type PersistedMfaCredential = {
+  secret: string;
+  status: "pending" | "enabled" | "disabled";
+  enrolledAt?: string;
+};
+
+// Read-path counterpart to persistMfaCredential() - without this, MFA
+// enrollment only ever lived in the handling instance's in-memory
+// mfaCredentials Map, invisible to every other Cloud Run instance/revision
+// (the same cross-instance class of bug already found and fixed for
+// sessions via getPersistedUserSession() - found here during AR.13's
+// production-activation validation, when an admin enrolled against one
+// canary revision and was told to re-enroll on another).
+export async function getPersistedMfaCredential(userId: string): Promise<PersistedMfaCredential | undefined> {
+  if (!shouldPersistMfaCredentialsInDatabase()) {
+    return undefined;
+  }
+  try {
+    const row = await prisma.userMfaCredential.findUnique({ where: { userId } });
+    if (!row) {
+      return undefined;
+    }
+    return {
+      secret: decryptMfaSecret(row.secretCiphertext),
+      status: row.status as "pending" | "enabled" | "disabled",
+      enrolledAt: row.enrolledAt ? row.enrolledAt.toISOString() : undefined
+    };
+  } catch (error) {
+    console.error("Failed to read persisted MFA credential:", error);
+    return undefined;
+  }
 }
 
 // Closes R-04 - real, previously-orphaned RevealRequest/RevealApproval/

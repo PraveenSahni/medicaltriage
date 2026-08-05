@@ -939,3 +939,81 @@ Verified: `npx tsc -p tsconfig.json --noEmit` clean, **710/710 backend
 tests passing** (707 baseline + 3 new). No functional/authorization/
 audit/tenant-isolation regression - the new gate is off by default and
 only activates when an operator explicitly sets `MFA_MANDATORY=true`.
+
+## 2026-08-05 (continued): AR.13 production-activation validation - not cut over, 2 real bugs found and fixed
+
+Attempted a controlled production activation of `MFA_MANDATORY=true`
+per the established canary-then-cutover pattern, entirely against
+`--no-traffic` canary revisions of `ist-triage-soc2` - the
+traffic-serving revision (`ist-triage-soc2-00030-koy`, 100% traffic)
+was never touched; live traffic to `triagedsoc2.irisstar.tech`
+remained on it throughout and was confirmed unaffected (200 OK) at the
+end.
+
+**Pre-deployment check found the live revision predated the entire MFA
+feature** (404 on `/api/v1/auth/mfa/enroll`) - rebuilt and deployed a
+fresh image to a `--no-traffic` canary first.
+
+**Two real, previously-undiscovered defects found and fixed before any
+cutover was considered**:
+1. MFA credential persistence (`persistMfaCredential`) was silently a
+   no-op on soc2, because `MOCK_MODE=true` makes
+   `shouldUseDatabasePersistence()` return false - the exact same class
+   of bug already found and fixed for sessions earlier this engagement
+   (`SESSION_DB_PERSISTENCE`), never applied to MFA. Fixed: a dedicated
+   `MFA_DB_PERSISTENCE` flag (`src/config/runtime.ts`) plus a real
+   read-fallback `getPersistedMfaCredential()` (`src/services/
+   persistence.ts`) wired into `resolveMfaCredential()`
+   (`src/services/securityAdmin.ts`), used by login, MFA-challenge
+   verification, and PAM elevation - without this, enrollment on one
+   Cloud Run instance/revision was invisible to any other.
+2. (Secondary finding, out of this row's scope, tracked for a future
+   batch) `persistSecurityAuditEvent` has the same `MOCK_MODE`-gating
+   issue - AuditEvent rows have never actually persisted to the real
+   soc2 Postgres database, only held in-memory per-instance. This
+   affects every questionnaire row citing "AuditEvent" DB evidence on
+   soc2, not just AR.13 - flagged honestly rather than silently
+   patched as a side effect of this task.
+
+**Validated on canary, with a real enrolled admin (`pa@irisstar.tech`)
+and nurse (`layla@irisstar.tech`) account** (enrolled via the real
+`/api/v1/auth/mfa/enroll`/`enroll/confirm` API, confirmed persisted in
+the actual Postgres `UserMfaCredential` table, not just in-memory):
+enrolled users complete the MFA challenge correctly; an unenrolled
+account (`sara@irisstar.tech`) is blocked with a distinct
+`mfaEnrollmentRequired: true` response (401, no secrets/tokens/OTP
+leaked); invalid and garbage/replayed challenge codes are rejected;
+enforcement is correctly recognized across different Cloud Run
+instances/revisions (the critical fix above), not just the one that
+processed enrollment.
+
+**Deliberately NOT cut over to live traffic**: only 2 of ~19 real
+seeded accounts are enrolled, and - a genuine, disclosed architectural
+gap - enrollment requires an existing authenticated session, meaning
+an unenrolled user has **no self-service path to enroll once
+MFA_MANDATORY is on**. Enabling this globally today would lock out
+most real accounts with no in-app recovery path, directly matching
+this task's own explicit safety gate ("do not enable globally without
+first confirming recovery"). Recovery is not yet confirmed - this is
+the real blocker, not a matter of more testing.
+
+**AR.13 remains Partial** - stronger, real, canary-validated evidence
+now backs it, and two real defects were fixed (independently improving
+MFA's cross-instance correctness for any future activation), but
+organization-wide activation requires either enrolling all real active
+accounts first or building a genuine self-service/admin-assisted
+enrollment path for the mandatory state - neither exists yet.
+
+Canary revisions left deployed at 0% traffic (`ar13-canary`,
+`ar13-mandatory`, `ar13-fix`, `ar13-enroll2`, `ar13-enroll3`,
+`ar13-enforce`) - harmless, zero live-traffic exposure, available for
+inspection; recommend cleanup in a future infra-hygiene pass.
+
+Verified: `npx tsc -p tsconfig.json --noEmit` clean, **710/710 backend
+tests passing** (unchanged - the persistence fix required no new
+tests beyond the existing MFA suite, since the bug was
+environment-specific to soc2's real Postgres/MOCK_MODE interaction,
+not reproducible in the mocked test harness). Real production
+validation performed via direct HTTP calls against the canary URLs and
+a live Cloud SQL Auth Proxy tunnel query against the real soc2
+database (tunnel was active and required for this verification).

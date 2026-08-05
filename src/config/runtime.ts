@@ -120,6 +120,16 @@ export function shouldPersistSessionsInDatabase(): boolean {
   return envFlag("SESSION_DB_PERSISTENCE", false);
 }
 
+// MFA credentials need the same independent-of-MOCK_MODE treatment as
+// sessions above, for the same reason: without it, enrollment recorded on
+// one Cloud Run instance is invisible to any other instance/revision.
+// Found during AR.13 production-activation validation - MOCK_MODE=true on
+// soc2 was silently making shouldUseDatabasePersistence() (and therefore
+// persistMfaCredential()/getPersistedMfaCredential()) a no-op.
+export function shouldPersistMfaCredentialsInDatabase(): boolean {
+  return envFlag("MFA_DB_PERSISTENCE", false);
+}
+
 // Closes Cloud CSQ AR.13's literal ask ("MFA required for all remote user
 // access") for real when an operator actually wants org-wide enforcement,
 // without changing today's default (opt-in per user) behavior. Off by

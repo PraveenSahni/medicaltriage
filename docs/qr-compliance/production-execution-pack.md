@@ -184,3 +184,33 @@ routinely this engagement when available).
 **Status**: test procedure complete (login/entry matrix already real
 and passing); awaiting tunnel access in a future session to fix and
 re-verify the deeper workflow fixtures.
+
+## AR.13 - update 2026-08-05, activation attempted, not cut over
+
+Attempted full activation per this pack's own plan. Validated
+end-to-end on `--no-traffic` canaries of `ist-triage-soc2` (zero live-
+traffic impact). Found and fixed 2 real defects along the way: (1) the
+live revision predated the MFA feature entirely; (2) MFA-credential DB
+persistence was silently disabled by `MOCK_MODE=true` (same class of
+bug as the earlier session cross-instance issue, never applied to
+MFA) - fixed via a dedicated `MFA_DB_PERSISTENCE` flag and a real
+read-fallback.
+
+**Not cut over to live traffic**: only 2 of ~19 real seeded accounts
+are enrolled, and there is no self-service enrollment path once
+`MFA_MANDATORY` is on (enrollment requires an existing authenticated
+session, which enforcement itself blocks for unenrolled users) - a
+genuine architectural gap, not a testing gap. Recommended next step
+before any real cutover: either (a) an admin-assisted bulk-enrollment
+process for all real active accounts, run before the flag is ever
+flipped, or (b) a dedicated bypass-enrollment flow for first-time
+mandatory MFA setup (e.g. a one-time enrollment token issued out of
+band). Neither is built.
+
+**Secondary finding**: AuditEvent persistence to the real soc2
+database is also currently non-functional (`MOCK_MODE`-gated, same
+root cause) - flagged for its own future batch, out of scope here.
+
+Canary revisions (`ar13-canary`, `ar13-mandatory`, `ar13-fix`,
+`ar13-enroll2`, `ar13-enroll3`, `ar13-enforce`) remain deployed at 0%
+traffic - harmless, recommend cleanup in a future infra-hygiene pass.

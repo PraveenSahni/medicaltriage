@@ -200,3 +200,15 @@ batch).
 | Requirement ID | Control | Code reference | Config reference | Test reference | Validation date | Validator | Remaining limitation |
 |---|---|---|---|---|---|---|---|
 | AR.13 | Org-wide MFA enforcement capability | `src/services/securityAdmin.ts` (`authenticateLocal()`, `isMfaMandatory()` gate) | `src/config/runtime.ts` (`MFA_MANDATORY` env flag, default off) | `tests/mfaVerification.test.ts` (3 new tests: blocks non-enrolled, allows enrolled, default unchanged) | 2026-08-05 | This engagement | Flag defaults off - enabling it for a live environment is an operator rollout decision (would lock out unenrolled users), not yet done for any real environment |
+
+## AR.13 production-activation validation (2026-08-05)
+
+| Requirement ID | Control | Code reference | Config reference | Test/validation reference | Validation date | Validator | Remaining limitation |
+|---|---|---|---|---|---|---|---|
+| AR.13 | Org-wide MFA enforcement, cross-instance correctness | `src/services/securityAdmin.ts` (`resolveMfaCredential()`), `src/services/persistence.ts` (`getPersistedMfaCredential()`) | `src/config/runtime.ts` (`MFA_DB_PERSISTENCE`, `MFA_MANDATORY`) | Live canary validation against `ist-triage-soc2` (real enrolled admin+nurse via real API, real Postgres row confirmed, cross-revision recognition confirmed); `tests/mfaVerification.test.ts` unchanged (710/710 passing) | 2026-08-05 | This engagement | Not cut over to live traffic - only 2 of ~19 real accounts enrolled, no self-service enrollment path once locked out (genuine, disclosed gap) |
+
+**Secondary finding (not an AR.13 evidence item, flagged for a future
+batch)**: `persistSecurityAuditEvent` shares the same `MOCK_MODE`-gating
+defect as MFA credentials did - AuditEvent rows have never persisted
+to the real soc2 Postgres database. Every row citing "AuditEvent" DB
+evidence on soc2 should be re-verified once this is fixed.

@@ -39,6 +39,7 @@ import type {
 import {
   getAuthenticationProviderConfig,
   getPersistedUserSession,
+  getPersistedMfaCredential,
   persistMfaCredential,
   persistRevealApproval,
   persistRevealEvent,
@@ -1870,6 +1871,28 @@ type MfaCredentialState = {
 };
 const mfaCredentials = new Map<string, MfaCredentialState>();
 
+// In-memory-first, DB-fallback read for MFA credential state - without this,
+// enrollment recorded by one Cloud Run instance (or revision) is invisible
+// to any other instance/revision handling a later request, since
+// persistMfaCredential() alone is write-only. Found during AR.13's
+// production-activation validation (an admin enrolled against one canary
+// revision, then was incorrectly told to re-enroll on another). Mirrors the
+// same in-memory-first/DB-fallback shape already used for sessions via
+// getPersistedUserSession().
+async function resolveMfaCredential(userId: string): Promise<MfaCredentialState | undefined> {
+  const cached = mfaCredentials.get(userId);
+  if (cached) {
+    return cached;
+  }
+  const persisted = await getPersistedMfaCredential(userId);
+  if (!persisted) {
+    return undefined;
+  }
+  const hydrated: MfaCredentialState = { secret: persisted.secret, status: persisted.status, failedAttempts: 0 };
+  mfaCredentials.set(userId, hydrated);
+  return hydrated;
+}
+
 type PendingMfaChallenge = {
   userId: string;
   rememberMe: boolean;
@@ -2488,7 +2511,7 @@ export async function requestElevation(
   session: AuthenticatedSession,
   code: string
 ): Promise<{ elevated: true; elevationId: string; expiresAt: string }> {
-  const credential = mfaCredentials.get(session.user.id);
+  const credential = await resolveMfaCredential(session.user.id);
   if (credential?.status !== "enabled") {
     throw new MfaNotEnrolledError("Privileged elevation requires TOTP MFA to already be enrolled and enabled.");
   }
@@ -2792,7 +2815,7 @@ export async function authenticateLocal(args: {
   // status "enabled" must complete a second, TOTP-verified step before a
   // real session is issued; users without MFA enrolled (or still
   // "pending"/"disabled") proceed exactly as before.
-  const mfaCredential = mfaCredentials.get(user.id);
+  const mfaCredential = await resolveMfaCredential(user.id);
   if (mfaCredential?.status === "enabled") {
     const challengeId = randomBytes(32).toString("base64url");
     pendingMfaChallenges.set(challengeId, {
@@ -2958,7 +2981,7 @@ export async function verifyMfaChallenge(
   }
 
   const user = users.find((candidate) => candidate.id === challenge.userId);
-  const credential = mfaCredentials.get(challenge.userId);
+  const credential = await resolveMfaCredential(challenge.userId);
   const username = user?.email.toLowerCase() ?? challenge.userId;
 
   // A wrong TOTP code reuses the same username-keyed failedLoginAttempts
