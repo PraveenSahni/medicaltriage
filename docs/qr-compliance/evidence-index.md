@@ -125,6 +125,12 @@ value was already "Yes," but flagged here for transparency.
 | NFR-138 | 3s p95 response time | 4 missing DB migrations found and applied to live soc2 (`npx prisma migrate deploy`); queue-list p95 3105ms -> 446-569ms | 2026-08-05 | This engagement | NFR-156 (capacity planning/soak testing) remains separately open |
 | NFR-152 | Scalability SLA | Same evidence | 2026-08-05 | This engagement | Same |
 
+## Capacity planning/soak testing: NFR-156 real evidence (2026-08-05)
+
+| Requirement ID | Control | Evidence | Validation date | Validator | Remaining limitation |
+|---|---|---|---|---|---|
+| NFR-156 | Capacity planning / sustained-load validation | Multi-tier load test (10/25/50 concurrent users, 6 distinct real accounts, ~3s think time) plus a 20-minute sustained-load run against `triagedsoc2.irisstar.tech`, with real Cloud Monitoring evidence: Cloud Run instance count/CPU/memory and Cloud SQL CPU/connections/disk utilization all flat throughout the soak window and a ~7-minute post-load recovery period; zero 5xx across every tier and the soak (3,609/3,609 soak requests succeeded). See `docs/performance/nfr-156-capacity-plan.md`. | 2026-08-05 | This engagement | Validated only up to 25 concurrent users - tier 50 was constrained by the 6-account test pool hitting the NFR-047 rate limiter, not infrastructure. Still open: Qatar Airways' actual peak-load projection, a 60+ minute soak (this pass ran 20 minutes), and write-path/tenant-isolation/audit-write validation under load (this pass tested reads only) |
+
 **Major integrity finding this pass**: 4 real database migrations
 (`add_user_feedback`, `add_role_permission_overrides`,
 `add_user_mfa_credential`, `add_queue_item_soft_delete`) were committed

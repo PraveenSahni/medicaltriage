@@ -759,3 +759,74 @@ Verified: `npx tsc --noEmit` clean, 688/692 (unchanged), zero errors in
 both load-test runs (no functional/authorization/audit/tenant-isolation
 regression). Register regenerated: 193 rows closed (unchanged - no rows
 converted this pass, remarks updated with real evidence).
+
+## 2026-08-05 (continued): NFR-156 dedicated capacity-planning/soak batch
+
+Follow-up batch closing the remaining NFR-156 gap left open by the
+performance-remediation pass above: real capacity sizing and sustained-
+load (soak) evidence, not just a point-in-time response-time fix.
+
+**Multi-tier load test** (new `scripts/capacityLoadTest.mjs`, against
+`https://triagedsoc2.irisstar.tech`, 6 distinct real seeded accounts
+round-robined across workers rather than one shared token - required
+to separate platform capacity from NFR-047's per-account rate limiter):
+
+- 10 concurrent users, 60s: 184/184 succeeded (100%), p95 475ms, zero
+  5xx/timeouts.
+- 25 concurrent users, 60s: 467/468 succeeded (99.8%), p95 464ms, zero
+  5xx/timeouts, 1 stray 429.
+- 50 concurrent users, 60s: 850/936 succeeded (90.8%), p95 535ms, zero
+  5xx/timeouts, 86 429s. **Not counted as an infrastructure or platform
+  finding** - Cloud Monitoring confirmed Cloud Run stayed at 1 instance
+  and single-digit CPU% throughout even this tier; the 429s are the
+  6-account test pool exceeding NFR-047's per-account budget, i.e. the
+  rate limiter working exactly as designed against an under-provisioned
+  test-account pool, not a capacity ceiling.
+
+**Soak test** (real, completed): 10 concurrent users, same 6 accounts,
+3s think time, 2026-08-05T13:07:15Z-13:27:38Z (~20 min 3s). 3,609/3,609
+requests succeeded (100%), zero 429/4xx/5xx/timeouts, p50/p95/p99 =
+283/396/969ms. Cloud Monitoring confirmed flat metrics across the full
+window and a ~7-minute post-load recovery period: Cloud Run instance
+count steady at 1, CPU 3-8%, memory ~28-29%; Cloud SQL CPU ~11%,
+connections steady at 9, disk ~1.72% - no drift, no leak, no growth
+trend in any measured signal.
+
+**Capacity statement, deliberately bounded**: "Validated at up to 25
+concurrent users under the defined realistic workload and pacing. A
+50-user test was attempted, but validation was constrained by the
+available six-account test pool and correctly functioning per-account
+rate limiting (NFR-047) - not by application or infrastructure
+capacity." No claim of unlimited scaling or of a demonstrated ceiling
+above 25 users is made.
+
+**Disclosed limitations, not glossed over**: the load-test tooling
+produced a pooled end-of-run summary, not a genuine per-endpoint
+(queue vs. protocol) or per-minute client-side percentile breakdown -
+the "no drift" conclusion rests on the infrastructure-side Cloud
+Monitoring time series (genuinely interval-by-interval), not the
+client-side numbers. Tenant-isolation and audit-write behavior under
+load were not measured (this pass tested reads only). The 20-minute
+run is labeled a "sustained read-load validation," explicitly **not** a
+long-duration soak test - a 60+ minute run (ideally including the
+write path and a larger, non-rate-limit-constrained account pool) is
+named as real, disclosed follow-up work.
+
+**Result**: NFR-156 **retained Partial** - the row now carries real,
+reproducible capacity evidence (zero-error performance at up to 25
+concurrent users, the actual first limiting factor correctly
+identified at tier 50, and a genuine 20-minute soak with flat
+infrastructure metrics) instead of an untested gap, but a QR
+peak-load projection, a 60+ minute soak, and write-path/tenant-
+isolation validation under load remain open.
+
+Full write-up: `docs/performance/nfr-156-capacity-plan.md`.
+`docs/performance/capacity-management-plan.md` updated with the safe
+operating envelope, warning/critical thresholds, and scaling guidance
+derived from this evidence.
+
+Verified: `npx tsc -p tsconfig.json --noEmit` clean, **707/707 backend
+tests passing** (unchanged - no code path was modified, only a new
+standalone test-harness script and documentation). No functional/
+authorization/audit/tenant-isolation regression. Committed locally as
+`4383256`, not pushed.
