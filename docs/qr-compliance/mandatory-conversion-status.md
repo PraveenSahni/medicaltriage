@@ -59,7 +59,7 @@ document, it would land here, still Partial, pending real sign-off.
 | ID | Tab | Procedure | Status |
 |---|---|---|---|
 | NFR-138 / NFR-152 | NFR | **Resolved 2026-08-05** - root cause found (4 missing DB migrations on live soc2, not primarily connection-pool sizing) and fixed for real (`prisma migrate deploy`); queue-list p95 3105ms -> 446-569ms | **Closed to Yes.** Both moved out of this table - see `docs/performance/nfr-138-152-156-validation.md`. |
-| NFR-156 | NFR | Load-test baseline already run 2026-08-04/05 - a real regression was found and fixed, but this row's literal ask (capacity sizing against QR's actual peak load, sustained soak testing) remains separate and unaddressed | Retained Partial - awaiting QR's peak-load projection (same open item as NFR-038/NFR-185) and a real soak-test exercise, not a quick win. |
+| NFR-156 | NFR | **Advanced 2026-08-05** - dedicated capacity-planning/soak batch: multi-tier load test (10/25/50 concurrent users, 6 distinct real accounts) plus a genuine 20-minute sustained-load run, all against `triagedsoc2.irisstar.tech` with real Cloud Monitoring evidence (Cloud Run/Cloud SQL flat throughout, zero 5xx). See `docs/performance/nfr-156-capacity-plan.md`. | Retained Partial - validated up to 25 concurrent users with zero errors; tier 50 was constrained by the 6-account test pool hitting NFR-047's rate limiter (not infrastructure), and a 60+ minute soak plus a real QR peak-load projection remain open. |
 
 IS.39/IS.40/IS.41 (network/application/OS-layer vulnerability scanning)
 and NFR-058 (OWASP compliance) do NOT have a defined test procedure yet

@@ -33,33 +33,92 @@ At 10 concurrent users (the only concurrency level actually tested):
   real, separate, additional improvement; it was not, on its own,
   sufficient to explain the queue endpoint's original regression.
 
+## Update 2026-08-05: dedicated NFR-156 capacity/soak batch
+
+See `nfr-156-capacity-plan.md` for the full Phase 1-7 writeup. Summary
+of what changed here:
+
+- **Safe operating envelope, validated**: up to 25 concurrent users on
+  the read-heavy queue-list/protocol-list workload (70/30 mix, ~3s
+  request cadence), 100%/99.8% success, zero 5xx, single Cloud Run
+  instance, Cloud Run CPU 1-8%, Cloud SQL CPU ~11%, DB connections
+  steady at 9 (soc2 db) - all measured, not inferred.
+- **Warning threshold (recommended)**: sustained Cloud Run CPU >50% or
+  Cloud SQL CPU >60% for more than 5 minutes, or DB connection count
+  approaching 20 (out of `db-f1-micro`'s low, shared `max_connections`
+  ceiling) - none of these were observed in this batch's testing, so
+  these are engineering-judgment thresholds, not yet validated against
+  a real incident.
+- **Critical threshold (recommended)**: Cloud SQL connection count at
+  or above ~22-23 (approaching the instance's hard ceiling, shared with
+  the demo environment and a DR replica) - a real risk given `soc2`
+  alone already holds a steady 9 connections during light load; this
+  is the most fragile shared resource in the current architecture.
+- **Scaling actions**: Cloud Run `max_instance_count = 20` gives
+  significant headroom for compute scale-out (untested in this batch -
+  no tier drove a second instance); the real constraint is Cloud SQL's
+  `db-f1-micro` tier's connection ceiling and shared-instance CPU, not
+  Cloud Run.
+- **Database-upgrade trigger (recommended)**: if a real QR peak-load
+  figure implies sustained connection counts above ~15-18 across all
+  environments sharing this instance, upgrade `ist-triage-postgres-uat`
+  off `db-f1-micro` before that load is placed on it - this is a
+  low-risk, straightforward change once a real target is known.
+- **Connection-pool guidance**: current `DATABASE_CONNECTION_LIMIT=8`
+  per Cloud Run instance (`src/db.ts`) is adequate at the validated
+  25-user tier; re-evaluate if `max_instance_count` scale-out is ever
+  exercised for real, since N instances × 8 connections could approach
+  the DB's ceiling faster than CPU/memory would.
+- **Min-instance guidance**: no min-instance is currently set (scales
+  to 0, cold starts possible) - acceptable at today's validated load
+  level; consider a `min-instances=1` setting if cold-start latency
+  becomes operationally significant once real traffic begins.
+- **Cost implications**: the validated envelope requires no additional
+  spend - same single `db-f1-micro`/single-instance Cloud Run footprint
+  already in place. A DB tier upgrade (if triggered per above) is the
+  main cost lever, not Cloud Run scale-out.
+- **Monitoring**: continue using the same Cloud Monitoring
+  metrics/queries exercised in this batch (`run.googleapis.com/
+  container/*`, `cloudsql.googleapis.com/database/*`) - no new
+  dashboards were built this pass; a follow-up could wire these into
+  the existing SLI reporting (`sliReportService.ts`) rather than
+  ad hoc queries.
+
 ## What this plan does not cover
 
 - Qatar Airways' actual projected peak concurrent-user count - not yet
   provided; this document cannot honestly define a capacity target
   without it.
-- Sustained/soak testing (minutes of load, not a single ~30s burst per
-  scenario).
-- A tested ceiling for the queue-list endpoint specifically, since its
-  bottleneck is not yet root-caused.
-- Autoscaling behavior at more than 1-2 concurrent Cloud Run instances -
-  not observed during this test (10 concurrent load-test workers did not
-  appear to trigger significant scale-out based on connection-count
-  metrics staying flat).
+- A 60+ minute soak, or any soak/tier test of the write path - see
+  `nfr-156-capacity-plan.md`'s "What this does not close" for the full
+  list.
+- A demonstrated ceiling above 25 concurrent simulated users - the
+  6-account test pool, not the platform, was the limiting factor
+  encountered at higher tiers (NFR-047's rate limiter working as
+  designed).
+- Autoscaling behavior at more than 1 Cloud Run instance - not observed
+  in any tier or the soak; the tested load never required scale-out.
 
 ## Recommended next steps
 
-1. Root-cause the queue-list endpoint's specific bottleneck (see
-   `nfr-138-152-156-validation.md`).
-2. Obtain Qatar Airways' actual peak-load projection to define a real
-   capacity target (this is the same open item tracked for NFR-038/
-   NFR-185's SLA-tier clarification).
-3. Consider whether `db-f1-micro` remains adequate once a real target
-   is known - a tier upgrade is a straightforward, low-risk change if
-   capacity requirements exceed what this tier can serve.
+1. Obtain Qatar Airways' actual peak-load projection to define a real
+   capacity target (same open item tracked for NFR-038/NFR-185's
+   SLA-tier clarification).
+2. Provision a larger real or safely-synthetic test-account pool (10+
+   distinct accounts) to re-run the 50-concurrent-user tier without the
+   rate-limiter confound, to find the actual application/infrastructure
+   ceiling above 25 users.
+3. Run a genuine 60+ minute soak, including the write path
+   (queue-item creation/claim/status-transition), once a larger account
+   pool exists.
+4. Consider whether `db-f1-micro` remains adequate once a real QR
+   target is known - a tier upgrade is a straightforward, low-risk
+   change if capacity requirements exceed what this tier can serve, and
+   is the most likely first real constraint given the shared-instance
+   connection ceiling.
 
 ## Review cadence
 
 Reviewed alongside the annual risk-register cadence
 (`docs/risk-register-2026-08-04.md`, next review 2026-11-04), or
-immediately once the queue-list root cause is found.
+immediately once a QR peak-load projection is provided.
