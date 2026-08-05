@@ -104,3 +104,24 @@ been performed - not whether it's possible. Generated 2026-08-05, updated
   2-mobile-profile matrix already real and passing for the login/entry
   flow), awaiting DB-tunnel access to fix and re-verify the deeper
   workflow fixtures.
+
+## AuditEvent durable persistence - resolved 2026-08-05
+
+**Exact production action**: activate `AUDIT_EVENT_DB_PERSISTENCE=true`
+on `ist-triage-soc2`. **Done** - validated on canary (2 revisions,
+cross-instance read confirmed), then cut over to live traffic; a real
+failed-login against the live URL confirmed as a real database row.
+
+**Required access**: `gcloud run deploy`/`update-traffic` on
+`ist-triage-soc2` (already routinely used this engagement).
+
+**Evidence**: `docs/operations/audit-event-persistence.md`; real
+`AuditEvent` rows in the soc2 database with real actor/organization/
+action/risk/outcome fields, no secrets.
+
+**Rollback**: set `AUDIT_EVENT_DB_PERSISTENCE=false` and redeploy - no
+data loss (this only stops new durable writes, doesn't remove existing
+rows).
+
+**Status**: Closed. `MFA_MANDATORY` (AR.13) remains a separate,
+still-blocked item on the same environment.

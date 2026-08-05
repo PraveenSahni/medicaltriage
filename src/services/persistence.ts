@@ -5,6 +5,7 @@ import type {
   TriageSeverity
 } from "@prisma/client";
 import {
+  shouldPersistAuditEventsInDatabase,
   shouldPersistMfaCredentialsInDatabase,
   shouldPersistSessionsInDatabase,
   shouldUseDatabasePersistence
@@ -130,7 +131,7 @@ function inboundRecordFromRow(
 }
 
 export async function persistSecurityAuditEvent(event: AuditEvent): Promise<PersistenceResult> {
-  if (!shouldUseDatabasePersistence()) {
+  if (!shouldPersistAuditEventsInDatabase()) {
     return { persisted: false, reason: "mock-mode" };
   }
 
@@ -367,15 +368,17 @@ function toRiskClassification(riskLevel: string | null): AuditEvent["risk"] {
  */
 export async function listPersistedAuditEvents(
   limit = 200,
-  filter?: { userId?: string; since?: string; until?: string }
+  filter?: { userId?: string; organization?: string; action?: string; since?: string; until?: string }
 ): Promise<AuditEvent[]> {
-  if (!shouldUseDatabasePersistence()) {
+  if (!shouldPersistAuditEventsInDatabase()) {
     return [];
   }
 
   const rows = await prisma.auditEvent.findMany({
     where: {
       ...(filter?.userId ? { userId: filter.userId } : {}),
+      ...(filter?.organization ? { organization: filter.organization } : {}),
+      ...(filter?.action ? { action: filter.action } : {}),
       ...(filter?.since || filter?.until
         ? {
             timestamp: {

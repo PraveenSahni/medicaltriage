@@ -212,3 +212,44 @@ batch)**: `persistSecurityAuditEvent` shares the same `MOCK_MODE`-gating
 defect as MFA credentials did - AuditEvent rows have never persisted
 to the real soc2 Postgres database. Every row citing "AuditEvent" DB
 evidence on soc2 should be re-verified once this is fixed.
+
+## Priority-0 audit-integrity remediation: durable AuditEvent persistence (2026-08-05)
+
+**Root cause** (found during AR.13 canary validation): `persistSecurityAuditEvent`/
+`listPersistedAuditEvents` were gated by `shouldUseDatabasePersistence()`,
+which returns false whenever `MOCK_MODE=true` - true on live soc2. Every
+security AuditEvent (login, MFA, PAM elevation, access denial) was
+therefore held only in one Cloud Run instance's memory, never durably
+written to the real database, despite this engagement having repeatedly
+cited "AuditEvent" DB rows as evidence for several mandatory rows.
+
+**Fix**: dedicated `AUDIT_EVENT_DB_PERSISTENCE` flag
+(`src/config/runtime.ts`), independent of `MOCK_MODE`, wired into both
+functions. Added a missing `LOGIN_MFA_FAILED` audit event (a real,
+separate coverage gap found during validation - wrong-code MFA
+verification previously wrote no audit event at all). Added 3 new
+Prisma indexes (`organization+timestamp`, `action+timestamp`,
+`riskLevel+timestamp`) via migration
+`20260805152719_add_audit_event_query_indexes`, applied to the real
+soc2 database. Extended `listPersistedAuditEvents()`'s filter to
+support `organization`/`action`, not just `userId`.
+
+**Validated**: on `--no-traffic` canaries first (two different
+revisions both wrote to, and correctly read from, the same database -
+proving cross-instance durability), then **cut over to live traffic**
+(low risk - purely additive persistence, no user-facing behavior
+change, unlike AR.13's `MFA_MANDATORY`). A real failed-login attempt
+against `https://triagedsoc2.irisstar.tech` (the live, 100%-traffic
+URL) was confirmed as a real row in the actual Postgres database.
+
+**Compliance implication, disclosed rather than silently assumed**:
+several mandatory rows already marked "Yes" (e.g. NFR-010 "DML audit
+completeness", IS.61 "privacy-breach anomaly detection", IS.51
+"incident isolation to tenants", HR.03) cited real `AuditEvent`-writing
+*code* as evidence - that code was, and remains, real and correct. What
+was NOT true until this fix is that those writes actually landed
+durably in the live soc2 database. **No compliance percentage changes
+as a result of this finding** - the rows' underlying code-level
+evidence was never inaccurate, only its live-environment durability.
+A full re-verification pass of every row citing AuditEvent DB evidence
+is recommended as follow-up, not performed exhaustively in this batch.

@@ -2991,7 +2991,24 @@ export async function verifyMfaChallenge(
   if (!isValid) {
     const currentFailures = failedLoginAttempts.get(username) ?? 0;
     failedLoginAttempts.set(username, currentFailures + 1);
-    if (currentFailures + 1 >= 5) {
+    const locked = currentFailures + 1 >= 5;
+    await recordAuditEvent({
+      id: randomUUID(),
+      timestampIso: new Date().toISOString(),
+      userId: challenge.userId,
+      activeRole: user?.roles[0] ?? "unknown",
+      organization: user?.organization ?? "unknown",
+      facility: user?.facility ?? "unknown",
+      department: user?.department ?? "unknown",
+      action: "LOGIN_MFA_FAILED",
+      module: "Authentication",
+      resource: "local",
+      ipAddress: challenge.ipAddress,
+      device: challenge.device,
+      success: false,
+      risk: locked ? "critical" : "high"
+    });
+    if (locked) {
       pendingMfaChallenges.delete(challengeId);
       return { ok: false, message: "Account is temporarily locked. Contact the helpdesk.", locked: true };
     }

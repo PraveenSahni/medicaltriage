@@ -361,3 +361,16 @@ persistence to the real soc2 database is currently non-functional
 evidence on soc2 should be re-verified once fixed. Recommend this as a
 priority item alongside the previously-identified NFR-189/NFR-015/
 IS.07 activations.
+
+## Update 2026-08-05 (continued): AuditEvent durable-persistence remediation - resolved
+
+Fixed and activated live: `AUDIT_EVENT_DB_PERSISTENCE` flag closes the
+Priority-0 audit-integrity defect found during AR.13 validation
+(`MOCK_MODE` was silently disabling all AuditEvent DB writes on soc2).
+Validated cross-instance on canaries, then cut over to live traffic
+(low risk, no user-facing change - unlike AR.13's still-blocked
+`MFA_MANDATORY`). Mandatory/overall compliance unchanged by this fix
+alone (78/149 = 52.35%, 133/391 = 34.02%) - it makes existing evidence
+durable, it doesn't create new evidence. Recommend a follow-up pass to
+re-verify every row citing AuditEvent DB evidence now that it's
+actually true on soc2.

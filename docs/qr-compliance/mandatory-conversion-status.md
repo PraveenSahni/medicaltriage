@@ -207,3 +207,16 @@ canary-validated evidence. See `docs/qr-questionnaire-backlog-tracker.md`
 for full detail, and the secondary finding that AuditEvent persistence
 is also currently non-functional on soc2 (same root cause, separate
 future batch).
+
+## Update 2026-08-05 (continued): AuditEvent durable-persistence remediation
+
+Fixed a Priority-0 audit-integrity defect (found during AR.13
+validation): `MOCK_MODE=true` silently disabled all AuditEvent DB
+persistence on soc2. Added a dedicated `AUDIT_EVENT_DB_PERSISTENCE`
+flag, validated cross-instance on canaries, then activated on live
+traffic (low-risk, unlike `MFA_MANDATORY`). No mandatory row moved to
+Yes as a direct result - the underlying code evidence for
+NFR-010/IS.61/IS.51/HR.03 was already accurate; only its live-
+environment durability was previously unproven. See
+`docs/operations/audit-event-persistence.md` and
+`docs/qr-questionnaire-backlog-tracker.md` for full detail.

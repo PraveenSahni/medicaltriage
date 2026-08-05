@@ -130,6 +130,20 @@ export function shouldPersistMfaCredentialsInDatabase(): boolean {
   return envFlag("MFA_DB_PERSISTENCE", false);
 }
 
+// Security AuditEvent rows need the same independent-of-MOCK_MODE
+// treatment as sessions and MFA credentials above - found as a Priority-0
+// audit-integrity defect during AR.13's canary validation: MOCK_MODE=true
+// on soc2 silently made every AuditEvent best-effort-persist as a no-op,
+// so the durable security audit trail this whole engagement has cited as
+// evidence (login, MFA, PAM elevation, access denial, legal hold, exports)
+// only ever existed in one Cloud Run instance's memory, lost on restart/
+// scale-down and invisible to every other instance. Default off (matches
+// SESSION_DB_PERSISTENCE/MFA_DB_PERSISTENCE precedent) - unit tests stay
+// isolated unless a test explicitly opts in.
+export function shouldPersistAuditEventsInDatabase(): boolean {
+  return envFlag("AUDIT_EVENT_DB_PERSISTENCE", false);
+}
+
 // Closes Cloud CSQ AR.13's literal ask ("MFA required for all remote user
 // access") for real when an operator actually wants org-wide enforcement,
 // without changing today's default (opt-in per user) behavior. Off by

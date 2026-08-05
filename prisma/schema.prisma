@@ -1414,6 +1414,9 @@ model AuditEvent {
 
   @@index([timestamp])
   @@index([userId, action])
+  @@index([organization, timestamp])
+  @@index([action, timestamp])
+  @@index([riskLevel, timestamp])
   @@map("audit_events")
 }
 

@@ -1017,3 +1017,50 @@ not reproducible in the mocked test harness). Real production
 validation performed via direct HTTP calls against the canary URLs and
 a live Cloud SQL Auth Proxy tunnel query against the real soc2
 database (tunnel was active and required for this verification).
+
+## 2026-08-05 (continued): Priority-0 AuditEvent durable-persistence remediation
+
+Fixed the audit-integrity defect found during AR.13's canary
+validation: `MOCK_MODE=true` on soc2 silently made every security
+`AuditEvent` write a no-op against the real database (in-memory only,
+lost on restart, invisible cross-instance). Root cause and fix
+documented in full at `docs/operations/audit-event-persistence.md`.
+
+**Fix**: dedicated `AUDIT_EVENT_DB_PERSISTENCE` flag
+(`src/config/runtime.ts`), independent of `MOCK_MODE`, wired into
+`persistSecurityAuditEvent()`/`listPersistedAuditEvents()`
+(`src/services/persistence.ts`). Also found and fixed a real, separate
+coverage gap: wrong-code MFA verification previously wrote no audit
+event at all - added `LOGIN_MFA_FAILED`. Added 3 new indexes
+(migration `20260805152719_add_audit_event_query_indexes`, applied to
+the real soc2 database) and extended the read-filter to support
+`organization`/`action`, not just `userId`.
+
+**Validated**: on `--no-traffic` canaries first (2 different revisions
+both wrote to and correctly read from the same database, proving
+cross-instance durability - not just single-instance correctness), no
+secrets/tokens present in persisted rows (`AuditEvent`'s own type
+carries none), then **cut over to live traffic** on
+`ist-triage-soc2` (low risk - purely additive, no user-facing
+behavior change, unlike AR.13's `MFA_MANDATORY`). A real failed-login
+attempt against the live `https://triagedsoc2.irisstar.tech` URL was
+confirmed as a real row in the actual Postgres database.
+
+**Compliance implication**: several already-"Yes" mandatory rows
+(NFR-010, IS.61, IS.51, HR.03) cited real AuditEvent-writing code as
+evidence - that code was and remains correct; what wasn't true until
+now is that those writes actually landed durably on soc2. No
+compliance percentage changes as a result of this fix alone - a full
+re-verification pass of every AuditEvent-citing row is recommended as
+follow-up, not performed exhaustively here.
+
+**AR.13 unaffected**: still Partial, still not cut over -
+`MFA_MANDATORY` remains off on the live revision; this batch only
+activated the separate, lower-risk `AUDIT_EVENT_DB_PERSISTENCE` flag.
+
+Verified: `npx tsc -p tsconfig.json --noEmit` clean, **716/716 backend
+tests passing** (710 + 6 new in `tests/auditEventPersistence.test.ts`),
+`npx pnpm audit --audit-level high` clean. Cloud SQL Auth Proxy was
+active and required throughout for direct database verification
+(migration application, pre/post row counts, cross-instance read
+confirmation).
