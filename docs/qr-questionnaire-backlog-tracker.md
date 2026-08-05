@@ -398,3 +398,31 @@ no new regressions). Register regenerated: 180 rows now closed (was
 173 after Batch 1, +7 Batch 2 closures, +1 IS.61 correction, small net
 discrepancy from a prior rounding not investigated further since it
 doesn't affect any individual row's correctness).
+
+## 2026-08-05 (continued): Batch 3
+
+**Batch 3 (6 mandatory Cloud CSQ closures)** approved and closed:
+
+- ✅ **IG.13** (production data never replicated to test) - real
+  synthetic-data-only seeding (`python/generate_synthetic_pdp_data.py`,
+  verified by its own test file) documented in
+  `docs/data-management-policy.md`.
+- ✅ **IS.51** (incident isolation to specific tenants) - same doc,
+  citing the existing `organizationId`-scoped `AuditEvent` trail.
+- ✅ **IS.58** (customer-facing data-usage documentation) - new
+  `docs/customer-data-usage-statement.md`.
+- ✅ **RM.13** (share BCP/redundancy plans with customers) - real
+  runbook (`docs/dr-failover-runbook.md`) now explicitly available to
+  share; explicitly does NOT claim the plan has been rehearsed (that
+  stays a separate, open gap at DR.05/RM.05).
+- ✅ **IS.42** (rapid-patch capability) - `docs/change-management-
+  policy.md` §5, same real CI/Dependabot mechanism already used for
+  IS.43, cross-referencing the shared-responsibility doc for the
+  GCP-managed OS/hypervisor layers.
+- ✅ **IS.18** (remediation/certification actions recorded) - real, both
+  halves already covered by existing code (`PATCH /api/v1/admin/users/
+  :id/status` + the quarterly review's `AuditEvent`); documented in
+  `docs/entitlement-reporting-procedure.md`.
+
+Verified: `npx tsc --noEmit` clean, 688/692 (same known environment gap).
+Register regenerated: 186 rows now closed (was 180).

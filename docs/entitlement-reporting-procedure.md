@@ -93,10 +93,24 @@ this must be logged as a gap in the next available report rather than
 silently skipped - the certification record's value depends on it being
 provably continuous, not assumed.
 
+## IS.18: are remediation and certification actions recorded?
+
+Closes Cloud CSQ IS.18. Yes for both halves of this question:
+certification is recorded (the `ACCESS_ENTITLEMENT_REVIEW_CERTIFIED`
+`AuditEvent` above), and when a flagged account is auto-remediable
+(elevated role + no login for 90+ days), `PATCH /api/v1/admin/users/:id/
+status` performs the suspension and writes its own real `AuditEvent` -
+the review script can invoke this with `--execute`
+(`docs/risk-register-2026-08-04.md` item R-09, updated 2026-08-04). The
+remaining flagged case (an already-non-active account) genuinely requires
+human judgment rather than automation - that is the correct process, not
+a recording gap: whatever action a human takes is itself recorded via the
+same `AuditEvent` mechanism when executed through the same endpoint.
+
 ## Related questionnaire IDs
 
-IS.19 (this document). IS.17/IS.18 (the underlying review-and-remediation
-control itself, see `docs/risk-register-2026-08-04.md` item R-09).
+IS.19, IS.18 (this document). IS.17 (the underlying review control itself,
+see `docs/risk-register-2026-08-04.md` item R-09).
 
 ## Related implementation references
 

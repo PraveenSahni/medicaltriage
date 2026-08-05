@@ -96,6 +96,17 @@ depends on the same PR-review discipline noted in section 1's honest gap
 detection cadence above is real and automated; the remediation-merge step
 is currently a manual, disciplined practice, not a measured/enforced SLA.
 
+**Closes Cloud CSQ IS.42** ("capability to rapidly patch vulnerabilities
+across all of your computing devices, applications, and systems"): the
+same mechanism above (0-day CI block on new vulnerabilities, weekly
+Dependabot patches) is the real rapid-patching capability for the
+application/dependency layer this team controls. For infrastructure
+layers outside that scope (hypervisor, OS) - see
+`docs/cloud-shared-responsibility-matrix.md`: these are fully managed and
+patched by Google Cloud as part of the serverless platform, not a
+patching responsibility this team holds or needs a separate capability
+for.
+
 ## 6. Management authorization for new applications/systems/infrastructure
 
 Closes Cloud CSQ SD.01 ("policies and procedures established for

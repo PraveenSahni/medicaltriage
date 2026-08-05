@@ -24,6 +24,25 @@ leakage); it is not a separate, dedicated DLP/extrusion-prevention
 product layered on top, which remains a distinct, unbuilt capability if
 ever independently required.
 
+**Closes Cloud CSQ IS.51** ("does your logging and monitoring framework
+allow isolation of an incident to specific customers?"): the same
+`organizationId` scoping means every `AuditEvent` and queue record is
+already tagged to a specific tenant - an incident's data-access footprint
+can be traced to the specific organization(s) involved via
+`GET /api/v1/admin/audit-events` filtered by organization, without a
+separate, purpose-built incident-isolation tool.
+
+**Closes Cloud CSQ IG.13** ("procedures in place to ensure production
+data shall not be replicated or used in your test environments"): the
+soc2/demo/test environments are seeded exclusively from
+`python/generate_synthetic_pdp_data.py` (deterministic, verified by
+`python/test_synthetic_pdp_generator.py`, generates fully synthetic
+staff/queue/encounter records) - real production data (from
+`triaged.irisstar.tech`) is never copied into any non-production
+environment by design. This is a stronger guarantee than masking a copy
+of real data, since no real data is ever present in non-production
+environments to begin with.
+
 ## 2. Retention and deletion
 
 `RetentionPolicy` (Prisma model) drives an automated, scheduled purge job

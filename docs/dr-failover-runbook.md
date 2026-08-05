@@ -8,6 +8,20 @@ back into a replica), so an actual dry-run promotion requires explicit
 sign-off before executing, not something to do silently as part of writing
 this doc. See "Rehearsal status" at the end._
 
+## Sharing with Qatar Airways (closes CSQ RM.13)
+
+Closes Cloud CSQ RM.13 ("share your business continuity and redundancy
+plans with your customers"). This runbook, together with
+`docs/backup-disaster-recovery-plan.md`, is the real, current business-
+continuity/redundancy plan for this platform - both are available to
+share with Qatar Airways on request. **This closes the "willingness/
+process to share" ask specifically** - it does not claim the plan has
+been rehearsed (see "Rehearsal status" below, and CSQ DR.05/RM.05 in
+`docs/qr-compliance/master-compliance-register.csv` for that separate,
+still-open gap). Sharing an unrehearsed-but-real plan honestly, with the
+rehearsal gap stated plainly, is more accurate than either withholding it
+or implying it has been drilled.
+
 ## When to use this runbook
 
 Only if `me-central1` (Doha) is confirmed down at the **regional** level -

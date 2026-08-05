@@ -45,7 +45,18 @@ itself was never actually updated - a real process gap, found and fixed
 during Batch 2 preparation. See `docs/qr-questionnaire-backlog-tracker.md`
 for the correction note.
 
-## Everything else scored "Yes" (94 rows, prior to Batch 1/2)
+## Batch 3 closures (2026-08-05) - Cloud CSQ logging/data-segregation/patching
+
+| Requirement ID | Control | Code/config reference | Document reference | Validation date | Validator | Remaining limitation |
+|---|---|---|---|---|---|---|
+| IG.13 | Synthetic-only non-production data | `python/generate_synthetic_pdp_data.py`, `python/test_synthetic_pdp_generator.py` | `docs/data-management-policy.md` | 2026-08-05 | This engagement | None known |
+| IS.18 | Remediation + certification actions recorded | `PATCH /api/v1/admin/users/:id/status` | `docs/entitlement-reporting-procedure.md` | 2026-08-05 | This engagement | Human-judgment case remains manual by design (correct, not a gap) |
+| IS.42 | Rapid-patch capability | CI dependency-audit + Dependabot | `docs/change-management-policy.md` §5 | 2026-08-05 | This engagement | OS/hypervisor layers are Google-managed, out of this team's scope |
+| IS.51 | Incident isolation to specific tenants | `organizationId`-scoped `AuditEvent` | `docs/data-management-policy.md` | 2026-08-05 | This engagement | No dedicated per-customer incident-isolation tool, tracing is via existing audit query |
+| IS.58 | Customer-facing data-usage statement | none (doc-only) | `docs/customer-data-usage-statement.md` | 2026-08-05 | This engagement | Not a substitute for a formal negotiated DPA |
+| RM.13 | BCP/DR plan sharing | none (doc-only) | `docs/dr-failover-runbook.md` | 2026-08-05 | This engagement | Plan is real but not yet rehearsed (separate, still-open gap: DR.05/RM.05) |
+
+## Everything else scored "Yes" (94 rows, prior to Batch 1/2/3)
 
 Sourced from earlier passes of this same engagement (prior to 2026-08-05).
 Each has an `Evidence Location` value in `master-compliance-register.csv`
