@@ -115,6 +115,35 @@ been performed - not whether it's possible. Generated 2026-08-05, updated
   **Status now**: production redeploy complete; NFR-015 retained at
   Partial pending the Focus Visible fix, not Yes.
 
+- **Update (2026-08-05, Batch 7 - Focus Visible fix executed)**:
+  root-caused the Focus Visible defect to an app-wide `[class]x6`
+  specificity-escalation `box-shadow: none !important` reset in
+  `global.css` (confirmed via direct CSSOM inspection, not guesswork).
+  Fixed by switching the generic focus rule to `outline` (untouched by
+  that reset) using the existing `--t1` token. Built image
+  `ist-triage-soc2:20260805-focusvisible` (digest
+  `sha256:ec7c9b63f55050eee626a42a92fffb1f621071f74ec8a534e4b9791bdba05576`),
+  deployed as canary `ist-triage-soc2-00049-tuv`, audited (0
+  violations), cut over to 100%. **Found and fixed a second, distinct,
+  real deployment-runbook bug while verifying**: `firebase deploy
+  --only hosting:soc2` uploads a **local** `dist-web` static build
+  independent of the Cloud Run image - Firebase Hosting serves matching
+  static asset paths directly, bypassing the Cloud Run rewrite. The
+  local `dist-web` had not been rebuilt with this fix, so the redeploy
+  initially re-served the stale bundle even after a correct Cloud Run
+  cutover. Fixed via `npm run build:web` before the Firebase deploy.
+  Verified live via real keyboard Tab testing on the production domain:
+  the previously-broken `.smb-soft-btn` now renders a real, visible
+  outline. Full detail:
+  `docs/accessibility/accessibility-known-limitations.md` item 2 - this
+  runbook gap is generally applicable, not specific to this one fix,
+  and should be fixed at the tooling level (a single script wrapping
+  Docker build -> local static build -> canary -> cutover -> Hosting
+  deploy). **Status now**: Focus Visible defect closed and verified
+  live; NFR-015 retained Partial (several required manual checks -
+  modal, zoom, session-timeout, destructive-action, screen-reader -
+  remain unperformed, a coverage gap rather than a known defect).
+
 ## NFR-004 (UX tab) - cross-browser e2e fixture fixes need DB access
 
 - **Finding (2026-08-05, Batch 5)**: the deeper clinical-workflow e2e

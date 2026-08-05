@@ -186,9 +186,9 @@ matching, form submission, clipboard operations) passed on every
 engine, indicating no cross-browser functional regression from this
 batch's changes.
 
-## Closure determination
+## Closure determination (superseded by the 2026-08-05 follow-up batch below)
 
-Per the 7 closure criteria in the batch instructions:
+Per the 7 closure criteria in the original batch instructions:
 
 1. Current fixes deployed - **Yes** (confirmed via 0-violation canary +
    production audit).
@@ -207,10 +207,96 @@ Per the 7 closure criteria in the batch instructions:
    Phase 1's literal-text reading, but does not offset criterion 3/6
    above.
 
-**NFR-015 remains Partial.** Criteria 1, 2, 4, and 7 are now genuinely
-met (a real improvement over the prior Partial state, which had never
-had a redeployed/re-validated build at all) - but criterion 3/6 (a
-real, confirmed, unresolved Focus Visible defect) is a material gap
-that must be fixed and re-verified before this row can honestly move
-to Yes. See `docs/accessibility/accessibility-known-limitations.md`
-for the full limitations list and the retest trigger.
+**NFR-015 remained Partial** at the end of this original batch pending
+the Focus Visible fix below.
+
+## Follow-up batch (2026-08-05): Focus Visible remediation
+
+**Root cause** found via direct CSSOM inspection (not guesswork): an
+app-wide "blank reset" rule at the end of `global.css`
+(`html body [class][class][class][class][class][class], ... *`),
+deliberately engineered with 6 repeated `[class]` attribute selectors
+to out-specificity every other `!important` rule in the file
+"regardless of source order" (per its own code comment). It forces
+`box-shadow: none !important` on every classed element, which silently
+defeated the generic `:focus-visible` rule's `box-shadow: var(--focus-ring)`.
+
+**Fix**: switched the generic focus rule
+(`button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible` in `global.css`) to use
+`outline: 3px solid var(--t1); outline-offset: 2px;` instead of
+`box-shadow` - the reset rule does not touch `outline` at all, and
+`--t1` reuses the exact same outer-ring color `--focus-ring` already
+used, so no new color token was invented.
+
+**Deployment**: built image
+`ist-triage-soc2:20260805-focusvisible` (digest
+`sha256:ec7c9b63f55050eee626a42a92fffb1f621071f74ec8a534e4b9791bdba05576`,
+build `d56c111d-cd67-4d23-b528-8a0d03bd9e0f`), deployed as `--no-traffic`
+canary `ist-triage-soc2-00049-tuv` (tag `focus-visible-fix`),
+health-checked, audited (0 violations across all 5 pages/personas),
+cut over to 100% traffic.
+
+**Second, distinct, real bug found and fixed during verification**:
+after cutover, `triagedsoc2.irisstar.tech` still served the OLD CSS
+bundle (`index-BSWmeLJU.css`) even after re-running `firebase deploy
+--only hosting:soc2`, because that command uploads the **local**
+`dist-web` directory, which had not been rebuilt with the current
+source. Firebase Hosting serves matching static asset paths directly,
+bypassing the Cloud Run rewrite entirely - so the Cloud Run image being
+correct was not sufficient. Fixed by running `npm run build:web`
+locally (producing the correct `index-CMwPER3V.css`, matching the
+Cloud Run canary's independently-served hash) before re-running
+`firebase deploy --only hosting:soc2`. Full detail in
+`docs/accessibility/accessibility-known-limitations.md` item 2 - this
+is a real, generally-applicable gap in this environment's deployment
+runbook that should be fixed at the tooling level.
+
+**Live verification** (real browser, real keyboard Tab, real
+production domain, post-fix): the exact previously-broken
+`.smb-soft-btn` on the Service Manager Board now computes `outline:
+rgb(10, 31, 68) solid ~2.67px`, `outline-offset: 2px` - a real, visible
+focus ring. Cross-checked on an unrelated element with no
+component-specific override (the login page's `عربي` language toggle)
+to confirm the fix is genuinely generic. Full 5-page/persona axe-core
+re-audit: 0 violations (no regression). Frontend jest: 55/55 passing,
+no regression.
+
+## Updated closure determination
+
+1. Current fixes deployed - **Yes**.
+2. 5-page automated audit passes without material violations - **Yes**.
+3. Manual keyboard and focus checks pass - **Yes** - the Focus Visible
+   defect is fixed and verified live on production via direct keyboard
+   testing (not just DOM/CSSOM inspection).
+4. Form labels and error handling validated - **Yes**.
+5. Browser coverage meets the literal requirement - **Partial**
+   (unchanged) - functional coverage across 6 engines confirmed;
+   automated accessibility scanning itself remains Chromium-only (see
+   known-limitations item 3, not addressed this batch).
+6. No unresolved material accessibility defect remains - **Yes**, with
+   one caveat: the Focus Visible fix was verified on the Service
+   Manager Board and cross-checked on one unrelated login-page control,
+   but was not exhaustively re-checked against every button/control
+   class across all 5 pages (time-boxed) - see known-limitations item 1.
+7. Questionnaire does not require independent external audit - true per
+   the original Phase 1 reading.
+
+**NFR-015 remains Partial**, not moved to Yes. Reasoning: the one
+*confirmed defect* found by this engagement (Focus Visible) is now
+genuinely fixed and verified live - a real, material improvement. But
+several manual checks explicitly required by the batch instructions
+were never performed at all (modal focus-trap/restoration, 200%
+zoom/reflow, session-timeout warning, destructive-action confirmation,
+and a real screen-reader pass) - "not yet tested" is a different, more
+honest status than "tested and passing," and moving this row to Yes
+would overstate what has actually been verified, contradicting this
+engagement's own standing instruction not to claim compliance beyond
+the evidence. The correct, honest framing: **the known defect blocking
+Yes is now closed; the remaining blocker is incomplete manual test
+coverage, not a known defect** - a materially different and better
+Partial than either prior batch's. See
+`docs/accessibility/accessibility-known-limitations.md` for the exact
+punch list a future batch would need to complete (modal, zoom, session-
+timeout, destructive-action, screen-reader, exhaustive per-page focus
+sweep) before this row could honestly move to Yes.

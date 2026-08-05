@@ -1287,3 +1287,39 @@ test-data cleanup).
 **Compliance unchanged by this batch**: mandatory 77/149 = 51.68%,
 overall 132/391 = 33.76% - no row moved to Yes or down; IS.61's status
 and remark are consistent with its prior downward correction.
+
+## 2026-08-05 (continued): Batch 7 - NFR-015 Focus Visible remediation
+
+Root-caused and fixed the one open item from Batch 6: a real WCAG 2.1
+SC 2.4.7 Focus Visible defect. Found via direct CSSOM inspection that
+an app-wide "blank reset" rule in `global.css` (6x `[class]`
+attribute-selector specificity escalation, by design, per its own code
+comment) was forcing `box-shadow: none !important` on every classed
+element, silently defeating the app's generic focus-visible rule.
+Fixed by switching that rule to use `outline` (a property the reset
+never touches) with the existing `--t1` token - no new color invented.
+Built, canary-deployed (`ist-triage-soc2-00049-tuv`), audited (0
+violations), cut over to 100%. While verifying live, found and fixed a
+second, distinct, real deployment-runbook gap: `firebase deploy --only
+hosting:soc2` uploads a **local** `dist-web` static build, independent
+of the Cloud Run image - Firebase Hosting serves matching static asset
+paths directly, bypassing the Cloud Run rewrite. The local `dist-web`
+had not been rebuilt with the CSS fix, so the "cache-busting" redeploy
+from this same batch initially re-served the stale bundle. Fixed by
+running `npm run build:web` before the Firebase deploy. Verified live
+on production via real keyboard Tab: the previously-broken
+`.smb-soft-btn` now shows a real, visible outline. Re-ran the full
+5-page/persona audit (0 violations) and the frontend jest suite
+(55/55, no regression).
+
+**NFR-015 remains Partial** (not moved to Yes) - the confirmed defect
+is now closed, but several manual checks the batch instructions
+require (modal focus-trap, 200% zoom/reflow, session-timeout,
+destructive-action, real screen-reader testing) were never performed,
+so "no unresolved material defect" is true only for what has actually
+been tested, not the full literal scope. This is a materially stronger
+Partial than Batch 6's - the only known defect is fixed - but honestly
+short of Yes given the untested surface. See
+`docs/accessibility/accessibility-known-limitations.md` for the full,
+updated punch list. No compliance percentage change (Partial to
+Partial).

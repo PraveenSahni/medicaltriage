@@ -4421,8 +4421,20 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
+  /* Uses `outline`, not `box-shadow`, as the real focus indicator here -
+     the app-wide blank-reset rule at the end of this file
+     (`html body [class][class]...`) deliberately out-specificities every
+     !important box-shadow rule, including this one's old
+     `box-shadow: var(--focus-ring)`, silently suppressing the visible
+     focus ring app-wide (a real WCAG 2.1 SC 2.4.7 failure, found via
+     manual keyboard testing during the NFR-015 batch). `outline` is not
+     touched by that reset, so it survives. Reuses `--t1` (the same
+     outer-ring color `--focus-ring` already used) and relies on
+     `outline-offset` for the visible-gap/halo effect `--focus-ring`'s
+     box-shadow used an explicit `--bg` layer for. */
+  outline: 3px solid var(--t1);
+  outline-offset: 2px;
+  box-shadow: none;
 }
 
 .app-frame {

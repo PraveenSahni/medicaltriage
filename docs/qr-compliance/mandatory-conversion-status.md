@@ -266,3 +266,19 @@ honestly move to Yes while a confirmed, material accessibility defect
 is open. See `docs/accessibility/accessibility-known-limitations.md`
 for the retest trigger. No compliance percentage change from this
 batch.
+
+## Update 2026-08-05 (continued): NFR-015 Focus Visible defect fixed, retained Partial
+
+Root-caused and fixed the Focus Visible (WCAG 2.1 SC 2.4.7) defect
+flagged in the prior batch - an app-wide CSS specificity-escalation
+reset was suppressing the focus ring; fixed via `outline` (untouched
+by that reset), deployed, and verified live via real keyboard testing
+on production. A second, real, distinct deployment-runbook gap was
+also found and fixed along the way (Firebase Hosting's static
+`dist-web` upload is independent of the Cloud Run image and must be
+rebuilt separately before each `firebase deploy --only hosting:soc2`).
+NFR-015 stays Partial - the one known defect is closed, but several
+required manual checks (modal focus-trap, zoom/reflow, session-
+timeout, destructive-action, real screen-reader testing) remain
+unperformed, so the row cannot honestly move to Yes yet. No compliance
+percentage change from this batch.

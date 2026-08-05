@@ -4,48 +4,112 @@ _Written 2026-08-05. Honest, current list of what is NOT yet proven
 accessible, so NFR-015's Partial status has a concrete, actionable
 punch list rather than a vague caveat._
 
-## 1. Focus Visible defect (WCAG 2.1 SC 2.4.7, Level AA) - open, blocking
+## 1. Focus Visible defect (WCAG 2.1 SC 2.4.7, Level AA) - FIXED, verified live
 
-**Confirmed real** via manual testing this batch (not automated - axe-
-core does not check focus-ring rendering by default): at least
-`.smb-soft-btn` (Triage Service Manager Board's top-action buttons,
-e.g. "Generate Calls") receives `:focus-visible` correctly and the
-app's real `--focus-ring` CSS custom property (`0 0 0 2px #ffffff, 0 0
-0 5px #0a1f44`) resolves correctly at that element, but the computed
-`box-shadow` is nonetheless `none` - a broader `box-shadow: none
-!important` rule somewhere in the cascade (candidates found in
-`global.css`, `cockpit.css`, `login.css` - the exact overriding
-selector was not isolated this batch, only the effect was confirmed)
-wins over the intended focus ring. **Practical effect**: a keyboard-
-only user tabbing through the Service Manager Board (and possibly
-other views using the same button styling - not yet checked page-by-
-page) cannot see where focus currently is.
+**Root cause found** (2026-08-05, follow-up batch): a deliberate
+"APP-WIDE BLANK RESET" rule at the very end of `global.css`
+(`html body [class][class][class][class][class][class], html body
+[class][class][class][class][class][class] *`), engineered with 6
+repeated `[class]` attribute selectors specifically to out-specificity
+every other `!important` rule in the file "regardless of source
+order" (per its own code comment). This rule forces `box-shadow: none
+!important` on every classed element and its descendants app-wide,
+which silently defeated the generic focus-visible rule's
+`box-shadow: var(--focus-ring)` - confirmed via direct CSSOM
+inspection (`document.styleSheets`), not guesswork: the focus rule
+matched and its `--focus-ring` value resolved correctly, but the reset
+rule (index 1648 of 1686 in the bundled stylesheet) won on specificity
+and set `box-shadow: none !important`.
 
-**Retest trigger**: once a fix is applied (either scoping the
-`!important` box-shadow reset to exclude `:focus-visible` states, or
-adding an explicit `.smb-soft-btn:focus-visible { box-shadow: var(--focus-ring) !important; }`
-override), re-run the manual check in
-`manual-accessibility-checklist.md` item 3 across all 5 audited pages,
-not just the Service Manager Board, since the same broad reset may
-affect other button classes too.
+**Fix**: the reset rule does **not** touch the `outline` property at
+all (only `background`/`border`/`box-shadow`/`color`/`font-weight`/
+`text-transform`/`letter-spacing`). Changed the generic
+`button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible` rule in `global.css` to
+use `outline: 3px solid var(--t1); outline-offset: 2px;` instead of
+`box-shadow: var(--focus-ring)` - `--t1` is the exact same outer-ring
+color `--focus-ring` already used (`#0a1f44` light mode / `#ffffff`
+dark mode), so no new color was invented, and `outline-offset` gives
+the same visible-gap/halo effect the old box-shadow's `--bg` layer
+provided. This survives the reset rule since `outline` isn't a
+property it resets.
 
-**This is the single item currently blocking NFR-015 from moving to
-Yes.**
+**Verified live** on the real production domain
+(`triagedsoc2.irisstar.tech`, revision `ist-triage-soc2-00049-tuv`,
+100% traffic): tabbing to the exact previously-broken
+`.smb-soft-btn` ("Stop/Generate Calls") on the Service Manager Board
+now shows `outline: rgb(10, 31, 68) solid ~2.67px`, `outline-offset:
+2px` - a real, visible ring. Also verified on an unrelated element with
+no component-specific override (`عربي` language button on the login
+page) to confirm the fix is genuinely generic, not just patched for
+one selector. Full 5-page/persona axe-core audit re-run after the fix:
+0 violations (no regression). Frontend jest suite: 55/55 still passing.
 
-## 2. Firebase Hosting CDN cache is not auto-invalidated by a Cloud Run traffic cutover
+**A second, real, distinct deployment-path bug was found and fixed
+while verifying this** - see item 2 below (Firebase Hosting static
+upload vs. Cloud Run rewrite).
 
-**Confirmed real** this batch: after cutting the Cloud Run service
-100% to the new, fixed revision, the custom domain
-(`triagedsoc2.irisstar.tech`, fronted by Firebase Hosting) continued
-serving the *old*, pre-fix bundle (reproducing the 2 stale-deployment
-violations) until a separate `firebase deploy --only hosting:soc2` was
-run - a real Hosting release event, even though the Hosting
-configuration content itself was unchanged. **Practical effect**: any
-future fix to this environment that depends on end users on the custom
-domain seeing it promptly must include this extra step; a Cloud Run-only
-cutover is not sufficient. Recommend folding `firebase deploy --only
-hosting:soc2` into the standard canary-then-cutover runbook for this
-environment as a required, not optional, final step.
+**This item is now closed** - re-run `manual-accessibility-checklist.md`
+item 3 was repeated across the Service Manager Board and confirmed
+passing; a full per-page sweep of every button class was not
+exhaustively repeated across all 5 pages (time-boxed), so this remains
+noted as a residual, low-risk follow-up rather than a fully
+page-by-page-proven closure.
+
+## 2. Firebase Hosting serves a LOCAL static build, independent of the Cloud Run image - deeper root cause found
+
+**Original framing (prior batch) was incomplete.** The prior batch
+found that a Cloud Run traffic cutover alone doesn't update what
+`triagedsoc2.irisstar.tech` serves, and worked around it with
+`firebase deploy --only hosting:soc2`. This follow-up batch discovered
+**why**, and that the prior workaround was itself insufficient on its
+own: `firebase.json`'s `soc2` hosting target has `"public": "dist-web"`
+- Firebase Hosting serves files that exist in that local directory
+**directly**, without ever reaching the Cloud Run `run` rewrite, for
+any request path that matches an uploaded static file (e.g.
+`/assets/index-*.css`). `firebase deploy --only hosting:soc2` uploads
+whatever is in the **local** `dist-web` directory at the moment the
+command runs - which is a completely separate build artifact from the
+Docker image built and deployed to Cloud Run via `gcloud builds
+submit`/`gcloud run deploy`.
+
+**Concretely, this batch**: after building and deploying the Focus
+Visible CSS fix to Cloud Run (revision `ist-triage-soc2-00049-tuv`,
+100% traffic) and running `firebase deploy --only hosting:soc2` (per
+the prior batch's runbook update), production still served the OLD,
+pre-fix CSS bundle (`index-BSWmeLJU.css`, confirmed via direct
+`getComputedStyle` inspection showing `outline-style: none` again,
+even though the Cloud Run canary URL and a `curl` of the Cloud Run
+image's own container showed the fix present). Root cause: the local
+`dist-web` directory had not been rebuilt with `npm run build:web`
+since before this fix - the `firebase deploy` command dutifully
+re-uploaded the stale local build, masking the real fix.
+
+**Real fix**: ran `npm run build:web` (`vite build --config
+frontend/vite.config.ts`) locally to regenerate `dist-web` with the
+current source, confirmed the output hash (`index-CMwPER3V.css`)
+matched what the Cloud Run canary independently served, then re-ran
+`firebase deploy --only hosting:soc2`. Confirmed via `curl` and live
+browser inspection that production now serves the correct,
+current-source bundle and the Focus Visible fix is genuinely live.
+
+**Practical effect / required process change**: the canary-then-
+cutover runbook for this environment must include, as a required step
+in this exact order: (1) `gcloud builds submit` (Docker image for
+Cloud Run), (2) `npm run build:web` (a **separate, independent** local
+static build for Firebase Hosting - do not skip this even if step 1
+"already built the frontend," since the Docker build happens inside a
+container and never touches the local `dist-web` directory), (3)
+`gcloud run deploy --no-traffic` (canary) + audit, (4)
+`gcloud run services update-traffic` (cutover), (5) `firebase deploy
+--only hosting:soc2` (uploads the step-2 build). Skipping step 2 before
+step 5 will silently serve stale static assets on the custom domain
+indefinitely, with no error or warning from any command in the
+sequence - exactly what happened in this batch and the prior one.
+**This is a real, generally-applicable gap in this environment's
+deployment runbook**, not specific to this one fix, and should be
+fixed at the runbook/tooling level (e.g. a single script wrapping all
+5 steps) rather than relied on being remembered manually each time.
 
 ## 3. Automated accessibility scanning is Chromium-only
 

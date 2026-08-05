@@ -303,3 +303,21 @@ found via manual keyboard testing and is not yet fixed. Full detail:
 retained Partial** - a materially stronger, current-build Partial than
 before, but not Yes given the open Focus Visible defect. No compliance
 percentage change from this batch (Partial to Partial).
+
+## NFR-015 - Focus Visible defect fixed (2026-08-05, Batch 7) - retained Partial
+
+Root-caused and fixed the WCAG 2.1 SC 2.4.7 Focus Visible defect from
+Batch 6: an app-wide `box-shadow: none !important` specificity-
+escalation reset in `global.css` was silently suppressing the focus
+ring. Fixed via `outline` (a property that reset does not touch),
+deployed to `ist-triage-soc2-00049-tuv` (100% traffic), and verified
+live via real keyboard testing on production. Also found and fixed a
+second, distinct, real deployment gap: Firebase Hosting's static
+`dist-web` upload is independent of the Cloud Run image and must be
+rebuilt (`npm run build:web`) before each `firebase deploy --only
+hosting:soc2`, or the custom domain silently serves a stale bundle.
+Full detail: `docs/accessibility/accessibility-known-limitations.md`.
+**NFR-015 retained Partial** - the known defect is closed, but several
+required manual checks (modal, zoom, session-timeout, destructive-
+action, screen-reader) remain unperformed. No compliance percentage
+change from this batch.
