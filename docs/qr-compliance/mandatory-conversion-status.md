@@ -241,3 +241,14 @@ monitoring only, an overclaim. Corrected to Partial. See
 `docs/qr-questionnaire-backlog-tracker.md`. Mandatory compliance now
 77/149 = 51.68% (was 78/149 = 52.35%); overall 132/391 = 33.76% (was
 133/391 = 34.02%).
+
+## Update 2026-08-05 (continued): IS.61 customer-notification workflow built - retained Partial
+
+A controlled, auditable privacy-incident notification workflow now
+exists (detection -> review -> classification -> decision -> approval
+-> dry-run/internal-test delivery), operational in safe mode only. See
+`docs/security/privacy-incident-notification-procedure.md`. IS.61
+remains Partial - real customer delivery requires an approved SLA,
+legal/privacy-approved template, authorized Qatar Airways recipients,
+and one approved live delivery, none of which exist. No compliance
+percentage change from this batch.

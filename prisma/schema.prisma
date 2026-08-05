@@ -1299,6 +1299,43 @@ model RevealEvent {
   @@map("reveal_events")
 }
 
+// Closes IS.61's second half ("notify customers expeditiously") - a
+// durable, cross-instance-safe record of a privacy-incident candidate from
+// detection through human review, classification, an explicit human
+// notification decision, approval, and delivery. Deliberately does NOT
+// store revealed field values, PHI, credentials, tokens, or any raw
+// sensitive request data - only the operational metadata needed to run and
+// evidence the workflow itself.
+model PrivacyIncident {
+  id                     String    @id @default(cuid())
+  organization           String?
+  detectionSource        String    @map("detection_source") // e.g. "reveal_anomaly"
+  detectedAt             DateTime  @default(now()) @map("detected_at")
+  severity               String    @default("unclassified") // unclassified | low | medium | high | critical
+  status                 String    @default("detected") // see PrivacyIncidentStatus in code
+  assignedOwnerUserId    String?   @map("assigned_owner_user_id")
+  privacyImpactStatus    String?   @map("privacy_impact_status") // pending | confirmed_breach | no_impact
+  affectedCustomerStatus String?   @map("affected_customer_status") // pending | affected | not_affected
+  notificationRequired   Boolean?  @map("notification_required")
+  decisionReason         String?   @map("decision_reason")
+  decisionByUserId       String?   @map("decision_by_user_id")
+  decisionAt             DateTime? @map("decision_at")
+  approverUserId         String?   @map("approver_user_id")
+  approvalAt             DateTime? @map("approval_at")
+  notificationDeadlineAt DateTime? @map("notification_deadline_at")
+  notificationSentAt     DateTime? @map("notification_sent_at")
+  deliveryStatus         String?   @map("delivery_status") // pending | sent | failed | dry-run
+  correlationId          String?   @map("correlation_id")
+  evidenceReferences     Json?     @map("evidence_references")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  @@index([organization, status])
+  @@index([status, notificationDeadlineAt])
+  @@index([detectionSource, detectedAt])
+  @@map("privacy_incidents")
+}
+
 // Closes IS.61's multi-instance requirement: a shared, durable record of
 // each reveal-request attempt, used to compute a real org-/user-scoped
 // rolling-window count across every Cloud Run instance - the in-memory

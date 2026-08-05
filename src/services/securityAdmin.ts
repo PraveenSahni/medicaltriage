@@ -12,6 +12,7 @@ import {
   randomState
 } from "openid-client";
 import { authenticator } from "otplib";
+import { createIncidentCandidate } from "./privacyIncidentWorkflow.js";
 import {
   getAdminPassword,
   getRevealAnomalyThreshold,
@@ -3323,6 +3324,20 @@ async function checkRevealAnomalyRate(requesterUserId: string): Promise<void> {
     success: true,
     risk: "critical"
   });
+
+  // Closes IS.61's second half: detection creates a durable incident
+  // CANDIDATE for human review - it never bypasses review to directly
+  // notify anyone. See src/services/privacyIncidentWorkflow.ts.
+  try {
+    await createIncidentCandidate({
+      organization: requestingUser?.organization,
+      detectionSource: "reveal_anomaly",
+      severity: "high",
+      evidenceReferences: { requesterUserId, count, threshold, windowSeconds }
+    });
+  } catch (error) {
+    console.error("Failed to create privacy-incident candidate (anomaly audit event still recorded):", error);
+  }
 }
 
 export async function requestReveal(

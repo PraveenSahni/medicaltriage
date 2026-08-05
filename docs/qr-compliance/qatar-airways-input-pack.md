@@ -51,3 +51,23 @@ action (provisioning test tenant access) rather than a one-line policy
 answer - recommend bundling it into the same outreach conversation
 once QR's Security/Technology Contact engages, even though it isn't
 one of the 7 "quick answer" items above.
+
+## Update 2026-08-05: authorized customer-notification recipients (IS.61)
+
+A real, controlled privacy-incident notification workflow now exists
+(see `docs/security/privacy-incident-notification-procedure.md`),
+implemented in safe dry-run/internal-test mode only. To close IS.61
+fully, Qatar Airways needs to provide:
+
+1. **Authorized recipient address(es)** for privacy-incident customer
+   notifications (`PRIVACY_NOTIFICATION_CUSTOMER_RECIPIENTS`).
+2. **Confirmation of an acceptable notification SLA** (hours from a
+   confirmed, notification-required incident to customer notification)
+   - no engineering default was chosen; this is currently unset.
+3. **Approval authority** - who at Qatar Airways needs to review/
+   approve the notification template before any real send (see
+   `docs/security/privacy-incident-notification-template.md`).
+
+None of these are configured or assumed - real customer delivery is
+technically refused outright until all three, plus IST's own Legal/
+DPO/management template approval, are in place.

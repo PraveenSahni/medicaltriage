@@ -196,6 +196,68 @@ export function getRevealAnomalyThreshold(): number {
   return Number.isInteger(parsed) && parsed > 0 ? parsed : 10;
 }
 
+// Closes IS.61's second half - the privacy-incident notification workflow.
+// Every value here is deliberately conservative-by-default: real customer
+// delivery is off until explicitly enabled AND a real SLA/recipient are
+// configured, matching this engagement's standing "never invent a
+// contractual figure" principle (IG.09's retention decision follows the
+// same pattern).
+
+// Master switch for the notification-delivery step specifically (the
+// incident/review/classification workflow itself always runs regardless -
+// this only gates whether an approved notification can actually be sent).
+export function isPrivacyNotificationEnabled(): boolean {
+  return envFlag("PRIVACY_NOTIFICATION_ENABLED", false);
+}
+
+// Default true (safe) - even when notification is "enabled," a send only
+// actually leaves this application when BOTH this is explicitly set to
+// "false" AND a real, approved recipient is configured. Mirrors
+// SLI_REPORT_DRY_RUN's exact precedent.
+export function isPrivacyNotificationDryRun(): boolean {
+  return envFlag("PRIVACY_NOTIFICATION_DRY_RUN", true);
+}
+
+// Not an engineering decision - null (not "approval-required" defaulted to
+// a number) until a real SLA is configured. A missing SLA is a real,
+// visible gap in the workflow (see docs/security/privacy-incident-notification-procedure.md),
+// not silently assumed to be some default number of hours.
+export function getPrivacyNotificationSlaHours(): number | null {
+  const raw = process.env.PRIVACY_NOTIFICATION_SLA_HOURS;
+  if (!raw) {
+    return null;
+  }
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    throw new Error(`PRIVACY_NOTIFICATION_SLA_HOURS must be a positive number, got: ${raw}`);
+  }
+  return parsed;
+}
+
+function splitRecipients(value?: string): string[] {
+  if (!value) {
+    return [];
+  }
+  return value
+    .split(",")
+    .map((recipient) => recipient.trim())
+    .filter(Boolean);
+}
+
+// Internal (IST-side) recipients for incident-review/overdue alerts - a
+// real, comma-separated list an operator configures; empty by default
+// (no address invented or hardcoded).
+export function getPrivacyNotificationInternalRecipients(): string[] {
+  return splitRecipients(process.env.PRIVACY_NOTIFICATION_INTERNAL_RECIPIENTS);
+}
+
+// Real, QR-authorized customer-facing recipients - empty until Qatar
+// Airways provides them (see docs/qr-compliance/qatar-airways-input-pack.md).
+// Never hardcoded, never guessed.
+export function getPrivacyNotificationCustomerRecipients(): string[] {
+  return splitRecipients(process.env.PRIVACY_NOTIFICATION_CUSTOMER_RECIPIENTS);
+}
+
 // Closes Cloud CSQ AR.13's literal ask ("MFA required for all remote user
 // access") for real when an operator actually wants org-wide enforcement,
 // without changing today's default (opt-in per user) behavior. Off by

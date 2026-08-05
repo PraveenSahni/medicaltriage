@@ -1191,3 +1191,67 @@ clean. Cloud SQL Auth Proxy was active and required throughout
 52.35% - the -1 numerator is IS.61's honest downward correction, not a
 new gap introduced this batch). Overall 132/391 = 33.76% (was
 133/391 = 34.02%, same -1 cause).
+
+## 2026-08-05 (continued): IS.61 customer-notification workflow - Partial (unchanged)
+
+Dedicated batch closing IS.61's second literal requirement ("notify
+customers expeditiously"). Full detail:
+`docs/security/privacy-incident-notification-procedure.md`,
+`docs/security/privacy-incident-notification-template.md`,
+`docs/operations/privacy-notification-runbook.md`.
+
+**Built**: a controlled, auditable privacy-incident lifecycle
+(`PrivacyIncident` model, migration
+`20260805170935_add_privacy_incident_workflow`, applied to the real
+soc2 database) - detection creates an incident CANDIDATE only (never
+bypasses review to directly notify anyone), through human review,
+classification, an explicit notification decision with a mandatory
+reason, segregation-of-duties approval, and dry-run/internal-test
+delivery via the existing, already-live `getEmailAdapter()`. Explicit
+allow-list state machine (`ALLOWED_TRANSITIONS`) rejects invalid
+transitions. New config: `PRIVACY_NOTIFICATION_ENABLED`,
+`PRIVACY_NOTIFICATION_DRY_RUN` (default `true`),
+`PRIVACY_NOTIFICATION_SLA_HOURS` (no engineering default - `null`
+until approved), `PRIVACY_NOTIFICATION_INTERNAL_RECIPIENTS`,
+`PRIVACY_NOTIFICATION_CUSTOMER_RECIPIENTS` (both empty by default, no
+address invented or hardcoded).
+
+**Two real bugs found and fixed by this batch's own tests before
+validation**: (1) a dry-run preview was silently permitted for the
+`customer` audience instead of being refused outright; (2) a duplicate
+notification-send attempt on an already-sent incident raised the wrong
+error type. Both fixed - customer delivery now requires full,
+explicit, non-default configuration with no preview exception, and
+duplicate-send detection is checked before the status gate.
+
+**Validated**: 10 new unit tests
+(`tests/privacyIncidentWorkflow.test.ts`) plus a real end-to-end run
+against the actual soc2 Postgres database (incident created,
+reviewed, classified, confirmed, decided, approved by a distinct
+approver, dry-run-delivered to a configured internal recipient,
+confirmed no email sent, confirmed a real durable
+`PRIVACY_INCIDENT_STATUS_TRANSITION` audit event) - all synthetic test
+data cleaned up after. Wired the reveal-anomaly detector
+(`checkRevealAnomalyRate`) to create a real incident candidate on
+threshold breach, alongside its existing audit event. Deployed to a
+`--no-traffic` canary, health-checked, then cut over to live traffic
+(low risk - notification delivery stays disabled by default).
+
+**IS.61 remains Partial** - exact remark: "Multi-instance privacy-
+anomaly detection and durable incident/audit workflow are operational.
+Customer notification capability is implemented in controlled dry-
+run/internal-test mode. Final closure requires approved notification
+SLA, legal/privacy-approved template, authorized Qatar Airways
+recipients and one approved live delivery validation." None of the 4
+remaining dependencies exist yet - not a new gap, the same one already
+disclosed.
+
+Verified: `npx tsc -p tsconfig.json --noEmit` clean, **735/735 backend
+tests passing** (725 + 10 new), `npx pnpm audit --audit-level high`
+clean. Cloud SQL Auth Proxy was active and required throughout
+(migration application, full end-to-end real-database validation,
+test-data cleanup).
+
+**Compliance unchanged by this batch**: mandatory 77/149 = 51.68%,
+overall 132/391 = 33.76% - no row moved to Yes or down; IS.61's status
+and remark are consistent with its prior downward correction.

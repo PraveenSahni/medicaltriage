@@ -157,3 +157,17 @@ remaining" until that business decision is made.
 requires the scoping conversation above before a real, non-generic
 paper can be written without guessing at facts only Legal Counsel
 knows.
+
+## Update 2026-08-05: IS.61 notification template - legal/DPO approval needed
+
+A draft customer-notification template now exists
+(`docs/security/privacy-incident-notification-template.md`) - fields
+are limited to real, already-recorded incident metadata (reference,
+detection time, affected-customer status, containment status); it
+deliberately excludes "actions taken," "customer action requested,"
+and "update cadence" sections pending legal/privacy review of what can
+be disclosed. **No approval has been sought or obtained.** Required
+before any real use: Legal Counsel review of exact wording, DPO
+confirmation of appropriate disclosure scope, and management sign-off
+on any customer-facing commitment. This is a new, distinct approval
+item alongside IG.09/IS.02/LG.01 already tracked in this pack.

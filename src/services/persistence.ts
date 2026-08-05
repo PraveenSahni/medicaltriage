@@ -829,3 +829,139 @@ export async function persistCompletedTriageNote(
 
   return { persisted: true, recordId: created.id };
 }
+
+// Closes IS.61's second half - durable, cross-instance-safe privacy-
+// incident workflow state. Always persisted (no MOCK_MODE-style gate) -
+// this is a brand-new feature with no prior in-memory-only behavior to
+// preserve, so it is built durable from the start rather than repeating
+// the exact anti-pattern this engagement spent several batches fixing.
+export type PrivacyIncidentRecord = {
+  id: string;
+  organization?: string;
+  detectionSource: string;
+  detectedAt: string;
+  severity: string;
+  status: string;
+  assignedOwnerUserId?: string;
+  privacyImpactStatus?: string;
+  affectedCustomerStatus?: string;
+  notificationRequired?: boolean;
+  decisionReason?: string;
+  decisionByUserId?: string;
+  decisionAt?: string;
+  approverUserId?: string;
+  approvalAt?: string;
+  notificationDeadlineAt?: string;
+  notificationSentAt?: string;
+  deliveryStatus?: string;
+  correlationId?: string;
+};
+
+function toPrivacyIncidentRecord(row: {
+  id: string;
+  organization: string | null;
+  detectionSource: string;
+  detectedAt: Date;
+  severity: string;
+  status: string;
+  assignedOwnerUserId: string | null;
+  privacyImpactStatus: string | null;
+  affectedCustomerStatus: string | null;
+  notificationRequired: boolean | null;
+  decisionReason: string | null;
+  decisionByUserId: string | null;
+  decisionAt: Date | null;
+  approverUserId: string | null;
+  approvalAt: Date | null;
+  notificationDeadlineAt: Date | null;
+  notificationSentAt: Date | null;
+  deliveryStatus: string | null;
+  correlationId: string | null;
+}): PrivacyIncidentRecord {
+  return {
+    id: row.id,
+    organization: row.organization ?? undefined,
+    detectionSource: row.detectionSource,
+    detectedAt: row.detectedAt.toISOString(),
+    severity: row.severity,
+    status: row.status,
+    assignedOwnerUserId: row.assignedOwnerUserId ?? undefined,
+    privacyImpactStatus: row.privacyImpactStatus ?? undefined,
+    affectedCustomerStatus: row.affectedCustomerStatus ?? undefined,
+    notificationRequired: row.notificationRequired ?? undefined,
+    decisionReason: row.decisionReason ?? undefined,
+    decisionByUserId: row.decisionByUserId ?? undefined,
+    decisionAt: row.decisionAt ? row.decisionAt.toISOString() : undefined,
+    approverUserId: row.approverUserId ?? undefined,
+    approvalAt: row.approvalAt ? row.approvalAt.toISOString() : undefined,
+    notificationDeadlineAt: row.notificationDeadlineAt ? row.notificationDeadlineAt.toISOString() : undefined,
+    notificationSentAt: row.notificationSentAt ? row.notificationSentAt.toISOString() : undefined,
+    deliveryStatus: row.deliveryStatus ?? undefined,
+    correlationId: row.correlationId ?? undefined
+  };
+}
+
+export async function createPrivacyIncident(args: {
+  organization?: string;
+  detectionSource: string;
+  severity?: string;
+  correlationId?: string;
+  evidenceReferences?: Record<string, unknown>;
+}): Promise<PrivacyIncidentRecord> {
+  const created = await prisma.privacyIncident.create({
+    data: {
+      organization: args.organization,
+      detectionSource: args.detectionSource,
+      severity: args.severity ?? "unclassified",
+      status: "detected",
+      correlationId: args.correlationId,
+      evidenceReferences: args.evidenceReferences ? (args.evidenceReferences as Prisma.InputJsonValue) : undefined
+    }
+  });
+  return toPrivacyIncidentRecord(created);
+}
+
+export async function getPrivacyIncident(id: string): Promise<PrivacyIncidentRecord | undefined> {
+  const row = await prisma.privacyIncident.findUnique({ where: { id } });
+  return row ? toPrivacyIncidentRecord(row) : undefined;
+}
+
+export async function updatePrivacyIncident(
+  id: string,
+  updates: Partial<Omit<PrivacyIncidentRecord, "id" | "detectionSource" | "detectedAt">>
+): Promise<PrivacyIncidentRecord> {
+  const updated = await prisma.privacyIncident.update({
+    where: { id },
+    data: {
+      ...(updates.organization !== undefined ? { organization: updates.organization } : {}),
+      ...(updates.severity !== undefined ? { severity: updates.severity } : {}),
+      ...(updates.status !== undefined ? { status: updates.status } : {}),
+      ...(updates.assignedOwnerUserId !== undefined ? { assignedOwnerUserId: updates.assignedOwnerUserId } : {}),
+      ...(updates.privacyImpactStatus !== undefined ? { privacyImpactStatus: updates.privacyImpactStatus } : {}),
+      ...(updates.affectedCustomerStatus !== undefined ? { affectedCustomerStatus: updates.affectedCustomerStatus } : {}),
+      ...(updates.notificationRequired !== undefined ? { notificationRequired: updates.notificationRequired } : {}),
+      ...(updates.decisionReason !== undefined ? { decisionReason: updates.decisionReason } : {}),
+      ...(updates.decisionByUserId !== undefined ? { decisionByUserId: updates.decisionByUserId } : {}),
+      ...(updates.decisionAt !== undefined ? { decisionAt: new Date(updates.decisionAt) } : {}),
+      ...(updates.approverUserId !== undefined ? { approverUserId: updates.approverUserId } : {}),
+      ...(updates.approvalAt !== undefined ? { approvalAt: new Date(updates.approvalAt) } : {}),
+      ...(updates.notificationDeadlineAt !== undefined
+        ? { notificationDeadlineAt: new Date(updates.notificationDeadlineAt) }
+        : {}),
+      ...(updates.notificationSentAt !== undefined ? { notificationSentAt: new Date(updates.notificationSentAt) } : {}),
+      ...(updates.deliveryStatus !== undefined ? { deliveryStatus: updates.deliveryStatus } : {})
+    }
+  });
+  return toPrivacyIncidentRecord(updated);
+}
+
+export async function listOverduePrivacyIncidents(now: Date = new Date()): Promise<PrivacyIncidentRecord[]> {
+  const rows = await prisma.privacyIncident.findMany({
+    where: {
+      notificationDeadlineAt: { lt: now },
+      status: { notIn: ["notification_sent", "closed", "notification_not_required"] }
+    },
+    orderBy: { notificationDeadlineAt: "asc" }
+  });
+  return rows.map(toPrivacyIncidentRecord);
+}

@@ -277,3 +277,13 @@ See `docs/security/reveal-anomaly-detection.md` for the full
 architecture, failure policy, and the honest rationale for correcting
 this row's value downward rather than treating the multi-instance fix
 as sufficient for a full "Yes."
+
+## IS.61 customer-notification workflow (2026-08-05) - still Partial
+
+| Control | Code reference | Config | Migration | Test reference | Validation date | Validator | Status |
+|---|---|---|---|---|---|---|---|
+| Privacy-incident notification workflow (detection -> review -> classification -> decision -> approval -> dry-run delivery) | `src/services/privacyIncidentWorkflow.ts` | `PRIVACY_NOTIFICATION_ENABLED`, `PRIVACY_NOTIFICATION_DRY_RUN`, `PRIVACY_NOTIFICATION_SLA_HOURS`, `PRIVACY_NOTIFICATION_INTERNAL_RECIPIENTS`, `PRIVACY_NOTIFICATION_CUSTOMER_RECIPIENTS` | `20260805170935_add_privacy_incident_workflow` | `tests/privacyIncidentWorkflow.test.ts` (10 tests) + real cross-process Postgres validation | 2026-08-05 | This engagement | **Partial (unchanged)** - workflow operational in dry-run/internal-test mode only; no real customer notification sent, no SLA/template/QR-recipient approval exists |
+
+See `docs/security/privacy-incident-notification-procedure.md`,
+`docs/security/privacy-incident-notification-template.md`, and
+`docs/operations/privacy-notification-runbook.md` for full detail.
