@@ -86,6 +86,22 @@ fully deterministic (rule-based `evaluateAviationRules`/
 `calculateTriageScore`), emitting only synthetic, explicitly-labeled
 non-clinical training data for a future initiative.
 
+## Batch 6 (2026-08-05) - independent re-verification of 23 "existing control" rows, 5 closed
+
+| Requirement ID | Control | Code/config/test reference | Validation date | Validator | Remaining limitation |
+|---|---|---|---|---|---|
+| NFR-027 | IP allowlisting capability | `src/middleware/ipAllowlist.ts`, `tests/ipAllowlist.test.ts` (5 tests) | 2026-08-05 | This engagement | QR's specific IP range not yet configured (deployment step, not a capability gap) |
+| IG.07 | Uniform data protection | `docs/data-management-policy.md` (tenant isolation, audit logging, RBAC) | 2026-08-05 | This engagement | No additive tiered-classification scheme exists (not required by the literal question) |
+| AR.10 | Input/output integrity (Zod) | 16 route files under `src/routes/*.ts`, including `emr.ts`, `hrms.ts`, `callCenterGateway.ts` | 2026-08-05 | This engagement | None known |
+| AR.15 | Network perimeter protection | `src/app.ts` (`isAllowedOriginForRequest`, CORS), Cloud Run ingress, `src/middleware/ipAllowlist.ts` | 2026-08-05 | This engagement | No dedicated commercial IPS/WAF (not required by the literal question) |
+| AR.16 | Strong encryption, no vendor defaults | `src/app.ts:140-153` (Helmet CSP), `docs/key-management-procedure.md` (Secret Manager, generated credentials) | 2026-08-05 | This engagement | None known |
+
+**18 of the 23 candidate rows reviewed and retained Partial/No** with no
+contradictory evidence found (each has a genuine, real gap - see
+`docs/qr-questionnaire-backlog-tracker.md`'s Batch 6 entry for the full
+list and reasoning per row). **No integrity discrepancies found this
+sub-batch.**
+
 ## Everything else scored "Yes" (94 rows, prior to Batch 1/2/3/4)
 
 Sourced from earlier passes of this same engagement (prior to 2026-08-05).

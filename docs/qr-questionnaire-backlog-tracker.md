@@ -508,3 +508,57 @@ no new regressions). No rows converted to Yes this batch - both were
 genuinely blocked on production/environment access, honestly routed to
 `docs/qr-compliance/production-execution-register.md` rather than
 forced closed.
+
+## 2026-08-05 (continued): Batch 6 - 23-row re-verification, sub-batch 1
+
+Independently re-verified all 23 rows classified "existing control -
+evidence missing" in `docs/qr-compliance/mandatory-conversion-status.md`.
+Not re-opened without contradictory evidence: IS.02, IS.66, LG.01
+(already deliberately kept Partial in Batch 2 for real reasons - no new
+evidence found this pass that changes that).
+
+**Closed to Yes (5 rows)**, each independently verified against real
+code/tests before the questionnaire changed:
+
+- ✅ **NFR-027** (IP allowlisting capability) - real, tested middleware
+  (`src/middleware/ipAllowlist.ts`, 5 tests in `tests/ipAllowlist.test.ts`
+  covering exact/CIDR match, rejection, malformed-input tolerance). The
+  literal ask is a capability requirement, satisfied regardless of
+  whether QR's specific IP range has been configured yet - same
+  precedent as NFR-020/021/047's already-closed configurable capabilities.
+- ✅ **IG.07** (treat all data as highly sensitive, same protection) -
+  verified the existing remark's own evidence actually satisfies the
+  literal ask: uniform protection across all data types IS what's being
+  asked, not a tiered-classification scheme.
+- ✅ **AR.10** (input/output integrity routines) - verified Zod schema
+  validation is used in 16 of the app's route files, including the real
+  external-interchange interfaces (`emr.ts`, `hrms.ts`,
+  `callCenterGateway.ts`), not just one endpoint.
+- ✅ **AR.15** (network perimeter protection) - verified CORS allowlist
+  logic (`src/app.ts`, `isAllowedOriginForRequest()`) plus Cloud Run
+  ingress control plus the IP-allowlist middleware together satisfy the
+  literal ask.
+- ✅ **AR.16** (strong encryption, no vendor defaults) - verified Helmet
+  CSP config (`src/app.ts:140-153`) and the real Secret Manager
+  generated-credential/rotation pattern
+  (`docs/key-management-procedure.md`).
+
+**Retained Partial/No, reviewed with no contradictory evidence found**:
+NFR-016, NFR-022, NFR-038, NFR-040, NFR-041, NFR-076, NFR-078, NFR-118,
+NFR-185, CO.04, IS.02, IS.50, IS.66, LG.01, DR.04, AR.03, AR.13, AR.21 -
+each has a genuine, real gap (real tenant credentials missing, QR
+clarification needed, field-level encryption not implemented, no
+comprehensive log-scrubbing audit, narrower-than-"any" anomaly coverage,
+data-residency confirmation needed, no recurring audit program, no
+executive sign-off, no SIEM subscriber, no workstation hardening, no
+signed NDA, no DR-region compute/failover test, named legacy federation
+standards unimplemented, MFA opt-in not mandated, no dedicated FIM/IDS
+tool).
+
+**No integrity discrepancies found this sub-batch** (unlike Batches 2/4/5
+- searched for contradictory evidence on each row per the mandated
+process, found none this time).
+
+Verified: `npx tsc --noEmit` clean, 688/692 (same known environment gap,
+no new regressions). Register regenerated: 192 rows now closed (was
+187). 18 of the original 23 candidate rows remain (5 closed this pass).
