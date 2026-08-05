@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>QR Vendor Questionnaire - Compliance Summary (2026-08-05)</title>
+<style>
+  :root {
+    --ink: #1a1f2b;
+    --muted: #5b6270;
+    --line: #e2e5ea;
+    --bg: #f7f8fa;
+    --card: #ffffff;
+    --yes: #1b7f4d;
+    --yesbg: #e8f5ee;
+    --partial: #9a6b00;
+    --partialbg: #fdf3dd;
+    --no: #b23b3b;
+    --nobg: #fbeaea;
+    --other: #555b66;
+    --otherbg: #eef0f2;
+    --accent: #0b5fa5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    margin: 0;
+    padding: 32px 24px 64px;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  h1 {
+    font-size: 22px;
+    margin: 0 0 4px;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0 0 28px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 2px rgba(20, 25, 35, 0.04);
+  }
+  h2 {
+    font-size: 16px;
+    margin: 0 0 4px;
+  }
+  .card-note {
+    color: var(--muted);
+    font-size: 12.5px;
+    margin: 0 0 14px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  th, td {
+    padding: 8px 10px;
+    text-align: right;
+    border-bottom: 1px solid var(--line);
+  }
+  th:first-child, td:first-child {
+    text-align: left;
+  }
+  thead th {
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-bottom: 2px solid var(--line);
+  }
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+  tr.total td {
+    font-weight: 700;
+    border-top: 2px solid var(--line);
+  }
+  .pill {
+    display: inline-block;
+    min-width: 52px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 12.5px;
+  }
+  .pill-yes { color: var(--yes); background: var(--yesbg); }
+  .pill-mid { color: var(--partial); background: var(--partialbg); }
+  .pill-low { color: var(--no); background: var(--nobg); }
+  .bar-track {
+    background: var(--line);
+    border-radius: 6px;
+    height: 8px;
+    width: 100%;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: var(--accent);
+  }
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 10px 0 0;
+  }
+  .legend span::before {
+    content: "";
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+  .dot-yes::before { background: var(--yes); }
+  .dot-partial::before { background: var(--partial); }
+  .dot-no::before { background: var(--no); }
+  .dot-other::before { background: var(--other); }
+  .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 720px) {
+    .grid2 { grid-template-columns: 1fr; }
+  }
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: #eef4fb;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--ink);
+    margin-top: 6px;
+  }
+  .footer-note {
+    color: var(--muted);
+    font-size: 11.5px;
+    text-align: center;
+    margin-top: 30px;
+  }
+  .delta {
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>QR Vendor Questionnaire &mdash; Compliance Summary</h1>
+  <p class="subtitle">
+    NFR_COTS_CSQ_v8.3 &middot; Non Functional Req / UX / AI / Cloud CSQ tabs &middot;
+    N/A rows excluded from every denominator &middot; snapshot as of 2026-08-05
+  </p>
+
+  <div class="card">
+    <h2>All rows, by tab</h2>
+    <p class="card-note">Every scored row (N/A excluded), across all mandatory and non-mandatory questions.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Tab</th>
+          <th>Scored</th>
+          <th>Yes</th>
+          <th>Partial</th>
+          <th>No</th>
+          <th>Other</th>
+          <th>% Yes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Non Functional Req</td>
+          <td>190</td><td>55</td><td>77</td><td>56</td><td>2</td>
+          <td><span class="pill pill-mid">28.9%</span></td>
+        </tr>
+        <tr>
+          <td>UX</td>
+          <td>17</td><td>1</td><td>13</td><td>3</td><td>0</td>
+          <td><span class="pill pill-low">5.9%</span></td>
+        </tr>
+        <tr>
+          <td>AI</td>
+          <td>31</td><td>4</td><td>12</td><td>8</td><td>7</td>
+          <td><span class="pill pill-low">12.9%</span></td>
+        </tr>
+        <tr>
+          <td>Cloud CSQ</td>
+          <td>158</td><td>40</td><td>46</td><td>65</td><td>7</td>
+          <td><span class="pill pill-mid">25.3%</span></td>
+        </tr>
+        <tr class="total">
+          <td>All tabs</td>
+          <td>396</td><td>100</td><td>148</td><td>132</td><td>16</td>
+          <td><span class="pill pill-mid">25.3%</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="bar-track"><div class="bar-fill" style="width:25.3%"></div></div>
+    <div class="legend">
+      <span class="dot-yes">Yes</span>
+      <span class="dot-partial">Partial</span>
+      <span class="dot-no">No</span>
+      <span class="dot-other">Other (e.g. Needs legal/QR input)</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Mandatory-only rows, by tab</h2>
+    <p class="card-note">Restricted to rows Qatar Airways marked "Mandatory" &mdash; the set that actually gates vendor acceptance.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Tab</th>
+          <th>Scored</th>
+          <th>Yes</th>
+          <th>Partial</th>
+          <th>No</th>
+          <th>Other</th>
+          <th>% Yes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Non Functional Req</td>
+          <td>23</td><td>4</td><td>16</td><td>3</td><td>0</td>
+          <td><span class="pill pill-low">17.4%</span></td>
+        </tr>
+        <tr>
+          <td>UX</td>
+          <td>3</td><td>0</td><td>2</td><td>1</td><td>0</td>
+          <td><span class="pill pill-low">0.0%</span></td>
+        </tr>
+        <tr>
+          <td>AI</td>
+          <td>10</td><td>3</td><td>6</td><td>0</td><td>1</td>
+          <td><span class="pill pill-mid">30.0%</span></td>
+        </tr>
+        <tr>
+          <td>Cloud CSQ</td>
+          <td>117</td><td>39</td><td>33</td><td>39</td><td>6</td>
+          <td><span class="pill pill-mid">33.3%</span></td>
+        </tr>
+        <tr class="total">
+          <td>All tabs</td>
+          <td>153</td><td>46</td><td>107</td><td>43</td><td>11</td>
+          <td><span class="pill pill-mid">30.1%</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="bar-track"><div class="bar-fill" style="width:30.1%"></div></div>
+    <p class="delta">Mandatory Yes moved 44 &rarr; 46 today (28.8% &rarr; 30.1%) after closing NFR-010 and NFR-116.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>Closed today (2026-08-05)</h2>
+      <p class="card-note">16 mandatory-Partial rows closed to Yes.</p>
+      <div class="callout">
+        <strong>Docs (10):</strong> IG.12, IS.01, IS.30, IS.05, IS.23, AR.23, HR.03, RM.03, RM.04, RM.05/06
+        <br><br>
+        <strong>Engineering (6):</strong> NFR-011, CO.13, LG.04, IS.54, IS.61, NFR-010, NFR-116
+      </div>
+    </div>
+    <div class="card">
+      <h2>Flagged, not closed</h2>
+      <p class="card-note">Explicitly reclassified or reopened rather than faked.</p>
+      <div class="callout">
+        <strong>Blocked:</strong> NFR-119, IS.07 (need live prod GCP writes or missing CI credentials)
+        <br><br>
+        <strong>Skipped:</strong> IG.09 (no decided retention period yet)
+        <br><br>
+        <strong>Reopened:</strong> NFR-189 / NFR-123 (monthly SLI report &mdash; previously marked done, found not built)
+      </div>
+    </div>
+  </div>
+
+  <p class="footer-note">
+    Generated from NFR_COTS_CSQ_v8.3-edc758c5-2b70-496a-9db4-947af34a67a4.xlsx &middot;
+    verification: tsc --noEmit clean, 692/692 backend tests passing &middot;
+    see docs/qr-questionnaire-backlog-tracker.md and docs/handover-2026-08-05.md for full detail
+  </p>
+
+</div>
+</body>
+</html>
