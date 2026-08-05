@@ -562,3 +562,22 @@ process, found none this time).
 Verified: `npx tsc --noEmit` clean, 688/692 (same known environment gap,
 no new regressions). Register regenerated: 192 rows now closed (was
 187). 18 of the original 23 candidate rows remain (5 closed this pass).
+
+## 2026-08-05 (continued): PA.08 - Implementation complete, awaiting deployment category
+
+Moving to the next priority category per the mandated order
+(documentation-complete-awaiting-approval has zero rows; moving to
+implementation-complete-awaiting-deployment). Of that category's 3 rows
+(NFR-119, IS.07, PA.08), only PA.08 (critical asset inventory) had a
+genuine documentation-only path - NFR-119 needs a business decision
+first, IS.07 needs a CI credential that doesn't exist.
+
+- ✅ **PA.08** (complete inventory of critical assets) - new
+  `docs/critical-asset-inventory.md`, real inventory of both live
+  environments (soc2 sourced from Terraform, demo sourced from real
+  deployment/handover records since demo isn't Terraform-managed -
+  stated honestly, not glossed over).
+
+Verified: `npx tsc --noEmit` clean, 688/692 (same known environment gap,
+no new regressions). Register regenerated: 193 rows now closed (was
+192).
