@@ -144,6 +144,23 @@ export function shouldPersistAuditEventsInDatabase(): boolean {
   return envFlag("AUDIT_EVENT_DB_PERSISTENCE", false);
 }
 
+// Found in the follow-up persistence-gating sweep: role-permission grant/
+// revoke had no cross-instance read-fallback at all (worse than MFA's
+// original gap - a grant/revoke on one Cloud Run instance was never even
+// best-effort visible to another) - a real authorization-bypass risk, not
+// just a compliance-evidence gap.
+export function shouldPersistRolePermissionOverridesInDatabase(): boolean {
+  return envFlag("ROLE_PERMISSION_DB_PERSISTENCE", false);
+}
+
+// Same sweep: a privileged PII reveal request created on one instance was
+// invisible to an approver whose request landed on a different instance -
+// a functional failure in a workflow that is inherently two separate HTTP
+// requests (requester, then approver), not just a durability nicety.
+export function shouldPersistRevealWorkflowInDatabase(): boolean {
+  return envFlag("REVEAL_WORKFLOW_DB_PERSISTENCE", false);
+}
+
 // Closes Cloud CSQ AR.13's literal ask ("MFA required for all remote user
 // access") for real when an operator actually wants org-wide enforcement,
 // without changing today's default (opt-in per user) behavior. Off by

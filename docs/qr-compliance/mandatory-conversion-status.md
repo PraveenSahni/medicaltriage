@@ -220,3 +220,12 @@ NFR-010/IS.61/IS.51/HR.03 was already accurate; only its live-
 environment durability was previously unproven. See
 `docs/operations/audit-event-persistence.md` and
 `docs/qr-questionnaire-backlog-tracker.md` for full detail.
+
+## Update 2026-08-05 (continued): persistence-gating integrity sweep
+
+Found and fixed 2 real multi-instance gaps (role-permission overrides,
+reveal workflow) and 1 flag bugfix (session revocation), following the
+AR.13/AuditEvent Priority-0 fixes. Full inventory in
+`docs/operations/persistence-gating-inventory.md`. IS.61's remark
+corrected (value unchanged) to disclose the reveal-anomaly counter's
+process-local scope. No mandatory row moved to Yes.

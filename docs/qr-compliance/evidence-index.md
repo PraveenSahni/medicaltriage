@@ -253,3 +253,16 @@ as a result of this finding** - the rows' underlying code-level
 evidence was never inaccurate, only its live-environment durability.
 A full re-verification pass of every row citing AuditEvent DB evidence
 is recommended as follow-up, not performed exhaustively in this batch.
+
+## Persistence-gating integrity sweep - role-permission and reveal-workflow cross-instance fixes (2026-08-05)
+
+| Control | Code reference | Config | Test reference | Validation date | Validator | Remaining limitation |
+|---|---|---|---|---|---|---|
+| Role-permission override cross-instance visibility (NFR-030/031/032) | `getPersistedRolePermissionOverrides()`, `hydrateRolePermissionOverridesFromDatabase()` (`src/services/securityAdmin.ts`, `src/index.ts`) | `ROLE_PERMISSION_DB_PERSISTENCE` | `tests/persistenceGatingCrossInstance.test.ts` + real cross-process DB proof | 2026-08-05 | This engagement | A grant/revoke made while another instance is already running requires that instance to restart to see it - no periodic refresh built |
+| Reveal-request cross-instance visibility (R-04) | `getPersistedRevealRequest()` (`src/services/persistence.ts`), wired into `decideReveal()`/`fetchApprovedRevealValue()` | `REVEAL_WORKFLOW_DB_PERSISTENCE` | Same | 2026-08-05 | This engagement | The approved plaintext value itself remains intentionally never persisted - a third instance that never processed the approval cannot serve it |
+| Session revocation flag bugfix (NFR-021) | `revokePersistedSessionsForUser()` now checks `shouldPersistSessionsInDatabase()` | Uses existing `SESSION_DB_PERSISTENCE` | Same | 2026-08-05 | This engagement | None known |
+
+See `docs/operations/persistence-gating-inventory.md` for the complete
+inventory of all `shouldUseDatabasePersistence()` call sites, including
+those confirmed already correct (queue, retention, legal hold) and
+those deferred (SSO config, CCP drafts, webhook records).

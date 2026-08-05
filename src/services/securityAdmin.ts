@@ -43,7 +43,9 @@ import {
   persistMfaCredential,
   persistRevealApproval,
   persistRevealEvent,
+  getPersistedRevealRequest,
   persistRevealRequest,
+  getPersistedRolePermissionOverrides,
   persistRolePermissionOverride,
   persistSecurityAuditEvent,
   persistUserSession,
@@ -2659,6 +2661,33 @@ type RolePermissionOverrideRecord = {
 
 let rolePermissionOverrides: RolePermissionOverrideRecord[] = [];
 
+// Loads the current durable role-permission override state into this
+// instance's in-memory cache - call once at process startup (src/index.ts).
+// Found during the persistence-gating sweep: without this, a grant/revoke
+// persisted by one Cloud Run instance was never visible to any other
+// instance's permission resolution, a genuine authorization-bypass risk.
+// This closes the "new instance starts from stale/empty state" case; it
+// does not make an already-running instance see a grant/revoke made after
+// it started (a disclosed residual limitation - would need a periodic
+// refresh or a pub/sub invalidation signal to close fully).
+export async function hydrateRolePermissionOverridesFromDatabase(): Promise<void> {
+  const roleCodes = new Set(roles.map((role) => role.code));
+  const hydrated: RolePermissionOverrideRecord[] = [];
+  for (const roleCode of roleCodes) {
+    try {
+      const persisted = await getPersistedRolePermissionOverrides(roleCode);
+      for (const override of persisted) {
+        hydrated.push({ roleCode: override.roleCode, permissionCode: override.permissionCode, action: override.action });
+      }
+    } catch (error) {
+      console.error(`Failed to hydrate role-permission overrides for ${roleCode}:`, error);
+    }
+  }
+  if (hydrated.length > 0) {
+    rolePermissionOverrides = hydrated;
+  }
+}
+
 function applyRolePermissionOverrides(role: Role): Role {
   const grants = new Set<string>();
   const revokes = new Set<string>();
@@ -3137,6 +3166,39 @@ type PendingRevealRequest = {
 const revealRequestsById = new Map<string, PendingRevealRequest>();
 const revealValuesById = new Map<string, { value: string; expiresAt: number }>();
 
+// In-memory-first, DB-fallback read for a reveal request's metadata -
+// without this, a request created on one Cloud Run instance was invisible
+// to an approver whose request landed on a different instance. Found
+// during the persistence-gating sweep. Note: the approved plaintext value
+// itself (revealValuesById) is intentionally NEVER persisted - hydrating
+// the request record here does not make an already-computed value
+// fetchable from a third instance that never computed it; that remains a
+// real, disclosed limitation (see docs/operations/persistence-gating-inventory.md),
+// not something to fix by persisting plaintext, which would be a worse
+// security regression than the gap it would close.
+async function resolveRevealRequest(revealRequestId: string): Promise<PendingRevealRequest | undefined> {
+  const cached = revealRequestsById.get(revealRequestId);
+  if (cached) {
+    return cached;
+  }
+  const persisted = await getPersistedRevealRequest(revealRequestId);
+  if (!persisted) {
+    return undefined;
+  }
+  const hydrated: PendingRevealRequest = {
+    id: persisted.id,
+    requesterUserId: persisted.requesterUserId,
+    resourceType: persisted.resourceType,
+    resourceId: persisted.resourceId,
+    fieldName: persisted.fieldName,
+    purpose: persisted.purpose,
+    status: persisted.status as PendingRevealRequest["status"],
+    createdAt: new Date().toISOString()
+  };
+  revealRequestsById.set(revealRequestId, hydrated);
+  return hydrated;
+}
+
 async function recordRevealEvent(args: {
   revealRequestId?: string;
   userId: string;
@@ -3244,7 +3306,7 @@ export async function decideReveal(
   decision: "approved" | "denied",
   comments?: string
 ): Promise<{ status: "approved" | "denied" }> {
-  const record = revealRequestsById.get(revealRequestId);
+  const record = await resolveRevealRequest(revealRequestId);
   if (!record) {
     throw new RevealRequestNotFoundError(`No reveal request found with id ${revealRequestId}`);
   }
@@ -3285,7 +3347,7 @@ export async function decideReveal(
 // it. Every attempt (success or failure) writes a real RevealEvent row -
 // the permanent "who saw what PII, when, and why" audit trail.
 export async function fetchApprovedRevealValue(revealRequestId: string, requesterUserId: string): Promise<string> {
-  const record = revealRequestsById.get(revealRequestId);
+  const record = await resolveRevealRequest(revealRequestId);
   if (!record) {
     throw new RevealRequestNotFoundError(`No reveal request found with id ${revealRequestId}`);
   }

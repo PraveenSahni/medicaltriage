@@ -1064,3 +1064,79 @@ tests passing** (710 + 6 new in `tests/auditEventPersistence.test.ts`),
 active and required throughout for direct database verification
 (migration application, pre/post row counts, cross-instance read
 confirmation).
+
+## 2026-08-05 (continued): Dedicated persistence-gating integrity sweep
+
+Full inventory of every `shouldUseDatabasePersistence()` call site
+(and related in-memory-authoritative state), following the AR.13/
+AuditEvent Priority-0 fixes. Full inventory and classification:
+`docs/operations/persistence-gating-inventory.md`.
+
+**No real gap found** (already correctly durable, cross-process
+consistent): triage queue/soft-delete (own `QUEUE_DB_PERSISTENCE`
+flag, already on soc2), retention execution and legal-hold enforcement
+(the two Cloud Run Jobs use their own dedicated Prisma client, never
+gated by `MOCK_MODE` at all).
+
+**Real gaps found and fixed**:
+1. **Role-permission overrides** - no cross-instance read-fallback
+   existed at all (a grant/revoke on one instance was invisible to
+   another, a genuine authorization-bypass risk). Fixed: dedicated
+   `ROLE_PERMISSION_DB_PERSISTENCE` flag, a new
+   `getPersistedRolePermissionOverrides()` read function, and a
+   startup-hydration call (`hydrateRolePermissionOverridesFromDatabase()`
+   in `src/index.ts`) so every new instance boots from the current
+   durable state. Disclosed residual limitation: a grant/revoke made
+   while another instance is already running still requires that
+   instance to restart to see it - a periodic-refresh or invalidation-
+   signal mechanism was not built in this pass.
+2. **Reveal workflow (privileged PII reveal)** - same missing-read-
+   fallback pattern; a request created on one instance was invisible to
+   an approver's request on a different instance, a functional failure
+   given the workflow is inherently two separate HTTP requests. Fixed:
+   dedicated `REVEAL_WORKFLOW_DB_PERSISTENCE` flag, a new
+   `getPersistedRevealRequest()` read function wired into `decideReveal()`
+   and `fetchApprovedRevealValue()`. Disclosed, not "fixed": the
+   approved plaintext value itself (`revealValuesById`) remains
+   intentionally never persisted (a correct security choice) - a
+   third instance that never processed the approval genuinely cannot
+   serve the value; only the request/approval metadata's cross-
+   instance visibility was closed.
+3. **Session revocation on account-status change** - a real, separate
+   bug: `revokePersistedSessionsForUser()` checked the generic
+   `shouldUseDatabasePersistence()` instead of the dedicated
+   `shouldPersistSessionsInDatabase()` already used by session
+   creation/lookup - meaning a suspended account's sessions were
+   revoked in-memory but silently not revoked in the database, even
+   with `SESSION_DB_PERSISTENCE=true` already on soc2. Fixed to check
+   the correct flag.
+4. **IS.61's remark corrected** (Compliance value unchanged, "Yes"):
+   the reveal-anomaly-rate counter is genuinely process-local with no
+   database backing at all, not yet re-architected - the control
+   remains real for a single-instance requester, but "organization-
+   wide" detection is narrower in practice than the row might imply.
+   Disclosed honestly rather than silently left overstated.
+
+**Deferred, explicitly flagged, not fixed this pass** (none
+compliance-evidence-bearing or authorization-critical in the way the
+3 fixed items are): SSO `AuthenticationProvider` config read (SSO not
+yet connected to a real IdP tenant), CCP outbound draft persistence,
+inbound webhook record persistence, the secondary/redundant
+`persistEvaluatedEncounter`/`persistCompletedTriageNote` write paths.
+
+**Validated**: 5 new focused tests
+(`tests/persistenceGatingCrossInstance.test.ts`) proving each flag's
+on/off gating; a real cross-process integration check against the
+actual soc2 Postgres database (a role-permission grant and a reveal
+request each written by one process and correctly read back by a
+separate process, simulating cross-instance visibility) - both real
+rows confirmed then cleaned up as synthetic test data. Deployed to a
+`--no-traffic` canary first, then **cut over to live traffic** (low
+risk - purely additive persistence + a flag-name bugfix, no user-
+facing behavior change).
+
+Verified: `npx tsc -p tsconfig.json --noEmit` clean, **721/721 backend
+tests passing** (716 + 5 new), `npx pnpm audit --audit-level high`
+clean. Cloud SQL Auth Proxy was active and required throughout for
+direct database verification (pre/post row counts, cross-process
+read-after-write proof, test-data cleanup).

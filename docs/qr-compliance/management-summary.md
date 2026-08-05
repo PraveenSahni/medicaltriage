@@ -374,3 +374,17 @@ alone (78/149 = 52.35%, 133/391 = 34.02%) - it makes existing evidence
 durable, it doesn't create new evidence. Recommend a follow-up pass to
 re-verify every row citing AuditEvent DB evidence now that it's
 actually true on soc2.
+
+## Update 2026-08-05 (continued): persistence-gating integrity sweep - resolved
+
+Full inventory of every `shouldUseDatabasePersistence()` call site
+(`docs/operations/persistence-gating-inventory.md`). Queue, retention,
+and legal-hold controls already correctly durable - no gap found. Real
+gaps found and fixed: role-permission override cross-instance
+visibility (authorization-bypass risk), reveal-workflow cross-instance
+visibility (functional failure risk), and a session-revocation flag
+bugfix (wrong gate function checked). IS.61's remark corrected to
+disclose the reveal-anomaly counter's process-local scope honestly (no
+value change). Validated cross-process against the real database, then
+cut over to live traffic (low risk, additive). Mandatory/overall
+compliance unchanged by this sweep (78/149 = 52.35%, 133/391 = 34.02%).

@@ -7,6 +7,8 @@ import type {
 import {
   shouldPersistAuditEventsInDatabase,
   shouldPersistMfaCredentialsInDatabase,
+  shouldPersistRevealWorkflowInDatabase,
+  shouldPersistRolePermissionOverridesInDatabase,
   shouldPersistSessionsInDatabase,
   shouldUseDatabasePersistence
 } from "../config/runtime.js";
@@ -235,7 +237,7 @@ export type RevealRequestSnapshot = {
 };
 
 export async function persistRevealRequest(snapshot: RevealRequestSnapshot): Promise<PersistenceResult> {
-  if (!shouldUseDatabasePersistence()) {
+  if (!shouldPersistRevealWorkflowInDatabase()) {
     return { persisted: false, reason: "mock-mode" };
   }
   const upserted = await prisma.revealRequest.upsert({
@@ -266,7 +268,7 @@ export type RevealApprovalSnapshot = {
 };
 
 export async function persistRevealApproval(snapshot: RevealApprovalSnapshot): Promise<PersistenceResult> {
-  if (!shouldUseDatabasePersistence()) {
+  if (!shouldPersistRevealWorkflowInDatabase()) {
     return { persisted: false, reason: "mock-mode" };
   }
   const created = await prisma.revealApproval.create({
@@ -293,7 +295,7 @@ export type RevealEventSnapshot = {
 };
 
 export async function persistRevealEvent(snapshot: RevealEventSnapshot): Promise<PersistenceResult> {
-  if (!shouldUseDatabasePersistence()) {
+  if (!shouldPersistRevealWorkflowInDatabase()) {
     return { persisted: false, reason: "mock-mode" };
   }
   const created = await prisma.revealEvent.create({
@@ -310,6 +312,41 @@ export async function persistRevealEvent(snapshot: RevealEventSnapshot): Promise
     }
   });
   return { persisted: true, recordId: created.id };
+}
+
+export type PersistedRevealRequest = {
+  id: string;
+  requesterUserId: string;
+  resourceType: string;
+  resourceId: string;
+  fieldName: string;
+  purpose: string;
+  status: string;
+  expiresAt?: string;
+};
+
+// Read-path counterpart to persistRevealRequest() - without this, a reveal
+// request created on one Cloud Run instance was invisible to an approver's
+// request landing on a different instance, since the workflow is inherently
+// two separate HTTP requests. Found during the persistence-gating sweep.
+export async function getPersistedRevealRequest(revealRequestId: string): Promise<PersistedRevealRequest | undefined> {
+  if (!shouldPersistRevealWorkflowInDatabase()) {
+    return undefined;
+  }
+  const row = await prisma.revealRequest.findUnique({ where: { id: revealRequestId } });
+  if (!row) {
+    return undefined;
+  }
+  return {
+    id: row.id,
+    requesterUserId: row.requesterUserId,
+    resourceType: row.resourceType,
+    resourceId: row.resourceId,
+    fieldName: row.fieldName,
+    purpose: row.purpose,
+    status: row.status,
+    expiresAt: row.expiresAt ? row.expiresAt.toISOString() : undefined
+  };
 }
 
 // Reads the real, previously-orphaned AuthenticationProvider row for a real
@@ -331,8 +368,36 @@ export type RolePermissionOverride = {
   reason: string;
 };
 
+export type PersistedRolePermissionOverride = {
+  roleCode: string;
+  permissionCode: string;
+  action: "GRANT" | "REVOKE";
+  createdAt: string;
+};
+
+// Read-path counterpart to persistRolePermissionOverride() - without this,
+// a grant/revoke recorded by one Cloud Run instance was never even best-
+// effort visible to another, a genuine authorization-bypass risk (a role's
+// effective permissions would differ depending on which instance handled a
+// given login). Found during the persistence-gating sweep.
+export async function getPersistedRolePermissionOverrides(roleCode: string): Promise<PersistedRolePermissionOverride[]> {
+  if (!shouldPersistRolePermissionOverridesInDatabase()) {
+    return [];
+  }
+  const rows = await prisma.rolePermission.findMany({
+    where: { roleCode, status: "active" },
+    orderBy: { createdAt: "asc" }
+  });
+  return rows.map((row) => ({
+    roleCode: row.roleCode,
+    permissionCode: row.permissionCode,
+    action: row.action as "GRANT" | "REVOKE",
+    createdAt: row.createdAt.toISOString()
+  }));
+}
+
 export async function persistRolePermissionOverride(override: RolePermissionOverride): Promise<PersistenceResult> {
-  if (!shouldUseDatabasePersistence()) {
+  if (!shouldPersistRolePermissionOverridesInDatabase()) {
     return { persisted: false, reason: "mock-mode" };
   }
 
@@ -476,7 +541,14 @@ export async function revokePersistedSession(sessionId?: string): Promise<void> 
 }
 
 export async function revokePersistedSessionsForUser(userId: string): Promise<void> {
-  if (!shouldUseDatabasePersistence()) {
+  // Found in the persistence-gating sweep: this checked the generic
+  // shouldUseDatabasePersistence() while session creation/lookup already
+  // correctly used the dedicated shouldPersistSessionsInDatabase() -
+  // meaning a suspended account's sessions were revoked in-memory but
+  // silently NOT revoked in the database, even with SESSION_DB_PERSISTENCE
+  // already on. Fixed to check the same flag as the rest of the session
+  // persistence path.
+  if (!shouldPersistSessionsInDatabase()) {
     return;
   }
 
