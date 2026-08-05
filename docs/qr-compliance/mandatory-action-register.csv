@@ -1,0 +1,83 @@
+Tab,ID,Requirement (short),Status,Gap,Required action,Owner,Supporting,Category,Target
+Non Functional Req,NFR-016,AD/OIDC/SAML federation vs real QR tenant,Partial,Real OIDC+PKCE built and proven vs. mock IdP; no real AD/Entra tenant or SAML,Obtain real QR IdP tenant credentials; wire and verify,Qatar Airways Security/Technology Contact,DevOps Lead,8,Next bid cycle if QR responds
+Non Functional Req,NFR-022,SSO login (real IdP),Partial,Proven vs mock IdP only,Same as NFR-016,Qatar Airways Security/Technology Contact,DevOps Lead,8,Next bid cycle
+Non Functional Req,NFR-038,Availability SLA tier,Partial,99.5%/month monitored as default; QR tier unconfirmed,QR to specify SLA tier,Qatar Airways Security/Technology Contact,CTO,8,On QR response
+Non Functional Req,NFR-039,RTO (<15 min Tier 0 target),No,Manual promotion = hours not minutes,Deploy DR-region compute + drill,Cloud Administrator,DevOps Lead,1,Dedicated future session
+Non Functional Req,NFR-040,RPO (0 min Tier 0 target),Partial,Bounded by unmeasured replication lag,Same DR deployment + drill,Cloud Administrator,DevOps Lead,1,Dedicated future session
+Non Functional Req,NFR-041,Primary+DR HA architecture,Partial,No DR-region compute; no drill,Same as NFR-039/040,Cloud Administrator,DevOps Lead,1,Dedicated future session
+Non Functional Req,NFR-058,OWASP compliance (formal ASVS),Partial,No formal ASVS assessment,Commission formal ASVS assessment,External Auditor,CISO,10,With CO.02/CO.03 engagement
+Non Functional Req,NFR-064,Data-handoff encryption in transit,No,No such pipeline exists,Reclassify to N/A,CISO,-,12,"Low effort, next batch"
+Non Functional Req,NFR-076,Encryption at rest/motion/in-use,Partial,No field-level in-use encryption,Build field-level encryption,DevOps Lead,CISO,1,Future engineering batch
+Non Functional Req,NFR-078,"PII not in logs, vault-encrypted",Partial,No systematic log-scrub audit,Run log-content audit + scrub,DevOps Lead,CISO/DPO,1,Future engineering batch
+Non Functional Req,NFR-079,DLP (no local downloads),No,No DLP product/control exists,Evaluate/procure DLP solution,CISO,Executive Sponsor,11,Procurement-dependent
+Non Functional Req,NFR-118,Anomaly alerting (any anomaly),Partial,Real alerts narrower than any-anomaly,Decide on broader ML anomaly detection,CISO,DevOps Lead,1,Future engineering batch
+Non Functional Req,NFR-119,QR-facing configurable alert thresholds,Partial,"Engineer-set, not QR-self-service",Business decision first (see pack),Product Owner,DevOps Lead,5,See pack
+Non Functional Req,NFR-156,Capacity planning / soak testing,Partial,Validated to 25 users + 20-min soak; 50-tier constrained by test-account pool,Obtain QR peak-load projection; run 60+min soak,Qatar Airways Security/Technology Contact,DevOps Lead,8,"On QR response, then 1-2 eng days"
+Non Functional Req,NFR-185,Data residency (QR-approved regions),Partial,"Infra in me-central1, unconfirmed vs QR list",QR to confirm approved region(s),Qatar Airways Security/Technology Contact,Cloud Administrator,8,On QR response
+Non Functional Req,NFR-189,SLIs/SLOs reported monthly to QR,Partial,Real monitoring proven; no real QR recipient/live secrets,See NFR-189 pack,Qatar Airways Security/Technology Contact,DevOps Lead,8,"On QR response, then <1 day"
+Non Functional Req,NFR-193,3 reference customers,N/A (commercial),Non-technical commercial question,Route to commercial/sales function,Executive Sponsor,-,12,N/A
+UX,NFR-004,Cross-browser compatibility,Partial,Login/entry matrix real; deeper e2e blocked on DB-tunnel access,Restore DB tunnel access; re-run deeper e2e,DevOps Lead,Cloud Administrator,4,1 eng day once access restored
+UX,NFR-015,WCAG 2.1 / responsive,Partial,"1 real violation, already fixed in source, stale deploy",Redeploy soc2; re-run a11y audit,Cloud Administrator,DevOps Lead,2,"<1 day, needs go-ahead"
+UX,NFR-016,QR branding/theme,No,No QR theme; needs QR brand assets,Request QR brand guidelines/assets,Qatar Airways Security/Technology Contact,Frontend Lead,8,On QR response
+AI,NFR-004,PII masked/redacted in logs,Partial,No systematic log-scrub audit,Same audit as NFR-078 (NFR tab),DevOps Lead,CISO/DPO,1,Future engineering batch
+AI,NFR-010,Cloud-native security service (SCC/Defender),No,No GCP Organization resource,Decide on GCP Org restructure,Executive Sponsor,Cloud Administrator,5,Business decision first
+AI,NFR-014,Firewall/WAF/DDoS,Partial,No WAF/Cloud Armor,Migrate to LB + Cloud Armor,Cloud Administrator,DevOps Lead,1,Dedicated future session
+AI,NFR-016,Centralized secrets vault (all environments),Partial,Demo env still has plaintext DATABASE_URL,Obtain go-ahead to modify demo secrets,Executive Sponsor,DevOps Lead,5,"On go-ahead, then <1 day"
+AI,NFR-040,Hallucination incident-response plan,Partial,Real IR plan; no live GenAI component to trigger it,Re-review if/when live GenAI feature added,CISO,-,12,On future AI feature
+AI,NFR-041,SOC2/ISO cert + compliance questionnaire,Partial,Readiness work real; no formal certification,See external-assurance-pack.md,Executive Sponsor,External Auditor,9,Business-scoped engagement
+AI,NFR-044,Log every AI request/response w/ actor+model version,N/A / Partial,No AI requests exist to log,Reclassify to N/A until live AI feature exists,CISO,-,12,"Low effort, next batch"
+Cloud CSQ,CO.01,Third-party audit reports,No,No external audit exists,Engage external auditor (see pack),Executive Sponsor,-,9,Business-scoped engagement
+Cloud CSQ,CO.02,External network pentest,Partial,Internal DAST only,Engage external pentest firm,Executive Sponsor,-,9,Business-scoped engagement
+Cloud CSQ,CO.03,Independent application pentest,No,No pentest performed,Engage external pentest firm,Executive Sponsor,-,9,Business-scoped engagement
+Cloud CSQ,CO.05,External audit (general),No,No external audit performed,Engage external auditor,Executive Sponsor,-,9,Business-scoped engagement
+Cloud CSQ,CO.07,External audit findings sharing,Partial,Internal findings only,Engage external auditor,Executive Sponsor,-,9,Business-scoped engagement
+Cloud CSQ,CO.08,SOC 2 Type II attestation,No,No attestation exists,Engage accredited SOC2 auditor,Executive Sponsor,-,9,Business-scoped engagement
+Cloud CSQ,CO.09,ISO 27001 certification,No,No certification exists,Engage accredited ISO27001 body,Executive Sponsor,-,9,Business-scoped engagement
+Cloud CSQ,PA.01,Physical security attestation,Partial,"Inherited from GCP, not owned",Cite GCP's own attestation formally,CISO,-,9,Low effort
+Cloud CSQ,PA.05,Physical ingress/egress monitoring,Partial,"Inherited from GCP, not owned",Cite GCP's own attestation formally,CISO,-,9,Low effort
+Cloud CSQ,PA.03,Physical perimeter security,Yes (inherited),Literal value not exact Yes,Normalize workbook cell to Yes,CISO,-,9,Low effort
+Cloud CSQ,DR.06,Physical-disaster protection,Yes (inherited),Literal value not exact Yes,Normalize workbook cell to Yes,CISO,-,9,Low effort
+Cloud CSQ,DR.07,Power/network redundancy,Yes (inherited),Literal value not exact Yes,Normalize workbook cell to Yes,CISO,-,9,Low effort
+Cloud CSQ,AR.19,NTP/time synchronization,Yes (inherited),Literal value not exact Yes,Normalize workbook cell to Yes,CISO,-,9,Low effort
+Cloud CSQ,IG.01,Data-labelling standard,No,No formal labelling standard,Adopt/implement labelling standard,Clinical Governance Lead,-,11,"Real program, long-lead"
+Cloud CSQ,IG.06,Customer-configurable geo-routing,No,No such architectural capability,Scope new capability,Cloud Administrator,-,11,Long-lead
+Cloud CSQ,IG.15,Dedicated DLP tool,No,Same as NFR-079,Procure DLP solution,CISO,-,11,Procurement-dependent
+Cloud CSQ,PA.04,Customer geo-routing control,No,Same as IG.06,Scope new capability,Cloud Administrator,-,11,Long-lead
+Cloud CSQ,IS.13,Access-removal-speed metrics,No,No offboarding SLA/metric,Build offboarding SLA + metric,HR Lead,-,11,Process-dependent
+Cloud CSQ,IS.33,CMEK,No,Not creation-time-retrofittable,Requires DB rebuild,Cloud Administrator,-,11,Long-lead
+Cloud CSQ,IS.34,BYOK,No,Same limitation as IS.33,Requires DB rebuild,Cloud Administrator,-,11,Long-lead
+Cloud CSQ,IS.45,Dedicated threat-detection signatures,No,Requires commercial product,Procure threat-detection product,CISO,-,11,Procurement-dependent
+Cloud CSQ,IS.53,Forensic-collection capability,No,No forensic-readiness program,Build forensic-readiness program,CISO,-,11,Long-lead
+Cloud CSQ,IS.59,Metadata-collection via inspection tech,No,No such inspection tech in architecture,Reclassify to N/A,CISO,-,12,Low effort
+Cloud CSQ,LG.02,Third-party data access beyond Twilio metadata,No,Likely genuine N/A,Legal review then reclassify,Legal Counsel,-,11,Low effort once reviewed
+Cloud CSQ,DR.05,Recurring BCP test program,No,Only a one-off restore drill exists,Build recurring test cadence,DevOps Lead,-,1,Future engineering batch
+Cloud CSQ,IS.39,Network-layer vulnerability scan,No,No scan performed,Commission network vuln scan,External Auditor,-,10,With external-assurance pack
+Cloud CSQ,IS.40,Application-layer vulnerability scan,Partial,pnpm audit + internal DAST only,Commission full commercial scanner,External Auditor,-,10,With external-assurance pack
+Cloud CSQ,IS.41,OS-layer vulnerability scan,No,Cloud Run is Google-managed,Clarify inherited vs genuine N/A,Cloud Administrator,-,12,Low effort
+Cloud CSQ,IS.11,Unauthorized OS-layer software install,No,"Candidate N/A - serverless, no OS access",Confirm and reclassify,CISO,-,12,Low effort
+Cloud CSQ,IS.73,Physical wireless infrastructure controls,No,Candidate N/A - no physical wireless infra,Confirm and reclassify,CISO,-,12,Low effort
+Cloud CSQ,SD.06,Supplier-domain control,No,Candidate N/A,Confirm applicability and reclassify,CISO,-,12,Low effort
+Cloud CSQ,AR.17,Virtualization-layer attack surface,No,"Candidate N/A - serverless, no virtualization layer owned",Confirm and reclassify,Cloud Administrator,-,12,Low effort
+Cloud CSQ,RM.02,SLA remuneration terms,N/A (commercial),Non-technical commercial question,Route to commercial/contracts function,Executive Sponsor,-,12,N/A
+Cloud CSQ,IG.10,Third-party/government data-request procedure,No,No formal procedure,Draft and approve procedure,Legal Counsel,-,6,Legal review cycle
+Cloud CSQ,IS.52,Chain-of-custody standard alignment,No,No formal alignment,Draft and approve policy,Legal Counsel,-,6,Legal review cycle
+Cloud CSQ,IS.55,Subpoena-data-separation attestation,No,No process/attestation,Draft and approve attestation,Legal Counsel,-,6,Legal review cycle
+Cloud CSQ,IS.62,Qatar-law Privacy Policy alignment,Needs legal input,No formal legal review yet,Legal review of Privacy Policy,Legal Counsel,DPO,6,Legal review cycle
+Cloud CSQ,DR.09,Customer jurisdiction-routing control,No,Likely architectural gap,Scope decision then legal review,Legal Counsel,-,6,Legal review cycle
+Cloud CSQ,PA.02,GCP-personnel background-check policy,No,Outside IST control (Google personnel),Confirm/document as inherited,CISO,-,5,Low effort
+Cloud CSQ,HR.01,Formal security-role training program,No,No program exists,Design and approve program,HR Lead,-,5,HR review cycle
+Cloud CSQ,HR.02,Training-acknowledgment documentation,No,Dependent on HR.01,"Design and approve, after HR.01",HR Lead,-,5,HR review cycle
+Cloud CSQ,IS.10,Disciplinary/sanction policy,No,No policy exists,Draft and approve policy,HR Lead,-,5,HR review cycle
+Cloud CSQ,IS.20,Formal security-awareness training,No,No program exists,Design and approve program,HR Lead,-,5,HR review cycle
+Cloud CSQ,IS.21,Admin legal-responsibility training,No,No module exists,Design and approve module,HR Lead,-,5,HR review cycle
+Cloud CSQ,IS.27,Staff policy-awareness program,No,No program exists,Design and approve program,HR Lead,-,5,HR review cycle
+Cloud CSQ,IS.02,Executive security-policy commitment,Partial,No named-executive sign-off,See executive-approval-pack.md,Executive Sponsor,CISO,3,See pack
+Cloud CSQ,IS.50,Existing-control evidence-missing row,Partial,Evidence documentation gap,Document existing control,CISO,-,1,Low effort
+Cloud CSQ,IS.66,Existing-control evidence-missing row,Partial,Evidence documentation gap,Document existing control,CISO,-,1,Low effort
+Cloud CSQ,LG.01,NDA/confidentiality execution,Partial,No signed NDA exists,See legal-privacy-action-pack.md,Legal Counsel,-,6,See pack
+Cloud CSQ,DR.04,Existing-control evidence-missing row,Partial,Evidence documentation gap,Document existing control,DevOps Lead,-,1,Low effort
+Cloud CSQ,AR.03,Existing-control evidence-missing row,Partial,Evidence documentation gap,Document existing control,CISO,-,1,Low effort
+Cloud CSQ,AR.13,Existing-control evidence-missing row,Partial,Evidence documentation gap,Document existing control,CISO,-,1,Low effort
+Cloud CSQ,AR.21,Existing-control evidence-missing row,Partial,Evidence documentation gap,Document existing control,CISO,-,1,Low effort
+Cloud CSQ,CO.04,Internal audit program,Partial,No formal internal audit program documented,Formalize and document program,CISO,-,1,Low effort
+Cloud CSQ,IS.07,Terraform/production drift detection,Partial,No CI credential to write drift-check job,See production-execution-pack.md,DevOps Lead,-,4,See pack
