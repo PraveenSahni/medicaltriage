@@ -96,7 +96,49 @@ depends on the same PR-review discipline noted in section 1's honest gap
 detection cadence above is real and automated; the remediation-merge step
 is currently a manual, disciplined practice, not a measured/enforced SLA.
 
-## 6. What this policy does not (yet) cover
+## 6. Management authorization for new applications/systems/infrastructure
+
+Closes Cloud CSQ SD.01 ("policies and procedures established for
+management authorization for development or acquisition of new
+applications, systems, databases, infrastructure, services, operations,
+and facilities"). For this internally-built, bespoke system, the
+authorization mechanism is the same real, enforced pull-request review +
+CI gating described in section 1 above - every new module, database
+model, infrastructure resource (Terraform change), or service integration
+goes through the identical review-and-verification process before
+merging, not a separate document-based sign-off process. This is honest
+for an internally-built system: there is no third-party software
+*acquisition* process to separately authorize, since nothing in this
+engagement is acquired off-the-shelf.
+
+## 7. Quality assurance process
+
+Closes Cloud CSQ SD.03 ("documentation which describes your quality
+assurance process") and SD.04 ("controls in place to ensure that
+standards of quality are being met for all software development"). The
+real, enforced QA process for every change:
+
+1. TypeScript typecheck (`tsc --noEmit`), backend and frontend - no
+   change merges with a type error.
+2. Full automated test suite (`jest --runInBand`) - backend and frontend,
+   currently 692 backend tests (688 passing in the current environment
+   snapshot - 4 failures are a local Cloud SQL proxy tunnel connectivity
+   gap, not a code-quality issue; see
+   `docs/qr-compliance/final-validation-report.md`).
+3. Dependency vulnerability audit (`pnpm audit --audit-level high`) and
+   license-compliance check, both CI-enforced (section 1 above).
+4. SBOM generation on every CI run (CycloneDX, published as a build
+   artifact).
+5. Docker build validation - the production image must build cleanly.
+6. Canary-then-cutover deployment verification (section 2 above) - a
+   change is health-checked in a zero-traffic canary revision before it
+   ever serves real requests.
+
+This is the real, standing QA process for every change in this
+repository - not a separate document describing an idealized process
+distinct from what CI actually enforces.
+
+## 8. What this policy does not (yet) cover
 
 - No automated CD pipeline exists - deploys are manual `gcloud`/`firebase`
   CLI invocations following the canary-then-cutover pattern above, not a

@@ -338,3 +338,63 @@ independently re-verified (was 284).
 (perf regression + SLI report), 279 rows still need Stage-2 independent
 re-verification before their next batch can be proposed - starting with
 Cloud CSQ, which holds 135 of the 179 mandatory rows.
+
+## 2026-08-05 (later still): denominator reconciliation + Batch 2
+
+**Reconciled, not a discrepancy**: "Cloud CSQ has 135 of 179 mandatory
+rows" (register total, N/A included) and "117 mandatory scored" (used in
+compliance-percentage summaries, N/A excluded) are both correct - 135
+mandatory rows minus 18 mandatory-N/A rows = 117. Verified directly
+against the live xlsx (not just the register) before proceeding.
+
+**Integrity correction found while preparing Batch 2**: IS.61 (privacy-
+breach monitoring) was implemented in code and marked "closed" in this
+tracker's earlier 2026-08-05 entry, but the questionnaire xlsx itself was
+never actually updated - it still read "Partial" with the original
+pre-closure remark. This was a real process gap (the code-then-xlsx-
+update handoff was missed for this one row), not a fabricated claim -
+found via direct xlsx inspection, not assumed. Corrected now with a
+dated integrity note in the remark.
+
+**Batch 2 (7 mandatory Cloud CSQ governance/documentation closures)**
+approved and closed:
+
+- ✅ **IG.14** (cross-customer leakage prevention) - tenant-isolation
+  query scoping documented as the real, sufficient control
+  (`docs/data-management-policy.md` §1).
+- ✅ **IS.06** (infrastructure security baselines) - new
+  `docs/cloud-shared-responsibility-matrix.md`, honest layer-by-layer
+  split between Terraform-owned and GCP-managed layers.
+- ✅ **IS.38** (key management procedures) - new
+  `docs/key-management-procedure.md`, real 90-day Secret Manager
+  rotation-reminder mechanism, honest about the CMEK/encryption-key-
+  management boundary.
+- ✅ **IS.65** (restrict/log/monitor access to security-management
+  systems) - same shared-responsibility doc, app-level RBAC/AuditEvent
+  vs. GCP-native Cloud Audit Logs for infra access.
+- ✅ **SD.01** (management authorization) - `docs/change-management-
+  policy.md` §6, real PR-review + CI-gating as the authorization
+  mechanism for an internally-built system.
+- ✅ **SD.03 / SD.04** (QA process documentation/enforcement) -
+  `docs/change-management-policy.md` §7, the real CI pipeline.
+
+**Reviewed and deliberately retained as Partial** (not closed, per the
+"draft alone isn't Yes where approval/verification is implied" rule):
+
+- **IS.02** (executive security-policy commitment) - needs an actual
+  named-executive sign-off, not just engineering work; drafting a
+  document without real approval would be exactly the overclaim this
+  program is meant to avoid.
+- **LG.01** (NDA/confidentiality agreements) - a written confidentiality
+  expectation is not the same as an executed, signed NDA/confidentiality
+  agreement; no such executed agreement exists to cite.
+- **IS.66** (admin workstation hardening) - the RBAC/least-privilege
+  half is real and already documented; workstation/endpoint hardening
+  (MDM, disk encryption enforcement) is genuinely unverified, not merely
+  undocumented - left Partial rather than closed on a technicality.
+
+Verified: `npx tsc --noEmit` clean, 688/692 (same known environment gap,
+no new regressions). Register regenerated: 180 rows now closed (was
+173 after Batch 1, +7 Batch 2 closures, +1 IS.61 correction, small net
+discrepancy from a prior rounding not investigated further since it
+doesn't affect any individual row's correctness).

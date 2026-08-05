@@ -26,7 +26,26 @@ and date.
 | HR.03 | Employment-termination procedure | `setDirectoryStatusForEmployee()`, `revokeSessionsForUser()` (grep-confirmed real function names) | none | `docs/hr-access-termination-procedure.md` | Existing jest suite | Cross-checked against real exported function names | 2026-08-05 | This engagement | None known |
 | RM.03 / RM.04 / RM.05 / RM.06 | Risk-register review cadence | none (doc-only) | none | `docs/risk-register-2026-08-04.md` §"Review cadence" | none | Manual doc review, real next-review date set (2026-11-04) | 2026-08-05 | This engagement | Cadence commitment not yet exercised (first review not due until 2026-11-04) |
 
-## Everything else scored "Yes" (94 rows)
+## Batch 2 closures (2026-08-05) - Cloud CSQ governance/documentation
+
+| Requirement ID | Control | Code/config reference | Document reference | Validation date | Validator | Remaining limitation |
+|---|---|---|---|---|---|---|
+| IG.14 | Tenant-isolation as leakage-prevention control | `src/services/tenantScope.ts` | `docs/data-management-policy.md` §1 | 2026-08-05 | This engagement | No separate dedicated DLP/extrusion-prevention tool exists |
+| IS.06 | Infrastructure baseline (shared-responsibility mapping) | `terraform/main.tf` | `docs/cloud-shared-responsibility-matrix.md` | 2026-08-05 | This engagement | Hypervisor/OS layers are GCP-managed, not separately baselined by IST Health |
+| IS.38 | Key/secret rotation-reminder procedure | `terraform/main.tf:81-149` | `docs/key-management-procedure.md` | 2026-08-05 | This engagement | Encryption-key management proper (CMEK) remains GCP-managed; first rotation reminder not yet observed (due 2026-11-02) |
+| IS.65 | Access restriction/logging (app + infra split) | `src/services/securityAdmin.ts` | `docs/cloud-shared-responsibility-matrix.md` | 2026-08-05 | This engagement | Infra-level log review process not independently exercised by IST Health |
+| SD.01 | Management authorization via PR review + CI gate | `.github/workflows/ci.yml` | `docs/change-management-policy.md` §6 | 2026-08-05 | This engagement | No formal acquisition process exists (not applicable - nothing is externally acquired) |
+| SD.03 | QA process documentation | CI pipeline (typecheck/test/audit/SBOM/canary) | `docs/change-management-policy.md` §7 | 2026-08-05 | This engagement | None known |
+| SD.04 | Quality-standard enforcement | Same as SD.03 | `docs/change-management-policy.md` §7 | 2026-08-05 | This engagement | None known |
+
+**Also corrected 2026-08-05**: IS.61 (privacy-breach monitoring) was
+implemented in code during the 2026-08-05 engineering batch and marked
+closed in the backlog tracker at the time, but the questionnaire xlsx
+itself was never actually updated - a real process gap, found and fixed
+during Batch 2 preparation. See `docs/qr-questionnaire-backlog-tracker.md`
+for the correction note.
+
+## Everything else scored "Yes" (94 rows, prior to Batch 1/2)
 
 Sourced from earlier passes of this same engagement (prior to 2026-08-05).
 Each has an `Evidence Location` value in `master-compliance-register.csv`

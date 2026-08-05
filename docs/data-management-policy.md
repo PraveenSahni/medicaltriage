@@ -14,6 +14,16 @@ isolated at the database query layer via `organizationId` scoping
 `findFirst`/`findUnique` call) - not an in-memory post-fetch filter. Verified
 by `tests/tenantScope.test.ts`/`tests/multiTenantRBAC.test.ts`.
 
+**Closes Cloud CSQ IG.14** ("controls in place to prevent data leakage or
+intentional/accidental compromise between customers in a multi-customer
+environment"): this query-level scoping is itself the real leakage-
+prevention control - no session/role can construct a query that returns
+another tenant's rows, verified by the tests above. This satisfies the
+question's literal ask (controls exist to prevent cross-customer
+leakage); it is not a separate, dedicated DLP/extrusion-prevention
+product layered on top, which remains a distinct, unbuilt capability if
+ever independently required.
+
 ## 2. Retention and deletion
 
 `RetentionPolicy` (Prisma model) drives an automated, scheduled purge job
