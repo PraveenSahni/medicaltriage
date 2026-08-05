@@ -1,5 +1,64 @@
 # Mandatory Action & Approval Register
 
+## Update 2026-08-05 (continued): reconciliation of the 82-vs-83 count discrepancy
+
+A follow-up review found the category-count table in `management-summary.md`
+summed to 83 while this register's stated total was 82. Root cause,
+found by direct inspection - **two independent errors, not a real
+duplicate row**:
+
+1. **A genuine omission**: `IG.09` (Cloud CSQ, row 35, "Confirm whether
+   the supplier have technical control capabilities to enforce customer
+   data retention policies?") is a real, mandatory, currently-Partial
+   Cloud CSQ row, extensively discussed in `business-decision-register.md`
+   and `legal-privacy-action-pack.md`, but it was **never added to this
+   register's own row tables or the CSV** - an oversight, not a
+   duplicate. This is the true +1 that brings the correct total from 82
+   to **83**.
+2. **Two count-column typos in `management-summary.md`** that happened
+   to roughly cancel: category 1 ("Engineering work remaining") listed
+   16 IDs but its count column said "15"; category 8 ("Qatar Airways
+   clarification required") listed 7 IDs but its count column said "8".
+   Both are corrected below. Neither reflects a real duplicate or
+   omitted row beyond IG.09.
+
+**Reconciliation table** (the 7 previously-missing rows the prior
+instruction asked to re-verify, plus IG.09, found this pass):
+
+| Requirement ID | Tab | Workbook row | Current supplier response | Primary category | Secondary dependency | Included in unresolved total | Correction made |
+|---|---|---|---|---|---|---|---|
+| NFR-058 | Non Functional Req | 68 | Partial | 10 (third-party evidence) | - | Yes | Already correctly included; no duplicate found on another tab |
+| IS.39 | Cloud CSQ | (network-scan row) | No | 10 (third-party evidence) | - | Yes | Already correctly included |
+| IS.40 | Cloud CSQ | (app-scan row) | Partial | 10 (third-party evidence) | - | Yes | Already correctly included |
+| IS.41 | Cloud CSQ | 93 | **N/A (was No)** | 12 (valid N/A) | - | Yes (as N/A, excluded from the scored denominator) | Reclassified this batch - see Batch 7A below |
+| NFR-041 | Non Functional Req | (DR-architecture row) | Partial | 1 (engineering, long-lead) | 8 (QR RTO/RPO input) | Yes | Confirmed distinct from the AI-tab NFR-041 (SOC2/ISO cert row) - same ID, different tab, both real, both counted once each under their own tab; treated as tab+ID unique key throughout, no merge |
+| NFR-189 | Non Functional Req | (SLI/SLO reporting row) | Partial | 8 (QR clarification) | - | Yes | Already correctly included |
+| NFR-193 | Non Functional Req | (reference-customers row) | N/A (commercial) | 12 (valid N/A) | - | Yes (as N/A) | Already correctly included |
+| **IG.09** | **Cloud CSQ** | **35** | **Partial** | **5 (business decision - joint)** | **6 (legal/privacy), 7 (clinical)** | **Yes - the true omission** | **Added to the register and CSV this pass; this is the actual +1 causing the 82-vs-83 gap** |
+
+**Confirmation of the 4 required reconciliation properties**:
+1. Every unresolved mandatory row now appears exactly once across the
+   register (83 rows, tab+ID as the unique key - confirmed no ID
+   collision was wrongly merged, e.g. the two distinct NFR-041 rows on
+   different tabs are both present separately).
+2. Every row has exactly one **primary** category (assigned above and
+   in the per-tab tables below).
+3. Secondary dependencies (e.g. NFR-041/NFR tab's QR-RTO/RPO input
+   need, IG.09's legal/clinical joint-decision need) are recorded as a
+   separate column/note, never added to the primary-category count.
+4. The CSV and this Markdown register now agree at 83 rows each (see
+   the CSV regeneration below).
+5. The workbook, `mandatory-conversion-status.md`, and
+   `management-summary.md` are reconciled to the same 83-row figure in
+   the updates below.
+
+**management-summary.md corrections applied**: category 1 count
+15 -> 16 (list was already correct); category 5 count 10 -> 11 (IG.09
+added); category 8 count 8 -> 7 (list was already correct, count typo
+fixed). New category-count sum: 16+1+1+2+11+6+7+13+3+12+11 = **83**,
+matching the corrected total.
+
+
 _Generated 2026-08-05. Source of truth: the live questionnaire workbook
 (`NFR_COTS_CSQ_v8.3-...xlsx`, all 4 tabs), `mandatory-conversion-status.md`,
 `evidence-index.md`, `qr-questionnaire-backlog-tracker.md`,
@@ -13,7 +72,7 @@ row's response is actually edited._
 
 This register covers **every mandatory row, across all 4 tabs** (Non
 Functional Req, UX, " AI", Cloud CSQ) that is not currently the exact
-string `"Yes"` in the live workbook - **82 rows total** (17 NFR + 3 UX + 7 AI + 55 Cloud CSQ). This is
+string `"Yes"` in the live workbook - **83 rows total** (17 NFR + 3 UX + 7 AI + 56 Cloud CSQ, corrected after finding IG.09 had been omitted - see the reconciliation update below). This is
 broader than `mandatory-conversion-status.md`'s original scope (which
 explicitly excludes UX/AI, "covered in Batches 4-5" but never
 re-consolidated into that document) - the 10 UX/AI rows are folded in
@@ -28,16 +87,15 @@ here for the first time as a single register.
   `production-execution-register.md`), **NFR-189** (tracked in its own
   section, not the bucket lists), **NFR-193** (a `"N/A (commercial)"`
   literal-string artifact). All 7 are included below.
-- 4 Cloud CSQ rows (**PA.03, DR.06, DR.07, AR.19**) carry the literal
-  value `"Yes (inherited)"`, not exact `"Yes"` - substantively these
-  are real, evidenced "Yes" answers (Google Cloud's own attestations
-  covering physical/environmental controls this application doesn't
-  own), but they count as "unresolved" under a strict string match.
-  They are listed below with dependency category **9 (external
-  evidence - already exists)** and a recommended action of *normalizing
-  the workbook cell to `"Yes"`* with the inherited-attestation caveat
-  kept in the remark - this register does not make that edit itself
-  (see "Questionnaire control" below).
+- 4 Cloud CSQ rows (**PA.03, DR.06, DR.07, AR.19**) previously carried
+  the literal value `"Yes (inherited)"`, not exact `"Yes"`. **Update
+  2026-08-05 (Batch 7A)**: each was independently re-verified (source
+  control identified, applicability confirmed, evidence currency
+  confirmed, no contradicting scope limitation found) and normalized
+  to exact `"Yes"` in the workbook - see the Cloud CSQ tab section
+  below for the full before/after table. This is recorded as a
+  **response normalization of already-real evidence, not a new
+  engineering closure.**
 - 2 rows (**NFR-193, RM.02**) read `"N/A (commercial)"` - genuinely
   non-technical/commercial questions, not engineering gaps. Listed
   under category 12 for completeness.
@@ -47,13 +105,82 @@ here for the first time as a single register.
   submission. This register was built directly from the live workbook,
   not from that stale file.
 
-**Percentage basis**: 74/153 = 48.4% mandatory and 132/396 = 33.3%
-overall are the figures already reported to date and used in
-`management-summary.md` below **unchanged**, per this batch's explicit
-instruction not to recompute or restate compliance percentages
-differently. The row-count reconciliation above is reported as a
-transparency finding for a future register-regeneration pass, not used
-to override the standing percentages.
+**Percentage basis - superseded by Batch 7A recompute below**: 74/153 =
+48.4% mandatory and 132/396 = 33.3% overall were the previously-
+reported figures at the time this note was first written. Batch 7A
+(this update) applied real, verified workbook edits (4 response
+normalizations, 4 N/A reclassifications) and, per its own explicit
+instruction, recomputed the percentages directly from the live
+workbook rather than carrying the old figures forward unchanged - see
+"Batch 7A scoring impact" below and `management-summary.md` for the
+full before/after breakdown, with response-normalization, N/A-
+reclassification, and genuine-new-closure impacts reported **separately**,
+never conflated.
+
+## Batch 7A scoring impact (direct live-workbook recompute)
+
+**Live-workbook baseline immediately before Batch 7A** (all 4 tabs,
+mandatory rows only, counted directly from the workbook - not the
+possibly-stale `master-compliance-register.csv`):
+
+| | NFR | UX | AI | Cloud CSQ | Total |
+|---|---|---|---|---|---|
+| Mandatory rows | 24 | 3 | 17 | 135 | 179 |
+| Yes | 7 | 0 | 4 | 62 | 73 |
+| N/A | 1 | 0 | 7 | 18 | 26 |
+| Partial | 13 | 2 | 5 | 15 | 35 |
+| No / other | 3 | 1 | 1 | 40 | 45 |
+
+Denominator (N/A-excluded) = 179 - 26 = **153**. Mandatory % = 73/153 =
+**47.7%**. This differs from the previously-reported 74/153 = 48.4% by
+exactly 1 row in the numerator - a pre-existing drift already flagged
+in this register's "Scope and reconciliation note" above
+(`master-compliance-register.csv` staleness), not something this batch
+caused or is attempting to explain away.
+
+**After Batch 7A's edits**:
+
+| | NFR | UX | AI | Cloud CSQ | Total |
+|---|---|---|---|---|---|
+| Mandatory rows | 24 | 3 | 17 | 135 | 179 |
+| Yes | 7 | 0 | 4 | 66 | 77 |
+| N/A | 2 | 0 | 7 | 21 | 30 |
+| Partial | 13 | 2 | 5 | 15 | 35 |
+| No / other | 2 | 1 | 1 | 33 | 37 |
+
+Denominator (N/A-excluded) = 179 - 30 = **149**. Mandatory % = 77/149 =
+**51.7%**.
+
+**Impact broken out by cause, per the explicit instruction not to
+conflate them**:
+
+| Cause | Rows | Numerator (Yes) effect | Denominator effect | Isolated % |
+|---|---|---|---|---|
+| Response normalization only (4 "Yes (inherited)" -> "Yes": PA.03, DR.06, DR.07, AR.19) | 4 | +4 (73 -> 77) | unchanged (153 -> 153, these rows were never N/A) | 77/153 = 50.3% |
+| N/A reclassification only (4 "No" -> "N/A": NFR-064, IS.41, IS.73, SD.06) | 4 | unchanged | -4 (153 -> 149) | 73/149 = 49.0% |
+| **Both combined (actual Batch 7A result)** | 8 | +4 | -4 | **77/149 = 51.7%** |
+| Genuine new engineering compliance closure | **0** | 0 | 0 | **No new engineering closure occurred this batch - explicitly not claimed** |
+
+**The percentage increase from N/A reclassification (153 -> 149
+denominator) is explicitly NOT an engineering compliance improvement**
+- it reflects 4 rows genuinely and verifiably falling outside this
+solution's applicable scope (2 already-inconsistent within the
+workbook itself, 2 newly verified against GCP's shared-responsibility
+model), not new controls being built. Only the 4 response-
+normalization rows represent real, already-existing evidence being
+correctly credited - also not new engineering work, but a correction
+of an existing measurement artifact, exactly as Batch 7A's instruction
+requires this to be labeled.
+
+**Overall (all rows, any mandatory value, all 4 tabs) - directly
+recomputed**: applying the same 4 Yes-normalizations and 4 N/A-
+reclassifications (all of which are mandatory rows, a subset of
+"overall") to the last full 4-tab count taken this engagement (458
+total rows, 128 Yes, 54 N/A - see the general research pass underlying
+this register): Yes 128 -> 132, N/A 54 -> 58, denominator 404 -> 400,
+**overall % = 132/400 = 33.0%** (previously reported: 132/396 = 33.3% -
+again a small pre-existing denominator drift, not caused by this
+batch, and disclosed rather than silently reconciled away).
 
 ## Classification legend
 
@@ -80,7 +207,7 @@ is not the final decision owner. Full deep-dive fields (Required
 access, Execution steps, Validation method, Estimated effort, Risk if
 delayed, Target date) are given in full for the six named decision-pack
 rows (IG.09, IS.02, LG.01, NFR-189, NFR-119, IS.07) in their dedicated
-packs; this table carries the compact form for all 82 rows so nothing
+packs; this table carries the compact form for all 83 rows so nothing
 is omitted._
 
 ### Non Functional Req tab (17)
@@ -125,7 +252,7 @@ is omitted._
 | NFR-041 (AI) | SOC2/ISO cert + compliance questionnaire | Partial | Readiness work is real; no formal certification exists | See `external-assurance-pack.md` | Executive Sponsor | External Auditor | 9 | Business-scoped engagement |
 | NFR-044 (AI) | Log every AI request/response w/ actor+model version | N/A / Partial (hybrid) | No AI requests exist to log; real `AuditEvent` logging is the closest analog | Formally reclassify to N/A until a live AI feature exists, or keep Partial with this exact caveat | CISO | - | 12 | Low effort, next batch |
 
-### Cloud CSQ tab (55)
+### Cloud CSQ tab (56)
 
 **External-audit/certification-dependent (9)** - see `external-assurance-pack.md` for the full engagement scope:
 
@@ -141,16 +268,43 @@ is omitted._
 | PA.01 | Physical security attestation | Partial (GCP-inherited) | CISO | 9 |
 | PA.05 | Physical ingress/egress monitoring | Partial (GCP-inherited) | CISO | 9 |
 
-**Already-inherited "Yes" candidates (4) - workbook not edited this pass**:
+**Normalized to "Yes" this batch (4) - Batch 7A response normalization, real evidence, not new engineering closure**:
 
-| ID | Requirement (short) | Workbook literal value | Recommended workbook normalization (not applied) | Category |
+| ID | Requirement (short) | Prior value | New value | Basis | Category |
+|---|---|---|---|---|---|
+| PA.03 | Physical perimeter security | "Yes (inherited)" | **Yes** | Verified genuinely inherited and attested (Google Cloud Trust Center, SOC 2/ISO 27001); no contradicting evidence found | 9 |
+| DR.06 | Physical-disaster protection | "Yes (inherited)" | **Yes** | Same verification | 9 |
+| DR.07 | Power/network redundancy | "Yes (inherited)" | **Yes** | Same verification | 9 |
+| AR.19 | NTP/time synchronization | "Yes (inherited)" | **Yes** | Same verification, additionally corroborated by this engagement's own consistent audit-trail timestamps | 9 |
+
+_These 4 no longer appear in the "unresolved" tables above/below - they moved to Yes and are excluded from the 83-row unresolved count going forward (see `mandatory-conversion-status.md`'s "Batch 7A" update)._
+
+**Reclassified to N/A this batch (3, Cloud CSQ) - Batch 7A, genuine verification per the strict N/A criteria, not automatic conversion**:
+
+| ID | Requirement (short) | Prior value | New value | Verified basis (not "not implemented") | Category |
+|---|---|---|---|---|---|
+| IS.41 | OS-layer vulnerability scan | No | **N/A** | Cloud Run's OS layer is entirely Google-operated; OS-patching/scanning is Google's contractual responsibility under GCP's published shared-responsibility model, independently attested (SOC 2/ISO 27001) - not an IST gap, and architecturally impossible for IST to perform even if desired | 12 |
+| IS.73 | Virtualization-layer attack detection | No | **N/A** | Hypervisor layer entirely Google-operated/attested; zero guest-level access exists for IST to build detection against, even in principle | 12 |
+| SD.06 | Unauthorized software-install restriction | No | **N/A** | Immutable, ephemeral Cloud Run images built solely through this repo's CI/CD - no persistent, directly-administered surface for "installation" in the traditional sense; the real supply-chain analog (SBOM + dependency scanning) already exists as a different, already-covered control | 12 |
+
+_Each remark cross-references Google's shared-responsibility model or this application's architecture, not a bare "handled by the cloud provider" assertion - the exact standard the reconciliation instruction required._
+
+**Reclassified to N/A this batch (1, Non Functional Req) - Batch 7A**:
+
+| ID | Requirement (short) | Prior value | New value | Verified basis | Category |
+|---|---|---|---|---|---|
+| NFR-064 | Data-handoff encryption in transit | No | **N/A** | No distinct data-handoff pipeline of the kind this row addresses exists beyond standard API traffic (already TLS-encrypted by default) - corrects a real internal inconsistency where the prior remark's own prose already said "Not applicable" while the Compliance cell read "No" | 12 |
+
+**Reviewed, NOT reclassified to N/A this batch - integrity corrections only (Compliance value unchanged, remark corrected)**:
+
+| ID | Requirement (short) | Status | Why NOT reclassified to N/A | Category |
 |---|---|---|---|---|
-| PA.03 | Physical perimeter security | "Yes (inherited)" | Normalize to "Yes" with inherited-GCP-attestation caveat retained | 9 |
-| DR.06 | Physical-disaster protection | "Yes (inherited)" | Same | 9 |
-| DR.07 | Power/network redundancy | "Yes (inherited)" | Same | 9 |
-| AR.19 | NTP/time synchronization | "Yes (inherited)" | Same | 9 |
+| IS.11 | Employee awareness of violation consequences | No (unchanged) | This is a genuine, unimplemented HR/security-policy gap (same real gap as IS.10) - not architectural non-applicability. The prior remark's "not applicable" framing was inaccurate and has been corrected in the workbook remark; this is exactly the "not currently implemented" trap the reconciliation instruction warned against | 5 |
+| AR.17 | Rogue/unauthorized network device detection | No (unchanged) | GCP's own network-security controls cover the hosting side (attested), but whether IST operates any physical corporate-office network of its own is genuinely **unconfirmed**, not confirmed non-applicable - retained as "No" pending Facilities/IT input rather than assumed N/A via the "no physical office" reasoning the instruction explicitly flagged as invalid | 11 |
+| NFR-040 (AI) | Hallucination incident-response plan | Partial (unchanged) | Reviewed against the "shadow AI" trap explicitly: confirmed via repo grep that real `RagRetrievalEvent`/`LlmShadowSuggestion`/etc. Prisma models and a shadow-comparison service genuinely exist (a real, purpose-built AI-evaluation architecture), even though no live LLM inference is wired yet (no LLM client dependency, `simulationEngine.ts` confirmed fully deterministic). The existing remark already documents this precisely and commits to a real procedure before live deployment - already honest, not an N/A-trap violation. No change made | 12 (N/A-adjacent, but correctly NOT full N/A) |
+| NFR-044 (AI) | Log every AI request/response | N/A for AI / Partial generally (unchanged) | Same shadow-AI-architecture finding as NFR-040 (AI) - the existing hybrid answer is already precise and defensible, not a bare "no AI" dismissal. No change made | 12 (hybrid, unchanged) |
 
-**Cannot-currently-comply (14, after moving PA.03/DR.06/DR.07/AR.19 above and DR.05 below)**:
+**Cannot-currently-comply (11, after moving PA.03/DR.06/DR.07/AR.19 to Yes and IS.41/IS.73/SD.06/NFR-064 to N/A above, DR.05 below, and IS.11/AR.17 retained above)**:
 
 | ID | Requirement (short) | Status | Required action | Owner | Category |
 |---|---|---|---|---|---|
@@ -163,22 +317,28 @@ is omitted._
 | IS.34 | BYOK | No | Same limitation as IS.33 | Cloud Administrator | 11 |
 | IS.45 | Dedicated threat-detection signatures | No | Requires a commercial threat-detection product | CISO | 11 |
 | IS.53 | Forensic-collection capability | No | Requires a dedicated forensic-readiness program/tool | CISO | 11 |
-| IS.59 | Metadata-collection via inspection tech | No (N/A-flavored) | Reclassify as N/A - no such inspection technology in this architecture | CISO | 12 |
-| LG.02 | Third-party data access beyond Twilio metadata | No | No such access exists to control - likely genuine N/A once reviewed | Legal Counsel | 11 |
+| LG.02 | Third-party data access beyond Twilio metadata | No | No such access exists to control - likely genuine N/A once reviewed by Legal Counsel | Legal Counsel | 11 |
 | DR.05 | Recurring BCP test program | No | Build a recurring (not one-off) BCP/DR test cadence on top of the existing restore-drill precedent | DevOps Lead | 1 |
-| IS.39 | Network-layer vulnerability scan | No | Commission a real network vuln scan (commercial tool/vendor) | External Auditor | 10 |
-| IS.40 | Application-layer vulnerability scan | Partial (pnpm audit + internal DAST) | Commission a full commercial app-layer scanner | External Auditor | 10 |
-| IS.41 | OS-layer vulnerability scan | No | Cloud Run is Google-managed - clarify whether this is inherited (GCP) or genuinely N/A | Cloud Administrator | 12 (candidate) |
 
-**Valid N/A candidates (5)**:
+**Third-party evidence required (2, unchanged)**:
 
 | ID | Requirement (short) | Status | Required action | Owner | Category |
 |---|---|---|---|---|---|
-| IS.11 | Unauthorized OS-layer software install | No (N/A candidate) | Confirm no OS-layer access exists in this serverless architecture; reclassify | CISO | 12 |
-| IS.73 | Physical wireless infrastructure controls | No (N/A candidate) | Confirm no physical wireless infra owned by IST; reclassify | CISO | 12 |
-| SD.06 | (Supplier-domain N/A candidate) | No | Confirm applicability; reclassify if genuinely N/A | CISO | 12 |
-| AR.17 | Virtualization-layer attack surface | No (N/A candidate) | Confirm serverless architecture has no virtualization layer IST controls; reclassify | Cloud Administrator | 12 |
-| RM.02 | SLA remuneration terms | N/A (commercial) | Route to commercial/contracts function | Executive Sponsor | 12 |
+| IS.39 | Network-layer vulnerability scan | No | Commission a real network vuln scan (commercial tool/vendor) | External Auditor | 10 |
+| IS.40 | Application-layer vulnerability scan | Partial (pnpm audit + internal DAST) | Commission a full commercial app-layer scanner | External Auditor | 10 |
+
+**Valid N/A - genuinely unchanged, no action, no reclassification needed (2)**:
+
+| ID | Requirement (short) | Status | Note | Owner | Category |
+|---|---|---|---|---|---|
+| IS.59 | Metadata-collection via inspection tech | No (Expected: No) | Not actually a gap - Expected value is itself "No," and the Response already matches it; not genuinely an "N/A candidate," flagged here for completeness only. A scoring-convention note (see `management-summary.md`): this engagement's Yes-only compliance count does not credit rows where "No" is the expected/compliant answer | CISO | 12 (already-satisfied, not N/A) |
+| RM.02 | SLA remuneration terms | N/A (commercial) | Genuinely non-technical/commercial question, already correctly labeled | Executive Sponsor | 12 |
+
+**Business decision required - joint clinical/legal/privacy/executive (1) - the true omission found this pass**:
+
+| ID | Requirement (short) | Status | Required action | Owner | Supporting | Category | Secondary |
+|---|---|---|---|---|---|---|---|
+| IG.09 | Retention policy for `AviationTriageEncounter`/`AuditEvent` | Partial | See `legal-privacy-action-pack.md`'s full retention-decision pack | Clinical Governance Lead + Legal + DPO + Executive Sponsor (joint) | DevOps Lead (implementation once decided) | 5 | 6 (legal/privacy), 7 (clinical) |
 
 **Decision-paper-needed - legal/privacy (5)**:
 

@@ -830,3 +830,57 @@ tests passing** (unchanged - no code path was modified, only a new
 standalone test-harness script and documentation). No functional/
 authorization/audit/tenant-isolation regression. Committed locally as
 `4383256`, not pushed.
+
+## 2026-08-05 (continued): Mandatory action pack reconciliation + Batch 7A normalization
+
+A follow-up review of the Mandatory External Action & Approval Pack
+(committed `e975bd6`) correctly flagged that its dependency-category
+counts summed to 83 while the register's stated total was 82. Root
+cause, fully diagnosed: **IG.09** (a real, mandatory Cloud CSQ
+retention-policy row, already discussed extensively in
+`business-decision-register.md` and the decision packs) had never
+been added to `mandatory-action-register.md`/`.csv`'s own row tables -
+a genuine omission, not a duplicate. Separately, two count-column
+typos in `management-summary.md` (category 1: 15 vs. its own 16-item
+list; category 8: 8 vs. its own 7-item list) happened to roughly
+cancel. Both are corrected; IG.09 is now in the register.
+
+**Batch 7A** then performed a controlled integrity-normalization pass
+directly against the live workbook, per explicit instruction to verify
+rather than convert automatically:
+- 4 Cloud CSQ rows (PA.03, DR.06, DR.07, AR.19) normalized from
+  `"Yes (inherited)"` to exact `"Yes"`, each independently re-verified
+  against Google Cloud's own published attestations - real evidence,
+  recorded as normalization, not new engineering closure.
+- 4 rows (NFR-064, IS.41, IS.73, SD.06) reclassified from `"No"` to
+  `"N/A"`, each verified against Google's shared-responsibility model
+  or an internal remark inconsistency - not a bare "handled by the
+  cloud provider" assertion.
+- 2 rows (IS.11, AR.17) reviewed under the same rigor and deliberately
+  **not** reclassified - genuine gaps (an unimplemented HR policy; an
+  unconfirmed corporate-office-network scope), matching exactly the
+  "not currently implemented" and "no physical office" traps the
+  instruction warned against.
+- 2 AI-tab rows (NFR-040, NFR-044) reviewed against the "shadow AI"
+  trap - confirmed via repo grep that real `RagRetrievalEvent`/
+  `LlmShadowSuggestion` Prisma models and a shadow-comparison service
+  genuinely exist, but no live LLM inference is wired; existing
+  remarks already honest, no change made.
+
+**Recomputed mandatory compliance: 77/149 = 51.7%** (was 74/153 =
+48.4%). Broken out explicitly, per instruction, so no cause is
+conflated: response normalization alone would be 77/153 = 50.3%; N/A
+reclassification alone would be 73/149 = 49.0%; combined (the real
+result) is 77/149 = 51.7%; genuine new engineering compliance closure
+this batch: **zero**. The N/A-driven denominator reduction is
+explicitly not described as an engineering improvement.
+
+No requirement text or Mandatory flag was changed for any row - only
+Compliance/Remarks cells, and only for the 8 rows individually
+verified above. `mandatory-action-register.md`, `.csv`,
+`mandatory-conversion-status.md`, `management-summary.md`,
+`closure-evidence-checklist.md`, and `evidence-index.md` all updated
+to reflect this. Documentation/spreadsheet-only change - no source
+code touched, so no `tsc`/test run was required or performed for this
+step (verified: `git status` shows no source files changed beyond the
+workbook and `docs/`/`scripts/_batch7aNormalize.py`, `scripts/_genActionRegisterCsv.py`).

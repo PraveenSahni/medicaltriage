@@ -1,5 +1,49 @@
 # Mandatory NFR/Cloud CSQ Conversion-Status Plan
 
+## Update 2026-08-05 (Batch 7A): reconciliation + integrity normalization
+
+A cross-document reconciliation found this document's own bucket lists
+never enumerated **IG.09** (Cloud CSQ, retention policy), **NFR-058,
+IS.39, IS.40, IS.41** (vulnerability scanning, discussed in prose only),
+**NFR-041 (NFR tab, DR architecture)**, and **NFR-189** (SLI/SLO
+reporting, tracked in its own section) - all are real, mandatory,
+unresolved rows and are now tracked in
+`docs/qr-compliance/mandatory-action-register.md`, the new
+consolidated source of truth for unresolved-mandatory-row tracking
+going forward.
+
+**Batch 7A also applied real, verified workbook edits** (full detail
+in `mandatory-action-register.md`):
+- **4 Cloud CSQ rows normalized from `"Yes (inherited)"` to exact
+  `"Yes"`**: PA.03, DR.06, DR.07, AR.19 - each independently
+  re-verified against Google Cloud's own published attestations, no
+  contradicting evidence found. Recorded as response normalization of
+  already-real evidence, not a new engineering closure.
+- **4 rows reclassified to `"N/A"`**: NFR-064 (NFR tab - corrected an
+  internal inconsistency where the remark already said "Not
+  applicable" while the cell read "No"), IS.41, IS.73, SD.06 (Cloud
+  CSQ - each verified against Google's shared-responsibility model for
+  serverless/PaaS, not a bare "handled by the cloud provider"
+  assertion).
+- **2 rows reviewed and deliberately NOT reclassified to N/A**: IS.11
+  (a genuine unimplemented HR policy gap, not architectural
+  non-applicability - the "not currently implemented" trap) and AR.17
+  (GCP's side is attested, but IST's own corporate-office-network scope
+  is unconfirmed, not confirmed non-applicable). Remarks corrected;
+  Compliance value unchanged (retained "No").
+- **2 AI-tab rows reviewed against the "shadow AI" trap and confirmed
+  already honest**: NFR-040 (AI), NFR-044 (AI) - real
+  `RagRetrievalEvent`/`LlmShadowSuggestion` Prisma models and a
+  shadow-comparison service genuinely exist (confirmed via repo grep),
+  but no live LLM inference is wired - the existing remarks already
+  document this precisely; no change made.
+
+**Recomputed mandatory compliance** (see `mandatory-action-register.md`'s
+"Batch 7A scoring impact" section for the full before/after table):
+77/149 = 51.7% (previously reported 74/153 = 48.4%; a small portion of
+this gap is pre-existing `master-compliance-register.csv` drift, not
+caused by this batch - disclosed, not hidden).
+
 _Covers all 79 remaining mandatory rows in the Non Functional Req and
 Cloud CSQ tabs not yet "Yes" (AI and UX mandatory rows are covered in
 Batches 4-5; this document does not repeat them). For each row, this

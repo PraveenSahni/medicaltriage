@@ -1,5 +1,23 @@
 # Closure Evidence Checklist
 
+## Update 2026-08-05 (Batch 7A): 8 items resolved this pass
+
+- [x] **PA.03, DR.06, DR.07, AR.19**: independently re-verified against
+      Google Cloud's own published attestations, no contradicting
+      evidence found -> normalized to exact "Yes" in the workbook.
+- [x] **NFR-064, IS.41, IS.73, SD.06**: genuinely verified as
+      non-applicable (Google's shared-responsibility model, or an
+      internal remark inconsistency for NFR-064) -> reclassified to
+      "N/A" in the workbook.
+- [ ] **IS.11, AR.17**: reviewed and deliberately NOT reclassified -
+      real gaps, remarks corrected for accuracy; still open, see
+      `mandatory-action-register.md`.
+- [ ] **NFR-040 (AI), NFR-044 (AI)**: reviewed against the "shadow AI"
+      trap, confirmed already-honest existing answers; still open
+      (Partial), no change made.
+
+## Original checklist (below), unaffected items remain open
+
 _Generated 2026-08-05. For every unresolved mandatory row, the exact
 evidence needed before its questionnaire response is changed - a
 checklist for whoever eventually applies the closure, not an

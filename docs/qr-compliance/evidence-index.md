@@ -165,3 +165,32 @@ each row was originally closed, not re-verified independently in this
 pass. Per Stage 2 of the compliance program, these should be re-confirmed
 against current code before being relied upon in a future audit - flagged
 here rather than silently assumed still accurate.
+
+## Batch 7A - integrity normalization (2026-08-05)
+
+Following a reconciliation review of `mandatory-action-register.md`
+(which found IG.09 genuinely omitted and two count-column typos, but
+no true duplicate row), a controlled normalization batch was run
+directly against the live workbook:
+
+| ID | Change | Evidence basis |
+|---|---|---|
+| PA.03 | "Yes (inherited)" -> "Yes" | Google Cloud Trust Center SOC 2 Type II / ISO 27001 attestation, physical perimeter security |
+| DR.06 | "Yes (inherited)" -> "Yes" | Same, physical-disaster protection |
+| DR.07 | "Yes (inherited)" -> "Yes" | Same, power/network redundancy |
+| AR.19 | "Yes (inherited)" -> "Yes" | Same, NTP/time sync, corroborated by this engagement's own consistent audit-trail timestamps |
+| NFR-064 | "No" -> "N/A" | Corrected an internal inconsistency (remark already said "Not applicable," cell read "No") |
+| IS.41 | "No" -> "N/A" | Verified via GCP's published shared-responsibility model for serverless/PaaS - OS-layer scanning is Google's contractual responsibility |
+| IS.73 | "No" -> "N/A" | Same shared-responsibility verification, hypervisor layer |
+| SD.06 | "No" -> "N/A" | Ephemeral/immutable Cloud Run images, no persistent install surface; real supply-chain analog (SBOM/dependency scanning) already covered elsewhere |
+
+No requirement text or Mandatory flag was changed for any row - only
+the Compliance and Remarks cells, and only after individual
+verification per row (not a blanket conversion). Two rows (IS.11,
+AR.17) were reviewed under the same rigor and **deliberately not**
+reclassified to N/A - see `mandatory-action-register.md` for why.
+Recomputed mandatory compliance: 77/149 = 51.7% (see
+`management-summary.md` for the full before/after breakdown, with
+response-normalization and N/A-reclassification effects reported
+separately - zero genuine new engineering compliance closures this
+batch).
