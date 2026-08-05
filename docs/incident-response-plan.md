@@ -131,6 +131,35 @@ environment):
   the incident is fully understood, even if they seem unrelated - audit
   trail preservation matters more here than speed of cleanup.
 
+## AI/generative-model incident readiness (AI-tab NFR-040)
+
+**Current state, verified 2026-08-05**: no live generative AI/LLM
+component exists anywhere in this system today - confirmed via dependency
+check (no LLM client library in `package.json`), code search (the "RAG
+Shadow" Prisma models `RagRetrievalEvent`/`LlmShadowSuggestion`/
+`ModelEvaluationRun`/`SafetyBlockedOutput` in `prisma/schema.prisma` have
+zero real readers/writers in `src/` - only descriptive help-text in
+`src/services/helpLibraryTechnicalContent.ts` references them), and
+inspection of `src/services/simulationEngine.ts` (fully deterministic
+rule-based triage logic - `evaluateAviationRules`, `calculateTriageScore`
+- that emits synthetic training-row data explicitly marked "Synthetic
+scenario only... Do not use as clinical truth or PHI" for a *future*
+model-evaluation initiative, not live inference). There is therefore no
+active hallucination risk to respond to today - this section is a
+forward commitment, not a retrofit of an existing gap.
+
+**Commitment before any live generative-model inference is deployed**
+(i.e. before the planned MedGemma initiative referenced in
+`src/services/helpLibraryTechnicalContent.ts` moves from schema-only to
+a live, credentialed inference adapter): this plan must be extended with
+a real hallucination/incorrect-output incident procedure covering
+detection (how a wrong clinical/financial suggestion is flagged),
+containment (fail-closed/disable behavior for the model output path),
+notification, and root-cause review - approved by clinical and security
+leadership before that deployment, not after. Deploying live inference
+without this section in place first would be a real safety gap, not a
+hypothetical one.
+
 ## Explicitly out of scope for this version
 
 - Formal legal/regulatory breach-notification timelines (needs legal review,

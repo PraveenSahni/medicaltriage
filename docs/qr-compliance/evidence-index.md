@@ -56,7 +56,37 @@ for the correction note.
 | IS.58 | Customer-facing data-usage statement | none (doc-only) | `docs/customer-data-usage-statement.md` | 2026-08-05 | This engagement | Not a substitute for a formal negotiated DPA |
 | RM.13 | BCP/DR plan sharing | none (doc-only) | `docs/dr-failover-runbook.md` | 2026-08-05 | This engagement | Plan is real but not yet rehearsed (separate, still-open gap: DR.05/RM.05) |
 
-## Everything else scored "Yes" (94 rows, prior to Batch 1/2/3)
+## Batch 4 (2026-08-05) - AI tab mandatory rows
+
+| Requirement ID | Control | Evidence | Validation date | Validator | Remaining limitation |
+|---|---|---|---|---|---|
+| AI/NFR-023 | Continuous security-finding monitoring + remediation SLA | CodeQL (`.github/workflows/codeql.yml`), `pnpm audit` CI gate, Dependabot (`.github/dependabot.yml`), DAST probe (`scripts/dastProbe.mjs`), remediation timeframes (`docs/change-management-policy.md` §5) | 2026-08-05 | This engagement | None known |
+
+**Reviewed, retained Partial** (5 of 6 mandatory AI rows): AI/NFR-004
+(PII-in-logs - no comprehensive scrubbing audit across all logging
+surfaces), AI/NFR-014 (WAF/Cloud Armor - real infra migration required),
+AI/NFR-016 (secrets vault - demo environment still has a known, deferred
+plaintext-secret gap, R-11, requiring explicit go-ahead to touch
+production), AI/NFR-040 (hallucination incident response - refined for
+precision after directly verifying no live generative-model component
+exists anywhere in this repo; a real forward-commitment section added to
+`docs/incident-response-plan.md`, not closed to Yes since no live model
+exists to have built a real incident procedure for yet), AI/NFR-041
+(SOC 2/ISO certification - external-audit dependency, unchanged).
+
+**Central integrity finding this batch**: verified directly (not
+assumed) that despite real Prisma schema (`RagRetrievalEvent`,
+`LlmShadowSuggestion`, `ModelEvaluationRun`, `SafetyBlockedOutput`) and
+descriptive documentation (`src/services/helpLibraryTechnicalContent.ts`)
+describing a planned "RAG Shadow / MedGemma" initiative, **no live
+generative AI/LLM code path exists anywhere in this system today** - no
+LLM client dependency in `package.json`, zero real code readers/writers
+of those Prisma models, and `src/services/simulationEngine.ts` confirmed
+fully deterministic (rule-based `evaluateAviationRules`/
+`calculateTriageScore`), emitting only synthetic, explicitly-labeled
+non-clinical training data for a future initiative.
+
+## Everything else scored "Yes" (94 rows, prior to Batch 1/2/3/4)
 
 Sourced from earlier passes of this same engagement (prior to 2026-08-05).
 Each has an `Evidence Location` value in `master-compliance-register.csv`

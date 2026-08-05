@@ -426,3 +426,50 @@ doesn't affect any individual row's correctness).
 
 Verified: `npx tsc --noEmit` clean, 688/692 (same known environment gap).
 Register regenerated: 186 rows now closed (was 180).
+
+## 2026-08-05 (continued): Batch 4 - AI tab mandatory rows
+
+Reviewed all 6 remaining mandatory-Partial rows in the AI tab (note:
+despite the tab name, 5 of the 6 are generic infra/security controls
+duplicated from the general NFR set for AI-hosting workloads, not
+AI-model-specific governance asks - only NFR-040 is genuinely about
+model behavior).
+
+**Central finding before touching anything**: directly verified (grep +
+schema + code read, not assumed) that **no live generative AI/LLM
+component exists anywhere in this repo today**, despite real Prisma
+schema and descriptive documentation about a planned "RAG Shadow /
+MedGemma" initiative:
+- No LLM client library in `package.json`.
+- Zero real code readers/writers of `RagRetrievalEvent`/
+  `LlmShadowSuggestion`/`ModelEvaluationRun`/`SafetyBlockedOutput` -
+  only `src/services/helpLibraryTechnicalContent.ts` (descriptive
+  in-app help text) references them.
+- `src/services/simulationEngine.ts` is fully deterministic rule-based
+  logic (`evaluateAviationRules`, `calculateTriageScore`), emitting only
+  synthetic training-row data explicitly labeled "Synthetic scenario
+  only... Do not use as clinical truth or PHI" for a future initiative.
+
+This confirms the existing AI/NFR-040 remark's core claim was directionally
+correct but imprecise - refined rather than reversed.
+
+- ✅ **AI/NFR-023** (continuous security-finding monitoring + remediation
+  SLA) - closed to Yes, citing CodeQL + `pnpm audit` + Dependabot + the
+  DAST probe (all already real/scheduled) plus the patch-timeframe
+  commitments in `docs/change-management-policy.md` §5.
+- **AI/NFR-040** (hallucination incident response) - retained Partial,
+  remark refined for precision, and a real forward-commitment section
+  added to `docs/incident-response-plan.md`: before any live
+  generative-model inference is ever deployed, a real hallucination-
+  incident procedure must exist and be clinically/security-approved
+  first.
+- **AI/NFR-004, NFR-014, NFR-016, NFR-041** reviewed and retained Partial
+  - each has a genuine, already-identified gap (no comprehensive log-
+  scrubbing audit; WAF/Cloud Armor needs a real infra migration; the
+  live demo environment has a known, deliberately-deferred plaintext-
+  secret gap requiring explicit production go-ahead, R-11; SOC 2/ISO
+  certification requires an external audit).
+
+Verified: `npx tsc --noEmit` clean, 688/692 (same known environment gap,
+no new regressions). Register regenerated: 187 rows now closed (was
+186).
