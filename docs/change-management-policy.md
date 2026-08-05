@@ -77,7 +77,26 @@ runs the canary-then-cutover sequence automatically) - flagged in
   remediation, giving a running, dated record of what changed and why across
   this engagement.
 
-## 4. What this policy does not (yet) cover
+## 5. Risk-based patching timeframes
+
+Closes Cloud CSQ IS.43 ("provide your risk-based systems patching
+timeframes to your customers upon request"). Real, currently-enforced
+timeframes:
+
+| Risk level | Timeframe | Real mechanism |
+|---|---|---|
+| New HIGH/CRITICAL dependency vulnerability introduced by a proposed change | Blocks merge immediately (0 days) | `dependency-audit` CI job, `pnpm audit --audit-level high` (`.github/workflows/ci.yml:63`) |
+| Existing dependency vulnerability, any severity, in already-deployed code | Weekly scan, PR opened same week | Dependabot (`.github/dependabot.yml`, `schedule.interval: weekly`, npm + Docker ecosystems), grouped into fast individual PRs for security patches vs. batched minor/patch version bumps |
+| Application-layer vulnerability found by the internal DAST-style probe | Weekly scan | `scripts/dastProbe.mjs`, scheduled weekly (see `docs/qr-questionnaire-backlog-tracker.md`) |
+
+**What this does not cover**: there is no separately measured
+"time-to-remediate" SLA once a Dependabot PR is opened - merging it still
+depends on the same PR-review discipline noted in section 1's honest gap
+(no platform-enforced required check on this GitHub plan tier). The
+detection cadence above is real and automated; the remediation-merge step
+is currently a manual, disciplined practice, not a measured/enforced SLA.
+
+## 6. What this policy does not (yet) cover
 
 - No automated CD pipeline exists - deploys are manual `gcloud`/`firebase`
   CLI invocations following the canary-then-cutover pattern above, not a

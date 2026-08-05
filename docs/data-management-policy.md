@@ -87,6 +87,38 @@ still genuinely hard-deletes records once their real retention window
 expires - soft-delete is for the day-to-day "delete a queue item" action,
 not a replacement for the actual retention-driven data-destruction path.
 
+## 10. Intellectual property protection
+
+Closes Cloud CSQ CO.14 ("policies and procedures... to protect customer's
+data marked as intellectual property"). Customer content (queue records,
+clinical narratives, SBAR notes, and any other data a tenant submits) is
+protected by the same real controls documented above, applied uniformly
+regardless of whether specific content is separately marked as IP:
+
+- **Access control**: only staff/sessions scoped to that tenant's
+  `organizationId` can read the content at all (item 1 above) - no other
+  tenant, including other customers of this platform, can query it.
+- **Audit trail**: every read/write/export of tenant content is
+  traceable via `AuditEvent` (item 6 above) - an unauthorized access
+  attempt is detectable, not silent.
+- **Export control**: the only path for a tenant's data to leave the
+  system in bulk is the PAM-elevation-gated org-export endpoint (item 8
+  above), not an unrestricted bulk-download surface.
+- **No cross-tenant model training or secondary use of real customer
+  content**: the platform's one AI-adjacent initiative (the RAG Shadow /
+  MedGemma architecture, `src/services/simulationEngine.ts`) is explicitly
+  scoped to synthetic-only data for any model evaluation/training work
+  (confirmed via code comment: "Synthetic scenario only... governed model
+  training. Do not use as clinical truth or PHI") - no live production
+  MedGemma training job is wired up today, and real tenant content is
+  never a training input. Tenant content is served back only to the
+  tenant that submitted it.
+
+This is the real, code-verified protection mechanism today. It is not a
+standalone contractual IP-protection clause (that remains a legal/sales
+matter between IST Health and Qatar Airways, not a technical control this
+document can substitute for).
+
 ## What this policy does not cover
 
 - A formal, per-customer/per-SLA data-management addendum negotiated with a

@@ -41,6 +41,29 @@ recovery. This closes the "no alerting exists" gap noted below, but remains
 a single-person email channel, not a staffed/paged rotation - see the
 remaining gap in "Explicitly out of scope."
 
+## Supplier vs. Qatar Airways responsibilities during a security incident
+
+Closes Cloud CSQ IS.49 ("publish a roles and responsibilities document
+specifying what you vs. your customers are responsible for during
+security incidents"). This section is written for a single-customer
+bespoke engagement (this is not a multi-tenant SaaS product with an
+external customer-administrator relationship) - "customer" below means
+Qatar Airways as the platform's operating counterparty.
+
+| Phase | IST Health (supplier) responsibility | Qatar Airways (customer) responsibility |
+|---|---|---|
+| Detection | Own and operate all monitoring/alerting (uptime checks, error-rate/latency alerts) and the DAST-style probe; triage and classify severity per the table above | Report any suspected issue observed from their own use of the platform (e.g. unexpected data visible, unexpected behavior) |
+| Containment | Execute technical containment (credential rotation, traffic rollback, IAM revocation) - see "Contain" below | None required unless QR's own network/credentials are implicated (e.g. a QR-side credential leak affecting IP allowlisting) |
+| Notification | Notify Qatar Airways of any confirmed SEV1/SEV2 incident affecting their data or service availability, within the timeframe defined once legal/compliance counsel confirms the applicable requirement (see "Data breach specific notes" below - not yet finalized) | Confirm receipt and designate a point of contact for incident coordination |
+| Eradication & recovery | Fix the root cause, verify against `ist-triage-soc2` before touching production, restore from backup if needed | Validate that restored/recovered service meets their operational needs before considering the incident closed |
+| Post-incident | Produce the post-incident summary (what happened, root cause, fix, prevention) | Review the summary and raise any follow-up questions or contractual/compliance concerns |
+
+**What this does not cover**: this table describes real operational
+practice for a bespoke single-customer deployment, not a formal, legally
+reviewed incident-responsibility contract clause - the latter remains a
+legal/contractual matter between IST Health and Qatar Airways, not a
+substitute this operational document can provide.
+
 ## Response procedure
 
 ### 1. Detect & Triage

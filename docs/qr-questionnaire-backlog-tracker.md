@@ -293,3 +293,48 @@ separate, properly-scoped effort, not a quick engineering win to fold
 into this batch.
 
 Verified: `npx tsc --noEmit` clean, full backend suite green (692/692).
+
+## 2026-08-05 (later): max-compliance program launched + Batch 1 closed
+
+Per an explicit broader instruction ("bring every possible QR requirement
+to genuine compliance"), built a full master compliance register
+(`docs/qr-compliance/master-compliance-register.{md,csv}`, 459 scored
+rows across all 4 tabs) plus the other 9 mandated Stage-5 deliverables
+(executive plan, mandatory-closure-plan, evidence-index,
+external-dependency/business-decision/production-execution/QR-
+clarification registers, validation report). See
+`docs/qr-compliance/executive-compliance-plan.md` for the full context
+and prioritization.
+
+**Corrected a stale figure**: the test baseline was 688/692, not 692/692
+- 4 `ssoOidcFlow.test.ts` failures are a local Cloud SQL proxy tunnel
+connectivity gap (confirmed via port check), not a code regression.
+
+**Batch 1 (5 mandatory documentation closures)** approved and closed:
+
+- ✅ **CO.14** (IP-protection controls) - `docs/data-management-policy.md`
+  section 10.
+- ✅ **IS.19** (entitlement remediation/certification reporting) - new
+  `docs/entitlement-reporting-procedure.md`.
+- ✅ **IS.24** (admin responsibilities role-definition doc) - new
+  `docs/administrative-responsibilities.md`.
+- ✅ **IS.43** (risk-based patching timeframes) -
+  `docs/change-management-policy.md` section 5.
+- ✅ **IS.49** (incident-specific supplier/customer responsibilities) -
+  `docs/incident-response-plan.md`'s new responsibility table.
+
+All 5 documents were cross-checked against real code/config before being
+marked "Yes" in the xlsx (e.g. IS.43's Dependabot cadence claim verified
+against `.github/dependabot.yml`; CO.14's "no cross-tenant model
+training" claim corrected mid-draft after a grep revealed a real,
+synthetic-data-only RAG Shadow/MedGemma initiative, rather than
+overclaiming "no AI/ML component at all").
+
+Verified: `npx tsc --noEmit` clean (doc-only change, no-op as expected).
+Register regenerated: 173 rows now closed (was 168), 279 not yet
+independently re-verified (was 284).
+
+**Remaining program status**: 3 flagged-blocked, 4 in active triage
+(perf regression + SLI report), 279 rows still need Stage-2 independent
+re-verification before their next batch can be proposed - starting with
+Cloud CSQ, which holds 135 of the 179 mandatory rows.
