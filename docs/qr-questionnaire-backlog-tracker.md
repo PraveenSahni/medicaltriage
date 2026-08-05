@@ -581,3 +581,38 @@ first, IS.07 needs a CI credential that doesn't exist.
 Verified: `npx tsc --noEmit` clean, 688/692 (same known environment gap,
 no new regressions). Register regenerated: 193 rows now closed (was
 192).
+
+## 2026-08-05 (continued): Performance remediation - NFR-138/152/156
+
+Real root-cause investigation and fix, per the dedicated performance
+batch. Root cause confirmed via live Cloud Monitoring metrics (not
+assumed): Prisma's connection pool was unconfigured on `ist-triage-soc2`
+(defaulting to ~3 connections for its 1-vCPU allocation) - active DB
+connections stayed at 2-4 throughout a 10-concurrent-worker load test
+while Cloud SQL CPU stayed under 12%, confirming requests were queueing
+for a free connection, not for the database itself. Two initial
+hypotheses (missing indexes, N+1 queries) were investigated and **ruled
+out** with direct evidence before landing on the real cause - see
+`docs/performance/nfr-138-152-156-root-cause.md`.
+
+**Fix**: `src/db.ts` now explicitly sets `connection_limit=8` (was
+implicit/default ~3), configurable via `DATABASE_CONNECTION_LIMIT`.
+Built, deployed to `ist-triage-soc2` via canary-then-cutover, health-
+checked before and after cutover.
+
+**Result (real before/after load test, same config)**:
+- Health check p95: 2895ms -> 629ms (-78%).
+- Protocol-list p95: 3982ms -> 2923ms (-27%, **now meets the 3s target**).
+- Queue-list p95: 3148ms -> 3105ms (no material change - **still exceeds
+  the target**). Its bottleneck is not connection-pool-related and
+  remains un-root-caused.
+
+**Not closed to Yes**: NFR-138, NFR-152, NFR-156 all retained Partial -
+a real, measured, partial improvement was made, but the queue-list
+endpoint (arguably the most clinically central one) still exceeds the
+3s p95 target, so closing these would overstate what was achieved.
+
+Verified: `npx tsc --noEmit` clean, 688/692 (unchanged), zero errors in
+both load-test runs (no functional/authorization/audit/tenant-isolation
+regression). Register regenerated: 193 rows closed (unchanged - no rows
+converted this pass, remarks updated with real evidence).
