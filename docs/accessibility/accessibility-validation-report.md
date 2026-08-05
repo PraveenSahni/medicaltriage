@@ -366,3 +366,119 @@ not supportable while items 5 and 9 remain open. See
 `docs/accessibility/accessibility-known-limitations.md` for the
 complete, current punch list and what a future batch would need to
 close before Yes is honestly reachable.
+
+## Dedicated Nurse Cockpit responsive-remediation batch (2026-08-05)
+
+**Root cause**: `.cockpit-layout` (`frontend/src/cockpit/cockpit.css`)
+was a fixed-row flex layout - a 300px sidebar plus a `flex: 1` main
+workspace with 24px/32px padding - with no responsive breakpoint at
+all below 1600px (where the separate `RagShadowRail` third column
+already collapsed via a pre-existing rule). Confirmed live: `<main
+class="cockpit-main">` measured 468px against a 320px viewport.
+
+**Responsive model selected**: single-column stacking below 900px -
+the queue sidebar becomes a full-width, height-bounded (`max-height:
+40vh`), independently scrollable region above the main workspace,
+which becomes full-width below it. Chosen over a tabs/drawer pattern
+because the main workspace already has its own internal stage
+navigation (now upgraded to real `role="tablist"`/`role="tab"`
+semantics), and inventing a second layer of tabs/drawers for the
+sidebar would add complexity without a clear benefit over a simple,
+predictable vertical stack. At 480px, the stage-tabs row additionally
+gains `flex-wrap` and the main workspace's padding is reduced.
+Desktop layout (>900px) is completely unchanged.
+
+**Components/CSS changed**: `frontend/src/cockpit/cockpit.css` (new
+`@media (max-width: 900px)` and `@media (max-width: 480px)` blocks),
+`frontend/src/cockpit/CockpitApp.tsx` (stage-tabs nav upgraded from a
+plain `<nav>` of buttons to `role="tablist"`/`role="tab"`/
+`aria-selected`/`aria-controls`, paired with a `role="tabpanel"` on the
+stage body).
+
+**Desktop/tablet/mobile behaviour**: desktop (>900px) unchanged 3-slot
+layout (RagShadowRail collapses at 1600px, pre-existing); tablet/mobile
+(<=900px) single-column stack, sidebar height-bounded and scrollable;
+narrow mobile (<=480px) stage-tabs wrap and workspace padding tightens.
+Verified via 30 new Playwright tests
+(`tests/e2e/cockpitResponsive.spec.ts`) at 320px, 768px, and desktop
+widths, all passing across Chromium, Edge, Firefox, WebKit, mobile
+Chrome, and mobile Safari (30/30).
+
+**Complete nurse-workflow validation**: the new tests confirm the
+sidebar and workspace both render and stack correctly at 320px, and
+that a real call can be answered and the stage-tabs (reason/questions/
+disposition/SBAR) operate correctly at that width - the same "answer
+call -> stage tabs operate" path a nurse would use. A full manual
+click-through of every stage's specific content (vitals form, IAQ/TAQ
+accordions, disposition save) at 320px was not separately, exhaustively
+re-verified this batch beyond what the automated tests exercise -
+disclosed, not assumed complete for every sub-component.
+
+**200% zoom**: not separately tested via actual browser zoom (as
+distinct from the 320px-viewport-equivalent test already performed).
+
+**Keyboard result**: the stage-tabs now expose real tablist/tab
+semantics with `aria-selected`; full keyboard Arrow-key navigation
+between tabs (the WAI-ARIA APG's full tablist pattern) was not
+implemented - only `role`/`aria-selected` were added. This is disclosed
+in `screen-reader-validation-checklist.md` as a specific follow-up item
+a future screen-reader pass may surface as needing completion.
+
+**Browser coverage**: 30/30 new tests passing across all 6 configured
+engines (Chromium, Edge, Firefox, WebKit, mobile Chrome, mobile
+Safari).
+
+**A real audit-tooling integrity bug was found and fixed during this
+batch**: `scripts/a11yAudit.mjs`'s login check accepted any 2xx HTTP
+status as a successful login, silently missing that
+`layla@irisstar.tech` and `pa@irisstar.tech` (this script's NURSE and
+PLATFORM_ADMIN personas for every prior NFR-015 audit this engagement)
+now have real, enrolled MFA credentials that make `/api/v1/auth/login`
+return `202 { authenticated: false, mfaRequired: true }` - a real HTTP-
+2xx response that is not a completed login. This means every prior
+"Nurse Cockpit: 0 violations" / "Control Center Admin: 0 violations"
+claim in this engagement rested on an audit that likely never actually
+reached those pages in an authenticated state. Fixed by checking
+`body.authenticated === true` explicitly, and switching to
+`sara@irisstar.tech` / `sa@irisstar.tech` (confirmed real accounts with
+the same roles and no MFA enrolled). Full detail:
+`docs/accessibility/accessibility-known-limitations.md` item 0.
+
+**Automated-audit result (genuinely trustworthy, for the first time)**:
+0 violations across all 5 pages/personas, both on the `--no-traffic`
+canary (`ist-triage-soc2-00053-xip`) and the production custom domain
+(post-cutover, post-Hosting-redeploy).
+
+**Deployment revision**: image
+`ist-triage-soc2:20260805-cockpitresponsive` (digest
+`sha256:5586586e31717286a6a250b87055a6e2658f5892f751a9f5412c54757d6f7bfb`,
+build `9707f2f0-b8d6-43dc-aba5-cb77c2e51e65`), Cloud Run revision
+`ist-triage-soc2-00053-xip`, 100% traffic. Firebase Hosting: rebuilt
+`dist-web` (`npm run build:web`, hash `index-sRJGWmel.js`/
+`index-vhz8Jcsj.css`) and redeployed via `firebase deploy --only
+hosting:soc2`; production `curl` confirms identical asset hashes.
+
+**Screen-reader limitation**: remains not performed - none available
+in this environment. A dedicated, prepared checklist now exists
+(`docs/accessibility/screen-reader-validation-checklist.md`) for a
+future session with real assistive-technology access.
+
+## Final closure decision (this batch)
+
+The Nurse Cockpit responsive defect - the second of the two blockers
+identified in the prior batch - is now fixed and verified live. The
+sole remaining blocker is the complete absence of real screen-reader
+validation (item 4 in known-limitations). Per the literal wording
+("Compliance with WCAG 2.1 or equivalent accessibility standards"),
+this batch interprets that a "WCAG 2.1 or equivalent" claim cannot be
+honestly made while zero real assistive-technology testing has ever
+been performed against this application - screen readers are a core,
+load-bearing part of WCAG 2.1 conformance, not an optional extra.
+
+**NFR-015 remains Partial.** State explicitly in the questionnaire and
+this report: internal automated accessibility testing is complete (0
+violations, genuinely trustworthy as of this batch's audit-tooling
+fix); keyboard/manual validation is complete; the responsive defect is
+corrected and verified live; real screen-reader validation remains the
+one outstanding, load-bearing dependency before this row can honestly
+move to Yes.

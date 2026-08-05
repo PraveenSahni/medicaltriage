@@ -341,3 +341,27 @@ available in this environment. Full detail:
 retained Partial** - the Cockpit responsiveness gap and missing
 screen-reader validation are the two remaining material blockers to
 Yes. No compliance percentage change from this batch.
+
+## NFR-015 - Nurse Cockpit responsive fix + audit-tooling integrity correction (2026-08-05, Batch 9) - retained Partial
+
+Fixed the Nurse Cockpit's non-responsive 3-column layout (single-
+column stack below 900px in `cockpit.css`, real `role="tablist"`/
+`role="tab"` ARIA semantics added to the stage-tabs) - the last
+confirmed material accessibility defect. Deployed to
+`ist-triage-soc2-00053-xip` (100% traffic), verified via 30 new
+Playwright tests (`tests/e2e/cockpitResponsive.spec.ts`) across all 6
+configured browser engines. **Found and fixed a significant integrity
+bug in `scripts/a11yAudit.mjs`**: its login check accepted any 2xx
+status as success, silently missing that this script's NURSE and
+PLATFORM_ADMIN personas now carry real, enrolled MFA credentials -
+meaning prior "0 violations" claims for the Nurse Cockpit and Control
+Center Admin pages rested on an audit that likely never reached those
+pages authenticated. Fixed and re-verified: genuinely 0 violations
+across all 5 pages. Full detail:
+`docs/accessibility/accessibility-validation-report.md`,
+`docs/accessibility/accessibility-known-limitations.md`. **NFR-015
+retained Partial** - the sole remaining blocker is the complete
+absence of real screen-reader validation
+(`docs/accessibility/screen-reader-validation-checklist.md` prepared
+for a future session). No compliance percentage change from this
+batch.

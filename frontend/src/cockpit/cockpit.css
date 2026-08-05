@@ -979,6 +979,51 @@
   }
 }
 
+/* ---------- Responsive layout (tablet/mobile) ----------
+   Found during the NFR-015 responsive-accessibility batch: below this
+   point, #cockpit-root .cockpit-layout is a fixed-row flex (300px
+   sidebar + a flex:1 main workspace with 24px/32px padding), with no
+   breakpoint at all - a real WCAG 1.4.10 Reflow failure at narrow
+   viewports (confirmed live: <main class="cockpit-main"> itself was
+   468px wide against a 320px viewport). The desktop 3-column workflow
+   (queue sidebar / main workspace / RagShadowRail) is preserved
+   unchanged above 900px; the RagShadowRail already collapses at
+   1600px (existing rule above). This adds the missing tablet/mobile
+   collapse for the remaining 2 columns: single-column stacking
+   (queue sidebar on top, bounded to a scrollable region so it never
+   crowds out the workspace below it), the smallest safe pattern that
+   keeps every real control reachable without inventing a new
+   drawer/tab component for content that already has its own internal
+   navigation (the stage-tabs nav below). */
+@media (max-width: 900px) {
+  #cockpit-root .cockpit-layout {
+    flex-direction: column !important;
+  }
+
+  #cockpit-root .cockpit-sidebar {
+    width: 100% !important;
+    max-height: 40vh !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--line) !important;
+  }
+
+  #cockpit-root .cockpit-main {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #cockpit-root .cockpit-main {
+    padding: 16px !important;
+  }
+
+  #cockpit-root .stage-tabs {
+    flex-wrap: wrap !important;
+    gap: 14px !important;
+  }
+}
+
 #cockpit-root .rag-rail-toggle {
   display: flex !important;
   align-items: center !important;

@@ -162,11 +162,14 @@ export function CockpitApp({ session, onLogout, onBack }: CockpitAppProps) {
                 </p>
               )}
 
-              <nav className="stage-tabs" aria-label="Clinical workflow stage">
+              <div className="stage-tabs" role="tablist" aria-label="Clinical workflow stage">
                 {COCKPIT_STAGES.map((candidate) => (
                   <button
                     key={candidate.key}
                     type="button"
+                    role="tab"
+                    aria-selected={stage === candidate.key}
+                    aria-controls="cockpit-stage-body"
                     className={`stage-tab${stage === candidate.key ? " stage-tab-active" : ""}`}
                     onClick={() => setStage(candidate.key)}
                   >
@@ -174,9 +177,9 @@ export function CockpitApp({ session, onLogout, onBack }: CockpitAppProps) {
                     {candidate.label}
                   </button>
                 ))}
-              </nav>
+              </div>
 
-              <div className="cockpit-stage-body">
+              <div className="cockpit-stage-body" id="cockpit-stage-body" role="tabpanel" aria-label={`${stage} stage`}>
                 {stage === "reason" && (
                   <ReasonRuleOutStage item={activeItem} isReadOnly={isReadOnly} onContinue={() => setStage("questions")} />
                 )}

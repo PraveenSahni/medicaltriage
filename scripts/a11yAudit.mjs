@@ -7,9 +7,26 @@ import AxeBuilder from "@axe-core/playwright";
 
 const BASE_URL = process.argv[2] ?? "https://triagedsoc2.irisstar.tech";
 
-const NURSE = { username: "layla@irisstar.tech", password: "Layla@2026", role: "remote_triage_nurse" };
+// Switched from layla@irisstar.tech to sara@irisstar.tech (2026-08-05,
+// Nurse Cockpit responsive batch): layla's account has a real, enabled
+// MFA credential enrolled from earlier AR.13 MFA testing, which makes
+// /api/v1/auth/login return 202 { mfaRequired: true } instead of 200 -
+// a real login that never completes via this simple username/password
+// flow. Found because response.ok() is true for 202, which had been
+// silently letting this script "succeed" past an incomplete login and
+// audit whatever unauthenticated page state was left, not the real
+// Nurse Cockpit (see loginViaUi's fixed check below). sara@irisstar.tech
+// carries the same real remote_triage_nurse role/permissions and has no
+// MFA credential enrolled, confirmed via a real login returning
+// authenticated:true.
+const NURSE = { username: "sara@irisstar.tech", password: "Sara@2026", role: "remote_triage_nurse" };
 const MANAGER = { username: "khalid@irisstar.tech", password: "Khalid@2026", role: "triage_service_manager" };
-const PLATFORM_ADMIN = { username: "pa@irisstar.tech", password: "PlatformAdmin@2026", role: "platform_super_administrator" };
+// Switched from pa@irisstar.tech to sa@irisstar.tech for the same reason
+// as NURSE above - pa now has an enrolled MFA credential and cannot
+// complete a simple login. sa@irisstar.tech (system_administrator) is a
+// real, distinct seeded account with confirmed Control Center admin
+// access and no MFA enrolled.
+const PLATFORM_ADMIN = { username: "sa@irisstar.tech", password: "SystemAdmin@2026", role: "system_administrator" };
 
 // Real UI-driven login (not a raw fetch() extracting a Set-Cookie header) -
 // found during the NFR-015 redeployment batch that Firebase Hosting's `run`
@@ -29,8 +46,18 @@ async function loginViaUi(page, baseUrl, persona) {
   const responsePromise = page.waitForResponse((response) => response.url().endsWith("/api/v1/auth/login"));
   await page.locator("button[type=submit]").click();
   const response = await responsePromise;
-  if (!response.ok()) {
-    throw new Error(`Login failed for ${persona.username}: ${response.status()}`);
+  // response.ok() is true for any 2xx status, including the real 202
+  // mfaRequired response - found during the Nurse Cockpit responsive
+  // batch that this silently let the script "succeed" past a login that
+  // never actually completed, auditing whatever unauthenticated/partial
+  // state the page was left in instead of throwing loudly. Must check
+  // the real response body, not just the HTTP status class.
+  const body = await response.json();
+  if (!response.ok() || body.authenticated !== true) {
+    throw new Error(
+      `Login did not complete for ${persona.username}: status ${response.status()}, ` +
+        `authenticated=${body.authenticated}, mfaRequired=${body.mfaRequired ?? false}`
+    );
   }
 }
 

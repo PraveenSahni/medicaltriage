@@ -4,6 +4,58 @@ _Written 2026-08-05. Honest, current list of what is NOT yet proven
 accessible, so NFR-015's Partial status has a concrete, actionable
 punch list rather than a vague caveat._
 
+## 0. IMPORTANT CORRECTION: prior "Nurse Cockpit: 0 violations" audit results were not reliable - found and fixed 2026-08-05
+
+**A real integrity defect in `scripts/a11yAudit.mjs` itself was found
+during the Nurse Cockpit responsive-accessibility batch.** Its login
+helper (`loginViaUi`) checked `response.ok()` on the `/api/v1/auth/login`
+response to decide whether login succeeded - but `Response.ok()` is
+`true` for *any* 2xx status, including the real `202 { authenticated:
+false, mfaRequired: true }` response the backend returns when an
+account has a real, enrolled MFA credential. Discovered because
+`layla@irisstar.tech` (this script's NURSE persona for every prior
+NFR-015 audit run this whole engagement) and `pa@irisstar.tech` (the
+PLATFORM_ADMIN persona) both now have real, enabled MFA credentials
+enrolled from earlier AR.13 MFA testing this session - their logins via
+this script were silently "succeeding" (no thrown error) while never
+actually completing authentication, meaning the script proceeded to
+audit whatever unauthenticated/partial page state resulted, **not** the
+real, authenticated Nurse Cockpit or Control Center Admin pages it
+claimed to be testing.
+
+**Fix**: `loginViaUi` now parses the real response body and requires
+`body.authenticated === true`, throwing a clear, specific error
+otherwise (confirmed working - re-running the audit with the old
+personas now correctly throws `Login did not complete for
+layla@irisstar.tech: ... mfaRequired=true` instead of silently
+continuing). The script's `NURSE` and `PLATFORM_ADMIN` personas were
+switched to `sara@irisstar.tech` (same real `remote_triage_nurse` role/
+permissions as layla, confirmed no MFA enrolled) and `sa@irisstar.tech`
+(`system_administrator` role, confirmed real Control Center admin
+access, confirmed no MFA enrolled) respectively. The `MANAGER` persona
+(`khalid@irisstar.tech`) was independently confirmed still able to
+complete a real login with no MFA blocker.
+
+**Practical effect / what this means for prior claims**: every
+"Nurse Cockpit: 0 violations" and "Control Center Admin: 0 violations"
+result reported in this engagement's NFR-015 documentation **from the
+point layla's and pa's MFA credentials were enrolled onward** should be
+treated as unverified for those two specific pages, not as false
+(the pages may well have been genuinely compliant), but as **not
+actually tested by the audit that claimed to test them**. This does
+**not** retroactively invalidate the real, independently-verified fixes
+made this engagement (Focus Visible, modal focus management, reflow
+fixes, etc.) - those were each also confirmed via direct, real browser/
+CSSOM/DOM inspection, not solely via this audit script's output. But it
+does mean the specific claim "axe-core found 0 violations on the Nurse
+Cockpit" in prior batches rested on an audit that silently never
+reached that page in its authenticated state.
+
+**Re-run with the fix**: `node scripts/a11yAudit.mjs
+https://triagedsoc2.irisstar.tech` now genuinely completes real
+authenticated logins for all 3 personas and reports 0 violations across
+all 5 pages - this result, from this batch onward, is trustworthy.
+
 ## 1. Focus Visible defect (WCAG 2.1 SC 2.4.7, Level AA) - FIXED, verified live
 
 **Root cause found** (2026-08-05, follow-up batch): a deliberate
@@ -156,32 +208,46 @@ live via the browser-automation tool's synthesized Shift+Tab events
 real DOM `KeyboardEvent`s) - disclosed as a tooling-verification gap
 for this one sub-check, not claimed as fully live-proven.
 
-## 6. Reflow/zoom at 320px - 2 real defects found, 1 fixed, 1 confirmed and left unfixed (2026-08-05, final batch)
+## 6. Reflow/zoom at 320px - all 3 confirmed defects now fixed and verified live
 
-- **Fixed**: unauthenticated `/help` fallback page had no `<meta
-  name="viewport">` tag at all (`src/routes/helpRouter.ts`), forcing a
-  980px desktop-width mobile rendering. Added the same viewport tag
-  already used elsewhere in the codebase.
-- **Fixed**: Service Manager Board's top action bar (`.smb-top-actions`)
-  had no `flex-wrap`, causing page-level horizontal overflow at 320px
-  (traced to the Help link extending past the viewport edge). Added
-  `flex-wrap: wrap`. The board's own internal kanban-column horizontal
-  scroll is untouched and correctly exempted (WCAG 1.4.10's
-  two-dimensional-layout exception).
-- **Confirmed real, NOT fixed**: the Nurse Cockpit page's 3-column
-  desktop layout (sidebar + main workspace + rail) does not collapse
-  to a single-column mobile layout at all - `<main class="cockpit-main">`
-  itself is 468px wide against a 320px viewport. This is a structural,
-  whole-page layout gap affecting the primary nurse workflow screen,
-  not a small CSS fix - building a real responsive Cockpit layout is a
-  much larger effort than this batch's scope (which was deliberately
-  limited to the smallest safe fix per defect). **This is a real,
-  material, unresolved accessibility defect** and is the second
-  reason, alongside missing screen-reader testing, that this row
-  cannot honestly move to Yes.
+- **Fixed** (prior batch): unauthenticated `/help` fallback page had no
+  `<meta name="viewport">` tag at all (`src/routes/helpRouter.ts`),
+  forcing a 980px desktop-width mobile rendering.
+- **Fixed** (prior batch): Service Manager Board's top action bar
+  (`.smb-top-actions`) had no `flex-wrap`, causing page-level
+  horizontal overflow at 320px. Added `flex-wrap: wrap`. The board's
+  own internal kanban-column horizontal scroll is untouched and
+  correctly exempted (WCAG 1.4.10's two-dimensional-layout exception).
+- **Fixed (this batch, 2026-08-05)**: the Nurse Cockpit page's 3-column
+  desktop layout (300px sidebar + flex:1 main workspace, RagShadowRail
+  already collapsed below 1600px by a pre-existing rule) had no
+  breakpoint at all below that - `<main class="cockpit-main">` was
+  468px wide against a 320px viewport, a real, structural WCAG 1.4.10
+  failure on the primary nurse workflow screen. Fixed via a new
+  responsive breakpoint in `frontend/src/cockpit/cockpit.css`:
+  `.cockpit-layout` switches from a row to a column flex direction
+  below 900px, the sidebar becomes full-width and height-bounded
+  (`max-height: 40vh`, scrollable) instead of a fixed 300px side
+  column, and the main workspace becomes full-width - a single-column
+  stack, the smallest safe pattern that preserves every real control
+  without inventing a new drawer/tab component. Below 480px, the
+  stage-tabs row also gains `flex-wrap`. The existing `stage-tabs`
+  navigation was also upgraded to real `role="tablist"`/`role="tab"`/
+  `aria-selected` semantics (`CockpitApp.tsx`) - a genuine ARIA
+  correctness improvement, not just a visual fix. **Verified live** via
+  30 new Playwright tests (`tests/e2e/cockpitResponsive.spec.ts`)
+  passing across all 6 configured browser engines (Chromium, Edge,
+  Firefox, WebKit, mobile Chrome, mobile Safari) at 320px, 768px, and
+  desktop widths, confirming `scrollWidth === clientWidth`, single-
+  column stacking, and real tablist semantics. Also confirmed via the
+  now-trustworthy `scripts/a11yAudit.mjs` (see item 0 above): 0
+  violations on the authenticated Nurse Cockpit page, for the first
+  time via a login that genuinely completed.
 - Control Center Admin was not separately checked at 320px this batch
   (disclosed, not assumed passing). 200% browser zoom (as distinct from
-  a 320px-equivalent narrow viewport) was not separately tested.
+  a 320px-equivalent narrow viewport) was not separately tested via
+  actual browser zoom, though the 320px-equivalent narrow-viewport
+  behavior was.
 
 ## 7. Session-timeout warning - confirmed NOT implemented (not merely untested)
 
@@ -229,15 +295,17 @@ batch's literal UI surface, not a gap requiring a fix.
 
 ## Remaining material gaps as of this batch (the reason NFR-015 stays Partial)
 
-1. **Nurse Cockpit is not mobile-responsive** (item 6) - a real,
-   confirmed, structural defect on the primary nurse workflow page,
-   left unfixed as out of this batch's scope.
-2. **No real screen-reader testing has ever been performed** (item 4) -
-   none is available in this environment.
-3. **No session-timeout warning exists** (item 7) - confirmed not
+1. **No real screen-reader testing has ever been performed** (item 4) -
+   none is available in this environment. A prepared, not-yet-executed
+   checklist now exists (`screen-reader-validation-checklist.md`) for a
+   future session with real assistive-technology access.
+2. **No session-timeout warning exists** (item 7) - confirmed not
    implemented, not merely untested.
 
-Items 1-3 are why this row remains Partial. Everything else found this
-engagement (color contrast, `.smb-board` keyboard focus, Focus
-Visible, modal focus management, 2 reflow defects) has been found,
-fixed, deployed, and verified live.
+The Nurse Cockpit's mobile-responsiveness defect (previously the other
+blocker) is now **fixed and verified live** (item 6). Items 1-2 above
+are the sole reason this row remains Partial. Everything else found
+this engagement - color contrast, `.smb-board` keyboard focus, Focus
+Visible, modal focus management, all 3 reflow defects, and a real
+audit-tooling integrity bug (item 0) - has been found, fixed, deployed,
+and verified live with a genuinely trustworthy automated audit.

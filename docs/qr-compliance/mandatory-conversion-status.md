@@ -297,3 +297,20 @@ is possible in this environment. NFR-015 stays Partial - these two
 remaining material gaps (Cockpit responsiveness, screen-reader
 validation) are the honest reason Yes is not yet reachable. No
 compliance percentage change from this batch.
+
+## Update 2026-08-05 (continued): NFR-015 Nurse Cockpit responsive fix + audit-tooling integrity fix, retained Partial
+
+Fixed the Nurse Cockpit's non-responsive 3-column layout (single-
+column stack below 900px, ARIA tablist semantics added to the stage
+tabs) - the last confirmed material defect blocking NFR-015. Deployed
+and verified live via 30 new Playwright tests across 6 engines and a
+corrected axe-core audit. Found and fixed a significant, real bug in
+this engagement's own accessibility-audit tooling
+(`scripts/a11yAudit.mjs`): its login check silently accepted a 202
+"MFA required" response as a successful login, meaning prior "Nurse
+Cockpit"/"Control Center Admin: 0 violations" claims rested on an audit
+that likely never reached those pages authenticated. Fixed and
+re-verified: genuinely 0 violations across all 5 pages now. NFR-015
+stays Partial - the sole remaining blocker is the complete absence of
+real screen-reader validation (checklist prepared for a future batch).
+No compliance percentage change from this batch.

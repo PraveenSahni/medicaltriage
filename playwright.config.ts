@@ -48,7 +48,7 @@ export default defineConfig({
     },
     {
       name: "google-chrome",
-      testMatch: /browser-journey\.spec\.ts/,
+      testMatch: /(browser-journey|cockpitResponsive)\.spec\.ts/,
       // clipboard-read/write permission grants are a Chromium-specific
       // Playwright capability - Firefox/WebKit reject the permission name
       // outright (a real cross-engine incompatibility found while adding
@@ -61,7 +61,7 @@ export default defineConfig({
     },
     {
       name: "microsoft-edge",
-      testMatch: /browser-journey\.spec\.ts/,
+      testMatch: /(browser-journey|cockpitResponsive)\.spec\.ts/,
       use: {
         channel: "msedge",
         permissions: ["clipboard-read", "clipboard-write"]
@@ -73,12 +73,12 @@ export default defineConfig({
     // browsers under different names (Chrome and Edge are both Chromium).
     {
       name: "mozilla-firefox",
-      testMatch: /browser-journey\.spec\.ts/,
+      testMatch: /(browser-journey|cockpitResponsive)\.spec\.ts/,
       use: { ...devices["Desktop Firefox"] }
     },
     {
       name: "webkit-safari",
-      testMatch: /browser-journey\.spec\.ts/,
+      testMatch: /(browser-journey|cockpitResponsive)\.spec\.ts/,
       use: { ...devices["Desktop Safari"] }
     },
     // Closes part of NFR-001 (Mobile Responsiveness) - real mobile viewport +
@@ -87,12 +87,12 @@ export default defineConfig({
     // separate/fabricated mobile-only path).
     {
       name: "mobile-chrome-pixel5",
-      testMatch: /browser-journey\.spec\.ts/,
+      testMatch: /(browser-journey|cockpitResponsive)\.spec\.ts/,
       use: { ...devices["Pixel 5"], permissions: ["clipboard-read", "clipboard-write"] }
     },
     {
       name: "mobile-safari-iphone13",
-      testMatch: /browser-journey\.spec\.ts/,
+      testMatch: /(browser-journey|cockpitResponsive)\.spec\.ts/,
       use: { ...devices["iPhone 13"] }
     }
   ]

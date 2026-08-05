@@ -1359,3 +1359,45 @@ found across this whole NFR-015 effort (color contrast, `.smb-board`
 keyboard focus, Focus Visible, modal focus management, viewport meta,
 top-action-bar reflow) has now been found, fixed, deployed, and
 verified live. No compliance percentage change (Partial to Partial).
+
+## 2026-08-05 (continued): Batch 9 - Nurse Cockpit responsive-accessibility fix + audit-tooling integrity correction
+
+Fixed the last confirmed material accessibility defect: the Nurse
+Cockpit's fixed 3-column desktop layout had no responsive breakpoint
+at all. Added a single-column stack below 900px (`cockpit-layout`
+switches to a column flex direction, sidebar becomes full-width and
+height-bounded/scrollable, main workspace becomes full-width) and
+`flex-wrap` for the stage-tabs row below 480px - desktop unchanged.
+Also upgraded the stage-tabs to real `role="tablist"`/`role="tab"`/
+`aria-selected` ARIA semantics. Added 30 new Playwright tests
+(`tests/e2e/cockpitResponsive.spec.ts`), all passing across all 6
+configured browser engines.
+
+**A significant, real audit-tooling integrity bug was found and fixed
+along the way**: `scripts/a11yAudit.mjs`'s login check accepted any
+2xx HTTP status as success, silently missing that this script's NURSE
+(`layla@irisstar.tech`) and PLATFORM_ADMIN (`pa@irisstar.tech`)
+personas now have real, enrolled MFA credentials from earlier AR.13
+testing, making their logins return `202 mfaRequired` - a real 2xx
+response that never completes authentication. This means every prior
+"Nurse Cockpit: 0 violations" / "Control Center Admin: 0 violations"
+claim in this engagement's NFR-015 work rested on an audit that likely
+never actually reached those pages authenticated. Fixed the login
+check to require `body.authenticated === true`, and switched to
+`sara@irisstar.tech`/`sa@irisstar.tech` (confirmed real accounts, same
+roles, no MFA enrolled). Re-ran the audit with the fix: genuinely 0
+violations across all 5 pages, for the first time with a login that
+actually completed.
+
+Deployed via the established canary-then-cutover process
+(`ist-triage-soc2-00053-xip`, 100% traffic), rebuilt `dist-web` and
+redeployed Firebase Hosting, confirmed matching production asset
+hashes, re-audited production (0 violations).
+
+**NFR-015 remains Partial.** The Cockpit responsiveness defect - the
+last of the two blockers from the prior batch - is now fixed and
+verified live. The sole remaining blocker is the complete absence of
+real screen-reader testing (a prepared checklist,
+`docs/accessibility/screen-reader-validation-checklist.md`, now exists
+for a future session with real assistive-technology access). No
+compliance percentage change (Partial to Partial).
