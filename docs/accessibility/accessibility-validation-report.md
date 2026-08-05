@@ -282,21 +282,87 @@ no regression.
 7. Questionnaire does not require independent external audit - true per
    the original Phase 1 reading.
 
-**NFR-015 remains Partial**, not moved to Yes. Reasoning: the one
-*confirmed defect* found by this engagement (Focus Visible) is now
-genuinely fixed and verified live - a real, material improvement. But
-several manual checks explicitly required by the batch instructions
-were never performed at all (modal focus-trap/restoration, 200%
-zoom/reflow, session-timeout warning, destructive-action confirmation,
-and a real screen-reader pass) - "not yet tested" is a different, more
-honest status than "tested and passing," and moving this row to Yes
-would overstate what has actually been verified, contradicting this
-engagement's own standing instruction not to claim compliance beyond
-the evidence. The correct, honest framing: **the known defect blocking
-Yes is now closed; the remaining blocker is incomplete manual test
-coverage, not a known defect** - a materially different and better
-Partial than either prior batch's. See
-`docs/accessibility/accessibility-known-limitations.md` for the exact
-punch list a future batch would need to complete (modal, zoom, session-
-timeout, destructive-action, screen-reader, exhaustive per-page focus
-sweep) before this row could honestly move to Yes.
+**NFR-015 remained Partial** at the end of this batch, superseded by
+the final manual-validation batch below.
+
+## Final batch (2026-08-05): complete the manual checklist
+
+Completed all remaining checklist items from the batch instructions:
+
+- **Modal focus management**: `ReadOnlyCallDrawer` (the only dialog in
+  the 5-page scope) had no `role="dialog"`, no `aria-modal`, no initial
+  focus, no Tab trap, no focus restoration - a real defect. Fixed:
+  added dialog semantics, focus-on-open, Tab/Shift+Tab trap, Escape
+  close, focus restoration to the trigger. 2 new jest/RTL regression
+  tests added. Live-verified on production: role/aria-modal present,
+  initial focus confirmed, Escape-close confirmed, focus-restoration
+  confirmed. The Tab-trap's directional wrap is proven by the real
+  jest/RTL test but gave inconsistent results under the browser-
+  automation tool's synthesized key events live - disclosed, not
+  overclaimed.
+- **320px reflow**: 2 real defects found and fixed (missing viewport
+  meta on `/help`'s unauthenticated fallback; unwrapped Service
+  Manager Board top-action bar) - both verified live on production
+  with `scrollWidth === clientWidth` after the fix. **1 real defect
+  found and left unfixed**: the Nurse Cockpit's 3-column desktop
+  layout does not collapse on narrow viewports at all - a structural
+  gap out of this batch's "smallest safe fix" scope.
+- **Session-timeout**: confirmed via code review - a real, enforced
+  server-side TTL exists, but no client-side warning/extend-session
+  capability exists anywhere in the frontend, and the app's own Help
+  docs already list this as planned-not-built. Classified **Not
+  implemented**, not "not tested."
+- **Destructive-action confirmation**: confirmed via code search - no
+  destructive action is rendered in the 5-page-scope frontend at all.
+  Classified **N/A**.
+- **Screen-reader testing**: confirmed, again, that no real
+  NVDA/JAWS/VoiceOver is available in this environment. Not performed.
+
+Full validation after all fixes: backend `tsc` clean, frontend `tsc`
+clean, full backend suite 735/735 passing, full frontend suite 57/57
+passing (55 baseline + 2 new dialog tests), 5-page axe-core audit 0
+violations (canary and production, post-cutover and post-Hosting-
+redeploy), production asset hashes confirmed matching the new build.
+
+## Final closure determination
+
+1. Current fixes deployed on the customer-facing domain - **Yes**
+   (confirmed via `curl` asset-hash match and live browser checks).
+2. Automated audit remains clean - **Yes** (0 violations, all 5 pages).
+3. Keyboard navigation and visible focus pass - **Yes** (Focus Visible
+   fixed and live-verified this session and the prior one).
+4. Dialog focus management passes - **Yes**, with the one disclosed
+   caveat above (Tab-trap live-tool verification inconclusive; proven
+   in the real jest/RTL test).
+5. 200% zoom and reflow pass without material defects - **No** - the
+   Nurse Cockpit's non-responsive 3-column layout is a real, confirmed,
+   unresolved defect on the primary nurse workflow page.
+6. Destructive actions are safely handled - **N/A**, none exist in the
+   current UI.
+7. Session-timeout behaviour is either accessible or demonstrably
+   outside the literal requirement - **No** - a real capability gap
+   (not implemented), and the literal NFR-015 wording ("WCAG 2.1 or
+   equivalent") does not exempt it, since SC 2.4.7-adjacent session
+   expectations are commonly part of a WCAG 2.1 AA baseline for
+   authenticated applications, even though no single explicit success
+   criterion is named in the row's text.
+8. No remaining material accessibility defect exists - **No** - item 5
+   (Cockpit reflow) is material and unresolved.
+9. Missing screen-reader testing does not contradict the claimed level
+   of conformance - **cannot be affirmed**, since no real
+   screen-reader pass has ever been performed against this application.
+
+**NFR-015: remains Partial.** Two independent, material gaps prevent
+an honest move to Yes: (1) the Nurse Cockpit - the application's
+primary clinical workflow screen - is not mobile-responsive at all,
+a real, confirmed, structural WCAG 1.4.10 defect; and (2) no real
+screen-reader validation has ever been performed, so a "WCAG 2.1 or
+equivalent" claim cannot be honestly made without at least one
+completed assistive-technology pass. This batch closed real,
+significant gaps (Focus Visible, modal focus management, 2 of 3
+reflow defects) and the remaining Partial is now backed by
+substantially more real evidence than any prior batch's - but Yes is
+not supportable while items 5 and 9 remain open. See
+`docs/accessibility/accessibility-known-limitations.md` for the
+complete, current punch list and what a future batch would need to
+close before Yes is honestly reachable.

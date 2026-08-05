@@ -144,6 +144,30 @@ been performed - not whether it's possible. Generated 2026-08-05, updated
   modal, zoom, session-timeout, destructive-action, screen-reader -
   remain unperformed, a coverage gap rather than a known defect).
 
+- **Update (2026-08-05, Batch 8 - final manual validation executed)**:
+  completed the remaining manual checklist. Fixed and deployed 3 real
+  defects: (1) `ReadOnlyCallDrawer` modal focus management
+  (`role="dialog"`, `aria-modal`, initial focus, Tab trap, Escape,
+  focus restoration - 2 new regression tests); (2) missing viewport
+  meta tag on the unauthenticated `/help` fallback
+  (`src/routes/helpRouter.ts`); (3) unwrapped `.smb-top-actions` bar
+  causing 320px page-level reflow overflow on the Service Manager
+  Board. Built image `ist-triage-soc2:20260805-manualbatch2` (digest
+  `sha256:a09c6b1fbd5a67e0e6faec82a891016d09b7454b2cbb7a0e278186cefc630822`),
+  deployed as canary `ist-triage-soc2-00051-nec`, audited (0
+  violations), cut over to 100%, rebuilt `dist-web` (`npm run
+  build:web`) and re-ran `firebase deploy --only hosting:soc2` per the
+  now-established runbook order. All 3 fixes verified live on the
+  production custom domain. Found and left unfixed, explicitly out of
+  scope: the Nurse Cockpit's 3-column desktop layout does not collapse
+  on narrow viewports at all - flagged as a real, material, structural
+  defect for a future, larger session. Full backend suite (735/735)
+  and full frontend suite (57/57) pass with zero regressions.
+  **Status now**: production deployment and manual validation for this
+  NFR-015 effort are complete. NFR-015 retained Partial - the Cockpit
+  responsiveness gap and the complete absence of real screen-reader
+  testing are the two remaining material blockers to Yes.
+
 ## NFR-004 (UX tab) - cross-browser e2e fixture fixes need DB access
 
 - **Finding (2026-08-05, Batch 5)**: the deeper clinical-workflow e2e

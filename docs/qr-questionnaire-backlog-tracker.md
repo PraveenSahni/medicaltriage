@@ -1323,3 +1323,39 @@ short of Yes given the untested surface. See
 `docs/accessibility/accessibility-known-limitations.md` for the full,
 updated punch list. No compliance percentage change (Partial to
 Partial).
+
+## 2026-08-05 (continued): Batch 8 - NFR-015 final manual accessibility validation
+
+Completed the remaining manual checklist items. Found and fixed 3
+additional real defects: (1) `ReadOnlyCallDrawer` (Service Manager
+Board's call-detail overlay, the only dialog in the 5-page scope) had
+no `role="dialog"`/`aria-modal`, no initial focus, no Tab trap, no
+focus restoration - added all of it plus 2 new jest/RTL regression
+tests; (2) the unauthenticated `/help` fallback page had no viewport
+meta tag at all, forcing a 980px desktop mobile rendering - fixed;
+(3) the Service Manager Board's top-action bar overflowed the
+viewport at 320px (no `flex-wrap`) - fixed. All 3 verified live on
+production (`ist-triage-soc2-00051-nec`, 100% traffic, Firebase
+Hosting rebuilt via `npm run build:web` before redeploy per the
+established runbook fix).
+
+Found and left **unfixed, explicitly out of scope**: the Nurse
+Cockpit's 3-column desktop layout does not collapse on narrow
+viewports at all - a real, structural, material defect on the primary
+nurse workflow screen. Confirmed via code/live review: session-timeout
+has no client-side warning UI (classified Not Implemented, not
+untested); no destructive action exists in the 5-page-scope frontend
+(classified N/A); no real screen reader is available in this
+environment (confirmed again, unchanged).
+
+Full validation: backend `tsc` clean, frontend `tsc` clean, full
+backend suite 735/735, full frontend suite 57/57, 5-page axe-core
+audit 0 violations (canary + production post-cutover).
+
+**NFR-015 remains Partial.** Two material, independent gaps block Yes:
+the Cockpit's non-responsive layout (a real, confirmed defect) and the
+complete absence of real screen-reader validation. Everything else
+found across this whole NFR-015 effort (color contrast, `.smb-board`
+keyboard focus, Focus Visible, modal focus management, viewport meta,
+top-action-bar reflow) has now been found, fixed, deployed, and
+verified live. No compliance percentage change (Partial to Partial).

@@ -108,6 +108,7 @@
 #service-manager-board-root .smb-top-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
 }
 

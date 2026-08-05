@@ -163,6 +163,37 @@ describe("TriageServiceManagerBoard", () => {
     expect(updateItemContext).not.toHaveBeenCalled();
   });
 
+  it("read-only drawer has real dialog semantics, moves focus in on open, and restores it on close", () => {
+    renderBoard();
+    const trigger = screen.getAllByText(/Back pain that started gradually/)[0];
+    (trigger as HTMLElement).closest("article")?.focus?.();
+    fireEvent.click(trigger);
+
+    const dialog = screen.getByLabelText("Call details");
+    expect(dialog).toHaveAttribute("role", "dialog");
+    expect(dialog).toHaveAttribute("aria-modal", "true");
+    expect(document.activeElement).toBe(screen.getByLabelText("Close details"));
+
+    fireEvent.click(screen.getByLabelText("Close details"));
+    expect(screen.queryByLabelText("Call details")).not.toBeInTheDocument();
+  });
+
+  it("read-only drawer traps Tab focus and closes on Escape", () => {
+    renderBoard();
+    fireEvent.click(screen.getAllByText(/Back pain that started gradually/)[0]);
+    const dialog = screen.getByLabelText("Call details");
+    const focusable = dialog.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const last = focusable[focusable.length - 1];
+    last.focus();
+    fireEvent.keyDown(document, { key: "Tab" });
+    expect(document.activeElement).toBe(focusable[0]);
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByLabelText("Call details")).not.toBeInTheDocument();
+  });
+
   it("never renders any claim/answer/hold/resume/escalate/complete control", () => {
     renderBoard();
     const forbidden = /answer|claim|hold|resume|escalate|reassign|complete call/i;

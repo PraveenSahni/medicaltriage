@@ -282,3 +282,18 @@ required manual checks (modal focus-trap, zoom/reflow, session-
 timeout, destructive-action, real screen-reader testing) remain
 unperformed, so the row cannot honestly move to Yes yet. No compliance
 percentage change from this batch.
+
+## Update 2026-08-05 (continued): NFR-015 final manual validation batch, retained Partial
+
+Completed the remaining NFR-015 manual checklist. Fixed 3 real defects
+(modal focus management on the Service Manager Board's call-detail
+drawer, missing viewport meta on the unauthenticated Help fallback,
+unwrapped top-action-bar causing 320px reflow overflow) and deployed/
+verified all three live. Found and left unfixed, out of scope: the
+Nurse Cockpit's 3-column layout is not mobile-responsive at all - a
+real, structural defect. Confirmed session-timeout has no accessible
+warning capability (not implemented) and no real screen-reader testing
+is possible in this environment. NFR-015 stays Partial - these two
+remaining material gaps (Cockpit responsiveness, screen-reader
+validation) are the honest reason Yes is not yet reachable. No
+compliance percentage change from this batch.

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { QueueItem } from "../QueueContext";
 import { fetchProtocolDetail, type ProtocolDetail } from "../cockpit/api/protocols";
 import { FitToFlyBadge } from "../cockpit/FitToFlyBadge";
@@ -32,14 +32,51 @@ function safetyStatusText(item: QueueItem): string {
 }
 
 export function ReadOnlyCallDrawer({ item, onClose }: ReadOnlyCallDrawerProps) {
+  const drawerRef = useRef<HTMLElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Real WCAG 2.1 SC 2.4.3 (Focus Order) fix, found during the NFR-015
+  // manual accessibility batch - this was the only dialog-like overlay
+  // within the 5 audited pages and had no role/aria-modal, no focus
+  // moved on open, no Tab trap, and no focus restoration on close.
+  // Captures the triggering element on mount, moves focus into the
+  // dialog, traps Tab/Shift+Tab within it, and restores focus to the
+  // trigger on unmount - the same "capture -> trap -> restore" shape
+  // already used by `role="dialog"` overlays elsewhere in this codebase
+  // (NurseWorkspace.tsx), just not previously applied here.
   useEffect(() => {
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    closeButtonRef.current?.focus();
+
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         onClose();
+        return;
+      }
+      if (event.key !== "Tab" || !drawerRef.current) {
+        return;
+      }
+      const focusable = drawerRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) {
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     }
     document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      previouslyFocused?.focus();
+    };
   }, [onClose]);
 
   const [activeTab, setActiveTab] = useState<"reason" | "iaq" | "taq" | "disposition" | "sbar">("reason");
@@ -77,7 +114,7 @@ export function ReadOnlyCallDrawer({ item, onClose }: ReadOnlyCallDrawerProps) {
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <aside className="smb-drawer" aria-label="Call details">
+      <aside ref={drawerRef} className="smb-drawer" role="dialog" aria-modal="true" aria-label="Call details">
         <div className="smb-drawer-head">
           <div>
             <div className="smb-case-id">Read-only call progress</div>
@@ -86,7 +123,13 @@ export function ReadOnlyCallDrawer({ item, onClose }: ReadOnlyCallDrawerProps) {
             </h2>
             {item.reasonNarrative && <p>{item.reasonNarrative}</p>}
           </div>
-          <button type="button" className="smb-close-btn" onClick={onClose} aria-label="Close details">
+          <button
+            ref={closeButtonRef}
+            type="button"
+            className="smb-close-btn"
+            onClick={onClose}
+            aria-label="Close details"
+          >
             ✕
           </button>
         </div>

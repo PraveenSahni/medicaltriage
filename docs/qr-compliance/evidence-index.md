@@ -321,3 +321,23 @@ Full detail: `docs/accessibility/accessibility-known-limitations.md`.
 required manual checks (modal, zoom, session-timeout, destructive-
 action, screen-reader) remain unperformed. No compliance percentage
 change from this batch.
+
+## NFR-015 - final manual accessibility validation (2026-08-05, Batch 8) - retained Partial
+
+Completed the manual accessibility checklist for NFR-015. Fixed and
+deployed 3 real defects: modal focus management on the Service Manager
+Board's call-detail drawer (`role="dialog"`, `aria-modal`, focus trap,
+focus restoration - 2 new regression tests added), a missing viewport
+meta tag on the unauthenticated `/help` fallback page, and an
+unwrapped top-action bar causing 320px reflow overflow on the Service
+Manager Board. All verified live on production
+(`ist-triage-soc2-00051-nec`). Found and left unfixed (out of scope,
+disclosed as a real defect): the Nurse Cockpit's fixed 3-column layout
+is not mobile-responsive. Confirmed session-timeout has no accessible
+warning (not implemented) and no real screen-reader testing is
+available in this environment. Full detail:
+`docs/accessibility/accessibility-validation-report.md`,
+`docs/accessibility/accessibility-known-limitations.md`. **NFR-015
+retained Partial** - the Cockpit responsiveness gap and missing
+screen-reader validation are the two remaining material blockers to
+Yes. No compliance percentage change from this batch.

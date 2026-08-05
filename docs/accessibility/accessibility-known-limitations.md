@@ -124,25 +124,86 @@ running axe-core against each engine separately (axe-core's own
 architecture supports this) or accepting Chromium-only automated
 scanning as the standing limitation.
 
-## 4. No real assistive-technology (screen reader) testing performed
+## 4. No real assistive-technology (screen reader) testing performed - confirmed unavailable, still open
 
 Confirmed no NVDA/JAWS/VoiceOver or equivalent is available in this
-engineering environment. All "screen-reader-readable" claims in the
-validation report and checklist are automated-proxy-only (axe-core's
+engineering environment (checked again in the final manual-validation
+batch, 2026-08-05 - no change). All "screen-reader-readable" claims in
+the validation report and checklist are automated-proxy-only (axe-core's
 accessible-name/label/ARIA rules), not verified with a real screen
 reader. **Do not claim real screen-reader compatibility based on this
-batch's evidence alone.**
+batch's evidence alone.** This is the primary remaining item keeping
+NFR-015 at Partial rather than Yes - see the closure decision in
+`accessibility-validation-report.md`.
 
-## 5. Manual checks not performed this batch (see checklist for the full table)
+## 5. Modal/dialog focus management - FIXED, verified live (2026-08-05, final batch)
 
-Modal/dialog focus-trap and restoration, zoom/reflow at 200%, session-
-timeout warning UX, destructive-action confirmation UX, and full
-keyboard-order verification across all 5 pages (only the Service
-Manager Board's first Tab stop was checked) - not performed due to
-this batch's time budget and the lack of populated live data to
-exercise some of these flows (e.g. no dialog was open with real
-content during the manual pass). None of these are assumed passing;
-they are explicitly open items for a follow-up manual pass.
+`ReadOnlyCallDrawer` (Triage Service Manager Board's call-detail
+overlay) was the only dialog-like component in the 5-page scope and
+had no `role="dialog"`, no `aria-modal`, no initial focus, no Tab trap,
+and no focus restoration on close - a real WCAG 2.1 SC 2.4.3 gap.
+Fixed: added `role="dialog"`/`aria-modal="true"`, focus moves to the
+close button on open (captured via a real `useRef`), a Tab/Shift+Tab
+trap cycles focus between the first and last focusable elements while
+open, Escape closes it, and focus returns to the triggering call card
+on close. Verified with 2 new jest/RTL regression tests
+(`TriageServiceManagerBoard.test.tsx`) and live on production: `role`/
+`aria-modal` present, initial focus on the close button confirmed,
+Escape-close confirmed, focus-restoration-to-trigger confirmed. The
+Tab-trap's directional wrap gave inconsistent results when re-tested
+live via the browser-automation tool's synthesized Shift+Tab events
+(works correctly and reliably in the real jsdom/RTL test, which uses
+real DOM `KeyboardEvent`s) - disclosed as a tooling-verification gap
+for this one sub-check, not claimed as fully live-proven.
+
+## 6. Reflow/zoom at 320px - 2 real defects found, 1 fixed, 1 confirmed and left unfixed (2026-08-05, final batch)
+
+- **Fixed**: unauthenticated `/help` fallback page had no `<meta
+  name="viewport">` tag at all (`src/routes/helpRouter.ts`), forcing a
+  980px desktop-width mobile rendering. Added the same viewport tag
+  already used elsewhere in the codebase.
+- **Fixed**: Service Manager Board's top action bar (`.smb-top-actions`)
+  had no `flex-wrap`, causing page-level horizontal overflow at 320px
+  (traced to the Help link extending past the viewport edge). Added
+  `flex-wrap: wrap`. The board's own internal kanban-column horizontal
+  scroll is untouched and correctly exempted (WCAG 1.4.10's
+  two-dimensional-layout exception).
+- **Confirmed real, NOT fixed**: the Nurse Cockpit page's 3-column
+  desktop layout (sidebar + main workspace + rail) does not collapse
+  to a single-column mobile layout at all - `<main class="cockpit-main">`
+  itself is 468px wide against a 320px viewport. This is a structural,
+  whole-page layout gap affecting the primary nurse workflow screen,
+  not a small CSS fix - building a real responsive Cockpit layout is a
+  much larger effort than this batch's scope (which was deliberately
+  limited to the smallest safe fix per defect). **This is a real,
+  material, unresolved accessibility defect** and is the second
+  reason, alongside missing screen-reader testing, that this row
+  cannot honestly move to Yes.
+- Control Center Admin was not separately checked at 320px this batch
+  (disclosed, not assumed passing). 200% browser zoom (as distinct from
+  a 320px-equivalent narrow viewport) was not separately tested.
+
+## 7. Session-timeout warning - confirmed NOT implemented (not merely untested)
+
+Real, enforced server-side session TTL exists (`SESSION_TIMEOUT_MINUTES`/
+`EXTENDED_SESSION_TIMEOUT_MINUTES` in `src/services/securityAdmin.ts`),
+but there is no client-side advance warning, extend-session action, or
+accessible timeout message anywhere in the frontend - confirmed via
+code search (zero matching UI component) and the application's own
+Help documentation, which lists "session-timeout notices" as an
+explicitly planned, not-yet-built item. This is classified as **Not
+implemented**, a confirmed gap, not an unknown - disclosed plainly per
+the instruction not to hide it as "not tested."
+
+## 8. Destructive-action confirmation - Not applicable to the current UI
+
+No destructive action (delete/suspend/revoke/reset/terminate) is
+rendered anywhere in the 5-page-scope frontend - confirmed via code
+search. The backend RBAC/session-management mutation endpoints built
+earlier this engagement are real but backend/API-only by explicit
+design, with no frontend control. "Sign out" is the only session-
+ending control and is reversible. Classified as **N/A** for this
+batch's literal UI surface, not a gap requiring a fix.
 
 ## What IS proven, real, and current as of this batch
 
@@ -156,3 +217,27 @@ they are explicitly open items for a follow-up manual pass.
   engines (Chromium, Edge, Firefox, WebKit, mobile Chrome, mobile
   Safari) - the one observed e2e failure is a pre-existing test-data
   gap, not a browser- or accessibility-specific regression.
+- The Focus Visible defect (item 1) and modal focus-management defect
+  (item 5) are both real, confirmed-root-caused, fixed, deployed to
+  production, and live-verified.
+- Two real reflow defects were found and fixed (missing viewport meta
+  on `/help`'s unauthenticated fallback; unwrapped top-action bar on
+  the Service Manager Board) - both verified live at 320px on
+  production with zero page-level horizontal overflow remaining.
+- Full backend suite (735/735) and full frontend suite (57/57) pass
+  with zero regressions after all of this batch's fixes.
+
+## Remaining material gaps as of this batch (the reason NFR-015 stays Partial)
+
+1. **Nurse Cockpit is not mobile-responsive** (item 6) - a real,
+   confirmed, structural defect on the primary nurse workflow page,
+   left unfixed as out of this batch's scope.
+2. **No real screen-reader testing has ever been performed** (item 4) -
+   none is available in this environment.
+3. **No session-timeout warning exists** (item 7) - confirmed not
+   implemented, not merely untested.
+
+Items 1-3 are why this row remains Partial. Everything else found this
+engagement (color contrast, `.smb-board` keyboard focus, Focus
+Visible, modal focus management, 2 reflow defects) has been found,
+fixed, deployed, and verified live.
