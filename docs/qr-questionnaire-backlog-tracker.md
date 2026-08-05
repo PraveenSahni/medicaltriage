@@ -697,6 +697,34 @@ deliberately kept running). Zero functional/authorization/audit/
 tenant-isolation regression. Register regenerated: 195 rows now closed
 (was 193).
 
+## 2026-08-05 (continued): Cross-instance cookie-session finding - corrected
+
+Dedicated follow-up investigation into the cookie-auth 401 flagged
+during the performance work. **Reframed, not fixed as originally
+assumed**: direct testing proved the session-store, hashing, lookup,
+expiration, and cross-instance DB-fallback logic are all already
+correct (a fresh session's DB row, `getPersistedUserSession()`, and the
+full `readAuthenticatedSession()` function all returned the correct
+session when tested directly). The actual cause: Firebase Hosting's
+`run` rewrite proxy (which fronts `triagedsoc2.irisstar.tech`) does not
+forward the `Cookie` request header to Cloud Run - confirmed
+conclusively by testing the same cookie against the Cloud Run service's
+own direct URL, where it worked perfectly.
+
+**This is not a live application bug** - the frontend already installs
+a real, working mitigation for exactly this limitation
+(`frontend/src/authToken.ts`'s `installBearerTokenFetch()`, called
+unconditionally at `frontend/src/main.tsx:9`), attaching a Bearer token
+to every real API call the browser frontend makes. Real users are
+unaffected; only a raw cookie-only HTTP client (like the earlier
+performance batch's diagnostic `curl`/load-test scripts) hits this.
+
+**No code changed** - there was no defect to fix. Full write-up:
+`docs/architecture/session-authentication-cross-instance.md`.
+
+**No questionnaire rows changed** - nothing was broken, so nothing was
+fixed; no closure claim is made based on this investigation.
+
 ## 2026-08-05 (continued): Performance remediation - NFR-138/152/156
 
 Real root-cause investigation and fix, per the dedicated performance

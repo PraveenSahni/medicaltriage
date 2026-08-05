@@ -136,11 +136,18 @@ queue-list endpoint's performance regression, not primarily the
 connection-pool sizing addressed in the earlier performance batch.
 Fixed via a real `prisma migrate deploy` against the live database.
 
-**Separate, unresolved finding**: cross-instance cookie-session lookup
-returns a fast, clean 401 for a valid, freshly-issued session cookie -
-a distinct, real, pre-existing bug not fixed in this batch (worked
-around by using Bearer-token auth, a real, legitimate, already-supported
-auth path, for this investigation's load testing).
+**Follow-up correction (2026-08-05, later)**: the "cross-instance
+cookie-session lookup" item above was investigated as its own dedicated
+task. It is **not an application defect** - direct testing proved the
+session-store, hashing, lookup, and cross-instance DB-fallback logic are
+all already correct. The real cause is that Firebase Hosting's `run`
+rewrite proxy (fronting `triagedsoc2.irisstar.tech`) does not forward
+the `Cookie` header to Cloud Run - confirmed by testing the same cookie
+directly against the Cloud Run service's own URL, where it worked. The
+frontend already mitigates this for all real users
+(`installBearerTokenFetch()`, `frontend/src/main.tsx:9`). No code
+changed; no questionnaire row is affected. Full write-up:
+`docs/architecture/session-authentication-cross-instance.md`.
 
 ## Everything else scored "Yes" (94 rows, prior to Batch 1/2/3/4)
 
