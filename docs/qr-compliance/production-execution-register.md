@@ -91,6 +91,30 @@ been performed - not whether it's possible. Generated 2026-08-05, updated
   explicit "no production credentials" boundary; flagged for explicit
   go-ahead rather than executed silently.
 
+- **Update (2026-08-05, Batch 6 - executed)**: the redeploy above was
+  performed with explicit go-ahead. Built current source
+  (`me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:20260805-nfr015`,
+  digest `sha256:5cdb6525c5ba13314891edda544aa2990de0c9b9d1c1479947db209f766260fd`,
+  build `9beaef14-e14b-40db-afd1-4c83226a7b14`), deployed as a
+  `--no-traffic` canary (`ist-triage-soc2-00047-nuz`), health-checked,
+  audited (0 violations across all 5 pages/personas), then cut over to
+  100% traffic. Found a new, real, second issue during this process:
+  the custom domain `triagedsoc2.irisstar.tech` continued serving the
+  old bundle after the Cloud Run cutover, because Firebase Hosting's
+  CDN edge cache is not invalidated by a Cloud Run traffic-split change
+  alone. Fixed via `firebase deploy --only hosting:soc2` (a real
+  Hosting release, forcing cache invalidation) - re-audit after this
+  step showed 0 violations against the real custom domain too. **This
+  CDN-invalidation step should be added as a required part of the
+  canary-then-cutover runbook for this environment going forward**, not
+  treated as a one-off. Full detail in
+  `docs/accessibility/accessibility-validation-report.md`. A separate,
+  new, real accessibility defect (Focus Visible, WCAG 2.1 SC 2.4.7) was
+  found via manual keyboard testing during this same batch and remains
+  open - see `docs/accessibility/accessibility-known-limitations.md`.
+  **Status now**: production redeploy complete; NFR-015 retained at
+  Partial pending the Focus Visible fix, not Yes.
+
 ## NFR-004 (UX tab) - cross-browser e2e fixture fixes need DB access
 
 - **Finding (2026-08-05, Batch 5)**: the deeper clinical-workflow e2e

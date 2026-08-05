@@ -252,3 +252,17 @@ remains Partial - real customer delivery requires an approved SLA,
 legal/privacy-approved template, authorized Qatar Airways recipients,
 and one approved live delivery, none of which exist. No compliance
 percentage change from this batch.
+
+## Update 2026-08-05 (continued): NFR-015 accessibility redeploy - retained Partial, no percentage change
+
+Real production redeploy of `ist-triage-soc2` executed (canary ->
+0-violation audit -> 100% cutover -> Firebase Hosting CDN cache fix ->
+0-violation re-audit against the live custom domain). A new, real,
+unresolved Focus Visible (WCAG 2.1 SC 2.4.7) defect was found via
+manual testing and remains open. NFR-015 stays Partial - the evidence
+behind that Partial is now real, current, and far stronger than the
+prior batch's (broken audit tooling + stale build), but the row cannot
+honestly move to Yes while a confirmed, material accessibility defect
+is open. See `docs/accessibility/accessibility-known-limitations.md`
+for the retest trigger. No compliance percentage change from this
+batch.

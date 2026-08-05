@@ -503,6 +503,38 @@ fix since it requires the local Cloud SQL Auth Proxy tunnel, unavailable
 in this session (same known gap as the corrected test baseline). Retained
 Partial, remark updated with the precise current state.
 
+## 2026-08-05 (continued): Batch 6 - NFR-015 real redeploy + full validation
+
+Closed the prior batch's outstanding "needs a real production redeploy"
+gap for NFR-015. Fixed a real break in `scripts/a11yAudit.mjs` itself
+(its cookie-based login stopped working against `triagedsoc2.irisstar.tech`
+- Firebase Hosting's `run` rewrite doesn't reliably return `Set-Cookie`
+to a bare `fetch()`, mirroring the already-documented request-side
+Cookie-forwarding limit; fixed via a real UI-driven login matching
+`tests/e2e/browser-journey.spec.ts`'s pattern). Built the current
+source, deployed as a `--no-traffic` canary (`ist-triage-soc2-00047-nuz`),
+audited it (0 violations across all 5 pages/personas - confirming the
+2 "new" violations found against the *old* live revision were stale-
+deployment artifacts of already-committed fixes, not real code
+defects), then cut over to 100% traffic. Found and fixed a second real,
+new operational gap along the way: the custom domain kept serving the
+old bundle after the Cloud Run cutover because Firebase Hosting's CDN
+cache isn't invalidated by a Cloud Run traffic change alone - required
+a `firebase deploy --only hosting:soc2` to force cache invalidation.
+Ran the full manual/automated/browser-coverage validation described in
+`docs/accessibility/accessibility-validation-report.md` and found one
+new, real, unresolved defect during manual keyboard testing: a Focus
+Visible (WCAG 2.1 SC 2.4.7) failure on at least the Service Manager
+Board's action buttons - the app's own `--focus-ring` token resolves
+correctly and `:focus-visible` matches, but a broader `box-shadow: none
+!important` rule elsewhere suppresses the visible ring. **NFR-015
+retained at Partial** (not moved to Yes) - this is now a materially
+better-evidenced Partial (real, current-build, 5-page/persona automated
+zero-violation result plus a documented, narrow, real remaining gap)
+rather than the prior Partial's "audit tool was broken and the build
+was stale" state. See `docs/accessibility/accessibility-known-limitations.md`
+for the full punch list and retest trigger.
+
 Verified: `npx tsc --noEmit` clean, 688/692 (same known environment gap,
 no new regressions). No rows converted to Yes this batch - both were
 genuinely blocked on production/environment access, honestly routed to

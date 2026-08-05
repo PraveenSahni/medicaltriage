@@ -287,3 +287,19 @@ as sufficient for a full "Yes."
 See `docs/security/privacy-incident-notification-procedure.md`,
 `docs/security/privacy-incident-notification-template.md`, and
 `docs/operations/privacy-notification-runbook.md` for full detail.
+
+## NFR-015 - accessibility redeployment + validation (2026-08-05, Batch 6) - retained Partial
+
+Redeployed `ist-triage-soc2` with the current source (already-committed
+`--muted` color-contrast and `.smb-board` keyboard-focusability fixes),
+confirmed via a real 5-page/persona axe-core audit: 0 violations on
+both the `--no-traffic` canary and, after fixing a newly-found Firebase
+Hosting CDN cache-invalidation gap, the live production custom domain.
+A new, real, unresolved Focus Visible (WCAG 2.1 SC 2.4.7) defect was
+found via manual keyboard testing and is not yet fixed. Full detail:
+`docs/accessibility/accessibility-validation-report.md`,
+`docs/accessibility/manual-accessibility-checklist.md`,
+`docs/accessibility/accessibility-known-limitations.md`. **NFR-015
+retained Partial** - a materially stronger, current-build Partial than
+before, but not Yes given the open Focus Visible defect. No compliance
+percentage change from this batch (Partial to Partial).

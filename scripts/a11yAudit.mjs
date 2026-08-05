@@ -11,22 +11,27 @@ const NURSE = { username: "layla@irisstar.tech", password: "Layla@2026", role: "
 const MANAGER = { username: "khalid@irisstar.tech", password: "Khalid@2026", role: "triage_service_manager" };
 const PLATFORM_ADMIN = { username: "pa@irisstar.tech", password: "PlatformAdmin@2026", role: "platform_super_administrator" };
 
-async function loginAndGetCookie(baseUrl, persona) {
-  const loginRes = await fetch(`${baseUrl}/api/v1/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: persona.username, password: persona.password, simulateRole: persona.role })
-  });
-  if (!loginRes.ok) {
-    throw new Error(`Login failed for ${persona.username}: ${loginRes.status}`);
+// Real UI-driven login (not a raw fetch() extracting a Set-Cookie header) -
+// found during the NFR-015 redeployment batch that Firebase Hosting's `run`
+// rewrite (fronting triagedsoc2.irisstar.tech) does not reliably return a
+// Set-Cookie header to a bare HTTP client either, mirroring the already-
+// documented request-side Cookie-forwarding limitation
+// (docs/architecture/session-authentication-cross-instance.md). A real
+// browser driving the actual login form uses the app's own patched
+// Bearer-token fetch (frontend/src/authToken.ts's installBearerTokenFetch())
+// for every subsequent API call, exactly like a real user - this is the
+// same auth path already proven reliable throughout this engagement's
+// cross-browser e2e suite (tests/e2e/browser-journey.spec.ts).
+async function loginViaUi(page, baseUrl, persona) {
+  await page.goto(`${baseUrl}/`, { waitUntil: "networkidle" });
+  await page.locator("#username").fill(persona.username);
+  await page.locator("#password").fill(persona.password);
+  const responsePromise = page.waitForResponse((response) => response.url().endsWith("/api/v1/auth/login"));
+  await page.locator("button[type=submit]").click();
+  const response = await responsePromise;
+  if (!response.ok()) {
+    throw new Error(`Login failed for ${persona.username}: ${response.status()}`);
   }
-  const setCookie = loginRes.headers.get("set-cookie");
-  if (!setCookie) {
-    throw new Error("No session cookie returned from login");
-  }
-  const [nameValue] = setCookie.split(";");
-  const [name, value] = nameValue.split("=");
-  return { name, value };
 }
 
 async function auditPage(page, url, label, results) {
@@ -51,13 +56,9 @@ async function auditPage(page, url, label, results) {
 }
 
 async function auditAsPersona(browser, baseUrl, persona, pages, results) {
-  const cookie = await loginAndGetCookie(baseUrl, persona);
-  const domain = new URL(baseUrl).hostname;
   const context = await browser.newContext();
-  await context.addCookies([
-    { name: cookie.name, value: cookie.value, domain, path: "/", httpOnly: true, secure: true, sameSite: "Strict" }
-  ]);
   const page = await context.newPage();
+  await loginViaUi(page, baseUrl, persona);
   for (const { path, label } of pages) {
     await auditPage(page, `${baseUrl}${path}`, label, results);
   }
