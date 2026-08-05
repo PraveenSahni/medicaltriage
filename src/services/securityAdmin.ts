@@ -12,7 +12,7 @@ import {
   randomState
 } from "openid-client";
 import { authenticator } from "otplib";
-import { getAdminPassword, isMockMode } from "../config/runtime.js";
+import { getAdminPassword, isMfaMandatory, isMockMode } from "../config/runtime.js";
 import { decryptMfaSecret, encryptMfaSecret } from "./mfaCrypto.js";
 import type {
   AdminUser,
@@ -2696,7 +2696,7 @@ function toSession(
 export type AuthenticateLocalResult =
   | { ok: true; session: AuthenticatedSession }
   | { ok: true; mfaRequired: true; challengeId: string }
-  | { ok: false; message: string; locked?: boolean; forbidden?: boolean };
+  | { ok: false; message: string; locked?: boolean; forbidden?: boolean; mfaEnrollmentRequired?: boolean };
 
 export async function authenticateLocal(args: {
   username: string;
@@ -2804,6 +2804,37 @@ export async function authenticateLocal(args: {
       device: args.device
     });
     return { ok: true, mfaRequired: true, challengeId };
+  }
+
+  // Real org-wide enforcement path for Cloud CSQ AR.13 ("MFA required for
+  // all remote user access") - off by default (see isMfaMandatory()), so
+  // today's opt-in behavior is unchanged unless an operator deliberately
+  // turns this on for a given environment. When on, a user without MFA
+  // enrolled/enabled cannot complete a normal login - they get a distinct,
+  // actionable response (not a generic auth failure) directing them to
+  // enroll, rather than silently being let in.
+  if (isMfaMandatory()) {
+    await recordAuditEvent({
+      id: randomUUID(),
+      timestampIso: new Date().toISOString(),
+      userId: user.id,
+      activeRole: user.roles[0] ?? "unknown",
+      organization: user.organization,
+      facility: user.facility,
+      department: user.department,
+      action: "LOGIN_BLOCKED_MFA_ENROLLMENT_REQUIRED",
+      module: "Authentication",
+      resource: "local",
+      ipAddress: args.ipAddress,
+      device: args.device,
+      success: false,
+      risk: "high"
+    });
+    return {
+      ok: false,
+      message: "Multi-factor authentication is required for this account. Enroll in MFA to continue.",
+      mfaEnrollmentRequired: true
+    };
   }
 
   const session = toSession(user, "local", args.rememberMe, args.simulateRole);

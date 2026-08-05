@@ -884,3 +884,58 @@ to reflect this. Documentation/spreadsheet-only change - no source
 code touched, so no `tsc`/test run was required or performed for this
 step (verified: `git status` shows no source files changed beyond the
 workbook and `docs/`/`scripts/_batch7aNormalize.py`, `scripts/_genActionRegisterCsv.py`).
+
+## 2026-08-05 (continued): Batch 7B - internal quick-closure review
+
+Reviewed the 8 candidate rows from `mandatory-action-register.md`'s
+"engineering work remaining, non-long-lead" set (CO.04, IS.50, IS.66,
+DR.04, DR.05, AR.03, AR.13, AR.21) for a genuine, small, internally-
+closable engineering fix - explicitly not selecting rows merely
+because they're easy to re-document.
+
+**7 of 8 reviewed and found to have no legitimate small-fix path this
+pass** - each requires either a real organizational program (CO.04:
+recurring internal-audit cadence; DR.05: recurring BCP test program),
+external/commercial tooling (IS.50: a subscribed SIEM; AR.21: file-
+integrity/IDS product), a larger already-scoped infrastructure project
+(DR.04: DR-region compute deployment, explicitly deferred elsewhere as
+long-lead), a legacy protocol integration (AR.03: SAML/SPML/WS-Fed), or
+genuinely has no further internal action available without additional
+organizational context (IS.66: admin-workstation hardening, where
+IST's own workstation-fleet policy is outside this codebase's
+visibility). Forcing any of these to Yes (or even a stronger Partial)
+without real new evidence would be exactly the kind of overclaim this
+program exists to avoid - remarks left unchanged.
+
+**1 of 8 (AR.13) had a genuine, small, real, testable gap**: MFA was
+enforceable per-user but had no way to actually be *required* for all
+remote access - the literal AR.13 ask. Built:
+- `isMfaMandatory()` in `src/config/runtime.ts` (env flag
+  `MFA_MANDATORY`, default off - same `envFlag()` pattern as
+  `SESSION_DB_PERSISTENCE`/`QUEUE_DB_PERSISTENCE`).
+- Wired into `authenticateLocal()` (`src/services/securityAdmin.ts`):
+  when on, any login attempt by an account without MFA enabled is
+  blocked with a distinct `mfaEnrollmentRequired: true` response
+  (not a generic auth failure), with a real `AuditEvent`
+  (`LOGIN_BLOCKED_MFA_ENROLLMENT_REQUIRED`). When off (default),
+  behavior is unchanged from before this batch.
+- `src/routes/auth.ts`'s `POST /login` surfaces `mfaEnrollmentRequired`
+  in the 401 response body.
+- 3 new tests in `tests/mfaVerification.test.ts`: blocks a non-enrolled
+  account when the flag is on; still allows the normal MFA-challenge
+  flow for an already-enrolled account when the flag is on; confirms
+  default (flag unset) behavior is unchanged.
+
+**AR.13 remains Partial, not moved to Yes** - the capability now
+genuinely exists and is tested, but turning `MFA_MANDATORY=true` on
+for a live environment is an operational rollout decision (it would
+immediately lock out any currently-unenrolled user), not something
+this engineering pass can or should flip on unilaterally. Workbook
+remark updated to describe the real, tested mechanism and state
+exactly what would move this to Yes (an operator decision to enable
+it for a given environment).
+
+Verified: `npx tsc -p tsconfig.json --noEmit` clean, **710/710 backend
+tests passing** (707 baseline + 3 new). No functional/authorization/
+audit/tenant-isolation regression - the new gate is off by default and
+only activates when an operator explicitly sets `MFA_MANDATORY=true`.

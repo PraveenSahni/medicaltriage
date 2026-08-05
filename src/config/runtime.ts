@@ -120,6 +120,15 @@ export function shouldPersistSessionsInDatabase(): boolean {
   return envFlag("SESSION_DB_PERSISTENCE", false);
 }
 
+// Closes Cloud CSQ AR.13's literal ask ("MFA required for all remote user
+// access") for real when an operator actually wants org-wide enforcement,
+// without changing today's default (opt-in per user) behavior. Off by
+// default - flipping this on is a deployment/rollout decision, not
+// something this codebase should assume.
+export function isMfaMandatory(): boolean {
+  return envFlag("MFA_MANDATORY", false);
+}
+
 export function getAdminPassword(): string {
   return process.env.ADMIN_PASSWORD ?? (isMockMode() ? MOCK_LOCAL_ADMIN_PASSWORD : "");
 }

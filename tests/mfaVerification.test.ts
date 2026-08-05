@@ -56,6 +56,77 @@ describe("TOTP MFA", () => {
     expect(verifyResult.session.authMethod).toBe("local");
   });
 
+  describe("MFA_MANDATORY org-wide enforcement (Cloud CSQ AR.13)", () => {
+    const ORIGINAL_ENV = process.env.MFA_MANDATORY;
+
+    afterEach(() => {
+      if (ORIGINAL_ENV === undefined) {
+        delete process.env.MFA_MANDATORY;
+      } else {
+        process.env.MFA_MANDATORY = ORIGINAL_ENV;
+      }
+    });
+
+    it("blocks login with a distinct enrollment-required response when MFA_MANDATORY=true and the user has no MFA enrolled", async () => {
+      process.env.MFA_MANDATORY = "true";
+
+      const loginResult = await authenticateLocal({
+        username: NURSE_EMAIL,
+        password: NURSE_PASSWORD,
+        rememberMe: false,
+        simulateRole: "remote_triage_nurse",
+        ipAddress: "127.0.0.1",
+        device: "jest"
+      });
+
+      expect(loginResult.ok).toBe(false);
+      if (loginResult.ok) {
+        throw new Error("Expected login to be blocked pending MFA enrollment");
+      }
+      expect(loginResult.mfaEnrollmentRequired).toBe(true);
+    });
+
+    it("still allows the normal MFA challenge flow when MFA_MANDATORY=true and the user has MFA enrolled", async () => {
+      process.env.MFA_MANDATORY = "true";
+      const { secret } = enrollMfa(NURSE_ID);
+      confirmMfaEnrollment(NURSE_ID, authenticator.generate(secret));
+
+      const loginResult = await authenticateLocal({
+        username: NURSE_EMAIL,
+        password: NURSE_PASSWORD,
+        rememberMe: false,
+        simulateRole: "remote_triage_nurse",
+        ipAddress: "127.0.0.1",
+        device: "jest"
+      });
+
+      expect(loginResult.ok).toBe(true);
+      if (!loginResult.ok || !("mfaRequired" in loginResult)) {
+        throw new Error("Expected the normal MFA challenge to still apply");
+      }
+      const verifyResult = await verifyMfaChallenge(loginResult.challengeId, authenticator.generate(secret));
+      expect(verifyResult.ok).toBe(true);
+    });
+
+    it("does not block login when MFA_MANDATORY is unset (default, opt-in behavior unchanged)", async () => {
+      delete process.env.MFA_MANDATORY;
+
+      const loginResult = await authenticateLocal({
+        username: NURSE_EMAIL,
+        password: NURSE_PASSWORD,
+        rememberMe: false,
+        simulateRole: "remote_triage_nurse",
+        ipAddress: "127.0.0.1",
+        device: "jest"
+      });
+
+      expect(loginResult.ok).toBe(true);
+      if (!loginResult.ok || "mfaRequired" in loginResult) {
+        throw new Error("Expected an immediate session when MFA_MANDATORY is unset and no MFA is enrolled");
+      }
+    });
+  });
+
   it("does not require MFA for a user who never enrolled", async () => {
     const loginResult = await authenticateLocal({
       username: NURSE_EMAIL,

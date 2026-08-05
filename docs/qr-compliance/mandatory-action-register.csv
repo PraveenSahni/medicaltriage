@@ -72,7 +72,7 @@ Cloud CSQ,IS.66,Existing-control evidence-missing row,Partial,Evidence documenta
 Cloud CSQ,LG.01,NDA/confidentiality execution,Partial,No signed NDA exists,See legal-privacy-action-pack.md,Legal Counsel,-,6,See pack
 Cloud CSQ,DR.04,Existing-control evidence-missing row,Partial,Evidence documentation gap,Document existing control,DevOps Lead,-,1,Low effort
 Cloud CSQ,AR.03,Existing-control evidence-missing row,Partial,Evidence documentation gap,Document existing control,CISO,-,1,Low effort
-Cloud CSQ,AR.13,Existing-control evidence-missing row,Partial,Evidence documentation gap,Document existing control,CISO,-,1,Low effort
+Cloud CSQ,AR.13,Existing-control evidence-missing row,Partial (strengthened),"Real MFA_MANDATORY enforcement mechanism now built and tested (Batch 7B); org-wide rollout for a live environment is an operator decision, not an engineering gap",Operator decision to enable MFA_MANDATORY=true for a given environment,CISO,-,1,Low effort
 Cloud CSQ,AR.21,Existing-control evidence-missing row,Partial,Evidence documentation gap,Document existing control,CISO,-,1,Low effort
 Cloud CSQ,CO.04,Internal audit program,Partial,No formal internal audit program documented,Formalize and document program,CISO,-,1,Low effort
 Cloud CSQ,IS.07,Terraform/production drift detection,Partial,No CI credential to write drift-check job,See production-execution-pack.md,DevOps Lead,-,4,See pack

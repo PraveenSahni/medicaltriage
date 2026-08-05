@@ -194,3 +194,9 @@ Recomputed mandatory compliance: 77/149 = 51.7% (see
 response-normalization and N/A-reclassification effects reported
 separately - zero genuine new engineering compliance closures this
 batch).
+
+## Batch 7B - AR.13 real MFA-mandatory enforcement mechanism (2026-08-05)
+
+| Requirement ID | Control | Code reference | Config reference | Test reference | Validation date | Validator | Remaining limitation |
+|---|---|---|---|---|---|---|---|
+| AR.13 | Org-wide MFA enforcement capability | `src/services/securityAdmin.ts` (`authenticateLocal()`, `isMfaMandatory()` gate) | `src/config/runtime.ts` (`MFA_MANDATORY` env flag, default off) | `tests/mfaVerification.test.ts` (3 new tests: blocks non-enrolled, allows enrolled, default unchanged) | 2026-08-05 | This engagement | Flag defaults off - enabling it for a live environment is an operator rollout decision (would lock out unenrolled users), not yet done for any real environment |
