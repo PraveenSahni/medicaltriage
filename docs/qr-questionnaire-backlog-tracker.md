@@ -1140,3 +1140,54 @@ tests passing** (716 + 5 new), `npx pnpm audit --audit-level high`
 clean. Cloud SQL Auth Proxy was active and required throughout for
 direct database verification (pre/post row counts, cross-process
 read-after-write proof, test-data cleanup).
+
+## 2026-08-05 (continued): IS.61 shared anomaly-detection remediation - Partial (corrected down from Yes)
+
+Dedicated batch closing the multi-instance gap in the reveal-anomaly
+counter found during the persistence-gating sweep. Full detail:
+`docs/security/reveal-anomaly-detection.md`.
+
+**Re-read the literal requirement**: IS.61 asks for BOTH monitoring
+AND customer notification. The row was previously `Yes` on monitoring
+alone - an overclaim independent of the multi-instance bug.
+
+**Built**: a shared, durable, PostgreSQL-backed rolling-window counter
+(new `RevealAnomalyEvent` table, migration
+`20260805161509_add_reveal_anomaly_events`, applied to the real soc2
+database) replacing the process-local in-memory `Map`. Atomic
+transactional create+cleanup+count per attempt
+(`recordAndCountRevealAnomalyEvents()`, `src/services/persistence.ts`).
+New config: `REVEAL_ANOMALY_DB_PERSISTENCE`,
+`REVEAL_ANOMALY_WINDOW_SECONDS`, `REVEAL_ANOMALY_THRESHOLD` (validated,
+explicit, not QR-confirmed defaults carried over unchanged from the
+prior implementation: 5 min / 10 requests).
+
+**Failure policy** (documented, not silent fail-open): on shared-store
+failure, falls back to the local counter and emits a distinct high-
+risk `PRIVACY_REVEAL_ANOMALY_STORE_DEGRADED` audit event - reveal
+itself is never denied (a monitoring outage should not become a care-
+delivery outage).
+
+**Validated**: a real cross-process test against the actual soc2
+database proved the exact gap closed (6+6 attempts across two
+simulated instances correctly combine to 12 and exceed the threshold,
+where each instance alone would have seen only 6 and never detected
+it) - test data cleaned up after. 4 new unit tests
+(`tests/revealAnomalySharedCounter.test.ts`). Deployed to canary,
+health-checked, then **cut over to live traffic** (low risk).
+
+**IS.61 compliance decision**: **retained Partial, corrected DOWN from
+the prior Yes** - monitoring/detection is now real and multi-instance-
+safe, but "notify customers expeditiously" has no implementation of
+any kind and remains the row's real, larger gap. This is an honest
+downward correction, not a closure.
+
+Verified: `npx tsc -p tsconfig.json --noEmit` clean, **725/725 backend
+tests passing** (721 + 4 new), `npx pnpm audit --audit-level high`
+clean. Cloud SQL Auth Proxy was active and required throughout
+(migration application, cross-process validation, test-data cleanup).
+
+**Recomputed compliance**: mandatory 77/149 = 51.68% (was 78/149 =
+52.35% - the -1 numerator is IS.61's honest downward correction, not a
+new gap introduced this batch). Overall 132/391 = 33.76% (was
+133/391 = 34.02%, same -1 cause).

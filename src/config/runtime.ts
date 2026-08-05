@@ -161,6 +161,41 @@ export function shouldPersistRevealWorkflowInDatabase(): boolean {
   return envFlag("REVEAL_WORKFLOW_DB_PERSISTENCE", false);
 }
 
+// Closes IS.61's multi-instance requirement: the reveal-anomaly counter
+// was found to be process-local (in-memory only) during the persistence-
+// gating sweep - a requester could distribute reveal requests across
+// Cloud Run instances to stay under each instance's local threshold. This
+// flag switches the counter to a shared, durable, cross-instance store.
+// Default off, matching every other dedicated persistence flag added this
+// engagement - unit tests stay isolated unless they opt in.
+export function shouldPersistRevealAnomalyCountersInDatabase(): boolean {
+  return envFlag("REVEAL_ANOMALY_DB_PERSISTENCE", false);
+}
+
+// Threshold/window are explicit, validated configuration rather than
+// hardcoded - defaults match the prior in-memory implementation's values
+// (5 minutes / 10 requests), an engineering-judgment starting point, NOT
+// a Qatar-Airways-confirmed figure. Owner: CISO/Privacy Officer; review
+// alongside the annual risk-register cadence, or immediately if QR
+// specifies a different threshold - see docs/security/reveal-anomaly-detection.md.
+export function getRevealAnomalyWindowSeconds(): number {
+  const raw = process.env.REVEAL_ANOMALY_WINDOW_SECONDS;
+  const parsed = raw ? Number(raw) : NaN;
+  if (raw && (!Number.isFinite(parsed) || parsed <= 0)) {
+    throw new Error(`REVEAL_ANOMALY_WINDOW_SECONDS must be a positive number, got: ${raw}`);
+  }
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 300;
+}
+
+export function getRevealAnomalyThreshold(): number {
+  const raw = process.env.REVEAL_ANOMALY_THRESHOLD;
+  const parsed = raw ? Number(raw) : NaN;
+  if (raw && (!Number.isInteger(parsed) || parsed <= 0)) {
+    throw new Error(`REVEAL_ANOMALY_THRESHOLD must be a positive integer, got: ${raw}`);
+  }
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : 10;
+}
+
 // Closes Cloud CSQ AR.13's literal ask ("MFA required for all remote user
 // access") for real when an operator actually wants org-wide enforcement,
 // without changing today's default (opt-in per user) behavior. Off by

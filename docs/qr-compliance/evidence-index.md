@@ -266,3 +266,14 @@ See `docs/operations/persistence-gating-inventory.md` for the complete
 inventory of all `shouldUseDatabasePersistence()` call sites, including
 those confirmed already correct (queue, retention, legal hold) and
 those deferred (SSO config, CCP drafts, webhook records).
+
+## IS.61 - shared reveal-anomaly detection (2026-08-05) - value corrected DOWN
+
+| Control | Code reference | Config | Migration | Test reference | Validation date | Validator | Status |
+|---|---|---|---|---|---|---|---|
+| Multi-instance reveal-anomaly detection | `recordAndCountRevealAnomalyEvents()` (`src/services/persistence.ts`), `checkRevealAnomalyRate()` (`src/services/securityAdmin.ts`) | `REVEAL_ANOMALY_DB_PERSISTENCE`, `REVEAL_ANOMALY_WINDOW_SECONDS`, `REVEAL_ANOMALY_THRESHOLD` | `20260805161509_add_reveal_anomaly_events` | `tests/revealAnomalySharedCounter.test.ts` + real cross-process DB proof | 2026-08-05 | This engagement | **Partial (corrected from Yes)** - detection is real and multi-instance-safe; customer notification (the row's other literal requirement) is entirely unbuilt |
+
+See `docs/security/reveal-anomaly-detection.md` for the full
+architecture, failure policy, and the honest rationale for correcting
+this row's value downward rather than treating the multi-instance fix
+as sufficient for a full "Yes."

@@ -229,3 +229,15 @@ AR.13/AuditEvent Priority-0 fixes. Full inventory in
 `docs/operations/persistence-gating-inventory.md`. IS.61's remark
 corrected (value unchanged) to disclose the reveal-anomaly counter's
 process-local scope. No mandatory row moved to Yes.
+
+## Update 2026-08-05 (continued): IS.61 corrected down to Partial
+
+Built a shared, durable, multi-instance-safe reveal-anomaly counter
+(closes the persistence-gating sweep's finding). Re-reading IS.61's
+literal wording during this batch found it requires BOTH monitoring
+AND customer notification - the row's prior `Yes` value covered
+monitoring only, an overclaim. Corrected to Partial. See
+`docs/security/reveal-anomaly-detection.md` and
+`docs/qr-questionnaire-backlog-tracker.md`. Mandatory compliance now
+77/149 = 51.68% (was 78/149 = 52.35%); overall 132/391 = 33.76% (was
+133/391 = 34.02%).

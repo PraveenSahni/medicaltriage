@@ -12,7 +12,14 @@ import {
   randomState
 } from "openid-client";
 import { authenticator } from "otplib";
-import { getAdminPassword, isMfaMandatory, isMockMode } from "../config/runtime.js";
+import {
+  getAdminPassword,
+  getRevealAnomalyThreshold,
+  getRevealAnomalyWindowSeconds,
+  isMfaMandatory,
+  isMockMode,
+  shouldPersistRevealAnomalyCountersInDatabase
+} from "../config/runtime.js";
 import { decryptMfaSecret, encryptMfaSecret } from "./mfaCrypto.js";
 import type {
   AdminUser,
@@ -44,6 +51,7 @@ import {
   persistRevealApproval,
   persistRevealEvent,
   getPersistedRevealRequest,
+  recordAndCountRevealAnomalyEvents,
   persistRevealRequest,
   getPersistedRolePermissionOverrides,
   persistRolePermissionOverride,
@@ -3225,18 +3233,77 @@ async function recordRevealEvent(args: {
 // not a live-paging/external-notification system (see the honest scope
 // note in docs/qr-questionnaire-backlog-tracker.md) - it is a genuine
 // detection-and-record mechanism, not aspirational.
-const REVEAL_ANOMALY_WINDOW_MS = 5 * 60 * 1000;
-const REVEAL_ANOMALY_THRESHOLD = 10;
+// Local, process-scoped fallback only - used when the shared counter is
+// off (unit tests, or REVEAL_ANOMALY_DB_PERSISTENCE unset) or when the
+// shared store is temporarily unavailable. NOT the primary mechanism on
+// any environment where cross-instance detection matters - see
+// docs/security/reveal-anomaly-detection.md for the full failure policy.
 const revealRequestTimestampsByUser = new Map<string, number[]>();
 
-async function checkRevealAnomalyRate(requesterUserId: string): Promise<void> {
+function countLocalRevealAttempts(requesterUserId: string, windowMs: number): number {
   const now = Date.now();
   const timestamps = (revealRequestTimestampsByUser.get(requesterUserId) ?? []).filter(
-    (timestamp) => now - timestamp < REVEAL_ANOMALY_WINDOW_MS
+    (timestamp) => now - timestamp < windowMs
   );
   timestamps.push(now);
   revealRequestTimestampsByUser.set(requesterUserId, timestamps);
-  if (timestamps.length <= REVEAL_ANOMALY_THRESHOLD) {
+  return timestamps.length;
+}
+
+async function checkRevealAnomalyRate(requesterUserId: string): Promise<void> {
+  const windowSeconds = getRevealAnomalyWindowSeconds();
+  const threshold = getRevealAnomalyThreshold();
+  const requestingUser = users.find((candidate) => candidate.id === requesterUserId);
+
+  // Failure policy (documented, not silently fail-open): the shared,
+  // durable counter is the primary mechanism whenever it's enabled. If the
+  // database write/read fails, we do NOT deny the reveal request itself
+  // (reveal is a legitimate clinical/privacy workflow; failing it closed
+  // on a monitoring-store outage would turn a detection-system problem
+  // into a care-delivery outage, a worse outcome) - instead we fall back
+  // to this instance's local counter (a real, if narrower, safety net) AND
+  // emit a distinct high-risk audit event flagging the degraded mode, so
+  // the gap is visible and investigable rather than silent.
+  let count: number;
+  let degradedMode = false;
+  if (shouldPersistRevealAnomalyCountersInDatabase()) {
+    try {
+      const result = await recordAndCountRevealAnomalyEvents({
+        userId: requesterUserId,
+        organization: requestingUser?.organization,
+        windowSeconds
+      });
+      count = result.count;
+    } catch (error) {
+      console.error("Shared reveal-anomaly counter unavailable, falling back to local counter:", error);
+      count = countLocalRevealAttempts(requesterUserId, windowSeconds * 1000);
+      degradedMode = true;
+    }
+  } else {
+    count = countLocalRevealAttempts(requesterUserId, windowSeconds * 1000);
+  }
+
+  if (degradedMode) {
+    await recordAuditEvent({
+      id: randomUUID(),
+      timestampIso: new Date().toISOString(),
+      userId: requesterUserId,
+      activeRole: "unknown",
+      organization: requestingUser?.organization ?? "",
+      facility: requestingUser?.facility ?? "",
+      department: requestingUser?.department ?? "",
+      action: "PRIVACY_REVEAL_ANOMALY_STORE_DEGRADED",
+      module: "PrivacyMonitoring",
+      resource: `User:${requesterUserId}`,
+      purpose: "Shared reveal-anomaly counter unavailable - falling back to a process-local counter for this request; org-wide detection is temporarily narrower than normal.",
+      ipAddress: "",
+      device: "",
+      success: false,
+      risk: "high"
+    });
+  }
+
+  if (count <= threshold) {
     return;
   }
   await recordAuditEvent({
@@ -3244,13 +3311,13 @@ async function checkRevealAnomalyRate(requesterUserId: string): Promise<void> {
     timestampIso: new Date().toISOString(),
     userId: requesterUserId,
     activeRole: "unknown",
-    organization: "",
-    facility: "",
-    department: "",
+    organization: requestingUser?.organization ?? "",
+    facility: requestingUser?.facility ?? "",
+    department: requestingUser?.department ?? "",
     action: "PRIVACY_REVEAL_ANOMALY_DETECTED",
     module: "PrivacyMonitoring",
     resource: `User:${requesterUserId}`,
-    purpose: `${timestamps.length} reveal requests within ${REVEAL_ANOMALY_WINDOW_MS / 60_000} minutes - exceeds the ${REVEAL_ANOMALY_THRESHOLD}-request anomaly threshold`,
+    purpose: `${count} reveal requests within ${windowSeconds / 60} minutes - exceeds the ${threshold}-request anomaly threshold`,
     ipAddress: "",
     device: "",
     success: true,

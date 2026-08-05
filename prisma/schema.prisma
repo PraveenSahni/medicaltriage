@@ -1299,6 +1299,26 @@ model RevealEvent {
   @@map("reveal_events")
 }
 
+// Closes IS.61's multi-instance requirement: a shared, durable record of
+// each reveal-request attempt, used to compute a real org-/user-scoped
+// rolling-window count across every Cloud Run instance - the in-memory
+// per-instance counter it replaces could not detect a requester
+// distributing requests across instances to stay under each instance's
+// local threshold. One row per reveal-request attempt (not per-approval),
+// deliberately lightweight (no sensitive field values) and self-cleaning
+// (old rows outside any realistic window are deleted opportunistically on
+// each check, bounding table growth under normal load).
+model RevealAnomalyEvent {
+  id           String   @id @default(cuid())
+  userId       String   @map("user_id")
+  organization String?
+  timestamp    DateTime @default(now())
+
+  @@index([userId, timestamp])
+  @@index([organization, timestamp])
+  @@map("reveal_anomaly_events")
+}
+
 model CryptographicKeyReference {
   id             String    @id @default(cuid())
   keyAlias       String    @unique @map("key_alias")

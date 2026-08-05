@@ -7,6 +7,7 @@ import type {
 import {
   shouldPersistAuditEventsInDatabase,
   shouldPersistMfaCredentialsInDatabase,
+  shouldPersistRevealAnomalyCountersInDatabase,
   shouldPersistRevealWorkflowInDatabase,
   shouldPersistRolePermissionOverridesInDatabase,
   shouldPersistSessionsInDatabase,
@@ -347,6 +348,37 @@ export async function getPersistedRevealRequest(revealRequestId: string): Promis
     status: row.status,
     expiresAt: row.expiresAt ? row.expiresAt.toISOString() : undefined
   };
+}
+
+// Closes IS.61's multi-instance requirement (found during the persistence-
+// gating sweep: the in-memory reveal-anomaly counter was process-local).
+// Records one reveal-request attempt, opportunistically deletes this
+// user's rows older than the window (bounding table growth under normal
+// load - a real cleanup-on-write strategy, not a scheduled job), then
+// returns the real count of this user's attempts still within the window
+// - all in one transaction, so concurrent requests from different
+// instances see a consistent, atomic result rather than a race.
+export async function recordAndCountRevealAnomalyEvents(args: {
+  userId: string;
+  organization?: string;
+  windowSeconds: number;
+}): Promise<{ count: number; persisted: boolean }> {
+  if (!shouldPersistRevealAnomalyCountersInDatabase()) {
+    return { count: 0, persisted: false };
+  }
+  const windowStart = new Date(Date.now() - args.windowSeconds * 1000);
+  const [, , countResult] = await prisma.$transaction([
+    prisma.revealAnomalyEvent.create({
+      data: { userId: args.userId, organization: args.organization }
+    }),
+    prisma.revealAnomalyEvent.deleteMany({
+      where: { userId: args.userId, timestamp: { lt: windowStart } }
+    }),
+    prisma.revealAnomalyEvent.count({
+      where: { userId: args.userId, timestamp: { gte: windowStart } }
+    })
+  ]);
+  return { count: countResult, persisted: true };
 }
 
 // Reads the real, previously-orphaned AuthenticationProvider row for a real
