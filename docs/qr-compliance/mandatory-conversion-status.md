@@ -174,3 +174,20 @@ evidence missing" rows - this is the same pattern (Batches 2-3) that
 already closed 13 real Cloud CSQ rows this session with no engineering
 work, just honest documentation of already-built controls. Recommend
 this as the next batch once mandatory NFR/Cloud CSQ work resumes.
+
+## Update 2026-08-05 (continued): overall-denominator reconciliation + PA.05 fix
+
+A follow-up mechanical recount (`scripts/_reconcileOverallDenominator.py`,
+walking every physical workbook row, all 4 tabs) found that the
+previously-reported "132/400" overall figure was never actually
+computed from the live workbook - it was derived by applying a
+mandatory-scope delta to a rough, differently-sourced estimate, and is
+retracted. The mechanical recount also found **PA.05** ("physical
+ingress/egress monitoring") had already been `"Yes (inherited)"` in
+the workbook the whole time, but was mis-transcribed as `"Partial"` in
+the action register - causing it to be missed by the original Batch 7A
+pass. PA.05 is now normalized to exact `"Yes"` alongside the other 4.
+
+**Corrected, mechanically-verified figures**: mandatory 78/149 =
+52.35%; overall 133/391 = 34.02%. See `management-summary.md` for the
+full per-tab breakdown and row-level delta table.

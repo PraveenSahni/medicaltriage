@@ -266,7 +266,6 @@ is omitted._
 | CO.08 | SOC 2 Type II attestation | No | Executive Sponsor | 9 |
 | CO.09 | ISO 27001 certification | No | Executive Sponsor | 9 |
 | PA.01 | Physical security attestation | Partial (GCP-inherited) | CISO | 9 |
-| PA.05 | Physical ingress/egress monitoring | Partial (GCP-inherited) | CISO | 9 |
 
 **Normalized to "Yes" this batch (4) - Batch 7A response normalization, real evidence, not new engineering closure**:
 
@@ -276,8 +275,9 @@ is omitted._
 | DR.06 | Physical-disaster protection | "Yes (inherited)" | **Yes** | Same verification | 9 |
 | DR.07 | Power/network redundancy | "Yes (inherited)" | **Yes** | Same verification | 9 |
 | AR.19 | NTP/time synchronization | "Yes (inherited)" | **Yes** | Same verification, additionally corroborated by this engagement's own consistent audit-trail timestamps | 9 |
+| PA.05 | Physical ingress/egress monitoring | "Yes (inherited)" | **Yes** | Same verification. **Found and corrected in a follow-up reconciliation pass** - this row's workbook value was already "Yes (inherited)" but had been mis-transcribed as "Partial" in this register, causing it to be missed by the original Batch 7A pass; a mechanical overall-denominator reconciliation caught the omission | 9 |
 
-_These 4 no longer appear in the "unresolved" tables above/below - they moved to Yes and are excluded from the 83-row unresolved count going forward (see `mandatory-conversion-status.md`'s "Batch 7A" update)._
+_These 5 no longer appear in the "unresolved" tables above/below - they moved to Yes and are excluded from the 83-row unresolved count going forward (see `mandatory-conversion-status.md`'s "Batch 7A" update)._
 
 **Reclassified to N/A this batch (3, Cloud CSQ) - Batch 7A, genuine verification per the strict N/A criteria, not automatic conversion**:
 

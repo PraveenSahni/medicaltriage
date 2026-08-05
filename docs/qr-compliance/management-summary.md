@@ -28,27 +28,116 @@ Genuine new engineering compliance closures this batch: **zero** - the
 percentage movement below is entirely normalization/reclassification,
 reported separately per instruction.
 
-## Current compliance (recomputed 2026-08-05, Batch 7A)
+## Update 2026-08-05 (continued): overall-denominator reconciliation
 
-- **Mandatory compliance: 77/149 = 51.7%** (was 74/153 = 48.4%
+A follow-up review correctly challenged the "132/400" figure below:
+an N/A-excluded denominator should decrease, not increase, when more
+rows are reclassified to N/A. **Root cause, found by a full mechanical
+recount of all 4 tabs (script: `scripts/_reconcileOverallDenominator.py`,
+walking every physical row, classifying every response string,
+confirming zero duplicate `(tab, ID)` keys)**: the "132/400" figure was
+**never actually recomputed from the live workbook** - it was produced
+by applying the mandatory-scope delta (+4 Yes, +4 N/A) to a rough,
+differently-sourced "458 total / 128 Yes / 54 N/A" estimate from an
+earlier research pass, which was not a rigorous, mechanically-verified
+count. That arithmetic was wrong on its face and is retracted.
+
+**A second, real error was also found and fixed in this pass**: Cloud
+CSQ row **PA.05** ("physical ingress/egress monitoring") had already
+been `"Yes (inherited)"` in the live workbook the whole time, but had
+been mis-transcribed as `"Partial"` in `mandatory-action-register.md`
+- causing it to be missed entirely by the original Batch 7A
+normalization. The mechanical recount caught this because it reads
+the workbook directly rather than trusting the register's prior
+transcription. PA.05 has now been normalized to exact `"Yes"`
+alongside the other 4 (see `mandatory-action-register.md`).
+
+**No stale-denominator issue was found on the "396" side** - 396 was
+simply the previously-reported figure from before this reconciliation
+program began, never mechanically re-derived until now.
+
+## Current compliance (mechanically recomputed 2026-08-05, post-PA.05 fix)
+
+- **Mandatory compliance: 78/149 = 52.35%** (was 74/153 = 48.4%
   previously reported; a direct live-workbook recount immediately
-  before Batch 7A's edits found 73/153 = 47.7% - 1 row different from
-  the previously-reported figure, a small pre-existing drift in
-  `master-compliance-register.csv`'s staleness, not caused by this
-  batch and not hidden here)
-- **Overall compliance: 132/400 = 33.0%** (was 132/396 = 33.3%
-  previously reported - same small pre-existing denominator drift)
+  before any Batch 7A edits found 73/153 = 47.7% - already 1 row
+  different from the previously-reported figure, a small pre-existing
+  `master-compliance-register.csv` staleness, not caused by this batch)
+- **Overall compliance: 133/391 = 34.02%** (was 132/396 = 33.3%
+  previously reported, and the intermediate "132/400" figure reported
+  earlier today is **retracted** as arithmetically unfounded - see
+  above)
 
-**These are not "new engineering compliance."** Of the 8-row workbook
-change this batch: 4 rows moved from an inconsistent `"Yes (inherited)"`
-string to exact `"Yes"` (real, pre-existing evidence, now correctly
-credited - +4 to the numerator, denominator unchanged), and 4 rows
-moved from `"No"` to genuinely verified `"N/A"` (correctly excluded
-from the denominator - -4 rows from the denominator, explicitly **not**
-described as a compliance improvement, per instruction). See
-`mandatory-action-register.md`'s "Batch 7A scoring impact" table for
-the response-normalization-only, N/A-reclassification-only, and
-combined effects shown separately.
+**These are not "new engineering compliance."** Of the 9-row workbook
+change across both passes today: 5 rows moved from an inconsistent
+`"Yes (inherited)"` string to exact `"Yes"` (real, pre-existing
+evidence, now correctly credited - PA.03, DR.06, DR.07, AR.19, PA.05),
+and 4 rows moved from `"No"` to genuinely verified `"N/A"` (NFR-064,
+IS.41, IS.73, SD.06 - correctly excluded from the denominator,
+explicitly **not** described as a compliance improvement). See
+`mandatory-action-register.md`'s scoring-impact section for the
+response-normalization-only, N/A-reclassification-only, and combined
+effects shown separately, and the row-level delta table below.
+
+## Row-level delta table (every workbook response value changed today)
+
+| Tab | ID | Row | Prior response | New response | Affected numerator? | Affected denominator? | Net scoring impact |
+|---|---|---|---|---|---|---|---|
+| Cloud CSQ | PA.03 | 44 | "Yes (inherited)" | "Yes" | Yes (+1) | No | +1 to mandatory Yes |
+| Cloud CSQ | DR.06 | 166 | "Yes (inherited)" | "Yes" | Yes (+1) | No | +1 to mandatory Yes |
+| Cloud CSQ | DR.07 | 167 | "Yes (inherited)" | "Yes" | Yes (+1) | No | +1 to mandatory Yes |
+| Cloud CSQ | AR.19 | 188 | "Yes (inherited)" | "Yes" | Yes (+1) | No | +1 to mandatory Yes |
+| Cloud CSQ | PA.05 | 46 | "Yes (inherited)" | "Yes" | Yes (+1) | No | +1 to mandatory Yes (found in the follow-up reconciliation pass, not the original Batch 7A) |
+| Non Functional Req | NFR-064 | 66 | "No" | "N/A" | No | Yes (-1 from denom) | Denominator -1 |
+| Cloud CSQ | IS.41 | 93 | "No" | "N/A" | No | Yes (-1 from denom) | Denominator -1 |
+| Cloud CSQ | IS.73 | 125 | "No" | "N/A" | No | Yes (-1 from denom) | Denominator -1 |
+| Cloud CSQ | SD.06 | 160 | "No" | "N/A" | No | Yes (-1 from denom) | Denominator -1 |
+
+**Confirmed no other cell was changed unintentionally**: both batch
+scripts (`scripts/_batch7aNormalize.py`, and the PA.05 single-row fix)
+asserted the exact target row/ID before writing, touched only the
+Compliance and Remarks columns, and a post-edit mechanical recount
+(`scripts/_reconcileOverallDenominator.py`) confirms workbook sheet
+names, header rows, and Requirement/Mandatory-flag values are
+unchanged - only the two intended columns moved, for exactly the 9
+rows listed above, nothing else.
+
+## Full mechanical breakdown by tab (post-fix, 2026-08-05)
+
+| Tab | Total rows | Mandatory | Non-mandatory | Mand. Yes | Mand. N/A | Mand. denom | Mand. % | Non-mand. Yes | Non-mand. N/A | Non-mand. denom | Non-mand. % |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Non Functional Req | 195 (2 header) | 24 | 171 | 7 | 2 | 22 | 31.8% | 51 | 4 | 167 | 30.5% |
+| UX | 17 (2 header) | 3 | 14 | 0 | 0 | 3 | 0.0% | 1 | 0 | 14 | 7.1% |
+| " AI" | 63 (2 header) | 17 | 46 | 4 | 7 | 10 | 40.0% | 1 | 25 | 21 | 4.8% |
+| Cloud CSQ | 183 (10 header, 1 no-ID row) | 135 | 48 | 67 | 21 | 114 | 58.8% | 2 | 8 | 40 | 5.0% |
+| **Combined** | **458** | **179** | **279** | **78** | **30** | **149** | **52.35%** | **55** | **37** | **242** | **22.73%** |
+
+**Overall (mandatory + non-mandatory combined)**: 458 total scored-eligible
+rows, 67 N/A, denominator 391, Yes 133, **34.02%**.
+
+**Data-quality findings disclosed, not fixed this pass** (out of scope
+for this arithmetic reconciliation, since fixing them means verifying
+non-mandatory rows individually, the same rigor Batch 7A applied to
+mandatory rows - flagged for a future pass, not touched here):
+- `" AI"` tab has 6 non-mandatory rows with non-standard response
+  strings not matching a strict `"Yes"`/`"Partial"`/`"No"`/`"N/A"`
+  pattern: `"No - blocked"` (NFR-010), `"Unverified"` (NFR-017),
+  `"Yes (real, not LLM-based)"` (NFR-034, NFR-058), `"Partial,
+  reframed"` (NFR-048), `"Yes (real, reframed)"` (NFR-060). Two of
+  these (`"Yes (real, not LLM-based)"`, `"Yes (real, reframed)"`) are
+  likely genuine Yes-equivalent answers not currently credited under
+  this engagement's strict-match convention - the same class of issue
+  PA.03/DR.06/DR.07/AR.19/PA.05 turned out to be, but on non-mandatory
+  rows, out of this reconciliation's mandatory-row scope.
+- `"Non Functional Req"` tab has 1 non-mandatory row with
+  `"Not measured"` (NFR-148) - genuinely neither Yes/Partial/No/N/A,
+  not resolved this pass.
+- These 7 rows do not affect the **mandatory** percentage (78/149 =
+  52.35%, fully verified above) - they only affect the **overall**
+  percentage's precision, and are excluded from this pass's Yes-credit
+  under the existing strict-match convention (counted as "not Yes" in
+  the denominator, i.e. treated conservatively, not excluded from
+  scoring).
 
 ## Mandatory Yes by tab (live workbook, post-Batch-7A edits, 2026-08-05)
 
@@ -91,7 +180,7 @@ added to category 5._
 | 6. Legal or privacy approval required | 6 | LG.01, IG.10, IS.52, IS.55, IS.62, DR.09 |
 | 7. Clinical approval required | 0 (IG.09 counted once, under category 5, not duplicated here) | - |
 | 8. Qatar Airways clarification required | 7 | NFR-016, NFR-022, NFR-038, NFR-156, NFR-185, NFR-189, NFR-016(UX) |
-| 9. External audit or certification required | 13 | CO.01, CO.02, CO.03, CO.05, CO.07, CO.08, CO.09, PA.01, PA.05, NFR-041(AI), + PA.03/DR.06/DR.07/AR.19 (**normalized to Yes this batch - removed from this count, listed here only for audit-trail continuity**) |
+| 9. External audit or certification required | 10 | CO.01, CO.02, CO.03, CO.05, CO.07, CO.08, CO.09, PA.01, NFR-041(AI) - **PA.03/DR.06/DR.07/AR.19/PA.05 all normalized to Yes across Batch 7A and its follow-up reconciliation, removed from this unresolved count** |
 | 10. Third-party evidence required | 3 | NFR-058, IS.39, IS.40 |
 | 11. Cannot currently comply | 12 | NFR-079, IG.01, IG.06, IG.15, PA.04, IS.13, IS.33, IS.34, IS.45, IS.53, LG.02, IS.11 (retained No, not N/A), AR.17 (retained No, not N/A) - 13 listed, IS.11/AR.17 counted here rather than in category 12 since they were confirmed real gaps, not N/A |
 | 12. Valid N/A (or already-satisfied) | 9 | NFR-064, IS.41, IS.73, SD.06 (reclassified to N/A this batch), NFR-193, RM.02 (already N/A), IS.59 (already satisfied, Expected=No=Response), NFR-040(AI), NFR-044(AI) (reviewed, confirmed already-honest hybrid answers, not reclassified) |
@@ -155,7 +244,7 @@ decision.
 | # | Action | Rows unlocked | Effort | Accountable role |
 |---|---|---|---|---|
 | 1 | ~~Reclassify valid-N/A rows~~ **DONE (Batch 7A, 2026-08-05)** - 4 of the original 11 candidates were genuinely verified and reclassified (NFR-064, IS.41, IS.73, SD.06); 2 were reviewed and correctly retained as real gaps, not N/A (IS.11, AR.17); 2 AI-tab rows reviewed against the "shadow AI" trap and confirmed already honest (no change); 2 were already-correct N/A (NFR-193, RM.02); 1 already matched its Expected=No value (IS.59) | 4 reclassified | Done | CISO |
-| 2 | ~~Normalize 4 "Yes (inherited)" cells~~ **DONE (Batch 7A, 2026-08-05)** - PA.03, DR.06, DR.07, AR.19 all independently re-verified and normalized to exact "Yes" | 4 | Done | CISO |
+| 2 | ~~Normalize "Yes (inherited)" cells~~ **DONE (Batch 7A + follow-up reconciliation, 2026-08-05)** - PA.03, DR.06, DR.07, AR.19, and PA.05 (found in a later mechanical recount, mis-transcribed as "Partial" in the register despite the workbook already reading "Yes (inherited)") all independently re-verified and normalized to exact "Yes" | 5 | Done | CISO |
 | 3 | Send the 7-item Qatar Airways clarification package | 7-8 (on QR response) | Low to send; timeline depends on QR | CTO / Qatar Airways Security/Technology Contact |
 | 4 | Configure NFR-189's real recipient + live secrets, run safe test delivery | 1 (high-visibility row) | Low (<1 day once recipient known) | DevOps Lead |
 | 5 | Provision IS.07's CI credential and validate the drift-detection workflow | 1 | Low-medium (~0.5-1 day) | DevOps Lead / Cloud Administrator |

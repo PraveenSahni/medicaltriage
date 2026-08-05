@@ -34,7 +34,6 @@ Cloud CSQ,CO.07,External audit findings sharing,Partial,Internal findings only,E
 Cloud CSQ,CO.08,SOC 2 Type II attestation,No,No attestation exists,Engage accredited SOC2 auditor,Executive Sponsor,-,9,Business-scoped engagement
 Cloud CSQ,CO.09,ISO 27001 certification,No,No certification exists,Engage accredited ISO27001 body,Executive Sponsor,-,9,Business-scoped engagement
 Cloud CSQ,PA.01,Physical security attestation,Partial,"Inherited from GCP, not owned",Cite GCP's own attestation formally,CISO,-,9,Low effort
-Cloud CSQ,PA.05,Physical ingress/egress monitoring,Partial,"Inherited from GCP, not owned",Cite GCP's own attestation formally,CISO,-,9,Low effort
 Cloud CSQ,IG.01,Data-labelling standard,No,No formal labelling standard,Adopt/implement labelling standard,Clinical Governance Lead,-,11,"Real program, long-lead"
 Cloud CSQ,IG.06,Customer-configurable geo-routing,No,No such architectural capability,Scope new capability,Cloud Administrator,-,11,Long-lead
 Cloud CSQ,IG.15,Dedicated DLP tool,No,Same as NFR-079,Procure DLP solution,CISO,-,11,Procurement-dependent
