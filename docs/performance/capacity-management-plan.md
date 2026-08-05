@@ -19,15 +19,19 @@ concurrent-user count - not yet provided)._
   2026-08-05 (`src/db.ts`, `DATABASE_CONNECTION_LIMIT` env var,
   previously an implicit default of ~3).
 
-## Measured capacity ceiling
+## Measured capacity ceiling (updated 2026-08-05, later)
 
 At 10 concurrent users (the only concurrency level actually tested):
-- Public/no-DB endpoints: comfortably handled (p95 629ms post-fix).
-- Protocol-list endpoint: meets the 3s p95 target post-fix.
-- Queue-list endpoint: does **not** meet the 3s p95 target even
-  post-fix - the real ceiling for this specific endpoint has not yet
-  been found (see `nfr-138-152-156-validation.md`'s remaining-limitation
-  note).
+- Public/no-DB endpoints: comfortably handled (p95 ~629ms-416ms across
+  runs).
+- Protocol-list endpoint: meets the 3s p95 target (fixed via the
+  connection-pool setting).
+- Queue-list endpoint: **now also meets the 3s p95 target** (446-569ms),
+  after a real root-cause fix (4 missing database migrations applied to
+  the live soc2 database - see `nfr-138-152-156-root-cause.md`'s
+  "Follow-up investigation" section). The connection-pool setting was a
+  real, separate, additional improvement; it was not, on its own,
+  sufficient to explain the queue endpoint's original regression.
 
 ## What this plan does not cover
 

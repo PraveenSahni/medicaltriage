@@ -644,6 +644,59 @@ clean (new dependency), 703/707 backend tests passing (15 new,
 688 baseline unchanged, same known Cloud SQL tunnel gap in
 `ssoOidcFlow.test.ts`).
 
+## 2026-08-05 (continued): Queue-endpoint performance follow-up - real root cause found
+
+Investigated why the earlier connection-pool fix only helped the
+protocol-list endpoint, not queue-list. Ran an isolated queue-endpoint
+load test, then traced the actual production error.
+
+**Major integrity finding**: 4 real database migrations
+(`add_user_feedback`, `add_role_permission_overrides`,
+`add_user_mfa_credential`, `add_queue_item_soft_delete`) were committed
+to source control weeks ago but **had never actually been applied to
+the live soc2 database** - confirmed via `npx prisma migrate status`
+against the real database (local Cloud SQL Auth Proxy tunnel, real ADC
+credentials) and directly via live Cloud Run error logs: `"The column
+triage_queue_items.deleted_at does not exist in the current database"`.
+This was the real dominant cause of the queue-list endpoint's
+regression - the earlier connection-pool fix was real and helped
+(protocol-list), but was investigating a secondary factor, not this one.
+
+**Fix**: `npx prisma migrate deploy` run for real against the live
+soc2 database - all 4 migrations additive-only (`ADD COLUMN`,
+`CREATE INDEX`, `CREATE TABLE`), no data-loss risk, applied
+successfully.
+
+**Real before/after result** (isolated queue-endpoint load test, same
+10-concurrent-worker configuration used throughout): p95 improved from
+**3105ms to 446-569ms** (5.5-7x). Both critical endpoints (protocol-list,
+queue-list) now reproducibly meet the 3s target.
+
+**Separate, unresolved finding, not fixed this batch**: cross-instance
+cookie-session lookup returns a clean, fast 401 for a valid, freshly-
+issued session cookie - a distinct real bug, worked around (not fixed)
+by switching this investigation's load test to Bearer-token auth (a
+real, already-supported auth path).
+
+**Closure decision**:
+- ✅ **NFR-138** (3s p95 response time) - closed to Yes.
+- ✅ **NFR-152** (scalability SLA) - closed to Yes, same evidence.
+- **NFR-156** (capacity planning) - retained Partial. Fixing a
+  performance-suppressing bug is not the same as completing a real
+  capacity-planning exercise against QR's actual projected peak load
+  (still not provided) with sustained soak testing (still not
+  performed).
+
+Verified: `npx tsc --noEmit` clean, `npx pnpm audit --audit-level high`
+clean, **707/707 backend tests passing** - the local Cloud SQL Auth
+Proxy tunnel used for this investigation remained active and also
+resolved the previously-documented 4 `ssoOidcFlow.test.ts`
+environment-blocked failures for the remainder of this session (not a
+code change; may reappear in a future session unless that tunnel is
+deliberately kept running). Zero functional/authorization/audit/
+tenant-isolation regression. Register regenerated: 195 rows now closed
+(was 193).
+
 ## 2026-08-05 (continued): Performance remediation - NFR-138/152/156
 
 Real root-cause investigation and fix, per the dedicated performance

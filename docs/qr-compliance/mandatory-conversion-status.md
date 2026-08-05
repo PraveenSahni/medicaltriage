@@ -58,7 +58,8 @@ document, it would land here, still Partial, pending real sign-off.
 
 | ID | Tab | Procedure | Status |
 |---|---|---|---|
-| NFR-138 / NFR-152 / NFR-156 | NFR | Load-test baseline already run 2026-08-04 (`docs/load-test-baseline-2026-08-04.md`) - a real procedure exists and was executed once, finding a real p95/p99 regression | Awaiting the actual performance-engineering fix + re-test, not just re-execution of the same test - this is real, scoped engineering work (query/payload/index investigation), not a quick win. Recommend its own dedicated session. |
+| NFR-138 / NFR-152 | NFR | **Resolved 2026-08-05** - root cause found (4 missing DB migrations on live soc2, not primarily connection-pool sizing) and fixed for real (`prisma migrate deploy`); queue-list p95 3105ms -> 446-569ms | **Closed to Yes.** Both moved out of this table - see `docs/performance/nfr-138-152-156-validation.md`. |
+| NFR-156 | NFR | Load-test baseline already run 2026-08-04/05 - a real regression was found and fixed, but this row's literal ask (capacity sizing against QR's actual peak load, sustained soak testing) remains separate and unaddressed | Retained Partial - awaiting QR's peak-load projection (same open item as NFR-038/NFR-185) and a real soak-test exercise, not a quick win. |
 
 IS.39/IS.40/IS.41 (network/application/OS-layer vulnerability scanning)
 and NFR-058 (OWASP compliance) do NOT have a defined test procedure yet

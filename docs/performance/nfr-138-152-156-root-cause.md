@@ -71,3 +71,72 @@ the bottleneck in this test, so upgrading the tier was not needed to
 close this specific regression. A larger tier would still be the right
 move for genuine production-scale capacity planning, separate from this
 fix.
+
+## Follow-up investigation (2026-08-05, later) - the real dominant cause
+
+The connection-pool fix above was real but did not explain why the
+queue-list endpoint specifically stayed slow while protocol-list
+improved. Investigating that discrepancy found a much larger, unrelated,
+genuine production bug.
+
+**Confirmed via `npx prisma migrate status` against the real live soc2
+database** (using a local Cloud SQL Auth Proxy tunnel, `127.0.0.1:5433`):
+**4 real migrations had never been applied to the live `ist_triage_soc2`
+database**, despite being committed to source control and already
+expected by deployed application code:
+
+- `20260804141501_add_user_feedback`
+- `20260804153928_add_role_permission_overrides`
+- `20260804161438_add_user_mfa_credential`
+- `20260804210206_add_queue_item_soft_delete`
+
+The last one adds the `deleted_at`/`deleted_by` columns that
+`listDbRecords()` (the queue-list query, `src/services/queueOrchestration.ts`)
+filters on for every request. Direct evidence from live Cloud Run logs:
+
+```
+Invalid `prisma.triageQueueItem.findMany()` invocation:
+The column `triage_queue_items.deleted_at` does not exist in the current database.
+```
+
+**Confirmed distinctly per auth path**: a fresh session cookie returned a
+fast, clean `401 Authentication required` (cross-instance cookie-session
+lookup is a separate, real, pre-existing bug - not fixed in this batch,
+see "Separate finding" below); a Bearer/JWT token for the same user hit
+this exact Prisma schema error and returned `500`.
+
+**Honest open question, not resolved within this session's time budget**:
+the earlier performance-batch load test (documented in
+`nfr-138-152-156-validation.md`) reported **0 errors** for the queue-list
+scenario at that time, even though this schema gap should have made
+every real DB-backed request to that endpoint fail. The exact reason for
+that discrepancy (possible causes: a transient traffic-routing/revision
+state during that test, or an untested code path) was not conclusively
+determined - flagged here explicitly rather than assumed away.
+
+### Fix applied
+
+Ran `npx prisma migrate deploy` against the real live soc2 database
+(via the local Cloud SQL Auth Proxy, real Application Default
+Credentials, no schema drift risk - all 4 migrations are additive-only:
+`ADD COLUMN`, `CREATE INDEX`, `CREATE TABLE`). All 4 applied
+successfully. Verified immediately after: the same Bearer-token request
+that previously returned `500` now returns `200` with real (empty)
+queue data.
+
+### Separate finding, not fixed this batch: cross-instance cookie-session lookup
+
+A fresh, valid session cookie (issued by a real, successful login)
+consistently returns `401 Authentication required` when used for a
+subsequent request - even after the schema fix. A Bearer/JWT token for
+the identical user succeeds. This points to `getSessionFromStore()`'s
+DB-backed fallback (`getPersistedUserSession`, used when a different
+Cloud Run instance's in-memory session cache misses) not correctly
+returning a session that a different instance created - a real, likely
+pre-existing bug distinct from the schema gap above, since it persists
+after the fix. Not investigated further or fixed in this batch (out of
+scope for the queue-performance objective); flagged as a genuine
+follow-up item. This session's load-testing was switched to Bearer-token
+auth to work around it, which is itself a real, legitimate auth path
+this app supports - not a workaround that invalidates the performance
+measurement.

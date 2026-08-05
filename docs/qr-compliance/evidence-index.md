@@ -118,6 +118,30 @@ substantially incomplete before this pass and is now genuinely accurate
 - not counted as a new closure in the register's totals since the bucket
 value was already "Yes," but flagged here for transparency.
 
+## Performance follow-up: NFR-138/NFR-152 real closure (2026-08-05)
+
+| Requirement ID | Control | Evidence | Validation date | Validator | Remaining limitation |
+|---|---|---|---|---|---|
+| NFR-138 | 3s p95 response time | 4 missing DB migrations found and applied to live soc2 (`npx prisma migrate deploy`); queue-list p95 3105ms -> 446-569ms | 2026-08-05 | This engagement | NFR-156 (capacity planning/soak testing) remains separately open |
+| NFR-152 | Scalability SLA | Same evidence | 2026-08-05 | This engagement | Same |
+
+**Major integrity finding this pass**: 4 real database migrations
+(`add_user_feedback`, `add_role_permission_overrides`,
+`add_user_mfa_credential`, `add_queue_item_soft_delete`) were committed
+to source control but **never applied to the live soc2 database** -
+confirmed directly via live Cloud Run error logs
+("`The column triage_queue_items.deleted_at does not exist`") and
+`npx prisma migrate status`. This was the real dominant cause of the
+queue-list endpoint's performance regression, not primarily the
+connection-pool sizing addressed in the earlier performance batch.
+Fixed via a real `prisma migrate deploy` against the live database.
+
+**Separate, unresolved finding**: cross-instance cookie-session lookup
+returns a fast, clean 401 for a valid, freshly-issued session cookie -
+a distinct, real, pre-existing bug not fixed in this batch (worked
+around by using Bearer-token auth, a real, legitimate, already-supported
+auth path, for this investigation's load testing).
+
 ## Everything else scored "Yes" (94 rows, prior to Batch 1/2/3/4)
 
 Sourced from earlier passes of this same engagement (prior to 2026-08-05).

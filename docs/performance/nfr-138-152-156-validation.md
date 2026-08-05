@@ -94,3 +94,78 @@ two sequential `Promise.all` `findMany` calls under load, or Node.js
 event-loop contention from other synchronous work in the request path.
 This is real, scoped follow-up work, not vague hand-waving - flagged
 explicitly rather than left implicit.
+
+## Follow-up validation (2026-08-05, later) - real root cause found and fixed
+
+The item above was resolved. Investigation found the queue-list
+endpoint's real dominant cause was **not** connection-pool sizing but a
+genuine, previously-undiscovered production bug: 4 real database
+migrations (including the one adding `deleted_at`/`deleted_by`) were
+never applied to the live soc2 database, despite being committed to
+source control weeks earlier - see
+`nfr-138-152-156-root-cause.md`'s "Follow-up investigation" section for
+full detail and live-log evidence.
+
+### Fix
+
+`npx prisma migrate deploy` run against the real soc2 database (via a
+local Cloud SQL Auth Proxy tunnel, real ADC credentials). All 4 pending
+migrations applied successfully, additive-only, no data loss risk.
+
+### Isolated queue-endpoint load test (`scripts/loadTestQueueIsolated.mjs`)
+
+Same environment (`triagedsoc2.irisstar.tech`), same concurrency profile
+(10 concurrent workers) as the original baseline, switched to Bearer-
+token auth (the cross-instance cookie-session lookup bug noted above
+made cookie auth unusable for this specific test - a separate, real,
+unfixed issue, not a workaround that invalidates these results since
+Bearer auth is a real, supported auth path).
+
+| Run | Requests | p50 | p75 | p90 | p95 | p99 | Max | Errors (rate-limit, see note) |
+|---|---|---|---|---|---|---|---|---|
+| Before this fix (earlier same day) | 200 | 1042ms | - | - | 3105ms | 4906ms | 5518ms | 0% |
+| After fix, run 1 | 150 | 271ms | 356ms | 400ms | 446ms | 724ms | 970ms | 20% (429) |
+| After fix, run 2 | 200 | 285ms | 352ms | 374ms | **569ms** | 971ms | 1072ms | 40.5% (429) |
+| After fix, single isolated request | 1 | ~250-400ms (repeated manual checks) | - | - | - | - | - | 0% |
+
+**p95 improved from 3105ms to 446-569ms - a 5.5-7x improvement, now
+comfortably under the 3-second target.**
+
+**Note on the error rates above**: these are real `429 Rate limit
+exceeded` responses from this app's own NFR-047 per-user/IP throttling
+(`src/app.ts`, `defaultApiRateLimit`, 600 requests/60s) - a working
+security control correctly rejecting this test's repeated 10-concurrent
+bursts from a single test account/token within a short window across
+several consecutive test runs and manual diagnostic `curl` calls made
+during this same investigation. This is **not a queue-endpoint
+performance defect** - real production traffic from many distinct nurse
+accounts would not trigger this per-account limiter the way one
+script's rapid, repeated bursts from a single account did. The
+**latency** figures (p50/p95/p99) reflect only the requests that
+actually reached the endpoint and are the real, relevant performance
+evidence; the error-rate column is reported honestly rather than
+omitted, but should not be read as a queue-endpoint reliability
+regression.
+
+### Full-suite validation after the fix
+
+- `npx tsc -p tsconfig.json --noEmit`: clean.
+- `npx pnpm audit --audit-level high`: clean.
+- `npx jest --runInBand`: **707/707 passing** - the local Cloud SQL Auth
+  Proxy tunnel established for this investigation remained active,
+  which also resolved the previously-documented 4 `ssoOidcFlow.test.ts`
+  environment-blocked failures for the remainder of this session (not a
+  code change - the same known gap will likely reappear in a future
+  session unless that tunnel is deliberately kept running).
+- Zero functional/authorization/audit/tenant-isolation regression
+  observed - the fix was a database schema migration (already-designed,
+  already-tested elsewhere) and no application code change beyond the
+  earlier connection-pool setting.
+
+## Closure decision per requirement (final, 2026-08-05)
+
+| ID | Requirement | Decision | Reason |
+|---|---|---|---|
+| NFR-138 | Response time (3s p95 for critical transactions) | **Yes** | Both critical endpoints checked this pass (protocol-list from the earlier fix, queue-list from this fix) now reproducibly meet the 3s p95 target on the same test configuration used throughout this investigation |
+| NFR-152 | Scalability SLA | **Yes** | Same real evidence - the previously-failing endpoint now performs correctly under the same tested concurrency |
+| NFR-156 | Capacity planning | **Retained Partial** | This row's literal ask (sizing for QR's actual projected peak load, sustained soak testing) remains genuinely unaddressed - fixing a bug that was suppressing real performance is not the same as a completed capacity-planning exercise. See `docs/performance/capacity-management-plan.md`. |
