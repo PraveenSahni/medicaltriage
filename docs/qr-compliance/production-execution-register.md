@@ -2,7 +2,8 @@
 
 _Rows where the control is technically ready (code/config exists) but the
 questionnaire genuinely asks whether a production action has actually
-been performed - not whether it's possible. Generated 2026-08-05._
+been performed - not whether it's possible. Generated 2026-08-05, updated
+2026-08-05 (Batch 5)._
 
 ## NFR-119 - QR-facing alert-threshold configuration
 
@@ -59,3 +60,47 @@ been performed - not whether it's possible. Generated 2026-08-05._
   significant infrastructure exercise, not a quick win. Recommend its
   own dedicated session once mandatory Priority 1/2 work is further
   along.
+
+## UX/NFR-015 - soc2 redeploy to pick up a real, already-fixed a11y issue
+
+- **Finding (2026-08-05, Batch 5)**: ran the already-broadened
+  `scripts/a11yAudit.mjs` (5 real pages/personas: login, help center,
+  Nurse Cockpit, Service Manager Board, Control Center admin) live
+  against `triagedsoc2.irisstar.tech`. Result: 1 real violation
+  (`html-has-lang`, serious impact) on the unauthenticated `/help` page.
+- **Root cause confirmed**: `src/routes/helpRouter.ts`'s "Sign in
+  required" HTML branch already includes `lang="en"` in the current
+  source (line 68) - the **live deployed Cloud Run revision on
+  `ist-triage-soc2` is running an older build that predates this fix**,
+  confirmed by comparing `curl`'d live output (missing the `<html
+  lang="en">` wrapper entirely) against the current source.
+- **Exact production action**: redeploy `ist-triage-soc2` via the
+  established canary-then-cutover pattern
+  (`docs/change-management-policy.md` §2) to pick up the current source.
+- **Required access**: `gcloud run deploy` permissions on the
+  `ist-triage-soc2` Cloud Run service (already used routinely this
+  engagement).
+- **Expected evidence after deployment**: re-run
+  `node scripts/a11yAudit.mjs` and confirm 0 violations across all 5
+  pages (matches this session's run except for the 1 stale-deploy
+  finding).
+- **Rollback**: standard canary rollback (traffic stays on the prior
+  revision until the canary is health-checked).
+- **Status**: Production execution required - not performed this batch
+  since a live redeploy is a production action outside this batch's
+  explicit "no production credentials" boundary; flagged for explicit
+  go-ahead rather than executed silently.
+
+## NFR-004 (UX tab) - cross-browser e2e fixture fixes need DB access
+
+- **Finding (2026-08-05, Batch 5)**: the deeper clinical-workflow e2e
+  suite (`tests/e2e/browser-journey.spec.ts`, `tests/e2e/api-contract.spec.ts`)
+  requires the local Cloud SQL Auth Proxy tunnel to `127.0.0.1:5433` -
+  the same dependency already flagged as unavailable in this session's
+  test-baseline correction (`docs/qr-compliance/final-validation-report.md`).
+  Could not attempt to diagnose or fix the "stale test-fixture
+  assumptions" mentioned in the existing remark without that DB access.
+- **Status**: Test procedure complete (Playwright config + 4-engine/
+  2-mobile-profile matrix already real and passing for the login/entry
+  flow), awaiting DB-tunnel access to fix and re-verify the deeper
+  workflow fixtures.

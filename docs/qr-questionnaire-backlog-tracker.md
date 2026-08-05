@@ -473,3 +473,38 @@ correct but imprecise - refined rather than reversed.
 Verified: `npx tsc --noEmit` clean, 688/692 (same known environment gap,
 no new regressions). Register regenerated: 187 rows now closed (was
 186).
+
+## 2026-08-05 (continued): Batch 5 - UX mandatory rows
+
+Reviewed the 2 remaining mandatory-Partial UX rows (NFR-016, branding,
+is mandatory=Yes but response=No - not touched, since it genuinely
+requires Qatar Airways to supply brand guidelines first, a QR-clarification
+item already tracked, not an engineering gap).
+
+**NFR-015 (WCAG/responsive)**: ran the already-broadened
+`scripts/a11yAudit.mjs` (5 real pages/personas - task #96 had extended
+it beyond the original 2-page baseline, but the questionnaire remark was
+never updated to reflect that, another real documentation-lag found and
+fixed) live against `triagedsoc2.irisstar.tech`. Found 1 real violation
+(`html-has-lang`, serious) on `/help` - root-caused to a **stale deployed
+build**: `src/routes/helpRouter.ts` already has the `lang="en"` fix in
+source, but the live soc2 Cloud Run revision predates it (confirmed by
+comparing live `curl` output to source). Retained Partial - a real
+production redeploy is needed to close this specific finding, not
+performed this batch since it's a live infrastructure action outside
+this batch's "no production credentials" scope. Logged in
+`docs/qr-compliance/production-execution-register.md`.
+
+**NFR-004 (cross-browser)**: confirmed the real 4-engine + 2-mobile-
+profile Playwright matrix still passes for the login/entry flow.
+Reviewed the deeper clinical-workflow e2e suite's pre-existing stale
+fixture issue (already noted in the prior remark) - could not attempt a
+fix since it requires the local Cloud SQL Auth Proxy tunnel, unavailable
+in this session (same known gap as the corrected test baseline). Retained
+Partial, remark updated with the precise current state.
+
+Verified: `npx tsc --noEmit` clean, 688/692 (same known environment gap,
+no new regressions). No rows converted to Yes this batch - both were
+genuinely blocked on production/environment access, honestly routed to
+`docs/qr-compliance/production-execution-register.md` rather than
+forced closed.
