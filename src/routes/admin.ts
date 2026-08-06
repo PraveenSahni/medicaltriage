@@ -12,6 +12,7 @@ import { shouldUseDatabasePersistence } from "../config/runtime.js";
 import { listPersistedAuditEvents } from "../services/persistence.js";
 import { rateLimit } from "../middleware/rateLimit.js";
 import {
+  CrossTenantMfaResetError,
   decideReveal,
   endElevation,
   fetchApprovedRevealValue,
@@ -46,9 +47,11 @@ import {
   RevealNotApprovedError,
   RevealRequestNotFoundError,
   revokePermissionFromRole,
+  resetMfaForUser,
   revokeSessionById,
   RoleNotFoundError,
   SelfApprovalError,
+  SelfMfaResetError,
   SelfPermissionRevocationError,
   SessionNotFoundError,
   updateUserAccountStatus,
@@ -186,6 +189,46 @@ export function createAdminRouter(): Router {
       return next(error);
     }
   });
+
+  // Real administrator-assisted MFA reset (closes AR.13's recovery gap).
+  // PAM-elevated (same as the status/role-permission mutations above) since
+  // this is one of the highest-risk actions in the app - it strips a
+  // user's second factor and forces re-enrollment.
+  const MfaResetRequestSchema = z.object({ reason: z.string().min(1).max(500) });
+  router.post(
+    "/users/:id/mfa-reset",
+    requireElevatedPermission("admin.users.manage"),
+    userStatusRateLimit,
+    async (req: AuthorizedRequest, res, next) => {
+      try {
+        const parsed = MfaResetRequestSchema.safeParse(req.body);
+        if (!parsed.success) {
+          return res.status(400).json({ error: "Invalid MFA reset request", details: parsed.error.flatten() });
+        }
+        const actor = req.securitySession;
+        if (!actor) {
+          return res.status(401).json({ error: "Authentication required" });
+        }
+        const result = await resetMfaForUser(
+          req.params.id,
+          { userId: actor.user.id, organization: actor.user.organization },
+          parsed.data.reason
+        );
+        return res.json({ reset: true, sessionsRevoked: result.sessionsRevoked });
+      } catch (error) {
+        if (error instanceof UserNotFoundError) {
+          return res.status(404).json({ error: error.message });
+        }
+        if (error instanceof SelfMfaResetError) {
+          return res.status(409).json({ error: error.message });
+        }
+        if (error instanceof CrossTenantMfaResetError) {
+          return res.status(403).json({ error: error.message });
+        }
+        return next(error);
+      }
+    }
+  );
 
   router.get("/roles", requirePermission("admin.roles.manage"), (_req, res) => {
     // Closes NFR-140 (caching) - the role/permission baseline itself only

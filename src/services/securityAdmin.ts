@@ -1876,11 +1876,36 @@ const failedLoginAttempts = new Map<string, number>();
 // shape as sessions/failedLoginAttempts above.
 type MfaCredentialState = {
   secret: string;
-  status: "pending" | "enabled" | "disabled";
+  // "reset_required" (closes AR.13's enrollment/recovery gap): a durable,
+  // distinct state from "pending" (a self-service enrollment never
+  // finished) - set only by an administrator-assisted reset, and the only
+  // status besides "no credential at all" that forces a user back through
+  // the pre-auth enrollment-token flow below rather than a normal login.
+  status: "pending" | "enabled" | "disabled" | "reset_required";
   failedAttempts: number;
   lockedUntil?: number;
 };
 const mfaCredentials = new Map<string, MfaCredentialState>();
+
+// Real, single-use, short-lived pre-authentication enrollment token (closes
+// AR.13's circular-dependency gap: mandatory MFA blocked login before an
+// unenrolled user could ever reach the session-gated /mfa/enroll routes).
+// Server-state-backed (same convention as pendingMfaChallenges below) rather
+// than a signed JWT - simpler, and this codebase already treats a random,
+// unguessable, server-tracked id as the security boundary for the
+// equivalent MFA-challenge token, so this token gets the same treatment.
+// Deliberately NOT a session and NOT a bearer access token - the two routes
+// that accept it (mfa/enroll, mfa/enroll/confirm) are the only places that
+// ever look this map up; every other route continues to require a real
+// AuthenticatedSession and would reject this token outright.
+type PendingEnrollmentToken = {
+  userId: string;
+  organizationId: string;
+  expiresAt: number;
+  used: boolean;
+};
+const pendingEnrollmentTokens = new Map<string, PendingEnrollmentToken>();
+const ENROLLMENT_TOKEN_TTL_MS = 15 * 60 * 1000;
 
 // In-memory-first, DB-fallback read for MFA credential state - without this,
 // enrollment recorded by one Cloud Run instance (or revision) is invisible
@@ -2487,6 +2512,7 @@ export function resetSecurityStoreForTests(): void {
   rolePermissionOverrides = [];
   mfaCredentials.clear();
   pendingMfaChallenges.clear();
+  pendingEnrollmentTokens.clear();
   oidcStateStore.clear();
   sessionContextBySessionId.clear();
   revealRequestsById.clear();
@@ -2757,7 +2783,14 @@ function toSession(
 export type AuthenticateLocalResult =
   | { ok: true; session: AuthenticatedSession }
   | { ok: true; mfaRequired: true; challengeId: string }
-  | { ok: false; message: string; locked?: boolean; forbidden?: boolean; mfaEnrollmentRequired?: boolean };
+  | {
+      ok: false;
+      message: string;
+      locked?: boolean;
+      forbidden?: boolean;
+      mfaEnrollmentRequired?: boolean;
+      enrollmentToken?: string;
+    };
 
 export async function authenticateLocal(args: {
   username: string;
@@ -2875,6 +2908,18 @@ export async function authenticateLocal(args: {
   // actionable response (not a generic auth failure) directing them to
   // enroll, rather than silently being let in.
   if (isMfaMandatory()) {
+    // Real pre-auth enrollment token (closes AR.13's circular-dependency
+    // gap) - a real, unauthenticated user cannot be handed a dead end here;
+    // this token is the ONLY thing that lets them reach the session-gated
+    // /mfa/enroll routes without already having a session. It authorizes
+    // nothing else (see pendingEnrollmentTokens' own comment above).
+    const enrollmentToken = randomBytes(32).toString("base64url");
+    pendingEnrollmentTokens.set(enrollmentToken, {
+      userId: user.id,
+      organizationId: user.organization,
+      expiresAt: Date.now() + ENROLLMENT_TOKEN_TTL_MS,
+      used: false
+    });
     await recordAuditEvent({
       id: randomUUID(),
       timestampIso: new Date().toISOString(),
@@ -2883,18 +2928,19 @@ export async function authenticateLocal(args: {
       organization: user.organization,
       facility: user.facility,
       department: user.department,
-      action: "LOGIN_BLOCKED_MFA_ENROLLMENT_REQUIRED",
+      action: "MFA_ENROLLMENT_TOKEN_ISSUED",
       module: "Authentication",
       resource: "local",
       ipAddress: args.ipAddress,
       device: args.device,
-      success: false,
+      success: true,
       risk: "high"
     });
     return {
       ok: false,
       message: "Multi-factor authentication is required for this account. Enroll in MFA to continue.",
-      mfaEnrollmentRequired: true
+      mfaEnrollmentRequired: true,
+      enrollmentToken
     };
   }
 
@@ -2928,6 +2974,54 @@ export async function authenticateLocal(args: {
 
 export class MfaChallengeNotFoundError extends Error {}
 export class MfaChallengeExpiredError extends Error {}
+export class EnrollmentTokenInvalidError extends Error {}
+
+// Validates a pre-auth enrollment token (see pendingEnrollmentTokens above)
+// without consuming it - enrollMfa (re-)issuing a secret can be called
+// multiple times against the same token (a user may scan the QR again
+// before confirming); only a successful confirmMfaEnrollment consumes it.
+function resolveEnrollmentToken(token: string): PendingEnrollmentToken {
+  const entry = pendingEnrollmentTokens.get(token);
+  if (!entry || entry.used || entry.expiresAt < Date.now()) {
+    if (entry?.used) {
+      void recordAuditEvent({
+        id: randomUUID(),
+        timestampIso: new Date().toISOString(),
+        userId: entry.userId,
+        activeRole: "self-service",
+        organization: entry.organizationId,
+        facility: "unknown",
+        department: "unknown",
+        action: "MFA_ENROLLMENT_TOKEN_REPLAYED",
+        module: "Authentication",
+        resource: "local",
+        ipAddress: "n/a",
+        device: "n/a",
+        success: false,
+        risk: "critical"
+      }).catch(() => {});
+    } else if (entry) {
+      void recordAuditEvent({
+        id: randomUUID(),
+        timestampIso: new Date().toISOString(),
+        userId: entry.userId,
+        activeRole: "self-service",
+        organization: entry.organizationId,
+        facility: "unknown",
+        department: "unknown",
+        action: "MFA_ENROLLMENT_TOKEN_EXPIRED",
+        module: "Authentication",
+        resource: "local",
+        ipAddress: "n/a",
+        device: "n/a",
+        success: false,
+        risk: "medium"
+      }).catch(() => {});
+    }
+    throw new EnrollmentTokenInvalidError("Enrollment token is invalid, expired, or already used.");
+  }
+  return entry;
+}
 
 export function enrollMfa(userId: string): { secret: string; otpauthUrl: string } {
   const user = users.find((candidate) => candidate.id === userId);
@@ -3003,6 +3097,99 @@ export function confirmMfaEnrollment(userId: string, code: string): boolean {
     risk: "medium"
   }).catch((error) => console.error("Failed to record MFA enrollment audit event:", error));
   return true;
+}
+
+// Pre-auth variants of enrollMfa/confirmMfaEnrollment, gated by a real
+// enrollment token instead of a session (see pendingEnrollmentTokens above).
+// These are the only functions in this module that ever read that map -
+// every other capability (queue, admin, reveal, etc.) still requires a real
+// AuthenticatedSession and would never accept this token.
+export function enrollMfaWithToken(token: string): { secret: string; otpauthUrl: string } {
+  const entry = resolveEnrollmentToken(token);
+  return enrollMfa(entry.userId);
+}
+
+export function confirmMfaEnrollmentWithToken(token: string, code: string): boolean {
+  const entry = resolveEnrollmentToken(token);
+  const confirmed = confirmMfaEnrollment(entry.userId, code);
+  if (confirmed) {
+    entry.used = true;
+    void recordAuditEvent({
+      id: randomUUID(),
+      timestampIso: new Date().toISOString(),
+      userId: entry.userId,
+      activeRole: "self-service",
+      organization: entry.organizationId,
+      facility: "unknown",
+      department: "unknown",
+      action: "MFA_ENROLLMENT_TOKEN_CONSUMED",
+      module: "Authentication",
+      resource: "local",
+      ipAddress: "n/a",
+      device: "n/a",
+      success: true,
+      risk: "medium"
+    }).catch(() => {});
+  }
+  return confirmed;
+}
+
+export class SelfMfaResetError extends Error {}
+export class CrossTenantMfaResetError extends Error {}
+
+// Real administrator-assisted MFA reset (closes AR.13's recovery gap: today
+// there is no way to recover a user who lost their authenticator device
+// other than deleting/re-seeding data by hand). Deliberately does NOT read
+// or return the existing secret - the credential is simply deleted and the
+// user is marked "reset_required", forcing them back through the same
+// pre-auth enrollment-token flow a never-enrolled user goes through. Every
+// active session for the user is revoked immediately, and the action is
+// always durably audited as high-risk. The caller (the route) is
+// responsible for the actual permission/elevation gate - this function
+// enforces the two guards that must never be bypassable by permission
+// alone: no self-reset, and no cross-tenant reset.
+export async function resetMfaForUser(
+  targetUserId: string,
+  actor: { userId: string; organization: string },
+  reason: string
+): Promise<{ sessionsRevoked: number }> {
+  if (targetUserId === actor.userId) {
+    throw new SelfMfaResetError("Administrators cannot reset their own MFA credential through this action.");
+  }
+  const targetUser = users.find((candidate) => candidate.id === targetUserId);
+  if (!targetUser) {
+    throw new UserNotFoundError(`No user found with id ${targetUserId}`);
+  }
+  if (targetUser.organization !== actor.organization) {
+    throw new CrossTenantMfaResetError("Cannot reset MFA for a user outside the requester's organization.");
+  }
+
+  mfaCredentials.set(targetUserId, { secret: "", status: "reset_required", failedAttempts: 0 });
+  void persistMfaCredential({ userId: targetUserId, secretCiphertext: "", status: "reset_required" }).catch((error) =>
+    console.error("Failed to persist MFA reset (change still applies in-memory):", error)
+  );
+
+  const sessionsRevoked = await revokeSessionsForUser(targetUserId);
+
+  await recordAuditEvent({
+    id: randomUUID(),
+    timestampIso: new Date().toISOString(),
+    userId: actor.userId,
+    activeRole: "administrator",
+    organization: actor.organization,
+    facility: targetUser.facility,
+    department: targetUser.department,
+    action: "MFA_RESET_COMPLETED",
+    module: "Authentication",
+    resource: `UserMfaCredential:${targetUserId}`,
+    purpose: `${reason} (sessionsRevoked=${sessionsRevoked})`,
+    ipAddress: "n/a",
+    device: "n/a",
+    success: true,
+    risk: "high"
+  });
+
+  return { sessionsRevoked };
 }
 
 export async function verifyMfaChallenge(

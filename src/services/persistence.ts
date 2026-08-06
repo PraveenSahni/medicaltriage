@@ -163,7 +163,7 @@ export async function persistSecurityAuditEvent(event: AuditEvent): Promise<Pers
 export type MfaCredentialSnapshot = {
   userId: string;
   secretCiphertext: string;
-  status: "pending" | "enabled" | "disabled";
+  status: "pending" | "enabled" | "disabled" | "reset_required";
   enrolledAt?: string;
 };
 
@@ -192,7 +192,7 @@ export async function persistMfaCredential(snapshot: MfaCredentialSnapshot): Pro
 
 export type PersistedMfaCredential = {
   secret: string;
-  status: "pending" | "enabled" | "disabled";
+  status: "pending" | "enabled" | "disabled" | "reset_required";
   enrolledAt?: string;
 };
 

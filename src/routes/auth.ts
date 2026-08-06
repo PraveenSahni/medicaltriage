@@ -6,7 +6,10 @@ import {
   buildSsoAuthorizationUrl,
   completeSsoLogin,
   confirmMfaEnrollment,
+  confirmMfaEnrollmentWithToken,
   enrollMfa,
+  enrollMfaWithToken,
+  EnrollmentTokenInvalidError,
   expiredSessionCookie,
   MfaChallengeExpiredError,
   MfaChallengeNotFoundError,
@@ -113,7 +116,9 @@ export function createAuthRouter(): Router {
         return res.status(result.forbidden ? 403 : result.locked ? 423 : 401).json({
           error: "Authentication failed",
           message: result.message,
-          ...(result.mfaEnrollmentRequired ? { mfaEnrollmentRequired: true } : {})
+          ...(result.mfaEnrollmentRequired
+            ? { mfaEnrollmentRequired: true, enrollmentToken: result.enrollmentToken }
+            : {})
         });
       }
 
@@ -149,8 +154,19 @@ export function createAuthRouter(): Router {
     }
   });
 
+  // Both routes below accept EITHER a real authenticated session (the
+  // existing self-service "enroll while already logged in" path) OR a
+  // real pre-auth enrollment token (closes AR.13 - lets an unenrolled user
+  // reach these two routes, and only these two, without a session). The
+  // token grants no other capability anywhere in this app - see
+  // pendingEnrollmentTokens' own comment in securityAdmin.ts.
   router.post("/mfa/enroll", async (req, res, next) => {
     try {
+      const enrollmentToken = typeof req.body?.enrollmentToken === "string" ? req.body.enrollmentToken : undefined;
+      if (enrollmentToken) {
+        const enrollment = enrollMfaWithToken(enrollmentToken);
+        return res.json(enrollment);
+      }
       const session = await readAuthenticatedSession(req);
       if (!session) {
         return res.status(401).json({ error: "Authentication required" });
@@ -161,19 +177,30 @@ export function createAuthRouter(): Router {
       if (error instanceof UserNotFoundError) {
         return res.status(404).json({ error: error.message });
       }
+      if (error instanceof EnrollmentTokenInvalidError) {
+        return res.status(401).json({ error: error.message });
+      }
       return next(error);
     }
   });
 
   router.post("/mfa/enroll/confirm", async (req, res, next) => {
     try {
-      const session = await readAuthenticatedSession(req);
-      if (!session) {
-        return res.status(401).json({ error: "Authentication required" });
-      }
       const parsed = MfaEnrollConfirmRequestSchema.safeParse(req.body);
       if (!parsed.success) {
         return res.status(400).json({ error: "Invalid MFA enrollment confirmation", details: parsed.error.flatten() });
+      }
+      const enrollmentToken = typeof req.body?.enrollmentToken === "string" ? req.body.enrollmentToken : undefined;
+      if (enrollmentToken) {
+        const confirmed = confirmMfaEnrollmentWithToken(enrollmentToken, parsed.data.code);
+        if (!confirmed) {
+          return res.status(401).json({ error: "Invalid authentication code" });
+        }
+        return res.json({ enrolled: true });
+      }
+      const session = await readAuthenticatedSession(req);
+      if (!session) {
+        return res.status(401).json({ error: "Authentication required" });
       }
       const confirmed = confirmMfaEnrollment(session.user.id, parsed.data.code);
       if (!confirmed) {
@@ -183,6 +210,9 @@ export function createAuthRouter(): Router {
     } catch (error) {
       if (error instanceof UserNotFoundError) {
         return res.status(404).json({ error: error.message });
+      }
+      if (error instanceof EnrollmentTokenInvalidError) {
+        return res.status(401).json({ error: error.message });
       }
       return next(error);
     }
