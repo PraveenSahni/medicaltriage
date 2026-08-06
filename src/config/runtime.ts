@@ -196,6 +196,48 @@ export function getRevealAnomalyThreshold(): number {
   return Number.isInteger(parsed) && parsed > 0 ? parsed : 10;
 }
 
+// CSQ AR.21's application-level intrusion-detection equivalent / NFR-118's
+// authentication-anomaly alert - mirrors the reveal-anomaly counter's
+// exact shared/durable/multi-instance pattern above, generalized to any
+// security-relevant signal type (login failure, MFA failure, PAM
+// elevation denial, etc.) rather than a second bespoke table. Default off,
+// same reasoning as REVEAL_ANOMALY_DB_PERSISTENCE - unit tests stay
+// isolated unless they opt in.
+export function shouldPersistSecurityAnomalyCountersInDatabase(): boolean {
+  return envFlag("SECURITY_ANOMALY_DB_PERSISTENCE", false);
+}
+
+// Engineering-judgment defaults, NOT Qatar-Airways-confirmed figures -
+// owner: CISO; review alongside the annual risk-register cadence, or
+// immediately if QR specifies different thresholds. See
+// docs/security/application-intrusion-detection.md.
+export function getAuthAnomalyWindowSeconds(): number {
+  const raw = process.env.AUTH_ANOMALY_WINDOW_SECONDS;
+  const parsed = raw ? Number(raw) : NaN;
+  if (raw && (!Number.isFinite(parsed) || parsed <= 0)) {
+    throw new Error(`AUTH_ANOMALY_WINDOW_SECONDS must be a positive number, got: ${raw}`);
+  }
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 300;
+}
+
+export function getAuthAnomalyFailureThreshold(): number {
+  const raw = process.env.AUTH_ANOMALY_FAILURE_THRESHOLD;
+  const parsed = raw ? Number(raw) : NaN;
+  if (raw && (!Number.isInteger(parsed) || parsed <= 0)) {
+    throw new Error(`AUTH_ANOMALY_FAILURE_THRESHOLD must be a positive integer, got: ${raw}`);
+  }
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : 10;
+}
+
+export function getPermissionDenialThreshold(): number {
+  const raw = process.env.PERMISSION_DENIAL_THRESHOLD;
+  const parsed = raw ? Number(raw) : NaN;
+  if (raw && (!Number.isInteger(parsed) || parsed <= 0)) {
+    throw new Error(`PERMISSION_DENIAL_THRESHOLD must be a positive integer, got: ${raw}`);
+  }
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : 10;
+}
+
 // Closes IS.61's second half - the privacy-incident notification workflow.
 // Every value here is deliberately conservative-by-default: real customer
 // delivery is off until explicitly enabled AND a real SLA/recipient are

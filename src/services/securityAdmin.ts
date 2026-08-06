@@ -16,11 +16,14 @@ import { authenticator } from "otplib";
 import { createIncidentCandidate } from "./privacyIncidentWorkflow.js";
 import {
   getAdminPassword,
+  getAuthAnomalyFailureThreshold,
+  getAuthAnomalyWindowSeconds,
   getRevealAnomalyThreshold,
   getRevealAnomalyWindowSeconds,
   isMfaMandatory,
   isMockMode,
-  shouldPersistRevealAnomalyCountersInDatabase
+  shouldPersistRevealAnomalyCountersInDatabase,
+  shouldPersistSecurityAnomalyCountersInDatabase
 } from "../config/runtime.js";
 import { decryptMfaSecret, encryptMfaSecret } from "./mfaCrypto.js";
 import type {
@@ -54,6 +57,7 @@ import {
   persistRevealEvent,
   getPersistedRevealRequest,
   recordAndCountRevealAnomalyEvents,
+  recordAndCountSecurityAnomalyEvents,
   persistRevealRequest,
   getPersistedRolePermissionOverrides,
   persistRolePermissionOverride,
@@ -2725,6 +2729,7 @@ export function resetSecurityStoreForTests(): void {
   elevatedSessions.clear();
   revealRequestTimestampsByUser.clear();
   accessRevocationMetrics = [];
+  localSecurityAnomalyTimestamps.clear();
 }
 
 // Real JIT privileged-access elevation (closes NFR-180's PAM capability gap:
@@ -2763,6 +2768,11 @@ export async function requestElevation(
   // new one.
   const isValid = authenticator.verify({ token: code, secret: credential.secret });
   if (!isValid) {
+    await checkSecurityAnomalyRate({
+      signalType: "PAM_ELEVATION_DENIED",
+      scopeKey: session.user.id,
+      organization: session.user.organization
+    });
     throw new InvalidElevationCodeError("Invalid authentication code.");
   }
 
@@ -3052,6 +3062,14 @@ export async function authenticateLocal(args: {
       device: args.device,
       success: false,
       risk: "high"
+    });
+    // scopeKey is the normalized username, not a raw credential - counts
+    // per-account, consistent with the existing failedLoginAttempts
+    // lockout's own keying.
+    await checkSecurityAnomalyRate({
+      signalType: "AUTH_FAILURE",
+      scopeKey: username,
+      organization: user?.organization
     });
     return { ok: false, message: genericMessage };
   }
@@ -3439,6 +3457,11 @@ export async function verifyMfaChallenge(
       success: false,
       risk: locked ? "critical" : "high"
     });
+    await checkSecurityAnomalyRate({
+      signalType: "MFA_FAILURE",
+      scopeKey: username,
+      organization: user?.organization
+    });
     if (locked) {
       pendingMfaChallenges.delete(challengeId);
       return { ok: false, message: "Account is temporarily locked. Contact the helpdesk.", locked: true };
@@ -3642,6 +3665,133 @@ function countLocalRevealAttempts(requesterUserId: string, windowMs: number): nu
   timestamps.push(now);
   revealRequestTimestampsByUser.set(requesterUserId, timestamps);
   return timestamps.length;
+}
+
+// CSQ AR.21's application-level intrusion-detection equivalent (closes
+// alongside NFR-118's authentication-anomaly alert). Generalizes
+// checkRevealAnomalyRate's exact shared/durable/local-fallback pattern to
+// any security-relevant signal type, rather than duplicating it per
+// signal. Signal types wired this batch: AUTH_FAILURE (failed local
+// login), MFA_FAILURE (failed TOTP challenge), PAM_ELEVATION_DENIED
+// (wrong elevation code). PERMISSION_DENIED and CLAIM_DENIED signal types
+// are supported by this function's generic API but are NOT wired to a
+// call site this batch - disclosed, not silently claimed, in
+// docs/security/application-intrusion-detection.md.
+const localSecurityAnomalyTimestamps = new Map<string, number[]>();
+
+function countLocalSecurityAnomalyEvents(signalType: string, scopeKey: string, windowMs: number): number {
+  const now = Date.now();
+  const key = `${signalType}:${scopeKey}`;
+  const timestamps = (localSecurityAnomalyTimestamps.get(key) ?? []).filter(
+    (timestamp) => now - timestamp < windowMs
+  );
+  timestamps.push(now);
+  localSecurityAnomalyTimestamps.set(key, timestamps);
+  return timestamps.length;
+}
+
+export type SecurityAnomalySignalType =
+  | "AUTH_FAILURE"
+  | "MFA_FAILURE"
+  | "PERMISSION_DENIED"
+  | "CLAIM_DENIED"
+  | "PAM_ELEVATION_DENIED";
+
+async function checkSecurityAnomalyRate(args: {
+  signalType: SecurityAnomalySignalType;
+  scopeKey: string;
+  organization?: string;
+}): Promise<void> {
+  const windowSeconds = getAuthAnomalyWindowSeconds();
+  const threshold = getAuthAnomalyFailureThreshold();
+
+  // Failure policy (documented, not silently fail-open) - identical
+  // reasoning to checkRevealAnomalyRate: never deny the underlying action
+  // (a login attempt, an MFA challenge, an elevation request) just because
+  // the shared monitoring store is unavailable - fall back to this
+  // instance's local counter and emit a distinct, durable, high-risk
+  // AuditEvent flagging the degraded mode.
+  let count: number;
+  let degradedMode = false;
+  if (shouldPersistSecurityAnomalyCountersInDatabase()) {
+    try {
+      const result = await recordAndCountSecurityAnomalyEvents({
+        signalType: args.signalType,
+        scopeKey: args.scopeKey,
+        organization: args.organization,
+        windowSeconds
+      });
+      count = result.count;
+    } catch (error) {
+      console.error("Shared security-anomaly counter unavailable, falling back to local counter:", sanitizeForLog(error));
+      count = countLocalSecurityAnomalyEvents(args.signalType, args.scopeKey, windowSeconds * 1000);
+      degradedMode = true;
+    }
+  } else {
+    count = countLocalSecurityAnomalyEvents(args.signalType, args.scopeKey, windowSeconds * 1000);
+  }
+
+  const correlationId = randomUUID();
+
+  if (degradedMode) {
+    await recordAuditEvent({
+      id: randomUUID(),
+      timestampIso: new Date().toISOString(),
+      userId: args.scopeKey,
+      activeRole: "unknown",
+      organization: args.organization ?? "",
+      facility: "",
+      department: "",
+      action: "SECURITY_ANOMALY_STORE_DEGRADED",
+      module: "SecurityMonitoring",
+      resource: `${args.signalType}:${args.scopeKey}`,
+      purpose: `Shared security-anomaly counter unavailable for signal ${args.signalType} - falling back to a process-local counter; cross-instance detection is temporarily narrower than normal. correlationId=${correlationId}`,
+      ipAddress: "",
+      device: "",
+      success: false,
+      risk: "high"
+    });
+  }
+
+  if (count <= threshold) {
+    return;
+  }
+
+  await recordAuditEvent({
+    id: randomUUID(),
+    timestampIso: new Date().toISOString(),
+    userId: args.scopeKey,
+    activeRole: "unknown",
+    organization: args.organization ?? "",
+    facility: "",
+    department: "",
+    action: "SECURITY_ANOMALY_DETECTED",
+    module: "SecurityMonitoring",
+    resource: `${args.signalType}:${args.scopeKey}`,
+    purpose: `${count} ${args.signalType} events within ${windowSeconds / 60} minutes - exceeds the ${threshold}-event anomaly threshold. correlationId=${correlationId}`,
+    ipAddress: "",
+    device: "",
+    success: true,
+    risk: "critical"
+  });
+
+  // Structured stdout emission (mirrors requestDurationLogger's and the
+  // privacy-reveal-anomaly pattern) - gives NFR-118's authentication-
+  // anomaly alert policy (terraform/alerting.tf) a real field to filter
+  // on. Deliberately excludes anything sensitive - only the signal type,
+  // an opaque scope key (already a userId, never a raw credential/IP/OTP),
+  // count, threshold, window, and correlation id.
+  console.log(
+    JSON.stringify({
+      type: "security_event",
+      action: "SECURITY_ANOMALY_DETECTED",
+      signalType: args.signalType,
+      count,
+      threshold,
+      windowSeconds,
+      correlationId
+    })
+  );
 }
 
 async function checkRevealAnomalyRate(requesterUserId: string): Promise<void> {

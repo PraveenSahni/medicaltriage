@@ -9,6 +9,7 @@ import {
   shouldPersistAuditEventsInDatabase,
   shouldPersistMfaCredentialsInDatabase,
   shouldPersistRevealAnomalyCountersInDatabase,
+  shouldPersistSecurityAnomalyCountersInDatabase,
   shouldPersistRevealWorkflowInDatabase,
   shouldPersistRolePermissionOverridesInDatabase,
   shouldPersistSessionsInDatabase,
@@ -377,6 +378,38 @@ export async function recordAndCountRevealAnomalyEvents(args: {
     }),
     prisma.revealAnomalyEvent.count({
       where: { userId: args.userId, timestamp: { gte: windowStart } }
+    })
+  ]);
+  return { count: countResult, persisted: true };
+}
+
+// CSQ AR.21 / NFR-118's generic, shared, durable security-anomaly counter -
+// identical shape/transaction pattern to recordAndCountRevealAnomalyEvents
+// above, generalized across signal types (AUTH_FAILURE, MFA_FAILURE,
+// PAM_ELEVATION_DENIED, ...) instead of one bespoke table per signal.
+// Throws on a real DB error (connection refused, etc.) rather than
+// swallowing it - the caller (checkSecurityAnomalyRate in
+// securityAdmin.ts) is responsible for the documented degraded-monitoring
+// fallback policy, not this low-level function.
+export async function recordAndCountSecurityAnomalyEvents(args: {
+  signalType: string;
+  scopeKey: string;
+  organization?: string;
+  windowSeconds: number;
+}): Promise<{ count: number; persisted: boolean }> {
+  if (!shouldPersistSecurityAnomalyCountersInDatabase()) {
+    return { count: 0, persisted: false };
+  }
+  const windowStart = new Date(Date.now() - args.windowSeconds * 1000);
+  const [, , countResult] = await prisma.$transaction([
+    prisma.securityAnomalyEvent.create({
+      data: { signalType: args.signalType, scopeKey: args.scopeKey, organization: args.organization }
+    }),
+    prisma.securityAnomalyEvent.deleteMany({
+      where: { signalType: args.signalType, scopeKey: args.scopeKey, timestamp: { lt: windowStart } }
+    }),
+    prisma.securityAnomalyEvent.count({
+      where: { signalType: args.signalType, scopeKey: args.scopeKey, timestamp: { gte: windowStart } }
     })
   ]);
   return { count: countResult, persisted: true };

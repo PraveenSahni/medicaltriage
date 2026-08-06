@@ -1356,6 +1356,28 @@ model RevealAnomalyEvent {
   @@map("reveal_anomaly_events")
 }
 
+// CSQ AR.21's application-level intrusion-detection equivalent (closes
+// alongside NFR-118's authentication-anomaly alert policy) - a generic,
+// shared, durable counter mirroring RevealAnomalyEvent's exact shape so
+// detection is combined across every Cloud Run instance, not per-process.
+// signalType distinguishes the kind of security-relevant burst being
+// counted (AUTH_FAILURE, MFA_FAILURE, PAM_ELEVATION_DENIED, and any future
+// signal) without needing a separate table per signal type. scopeKey is
+// whatever dimension that signal is counted against (a userId for
+// per-user scoping - never a raw IP/credential value, to keep this table
+// free of anything sensitive).
+model SecurityAnomalyEvent {
+  id           String   @id @default(cuid())
+  signalType   String   @map("signal_type")
+  scopeKey     String   @map("scope_key")
+  organization String?
+  timestamp    DateTime @default(now())
+
+  @@index([signalType, scopeKey, timestamp])
+  @@index([organization, timestamp])
+  @@map("security_anomaly_events")
+}
+
 model CryptographicKeyReference {
   id             String    @id @default(cuid())
   keyAlias       String    @unique @map("key_alias")
