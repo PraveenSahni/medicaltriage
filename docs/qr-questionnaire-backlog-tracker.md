@@ -1705,3 +1705,19 @@ NFR-004 (UX and AI tab) closures, not a scoring-method change. A
 63.49%, overall 49.12%) and is explicitly labeled non-authoritative.
 
 NFR-004 (UX tab) remains **Yes**. IS.07 remains **Partial**, not resumed.
+
+## Update 2026-08-06 (continued): Automated Security Monitoring & Metrics batch (IS.13/IS.40/NFR-118)
+
+Executed the approved batch, assessing each row independently rather than
+moving all three to Yes because the batch completed:
+
+- **CSQ IS.13 -> Yes**: real, operational access-removal timing metrics
+  (`docs/security/access-revocation-metrics.md`).
+- **CSQ IS.40 -> stays Partial**: OWASP ZAP baseline workflow authored but
+  not pushed/run (`docs/security/application-vulnerability-scanning.md`).
+- **NFR-118 -> stays Partial**: 3 new Terraform alert-policy definitions,
+  not applied/validated (`docs/operations/anomaly-alerting-matrix.md`).
+
+**Mandatory 80/152 (52.63%) -> 81/152 (53.29%). Overall 135/400 (33.75%)
+-> 136/400 (34.00%).** Full backend suite 771/771, tsc clean. Local
+commits only, main not pushed; IS.07 not resumed; PR #15 not touched.

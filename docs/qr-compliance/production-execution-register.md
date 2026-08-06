@@ -376,3 +376,43 @@ Backend: 759/759 tests pass, tsc clean.
 
 **NFR-004 (UX tab) moves to Yes.** Full evidence:
 docs/architecture/call-center-workflow-model.md.
+
+## Update 2026-08-06: Automated Security Monitoring & Metrics batch (CSQ IS.13, CSQ IS.40, NFR-118)
+
+Three independently-assessed rows, each closed on its own merits (not
+bundled toward Yes merely because the batch completed):
+
+- **CSQ IS.13 (access-removal timing metrics) - moves to Yes.** Real,
+  operational metric recording at every material access-removal path
+  (account status change, role-permission revoke, single-session
+  termination, HRMS/JML deprovisioning), a read-only reporting endpoint
+  (p50/p95/max, per-type breakdown, org-scoped), no invented SLA. 12 new
+  tests, full backend suite 771/771, tsc clean.
+  `docs/security/access-revocation-metrics.md`.
+- **CSQ IS.40 (recurring application-layer vulnerability scanning) -
+  stays Partial.** A complete OWASP ZAP baseline-scan GitHub Actions
+  workflow was authored (`.github/workflows/zap-baseline.yml`, passive-
+  only, soc2-only) but is committed locally only - not pushed/merged (per
+  the standing "do not push local main" constraint), so no CI run has
+  occurred and no findings exist. Docker was also unavailable in this
+  execution environment for a local scan attempt.
+  `docs/security/application-vulnerability-scanning.md`.
+- **NFR-118 (anomaly alerting) - stays Partial.** 3 new Cloud Monitoring
+  alert-policy definitions added (`terraform/alerting.tf`): auth-failure-
+  spike and privacy-reveal-anomaly are backed by real emitted log data (a
+  new structured stdout log line was added for the latter); queue-backlog
+  age is honestly disclosed as not yet backed by any real emission. None
+  of the 3 have been `terraform apply`-ed or synthetically validated this
+  batch - deliberately deferred to its own execution window rather than
+  rushed into the same pass. `docs/operations/anomaly-alerting-matrix.md`.
+
+**Score movement**: mandatory 80/152 (52.63%) -> **81/152 (53.29%)**;
+overall 135/400 (33.75%) -> **136/400 (34.00%)** - exactly +1 Yes each,
+matching the single IS.13 closure. Neither IS.40 nor NFR-118 contributed
+to the numerator, consistent with the batch's own integrity rule not to
+move every row to Yes merely because the batch completed.
+
+Do not resume IS.07; PR #15 untouched; local main not pushed.
+`gcloud auth list` confirmed active credentials to `triage-502706`
+throughout this batch (used only to confirm activation feasibility for a
+future pass, not to apply any live infrastructure change this batch).

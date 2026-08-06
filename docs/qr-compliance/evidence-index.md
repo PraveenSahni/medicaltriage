@@ -449,3 +449,25 @@ now with zero outstanding exclusions. See
 `docs/compatibility/cross-browser-validation-report.md`,
 `docs/compatibility/supported-browser-matrix.md`, and
 `docs/architecture/call-center-workflow-model.md`.
+
+## Update 2026-08-06 (continued): Automated Security Monitoring & Metrics batch
+
+Three mandatory rows independently assessed:
+
+- **CSQ IS.13 (access-removal timing metrics) moves to Yes.** Real,
+  operational per-revocation-path metric recording plus a read-only,
+  organization-scoped reporting endpoint; no invented SLA. 12 new tests,
+  full backend suite 771/771. `docs/security/access-revocation-metrics.md`.
+- **CSQ IS.40 (application-layer vulnerability scanning) stays Partial.**
+  A complete OWASP ZAP baseline workflow was authored but committed
+  locally only - not pushed, so no CI run/schedule/findings exist yet.
+  `docs/security/application-vulnerability-scanning.md`.
+- **NFR-118 (anomaly alerting) stays Partial.** 3 new alert-policy
+  definitions added to Terraform, 2 backed by real log emissions - none
+  applied or synthetically validated this batch.
+  `docs/operations/anomaly-alerting-matrix.md`.
+
+**Mandatory: 80/152 (52.63%) -> 81/152 (53.29%). Overall: 135/400 (33.75%)
+-> 136/400 (34.00%).** Exactly +1 Yes each, from IS.13 alone - IS.40 and
+NFR-118 did not move, consistent with assessing each row independently
+rather than closing all three because the batch completed.

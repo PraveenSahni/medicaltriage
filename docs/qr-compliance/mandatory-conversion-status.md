@@ -422,3 +422,16 @@ overall 135/400 = 33.75%** (small, legitimate drift from this session's
 own intervening NFR-004 UX/AI closures, not a scoring change). NFR-004
 (UX tab) remains **Yes**; this row itself is not affected by the
 reconciliation.
+
+## Update 2026-08-06 (continued): Automated Security Monitoring & Metrics batch
+
+**CSQ IS.13 moves to Yes** - real, operational access-removal timing
+metrics (`docs/security/access-revocation-metrics.md`). **CSQ IS.40** and
+**NFR-118 stay Partial** - real engineering readiness (a ZAP workflow, 3
+Terraform alert-policy definitions) exists but neither is yet an
+operating control (not pushed/applied/validated), per the batch's own
+integrity rule against counting preparation as an operating control.
+
+**Mandatory: 80/152 = 52.63% -> 81/152 = 53.29%. Overall: 135/400 = 33.75%
+-> 136/400 = 34.00%.** Full backend suite 771/771, tsc clean. IS.07
+remains untouched at Partial; PR #15 not modified; local main not pushed.
