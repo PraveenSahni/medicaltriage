@@ -1585,3 +1585,33 @@ synthetic-marker validation passed. NFR-004 (AI tab) moves to **Yes**
 wording also requires field-level database encryption using vault keys,
 which this batch does not address (separate architecture item under
 NFR-076/IS.33/IS.34). See `docs/security/log-data-protection-audit.md`.
+
+## Update 2026-08-06: call-center gateway session/authorization remediation batch
+
+Established the intended architecture (Model A - queue claim/context is
+the real, authoritative "answer call" flow; call-center-gateway /command
+is real but only wired to Hold/Resume, never Answer). Fixed the confirmed
+stale test assertions (WEB-005/006, API-008 now assert on /claim, not
+/command). Found and fixed a real, confirmed audit gap in the same
+investigation: claim/context/move/complete actions left zero audit trail
+in mock/in-memory mode (the default) - now always recorded in-memory via
+the same pattern as securityAdmin.ts's recordAuditEvent, regardless of
+QUEUE_DB_PERSISTENCE. Added a QUEUE_ITEM_CLAIM_DENIED audit event for the
+role-denied-claim path. Added focused backend tests: unauthorized-role
+claim denial, durable audit persistence for successful claim.
+
+A second, deeper root cause was then found: WEB-005/007/008 wait for a
+modal dialog and a calculate-score call that exist only in the legacy
+NurseWorkspaceRedesign component, reachable only via the separate
+#/cockpit-v2 route - never the default #/cockpit view a real nurse login
+actually reaches. This is disclosed, not fixed this batch (a real UI
+rewrite against the current stage-tab Cockpit board, requiring dedicated
+investigation). See docs/architecture/call-center-workflow-model.md.
+
+Full 6-engine matrix re-run cleanly (explicit env vars, no orphaned
+processes, no leaked .env values): 61/86 passed, same as before this
+batch's endpoint fix (the deeper UI-surface mismatch is a separate,
+unresolved issue). NFR-004 (UX tab) stays Partial.
+
+Backend: 759/759 tests passed (up from 757 - 2 new audit/authorization
+tests), tsc clean.

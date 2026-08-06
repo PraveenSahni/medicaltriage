@@ -313,3 +313,35 @@ this batch (tracked under NFR-076/IS.33/IS.34).
 
 **Backend validation**: `npx tsc --noEmit` clean, full backend Jest suite
 757/757 passed (no regressions from the sanitizer/app.ts/test changes).
+
+## Update 2026-08-06: call-center gateway session/authorization remediation
+
+Root-caused the answer-call → SBAR e2e failures found in the prior batch:
+Model A confirmed (queue claim/context is the real, shipped workflow;
+call-center-gateway /command is real but only wired to Hold/Resume).
+Fixed 3 stale test assertions (WEB-005/006, API-008) to assert on the
+real /claim response shape. Found and fixed a genuine audit gap:
+recordQueueAuditEvent() was a complete no-op unless QUEUE_DB_PERSISTENCE
+was set, meaning claim/context/move/complete actions had zero audit trail
+in the default mock mode - now always recorded in-memory first (matching
+securityAdmin.ts's established pattern), DB write remains an additional
+step when the flag is on. Added QUEUE_ITEM_CLAIM_DENIED audit event for
+denied claims. Added 2 focused backend tests (unauthorized-role denial,
+audit persistence for successful claim) - both pass, full suite 759/759.
+
+A second, deeper finding emerged after the endpoint fix: WEB-005/007/008
+wait for a modal dialog (`role="dialog" aria-label="Active triage focus"`)
+and an automatic /triage/calculate-score call that exist only in the
+legacy NurseWorkspaceRedesign component (#/cockpit-v2 route) - never the
+default #/cockpit Cockpit view a real nurse login actually reaches
+(confirmed via App.tsx routing logic and tests/e2e/fixtures.ts's own
+landingView comment). This is disclosed, not fixed this batch - a
+real rewrite against the current stage-tab Cockpit UI needs dedicated
+investigation of its DOM/API sequence, which this batch's remaining scope
+does not responsibly allow. See
+docs/architecture/call-center-workflow-model.md for full detail.
+
+Re-ran the full 6-engine matrix cleanly (explicit env vars, verified no
+orphaned server processes, no .env leakage): 61/86 passed - identical
+total to the prior batch, since the deeper UI-surface mismatch is a
+separate, still-open issue. **NFR-004 (UX tab) stays Partial.**
