@@ -1562,3 +1562,26 @@ branch). Every other closure criterion was met via direct, real validation
 using the identical identity and commands the workflow itself runs - see
 `docs/operations/infrastructure-drift-detection-runbook.md` for the full
 evidence log.
+
+## Update 2026-08-06: Cross-browser validation + logging-privacy audit batch
+
+**NFR-004 (UX tab) - cross-browser/mobile compatibility**: real Playwright
+run across all 6 configured engines (Chrome, Edge, Firefox, WebKit, Mobile
+Chrome, Mobile Safari) against the real soc2 database via Cloud SQL Auth
+Proxy. Found and fixed 3 genuine test-infrastructure defects (env-var
+leakage, a stale DOM locator from an earlier UI restyle, a stale
+protocol-match assumption predating the real-STCC-content migration).
+Confirmed zero browser-specific defects. One deeper workflow chain
+(answer-call through SBAR completion) revealed a call-center-gateway
+session/permission gap, identical across all engines - disclosed, not
+fixed this batch (out of scope). **Stays Partial** - see
+`docs/compatibility/cross-browser-validation-report.md`.
+
+**NFR-078 (Non Functional Req tab) / NFR-004 (AI tab) - PII in logs**:
+full logging-surface audit performed, centralized sanitizer built and
+applied to every confirmed unsafe call site, tests added, runtime
+synthetic-marker validation passed. NFR-004 (AI tab) moves to **Yes**
+(pure logging requirement, now closed). NFR-078 **stays Partial** - its
+wording also requires field-level database encryption using vault keys,
+which this batch does not address (separate architecture item under
+NFR-076/IS.33/IS.34). See `docs/security/log-data-protection-audit.md`.

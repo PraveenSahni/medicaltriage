@@ -372,3 +372,17 @@ stays **Partial**, not Yes, because the workflow's schedule cannot
 literally be active in GitHub Actions until this is pushed (explicitly out
 of scope this batch). See
 `docs/operations/infrastructure-drift-detection-runbook.md`.
+
+## Update 2026-08-06: NFR-004 (AI tab) moved to Yes; NFR-004 (UX) and NFR-078 retained Partial
+
+Real 6-engine + 2-mobile-profile Playwright cross-browser validation
+performed against the real soc2 database; a full logging-surface privacy
+audit performed with a new centralized sanitizer, tests, and runtime
+synthetic-marker validation. NFR-004 (AI tab) closes to Yes (pure logging
+requirement, fully addressed). NFR-004 (UX tab) and NFR-078 (Non Functional
+Req tab) both retained Partial - the former because a core workflow chain
+(answer-call through SBAR completion) revealed an unresolved,
+out-of-batch-scope call-center-gateway session gap; the latter because its
+wording also requires field-level database encryption using vault keys,
+untouched by this batch. See `docs/compatibility/cross-browser-validation-report.md`
+and `docs/security/log-data-protection-audit.md`.

@@ -274,3 +274,42 @@ browser-verified user journey rather than API-only evidence.
 3. Mutation-privilege check: direct `PATCH` to the Cloud Run Admin API using the identity's own token → HTTP 403.
 
 **Status**: IS.07 stays **Partial**. Per the compliance instruction's own rule, an implemented workflow with an inactive schedule stays Partial - and the schedule genuinely cannot fire in GitHub Actions until this commit is pushed (out of scope this batch, "Do not push"). Full evidence log: `docs/operations/infrastructure-drift-detection-runbook.md`.
+
+## Update 2026-08-06: cross-browser validation + logging-privacy audit batch
+
+**Cloud SQL Auth Proxy**: active this batch, tunnel to
+`triage-502706:me-central1:ist-triage-postgres-uat` on `127.0.0.1:5433`,
+`DATABASE_URL` explicitly pointed at the `ist_triage_soc2` database.
+
+**NFR-004 (UX tab)**: full Playwright matrix (Chrome, Edge, Firefox,
+WebKit, Mobile Chrome, Mobile Safari) run against real soc2 data. 61/86
+tests passed after fixing 3 confirmed test-infrastructure defects
+(env-var leakage from a local `.env` file silently pointing queue reads at
+live data; a stale `ancestor::article` DOM locator from an earlier Cockpit
+UI restyle; a stale protocol-match assumption predating the real-STCC-content
+migration). Zero browser-specific defects found. One deeper workflow chain
+(answer-call → SBAR completion, `WEB-005`–`WEB-008`/`API-006`–`API-008`)
+revealed a call-center-gateway session/permission gap (`GET
+/api/v1/call-center/sessions` → 403), identical across every engine -
+disclosed, not fixed (separate subsystem, out of this batch's scope).
+**Stays Partial.** Full detail:
+`docs/compatibility/cross-browser-validation-report.md`.
+
+**NFR-078 / NFR-004 (AI tab)**: full logging-surface inventory (backend,
+frontend, admin scripts) - see `docs/security/log-data-protection-audit.md`.
+Confirmed fixes: masked person identifier in
+`fulfillPrivacyRequests.ts` console output; 15 raw-error-object
+`console.error` sites now sanitized via new `src/utils/logSanitizer.ts`;
+`morgan`'s query-string-inclusive URL logging replaced with a
+query-string-stripping custom token. 12 unit tests + 2 integration tests
+(capturing real emitted log output) added. Runtime validation with
+synthetic PII markers against the real soc2 database confirmed via direct
+browser/log inspection (not curl) that markers never reach logs. No live
+AI/LLM component exists in this codebase - NFR-004 (AI tab)'s live-AI
+logging clause has no current applicability, honestly documented.
+**NFR-004 (AI tab) moves to Yes. NFR-078 stays Partial** - its wording also
+requires field-level database encryption using vault keys, untouched by
+this batch (tracked under NFR-076/IS.33/IS.34).
+
+**Backend validation**: `npx tsc --noEmit` clean, full backend Jest suite
+757/757 passed (no regressions from the sanitizer/app.ts/test changes).

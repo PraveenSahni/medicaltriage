@@ -404,3 +404,26 @@ enrollment through the actual UI, and a subsequent login completed the
 real MFA challenge, granting genuine application access. Full backend
 suite 743/743, frontend suite 57/57. **AR.13: Partial -> Yes**, backed
 this time by real user-journey evidence.
+
+## Update 2026-08-06: NFR-004 (AI tab) - PII masking/redaction in logs - now Yes
+
+Full logging-surface inventory performed (backend, frontend, admin scripts)
+- see `docs/security/log-data-protection-audit.md`. Confirmed findings
+fixed: unmasked person identifier in console output
+(`src/scripts/fulfillPrivacyRequests.ts`), 15 unsanitized raw-error-object
+`console.error` sites, and `morgan`'s query-string-inclusive URL logging.
+New centralized sanitizer (`src/utils/logSanitizer.ts`,
+`docs/security/logging-redaction-standard.md`) with 12 unit tests + 2
+integration tests capturing real emitted log output
+(`tests/logSanitizer.test.ts`, `tests/logPrivacyIntegration.test.ts`).
+Runtime validation with synthetic PII markers against the real soc2
+database confirmed no marker values reach logs. No live AI/LLM component
+exists in this codebase (confirmed by code search) - this row's live-AI
+logging clause has no current applicability, honestly documented rather
+than silently assumed.
+
+Note: NFR-078 (Non Functional Req tab) covers the same logging concern
+*plus* a separate, unmet database-field-level-encryption-with-vault-keys
+clause - it stays **Partial**, not Yes, despite the identical logging work
+closing its logging half. See `docs/security/logging-redaction-standard.md`
+for why these two otherwise-similar rows reach different outcomes.
