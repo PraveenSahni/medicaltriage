@@ -513,3 +513,43 @@ this session.
 overall 137/400 = 34.25%, unchanged). IS.07 not resumed; PR #15 not
 touched; local main not pushed. Full assessment:
 `docs/security/is66-least-privilege-assessment.md`.
+
+## Update 2026-08-06 (continued): soc2 runtime service-account cutover (IS.66)
+
+A real, live production-infrastructure change was executed: `ist-triage-
+soc2`'s Cloud Run runtime identity was switched from the default Compute
+Engine service account (project-wide `roles/editor`) to the dedicated,
+narrowly-scoped `ist-triage-cloudrun-sa` (`roles/cloudsql.client` +
+`secretmanager.secretAccessor` on only its own 3 real secrets).
+
+**Procedure followed** (`docs/operations/runtime-service-account-
+cutover-runbook.md`): deployed a 0%-traffic canary revision reusing the
+exact same image; confirmed `200` health-check response; confirmed real
+database connectivity via a real-DB-query-dependent `401` login
+response; confirmed zero `severity>=ERROR` Cloud Logging entries on the
+canary revision; promoted to 100% traffic; confirmed the live custom
+domain (`triagedsoc2.irisstar.tech`) healthy with the same checks;
+updated `terraform/main.tf`'s `service_account` field to match, then
+confirmed a full untargeted `terraform plan` shows zero drift anywhere
+in the project. Rollback path preserved (the prior revision was not
+deleted).
+
+**Deliberately not done**: `ist-triage-demo` (customer-facing, needs its
+own approved deployment window) and the 4 Cloud Run Jobs (each needs
+individual verification; `generate-monthly-sli-report-soc2` in
+particular has a materially different permission need -
+`roles/monitoring.viewer` - requiring its own dedicated identity, a real
+finding from this batch's permission-dependency-map exercise). The
+default compute SA's `roles/editor` was therefore **not** removed - real
+remaining dependents exist.
+
+**IS.66 stays Partial.** Precisely: cloud runtime IAM remediated (for
+soc2); application RBAC validated (already real/tested from prior
+engagement work); administrator-workstation-hardening evidence remains
+entirely pending and is the sole reason this row does not close, per
+`docs/security/admin-workstation-hardening-evidence.md`.
+
+**Score: mandatory 82/152 = 53.95%, overall 137/400 = 34.25% - both
+unchanged.** IS.07 not resumed; PR #15 not touched; local main not
+pushed. Cloud SQL Auth Proxy was not required for this batch (pure
+`gcloud`/Terraform IAM work plus HTTPS-only validation calls).

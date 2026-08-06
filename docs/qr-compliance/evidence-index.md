@@ -525,3 +525,22 @@ hardening remains entirely unverifiable from a code/cloud review
 (requires real HR/IT evidence). **IS.66 stays Partial - no score
 movement** (mandatory 82/152 = 53.95%, overall 137/400 = 34.25%,
 unchanged).
+
+## Update 2026-08-06 (continued): soc2 runtime service-account cutover
+
+`ist-triage-soc2` cut over for real from the default Compute Engine SA
+(project-wide `roles/editor`) to the dedicated, narrowly-scoped
+`ist-triage-cloudrun-sa` (`roles/cloudsql.client` +
+`secretmanager.secretAccessor` on only its own 3 secrets) - via a
+validated 0%-traffic canary (health check, real DB-connectivity proof,
+zero error-log entries), promoted to 100%, confirmed healthy, Terraform
+updated to match with zero drift. Demo service and all 4 Cloud Run Jobs
+deliberately not cut over this batch (demo needs its own approved
+window; the SLI-report job has a materially different permission need).
+`docs/security/gcp-iam-least-privilege-review.md`,
+`docs/security/privileged-identity-register.md`.
+
+**IS.66 stays Partial - no score movement** (mandatory 82/152 = 53.95%,
+overall 137/400 = 34.25%, unchanged). Administrator-workstation hardening
+remains entirely unverified -
+`docs/security/admin-workstation-hardening-evidence.md`.

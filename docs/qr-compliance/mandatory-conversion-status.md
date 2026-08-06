@@ -469,3 +469,14 @@ Workstation hardening honestly unverifiable from this review - requires
 HR/IT evidence. **IS.66 stays Partial - no score movement**
 (mandatory 82/152 = 53.95%, overall 137/400 = 34.25%, unchanged).
 `docs/security/is66-least-privilege-assessment.md`.
+
+## Update 2026-08-06 (continued): soc2 runtime service-account cutover
+
+Real production cutover of `ist-triage-soc2` to the dedicated
+least-privilege runtime SA, validated (canary + zero-error promotion +
+Terraform zero-drift). Demo and job cutovers deferred (separate
+deployment window / materially different permission needs). **IS.66
+stays Partial - no score movement** (mandatory 82/152 = 53.95%, overall
+137/400 = 34.25%, unchanged) - workstation-hardening evidence remains
+the blocking gap regardless of cloud-IAM progress.
+`docs/security/gcp-iam-least-privilege-review.md`.

@@ -1768,3 +1768,23 @@ confirmed already covered by prior engagement work. Workstation hardening
 honestly marked as requiring HR/IT evidence not available this session.
 **IS.66 stays Partial - no score movement.** Full report:
 `docs/security/is66-least-privilege-assessment.md`.
+
+## Update 2026-08-06 (continued): soc2 runtime service-account cutover
+
+Real production cutover: `ist-triage-soc2` now runs under the dedicated
+least-privilege SA (`ist-triage-cloudrun-sa`), replacing the
+over-privileged default compute SA - validated via a 0%-traffic canary
+(health check, DB-connectivity proof via a real login attempt, zero
+error/PERMISSION_DENIED log entries), promoted to 100%, confirmed
+healthy on the live custom domain, Terraform updated with zero drift.
+Demo (customer-facing) and the 4 Cloud Run Jobs deliberately deferred -
+the SLI-report job needs its own dedicated identity
+(`roles/monitoring.viewer`, a materially different need than the web
+service). Default compute SA's `roles/editor` not yet removed - real
+dependents remain (demo, all 4 jobs).
+
+**IS.66 stays Partial - no score movement.** Cloud runtime IAM
+remediated for soc2; application RBAC validated (already real/tested);
+workstation-hardening evidence still entirely pending. Full evidence:
+`docs/security/gcp-iam-least-privilege-review.md`,
+`docs/operations/runtime-service-account-cutover-runbook.md`.
