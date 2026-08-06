@@ -6,6 +6,39 @@ and the 6 focused packs. NFR-156 is explicitly NOT counted as closed
 in this summary - it remains Partial, per standing instruction, backed
 by real 25-user/20-minute-soak evidence rather than an untested gap._
 
+## Update 2026-08-06: Priority-0 scoring reconciliation - current authoritative figures
+
+A follow-up Priority-0 pass investigated a scoring discrepancy raised
+against an intermediate, erroneous report (never committed to any tracked
+document) that had used an unauthorized `Yes + 0.5*Partial` weighting and
+had silently dropped the entire Cloud CSQ tab due to a column-layout bug
+in that report's ad hoc script. Full investigation, row-count bridge, and
+retraction: `docs/qr-compliance/priority0-scoring-reconciliation-2026-08-06.md`.
+
+**Confirmed authoritative method: Method A (binary), exactly as already
+established below** - `Exact "Yes" / scored rows excluding N/A, across all
+4 tabs`. No workbook-authoritative weighted formula exists (the
+`Definitions & Instructions` sheet defines only 3 non-numeric compliance
+categories, no formula cells, no summary sheet). This has not changed.
+
+**Current mechanically-recomputed figures (new deterministic script,
+`scripts/reconcileComplianceScore.py`, 2026-08-06), superseding this
+document's 2026-08-05 figures below (not retracting them - they were
+correct as of their own date; the small deltas are real, legitimate
+intervening closures, itemized in the reconciliation doc):**
+
+- **Mandatory compliance: 80/152 = 52.63%** (was 78/149 = 52.35% on
+  2026-08-05; +2 mandatory Yes from the NFR-004 UX and NFR-004 AI
+  closures recorded 2026-08-06, +3 mandatory denominator from ordinary
+  recount drift)
+- **Overall compliance: 135/400 = 33.75%** (was 133/391 = 34.02% on
+  2026-08-05)
+- **Supplementary, non-authoritative maturity indicator only (never to
+  be called "compliance"): mandatory 63.49%, overall 49.12%** - reported
+  separately per explicit instruction, using `Yes + 0.5*Partial`.
+
+NFR-004 (UX tab) remains **Yes**. IS.07 remains **Partial**, untouched.
+
 ## Update 2026-08-05 (Batch 7A): the 82-vs-83 discrepancy, explained
 
 A follow-up review correctly noticed this document's own

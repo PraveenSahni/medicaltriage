@@ -1681,3 +1681,27 @@ this pass removes that exclusion entirely rather than changing the
 compliance status). See
 `docs/compatibility/cross-browser-validation-report.md` and
 `docs/compatibility/supported-browser-matrix.md`.
+
+## Update 2026-08-06 (continued): Priority-0 compliance-scoring reconciliation
+
+A scoring discrepancy was flagged against an intermediate, uncommitted
+report (never written to any tracked document) that had used an
+unauthorized `Yes + 0.5*Partial` weighting and a buggy script that
+silently dropped the entire Cloud CSQ tab (wrong column layout applied).
+Full investigation, per-tab mechanical recount, and row-count bridges:
+`docs/qr-compliance/priority0-scoring-reconciliation-2026-08-06.md`, using
+a new deterministic script `scripts/reconcileComplianceScore.py`.
+
+Confirmed the authoritative scoring method is, and remains, **Method A
+(binary compliance): exact "Yes" / scored rows excluding N/A, across all
+4 tabs (Non Functional Req, UX, AI, Cloud CSQ)** - already established in
+`docs/qr-compliance/management-summary.md` on 2026-08-05 (78/149 = 52.35%
+mandatory, 133/391 = 34.02% overall). No workbook-authoritative weighted
+formula exists. Current mechanical recount: **mandatory 80/152 = 52.63%,
+overall 135/400 = 33.75%** - the small deltas from the 2026-08-05 baseline
+are real, itemized, legitimate drift from this session's own intervening
+NFR-004 (UX and AI tab) closures, not a scoring-method change. A
+`Yes + 0.5*Partial` maturity indicator is reported separately (mandatory
+63.49%, overall 49.12%) and is explicitly labeled non-authoritative.
+
+NFR-004 (UX tab) remains **Yes**. IS.07 remains **Partial**, not resumed.

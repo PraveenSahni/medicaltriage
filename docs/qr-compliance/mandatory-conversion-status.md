@@ -407,3 +407,18 @@ user experience end-to-end. **Result: 86 of 86 tests now pass across all
 remains **Yes**, now with zero outstanding exclusions. See
 `docs/compatibility/cross-browser-validation-report.md` and
 `docs/architecture/call-center-workflow-model.md`.
+
+## Update 2026-08-06 (continued): Priority-0 scoring reconciliation
+
+A follow-up pass reconciled a scoring discrepancy against an intermediate,
+uncommitted, erroneous report that had used an unauthorized weighted
+formula and had silently dropped the Cloud CSQ tab (column-layout bug).
+Full investigation: `docs/qr-compliance/priority0-scoring-reconciliation-2026-08-06.md`.
+Confirmed authoritative method remains Method A (binary: exact Yes /
+scored rows excluding N/A, all 4 tabs) - unchanged from
+`docs/qr-compliance/management-summary.md`'s 2026-08-05 baseline.
+Mechanically recomputed current figures: **mandatory 80/152 = 52.63%,
+overall 135/400 = 33.75%** (small, legitimate drift from this session's
+own intervening NFR-004 UX/AI closures, not a scoring change). NFR-004
+(UX tab) remains **Yes**; this row itself is not affected by the
+reconciliation.
