@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { sanitizeForLog } from "../utils/logSanitizer.js";
 import type {
   AcuityDispositionCode,
   Prisma,
@@ -218,7 +219,7 @@ export async function getPersistedMfaCredential(userId: string): Promise<Persist
       enrolledAt: row.enrolledAt ? row.enrolledAt.toISOString() : undefined
     };
   } catch (error) {
-    console.error("Failed to read persisted MFA credential:", error);
+    console.error("Failed to read persisted MFA credential:", sanitizeForLog(error));
     return undefined;
   }
 }

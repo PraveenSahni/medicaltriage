@@ -1,5 +1,6 @@
 import { randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import type { IncomingHttpHeaders } from "node:http";
+import { sanitizeForLog } from "../utils/logSanitizer.js";
 import {
   allowInsecureRequests,
   authorizationCodeGrant,
@@ -2023,7 +2024,7 @@ async function recordAuditEvent(event: AuditEvent): Promise<void> {
   try {
     await persistSecurityAuditEvent(event);
   } catch (error) {
-    console.error("Failed to persist audit event (action itself still succeeds):", error);
+    console.error("Failed to persist audit event (action itself still succeeds):", sanitizeForLog(error));
   }
 }
 
@@ -2169,7 +2170,7 @@ async function mutateRolePermission(
       reason: actor.reason
     });
   } catch (error) {
-    console.error("Failed to persist role-permission override (change still applies in-memory):", error);
+    console.error("Failed to persist role-permission override (change still applies in-memory):", sanitizeForLog(error));
   }
 
   // session.permissions is a snapshot taken at login (see toSession()) and
@@ -2715,7 +2716,7 @@ export async function hydrateRolePermissionOverridesFromDatabase(): Promise<void
         hydrated.push({ roleCode: override.roleCode, permissionCode: override.permissionCode, action: override.action });
       }
     } catch (error) {
-      console.error(`Failed to hydrate role-permission overrides for ${roleCode}:`, error);
+      console.error(`Failed to hydrate role-permission overrides for ${roleCode}:`, sanitizeForLog(error));
     }
   }
   if (hydrated.length > 0) {
@@ -3031,7 +3032,7 @@ export function enrollMfa(userId: string): { secret: string; otpauthUrl: string 
   const secret = authenticator.generateSecret();
   mfaCredentials.set(userId, { secret, status: "pending", failedAttempts: 0 });
   void persistMfaCredential({ userId, secretCiphertext: encryptMfaSecret(secret), status: "pending" }).catch(
-    (error) => console.error("Failed to persist MFA credential (change still applies in-memory):", error)
+    (error) => console.error("Failed to persist MFA credential (change still applies in-memory):", sanitizeForLog(error))
   );
   void recordAuditEvent({
     id: randomUUID(),
@@ -3048,7 +3049,7 @@ export function enrollMfa(userId: string): { secret: string; otpauthUrl: string 
     device: "n/a",
     success: true,
     risk: "medium"
-  }).catch((error) => console.error("Failed to record MFA enrollment audit event:", error));
+  }).catch((error) => console.error("Failed to record MFA enrollment audit event:", sanitizeForLog(error)));
   const otpauthUrl = authenticator.keyuri(user.email, "IST Health Tele-Triage", secret);
   return { secret, otpauthUrl };
 }
@@ -3078,7 +3079,7 @@ export function confirmMfaEnrollment(userId: string, code: string): boolean {
     secretCiphertext: encryptMfaSecret(credential.secret),
     status: "enabled",
     enrolledAt: new Date().toISOString()
-  }).catch((error) => console.error("Failed to persist MFA credential (change still applies in-memory):", error));
+  }).catch((error) => console.error("Failed to persist MFA credential (change still applies in-memory):", sanitizeForLog(error)));
   const enrolledUser = users.find((candidate) => candidate.id === userId);
   void recordAuditEvent({
     id: randomUUID(),
@@ -3095,7 +3096,7 @@ export function confirmMfaEnrollment(userId: string, code: string): boolean {
     device: "n/a",
     success: true,
     risk: "medium"
-  }).catch((error) => console.error("Failed to record MFA enrollment audit event:", error));
+  }).catch((error) => console.error("Failed to record MFA enrollment audit event:", sanitizeForLog(error)));
   return true;
 }
 
@@ -3166,7 +3167,7 @@ export async function resetMfaForUser(
 
   mfaCredentials.set(targetUserId, { secret: "", status: "reset_required", failedAttempts: 0 });
   void persistMfaCredential({ userId: targetUserId, secretCiphertext: "", status: "reset_required" }).catch((error) =>
-    console.error("Failed to persist MFA reset (change still applies in-memory):", error)
+    console.error("Failed to persist MFA reset (change still applies in-memory):", sanitizeForLog(error))
   );
 
   const sessionsRevoked = await revokeSessionsForUser(targetUserId);
@@ -3407,7 +3408,7 @@ async function recordRevealEvent(args: {
   try {
     await persistRevealEvent({ ...args, ipAddress: "request-context", device: "request-context" });
   } catch (error) {
-    console.error("Failed to persist reveal event (in-memory state still consistent):", error);
+    console.error("Failed to persist reveal event (in-memory state still consistent):", sanitizeForLog(error));
   }
 }
 
@@ -3463,7 +3464,7 @@ async function checkRevealAnomalyRate(requesterUserId: string): Promise<void> {
       });
       count = result.count;
     } catch (error) {
-      console.error("Shared reveal-anomaly counter unavailable, falling back to local counter:", error);
+      console.error("Shared reveal-anomaly counter unavailable, falling back to local counter:", sanitizeForLog(error));
       count = countLocalRevealAttempts(requesterUserId, windowSeconds * 1000);
       degradedMode = true;
     }
@@ -3523,7 +3524,7 @@ async function checkRevealAnomalyRate(requesterUserId: string): Promise<void> {
       evidenceReferences: { requesterUserId, count, threshold, windowSeconds }
     });
   } catch (error) {
-    console.error("Failed to create privacy-incident candidate (anomaly audit event still recorded):", error);
+    console.error("Failed to create privacy-incident candidate (anomaly audit event still recorded):", sanitizeForLog(error));
   }
 }
 
@@ -3559,7 +3560,7 @@ export async function requestReveal(
       status: "pending"
     });
   } catch (error) {
-    console.error("Failed to persist reveal request (in-memory state still consistent):", error);
+    console.error("Failed to persist reveal request (in-memory state still consistent):", sanitizeForLog(error));
   }
 
   return { id, status: "pending" };
@@ -3598,7 +3599,7 @@ export async function decideReveal(
       status: decision
     });
   } catch (error) {
-    console.error("Failed to persist reveal approval (in-memory state still consistent):", error);
+    console.error("Failed to persist reveal approval (in-memory state still consistent):", sanitizeForLog(error));
   }
 
   if (decision === "approved") {
@@ -3670,7 +3671,7 @@ async function persistRevealRequestStatus(record: PendingRevealRequest): Promise
       status: record.status
     });
   } catch (error) {
-    console.error("Failed to persist reveal request status (in-memory state still consistent):", error);
+    console.error("Failed to persist reveal request status (in-memory state still consistent):", sanitizeForLog(error));
   }
 }
 

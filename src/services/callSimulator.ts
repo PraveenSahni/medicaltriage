@@ -12,6 +12,7 @@
  */
 
 import { buildSimulatedQueueCreateRequest, loadStaffCandidatePool, type SimulatorCandidate } from "./queueCallGenerator.js";
+import { sanitizeForLog } from "../utils/logSanitizer.js";
 
 const INTAKE_USERNAME = "intake@irisstar.tech";
 const INTAKE_PASSWORD = "Intake@2026";
@@ -102,7 +103,7 @@ export function startIncomingCallSimulator(baseUrl: string, callsPerTick = 2, in
         await createOneCall(baseUrl, jar, candidates);
       }
     } catch (error) {
-      console.error("[call-simulator] tick failed", error);
+      console.error("[call-simulator] tick failed", sanitizeForLog(error));
       loggedIn = false;
     }
   }
@@ -196,7 +197,7 @@ function startOtherNurseActivitySimulator(baseUrl: string, minClaimed = 2, maxCl
         const ids = Array.from(claimedIds);
         const id = pick(ids);
         claimedIds.delete(id);
-        await finishOne(id).catch((error) => console.error("[call-simulator] other-nurse finish failed", error));
+        await finishOne(id).catch((error) => console.error("[call-simulator] other-nurse finish failed", sanitizeForLog(error)));
       }
       const target = minClaimed + Math.floor(Math.random() * (maxClaimed - minClaimed + 1));
       while (claimedIds.size < target) {
@@ -205,7 +206,7 @@ function startOtherNurseActivitySimulator(baseUrl: string, minClaimed = 2, maxCl
         if (claimedIds.size === before) break; // nothing left to claim
       }
     } catch (error) {
-      console.error("[call-simulator] other-nurse tick failed", error);
+      console.error("[call-simulator] other-nurse tick failed", sanitizeForLog(error));
       loggedIn = false;
     }
   }

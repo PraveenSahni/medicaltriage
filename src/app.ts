@@ -182,7 +182,19 @@ export function createApp() {
     return next();
   });
   if (process.env.NODE_ENV !== "test") {
-    app.use(morgan("combined"));
+    // NFR-078/NFR-004(AI): morgan's built-in ":url" token logs the full
+    // request path *including query string* verbatim. No current route
+    // accepts sensitive data as a query parameter, but nothing structurally
+    // prevents a future one from doing so - stripping the query string here
+    // closes that class of leak at the logging layer rather than relying on
+    // every future route author to remember not to log it. Path, method,
+    // status, size, referrer, and user-agent are unaffected.
+    morgan.token("url-no-query", (req) => (req.url ?? "").split("?")[0]);
+    app.use(
+      morgan(
+        ':remote-addr - :remote-user [:date[clf]] ":method :url-no-query HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'
+      )
+    );
   }
 
   app.get("/healthz", (_req, res) => {

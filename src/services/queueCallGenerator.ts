@@ -8,6 +8,7 @@
  */
 
 import { readFileSync } from "node:fs";
+import { sanitizeForLog } from "../utils/logSanitizer.js";
 import path from "node:path";
 import type { QueueCreateRequest } from "../types/queue.js";
 import { resolveStaffProfile } from "./hrmsOracleAdapter.js";
@@ -123,7 +124,7 @@ export function loadStaffCandidatePool(): SimulatorCandidate[] {
       .slice(0, 3000)
       .map((worker) => ({ istStaffId: worker.PersonNumber, department: worker.DepartmentName, jobTitle: worker.JobName }));
   } catch (error) {
-    console.error("[queue-call-generator] failed to load HRMS candidate pool", error);
+    console.error("[queue-call-generator] failed to load HRMS candidate pool", sanitizeForLog(error));
     cachedStaffCandidatePool = [];
   }
   return cachedStaffCandidatePool;

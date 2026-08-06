@@ -8,6 +8,7 @@
 // real SLA, real recipients, and an approval are all configured - see
 // docs/security/privacy-incident-notification-procedure.md.
 import { randomUUID } from "node:crypto";
+import { sanitizeForLog } from "../utils/logSanitizer.js";
 import {
   getPrivacyNotificationCustomerRecipients,
   getPrivacyNotificationInternalRecipients,
@@ -30,7 +31,7 @@ async function recordWorkflowAuditEvent(event: Omit<AuditEvent, "id" | "timestam
   try {
     await persistSecurityAuditEvent({ ...event, id: randomUUID(), timestampIso: new Date().toISOString() });
   } catch (error) {
-    console.error("Failed to persist privacy-incident workflow audit event (workflow state itself is unaffected):", error);
+    console.error("Failed to persist privacy-incident workflow audit event (workflow state itself is unaffected):", sanitizeForLog(error));
   }
 }
 

@@ -24,6 +24,20 @@
  *   npx tsx src/scripts/fulfillPrivacyRequests.ts --execute
  */
 import { PrismaClient } from "@prisma/client";
+import { sanitizeForLog } from "../utils/logSanitizer.js";
+
+// Masks a person identifier for console output (NFR-078/NFR-004 AI-tab) -
+// the durable AuditEvent.metadata below still records the real, unmasked
+// requesterRef, since that's the legitimate, access-controlled audit trail
+// this job exists to produce; console output goes to Cloud Logging, a much
+// broader-access surface, so it gets the same partial mask already used
+// elsewhere in this codebase for identifiers in logs/output.
+function maskIdentifier(value: string): string {
+  if (value.length <= 4) {
+    return "***";
+  }
+  return `${value.slice(0, 3)}***${value.slice(-2)}`;
+}
 
 const prisma = new PrismaClient();
 
@@ -76,7 +90,7 @@ async function main() {
         earliestCreatedAt: items.length ? items.reduce((a, b) => (a.createdAt < b.createdAt ? a : b)).createdAt : null,
         latestUpdatedAt: items.length ? items.reduce((a, b) => (a.updatedAt > b.updatedAt ? a : b)).updatedAt : null
       };
-      console.log(`[access] ${request.id} (${request.requesterRef}): ${items.length} record(s)`, summary);
+      console.log(`[access] ${request.id} (${maskIdentifier(request.requesterRef)}): ${items.length} record(s)`, summary);
 
       if (execute) {
         await prisma.privacyRequest.update({
@@ -106,7 +120,7 @@ async function main() {
       const heldCount = items.length - eligible.length;
 
       console.log(
-        `[erasure] ${request.id} (${request.requesterRef}): ${items.length} record(s), ${heldCount} excluded by legal hold, ` +
+        `[erasure] ${request.id} (${maskIdentifier(request.requesterRef)}): ${items.length} record(s), ${heldCount} excluded by legal hold, ` +
           `${eligible.length} eligible for deletion`
       );
 
@@ -152,6 +166,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error("Privacy request fulfillment run failed:", error);
+  console.error("Privacy request fulfillment run failed:", sanitizeForLog(error));
   process.exitCode = 1;
 });
