@@ -497,3 +497,13 @@ reachability subcomponent (applicable, only partially met via existing
 security-header checks). Moved No -> Partial, not full-row N/A. **No
 score impact** (mandatory 82/151 = 54.30%, overall 137/399 = 34.34%,
 unchanged). `docs/security/na-applicability-register.md`.
+
+## Update 2026-08-06 (continued): non-standard mandatory response-value normalization
+
+5 mandatory rows normalized to exact Yes/Partial/No/N/A/Other (3 moved
+to N/A: AI/NFR-044, NFR/NFR-193, Cloud CSQ/RM.02 - all genuinely
+non-technical/inapplicable; 2 relabeled with unchanged bucket: AI/
+NFR-010 -> No, Cloud CSQ/IS.62 -> Other, explicitly not N/A since it's
+a real, applicable, unanswered legal question). **Mandatory: 82/151 =
+54.30% -> 82/148 = 55.41%. Overall: 137/399 = 34.34% -> 137/396 =
+34.60%.** Numerator unchanged. `docs/security/na-applicability-register.md`.

@@ -1813,3 +1813,19 @@ split, not marked full-row N/A. Full analysis:
 **No score impact on the binary Method A score** - a No->Partial bucket
 shift does not change the scored denominator or Yes numerator (mandatory
 stays 82/151 = 54.30%, overall stays 137/399 = 34.34%).
+
+## Update 2026-08-06 (continued): non-standard mandatory response-value normalization
+
+5 mandatory rows carrying non-standard Compliance-field strings
+normalized to exact Yes/Partial/No/N/A/Other values (explanatory detail
+kept in Remarks): AI/NFR-010 `No - blocked` -> `No`; AI/NFR-044 `N/A for
+AI; Partial for the app generally` -> `N/A` (row-scope: AI tab's own
+question is genuinely inapplicable, no live AI/LLM component exists);
+NFR/NFR-193 `N/A (commercial)` -> `N/A`; Cloud CSQ/IS.62 `Needs legal
+input` -> `Other` (explicitly not N/A - a real, applicable, unanswered
+legal question); Cloud CSQ/RM.02 `N/A (commercial)` -> `N/A`. Full
+reasoning: `docs/security/na-applicability-register.md`.
+
+**Mandatory: 82/151 (54.30%) -> 82/148 (55.41%). Overall: 137/399
+(34.34%) -> 137/396 (34.60%).** Numerator unchanged - entirely a
+classification/denominator cleanup, not a new compliance closure.

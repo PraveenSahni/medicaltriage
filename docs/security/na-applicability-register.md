@@ -66,3 +66,29 @@ A requirement (or subcomponent) may be classified N/A only when:
 | IG.06/PA.04 (customer-configurable geo-routing) | A real, buildable feature that doesn't exist yet, not architecturally inapplicable |
 | AR.21 (host FIM subcomponent) | Already correctly split (Yes overall, FIM subcomponent documented N/A) prior to this register's creation - see `docs/architecture/serverless-integrity-control-mapping.md` |
 | IS.66 (full row) | Compound requirement; no subcomponent qualifies for N/A - all four parts (cloud IAM, application RBAC, least privilege, workstation hardening) are genuinely applicable, in varying states of completion |
+
+---
+
+## Non-standard mandatory response-value normalization (2026-08-06)
+
+Five mandatory rows carrying non-standard Compliance-field strings were
+normalized to exactly one of Yes/Partial/No/N/A/Other, with all
+explanatory detail kept in Remarks rather than embedded in the
+Compliance field:
+
+| Tab | ID | Prior value | Normalized to | Basis |
+|---|---|---|---|---|
+| AI | NFR-010 | `No - blocked` | **No** | Genuinely applicable (Security Command Center could be enabled if IST restructures the GCP account under an Organization - a business decision, not an architectural impossibility). Not N/A - "blocked" detail retained in Remarks only |
+| AI | NFR-044 | `N/A for AI; Partial for the app generally` | **N/A** | Row-scope interpretation: this row is on the AI tab and asks specifically about logging AI requests/responses; no live AI/LLM component exists in this codebase (confirmed by code search), so the row's actual, in-scope question is genuinely inapplicable. The "Partial for the app generally" aside describes a different, non-AI audit-logging capability outside this row's own scope - it does not make this row itself Partial |
+| Non Functional Req | NFR-193 | `N/A (commercial)` | **N/A** | A commercial/sales-relationship question (reference customers) with no technical or architectural content whatsoever - independently validated as inherently non-technical, not a deferred technical control |
+| Cloud CSQ | IS.62 | `Needs legal input` | **Other** | Explicitly NOT reclassified N/A - Privacy Policy/Qatar-law alignment is a real, applicable legal-compliance question awaiting an answer, not something outside scope (N/A would misuse the classification to hide a missing approval, which the strict test forbids). Not No/Partial either - no assessment has been performed at all, so neither would be honest |
+| Cloud CSQ | RM.02 | `N/A (commercial)` | **N/A** | SLA remuneration terms are a commercial/contractual matter with no technical or architectural content - same reasoning as NFR-193 |
+
+**Score impact**: mandatory 82/151 (54.30%) -> **82/148 (55.41%)**;
+overall 137/399 (34.34%) -> **137/396 (34.60%)**. Numerator unchanged in
+both cases - this is entirely a denominator/classification cleanup
+(3 rows moved from a non-standard "Other"-equivalent string to exact
+N/A; 2 rows relabeled to exact No/Other with identical scoring
+treatment), not a new compliance closure. Future mechanical rescoring
+of this workbook will now recognize all 5 rows as exact-match values
+rather than falling into the "unrecognized value" warning bucket.

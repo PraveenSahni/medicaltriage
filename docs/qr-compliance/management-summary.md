@@ -457,3 +457,17 @@ cipher/port scan does). Moved No -> Partial to reflect this precisely -
 **Current compliance (mechanically recomputed 2026-08-06): mandatory
 82/151 = 54.30%, overall 137/399 = 34.34%.** Full reasoning for both
 rows: `docs/security/na-applicability-register.md`.
+
+## Update 2026-08-06 (continued): non-standard mandatory response-value normalization
+
+5 mandatory rows with non-standard Compliance strings normalized to
+exact Yes/Partial/No/N/A/Other, per `docs/security/na-applicability-
+register.md`. 3 rows moved to N/A (AI/NFR-044, NFR/NFR-193, Cloud CSQ/
+RM.02 - each a genuinely non-technical or out-of-scope question); 2
+relabeled without a bucket change (AI/NFR-010 -> No; Cloud CSQ/IS.62 ->
+Other, deliberately not N/A since it remains a real, applicable,
+unanswered legal question).
+
+**Current compliance (mechanically recomputed 2026-08-06): mandatory
+82/148 = 55.41%, overall 137/396 = 34.60%.** Numerator unchanged in
+both - a classification/denominator cleanup only.
