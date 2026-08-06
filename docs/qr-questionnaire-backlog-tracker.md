@@ -1721,3 +1721,21 @@ moving all three to Yes because the batch completed:
 **Mandatory 80/152 (52.63%) -> 81/152 (53.29%). Overall 135/400 (33.75%)
 -> 136/400 (34.00%).** Full backend suite 771/771, tsc clean. Local
 commits only, main not pushed; IS.07 not resumed; PR #15 not touched.
+
+## Update 2026-08-06 (continued): Security-detection batch (AR.21, NFR-118)
+
+- **CSQ AR.21 -> Yes**: real, shared, multi-instance-safe application-
+  level intrusion detector (`docs/security/application-intrusion-
+  detection.md`); FIM/host clause formally non-applicable under serverless
+  architecture (`docs/architecture/serverless-integrity-control-mapping.md`).
+- **NFR-118 -> stays Partial**: the 3 new alert policies were deployed for
+  real against the live soc2 project, a real filter bug found via live
+  synthetic validation was fixed, but a full incident-fire-and-resolve
+  cycle was not completed this session
+  (`docs/operations/anomaly-alerting-matrix.md`).
+
+**Mandatory 81/152 (53.29%) -> 82/152 (53.95%). Overall 136/400 (34.00%)
+-> 137/400 (34.25%).** Full backend suite 781/781, tsc clean. Cloud SQL
+Auth Proxy active (used for the SecurityAnomalyEvent migration + real-
+Postgres integration tests). Local commits only, main not pushed; IS.07
+not resumed; PR #15 not touched.

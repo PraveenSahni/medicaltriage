@@ -435,3 +435,17 @@ integrity rule against counting preparation as an operating control.
 **Mandatory: 80/152 = 52.63% -> 81/152 = 53.29%. Overall: 135/400 = 33.75%
 -> 136/400 = 34.00%.** Full backend suite 771/771, tsc clean. IS.07
 remains untouched at Partial; PR #15 not modified; local main not pushed.
+
+## Update 2026-08-06 (continued): Security-detection batch
+
+**CSQ AR.21 moves to Yes** - a real, shared, multi-instance-safe
+application-level intrusion detector, plus a defensible, documented
+non-applicability finding for the file-integrity/host clause under this
+serverless architecture. **NFR-118 stays Partial** - the 3 new alert
+policies are now genuinely deployed against the live soc2 project
+(a real filter bug was found and fixed via live synthetic validation),
+but a full incident-fire-and-resolve cycle remains outstanding.
+
+**Mandatory: 81/152 = 53.29% -> 82/152 = 53.95%. Overall: 136/400 = 34.00%
+-> 137/400 = 34.25%.** Full backend suite 781/781, tsc clean. IS.07
+untouched; PR #15 untouched; local main not pushed.

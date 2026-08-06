@@ -89,12 +89,52 @@ credentials blocker - flagged as the very next actionable step.
    alert resolves, retain evidence.
 5. Document policy owners formally in this matrix.
 
+## Update 2026-08-06 (continued): deployed and partially validated
+
+All 3 new policies were applied for real via `terraform apply` (scoped
+via `-target` to only these 6 resources; a full, untargeted
+`terraform plan` afterward showed zero drift anywhere else in the
+project). Wired to the existing, already-operational internal IST
+notification channel ("Triage Ops Email" -
+`projects/triage-502706/notificationChannels/15435234724333157056`,
+confirmed via `gcloud alpha monitoring channels list`, the same channel
+already used by all 5 pre-existing policies) - no new channel needed, no
+Qatar Airways recipient used.
+
+The queue-backlog metric is now backed by a real emission
+(`emitQueueBacklogMetric()` in `src/services/queueOrchestration.ts`,
+called from `listQueueItems()`).
+
+**A real, more significant defect was found and fixed during synthetic
+validation**: the auth-failure-rate log filter originally read
+`jsonPayload.path="/api/v1/auth/login"`, but a live synthetic
+failed-login trigger against `https://triagedsoc2.irisstar.tech` showed
+via `gcloud logging read` that `requestDurationLogger` actually logs
+router-relative paths (`"/login"`, not the full mount path) - the
+original filter would never have matched anything. Fixed and
+re-`terraform apply`-ed; a follow-up synthetic trigger confirmed real log
+entries now match the corrected filter.
+
+**What was validated**: real synthetic failed-login attempts against the
+live soc2 environment produce real, matching Cloud Logging entries for
+the auth-failure-rate metric (confirmed via `gcloud logging read`).
+
+**What was NOT completed this batch**: a full incident-fire-and-resolve
+cycle (metric crosses threshold -> policy enters incident state ->
+notification delivered -> condition clears -> policy resolves) for any
+of the 3 policies. Each requires sustained real traffic sampled across a
+genuine 5-15 minute Cloud Monitoring alignment window, which was not
+completed within this session. This is the one remaining gap before
+NFR-118 can move to Yes per its own closure rule ("policies are deployed,
+internal alert routing works, synthetic trigger/resolve cycles succeed").
+
 ## Closure decision
 
-**NFR-118 stays Partial**, strengthened from the prior state (4 real
-policies) with 2 of 3 new policies now backed by real emitted log data
-(auth-failure, privacy-anomaly) and one (queue-backlog) honestly disclosed
-as not yet backed by any emission at all. None of the 3 new policies have
-been applied or synthetically validated this batch - per the batch's own
-rule, definitions in Terraform without deployment and triggering do not
-constitute an operational alert.
+**NFR-118 stays Partial.** All 3 new policies are now genuinely deployed
+(not merely defined) against the real soc2 project, correctly filtered
+(after a real bug fix confirmed via live log inspection), and wired to an
+operational internal notification channel - a substantial, real
+strengthening from the prior "prepared, not applied" state. It does not
+yet move to Yes because the full synthetic trigger/resolve cycle (proving
+the policies actually fire and notify, not just that they exist and
+parse real log data) was not completed this session.

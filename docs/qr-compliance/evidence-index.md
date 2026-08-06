@@ -471,3 +471,26 @@ Three mandatory rows independently assessed:
 -> 136/400 (34.00%).** Exactly +1 Yes each, from IS.13 alone - IS.40 and
 NFR-118 did not move, consistent with assessing each row independently
 rather than closing all three because the batch completed.
+
+## Update 2026-08-06 (continued): Security-detection batch (CSQ AR.21, NFR-118)
+
+- **CSQ AR.21 (file integrity/host + network IDS) moves to Yes.** A
+  real, shared, multi-instance-safe application-level intrusion detector
+  now exists (SecurityAnomalyEvent, wired to AUTH_FAILURE/MFA_FAILURE/
+  PAM_ELEVATION_DENIED, 8 tests incl. 2 real-PostgreSQL integration
+  tests). The file-integrity/host clause is formally, defensibly assessed
+  as non-applicable under this serverless Cloud Run architecture
+  (immutable images, no host filesystem, no SSH access) - not silently
+  omitted. `docs/security/application-intrusion-detection.md`,
+  `docs/architecture/serverless-integrity-control-mapping.md`.
+- **NFR-118 (anomaly alerting) stays Partial**, substantially
+  strengthened: all 3 new alert policies were deployed for real via
+  `terraform apply` against the live soc2 project (confirmed zero drift
+  elsewhere), wired to the existing operational internal IST notification
+  channel, and a real deploy-time filter bug was found and fixed via live
+  synthetic validation. Does not yet move to Yes - a full incident-fire-
+  and-resolve cycle for the 3 new policies was not completed this
+  session. `docs/operations/anomaly-alerting-matrix.md`.
+
+**Mandatory: 81/152 (53.29%) -> 82/152 (53.95%). Overall: 136/400 (34.00%)
+-> 137/400 (34.25%).** Exactly +1 Yes, from AR.21 alone.

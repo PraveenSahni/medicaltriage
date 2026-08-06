@@ -416,3 +416,33 @@ Do not resume IS.07; PR #15 untouched; local main not pushed.
 `gcloud auth list` confirmed active credentials to `triage-502706`
 throughout this batch (used only to confirm activation feasibility for a
 future pass, not to apply any live infrastructure change this batch).
+
+## Update 2026-08-06 (continued): Security-detection batch (CSQ AR.21, NFR-118)
+
+This time, real live infrastructure changes were applied (unlike the
+prior batch's deliberate deferral): all 3 NFR-118 alert policies were
+`terraform apply`-ed against the real `triage-502706` project (scoped via
+`-target`, confirmed zero drift elsewhere via a full untargeted
+`terraform plan` afterward), wired to the existing operational internal
+IST notification channel. Real synthetic failed-login attempts were sent
+directly to `https://triagedsoc2.irisstar.tech`, and `gcloud logging read`
+confirmed real matching Cloud Logging entries - which surfaced a genuine
+defect (the auth-failure-rate filter referenced a path format that
+request logging never actually produces), fixed and re-verified live.
+
+**CSQ AR.21 moves to Yes** (a new SecurityAnomalyEvent Prisma model +
+migration applied against the real local soc2 Postgres via the Cloud SQL
+Auth Proxy; 8 tests including 2 real-PostgreSQL integration tests).
+**NFR-118 stays Partial** - deployed and partially validated, but a full
+incident-fire-and-resolve cycle (requiring a genuine 5-15 minute
+sustained-traffic window) was not completed this session.
+
+**Score movement**: mandatory 81/152 (53.29%) -> **82/152 (53.95%)**;
+overall 136/400 (34.00%) -> **137/400 (34.25%)** - exactly +1 Yes, from
+AR.21 alone.
+
+Do not resume IS.07; PR #15 untouched; local main not pushed. The
+Terraform apply and `gcloud logging read`/synthetic-trigger calls
+targeted only the already-approved soc2 environment - no change was made
+to `triaged.irisstar.tech` (the live customer-facing demo) or to any
+other project resource.

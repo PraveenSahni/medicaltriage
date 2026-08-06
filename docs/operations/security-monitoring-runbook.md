@@ -34,17 +34,18 @@ scanning), NFR-118 (anomaly alerting)._
 
 ## NFR-118 - anomaly alerting
 
-- **Where**: `terraform/alerting.tf` (3 new policies, not yet applied);
+- **Where**: `terraform/alerting.tf` (3 new policies, deployed 2026-08-06 -
+  confirmed via `gcloud alpha monitoring policies list --project=triage-502706`);
   existing 5 policies documented in `docs/sli-slo-definitions.md`.
 - **On-call action for an incident**: each policy's `documentation.content`
   field (visible in the Cloud Monitoring incident) states the specific
   investigation step (e.g. "investigate the source IP(s)" for the
-  auth-failure-spike policy).
-- **Before treating the 3 new policies as active**: confirm via
-  `gcloud alpha monitoring policies list --project=triage-502706` that they
-  actually exist - `terraform/alerting.tf` being present in this repo does
-  NOT mean they are deployed. See `docs/operations/anomaly-alerting-matrix.md`
-  for the exact remaining activation steps.
+  auth-failure-spike policy). All 8 policies (5 existing + 3 new) notify
+  the same internal IST channel ("Triage Ops Email").
+- **Remaining gap, disclosed**: a full incident-fire-and-resolve cycle has
+  not yet been observed for any of the 3 new policies (requires sustained
+  real traffic across a genuine 5-15 minute alignment window) - see
+  `docs/operations/anomaly-alerting-matrix.md` for exact remaining steps.
 
 ## General principle for all three
 
