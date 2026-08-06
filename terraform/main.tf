@@ -14,11 +14,24 @@
 # not an aspirational target.
 
 terraform {
+  required_version = "~> 1.14.0"
+
   required_providers {
     google = {
       source  = "hashicorp/google"
       version = "~> 5.0"
     }
+  }
+
+  # Remote state (IS.07): previously local-only, which meant no CI identity
+  # could ever safely run `terraform plan` (no shared state, no locking).
+  # This bucket also has object versioning enabled, so a bad state write is
+  # recoverable. State-locking is GCS's native lock-on-write behavior for
+  # this backend - Terraform refuses a concurrent plan/apply against a
+  # locked state file.
+  backend "gcs" {
+    bucket = "triage-502706-terraform-state"
+    prefix = "soc2"
   }
 }
 
@@ -159,7 +172,7 @@ resource "google_cloud_run_v2_service" "soc2" {
     }
 
     containers {
-      image = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:quickwins2-20260804"
+      image = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:20260806-mfa-ui"
 
       env {
         name  = "NODE_ENV"
@@ -231,6 +244,38 @@ resource "google_cloud_run_v2_service" "soc2" {
             version = "latest"
           }
         }
+      }
+      env {
+        name  = "MFA_MANDATORY"
+        value = "true"
+      }
+      env {
+        name  = "MFA_DB_PERSISTENCE"
+        value = "true"
+      }
+      env {
+        name  = "AUDIT_EVENT_DB_PERSISTENCE"
+        value = "true"
+      }
+      env {
+        name  = "ROLE_PERMISSION_DB_PERSISTENCE"
+        value = "true"
+      }
+      env {
+        name  = "REVEAL_WORKFLOW_DB_PERSISTENCE"
+        value = "true"
+      }
+      env {
+        name  = "REVEAL_ANOMALY_DB_PERSISTENCE"
+        value = "true"
+      }
+      env {
+        name  = "PRIVACY_NOTIFICATION_ENABLED"
+        value = "false"
+      }
+      env {
+        name  = "PRIVACY_NOTIFICATION_DRY_RUN"
+        value = "true"
       }
 
       volume_mounts {
