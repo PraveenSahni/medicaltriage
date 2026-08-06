@@ -28,11 +28,19 @@ variable "notification_channel_ids" {
 # for repeated 401 responses on /api/v1/auth/login within a short window,
 # a real brute-force/credential-stuffing indicator.
 resource "google_logging_metric" "auth_failure_rate" {
-  name   = "soc2_auth_failure_rate"
+  name = "soc2_auth_failure_rate"
+  # jsonPayload.path is router-relative (requestDurationLogger reads
+  # req.path, which excludes the router's own mount prefix), NOT the full
+  # request URL - confirmed by reading real live Cloud Logging entries
+  # during this batch's synthetic validation: POST /api/v1/auth/login
+  # actually logs path="/login". The original filter (path=
+  # "/api/v1/auth/login") would never have matched anything - fixed here
+  # before this was discovered to be broken only after go-live.
   filter = <<-EOT
     resource.type="cloud_run_revision"
     resource.labels.service_name="ist-triage-soc2"
-    jsonPayload.path="/api/v1/auth/login"
+    jsonPayload.path="/login"
+    jsonPayload.method="POST"
     jsonPayload.statusCode=401
   EOT
 
@@ -71,7 +79,7 @@ resource "google_monitoring_alert_policy" "auth_failure_spike" {
 # CSQ IS.61) to a real Cloud Monitoring alert, so a detected anomaly
 # reaches an operational alert channel, not just an in-app audit record.
 resource "google_logging_metric" "privacy_reveal_anomaly" {
-  name   = "soc2_privacy_reveal_anomaly"
+  name = "soc2_privacy_reveal_anomaly"
   # Matches the real structured stdout line added in
   # src/services/securityAdmin.ts's checkRevealAnomalyRate()
   # ({"type":"security_event","action":"PRIVACY_REVEAL_ANOMALY_DETECTED",...})
@@ -120,28 +128,42 @@ resource "google_monitoring_alert_policy" "privacy_reveal_anomaly" {
 # low traffic outside business hours (a low-volume period is not itself
 # an anomaly).
 #
-# HONEST GAP, DISCLOSED: unlike the two policies above (both backed by a
-# real, already-emitted log line), no code anywhere currently emits a
-# `queue_oldest_waiting_item_age_seconds` value to stdout/Cloud Logging -
-# this metric definition is prepared ahead of that instrumentation, not
-# after it. This policy cannot fire until a small, separate follow-up adds
-# a periodic (e.g. scheduled-job or per-request) structured log line
-# emitting that gauge value. Do not treat this policy as operational
-# evidence until that emission point exists and is verified.
+# Backed by a real, already-emitted log line: emitQueueBacklogMetric() in
+# src/services/queueOrchestration.ts, called from listQueueItems() on every
+# real, unfiltered (or near-unfiltered) queue read. This is per-request
+# sampling, not a true continuous background-job gauge (no scheduled-job
+# infrastructure exists for this purpose today) - a disclosed, accepted
+# limitation, not a hidden gap. See
+# docs/operations/anomaly-alerting-matrix.md.
 resource "google_logging_metric" "queue_oldest_waiting_item_age_seconds" {
   name   = "soc2_queue_oldest_waiting_item_age_seconds"
   filter = <<-EOT
     resource.type="cloud_run_revision"
     resource.labels.service_name="ist-triage-soc2"
-    jsonPayload.metric="queue_oldest_waiting_item_age_seconds"
+    jsonPayload.type="queue_metric"
+    jsonPayload.metric="queue_backlog"
   EOT
 
+  # GCP requires value_type = DISTRIBUTION for any log-based metric that
+  # extracts a numeric field via value_extractor (confirmed via a real
+  # apply-time 400 error: "A value extractor can only be specified for a
+  # DISTRIBUTION value type") - GAUGE/INT64 only supports a plain event
+  # count, not an extracted value. ALIGN_MAX in the alert policy below
+  # still gives the correct "oldest age observed in the window" semantic
+  # against a distribution metric.
   metric_descriptor {
-    metric_kind = "GAUGE"
-    value_type  = "INT64"
+    metric_kind = "DELTA"
+    value_type  = "DISTRIBUTION"
     unit        = "s"
   }
-  value_extractor = "EXTRACT(jsonPayload.value)"
+  value_extractor = "EXTRACT(jsonPayload.oldestWaitingAgeSeconds)"
+  bucket_options {
+    exponential_buckets {
+      num_finite_buckets = 30
+      growth_factor      = 2
+      scale              = 1
+    }
+  }
 }
 
 resource "google_monitoring_alert_policy" "queue_backlog_age" {
@@ -155,8 +177,12 @@ resource "google_monitoring_alert_policy" "queue_backlog_age" {
       threshold_value = 1800
       duration        = "300s"
       aggregations {
-        alignment_period   = "300s"
-        per_series_aligner = "ALIGN_MAX"
+        alignment_period = "300s"
+        # DISTRIBUTION + DELTA metrics only accept a percentile aligner
+        # (confirmed via a real apply-time 400 error against ALIGN_MAX) -
+        # p99 of the observed ages in each window is the correct "oldest
+        # age" proxy for this metric shape.
+        per_series_aligner = "ALIGN_PERCENTILE_99"
       }
     }
   }
