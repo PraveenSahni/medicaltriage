@@ -335,3 +335,26 @@ soc2 environment** - see
 evidence and the explicit scope note (this activation covers soc2
 only, the only environment this engagement's technical evidence has
 ever targeted).
+
+## PRIORITY-0 CORRECTION 2026-08-06: AR.13 reverted from Yes to Partial
+
+The prior batch's move to Yes rested on curl-only validation. A real,
+material gap was found: the browser UI has no handling at all for
+`mfaRequired`/`mfaEnrollmentRequired` - a real user sees only a
+generic failure message. Backend/API enforcement remains real and
+operational; the interactive user journey does not exist yet.
+**Reverted to Partial** pending a real frontend fix (see the
+backlog tracker and evidence index for the immediate follow-up batch).
+
+## Update 2026-08-06 (continued): real frontend MFA UI built and browser-validated - AR.13 back to Yes
+
+Built the missing browser-facing MFA enrollment/challenge UI in
+`LoginCard.tsx` (enrollment screen with manual setup key, challenge
+screen, setup-complete confirmation - state held only in memory,
+secret never re-shown after enrollment). Deployed via canary-then-
+cutover, validated via real Browser-pane interaction (not curl): an
+unenrolled account was shown the real enrollment screen and completed
+it; a subsequent fresh login correctly required and completed the MFA
+challenge, granting real application access. Confirmed on production
+too. **AR.13 moves back to Yes**, this time genuinely backed by a real
+user-journey validation rather than API-only evidence.

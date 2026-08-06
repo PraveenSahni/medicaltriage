@@ -35,7 +35,17 @@ export type LoginCardProps = {
   onAuthenticated: (session: AuthenticatedSession, redirectTo: "workspace" | "admin") => void;
 };
 
-const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+const apiBase = import.meta.env?.VITE_API_BASE_URL || "";
+
+// Real states for the MFA login/enrollment journey (closes the AR.13
+// Priority-0 gap: backend enrollment-token and challenge APIs were real,
+// but the browser had zero handling for either response, leaving a real
+// user at a dead-end generic failure message). Enrollment tokens, MFA
+// challenge ids, and the TOTP secret only ever live in this component's
+// in-memory state - never in the URL, never in localStorage/sessionStorage -
+// and are cleared the moment they're no longer needed (see resetToLogin()
+// and the success/failure branches below).
+type MfaStage = "password" | "challenge" | "enroll" | "enrollDone";
 
 type LoginErrorKind = "invalid" | "locked" | "disabled" | "network" | "server";
 
@@ -67,6 +77,121 @@ export function LoginCard({ onAuthenticated }: LoginCardProps) {
   const [errorMessage, setErrorMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
+  const [mfaStage, setMfaStage] = useState<MfaStage>("password");
+  const [challengeId, setChallengeId] = useState("");
+  const [enrollmentToken, setEnrollmentToken] = useState("");
+  const [enrollSecret, setEnrollSecret] = useState("");
+  const [enrollOtpauthUrl, setEnrollOtpauthUrl] = useState("");
+  const [otpCode, setOtpCode] = useState("");
+
+  function resetToLogin() {
+    setMfaStage("password");
+    setChallengeId("");
+    setEnrollmentToken("");
+    setEnrollSecret("");
+    setEnrollOtpauthUrl("");
+    setOtpCode("");
+    setPassword("");
+    setErrorMessage("");
+  }
+
+  async function startEnrollment(token: string) {
+    try {
+      const response = await fetch(`${apiBase}/api/v1/auth/mfa/enroll`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enrollmentToken: token })
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        setErrorMessage(payload.error || "Enrollment could not be started. Please sign in again.");
+        resetToLogin();
+        return;
+      }
+      setEnrollSecret(payload.secret ?? "");
+      setEnrollOtpauthUrl(payload.otpauthUrl ?? "");
+      setMfaStage("enroll");
+    } catch {
+      setErrorMessage(messageForError("network"));
+      resetToLogin();
+    }
+  }
+
+  async function submitMfaChallenge(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setErrorMessage("");
+    try {
+      const response = await fetch(`${apiBase}/api/v1/auth/mfa/verify`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ challengeId, code: otpCode })
+      });
+      const payload: { message?: string; session?: AuthenticatedSession; accessToken?: string; redirectTo?: string } =
+        await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (response.status === 423) {
+          setErrorMessage(payload.message || "Too many attempts. This account is temporarily locked.");
+        } else if (response.status === 410) {
+          setErrorMessage("This code has expired. Please sign in again.");
+          resetToLogin();
+        } else {
+          setErrorMessage("That code was not accepted. Check your authenticator app and try again.");
+        }
+        setOtpCode("");
+        return;
+      }
+      if (!payload.session || !payload.accessToken) {
+        setErrorMessage(messageForError("server"));
+        return;
+      }
+      setAccessToken(payload.accessToken);
+      onAuthenticated(payload.session, payload.redirectTo === "admin" ? "admin" : "workspace");
+    } catch {
+      setErrorMessage(messageForError("network"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function submitEnrollmentConfirm(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setErrorMessage("");
+    try {
+      const response = await fetch(`${apiBase}/api/v1/auth/mfa/enroll/confirm`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enrollmentToken, code: otpCode })
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if ((payload.error || "").includes("invalid, expired, or already used")) {
+          setErrorMessage("Your enrollment link has expired. Please sign in again to get a new one.");
+          resetToLogin();
+        } else {
+          setErrorMessage("That code was not accepted. Check your authenticator app and try again.");
+          setOtpCode("");
+        }
+        return;
+      }
+      // Never keep the secret/QR payload in memory once enrollment succeeds -
+      // it must not be shown again after this point.
+      setEnrollSecret("");
+      setEnrollOtpauthUrl("");
+      setOtpCode("");
+      setEnrollmentToken("");
+      setMfaStage("enrollDone");
+    } catch {
+      setErrorMessage(messageForError("network"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function submitLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (busy) {
@@ -89,14 +214,42 @@ export function LoginCard({ onAuthenticated }: LoginCardProps) {
         })
       });
 
-      let payload: { message?: string; session?: AuthenticatedSession; accessToken?: string; redirectTo?: string } = {};
+      let payload: {
+        message?: string;
+        session?: AuthenticatedSession;
+        accessToken?: string;
+        redirectTo?: string;
+        mfaRequired?: boolean;
+        challengeId?: string;
+        mfaEnrollmentRequired?: boolean;
+        enrollmentToken?: string;
+      } = {};
       try {
         payload = await response.json();
       } catch {
         // non-JSON error body, fall through to status-based message
       }
 
+      // Real MFA challenge (an already-enrolled user) - route to the OTP
+      // step instead of treating this 202 as a login failure or success.
+      if (response.status === 202 && payload.mfaRequired && payload.challengeId) {
+        setChallengeId(payload.challengeId);
+        setPassword("");
+        setOtpCode("");
+        setMfaStage("challenge");
+        return;
+      }
+
       if (!response.ok) {
+        // Real pre-auth enrollment-required response (closes the AR.13
+        // Priority-0 gap): route the user into the real enrollment UI
+        // instead of showing a dead-end generic failure message.
+        if (payload.mfaEnrollmentRequired && payload.enrollmentToken) {
+          setPassword("");
+          setEnrollmentToken(payload.enrollmentToken);
+          void startEnrollment(payload.enrollmentToken);
+          return;
+        }
         if (response.status === 423) {
           setErrorMessage(messageForError("locked", payload.message));
         } else if (response.status === 403) {
@@ -123,12 +276,145 @@ export function LoginCard({ onAuthenticated }: LoginCardProps) {
     }
   }
 
+  const brandHeader = (
+    <div className="login-brand">
+      <BrandMark className="login-brand-mark" />
+      <span className="login-brand-word">IST Health</span>
+    </div>
+  );
+
+  if (mfaStage === "challenge") {
+    return (
+      <form className="login-card" onSubmit={submitMfaChallenge} aria-busy={busy}>
+        {brandHeader}
+        <div>
+          <h1 className="login-title">Enter your authentication code</h1>
+          <p className="login-subtitle">
+            Open your authenticator app and enter the current 6-digit code for this account.
+          </p>
+        </div>
+        <div className="login-field">
+          <label htmlFor="mfa-otp">Authentication code</label>
+          <div className="login-input-row">
+            <input
+              id="mfa-otp"
+              name="mfa-otp"
+              className="login-input"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={6}
+              value={otpCode}
+              onChange={(event) => setOtpCode(event.target.value.replace(/\D/g, ""))}
+              disabled={busy}
+              required
+              autoFocus
+            />
+          </div>
+        </div>
+        {errorMessage && (
+          <div className="login-alert" role="alert">
+            {errorMessage}
+          </div>
+        )}
+        <button className="login-primary-btn" type="submit" disabled={busy || otpCode.length !== 6}>
+          {busy ? "Verifying..." : "Verify and sign in"}
+        </button>
+        <button className="login-secondary-btn" type="button" onClick={resetToLogin} disabled={busy}>
+          Back to sign in
+        </button>
+        <p className="login-legal">
+          Lost your device? Contact the helpdesk for an administrator-assisted reset.
+        </p>
+      </form>
+    );
+  }
+
+  if (mfaStage === "enroll") {
+    return (
+      <form className="login-card" onSubmit={submitEnrollmentConfirm} aria-busy={busy}>
+        {brandHeader}
+        <div>
+          <h1 className="login-title">Set up multi-factor authentication</h1>
+          <p className="login-subtitle">
+            This account requires a second sign-in step. Add it to an authenticator app (such as
+            Google Authenticator, Microsoft Authenticator, or Authy), then enter the current code
+            below to finish.
+          </p>
+        </div>
+        {enrollOtpauthUrl && (
+          <div className="login-field">
+            <label htmlFor="mfa-setup-key">
+              Manual setup key (use this if you cannot scan a QR code in your authenticator app)
+            </label>
+            <div className="login-input-row">
+              <input
+                id="mfa-setup-key"
+                className="login-input"
+                value={enrollSecret}
+                readOnly
+                onFocus={(event) => event.currentTarget.select()}
+              />
+            </div>
+            <p className="login-subtitle" aria-live="polite">
+              Account: {username || "this account"}. This key is shown only once and will not be
+              shown again after enrollment completes.
+            </p>
+          </div>
+        )}
+        <div className="login-field">
+          <label htmlFor="mfa-enroll-otp">Authentication code</label>
+          <div className="login-input-row">
+            <input
+              id="mfa-enroll-otp"
+              name="mfa-enroll-otp"
+              className="login-input"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={6}
+              value={otpCode}
+              onChange={(event) => setOtpCode(event.target.value.replace(/\D/g, ""))}
+              disabled={busy}
+              required
+              autoFocus
+            />
+          </div>
+        </div>
+        {errorMessage && (
+          <div className="login-alert" role="alert">
+            {errorMessage}
+          </div>
+        )}
+        <button className="login-primary-btn" type="submit" disabled={busy || otpCode.length !== 6}>
+          {busy ? "Confirming..." : "Confirm and finish setup"}
+        </button>
+        <button className="login-secondary-btn" type="button" onClick={resetToLogin} disabled={busy}>
+          Cancel and start over
+        </button>
+      </form>
+    );
+  }
+
+  if (mfaStage === "enrollDone") {
+    return (
+      <div className="login-card" aria-busy={false}>
+        {brandHeader}
+        <div>
+          <h1 className="login-title">Setup complete</h1>
+          <p className="login-subtitle" role="status">
+            Multi-factor authentication is now active on this account. Sign in again with your
+            password and the code from your authenticator app.
+          </p>
+        </div>
+        <button className="login-primary-btn" type="button" onClick={resetToLogin}>
+          Continue to sign in
+        </button>
+      </div>
+    );
+  }
+
   return (
     <form className="login-card" onSubmit={submitLogin} aria-busy={busy}>
-      <div className="login-brand">
-        <BrandMark className="login-brand-mark" />
-        <span className="login-brand-word">IST Health</span>
-      </div>
+      {brandHeader}
 
       <div className="login-language-switch" role="group" aria-label="Language">
         <button

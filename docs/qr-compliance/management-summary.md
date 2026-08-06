@@ -388,3 +388,18 @@ disclose the reveal-anomaly counter's process-local scope honestly (no
 value change). Validated cross-process against the real database, then
 cut over to live traffic (low risk, additive). Mandatory/overall
 compliance unchanged by this sweep (78/149 = 52.35%, 133/391 = 34.02%).
+
+## Update 2026-08-06: Priority-0 integrity correction and fix - AR.13
+
+A follow-up integrity review found that AR.13's prior "moved to Yes"
+claim rested only on API/curl-level validation - the actual browser
+application had no way for a real user to complete MFA enrollment or a
+challenge; a real user saw a generic sign-in failure. This was
+corrected immediately (reverted to Partial) and then genuinely fixed:
+a real, accessible in-browser enrollment and challenge journey was
+built and deployed, then validated through direct browser interaction
+(not curl) on both the canary and the live production domain. AR.13 is
+now back to Yes, backed by real user-journey evidence. This is recorded
+here as an example of this engagement's standing "verify, don't
+assume" discipline catching and correcting its own overclaim before it
+was accepted as final.

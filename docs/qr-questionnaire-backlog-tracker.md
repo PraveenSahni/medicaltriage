@@ -1464,3 +1464,73 @@ MFA scoping); no break-glass account exists (documented, justified
 decision); the enrollment-token flow depends on the user already
 knowing their password (real, but not the whole "remote access"
 picture if a future SSO-only population is added).
+
+## 2026-08-06 (continued): PRIORITY-0 INTEGRITY CORRECTION - AR.13 reverted from Yes to Partial
+
+The prior batch moved AR.13 to Yes based entirely on API-level (curl)
+validation of the enrollment-token and administrator-reset flows.
+A follow-up integrity review found a real, material gap: the
+production browser UI (`frontend/src/auth/LoginCard.tsx`) had **zero
+handling** for the `mfaRequired` or `mfaEnrollmentRequired` login
+responses - a real interactive user in the actual browser hitting
+either state saw only a generic "Sign-in failed" message, with no path
+to enroll or complete an MFA challenge. Confirmed by direct code
+inspection: the login handler's error branch only checks HTTP status
+423/403/401/else, and 202 (`mfaRequired`)/401 with
+`mfaEnrollmentRequired` both fall through to a dead-end generic
+failure message. **API capability alone is not sufficient evidence for
+a requirement about real user access** - this was a genuine overclaim,
+not a hidden or minor gap.
+
+**AR.13 reverted to Partial immediately.** Backend enforcement and API
+enrollment/reset remain real and operational (unchanged from the prior
+batch); what's missing is the actual interactive user journey. See the
+next entry for the real frontend fix.
+
+## 2026-08-06 (continued): Real frontend MFA UI built and validated - AR.13 moves back to Yes
+
+Following the Priority-0 correction above, built the real, accessible
+in-browser MFA enrollment and challenge journey in
+`frontend/src/auth/LoginCard.tsx`: a password screen (unchanged), a new
+enrollment screen (manual setup key + OTP field, shown only when the
+login response carries `mfaEnrollmentRequired`/`enrollmentToken`), a
+setup-complete confirmation, and a new challenge screen (OTP field,
+shown when the response carries `mfaRequired`/`challengeId`).
+Enrollment tokens/challenge ids live only in component state (never
+the URL, never `localStorage`); the TOTP secret is cleared immediately
+after successful enrollment and never shown again; invalid codes and
+expired/replayed tokens are handled with accessible `role="alert"`
+messages; no application route is reachable before a real
+challenge/session completes.
+
+Deployed via canary-then-cutover (`ist-triage-soc2-00057-hat`, 100%
+traffic), Firebase Hosting rebuilt from the same source
+(`npm run build:web`), production asset hashes confirmed matching.
+
+**Validated via real browser interaction, not curl** (per this
+correction batch's own explicit requirement): an unenrolled account
+(`sara@irisstar.tech`) was shown the real enrollment screen with a live
+secret rendered on the page; the same account completed enrollment and
+a subsequent fresh login correctly showed the MFA challenge screen,
+which was completed with a valid TOTP code and granted real application
+access (confirmed by the actual Nurse Cockpit workspace rendering).
+Repeated on the production domain: `khalid@irisstar.tech` (unenrolled)
+correctly received the real enrollment screen, not a dead end.
+
+One disclosed, real testing-infrastructure limitation: a component-
+level Jest test for the new UI could not run due to a pre-existing
+Jest/Vite ESM gap (`import.meta.env` requires Node's
+`--experimental-vm-modules` flag, which then requires further Jest-
+globals-under-ESM plumbing not wired into this repo's config) -
+unrelated to this fix itself. Live browser verification was used as
+the authoritative evidence instead, which is arguably stronger
+evidence for this specific requirement (real user access) than a
+mocked component test would have been.
+
+Full backend suite 743/743, frontend suite 57/57, both typechecks
+clean.
+
+**AR.13 moves back to Yes for the `ist-triage-soc2` environment**,
+this time backed by genuine real-user-journey evidence rather than
+API-only validation - the exact standard this correction batch
+required before any such claim could be honestly made again.

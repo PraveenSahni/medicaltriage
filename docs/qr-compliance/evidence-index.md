@@ -382,3 +382,25 @@ canary and production. Full detail:
 `docs/operations/mfa-administrator-reset-runbook.md`,
 `docs/security/mfa-break-glass-assessment.md`. **AR.13: Partial ->
 Yes**, scoped explicitly to the soc2 environment.
+
+## PRIORITY-0 CORRECTION (2026-08-06): AR.13 reverted from Yes to Partial
+
+Moving AR.13 to Yes in the prior batch was an overclaim - validated
+only via direct API/curl calls, not the real browser user journey.
+`frontend/src/auth/LoginCard.tsx` had no handling for `mfaRequired` or
+`mfaEnrollmentRequired` at all; a real user saw a generic "Sign-in
+failed" message with no way to enroll or complete a challenge.
+Reverted to Partial. See the immediately following entry for the real
+frontend fix and re-validation.
+
+## AR.13 - real frontend MFA UI built and browser-validated (2026-08-06) - back to Yes
+
+Closed the Priority-0 gap by building the real in-browser MFA
+enrollment/challenge journey (`frontend/src/auth/LoginCard.tsx`),
+deployed to `ist-triage-soc2-00057-hat` (100% traffic) with matching
+Firebase Hosting assets. Validated via real browser interaction on
+both the canary and production domain: an unenrolled user completed
+enrollment through the actual UI, and a subsequent login completed the
+real MFA challenge, granting genuine application access. Full backend
+suite 743/743, frontend suite 57/57. **AR.13: Partial -> Yes**, backed
+this time by real user-journey evidence.

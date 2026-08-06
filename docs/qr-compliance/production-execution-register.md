@@ -225,3 +225,35 @@ live soc2 traffic. AR.13 moved to Yes for this environment.**
 Rollback, if ever needed, is `MFA_MANDATORY=false` via
 `gcloud run services update` - no credential data is deleted by
 disabling the flag.
+
+## Update 2026-08-06: PRIORITY-0 correction + real frontend MFA UI, AR.13 back to Yes
+
+**Correction**: the "AR.13 moved to Yes" claim above (previous entry)
+was found to be an overclaim - validated only via curl/API calls, not
+the real browser user journey. `frontend/src/auth/LoginCard.tsx` had
+zero handling for `mfaRequired`/`mfaEnrollmentRequired`; a real user
+saw only a generic failure message. Reverted to Partial.
+
+**Real fix**: built the missing browser UI - an enrollment screen
+(manual setup key + OTP, shown on `mfaEnrollmentRequired`), a challenge
+screen (OTP, shown on `mfaRequired`), and a setup-complete
+confirmation. State (tokens, challenge id, TOTP secret) held only in
+memory, never the URL or `localStorage`; the secret is cleared
+immediately after successful enrollment. Built image
+`ist-triage-soc2:20260806-mfa-ui` (digest
+`sha256:02abc96bdd1c9b62ca7ff4657122df362b00a56754c3680b7523d25fb0e32418`),
+deployed as canary `ist-triage-soc2-00057-hat`, cut over to 100%
+traffic. Rebuilt `dist-web` and redeployed Firebase Hosting; production
+asset hashes confirmed matching.
+
+**Validated via real browser interaction** (Browser pane, not curl):
+an unenrolled account (`sara@irisstar.tech`) was shown the real
+enrollment screen with a live secret; completed enrollment; a fresh
+login then showed the real MFA challenge screen; completing it with a
+valid TOTP code granted genuine application access (the real Nurse
+Cockpit workspace rendered). Repeated on the production domain
+(`triagedsoc2.irisstar.tech`): `khalid@irisstar.tech` (unenrolled)
+correctly received the real enrollment screen, not a dead end.
+
+**Status now: AR.13 moved back to Yes**, this time backed by a real,
+browser-verified user journey rather than API-only evidence.

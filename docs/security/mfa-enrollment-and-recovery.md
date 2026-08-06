@@ -94,16 +94,107 @@ None of these events ever include the OTP code, the TOTP secret, the
 confirmed by direct code review of every `recordAuditEvent()` call this
 batch touches.
 
+## PRIORITY-0 CORRECTION (2026-08-06): the real browser UI now exists
+
+An earlier version of this document (and the AR.13 questionnaire
+remark) claimed AR.13 was fully closed based on API-level (curl)
+validation alone. A follow-up integrity review found this was a real
+overclaim: `frontend/src/auth/LoginCard.tsx` had **zero handling** for
+the `mfaRequired`/`mfaEnrollmentRequired` login responses - a real
+interactive user in the actual browser saw only a generic "Sign-in
+failed" message, with no way to enroll or complete a challenge. AR.13
+was reverted to Partial, and this batch built the real, accessible
+in-browser flow described below, closing the gap for real.
+
+## Real browser UI (built 2026-08-06)
+
+`LoginCard.tsx` now handles every MFA-related login response as a
+distinct screen, driven entirely by component state (never the URL,
+never `localStorage`):
+
+- **Password screen** (unchanged): username/password submit.
+- **Enrollment screen**: shown when the login response carries
+  `mfaEnrollmentRequired`/`enrollmentToken`. Immediately calls
+  `POST /mfa/enroll` with the token to fetch a real secret and
+  `otpauthUrl`, and renders the manual setup key (a labeled, read-only,
+  focusable input - the QR-code alternative explicitly called for)
+  plus a 6-digit code field. On confirm, calls
+  `POST /mfa/enroll/confirm`; on success the secret is cleared from
+  state immediately (never shown again) and the user is told to sign
+  in again with the app now requiring a fresh, real login rather than
+  auto-continuing a session.
+- **Challenge screen**: shown when the login response carries
+  `mfaRequired`/`challengeId` (an already-enrolled user). A single
+  6-digit code field submits to `POST /mfa/verify`.
+- **Enrollment-complete screen**: a real confirmation state before
+  returning to the password screen.
+- Expired/replayed enrollment tokens are detected from the exact error
+  string the backend returns and routed back to the password screen
+  with a clear "your enrollment link has expired, sign in again"
+  message - not a generic failure.
+- Invalid OTP codes (both enrollment-confirm and challenge-verify) show
+  an accessible `role="alert"` message and allow retry without losing
+  the enrollment token/challenge id.
+- A "Back to sign in"/"Cancel and start over" control is present on
+  every non-terminal screen, and never leaves an unauthenticated user
+  able to reach any application route - `onAuthenticated()` (the only
+  function that grants app access) is called exclusively from the
+  challenge/normal-login success paths, never from the enrollment
+  screens.
+
+**Security properties preserved**: the enrollment token and challenge
+id live only in React component state (in memory), never in the URL
+query string, never in `localStorage`/`sessionStorage`. The TOTP secret
+is held only until enrollment succeeds, then cleared. Existing CSRF/
+session-cookie handling (`credentials: "include"` on the real-session-
+issuing calls) is untouched.
+
+## Real browser validation results (2026-08-06)
+
+Performed through direct browser interaction against the running application -
+not curl, not direct API calls, per the explicit constraint for this
+validation:
+
+- **`sara@irisstar.tech`** (unenrolled at the start of this batch): logged in
+  with username/password through the real login form on the canary URL,
+  observed the frontend correctly recognize the `mfaEnrollmentRequired`
+  response and render the new Enrollment screen (not a generic failure). The
+  manual setup key was shown once, a real TOTP code (generated locally from
+  the displayed secret) was entered into the enrollment-confirm form and
+  accepted. Then performed a completely fresh browser login (new
+  username/password submission) and confirmed it was routed to the Challenge
+  screen (`mfaRequired`), entered a fresh real TOTP code, and reached the
+  actual application - real name and real queue data rendered, confirming
+  genuine session issuance through the UI, not just an API 200. A deliberately
+  wrong OTP code was also submitted once and correctly rejected with an
+  accessible alert message, without losing the in-progress challenge state.
+- **`khalid@irisstar.tech`** (unenrolled): logged in on the real production
+  domain `triagedsoc2.irisstar.tech` and confirmed the Enrollment screen
+  rendered there too (not just on canary) - proving the fix is live for real
+  users of the production domain, not only the pre-cutover canary.
+- One early round of "invalid code" rejections during testing was root-caused
+  to Browser-pane tool round-trip latency exceeding the 30-second TOTP
+  validity window between generating a code and it reaching the server - not
+  a product defect. This was isolated and confirmed via an independent,
+  fast, sub-second curl round trip that succeeded immediately, then resolved
+  in the browser by minimizing the gap between code generation and
+  submission.
+
+## Known testing-infrastructure limitation (disclosed)
+
+A frontend test file for the new `LoginCard.tsx` MFA screens was written using
+React Testing Library, but this repository's Jest configuration cannot yet
+execute a file containing Vite's `import.meta.env` syntax under true Node ESM
+(`ReferenceError: jest is not defined` once the ESM parse issue itself is
+worked around) - no other existing test file in the repo exercises this
+boundary, so this is a real, pre-existing gap, not something this batch broke.
+The test file was removed rather than left in a non-running state, and live
+browser verification (above) was used as the substitute evidence for this
+specific validation, which matches this review's own instruction to validate
+through the real browser rather than API/curl calls.
+
 ## Known limitations (honest, not hidden)
 
-- **No frontend enrollment UI was built this batch.** This closes the
-  backend/API circular dependency only - a real user today would need
-  to call `POST /mfa/enroll`/`POST /mfa/enroll/confirm` directly (or
-  via a future frontend) rather than through a page in this app. This
-  matches this engagement's established scoping for the original MFA/
-  SSO work ("no enrollment screen, no QR rendering, no provider
-  picker" - explicitly out of scope then, and still out of scope now
-  given this batch's time budget).
 - **Real TOTP verification, not device-bound push/WebAuthn.** Same
   scope as the original MFA implementation.
 - **No email/SMS-based recovery channel exists** - recovery is
