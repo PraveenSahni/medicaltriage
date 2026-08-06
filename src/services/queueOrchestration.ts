@@ -1771,6 +1771,37 @@ export async function exportOrganizationQueueData(organizationId: string): Promi
   return sorted(rows.map(dbRowToRecord)).map(toDto);
 }
 
+// NFR-118's queue-backlog/transaction-drop anomaly signal - emits a
+// structured stdout line so terraform/alerting.tf's queue-backlog alert
+// policy has a real Cloud Logging field to filter on. This is the
+// previously-disclosed gap from the prior batch (the policy was defined
+// in Terraform ahead of any real emission) - now closed. Emitted from
+// listQueueItems() (a real, frequently-hit read path) rather than a
+// separate scheduled job, since no background-job infrastructure exists
+// for this purpose today - an honest, disclosed limitation (per-request
+// sampling, not a true continuous gauge) documented in
+// docs/operations/anomaly-alerting-matrix.md. Contains no patient/call
+// content - only counts and an age in seconds.
+function emitQueueBacklogMetric(visible: QueueRecord[], organization?: string): void {
+  const waiting = visible.filter((record) => record.status === "INCOMING");
+  const oldestWaitingAgeSeconds = waiting.length
+    ? Math.max(
+        0,
+        Math.round((Date.now() - Math.min(...waiting.map((record) => new Date(record.createdAtIso).getTime()))) / 1000)
+      )
+    : 0;
+  console.log(
+    JSON.stringify({
+      type: "queue_metric",
+      metric: "queue_backlog",
+      waitingCount: waiting.length,
+      oldestWaitingAgeSeconds,
+      totalVisible: visible.length,
+      organization: organization ?? ""
+    })
+  );
+}
+
 export async function listQueueItems(
   session: AuthenticatedSession,
   filters: QueueListQuery = {}
@@ -1785,6 +1816,15 @@ export async function listQueueItems(
     filters.limit !== undefined
       ? visible.slice(filters.offset ?? 0, (filters.offset ?? 0) + filters.limit)
       : visible;
+  // Only emitted for an unfiltered (or near-unfiltered) listing - a
+  // heavily-filtered request (e.g. a single-severity/department search)
+  // would otherwise produce a misleadingly narrow backlog reading.
+  const isNarrowlyFiltered = Boolean(
+    filters.severity || filters.department || filters.channel || filters.owner || filters.stage
+  );
+  if (!isNarrowlyFiltered) {
+    emitQueueBacklogMetric(visible, session.user.organization);
+  }
   return { items: paged.map(toDto), totalCount };
 }
 
