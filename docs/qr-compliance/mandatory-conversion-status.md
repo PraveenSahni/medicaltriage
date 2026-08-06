@@ -480,3 +480,11 @@ stays Partial - no score movement** (mandatory 82/152 = 53.95%, overall
 137/400 = 34.25%, unchanged) - workstation-hardening evidence remains
 the blocking gap regardless of cloud-IAM progress.
 `docs/security/gcp-iam-least-privilege-review.md`.
+
+## Update 2026-08-06 (continued): AR.17 N/A reclassification
+
+Confirmed with IST: all-cloud (GCP me-central1/Doha) hosting, no
+IST-operated physical network exists. AR.17 reclassified No -> N/A.
+**Mandatory: 82/152 = 53.95% -> 82/151 = 54.30%. Overall: 137/400 =
+34.00% -> 137/399 = 34.34%.** Numerator unchanged - a denominator
+correction, not a new closure.

@@ -1788,3 +1788,12 @@ remediated for soc2; application RBAC validated (already real/tested);
 workstation-hardening evidence still entirely pending. Full evidence:
 `docs/security/gcp-iam-least-privilege-review.md`,
 `docs/operations/runtime-service-account-cutover-runbook.md`.
+
+## Update 2026-08-06 (continued): AR.17 N/A reclassification
+
+Confirmed with IST: all-cloud hosting (GCP, me-central1/Doha), no
+IST-operated physical office/corporate network exists. AR.17 moved
+No -> N/A per the strict N/A test applied earlier this session (no
+contradictory fact remains once confirmed). **Mandatory 82/152 (53.95%)
+-> 82/151 (54.30%). Overall 137/400 (34.00%) -> 137/399 (34.34%).**
+Reassessment required if IST ever operates a physical office network.

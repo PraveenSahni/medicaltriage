@@ -544,3 +544,20 @@ window; the SLI-report job has a materially different permission need).
 overall 137/400 = 34.25%, unchanged). Administrator-workstation hardening
 remains entirely unverified -
 `docs/security/admin-workstation-hardening-evidence.md`.
+
+## Update 2026-08-06 (continued): AR.17 reclassified N/A - confirmed all-cloud, no IST-operated network
+
+Confirmed directly with IST: this offering is hosted entirely on Google
+Cloud (Cloud Run, `me-central1`/Doha) - IST operates no physical
+corporate office network of its own. AR.17 ("protect network
+environments and detect... rogue network devices") reclassified from
+**No to N/A** - not applicable to an all-cloud deployment with no
+IST-operated network environment for such a policy to govern. Google's
+own network layer is independently SOC 2/ISO 27001-attested (already
+cited under CO.01/CO.08/CO.09). Reassessment required if IST ever
+operates a physical office/on-prem network.
+
+**Mandatory: 82/152 (53.95%) -> 82/151 (54.30%). Overall: 137/400
+(34.25%) -> 137/399 (34.34%).** Numerator unchanged (N/A is excluded
+from the denominator, not counted as compliant) - this is a legitimate
+denominator correction, not a new closure.
