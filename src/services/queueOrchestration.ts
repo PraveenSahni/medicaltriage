@@ -3,7 +3,7 @@ import type { Prisma } from "@prisma/client";
 import { isMockMode, shouldPersistQueueInDatabase } from "../config/runtime.js";
 import { prisma } from "../db.js";
 import { auditSignatureFor } from "./safetyKernel.js";
-import { getOrganizationById, listUsers } from "./securityAdmin.js";
+import { getOrganizationById, listUsers, recordAuditEvent } from "./securityAdmin.js";
 import { findDependent, resolvePatientAgeFromDirectory, validateStaffMember } from "./hrms.js";
 import {
   getClinicalProtocolById,
@@ -1295,6 +1295,29 @@ async function recordQueueAuditEvent(args: {
   riskLevel?: string;
   metadata?: Record<string, unknown>;
 }): Promise<void> {
+  // In-memory-first, always recorded regardless of QUEUE_DB_PERSISTENCE -
+  // matching the established audit pattern elsewhere in this codebase
+  // (securityAdmin.ts's recordAuditEvent). Previously this whole function
+  // was a no-op unless QUEUE_DB_PERSISTENCE was on, meaning claim/context/
+  // move actions left zero audit trail in mock/in-memory mode - a real,
+  // confirmed gap found during the answer-call authorization remediation
+  // batch.
+  await recordAuditEvent({
+    id: `qaudit-${randomUUID()}`,
+    timestampIso: new Date().toISOString(),
+    userId: args.session.user.id,
+    activeRole: args.session.activeRole,
+    organization: args.session.user.organizationId ?? "",
+    facility: "",
+    department: "",
+    action: args.action,
+    module: "Queue",
+    resource: `TriageQueueItem:${args.recordId}`,
+    ipAddress: "",
+    device: "",
+    success: args.success,
+    risk: (args.riskLevel as "low" | "medium" | "high" | "critical" | undefined) ?? "low"
+  });
   if (!shouldPersistQueueInDatabase()) {
     return;
   }
@@ -1947,6 +1970,14 @@ export async function createQueueItem(session: AuthenticatedSession, request: Qu
 export async function claimQueueItem(session: AuthenticatedSession, id: string): Promise<QueueItemDto> {
   requireQueueAccess(session);
   if (!isClinicalOperator(session) && !hasManagerControl(session)) {
+    await recordQueueAuditEvent({
+      session,
+      action: "QUEUE_ITEM_CLAIM_DENIED",
+      recordId: id,
+      success: false,
+      riskLevel: "medium",
+      metadata: { reason: "role_not_authorized_for_claim" }
+    });
     throw new QueueOrchestrationError(403, "Active role cannot claim clinical queue items.", "QUEUE_ROLE_DENIED");
   }
 
@@ -1968,14 +1999,14 @@ export async function claimQueueItem(session: AuthenticatedSession, id: string):
   const saved = await saveRecord(record);
   if (shouldPersistQueueInDatabase()) {
     await addDbTransition(saved, transition);
-    await recordQueueAuditEvent({
-      session,
-      action: "QUEUE_ITEM_CLAIM",
-      recordId: record.id,
-      success: true,
-      metadata: { fromStatus: previous.status, fromStage: previous.currentStage }
-    });
   }
+  await recordQueueAuditEvent({
+    session,
+    action: "QUEUE_ITEM_CLAIM",
+    recordId: record.id,
+    success: true,
+    metadata: { fromStatus: previous.status, fromStage: previous.currentStage }
+  });
   return toDto(saved);
 }
 
@@ -2154,26 +2185,23 @@ export async function updateQueueContext(
   record.priorityScore = computePriority(record);
   record.updatedAtIso = nowIso();
   const saved = await saveRecord(record);
-  if (shouldPersistQueueInDatabase()) {
-    // This is the riskiest routine mutation (severity/disposition/vitals/SBAR
-    // edits) and was previously the one queue-context write path with no
-    // audit trail at all - the other mutations (claim/move/delete) already
-    // had one.
-    const changedFields = (Object.keys(update) as Array<keyof QueueContextUpdate>).filter(
-      (key) => update[key] !== undefined
-    );
-    const clinicalFieldsChanged = ["calculatedSeverity", "dispositionCode", "vitals", "matchedProtocolId"].some(
-      (field) => changedFields.includes(field as keyof QueueContextUpdate)
-    );
-    await recordQueueAuditEvent({
-      session,
-      action: "QUEUE_CONTEXT_UPDATE",
-      recordId: record.id,
-      success: true,
-      riskLevel: clinicalFieldsChanged ? "high" : "medium",
-      metadata: { changedFields }
-    });
-  }
+  // Always audited, regardless of QUEUE_DB_PERSISTENCE - this is the riskiest
+  // routine mutation (severity/disposition/vitals/SBAR edits) and previously
+  // had no audit trail at all in mock/in-memory mode.
+  const changedFields = (Object.keys(update) as Array<keyof QueueContextUpdate>).filter(
+    (key) => update[key] !== undefined
+  );
+  const clinicalFieldsChanged = ["calculatedSeverity", "dispositionCode", "vitals", "matchedProtocolId"].some(
+    (field) => changedFields.includes(field as keyof QueueContextUpdate)
+  );
+  await recordQueueAuditEvent({
+    session,
+    action: "QUEUE_CONTEXT_UPDATE",
+    recordId: record.id,
+    success: true,
+    riskLevel: clinicalFieldsChanged ? "high" : "medium",
+    metadata: { changedFields }
+  });
   return toDto(saved);
 }
 
@@ -2214,21 +2242,21 @@ export async function moveQueueItem(
   const saved = await saveRecord(record);
   if (shouldPersistQueueInDatabase()) {
     await addDbTransition(saved, transition);
-    await recordQueueAuditEvent({
-      session,
-      action: record.status === "COMPLETED" && previous.status !== "COMPLETED" ? "QUEUE_ITEM_COMPLETE" : "QUEUE_ITEM_MOVE",
-      recordId: record.id,
-      success: true,
-      riskLevel: record.status === "COMPLETED" ? "high" : "medium",
-      metadata: {
-        fromStatus: previous.status,
-        fromStage: previous.currentStage,
-        toStatus: record.status,
-        toStage: record.currentStage,
-        reason: request.reason
-      }
-    });
   }
+  await recordQueueAuditEvent({
+    session,
+    action: record.status === "COMPLETED" && previous.status !== "COMPLETED" ? "QUEUE_ITEM_COMPLETE" : "QUEUE_ITEM_MOVE",
+    recordId: record.id,
+    success: true,
+    riskLevel: record.status === "COMPLETED" ? "high" : "medium",
+    metadata: {
+      fromStatus: previous.status,
+      fromStage: previous.currentStage,
+      toStatus: record.status,
+      toStage: record.currentStage,
+      reason: request.reason
+    }
+  });
   return toDto(saved);
 }
 

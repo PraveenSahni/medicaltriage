@@ -522,4 +522,27 @@ describe("Enterprise queue orchestration", () => {
       await nurse.get("/api/v1/queue?limit=abc").expect(400);
     });
   });
+
+  // Closes the answer-call authorization/audit gaps found during the
+  // NFR-004 UX cross-browser validation batch (call-center-gateway session
+  // remediation).
+  describe("claim authorization and audit evidence", () => {
+    it("denies claim for a role with queue-read access but no clinical-operator/manager control", async () => {
+      const intake = await agentFor("intake@irisstar.tech", "call_intake_coordinator");
+      const denied = await intake.post("/api/v1/queue/case-10002/claim").expect(403);
+      expect(denied.body.code).toBe("QUEUE_ROLE_DENIED");
+    });
+
+    it("persists a durable audit event for a successful claim", async () => {
+      const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+      await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
+
+      const admin = await agentFor("pa@irisstar.tech", "platform_super_administrator");
+      const events = await admin.get("/api/v1/admin/audit-events").expect(200);
+      const claimEvents = (events.body.events as Array<{ action: string; resource: string }>).filter(
+        (event) => event.resource?.includes("case-10002")
+      );
+      expect(claimEvents.length).toBeGreaterThan(0);
+    });
+  });
 });

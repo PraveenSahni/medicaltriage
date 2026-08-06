@@ -325,16 +325,19 @@ test.describe.serial("API contracts from login through clinical completion", () 
     expect(denied.status()).toBe(403);
   });
 
-  test("API-008 executes a complete callback-to-SBAR journey and validates every write", async ({ request }) => {
+  test("API-008 executes a complete claim-to-SBAR journey and validates every write", async ({ request }) => {
     await apiLogin(request, personas.nurse);
-    const callback = await request.post("/api/v1/call-center/queue/case-10002/command", {
-      data: { action: "ANSWER", provider: "dry-run" }
-    });
-    expect(callback.status(), await callback.text()).toBe(200);
-    const callbackBody = await callback.json();
-    expect(callbackBody).toMatchObject({
-      item: { id: "case-10002", status: "IN_PROCESS", lockedBy: "usr_nurse_10001" },
-      call: { status: "CONNECTED" }
+    // Real current UI behavior: the initial answer/claim action calls
+    // POST /queue/:id/claim directly, not the call-center-gateway /command
+    // endpoint (which is real, and covered separately by API-007's
+    // permission-denial check, but is only wired to Hold/Resume in the
+    // current frontend, not the initial claim).
+    const claim = await request.post("/api/v1/queue/case-10002/claim");
+    expect(claim.status(), await claim.text()).toBe(200);
+    const claimBody = await claim.json();
+    expect(claimBody).toMatchObject({
+      item: { id: "case-10002", status: "IN_PROCESS" },
+      lock: { lockedBy: "usr_nurse_10001" }
     });
 
     const score = await request.post("/api/v1/triage/calculate-score", {

@@ -2013,7 +2013,7 @@ export async function validateSessionContext(
   return "ok";
 }
 
-async function recordAuditEvent(event: AuditEvent): Promise<void> {
+export async function recordAuditEvent(event: AuditEvent): Promise<void> {
   auditEvents.push(event);
   // A failure to persist the audit record (DB outage, network blip, a
   // misconfigured DATABASE_URL) must never block the primary action this

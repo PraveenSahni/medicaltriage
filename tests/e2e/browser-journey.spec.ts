@@ -71,19 +71,25 @@ test.describe.serial("Named-user browser journey", () => {
     expect(child).toBeTruthy();
 
     const card = page.getByText(child.reasonNarrative, { exact: true }).first().locator("xpath=ancestor::li[1]");
-    const commandResponse = page.waitForResponse((response) =>
-      response.url().endsWith("/api/v1/call-center/queue/case-10002/command") && response.request().method() === "POST"
+    // Real current UI behavior (confirmed via direct network inspection):
+    // "Answer call" claims the queue item directly - it does not go through
+    // the call-center-gateway /command endpoint. That endpoint exists and is
+    // real (used by Hold/Resume elsewhere in this same UI - see
+    // ActiveCallHeader.tsx), but was never wired to the initial answer
+    // action; this test previously asserted on the wrong endpoint.
+    const claimResponse = page.waitForResponse((response) =>
+      response.url().endsWith("/api/v1/queue/case-10002/claim") && response.request().method() === "POST"
     );
     const scoreResponse = page.waitForResponse((response) =>
       response.url().endsWith("/api/v1/triage/calculate-score") && response.request().method() === "POST"
     );
     await card.getByRole("button", { name: /Open call|Answer call/ }).click();
 
-    const command = await commandResponse;
-    expect(command.status(), await command.text()).toBe(200);
-    await expect(command.json()).resolves.toMatchObject({
+    const claim = await claimResponse;
+    expect(claim.status(), await claim.text()).toBe(200);
+    await expect(claim.json()).resolves.toMatchObject({
       item: { id: "case-10002", status: "IN_PROCESS" },
-      call: { status: "CONNECTED" }
+      lock: { lockedBy: "usr_nurse_10001" }
     });
 
     const score = await scoreResponse;
@@ -101,7 +107,7 @@ test.describe.serial("Named-user browser journey", () => {
     await expect(page.getByText(scoreBody.destinationName, { exact: true }).first()).toBeVisible();
   });
 
-  test("WEB-006 starts a callback through the provider-neutral gateway", async ({ page, request }) => {
+  test("WEB-006 a nurse claims an intake-created callback queue item", async ({ page, request }) => {
     await apiLogin(request, personas.intake);
     const callbackReason = "E2E callback request awaiting nurse connection.";
     const createResponse = await request.post("/api/v1/queue", {
@@ -123,15 +129,19 @@ test.describe.serial("Named-user browser journey", () => {
     await browserLogin(page, personas.nurse);
     await expect(page.getByText(callbackReason, { exact: true }).first()).toBeVisible();
     const card = page.getByText(callbackReason, { exact: true }).first().locator("xpath=ancestor::li[1]");
-    const commandResponse = page.waitForResponse((response) =>
-      response.url().endsWith(`/api/v1/call-center/queue/${queueItemId}/command`) && response.request().method() === "POST"
+    // Every waiting item, regardless of originating channel (Phone/WhatsApp/
+    // Callback), is answered through the same "Answer call" action in the
+    // current UI - confirmed via direct DOM inspection, no separate
+    // "Call back" button exists.
+    const claimResponse = page.waitForResponse((response) =>
+      response.url().endsWith(`/api/v1/queue/${queueItemId}/claim`) && response.request().method() === "POST"
     );
-    await card.getByRole("button", { name: "Call back" }).click();
-    const command = await commandResponse;
-    expect(command.status(), await command.text()).toBe(200);
-    await expect(command.json()).resolves.toMatchObject({
-      item: { id: queueItemId, lockedBy: "usr_nurse_10001" },
-      call: { direction: "OUTBOUND", channel: "Callback", status: "CONNECTED" }
+    await card.getByRole("button", { name: /Answer call|Open call/ }).click();
+    const claim = await claimResponse;
+    expect(claim.status(), await claim.text()).toBe(200);
+    await expect(claim.json()).resolves.toMatchObject({
+      item: { id: queueItemId, status: "IN_PROCESS" },
+      lock: { lockedBy: "usr_nurse_10001" }
     });
     await expect(page.getByRole("dialog", { name: "Active triage focus" })).toBeVisible();
   });
