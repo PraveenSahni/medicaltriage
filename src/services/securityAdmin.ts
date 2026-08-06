@@ -3718,6 +3718,22 @@ async function checkRevealAnomalyRate(requesterUserId: string): Promise<void> {
     risk: "critical"
   });
 
+  // Structured stdout emission (mirrors requestDurationLogger's pattern) -
+  // Cloud Run ships this to Cloud Logging with no extra wiring, giving the
+  // NFR-118 privacy-reveal-anomaly log-based metric/alert policy
+  // (terraform/alerting.tf) a real field to filter on. Without this line,
+  // that alert policy has nothing to fire on - AuditEvent alone is only
+  // persisted in-memory/DB, never emitted to stdout.
+  console.log(
+    JSON.stringify({
+      type: "security_event",
+      action: "PRIVACY_REVEAL_ANOMALY_DETECTED",
+      requesterUserId,
+      count,
+      windowSeconds
+    })
+  );
+
   // Closes IS.61's second half: detection creates a durable incident
   // CANDIDATE for human review - it never bypasses review to directly
   // notify anyone. See src/services/privacyIncidentWorkflow.ts.
