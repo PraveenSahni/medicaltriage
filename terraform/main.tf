@@ -165,7 +165,17 @@ resource "google_cloud_run_v2_service" "soc2" {
   location = "me-central1"
 
   template {
-    service_account = "1096520215793-compute@developer.gserviceaccount.com"
+    # CSQ IS.66 least-privilege cutover (2026-08-06): switched from the
+    # broad default Compute Engine service account (project-wide
+    # roles/editor) to the dedicated, narrowly-scoped runtime identity
+    # (roles/cloudsql.client + secretmanager.secretAccessor on only this
+    # service's 3 real secrets - see terraform/least_privilege_runtime.tf).
+    # Cut over via a 0%-traffic canary revision, validated (health check,
+    # DB connectivity via a real login attempt, zero PERMISSION_DENIED/
+    # error-severity log entries), then promoted to 100% traffic - see
+    # docs/operations/runtime-service-account-cutover-runbook.md for the
+    # full evidence trail.
+    service_account = data.google_service_account.cloudrun_runtime.email
 
     scaling {
       max_instance_count = 20
