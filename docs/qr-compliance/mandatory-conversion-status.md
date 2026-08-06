@@ -449,3 +449,13 @@ but a full incident-fire-and-resolve cycle remains outstanding.
 **Mandatory: 81/152 = 53.29% -> 82/152 = 53.95%. Overall: 136/400 = 34.00%
 -> 137/400 = 34.25%.** Full backend suite 781/781, tsc clean. IS.07
 untouched; PR #15 untouched; local main not pushed.
+
+## Update 2026-08-06 (continued): dedicated NFR-118 operational validation
+
+`docs/operations/nfr-118-alert-validation-report.md`: confirmed zero
+Terraform drift; obtained real end-to-end metric-ingestion evidence for
+the auth-failure-spike policy; privacy-anomaly and queue-backlog triggers
+not attempted (live-soc2 authentication constraint); incident-state and
+notification-delivery cannot be confirmed via any accessible API/CLI.
+**NFR-118 stays Partial - no score movement.** IS.07 untouched; PR #15
+untouched; local main not pushed.

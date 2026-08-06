@@ -446,3 +446,33 @@ Terraform apply and `gcloud logging read`/synthetic-trigger calls
 targeted only the already-approved soc2 environment - no change was made
 to `triaged.irisstar.tech` (the live customer-facing demo) or to any
 other project resource.
+
+## Update 2026-08-06 (continued): dedicated NFR-118 operational validation
+
+Full policy inspection confirmed the live soc2 project has zero drift
+from `terraform/alerting.tf`. Real synthetic failed-login attempts
+(13 total, spread across 6 disposable synthetic usernames to respect
+per-account lockout and per-IP rate limiting) produced real, matching
+Cloud Logging entries and, confirmed via a direct authenticated REST call
+to the Cloud Monitoring `timeSeries` API, real matching time-series data
+points exceeding the policy's raw `>10` threshold - genuine, end-to-end
+proof the log-based metric pipeline works.
+
+Privacy-reveal-anomaly and queue-backlog-age triggers were **not
+attempted**: both require an authenticated session against the live soc2
+environment, which has no admin bootstrap credential configured (MFA is
+mandatory there, per AR.13) - obtaining or bypassing a real user's
+credentials to perform this test would be inappropriate and was not
+done. Incident-state (an alert policy actually opening) and notification-
+delivery (an email actually reaching "Triage Ops Email") could not be
+confirmed for any of the 3 policies - Cloud Monitoring's public API/CLI
+exposes only policy *definitions*, never live incident state; that is
+only visible via the Cloud Console UI (not accessible this session) or
+inbox access (also not available). Full detail:
+`docs/operations/nfr-118-alert-validation-report.md`.
+
+**NFR-118 stays Partial - no score movement this pass** (mandatory
+remains 82/152 = 53.95%; overall remains 137/400 = 34.25%). Cloud SQL
+Auth Proxy was active throughout (confirmed connectivity, not required
+for this batch's HTTP-only synthetic triggers). IS.07 not resumed; PR #15
+not touched; local main not pushed.

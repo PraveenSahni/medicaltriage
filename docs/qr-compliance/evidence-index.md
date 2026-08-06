@@ -494,3 +494,18 @@ rather than closing all three because the batch completed.
 
 **Mandatory: 81/152 (53.29%) -> 82/152 (53.95%). Overall: 136/400 (34.00%)
 -> 137/400 (34.25%).** Exactly +1 Yes, from AR.21 alone.
+
+## Update 2026-08-06 (continued): dedicated NFR-118 operational validation
+
+Full inspection (confirmed zero Terraform drift), synthetic-trigger, and
+coverage-matrix pass performed -
+`docs/operations/nfr-118-alert-validation-report.md`. Real, verified,
+end-to-end metric-ingestion evidence obtained for the authentication-
+failure-spike policy (matching Cloud Logging entries + matching Cloud
+Monitoring time-series data exceeding the raw threshold). Privacy-
+reveal-anomaly and queue-backlog-age triggers were not attempted
+(require live-soc2 authentication this session does not have and should
+not bypass). Incident-state and notification-delivery cannot be
+confirmed via any accessible API/CLI (Cloud Monitoring exposes only
+policy definitions, not live incidents) - a genuine tooling limitation,
+disclosed. **NFR-118 stays Partial - no score movement this pass.**

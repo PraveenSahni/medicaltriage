@@ -128,13 +128,39 @@ completed within this session. This is the one remaining gap before
 NFR-118 can move to Yes per its own closure rule ("policies are deployed,
 internal alert routing works, synthetic trigger/resolve cycles succeed").
 
+## Update 2026-08-06 (continued): dedicated operational validation batch
+
+Full inspection, synthetic-trigger, and coverage-matrix pass performed -
+see `docs/operations/nfr-118-alert-validation-report.md` for exact
+timestamps, commands, and evidence. Confirmed zero Terraform drift (a
+full `terraform plan` shows the live project exactly matches
+configuration). The authentication-failure-spike trigger produced real,
+verified, end-to-end metric-ingestion evidence: matching Cloud Logging
+entries and matching Cloud Monitoring time-series data points exceeding
+the raw `>10` threshold. Privacy-reveal-anomaly and queue-backlog-age
+triggers were **not attempted** this batch - both require an
+authenticated session against the live soc2 environment (MFA-mandatory,
+no admin bootstrap credential configured there), which this session does
+not have and should not attempt to bypass.
+
+**Genuine, disclosed tooling limitation**: Cloud Monitoring's public
+API/CLI surface (`gcloud alpha monitoring policies ...`, the
+`alertPolicies` REST resource) exposes only policy *definitions*, never
+live incident/violation state - there is no accessible way in this
+environment to confirm "an incident opened" or "a notification was
+delivered" without Cloud Console UI access (not available this session)
+or inbox access to "Triage Ops Email" (also not available). This applies
+to all 3 policies regardless of trigger success.
+
 ## Closure decision
 
-**NFR-118 stays Partial.** All 3 new policies are now genuinely deployed
-(not merely defined) against the real soc2 project, correctly filtered
-(after a real bug fix confirmed via live log inspection), and wired to an
-operational internal notification channel - a substantial, real
-strengthening from the prior "prepared, not applied" state. It does not
-yet move to Yes because the full synthetic trigger/resolve cycle (proving
-the policies actually fire and notify, not just that they exist and
-parse real log data) was not completed this session.
+**NFR-118 stays Partial.** All 3 new policies are genuinely deployed
+against the real soc2 project, correctly filtered (after a real bug fix
+confirmed via live log inspection), and wired to an operational internal
+notification channel. This batch added real, verified metric-ingestion
+proof for 1 of 3 policies. It does not move to Yes because: (1) incident-
+state and notification-delivery cannot be confirmed with the tools
+available in this environment for any of the 3 policies, and (2) the
+privacy-anomaly and queue-backlog triggers were not attempted due to a
+genuine authentication-credential constraint against the live
+MFA-mandatory soc2 environment.

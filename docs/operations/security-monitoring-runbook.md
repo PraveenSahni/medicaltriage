@@ -42,10 +42,13 @@ scanning), NFR-118 (anomaly alerting)._
   investigation step (e.g. "investigate the source IP(s)" for the
   auth-failure-spike policy). All 8 policies (5 existing + 3 new) notify
   the same internal IST channel ("Triage Ops Email").
-- **Remaining gap, disclosed**: a full incident-fire-and-resolve cycle has
-  not yet been observed for any of the 3 new policies (requires sustained
-  real traffic across a genuine 5-15 minute alignment window) - see
-  `docs/operations/anomaly-alerting-matrix.md` for exact remaining steps.
+- **Remaining gap, disclosed**: incident-state and notification-delivery
+  confirmation is not achievable via any CLI/API available in this
+  environment (Cloud Monitoring exposes only policy definitions, not live
+  incidents, through `gcloud`/REST) - see
+  `docs/operations/nfr-118-alert-validation-report.md` for the full
+  synthetic-validation attempt and exact remaining steps (Console UI or
+  inbox access, neither available this session).
 
 ## General principle for all three
 

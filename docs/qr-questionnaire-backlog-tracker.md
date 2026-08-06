@@ -1739,3 +1739,19 @@ commits only, main not pushed; IS.07 not resumed; PR #15 not touched.
 Auth Proxy active (used for the SecurityAnomalyEvent migration + real-
 Postgres integration tests). Local commits only, main not pushed; IS.07
 not resumed; PR #15 not touched.
+
+## Update 2026-08-06 (continued): dedicated NFR-118 operational validation
+
+Full policy inspection (confirmed zero Terraform drift via
+`terraform plan`), synthetic-trigger, and coverage-matrix pass -
+`docs/operations/nfr-118-alert-validation-report.md`. Real end-to-end
+metric-ingestion evidence obtained for the auth-failure-spike policy
+(matching Cloud Logging entries + Cloud Monitoring time-series values
+exceeding the raw threshold). Privacy-anomaly and queue-backlog triggers
+were not attempted (require live-soc2 authentication not available/
+appropriate to bypass this session). Incident-state and notification-
+delivery confirmation is not achievable via any accessible API/CLI in
+this environment - disclosed as the specific remaining unproven step.
+
+**NFR-118 stays Partial - no score movement.** Cloud SQL Auth Proxy
+active. IS.07 not resumed; PR #15 not touched; local main not pushed.
