@@ -17,6 +17,7 @@ import {
   endElevation,
   fetchApprovedRevealValue,
   FieldNotRevealableError,
+  getAccessRevocationMetricsReport,
   getSecurityDashboard,
   grantPermissionToRole,
   InvalidElevationCodeError,
@@ -336,6 +337,22 @@ export function createAdminRouter(): Router {
     } catch (error) {
       return next(error);
     }
+  });
+
+  // CSQ IS.13: "metrics which track the speed with which access rights are
+  // removed" - a read-only, least-privilege reporting surface over the
+  // access-revocation metrics recorded in securityAdmin.ts. Gated by the
+  // same audit.events.view permission as the other reporting/audit routes,
+  // since this is itself a compliance-reporting view, not a mutation.
+  router.get("/access-revocation-metrics", requirePermission("audit.events.view"), (req, res) => {
+    const days = req.query.days ? Number(req.query.days) : 30;
+    const organization = typeof req.query.organization === "string" ? req.query.organization : undefined;
+    // A caller may only request their own organization's metrics unless
+    // they hold the platform-wide audit.events.view permission across all
+    // orgs (mirrors the same scoping convention already used by
+    // exportOrganizationQueueData) - never returns another organization's
+    // metrics implicitly.
+    return res.json(getAccessRevocationMetricsReport({ days: Number.isFinite(days) ? days : 30, organization }));
   });
 
   router.get(

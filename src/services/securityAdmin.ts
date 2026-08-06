@@ -2013,6 +2013,158 @@ export async function validateSessionContext(
   return "ok";
 }
 
+// CSQ IS.13 ("metrics which track the speed with which access rights are
+// removed"): a durable, in-process metric record for every material
+// access-removal path (account status change, role-permission revoke,
+// single-session termination, HRMS/JML-driven deprovisioning). Kept as a
+// dedicated store rather than overloading AuditEvent, since AuditEvent has
+// no numeric-duration field and this needs cheap p50/p95/max aggregation.
+export type AccessRevocationType =
+  | "ACCOUNT_STATUS_CHANGE"
+  | "ROLE_PERMISSION_REVOKE"
+  | "SESSION_TERMINATION"
+  | "JML_DEPROVISION";
+
+export type AccessRevocationOutcome = "SUCCESS" | "FAILURE";
+
+export type AccessRevocationMetric = {
+  id: string;
+  correlationId: string;
+  requestedAtIso: string;
+  completedAtIso: string;
+  durationMs: number;
+  revocationType: AccessRevocationType;
+  outcome: AccessRevocationOutcome;
+  organization: string;
+  actorUserId: string;
+  targetUserId?: string;
+  targetRoleCode?: string;
+  sessionsRevoked?: number;
+  failureReason?: string;
+};
+
+let accessRevocationMetrics: AccessRevocationMetric[] = [];
+
+/**
+ * Records one completed (or failed) access-removal operation. `requestedAt`
+ * must be captured by the caller at the start of the operation so the
+ * duration reflects the real elapsed time of the revocation itself, not
+ * just this function call. Never accepts credentials/tokens/session
+ * values - only the identifiers needed to attribute and time the removal.
+ */
+function recordAccessRevocationMetric(input: {
+  requestedAt: number;
+  revocationType: AccessRevocationType;
+  outcome: AccessRevocationOutcome;
+  organization: string;
+  actorUserId: string;
+  targetUserId?: string;
+  targetRoleCode?: string;
+  sessionsRevoked?: number;
+  failureReason?: string;
+}): void {
+  const completedAt = Date.now();
+  accessRevocationMetrics.push({
+    id: randomUUID(),
+    correlationId: randomUUID(),
+    requestedAtIso: new Date(input.requestedAt).toISOString(),
+    completedAtIso: new Date(completedAt).toISOString(),
+    durationMs: Math.max(0, completedAt - input.requestedAt),
+    revocationType: input.revocationType,
+    outcome: input.outcome,
+    organization: input.organization,
+    actorUserId: input.actorUserId,
+    targetUserId: input.targetUserId,
+    targetRoleCode: input.targetRoleCode,
+    sessionsRevoked: input.sessionsRevoked,
+    failureReason: input.failureReason
+  });
+}
+
+function percentile(sortedDurations: number[], p: number): number {
+  if (sortedDurations.length === 0) {
+    return 0;
+  }
+  const index = Math.min(sortedDurations.length - 1, Math.ceil((p / 100) * sortedDurations.length) - 1);
+  return sortedDurations[Math.max(0, index)];
+}
+
+export type AccessRevocationMetricsReport = {
+  periodStartIso: string;
+  periodEndIso: string;
+  organization: string | "all";
+  completedCount: number;
+  failedCount: number;
+  p50DurationMs: number | null;
+  p95DurationMs: number | null;
+  maxDurationMs: number | null;
+  byType: Record<AccessRevocationType, { completed: number; failed: number }>;
+  dataComplete: boolean;
+  note: string;
+};
+
+/**
+ * CSQ IS.13's reporting surface. Reports MEASURED performance only - no
+ * approved revocation-time target/SLA has been agreed with Qatar Airways,
+ * so this deliberately does not invent one (a `targetMs` field is left
+ * `null`/undefined pending that approval, per explicit instruction not to
+ * fabricate an SLA).
+ */
+export function getAccessRevocationMetricsReport(params: {
+  days: number;
+  organization?: string;
+}): AccessRevocationMetricsReport {
+  const days = Math.max(1, Math.min(365, params.days));
+  const periodEnd = Date.now();
+  const periodStart = periodEnd - days * 24 * 60 * 60 * 1000;
+
+  const inWindow = accessRevocationMetrics.filter((metric) => {
+    const ts = new Date(metric.completedAtIso).getTime();
+    if (ts < periodStart || ts > periodEnd) {
+      return false;
+    }
+    if (params.organization && params.organization !== "all" && metric.organization !== params.organization) {
+      return false;
+    }
+    return true;
+  });
+
+  const completed = inWindow.filter((m) => m.outcome === "SUCCESS");
+  const failed = inWindow.filter((m) => m.outcome === "FAILURE");
+  const durations = completed.map((m) => m.durationMs).sort((a, b) => a - b);
+
+  const byType: AccessRevocationMetricsReport["byType"] = {
+    ACCOUNT_STATUS_CHANGE: { completed: 0, failed: 0 },
+    ROLE_PERMISSION_REVOKE: { completed: 0, failed: 0 },
+    SESSION_TERMINATION: { completed: 0, failed: 0 },
+    JML_DEPROVISION: { completed: 0, failed: 0 }
+  };
+  for (const metric of inWindow) {
+    if (metric.outcome === "SUCCESS") {
+      byType[metric.revocationType].completed += 1;
+    } else {
+      byType[metric.revocationType].failed += 1;
+    }
+  }
+
+  return {
+    periodStartIso: new Date(periodStart).toISOString(),
+    periodEndIso: new Date(periodEnd).toISOString(),
+    organization: params.organization && params.organization !== "all" ? params.organization : "all",
+    completedCount: completed.length,
+    failedCount: failed.length,
+    p50DurationMs: durations.length ? percentile(durations, 50) : null,
+    p95DurationMs: durations.length ? percentile(durations, 95) : null,
+    maxDurationMs: durations.length ? durations[durations.length - 1] : null,
+    byType,
+    dataComplete: inWindow.length > 0,
+    note:
+      inWindow.length === 0
+        ? "No access-removal operations recorded in this period - report is empty, not an error."
+        : "Measured performance only. No Qatar-Airways-approved revocation-time target/SLA exists yet; this report shows real elapsed durations, not conformance to a target."
+  };
+}
+
 export async function recordAuditEvent(event: AuditEvent): Promise<void> {
   auditEvents.push(event);
   // A failure to persist the audit record (DB outage, network blip, a
@@ -2107,9 +2259,19 @@ export async function updateUserAccountStatus(
   // an already-established session - without this, the status change is
   // cosmetic until that session naturally expires. Mirrors the same
   // revocation already triggered by HRMS-driven deactivation.
+  const revocationRequestedAt = Date.now();
   let sessionsRevoked = 0;
   if (status !== "active") {
     sessionsRevoked = await revokeSessionsForUser(user.id);
+    recordAccessRevocationMetric({
+      requestedAt: revocationRequestedAt,
+      revocationType: "ACCOUNT_STATUS_CHANGE",
+      outcome: "SUCCESS",
+      organization: user.organization ?? "",
+      actorUserId: actor.userId,
+      targetUserId: user.id,
+      sessionsRevoked
+    });
   }
 
   await recordAuditEvent({
@@ -2160,6 +2322,7 @@ async function mutateRolePermission(
     );
   }
 
+  const revocationRequestedAt = Date.now();
   rolePermissionOverrides.push({ roleCode, permissionCode, action });
   try {
     await persistRolePermissionOverride({
@@ -2177,6 +2340,17 @@ async function mutateRolePermission(
   // is never re-derived - without this, a grant/revoke here would be
   // invisible to anyone already logged in under the affected role.
   const sessionsRevoked = await revokeSessionsForRole(roleCode);
+  if (action === "REVOKE") {
+    recordAccessRevocationMetric({
+      requestedAt: revocationRequestedAt,
+      revocationType: "ROLE_PERMISSION_REVOKE",
+      outcome: "SUCCESS",
+      organization: "",
+      actorUserId: actor.userId,
+      targetRoleCode: roleCode,
+      sessionsRevoked
+    });
+  }
 
   await recordAuditEvent({
     id: `audit-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -2432,14 +2606,32 @@ export async function revokeSessionById(
   sessionId: string,
   actor: { userId: string; activeRole: string }
 ): Promise<{ userId: string; activeRole: string }> {
+  const revocationRequestedAt = Date.now();
   const session = sessions.get(sessionId);
   if (!session) {
+    recordAccessRevocationMetric({
+      requestedAt: revocationRequestedAt,
+      revocationType: "SESSION_TERMINATION",
+      outcome: "FAILURE",
+      organization: "",
+      actorUserId: actor.userId,
+      failureReason: "Session not found"
+    });
     throw new SessionNotFoundError(`No active session found with id ${sessionId}`);
   }
   sessions.delete(sessionId);
   sessionContextBySessionId.delete(sessionId);
   elevatedSessions.delete(sessionId);
   await revokePersistedSession(sessionId);
+  recordAccessRevocationMetric({
+    requestedAt: revocationRequestedAt,
+    revocationType: "SESSION_TERMINATION",
+    outcome: "SUCCESS",
+    organization: session.user.organization ?? "",
+    actorUserId: actor.userId,
+    targetUserId: session.user.id,
+    sessionsRevoked: 1
+  });
   await recordAuditEvent({
     id: randomUUID(),
     timestampIso: new Date().toISOString(),
@@ -2498,11 +2690,23 @@ export async function setDirectoryStatusForEmployee(
   if (!user) {
     return { sessionsRevoked: 0 };
   }
+  const revocationRequestedAt = Date.now();
   user.directoryStatus = directoryStatus;
   user.accountStatus = directoryStatusToAccountStatus(directoryStatus);
   user.updatedBy = "oracle-hrms-sync";
   user.updatedAtIso = new Date().toISOString();
   const sessionsRevoked = directoryStatus === "active" ? 0 : await revokeSessionsForUser(user.id);
+  if (directoryStatus !== "active") {
+    recordAccessRevocationMetric({
+      requestedAt: revocationRequestedAt,
+      revocationType: "JML_DEPROVISION",
+      outcome: "SUCCESS",
+      organization: user.organization ?? "",
+      actorUserId: "oracle-hrms-sync",
+      targetUserId: user.id,
+      sessionsRevoked
+    });
+  }
   return { user: maskUser(user), sessionsRevoked };
 }
 
@@ -2520,6 +2724,7 @@ export function resetSecurityStoreForTests(): void {
   revealValuesById.clear();
   elevatedSessions.clear();
   revealRequestTimestampsByUser.clear();
+  accessRevocationMetrics = [];
 }
 
 // Real JIT privileged-access elevation (closes NFR-180's PAM capability gap:
