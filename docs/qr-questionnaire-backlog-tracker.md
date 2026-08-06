@@ -1401,3 +1401,66 @@ real screen-reader testing (a prepared checklist,
 `docs/accessibility/screen-reader-validation-checklist.md`, now exists
 for a future session with real assistive-technology access). No
 compliance percentage change (Partial to Partial).
+
+## 2026-08-06: Batch 10 - AR.13 MFA enrollment, recovery, and production activation
+
+Closed AR.13's real circular-dependency and recovery gaps. Implemented
+a pre-auth enrollment token (`pendingEnrollmentTokens` in
+`securityAdmin.ts`): a short-lived (15 min), single-use,
+user/organization-bound, server-tracked token issued the moment
+`MFA_MANDATORY=true` blocks an unenrolled user's login, authorizing
+only the two enrollment routes and nothing else. Implemented a real
+administrator-assisted MFA reset (`resetMfaForUser()`, PAM-elevation-
+gated `POST /api/v1/admin/users/:id/mfa-reset`) with self-reset and
+cross-tenant guards, immediate session revocation, and a new durable
+`reset_required` credential state that routes the user back through
+the same enrollment flow. Added 8 new focused tests
+(`tests/mfaEnrollmentRecovery.test.ts`), all passing; full backend
+suite 743/743.
+
+Enrolled a second administrator (`sa@irisstar.tech`) via the real
+self-service API, confirming at least 2 administrators are enrolled in
+soc2 before activation (the existing `pa@irisstar.tech` was already
+enrolled from earlier AR.13 testing). Deployed a `--no-traffic` canary
+(`ist-triage-soc2-00055-juc`) with `MFA_MANDATORY=true`,
+`MFA_DB_PERSISTENCE=true`, `AUDIT_EVENT_DB_PERSISTENCE=true`. Live-
+validated end to end via real HTTP calls: both enrolled admins hit the
+normal MFA challenge (not enrollment); an unenrolled account
+(`khalid@irisstar.tech`) received a real enrollment token instead of a
+lockout; enrollment completed via the token; the token was confirmed
+single-use (replay rejected); a fresh login then required the normal
+MFA challenge; the admin MFA-reset endpoint (elevated via PAM) reset
+`khalid`'s credential and correctly forced re-enrollment on the next
+login attempt. Cut over to 100% traffic. Confirmed live on the
+production domain: an unenrolled user (`sara@irisstar.tech`) receives
+a real enrollment token, not a lockout.
+
+Wrote `docs/security/mfa-enrollment-and-recovery.md`,
+`docs/operations/mfa-administrator-reset-runbook.md`, and
+`docs/security/mfa-break-glass-assessment.md` (a real assessment
+concluding a dedicated break-glass account is not justified this batch
+- the admin-reset flow plus maintaining 2+ enrolled administrators is
+the accepted mitigating control).
+
+**AR.13 moves to Yes for the soc2 environment.** All 9 closure
+criteria are met there: mandatory MFA is active on live soc2 traffic;
+enrolled users authenticate successfully; unenrolled users can
+securely self-enroll via the new token flow; administrator reset and
+recovery are operational and tested; sessions are revoked after reset;
+cross-instance persistence is proven (credentials survive a fresh
+Cloud Run revision); audit evidence is durable
+(`MFA_DB_PERSISTENCE`/`AUDIT_EVENT_DB_PERSISTENCE`); no user population
+is locked out (every unenrolled user is routed into a real, working
+enrollment flow, not blocked). **Scope note**: this activation covers
+the `ist-triage-soc2` environment specifically, the only environment
+this questionnaire's technical evidence has ever been validated
+against this engagement - if AR.13's requirement is read as applying
+to a separate, real customer-production environment, that environment
+is out of this batch's scope and would need its own activation.
+
+Known limitations, disclosed: no frontend enrollment UI was built
+(backend/API only, consistent with this engagement's established SSO/
+MFA scoping); no break-glass account exists (documented, justified
+decision); the enrollment-token flow depends on the user already
+knowing their password (real, but not the whole "remote access"
+picture if a future SSO-only population is added).

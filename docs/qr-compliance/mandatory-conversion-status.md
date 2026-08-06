@@ -314,3 +314,24 @@ re-verified: genuinely 0 violations across all 5 pages now. NFR-015
 stays Partial - the sole remaining blocker is the complete absence of
 real screen-reader validation (checklist prepared for a future batch).
 No compliance percentage change from this batch.
+
+## Update 2026-08-06: AR.13 - real enrollment/recovery built, mandatory MFA activated on soc2, moved to Yes
+
+Closed the two gaps that kept AR.13 at Partial: (1) a real pre-auth
+enrollment token now lets an unenrolled user complete MFA enrollment
+without an existing session, removing the circular dependency that
+previously meant `MFA_MANDATORY=true` would have locked out anyone not
+already enrolled; (2) a real, PAM-elevation-gated administrator MFA
+reset now exists, with immediate session revocation and forced
+re-enrollment, closing the "no recovery path" gap. A second
+administrator (`sa@irisstar.tech`) was enrolled so at least 2
+administrators are active, and `MFA_MANDATORY=true` was activated on
+`ist-triage-soc2` via canary-then-cutover, live-validated end to end
+(enrolled users authenticate normally, unenrolled users are routed
+into real enrollment rather than locked out, admin reset works,
+cross-instance persistence confirmed). **AR.13 moves to Yes for the
+soc2 environment** - see
+`docs/qr-questionnaire-backlog-tracker.md` Batch 10 for the full
+evidence and the explicit scope note (this activation covers soc2
+only, the only environment this engagement's technical evidence has
+ever targeted).

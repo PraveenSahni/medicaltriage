@@ -202,3 +202,26 @@ rows).
 
 **Status**: Closed. `MFA_MANDATORY` (AR.13) remains a separate,
 still-blocked item on the same environment.
+
+## Update 2026-08-06: AR.13 - MFA_MANDATORY activated on ist-triage-soc2
+
+Built the enrollment-token and administrator-reset flows that made
+this safe to enable (see `docs/security/mfa-enrollment-and-recovery.md`,
+`docs/operations/mfa-administrator-reset-runbook.md`). Enrolled a
+second administrator (`sa@irisstar.tech`) via the real self-service
+API. Built image `ist-triage-soc2:20260805-ar13-mandatory` (digest
+`sha256:e75b23552ed2a15ba721e4516bf0c5d750e0dc10021c12f8c77bed3db28c3252`),
+deployed as canary `ist-triage-soc2-00055-juc` with
+`MFA_MANDATORY=true`, `MFA_DB_PERSISTENCE=true`,
+`AUDIT_EVENT_DB_PERSISTENCE=true`. Live-validated via real HTTP calls:
+both enrolled administrators hit the normal MFA challenge; an
+unenrolled account received a real enrollment token and completed
+enrollment; the token was confirmed single-use; the administrator
+MFA-reset endpoint (PAM-elevated) reset a test account and correctly
+forced re-enrollment. Cut over to 100% traffic. Confirmed live on the
+production domain that an unenrolled account is routed into real
+enrollment, not locked out. **Status now: `MFA_MANDATORY` is active on
+live soc2 traffic. AR.13 moved to Yes for this environment.**
+Rollback, if ever needed, is `MFA_MANDATORY=false` via
+`gcloud run services update` - no credential data is deleted by
+disabling the flag.

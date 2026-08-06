@@ -365,3 +365,20 @@ absence of real screen-reader validation
 (`docs/accessibility/screen-reader-validation-checklist.md` prepared
 for a future session). No compliance percentage change from this
 batch.
+
+## AR.13 - MFA enrollment/recovery + mandatory activation (2026-08-06, Batch 10) - moved to Yes
+
+Built a real pre-auth enrollment token (`pendingEnrollmentTokens`,
+`src/services/securityAdmin.ts`) closing the circular dependency
+between mandatory MFA and self-service enrollment, and a real,
+PAM-gated administrator MFA reset (`resetMfaForUser()`,
+`POST /api/v1/admin/users/:id/mfa-reset`) with session revocation and
+forced re-enrollment. 8 new tests (`tests/mfaEnrollmentRecovery.test.ts`),
+full backend suite 743/743. Enrolled a second administrator, activated
+`MFA_MANDATORY=true` on `ist-triage-soc2` via canary-then-cutover, and
+live-validated every closure criterion via real HTTP calls against the
+canary and production. Full detail:
+`docs/security/mfa-enrollment-and-recovery.md`,
+`docs/operations/mfa-administrator-reset-runbook.md`,
+`docs/security/mfa-break-glass-assessment.md`. **AR.13: Partial ->
+Yes**, scoped explicitly to the soc2 environment.
