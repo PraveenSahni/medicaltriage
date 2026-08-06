@@ -1,0 +1,191 @@
+name: Infrastructure Drift Detection (soc2)
+
+# IS.07: detects differences between source-controlled Terraform config,
+# Terraform state, and the actual deployed GCP infrastructure for the soc2
+# environment. Plan-only - never runs `terraform apply`. Authenticates
+# keylessly via Workload Identity Federation to a dedicated, least-privilege
+# read-only service account (ci-drift-detector@triage-502706.iam.gserviceaccount.com)
+# that holds roles/viewer, roles/cloudsql.viewer, and roles/iam.securityReviewer
+# at the project level, plus roles/storage.objectAdmin scoped ONLY to the
+# Terraform state bucket (needed for state locking). It has no apply-level
+# mutation permission on any resource - confirmed by a real 403 in
+# docs/operations/infrastructure-drift-detection-runbook.md's validation log.
+#
+# Coverage: only resources declared in terraform/main.tf (the soc2 Cloud Run
+# service/jobs, its Secret Manager secrets, Pub/Sub topics, the BigQuery
+# billing-export dataset, the log-archive bucket, and Cloud Scheduler jobs).
+# The demo environment, Firebase Hosting, and Artifact Registry are NOT under
+# Terraform management and are therefore outside this workflow's coverage -
+# see docs/architecture/infrastructure-as-code-scope.md.
+
+on:
+  schedule:
+    # Daily at 03:00 UTC. GitHub only fires `schedule` events from the
+    # workflow file as it exists on the default branch.
+    - cron: "0 3 * * *"
+  push:
+    branches: [main]
+    paths:
+      - "terraform/**"
+      - ".github/workflows/infra-drift-detection.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  id-token: write # required for keyless WIF auth
+  issues: write # required to open/update the drift-alert issue
+
+concurrency:
+  group: infra-drift-detection-soc2
+  cancel-in-progress: false # never cancel a plan mid-flight
+
+env:
+  TF_VERSION: "1.14.9" # pinned - matches terraform/.terraform.lock.hcl
+  TF_WORKING_DIR: terraform
+  GCP_PROJECT: triage-502706
+  GCP_WORKLOAD_IDENTITY_PROVIDER: projects/1096520215793/locations/global/workloadIdentityPools/github-actions/providers/github-actions-drift
+  GCP_SERVICE_ACCOUNT: ci-drift-detector@triage-502706.iam.gserviceaccount.com
+
+jobs:
+  drift-check:
+    name: Terraform plan (soc2, plan-only)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out exact branch
+        uses: actions/checkout@v4
+
+      - name: Authenticate to GCP (keyless, Workload Identity Federation)
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
+          # No JSON key - short-lived, OIDC-exchanged credentials only.
+
+      - name: Install pinned Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+
+      - name: terraform fmt (check only)
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform fmt -check -diff -recursive
+
+      - name: terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init -input=false
+
+      - name: terraform validate
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform validate
+
+      - name: terraform plan (detailed exit code)
+        id: plan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        continue-on-error: true
+        run: |
+          set +e
+          terraform plan -detailed-exitcode -no-color -input=false -out=drift.tfplan > plan_raw.txt 2>&1
+          exit_code=$?
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Sanitize plan artefact
+        if: always()
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          # Strip anything that looks like a secret value, token, or
+          # connection string before this ever leaves the runner. Real
+          # secret *values* never appear in a `google_secret_manager_secret`
+          # plan anyway (Terraform only manages the secret's metadata/rotation
+          # config here, never a version's payload) - this is defense in depth
+          # against any future resource type that might expose one.
+          test -f plan_raw.txt && \
+          sed -E 's/("?(secret|token|password|key)[a-zA-Z_]*"?\s*[:=]\s*")[^"]*(")/\1***REDACTED***\3/gi' plan_raw.txt > plan_sanitized.txt || true
+
+      - name: Upload sanitized plan artefact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift-plan-soc2-${{ github.run_id }}
+          path: ${{ env.TF_WORKING_DIR }}/plan_sanitized.txt
+          retention-days: 90 # evidence retention
+
+      - name: Interpret plan result
+        id: interpret
+        run: |
+          code="${{ steps.plan.outputs.exit_code }}"
+          if [ "$code" = "0" ]; then
+            echo "result=clean" >> "$GITHUB_OUTPUT"
+          elif [ "$code" = "2" ]; then
+            echo "result=drift" >> "$GITHUB_OUTPUT"
+          else
+            echo "result=error" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fail the job on workflow/Terraform error (exit 1)
+        if: steps.interpret.outputs.result == 'error'
+        run: |
+          echo "::error::terraform plan failed (workflow/config error, not drift). See the plan artefact and job log."
+          exit 1
+
+      - name: De-duplicate and open/update drift alert (exit 2)
+        if: steps.interpret.outputs.result == 'drift'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = "[infra-drift][soc2] Terraform drift detected";
+            const { data: existing } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "infra-drift,soc2",
+            });
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const detectedAt = new Date().toISOString();
+            const body = [
+              `**Environment:** soc2 (\`ist-triage-soc2\`, project \`triage-502706\`)`,
+              `**Workflow run:** ${runUrl}`,
+              `**Detection time:** ${detectedAt}`,
+              ``,
+              `Terraform plan detected a difference between source-controlled configuration and the actual deployed infrastructure (\`terraform plan -detailed-exitcode\` returned 2).`,
+              ``,
+              `**Next steps (see docs/operations/infrastructure-drift-detection-runbook.md):**`,
+              `1. Download the sanitized plan artefact from this run and identify the affected resource address(es).`,
+              `2. Classify: expected change not yet applied / out-of-band manual change / provider-generated noise / state inconsistency / import gap.`,
+              `3. If expected: update terraform/main.tf to match, peer review, approved \`terraform apply\`.`,
+              `4. If unauthorized: revert the manual change out of band, or raise for review before importing it.`,
+              `5. Re-run this workflow (workflow_dispatch) to confirm a clean result, then close this issue.`,
+              ``,
+              `Owner: whoever last touched terraform/main.tf or deployed to soc2 - see recent commits/deploys.`,
+              ``,
+              `_This issue is deduplicated - a still-open issue with the same labels is updated with a new comment instead of a new issue being opened._`,
+            ].join("\n");
+
+            if (existing.length > 0) {
+              const issue = existing[0];
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `Drift detected again on a later run.\n\n${body}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ["infra-drift", "soc2"],
+              });
+            }
+
+      - name: Record clean-run evidence (exit 0)
+        if: steps.interpret.outputs.result == 'clean'
+        run: |
+          echo "No drift detected for soc2 at $(date -u +%Y-%m-%dT%H:%M:%SZ). Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: Fail the job if drift was found (surfaces in CI status)
+        if: steps.interpret.outputs.result == 'drift'
+        run: exit 1
