@@ -488,3 +488,12 @@ IST-operated physical network exists. AR.17 reclassified No -> N/A.
 **Mandatory: 82/152 = 53.95% -> 82/151 = 54.30%. Overall: 137/400 =
 34.00% -> 137/399 = 34.34%.** Numerator unchanged - a denominator
 correction, not a new closure.
+
+## Update 2026-08-06 (continued): IS.39 applicability subcomponent review
+
+IS.39 split into a host/VM/network-device subcomponent (N/A - no VMs or
+customer-managed network devices exist) and a public-endpoint TLS/
+reachability subcomponent (applicable, only partially met via existing
+security-header checks). Moved No -> Partial, not full-row N/A. **No
+score impact** (mandatory 82/151 = 54.30%, overall 137/399 = 34.34%,
+unchanged). `docs/security/na-applicability-register.md`.

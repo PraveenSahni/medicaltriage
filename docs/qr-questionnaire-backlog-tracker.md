@@ -1797,3 +1797,19 @@ No -> N/A per the strict N/A test applied earlier this session (no
 contradictory fact remains once confirmed). **Mandatory 82/152 (53.95%)
 -> 82/151 (54.30%). Overall 137/400 (34.00%) -> 137/399 (34.34%).**
 Reassessment required if IST ever operates a physical office network.
+
+## Update 2026-08-06 (continued): IS.39 applicability subcomponent review
+
+Literal wording ("network-layer vulnerability scans") separated into two
+subcomponents: (1) host/VM/customer-managed network-device scanning -
+**N/A**, since IST operates no VM hosts or network devices under this
+Cloud Run serverless deployment; (2) public-facing endpoint network/TLS
+reachability testing - **applicable, only partially met** (existing
+`scripts/dastProbe.mjs` checks security-header presence only, not a
+genuine TLS/cipher/port scan). Row moved No -> Partial to reflect this
+split, not marked full-row N/A. Full analysis:
+`docs/security/na-applicability-register.md`.
+
+**No score impact on the binary Method A score** - a No->Partial bucket
+shift does not change the scored denominator or Yes numerator (mandatory
+stays 82/151 = 54.30%, overall stays 137/399 = 34.34%).

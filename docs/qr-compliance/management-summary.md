@@ -436,3 +436,24 @@ now back to Yes, backed by real user-journey evidence. This is recorded
 here as an example of this engagement's standing "verify, don't
 assume" discipline catching and correcting its own overclaim before it
 was accepted as final.
+
+## Update 2026-08-06: AR.17 N/A reclassification + IS.39 subcomponent review
+
+**AR.17** ("protect network environments... rogue network devices")
+reclassified No -> N/A after confirming directly with IST that this
+offering is hosted entirely on Google Cloud (Cloud Run, me-central1/
+Doha) with no IST-operated physical office network - a genuine
+denominator correction (mandatory 152->151, overall 400->399; numerator
+unchanged).
+
+**IS.39** ("network-layer vulnerability scans") reviewed subcomponent-
+by-subcomponent rather than reclassified wholesale: the host/VM/network-
+device half is N/A (no VMs or customer-managed network devices exist),
+but the public-endpoint TLS/reachability-testing half remains applicable
+and only partially met (security-header checks exist; no genuine TLS/
+cipher/port scan does). Moved No -> Partial to reflect this precisely -
+**no score impact**, since both buckets are "not Yes."
+
+**Current compliance (mechanically recomputed 2026-08-06): mandatory
+82/151 = 54.30%, overall 137/399 = 34.34%.** Full reasoning for both
+rows: `docs/security/na-applicability-register.md`.

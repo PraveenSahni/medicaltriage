@@ -385,3 +385,15 @@ _Each remark cross-references Google's shared-responsibility model or this appli
 companion packs is prepared **for future use only**, to be applied
 once the corresponding action/approval/evidence is real - never
 speculatively.
+
+## Update 2026-08-06: IS.39 applicability subcomponent review (real workbook change, disclosed)
+
+Unlike every other entry in this register (prepared remarks only, no
+workbook change), this one **was** applied directly: IS.39
+("network-layer vulnerability scans") was split into a host/VM/network-
+device subcomponent (N/A - no VMs or customer-managed network devices
+exist under this Cloud Run serverless deployment) and a public-endpoint
+TLS/reachability subcomponent (applicable, only partially met). Moved
+No -> Partial in the live workbook. Full analysis:
+`docs/security/na-applicability-register.md`. No score impact on the
+binary Method A score (a No->Partial shift, both "not Yes").
