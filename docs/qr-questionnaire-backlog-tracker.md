@@ -1615,3 +1615,36 @@ unresolved issue). NFR-004 (UX tab) stays Partial.
 
 Backend: 759/759 tests passed (up from 757 - 2 new audit/authorization
 tests), tsc clean.
+
+## Update 2026-08-06: full Playwright rewrite against the real #/cockpit workflow - NFR-004 UX moves to Yes
+
+Mapped the exact, current #/cockpit workflow via live DOM investigation
+(stage tabs, inline content, no modal, exact button text at every
+transition). Rewrote WEB-005/006/007 in tests/e2e/browser-journey.spec.ts
+against this real map. WEB-005 now proves the complete login -> claim ->
+Reason -> Questions -> Disposition -> SBAR -> Completed journey
+end-to-end, confirming the real completion sequence has no EMR writeback
+call (a real correction to a stale assumption from the legacy UI). WEB-007
+was repurposed into a real browser-level authorization-denial test.
+
+Found and fixed 2 further real defects: a pre-existing backend
+completion-gate requirement (sbarNoteText) the old API-008 test never
+actually exercised, and a deterministic-fixture violation where API-008
+permanently completed the shared case-10002 record other tests depend on
+(fixed by using a dedicated, dynamically-created queue item instead).
+
+Result: 80/86 e2e tests pass across all 6 engines (Chrome, Edge, Firefox,
+WebKit, Mobile Chrome, Mobile Safari), up from 61/86. Zero
+browser-specific defects. The one remaining failure (WEB-008, identical
+across all engines) is a separate, disclosed, non-core issue (Help Center
+link opens a new tab) - a different feature area, out of this batch's
+scope.
+
+**NFR-004 (UX tab) moves to Yes**: the actual shipped #/cockpit workflow
+is now tested end-to-end, core nurse workflows pass across all 6
+configured projects, no material browser-specific defect remains, test
+fixtures are deterministic (dedicated records, no shared-state
+collisions), and the legacy #/cockpit-v2 modal assumptions have been fully
+removed and replaced with real selectors. See
+docs/architecture/call-center-workflow-model.md for the complete
+investigation and evidence.

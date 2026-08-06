@@ -345,3 +345,34 @@ Re-ran the full 6-engine matrix cleanly (explicit env vars, verified no
 orphaned server processes, no .env leakage): 61/86 passed - identical
 total to the prior batch, since the deeper UI-surface mismatch is a
 separate, still-open issue. **NFR-004 (UX tab) stays Partial.**
+
+## Update 2026-08-06: NFR-004 (UX tab) closes to Yes - real #/cockpit workflow rewrite
+
+Full Playwright rewrite of tests/e2e/browser-journey.spec.ts's WEB-005/
+006/007 against the real, current #/cockpit UI (mapped via live DOM
+investigation, not assumption): stage tabs, inline content (confirmed no
+modal anywhere), exact button text at every transition. WEB-005 proves
+the complete claim-through-completion journey end-to-end and confirms
+the real completion sequence (context PATCH -> triage/complete POST ->
+context PATCH -> queue/move POST, no EMR writeback call - a correction to
+a stale legacy-UI assumption). WEB-007 repurposed into a real
+authorization-denial browser test.
+
+Found and fixed 2 further real defects during verification: a backend
+completion-gate requirement (sbarNoteText) the old API-008 test never
+exercised until now, and a deterministic-fixture violation (API-008
+permanently completing the shared case-10002 record other tests depend
+on) - fixed via a dedicated, dynamically-created queue item.
+
+Full 6-engine matrix (clean run, explicit env vars, no orphaned
+processes): **80/86 passed**, up from 61/86. Zero browser-specific
+defects across Chrome, Edge, Firefox, WebKit, Mobile Chrome, Mobile
+Safari. The one remaining failure (WEB-008, identical on every engine) is
+a separate, disclosed, non-core issue (Help Center link navigation) -
+unrelated to the claim/context/authorization/audit workflow this batch
+targets.
+
+Backend: 759/759 tests pass, tsc clean.
+
+**NFR-004 (UX tab) moves to Yes.** Full evidence:
+docs/architecture/call-center-workflow-model.md.
