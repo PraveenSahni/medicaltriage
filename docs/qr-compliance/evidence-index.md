@@ -509,3 +509,19 @@ not bypass). Incident-state and notification-delivery cannot be
 confirmed via any accessible API/CLI (Cloud Monitoring exposes only
 policy definitions, not live incidents) - a genuine tooling limitation,
 disclosed. **NFR-118 stays Partial - no score movement this pass.**
+
+## Update 2026-08-06 (continued): IS.66 least-privilege and administrative-access assessment
+
+Full 8-phase assessment - `docs/security/is66-least-privilege-assessment.md`.
+Real cloud-IAM finding: both live Cloud Run services run under the
+default Compute Engine SA (project-wide `roles/editor`); a dedicated,
+narrowly-scoped runtime SA already existed but was never wired into
+Terraform or granted Secret Manager access - both gaps closed additively
+this batch (`terraform/least_privilege_runtime.tf`, applied, zero drift,
+zero blast radius). Actual runtime-identity cutover deliberately deferred
+to a planned deployment window. Application RBAC confirmed already real
+and tested from prior work - no new gaps. Administrator-workstation
+hardening remains entirely unverifiable from a code/cloud review
+(requires real HR/IT evidence). **IS.66 stays Partial - no score
+movement** (mandatory 82/152 = 53.95%, overall 137/400 = 34.25%,
+unchanged).

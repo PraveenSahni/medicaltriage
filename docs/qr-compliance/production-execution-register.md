@@ -476,3 +476,40 @@ remains 82/152 = 53.95%; overall remains 137/400 = 34.25%). Cloud SQL
 Auth Proxy was active throughout (confirmed connectivity, not required
 for this batch's HTTP-only synthetic triggers). IS.07 not resumed; PR #15
 not touched; local main not pushed.
+
+## Update 2026-08-06 (continued): IS.66 least-privilege and administrative-access assessment
+
+Real GCP IAM audit (`gcloud projects get-iam-policy triage-502706`)
+found both live Cloud Run services (soc2 + demo) running under the
+default Compute Engine service account, which holds project-wide
+`roles/editor`. A dedicated, narrowly-scoped runtime service account
+(`ist-triage-cloudrun-sa`, holding only `roles/cloudsql.client`) already
+existed but was never tracked in Terraform and was missing the Secret
+Manager access the application actually needs. Both gaps were closed
+additively via `terraform/least_privilege_runtime.tf` (a real
+`terraform apply` against the live project, confirmed via a full
+untargeted `terraform plan` afterward showing zero drift anywhere).
+This grant did not remove any existing access, so it carries zero blast
+radius - both live services (`triagedsoc2.irisstar.tech`,
+`triaged.irisstar.tech`) were confirmed healthy (`200`) before and after.
+
+The actual cutover (switching each service's `--service-account` to the
+new dedicated identity) and the subsequent narrowing/removal of the
+default compute SA's `roles/editor` were deliberately **not** performed
+this batch - both are real production changes needing a planned
+deployment window and rollback plan, consistent with this engagement's
+practice of separating definition/preparation from live activation.
+
+Application RBAC (least privilege by role, PAM elevation, tenant
+isolation, durable permission overrides, session revocation, audit
+trail) was reviewed and confirmed already real and tested from prior
+engagement work - no new gaps found, no new tests added.
+Administrator-workstation hardening (managed devices, disk encryption,
+EDR, patching, etc.) was honestly assessed as entirely unverifiable from
+a code/cloud review, requiring real IST HR/IT evidence not available
+this session.
+
+**IS.66 stays Partial - no score movement** (mandatory 82/152 = 53.95%,
+overall 137/400 = 34.25%, unchanged). IS.07 not resumed; PR #15 not
+touched; local main not pushed. Full assessment:
+`docs/security/is66-least-privilege-assessment.md`.

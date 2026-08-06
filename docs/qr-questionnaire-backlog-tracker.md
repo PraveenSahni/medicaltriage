@@ -1755,3 +1755,16 @@ this environment - disclosed as the specific remaining unproven step.
 
 **NFR-118 stays Partial - no score movement.** Cloud SQL Auth Proxy
 active. IS.07 not resumed; PR #15 not touched; local main not pushed.
+
+## Update 2026-08-06 (continued): IS.66 least-privilege assessment
+
+Real cloud-IAM remediation: dedicated runtime SA (`ist-triage-cloudrun-sa`,
+previously untracked/underprivileged) wired into Terraform and granted the
+Secret Manager access it needs, additively (zero drift, zero impact to
+live services, confirmed healthy throughout). Cutover of the live
+services' runtime identity away from the over-privileged default compute
+SA deliberately deferred to its own deployment window. Application RBAC
+confirmed already covered by prior engagement work. Workstation hardening
+honestly marked as requiring HR/IT evidence not available this session.
+**IS.66 stays Partial - no score movement.** Full report:
+`docs/security/is66-least-privilege-assessment.md`.
