@@ -358,3 +358,17 @@ it; a subsequent fresh login correctly required and completed the MFA
 challenge, granting real application access. Confirmed on production
 too. **AR.13 moves back to Yes**, this time genuinely backed by a real
 user-journey validation rather than API-only evidence.
+
+## Update 2026-08-06: IS.07 - CI drift-detection credential built and validated (still Partial)
+
+The CI-credential gap recorded in the table above is now closed: a real
+Workload Identity Federation identity (`ci-drift-detector@triage-502706
+.iam.gserviceaccount.com`) exists, least-privilege (no apply-level
+mutation permission - confirmed via a real 403), and a full drift-detection
+GitHub Actions workflow was written and validated end-to-end against real
+soc2 infrastructure (real pre-existing drift found + reconciled, real
+synthetic drift detected + reverted, final clean run confirmed). Status
+stays **Partial**, not Yes, because the workflow's schedule cannot
+literally be active in GitHub Actions until this is pushed (explicitly out
+of scope this batch). See
+`docs/operations/infrastructure-drift-detection-runbook.md`.

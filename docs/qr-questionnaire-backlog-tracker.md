@@ -1534,3 +1534,31 @@ clean.
 this time backed by genuine real-user-journey evidence rather than
 API-only validation - the exact standard this correction batch
 required before any such claim could be honestly made again.
+
+## Update 2026-08-06: IS.07 CI drift-detection activation (real, Partial retained)
+
+The previously-blocking gap ("IS.07 needs a CI credential that doesn't
+exist") is now closed on the credential side: a real, keyless Workload
+Identity Federation setup (`github-actions` pool/provider,
+`ci-drift-detector@triage-502706.iam.gserviceaccount.com`, least-privilege
+IAM, no long-lived key) was created against project `triage-502706`, and a
+full `terraform plan -detailed-exitcode` drift-detection workflow was
+written (`.github/workflows/infra-drift-detection.yml`).
+
+This identity's Terraform plan capability was validated for real against
+live soc2 infrastructure: it found genuine pre-existing drift (an
+un-backfilled image tag and 8 env vars from this engagement's own prior
+feature work), which was reconciled in `terraform/main.tf`; it then
+detected a real, controlled, reversible synthetic drift
+(`scaling.max_instance_count` 20→21) with exit code 2, and confirmed a
+clean exit 0 after reverting. A direct mutation attempt using the
+identity's own token returned 403, confirming no apply-level privilege.
+
+**IS.07 stays Partial**, not Yes - the compliance instruction's own rule is
+that if the schedule remains inactive, Partial is retained. Since this
+batch is "do not push," the workflow's `schedule` trigger cannot literally
+fire in GitHub Actions yet (GitHub only runs `schedule` from the default
+branch). Every other closure criterion was met via direct, real validation
+using the identical identity and commands the workflow itself runs - see
+`docs/operations/infrastructure-drift-detection-runbook.md` for the full
+evidence log.

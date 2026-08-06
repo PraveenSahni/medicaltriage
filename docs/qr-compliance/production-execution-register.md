@@ -257,3 +257,20 @@ correctly received the real enrollment screen, not a dead end.
 
 **Status now: AR.13 moved back to Yes**, this time backed by a real,
 browser-verified user journey rather than API-only evidence.
+
+## Update 2026-08-06: IS.07 CI drift-detection activation
+
+**Real GCP resources created** (project `triage-502706`):
+- Terraform remote state: `gs://triage-502706-terraform-state` (versioned GCS bucket); `terraform/main.tf` migrated from local state via `terraform init -migrate-state`.
+- Service account: `ci-drift-detector@triage-502706.iam.gserviceaccount.com`.
+- Workload Identity Pool `github-actions` + OIDC provider `github-actions-drift`, issuer `https://token.actions.githubusercontent.com`, attribute condition restricting to `assertion.repository=='PraveenSahni/medicaltriage'`.
+- IAM: `roles/viewer`, `roles/cloudsql.viewer`, `roles/iam.securityReviewer` (project-level, all read-only), plus `roles/storage.objectAdmin` scoped only to the state bucket. No apply-level mutation role anywhere - confirmed via a real 403 on a direct mutation attempt using the identity's own token.
+
+**Workflow**: `.github/workflows/infra-drift-detection.yml` - `terraform plan -detailed-exitcode`, sanitized plan artefact (90-day retention), deduplicated GitHub-issue alerting, schedule (daily 03:00 UTC) + push-on-terraform-change + manual dispatch triggers. Never runs `terraform apply`.
+
+**Real validation against soc2** (this batch, using the genuine `ci-drift-detector` identity):
+1. First real plan run found genuine pre-existing drift (image tag + 8 env vars added via prior `gcloud run deploy` calls this engagement, never backfilled into `main.tf`) - reconciled by updating `main.tf` to match real deployed state (positional `env` block order fix required and applied). Re-plan: exit 0.
+2. Controlled synthetic drift: `gcloud run services update --max-instances=21` (out of band) → plan exit 2, exact diff `max_instance_count = 21 -> 20`. Reverted (`--max-instances=20`) → plan exit 0, "No changes."
+3. Mutation-privilege check: direct `PATCH` to the Cloud Run Admin API using the identity's own token → HTTP 403.
+
+**Status**: IS.07 stays **Partial**. Per the compliance instruction's own rule, an implemented workflow with an inactive schedule stays Partial - and the schedule genuinely cannot fire in GitHub Actions until this commit is pushed (out of scope this batch, "Do not push"). Full evidence log: `docs/operations/infrastructure-drift-detection-runbook.md`.
