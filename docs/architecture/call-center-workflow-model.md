@@ -99,6 +99,59 @@ objectively correct progress (it fixed the first, shallower defect these
 tests hit), but they will continue to fail until rewritten against the
 real default Cockpit UI in a follow-up batch.
 
+## Third phase: full Playwright rewrite against the real #/cockpit UI (2026-08-06)
+
+A dedicated real-DOM investigation (live browser probing, not assumption)
+mapped the exact, current `#/cockpit` workflow: stage tabs
+(`role="tablist" aria-label="Clinical workflow stage"`), inline stage
+content (no modal anywhere), and the exact button text at every
+transition (`"Answer call →"` → `"Triage Questions →"` →
+auto-advance-or-`"Disposition & Advice →"` → `"Continue to SBAR →"` →
+`"✓ Complete Call"`). `WEB-005`, `WEB-006`, and `WEB-007` in
+`tests/e2e/browser-journey.spec.ts` were fully rewritten against this real
+map (role/name selectors only, no `data-testid` since none exist in this
+UI, no fixed sleeps beyond a short settle after each answer-loop
+iteration). `WEB-005` now proves the complete login → claim → Reason →
+Questions → Disposition → SBAR → Completed journey end-to-end, confirming
+along the way (via live network inspection) that the real completion
+sequence is `context PATCH → triage/complete POST → context PATCH →
+queue/move POST` with **no EMR writeback call** in the current Cockpit
+(the legacy `NurseWorkspace`/`NurseWorkspaceRedesign` components do call
+it; the current one does not - a real, confirmed correction to the old
+test's assumption). `WEB-007` was repurposed from a redundant modal-click
+sequence into a real browser-level authorization-denial test (the intake
+role cannot claim through the actual UI).
+
+Two further real, pre-existing defects were found and fixed while
+verifying this rewrite:
+
+1. **A backend completion-gate bug in the test itself**: `queueOrchestration.ts`'s
+   `validateClinicalSequence` requires real `sbarNoteText`, not just the
+   `sbarCopied` boolean, before allowing `COMPLETED` - a real guard added
+   earlier in this engagement that the old API-008 test never actually
+   exercised (it always failed earlier at the wrong-endpoint step). Fixed
+   by adding the missing `sbarNoteText` PATCH.
+2. **A deterministic-fixture violation**: API-008 previously operated on
+   the shared `case-10002` fixture record that other tests (`WEB-004`)
+   depend on remaining unclaimed/incomplete. Since `api-contract` and every
+   browser project share one server process for the whole
+   `npx playwright test` run, API-008 succeeding for the first time
+   permanently completed `case-10002`, breaking `WEB-004` in every
+   later-running project. Fixed by having API-008 create and operate on
+   its own dedicated queue item instead of the shared fixture. `WEB-006`'s
+   callback-reason text was also made unique per project invocation for
+   the same reason (a fixed literal collided across the 6 shared-server
+   projects).
+
+**Result: 80 of 86 e2e tests pass across all 6 configured engines/mobile
+profiles**, up from 61/86. The one remaining failure (`WEB-008`, on every
+engine identically) is a separate, disclosed, non-core issue: the Help
+Center entry point is a real `<a aria-label="Help">` link that opens in a
+new browser tab, and the old test's `toHaveURL(/#\/help$/)` assertion
+against the *same* page/tab is stale - unrelated to the claim/context/
+authorization/audit workflow this batch targets, and out of this batch's
+scope to fix (a different feature area entirely).
+
 ## Explicitly not changed
 
 - The call-center-gateway `/sessions`/`/command` endpoints' own permission

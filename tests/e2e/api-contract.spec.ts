@@ -326,17 +326,43 @@ test.describe.serial("API contracts from login through clinical completion", () 
   });
 
   test("API-008 executes a complete claim-to-SBAR journey and validates every write", async ({ request }) => {
+    // Uses a dedicated, dynamically-created queue item rather than the
+    // shared "case-10002" fixture other tests (e.g. WEB-004) rely on
+    // remaining in an unclaimed/incomplete state - this test genuinely
+    // completes the item it operates on, and running it against a shared
+    // well-known record would permanently remove that record from the
+    // default queue view for every later test/project sharing this same
+    // e2e server (found and fixed as a real deterministic-fixture defect
+    // during this batch).
+    await apiLogin(request, personas.intake);
+    const createResponse = await request.post("/api/v1/queue", {
+      data: {
+        istStaffId: "IST-1001",
+        dependentId: "dep_ist_1001_child_02",
+        patientType: "Dependent",
+        channel: "WhatsApp",
+        stationCode: "DOH",
+        summary: "API-008 dedicated fever/fast-breathing scenario.",
+        reasonNarrative: "Fever with fast breathing reported by parent.",
+        safetyFloorActive: true,
+        slaMinutes: 20
+      }
+    });
+    expect(createResponse.status(), await createResponse.text()).toBe(201);
+    const created = await createResponse.json();
+    const itemId = created.item.id as string;
+
     await apiLogin(request, personas.nurse);
     // Real current UI behavior: the initial answer/claim action calls
     // POST /queue/:id/claim directly, not the call-center-gateway /command
     // endpoint (which is real, and covered separately by API-007's
     // permission-denial check, but is only wired to Hold/Resume in the
     // current frontend, not the initial claim).
-    const claim = await request.post("/api/v1/queue/case-10002/claim");
+    const claim = await request.post(`/api/v1/queue/${itemId}/claim`);
     expect(claim.status(), await claim.text()).toBe(200);
     const claimBody = await claim.json();
     expect(claimBody).toMatchObject({
-      item: { id: "case-10002", status: "IN_PROCESS" },
+      item: { id: itemId, status: "IN_PROCESS" },
       lock: { lockedBy: "usr_nurse_10001" }
     });
 
@@ -354,7 +380,7 @@ test.describe.serial("API contracts from login through clinical completion", () 
     expect(score.status()).toBe(200);
     const scoreBody = await score.json();
 
-    const context = await request.patch("/api/v1/queue/case-10002/context", {
+    const context = await request.patch(`/api/v1/queue/${itemId}/context`, {
       data: {
         identityValidated: true,
         vitals: { heartRate: 118, respiratoryRate: 42, spo2: 91, temperature: 38.2, consciousLevel: "alert" },
@@ -371,7 +397,7 @@ test.describe.serial("API contracts from login through clinical completion", () 
     const complete = await request.post("/api/v1/triage/complete", {
       headers: { accept: "application/json" },
       data: {
-        encounter_id: "case-10002",
+        encounter_id: itemId,
         ist_staff_id: "IST-1001",
         nurse_id: "usr_nurse_10001",
         patient_name: "Dependent child",
@@ -393,20 +419,32 @@ test.describe.serial("API contracts from login through clinical completion", () 
     expect(completeBody.notePayload).toContain("ملخص الحالة السريرية");
     expect(completeBody.clipboardOptimized).toBe(true);
 
-    const move = await request.post("/api/v1/queue/case-10002/move", {
+    // The completion gate requires real captured SBAR note text, not just
+    // the sbarCopied boolean flag (see queueOrchestration.ts's
+    // validateClinicalSequence - added to close a real defect where a call
+    // could reach COMPLETED with sbarCopied:true but no actual note
+    // content). This test predates that guard and was never exercised
+    // against it until this batch, since it always failed earlier at the
+    // wrong-endpoint step - a real, confirmed pre-existing gap, now fixed.
+    const sbarPersist = await request.patch(`/api/v1/queue/${itemId}/context`, {
+      data: { sbarCopied: true, sbarNoteText: completeBody.notePayload }
+    });
+    expect(sbarPersist.status(), await sbarPersist.text()).toBe(200);
+
+    const move = await request.post(`/api/v1/queue/${itemId}/move`, {
       data: { toStatus: "COMPLETED", toStage: "SBAR", reason: "E2E nurse-approved closure" }
     });
     expect(move.status(), await move.text()).toBe(200);
-    await expect(move.json()).resolves.toMatchObject({ item: { id: "case-10002", status: "COMPLETED", currentStage: "SBAR" } });
+    await expect(move.json()).resolves.toMatchObject({ item: { id: itemId, status: "COMPLETED", currentStage: "SBAR" } });
 
-    const writeback = await request.post("/api/v1/emr/writeback/case-10002", {
+    const writeback = await request.post(`/api/v1/emr/writeback/${itemId}`, {
       data: { dryRun: true, isDraft: true }
     });
     expect(writeback.status(), await writeback.text()).toBe(200);
     const writebackBody = await writeback.json();
     expect(writebackBody).toBeTruthy();
 
-    const finalItem = await request.get("/api/v1/queue/case-10002");
+    const finalItem = await request.get(`/api/v1/queue/${itemId}`);
     expect(finalItem.status()).toBe(200);
     await expect(finalItem.json()).resolves.toMatchObject({
       item: {
