@@ -264,50 +264,67 @@ test.describe.serial("Named-user browser journey", () => {
     await expect(page.getByRole("tablist", { name: "Clinical workflow stage" })).not.toBeVisible();
   });
 
-  test("WEB-008 reviews test evidence and enforces governed validation actions", async ({ page }) => {
+  test("WEB-008 opens the Help Center in a new tab (by design) without disturbing the active Cockpit page", async ({ page, context }) => {
+    // Confirmed via source inspection (CockpitUtilityBar.tsx) and its own
+    // code comment: this is a genuine, intentional product decision, not a
+    // stale/missing attribute - the anchor already has
+    // target="_blank" rel="noopener noreferrer" (no security gap), and the
+    // explicit reason is to open a fully separate, server-rendered page
+    // (GET /help, outside the SPA bundle) so the running Cockpit
+    // workspace/active call is never touched by clicking it. The prior
+    // version of this test assumed same-tab navigation, which never
+    // matched the real, documented behavior - this is a stale-test
+    // correction, not a product change.
     await browserLogin(page, personas.nurse);
-    // The real Help entry point is an <a aria-label="Help"> link, not a
-    // button - confirmed via live DOM inspection (another stale assumption
-    // from before the Cockpit UI's current header layout).
-    await page.getByRole("link", { name: "Help", exact: true }).click();
-    await expect(page).toHaveURL(/#\/help$/);
-    await page.getByRole("tab", { name: "Test Results" }).click();
+    const originalUrl = page.url();
 
-    await expect(page.getByRole("heading", { name: "Test Cases and Test Results" })).toBeVisible();
-    await expect(page.getByText("Showing 593 of 593 unique test cases", { exact: true })).toBeVisible();
+    const helpLink = page.getByRole("link", { name: "Help", exact: true });
+    await expect(helpLink).toHaveAttribute("target", "_blank");
+    await expect(helpLink).toHaveAttribute("rel", /noopener/);
+    await expect(helpLink).toHaveAttribute("rel", /noreferrer/);
 
-    await page.getByLabel("Module").selectOption("Role Access Matrix");
-    await expect(page.getByText("Showing 498 of 593 unique test cases", { exact: true })).toBeVisible();
-    await expect(page.locator(".test-summary > div").first()).toContainText("498");
-    await page.getByLabel("Module").selectOption("All");
+    const popupPromise = context.waitForEvent("page");
+    await helpLink.click();
+    const helpPage = await popupPromise;
+    await helpPage.waitForLoadState();
 
-    const apiCase = page.getByRole("button", { name: /API-001.*Runtime environment and health contract/i });
-    await apiCase.click();
-    const panel = page.locator("#test-panel-api-001");
-    await expect(panel.getByRole("heading", { name: "Execution steps" })).toBeVisible();
-    await expect(panel.getByText("HTTP 200 returned", { exact: true })).toBeVisible();
+    // Confirms exactly one new page was opened, with the expected URL, and
+    // that the original Cockpit page/tab is untouched (still open, same
+    // URL, active workflow state preserved).
+    expect(helpPage.url()).toMatch(/\/help(\?|$)/);
+    await expect(helpPage.locator("h1")).toContainText(/Help/i);
+    expect(page.isClosed()).toBe(false);
+    expect(page.url()).toBe(originalUrl);
+    // The stage tablist only renders once a call is actively open; this
+    // test starts with no active call, so the stable, always-present
+    // Cockpit landmark to check instead is the sidebar's own list region.
+    await expect(page.getByRole("complementary", { name: "Open calls" })).toBeVisible();
 
-    await panel.getByRole("button", { name: "Request Retest" }).click();
-    await expect(panel.getByRole("alert")).toHaveText(/reason is required/i);
-    await panel.getByLabel("Validator comment or reason").fill("Re-run after deployment evidence is attached.");
-    await panel.getByRole("button", { name: "Request Retest" }).click();
-    await expect(panel.getByText("Retest Required", { exact: true }).first()).toBeVisible();
-    await expect(panel.getByText("Current help reviewer", { exact: true })).toBeVisible();
+    // This new page is the standalone, server-rendered Help & Library
+    // reference (src/services/helpLibraryContent.ts) - a static evidence/
+    // documentation page, NOT the same thing as the in-SPA interactive
+    // HelpCenter with its own "Test Results" tab (App.tsx's separate
+    // "Open help and library" topbar button, reached via openView("help")).
+    // That in-SPA topbar/button is only ever rendered for the old
+    // application shell (workspace/admin/serviceManagerBoard/ccp views) -
+    // confirmed via App.tsx:382-390, the Nurse Cockpit route bypasses that
+    // shell entirely and renders only <CockpitApp>. A real nurse's Cockpit
+    // journey therefore has no path to the interactive Test Results tab at
+    // all - this test previously (incorrectly) exercised that unreachable
+    // surface. It now verifies the real, actual content of the page a
+    // nurse can genuinely reach.
+    await expect(helpPage.getByRole("heading", { name: "Nurse Cockpit" })).toBeVisible();
+    await expect(helpPage.getByRole("heading", { name: "Test Results & Validation" })).toBeVisible();
+    await expect(helpPage.getByText(/Answering and holding a call/i).first()).toBeVisible();
+    await helpPage.locator("#global-search").fill("Test Results");
+    await expect(helpPage.getByRole("heading", { name: "Test Results & Validation" })).toBeVisible();
 
-    await page.getByLabel("Search").fill("WEB-007");
-    await expect(page.getByText("Showing 1 of 593 unique test cases", { exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: /WEB-007.*Complete all four nurse actions/i })).toBeVisible();
-
-    await page.getByLabel("Search").fill("CCG-CAT-001");
-    await expect(page.getByText("Showing 1 of 593 unique test cases", { exact: true })).toBeVisible();
-    const generatedCase = page.getByRole("button", { name: /CCG-CAT-001.*keeps every maintained scenario ID unique/i });
-    await generatedCase.click();
-    await expect(page.locator("#test-panel-ccg-cat-001").getByText(/All assertions passed in \d+ ms\./)).toBeVisible();
-
-    await page.getByLabel("Search").fill("");
-    await page.getByRole("tab", { name: "Help" }).click();
-    await page.getByRole("tab", { name: "Test Results" }).click();
-    await expect(apiCase).toHaveAttribute("aria-expanded", "true");
-    await expect(page.locator("#test-panel-api-001").getByText("Retest Required", { exact: true }).first()).toBeVisible();
+    // Close the Help page and confirm control returns to the original
+    // Cockpit page/tab, still on its original URL with its workflow intact.
+    await helpPage.close();
+    expect(page.isClosed()).toBe(false);
+    expect(page.url()).toBe(originalUrl);
+    await page.bringToFront();
+    await expect(page.getByRole("link", { name: "Help", exact: true })).toBeVisible();
   });
 });

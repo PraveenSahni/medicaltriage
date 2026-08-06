@@ -42,12 +42,15 @@ evidence.
 
 ## Known limitations (disclosed)
 
-- The deeper "answer call → SBAR completion" workflow chain
-  (`WEB-005`–`WEB-008`, `API-005`–`API-008`) could not be fully verified
-  this batch - see `docs/compatibility/cross-browser-validation-report.md`
-  for the exact, confirmed root cause (a call-center-gateway session/
-  permission gap, identical across all 6 engines - not a browser-specific
-  defect).
 - No formal, named browser-version support policy exists (e.g. "Chrome
   N-2"). The matrix tests whatever Playwright's pinned browser builds are
   at time of the test run.
+
+## Update (2026-08-06): full matrix now clean, 86/86
+
+The previously-disclosed "answer call -> SBAR completion" workflow-chain
+gap and the `WEB-008` Help-Center stale-test issue are both resolved - see
+`docs/compatibility/cross-browser-validation-report.md` for the full
+history and root causes. The complete core clinical workflow, including
+Help-Center navigation, now passes on all 6 configured engines/mobile
+profiles with zero known gaps.

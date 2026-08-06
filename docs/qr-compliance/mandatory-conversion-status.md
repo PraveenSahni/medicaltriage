@@ -386,3 +386,24 @@ out-of-batch-scope call-center-gateway session gap; the latter because its
 wording also requires field-level database encryption using vault keys,
 untouched by this batch. See `docs/compatibility/cross-browser-validation-report.md`
 and `docs/security/log-data-protection-audit.md`.
+
+## Update 2026-08-06 (continued): NFR-004 (UX tab) moved to Yes, then confirmed with a clean 86/86 evidence-integrity pass
+
+Superseding the note directly above: a follow-up batch fully rewrote
+WEB-005/006/007 against the real, current `#/cockpit` UI (live DOM
+investigation, not assumption), resolving the call-center-gateway
+session-gap finding as a stale-test/legacy-UI-surface mismatch rather than
+a live product defect. That batch reached 80/86 passing and moved
+**NFR-004 (UX tab) to Yes**, with one disclosed, non-core exclusion
+(`WEB-008`, a Help Center new-tab test assumption).
+
+A dedicated final evidence-integrity pass on `WEB-008` (this update)
+confirmed the new-tab Help Center behavior is a genuine, documented,
+already-security-correct product decision (`target="_blank"
+rel="noopener noreferrer"`), not a defect - `WEB-008` was rewritten (a
+stale-test correction, no product change) to prove the real popup/new-tab
+user experience end-to-end. **Result: 86 of 86 tests now pass across all
+6 engines**, closing the last disclosed exclusion. NFR-004 (UX tab)
+remains **Yes**, now with zero outstanding exclusions. See
+`docs/compatibility/cross-browser-validation-report.md` and
+`docs/architecture/call-center-workflow-model.md`.

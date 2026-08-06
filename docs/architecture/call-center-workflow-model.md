@@ -143,14 +143,60 @@ verifying this rewrite:
    the same reason (a fixed literal collided across the 6 shared-server
    projects).
 
-**Result: 80 of 86 e2e tests pass across all 6 configured engines/mobile
-profiles**, up from 61/86. The one remaining failure (`WEB-008`, on every
-engine identically) is a separate, disclosed, non-core issue: the Help
-Center entry point is a real `<a aria-label="Help">` link that opens in a
-new browser tab, and the old test's `toHaveURL(/#\/help$/)` assertion
-against the *same* page/tab is stale - unrelated to the claim/context/
-authorization/audit workflow this batch targets, and out of this batch's
-scope to fix (a different feature area entirely).
+**Result at that point: 80 of 86 e2e tests pass across all 6 configured
+engines/mobile profiles**, up from 61/86. The one remaining failure
+(`WEB-008`, on every engine identically) was a separate, disclosed,
+non-core issue: the Help Center entry point is a real
+`<a aria-label="Help">` link that opens in a new browser tab, and the old
+test's `toHaveURL(/#\/help$/)` assertion against the *same* page/tab was
+stale - unrelated to the claim/context/authorization/audit workflow this
+batch targeted.
+
+## Fourth phase: WEB-008 evidence-integrity pass - two distinct Help surfaces found, clean 86/86 (2026-08-06)
+
+A dedicated investigation (source inspection, not assumption) confirmed
+`WEB-008`'s failure was a genuine **stale test expectation**, not a
+product defect, undocumented decision, or accessibility/security gap:
+
+- **Two distinct "Help" surfaces exist in this codebase and must not be
+  confused.** `CockpitUtilityBar.tsx`'s `<a aria-label="Help">` anchor is
+  real, already has `target="_blank" rel="noopener noreferrer"` (no
+  security gap), and navigates via genuine top-level browser navigation to
+  a server-rendered static HTML page at `GET /help`
+  (`helpRouter.ts` -> `renderHelpLibraryHtml()` in
+  `src/services/helpLibraryContent.ts`), entirely outside the React SPA
+  bundle. Separately, `App.tsx`'s `LabeledIconButton`
+  (`aria-label="Open help and library"`, `onClick={() =>
+  openView("help")}`) renders the in-SPA React `HelpCenter.tsx` component
+  at the client-side hash route `#/help`, with its own interactive "Test
+  Results" tab. These are related in content but are not the same feature.
+- **The Nurse Cockpit route bypasses the old app shell entirely**
+  (`App.tsx:382-390`'s `if (activeView === "cockpit") { ... return
+  <CockpitApp .../> }`, per the approved design reference) - meaning the
+  old shell containing the in-SPA `LabeledIconButton` never renders for a
+  nurse on the Cockpit route. The `CockpitUtilityBar` anchor is therefore
+  the **only** Help entry point a real nurse's Cockpit journey can reach.
+  The original, pre-rewrite `WEB-008` test body targeted the unreachable
+  in-SPA surface - a second, independent defect beyond the tab-vs-same-page
+  assumption.
+- The anchor's `target="_blank" rel="noopener noreferrer"` was already
+  present and correct (confirmed via `git log`/`git show` on the
+  introducing commit) - Phase 2's security/accessibility review found no
+  defect to fix.
+
+`WEB-008` was rewritten to prove the real user experience end-to-end:
+waits for the new page/popup, triggers the link via its accessible role/
+name, confirms exactly one new page opens with the expected `/help` URL
+and headings, confirms the original Cockpit page/tab and its workflow
+state remain untouched throughout, and confirms safe close with focus
+returning to the original page - not a weak `href`-only assertion. No
+product or security change was needed; this was a test-only fix.
+
+**Result: 86 of 86 e2e tests pass across all 6 configured engines/mobile
+profiles**, up from 80/86 - the first fully clean run of this engagement.
+Backend suite reconfirmed unaffected at 759/759. See
+`docs/compatibility/cross-browser-validation-report.md` for the full
+evidence and the NFR-004 (UX tab) closure decision.
 
 ## Explicitly not changed
 

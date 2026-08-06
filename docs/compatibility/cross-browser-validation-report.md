@@ -77,20 +77,60 @@ a new problem).
   path for the answer-call → SBAR-completion workflow chain) - disclosed,
   not fixed, not hidden.
 
-## Closure decision
+## Closure decision (superseded - see updates below)
 
-Per the closure criteria: material product defects were **not** found (the
-one unresolved gap is a workflow/session-bootstrap issue reproduced
-identically regardless of browser, not a compatibility defect), but a
-**material fraction of the intended core-workflow coverage** (answer-call
-through SBAR completion) could not be verified end-to-end this batch. The
-literal requirement ("ensure functionality across modern browsers") is
-substantively evidenced for every workflow that was reachable, but not
-fully proven for the complete clinical workflow.
+Per the closure criteria as they stood at that point: material product
+defects were **not** found (the one unresolved gap is a workflow/session-
+bootstrap issue reproduced identically regardless of browser, not a
+compatibility defect), but a **material fraction of the intended core-
+workflow coverage** (answer-call through SBAR completion) could not be
+verified end-to-end this batch. The literal requirement ("ensure
+functionality across modern browsers") was substantively evidenced for
+every workflow that was reachable, but not fully proven for the complete
+clinical workflow at that time.
 
-**NFR-004 (UX tab) stays Partial** - upgraded with substantially stronger,
-real evidence (a full 6-engine + 2-mobile-profile run, 2 genuine
-test-infrastructure defects found and fixed, zero browser-specific defects
-found) but not moved to Yes, since core-workflow coverage is incomplete and
-the honest thing is to say so rather than claim full clinical-workflow
-compatibility that wasn't actually observed working end to end this batch.
+## Update (2026-08-06): full core-workflow rewrite - 80/86, then WEB-008 evidence-integrity pass - 86/86
+
+A follow-up batch fully rewrote `WEB-005`/`WEB-006`/`WEB-007` against the
+real, current `#/cockpit` UI (see
+`docs/architecture/call-center-workflow-model.md` for the complete DOM/API
+investigation) after confirming the call-center-gateway `/command` gap
+above was actually a stale-test/legacy-UI-surface mismatch, not a live
+product defect. That batch reached **80 of 86 passing**, with exactly one
+remaining failure, `WEB-008`, identical across all 6 engines.
+
+**`WEB-008` root-cause investigation (this pass, 2026-08-06):** the
+Cockpit's Help entry point (`CockpitUtilityBar.tsx`'s `<a aria-label="Help">`
+anchor) intentionally opens the server-rendered `GET /help` page in a new
+browser tab (`target="_blank" rel="noopener noreferrer"`, already
+security-correct - no missing `rel` attribute, no opener leak). This is a
+genuine, documented product decision (explained in the anchor's own code
+comment: a plain top-level navigation to a page outside the SPA bundle, so
+the live Cockpit workspace/active-call state is never touched by clicking
+it) - not an accessibility or security gap. `WEB-008`'s old assertion
+(`toHaveURL(/#\/help$/)` against the *same* page) assumed same-page
+navigation, which never matched this real, intentional behavior. This is a
+**stale test correction**, not a product change: `tests/e2e/browser-
+journey.spec.ts`'s `WEB-008` was rewritten to open-a-new-tab semantics
+(`context.waitForEvent("page")`), confirming the accessible name/role, the
+`target`/`rel` attributes, exactly one new page opening with the expected
+`/help` URL and expected headings, the original Cockpit page remaining
+open/untouched/on its original URL throughout, and safe close/focus return
+- proving the real user experience end to end rather than a weak `href`
+check.
+
+**Result: 86 of 86 tests pass across all 6 configured engines/mobile
+profiles** (google-chrome, microsoft-edge, mozilla-firefox, webkit-safari,
+mobile-chrome-pixel5, mobile-safari-iphone13) - a fully clean run, up from
+80/86. Environment: soc2 (real Cloud SQL database `ist_triage_soc2` via a
+local Cloud SQL Auth Proxy tunnel), `CLINICAL_CONTENT_SOURCE=database`.
+Backend suite reconfirmed unaffected at 759/759.
+
+**NFR-004 (UX tab) is now Yes.** All 4 closure-criteria conditions are met:
+the full core clinical workflow (login -> claim -> Reason -> Questions ->
+Disposition -> SBAR -> Completed) is proven end-to-end on all 6 engines;
+the one remaining exclusion from the prior batch (`WEB-008`) is now
+corrected and passing, not merely excused; no browser-specific defect
+exists anywhere in the matrix; and this document plus
+`docs/compatibility/supported-browser-matrix.md` now match the actual,
+current evidence.

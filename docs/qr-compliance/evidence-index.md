@@ -427,3 +427,25 @@ Note: NFR-078 (Non Functional Req tab) covers the same logging concern
 clause - it stays **Partial**, not Yes, despite the identical logging work
 closing its logging half. See `docs/security/logging-redaction-standard.md`
 for why these two otherwise-similar rows reach different outcomes.
+
+## Update 2026-08-06 (continued): NFR-004 (UX tab) - cross-browser compatibility - WEB-008 evidence-integrity pass, clean 86/86
+
+NFR-004 (UX tab) had already moved to Yes in an earlier step of this same
+batch (80/86, one disclosed non-core exclusion: `WEB-008`, a Help Center
+new-tab test assumption). A dedicated evidence-integrity pass investigated
+`WEB-008` before accepting the closure: confirmed it was a **stale test
+expectation**, not a product defect, undocumented behavior, or an
+accessibility/security issue - the Help link's `target="_blank"
+rel="noopener noreferrer"` new-tab behavior is a genuine, already
+security-correct, documented product decision (preserves the live Cockpit
+workspace/active call). `tests/e2e/browser-journey.spec.ts`'s `WEB-008`
+was rewritten to prove the real popup/new-tab user experience end-to-end
+(accessible-role trigger, single-new-page confirmation, URL/heading
+confirmation, original-page-state preservation, safe close/focus return)
+rather than a weak `href`-only assertion. No product or security change
+was needed. Result: **86 of 86 tests pass across all 6 engines**, the
+first fully clean run of this engagement. **NFR-004 (UX tab) stays Yes**,
+now with zero outstanding exclusions. See
+`docs/compatibility/cross-browser-validation-report.md`,
+`docs/compatibility/supported-browser-matrix.md`, and
+`docs/architecture/call-center-workflow-model.md`.

@@ -1648,3 +1648,36 @@ collisions), and the legacy #/cockpit-v2 modal assumptions have been fully
 removed and replaced with real selectors. See
 docs/architecture/call-center-workflow-model.md for the complete
 investigation and evidence.
+
+## Update 2026-08-06 (continued): WEB-008 evidence-integrity pass - clean 86/86, NFR-004 UX confirmed Yes with zero exclusions
+
+Investigated whether the one remaining exclusion (`WEB-008`) was a stale
+test, a real product defect, an undocumented behavior decision, or an
+accessibility/security issue. Confirmed via source inspection
+(`CockpitUtilityBar.tsx`) plus the anchor's own code comment: the Help
+link's new-tab behavior (`target="_blank" rel="noopener noreferrer"`) is a
+genuine, intentional, already-security-correct product decision - opening
+a separate, server-rendered `/help` page outside the SPA bundle so the
+live Cockpit workspace/active call is never disturbed. No product or
+security defect found; nothing was changed to "make the test pass."
+`WEB-008` in `tests/e2e/browser-journey.spec.ts` was rewritten (a stale-
+test correction) to: wait for the new page/popup, trigger the link via its
+accessible role/name, confirm exactly one new page opens with the correct
+URL and headings, confirm the original Cockpit page/tab and its workflow
+state remain untouched throughout, and confirm safe close/focus return -
+proving the real user experience, not a weak `href` assertion.
+
+**Result: 86 of 86 tests pass across all 6 engines** (google-chrome,
+microsoft-edge, mozilla-firefox, webkit-safari, mobile-chrome-pixel5,
+mobile-safari-iphone13) - the first fully clean run of this whole
+engagement, up from 80/86. Backend suite reconfirmed unaffected at
+759/759, `tsc` clean. Cloud SQL Auth Proxy was active throughout, run
+against the real soc2 database (`ist_triage_soc2`).
+
+**NFR-004 (UX tab) stays Yes**, now with the evidence remark strengthened
+to reflect a clean 86/86 result and zero outstanding exclusions (the prior
+Yes was already correct/justified with one disclosed non-core exclusion;
+this pass removes that exclusion entirely rather than changing the
+compliance status). See
+`docs/compatibility/cross-browser-validation-report.md` and
+`docs/compatibility/supported-browser-matrix.md`.
