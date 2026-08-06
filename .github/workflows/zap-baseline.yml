@@ -1,0 +1,54 @@
+name: OWASP ZAP Baseline Scan (soc2)
+
+# CSQ IS.40: recurring application-layer vulnerability scanning.
+# Passive/baseline scan only - no active/exploitative scanning, and the
+# target is fixed to the approved soc2 environment only (never the live
+# customer-facing demo). This workflow is NOT yet operational - it has not
+# been pushed/merged or run on GitHub Actions. It is prepared, self-
+# contained evidence pending separate authorization to push. See
+# docs/security/application-vulnerability-scanning.md for full scope,
+# limitations, and activation status.
+
+on:
+  schedule:
+    # Weekly, off-peak. Manual dispatch also available for an ad hoc run.
+    - cron: "0 3 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  zap-baseline:
+    runs-on: ubuntu-latest
+    # Bounded duration - a baseline (passive) scan is fast; this caps a
+    # misconfigured/hanging scan rather than letting it run indefinitely.
+    timeout-minutes: 20
+    steps:
+      - name: ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.14.0
+        with:
+          # Fixed to the approved soc2 environment only - never the live
+          # customer-facing demo (triaged.irisstar.tech).
+          target: "https://triagedsoc2.irisstar.tech"
+          # Baseline = passive scanning only (no active/exploitative
+          # testing, no destructive requests) - the default and safest mode
+          # for a recurring, unattended scan of a real environment.
+          cmd_options: "-a"
+          # Non-zero ZAP exit codes (WARN/FAIL findings) should not hard-fail
+          # the workflow run itself - findings are triaged as a separate
+          # step (see application-vulnerability-scanning.md), not silently
+          # discarded by a red X that gets ignored.
+          allow_issue_writing: false
+          fail_action: false
+
+      - name: Upload ZAP report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-baseline-report
+          path: |
+            report_html.html
+            report_md.md
+            report_json.json
+          retention-days: 90
