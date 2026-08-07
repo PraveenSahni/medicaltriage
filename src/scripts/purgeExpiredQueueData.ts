@@ -18,6 +18,14 @@
  * operational queue record it describes) - those need their own, separately
  * decided retention periods, not bundled into this first pass.
  *
+ * Archival: when the RetentionPolicy row's `deletionMode` is
+ * "archive_then_delete" (or no policy row exists at all, the conservative
+ * default), the full record is written to ArchivedRecord as JSON before
+ * being deleted from TriageQueueItem - real archival, not just purge, per
+ * NFR-068. A `deletionMode` of "hard_delete" skips archival entirely (an
+ * explicit policy choice, e.g. for data that must never persist anywhere
+ * post-retention).
+ *
  * Legal-hold enforcement: any TriageQueueItem row with an active LegalHold
  * (resourceType "TriageQueueItem", status "active") is excluded from the
  * purge candidate set entirely, regardless of age - this is the first real
@@ -54,6 +62,14 @@ async function resolveRetentionDays(cliOverride: number | undefined): Promise<{ 
   return { days: 90, source: "hardcoded default (no active RetentionPolicy row found)" };
 }
 
+async function resolveDeletionMode(): Promise<string> {
+  const policy = await prisma.retentionPolicy.findUnique({ where: { code: RETENTION_POLICY_CODE } });
+  if (policy && policy.status === "active" && policy.deletionMode) {
+    return policy.deletionMode;
+  }
+  return "archive_then_delete";
+}
+
 async function main() {
   const retentionArg = process.argv.find((a) => a.startsWith("--retention-days="));
   const cliOverride = retentionArg ? Number(retentionArg.split("=")[1]) : undefined;
@@ -64,13 +80,14 @@ async function main() {
   }
 
   const { days: retentionDays, source: retentionSource } = await resolveRetentionDays(cliOverride);
+  const deletionMode = await resolveDeletionMode();
   console.log(`Retention period source: ${retentionSource} (${retentionDays} days)`);
+  console.log(`Deletion mode: ${deletionMode}`);
 
   const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
 
   const allExpired = await prisma.triageQueueItem.findMany({
-    where: { status: "COMPLETED", updatedAt: { lt: cutoff } },
-    select: { id: true, updatedAt: true, organizationId: true }
+    where: { status: "COMPLETED", updatedAt: { lt: cutoff } }
   });
 
   const activeHolds = await prisma.legalHold.findMany({
@@ -109,6 +126,17 @@ async function main() {
 
   if (execute && candidates.length > 0) {
     const ids = candidates.map((c) => c.id);
+    if (deletionMode === "archive_then_delete") {
+      await prisma.archivedRecord.createMany({
+        data: candidates.map((c) => ({
+          entityName: "TriageQueueItem",
+          recordId: c.id,
+          policyCode: RETENTION_POLICY_CODE,
+          payload: jsonValue(c)
+        }))
+      });
+      console.log(`Archived ${candidates.length} queue item(s) to ArchivedRecord before deletion.`);
+    }
     const result = await prisma.triageQueueItem.deleteMany({ where: { id: { in: ids } } });
     console.log(`Deleted ${result.count} queue item(s).`);
   }

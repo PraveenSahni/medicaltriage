@@ -1454,6 +1454,18 @@ model RetentionPolicy {
   @@map("retention_policies")
 }
 
+model ArchivedRecord {
+  id           String   @id @default(cuid())
+  entityName   String   @map("entity_name")
+  recordId     String   @map("record_id")
+  policyCode   String   @map("policy_code")
+  payload      Json
+  archivedAt   DateTime @default(now()) @map("archived_at")
+
+  @@index([entityName, recordId])
+  @@map("archived_records")
+}
+
 model LegalHold {
   id           String    @id @default(cuid())
   holdCode     String    @unique @map("hold_code")
