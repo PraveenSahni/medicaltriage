@@ -9,8 +9,15 @@ import {
   type AuthorizedRequest
 } from "../services/authorization.js";
 import { shouldUseDatabasePersistence } from "../config/runtime.js";
-import { listPersistedAuditEvents } from "../services/persistence.js";
+import { countPersistedAuditEvents, listPersistedAuditEvents } from "../services/persistence.js";
 import { rateLimit } from "../middleware/rateLimit.js";
+import {
+  listScheduledJobs,
+  pauseScheduledJob,
+  resumeScheduledJob,
+  runScheduledJobNow,
+  ScheduledJobNotFoundError
+} from "../services/scheduledJobsAdmin.js";
 import {
   CrossTenantMfaResetError,
   decideReveal,
@@ -73,6 +80,13 @@ const UpdateUserStatusRequestSchema = z.object({
   reason: z.string().min(1).max(500)
 });
 
+// Same opt-in limit/offset convention as QueueListQuerySchema (NFR-144) -
+// omitted entirely returns the full list exactly as before.
+const PaginationQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(1000).optional(),
+  offset: z.coerce.number().int().min(0).optional()
+});
+
 const controlCenterPermissions = [
   "admin.users.manage",
   "admin.roles.manage",
@@ -114,8 +128,13 @@ export function createAdminRouter(): Router {
     return res.json({ dashboard: getSecurityDashboard() });
   });
 
-  router.get("/users", requirePermission("admin.users.manage"), (_req, res) => {
-    return res.json({ users: listUsers() });
+  router.get("/users", requirePermission("admin.users.manage"), (req, res) => {
+    const parsed = PaginationQuerySchema.safeParse(req.query);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid pagination parameters", details: parsed.error.flatten() });
+    }
+    const { users, totalCount } = listUsers(parsed.data);
+    return res.json({ users, totalCount });
   });
 
   // Closes CSQ CO.13 ("isolate and recover data for a specific customer")
@@ -334,12 +353,21 @@ export function createAdminRouter(): Router {
     return res.json({ policies: listEncryptionPolicies() });
   });
 
-  router.get("/audit-events", requirePermission("audit.events.view"), async (_req, res, next) => {
+  router.get("/audit-events", requirePermission("audit.events.view"), async (req, res, next) => {
     try {
-      if (shouldUseDatabasePersistence()) {
-        return res.json({ events: await listPersistedAuditEvents() });
+      const parsed = PaginationQuerySchema.safeParse(req.query);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid pagination parameters", details: parsed.error.flatten() });
       }
-      return res.json({ events: listAuditEvents() });
+      if (shouldUseDatabasePersistence()) {
+        const [events, totalCount] = await Promise.all([
+          listPersistedAuditEvents(parsed.data.limit ?? 200, { offset: parsed.data.offset }),
+          countPersistedAuditEvents()
+        ]);
+        return res.json({ events, totalCount });
+      }
+      const events = listAuditEvents(parsed.data);
+      return res.json({ events, totalCount: listAuditEvents().length });
     } catch (error) {
       return next(error);
     }
@@ -361,6 +389,52 @@ export function createAdminRouter(): Router {
         : listAuditEvents({ resource });
       return res.json({ resource, events: [...events].sort((left, right) => left.timestampIso.localeCompare(right.timestampIso)) });
     } catch (error) {
+      return next(error);
+    }
+  });
+
+  // Closes NFR-049/050/051's real remaining gap: real job scheduling,
+  // periodic/on-demand execution, and pause/cancel already exist via Cloud
+  // Scheduler + Cloud Run Jobs, only reachable via `gcloud`. This surfaces
+  // the same real control through the application itself, using the
+  // official @google-cloud/scheduler client - not a new scheduling engine.
+  router.get("/scheduled-jobs", requirePermission("admin.roles.manage"), async (_req, res, next) => {
+    try {
+      return res.json({ jobs: await listScheduledJobs() });
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  router.post("/scheduled-jobs/:name/run", requirePermission("admin.roles.manage"), rateLimit({ name: "admin-scheduled-job-run", windowMs: 60_000, maxRequests: 20 }), async (req, res, next) => {
+    try {
+      return res.json({ job: await runScheduledJobNow(req.params.name) });
+    } catch (error) {
+      if (error instanceof ScheduledJobNotFoundError) {
+        return res.status(404).json({ error: error.message });
+      }
+      return next(error);
+    }
+  });
+
+  router.post("/scheduled-jobs/:name/pause", requirePermission("admin.roles.manage"), rateLimit({ name: "admin-scheduled-job-pause", windowMs: 60_000, maxRequests: 20 }), async (req, res, next) => {
+    try {
+      return res.json({ job: await pauseScheduledJob(req.params.name) });
+    } catch (error) {
+      if (error instanceof ScheduledJobNotFoundError) {
+        return res.status(404).json({ error: error.message });
+      }
+      return next(error);
+    }
+  });
+
+  router.post("/scheduled-jobs/:name/resume", requirePermission("admin.roles.manage"), rateLimit({ name: "admin-scheduled-job-resume", windowMs: 60_000, maxRequests: 20 }), async (req, res, next) => {
+    try {
+      return res.json({ job: await resumeScheduledJob(req.params.name) });
+    } catch (error) {
+      if (error instanceof ScheduledJobNotFoundError) {
+        return res.status(404).json({ error: error.message });
+      }
       return next(error);
     }
   });

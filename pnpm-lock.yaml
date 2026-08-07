@@ -15,6 +15,9 @@ importers:
       '@google-cloud/monitoring':
         specifier: ^5.4.0
         version: 5.4.0(supports-color@8.1.1)
+      '@google-cloud/scheduler':
+        specifier: ^5.4.0
+        version: 5.4.0(supports-color@8.1.1)
       '@prisma/client':
         specifier: ^5.22.0
         version: 5.22.0(prisma@5.22.0)
@@ -1239,6 +1242,10 @@ packages:
 
   '@google-cloud/monitoring@5.4.0':
     resolution: {integrity: sha512-ILb/adzcSOiC4eK/uN8OaHp9EvC585IV2ANWBPp3djRWBxZWz2MXSsRVRsOIa6PsiWi2biDZRkS2iPUliQ3TOA==}
+    engines: {node: '>=18'}
+
+  '@google-cloud/scheduler@5.4.0':
+    resolution: {integrity: sha512-SCLvYOSiykZXvznyIToDcs7NF3kZDKpO7DMakXWBV5E8VqDVmkBD8GJ50/4zQeI3SsMmMLqrWzGUJ4e5vpvc2A==}
     engines: {node: '>=18'}
 
   '@grpc/grpc-js@1.14.4':
@@ -5458,6 +5465,12 @@ snapshots:
   '@gar/promise-retry@1.0.3': {}
 
   '@google-cloud/monitoring@5.4.0(supports-color@8.1.1)':
+    dependencies:
+      google-gax: 5.0.8(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@google-cloud/scheduler@5.4.0(supports-color@8.1.1)':
     dependencies:
       google-gax: 5.0.8(supports-color@8.1.1)
     transitivePeerDependencies:

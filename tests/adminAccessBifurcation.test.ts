@@ -331,4 +331,27 @@ describe("Role-based Control Center bifurcation", () => {
       .expect(200);
     expect(history.body.events).toEqual([]);
   });
+
+  it("supports opt-in limit/offset pagination on GET /admin/users, backward-compatible when omitted (NFR-144)", async () => {
+    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+
+    const full = await sysAdmin.get("/api/v1/admin/users").expect(200);
+    expect(full.body.totalCount).toBe(full.body.users.length);
+
+    const paged = await sysAdmin.get("/api/v1/admin/users?limit=2&offset=1").expect(200);
+    expect(paged.body.users).toHaveLength(2);
+    expect(paged.body.totalCount).toBe(full.body.totalCount);
+    expect(paged.body.users).toEqual(full.body.users.slice(1, 3));
+  });
+
+  it("supports opt-in limit/offset pagination on GET /admin/audit-events, backward-compatible when omitted (NFR-144)", async () => {
+    const auditor = await agentFor("audit@irisstar.tech", "compliance_auditor");
+
+    const full = await auditor.get("/api/v1/admin/audit-events").expect(200);
+    expect(full.body.totalCount).toBe(full.body.events.length);
+
+    const paged = await auditor.get("/api/v1/admin/audit-events?limit=1&offset=0").expect(200);
+    expect(paged.body.events).toHaveLength(1);
+    expect(paged.body.totalCount).toBe(full.body.totalCount);
+  });
 });

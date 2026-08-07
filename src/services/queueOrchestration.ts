@@ -766,7 +766,7 @@ function dbRowToRecord(row: QueueDbRow): QueueRecord {
 // instead of either a meaningless id or a fabricated name.
 function resolveLockedByName(userId: string | undefined): string | undefined {
   if (!userId) return undefined;
-  return listUsers().find((user) => user.id === userId)?.fullName;
+  return listUsers().users.find((user) => user.id === userId)?.fullName;
 }
 
 function toDto(record: QueueRecord): QueueItemDto {

@@ -524,7 +524,7 @@ function toRiskClassification(riskLevel: string | null): AuditEvent["risk"] {
  */
 export async function listPersistedAuditEvents(
   limit = 200,
-  filter?: { userId?: string; organization?: string; action?: string; resource?: string; since?: string; until?: string }
+  filter?: { userId?: string; organization?: string; action?: string; resource?: string; since?: string; until?: string; offset?: number }
 ): Promise<AuditEvent[]> {
   if (!shouldPersistAuditEventsInDatabase()) {
     return [];
@@ -546,7 +546,8 @@ export async function listPersistedAuditEvents(
         : {})
     },
     orderBy: { timestamp: "desc" },
-    take: limit
+    take: limit,
+    skip: filter?.offset ?? 0
   });
 
   return rows.map((row) => ({
@@ -566,6 +567,30 @@ export async function listPersistedAuditEvents(
     success: row.success,
     risk: toRiskClassification(row.riskLevel)
   }));
+}
+
+export async function countPersistedAuditEvents(
+  filter?: { userId?: string; organization?: string; action?: string; resource?: string; since?: string; until?: string }
+): Promise<number> {
+  if (!shouldPersistAuditEventsInDatabase()) {
+    return 0;
+  }
+  return prisma.auditEvent.count({
+    where: {
+      ...(filter?.userId ? { userId: filter.userId } : {}),
+      ...(filter?.organization ? { organization: filter.organization } : {}),
+      ...(filter?.action ? { action: filter.action } : {}),
+      ...(filter?.resource ? { resource: filter.resource } : {}),
+      ...(filter?.since || filter?.until
+        ? {
+            timestamp: {
+              ...(filter?.since ? { gte: new Date(filter.since) } : {}),
+              ...(filter?.until ? { lte: new Date(filter.until) } : {})
+            }
+          }
+        : {})
+    }
+  });
 }
 
 export async function persistUserSession(args: {

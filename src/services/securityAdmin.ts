@@ -2229,8 +2229,19 @@ export function listRoles(): Role[] {
   return roles.map(applyRolePermissionOverrides);
 }
 
-export function listUsers(): SafeAdminUser[] {
-  return users.map(maskUser);
+// Closes NFR-144's real remaining gap: the same opt-in limit/offset
+// pagination pattern already added to GET /api/v1/queue and
+// GET /api/v1/protocols, extended to this list endpoint - backward
+// compatible (omitted params return every user, as before).
+export function listUsers(pagination?: { limit?: number; offset?: number }): { users: SafeAdminUser[]; totalCount: number } {
+  const masked = users.map(maskUser);
+  const totalCount = masked.length;
+  if (pagination?.limit === undefined && pagination?.offset === undefined) {
+    return { users: masked, totalCount };
+  }
+  const offset = pagination?.offset ?? 0;
+  const limit = pagination?.limit ?? totalCount;
+  return { users: masked.slice(offset, offset + limit), totalCount };
 }
 
 export class UserNotFoundError extends Error {}
@@ -2951,8 +2962,15 @@ export function listEncryptionPolicies(): EncryptionPolicy[] {
   return encryptionPolicies;
 }
 
-export function listAuditEvents(filter?: { userId?: string; resource?: string; since?: string; until?: string }): AuditEvent[] {
-  return [...auditEvents]
+export function listAuditEvents(filter?: {
+  userId?: string;
+  resource?: string;
+  since?: string;
+  until?: string;
+  limit?: number;
+  offset?: number;
+}): AuditEvent[] {
+  const filtered = [...auditEvents]
     .filter((event) => {
       if (filter?.userId && event.userId !== filter.userId) {
         return false;
@@ -2969,6 +2987,12 @@ export function listAuditEvents(filter?: { userId?: string; resource?: string; s
       return true;
     })
     .sort((left, right) => right.timestampIso.localeCompare(left.timestampIso));
+  if (filter?.limit === undefined && filter?.offset === undefined) {
+    return filtered;
+  }
+  const offset = filter?.offset ?? 0;
+  const limit = filter?.limit ?? filtered.length;
+  return filtered.slice(offset, offset + limit);
 }
 
 export function getSecurityDashboard(): SecurityDashboard {

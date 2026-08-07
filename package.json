@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "@google-cloud/monitoring": "^5.4.0",
+    "@google-cloud/scheduler": "^5.4.0",
     "@prisma/client": "^5.22.0",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
