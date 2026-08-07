@@ -125,6 +125,45 @@ describe("Role-based Control Center bifurcation", () => {
     await remoteNurse.get("/api/v1/admin/feedback-summary").expect(403);
   });
 
+  it("reports feedback-trend as honestly unmeasured in mock mode, gated the same as feedback-summary", async () => {
+    const reportingAnalyst = await agentFor("reports@irisstar.tech", "reporting_analyst");
+
+    const trend = await reportingAnalyst.get("/api/v1/admin/feedback-trend").expect(200);
+    expect(trend.body).toMatchObject({
+      measured: false,
+      byContext: [],
+      byRole: [],
+      recentAverageRating: null,
+      priorAverageRating: null
+    });
+
+    const remoteNurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    await remoteNurse.get("/api/v1/admin/feedback-trend").expect(403);
+  });
+
+  it("lets a role with admin.roles.manage view and configure real security anomaly thresholds", async () => {
+    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+
+    const initial = await sysAdmin.get("/api/v1/admin/security-thresholds").expect(200);
+    const authThreshold = initial.body.thresholds.find((t: { key: string }) => t.key === "AUTH_ANOMALY_FAILURE_THRESHOLD");
+    expect(authThreshold).toMatchObject({ isOverridden: false });
+    expect(authThreshold.value).toBeGreaterThan(0);
+
+    const updated = await sysAdmin
+      .patch("/api/v1/admin/security-thresholds/AUTH_ANOMALY_FAILURE_THRESHOLD")
+      .send({ value: 25 })
+      .expect(200);
+    expect(updated.body.thresholds).toEqual(
+      expect.arrayContaining([expect.objectContaining({ key: "AUTH_ANOMALY_FAILURE_THRESHOLD", value: 25, isOverridden: true })])
+    );
+
+    await sysAdmin.patch("/api/v1/admin/security-thresholds/AUTH_ANOMALY_FAILURE_THRESHOLD").send({ value: -5 }).expect(400);
+    await sysAdmin.patch("/api/v1/admin/security-thresholds/NOT_A_REAL_KEY").send({ value: 5 }).expect(404);
+
+    const remoteNurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    await remoteNurse.get("/api/v1/admin/security-thresholds").expect(403);
+  });
+
   it("keeps Remote Triage Nurse out of the Control Center despite reveal permission", async () => {
     const remoteNurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 

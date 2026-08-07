@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { requireAnyPermission } from "../middleware/rbac.js";
-import { getFeedbackSummary } from "../services/feedbackSummary.js";
+import { getFeedbackSummary, getFeedbackTrend } from "../services/feedbackSummary.js";
 import { exportOrganizationQueueData } from "../services/queueOrchestration.js";
 import {
   getRequestSession,
@@ -21,7 +21,11 @@ import {
   getSecurityDashboard,
   grantPermissionToRole,
   InvalidElevationCodeError,
+  InvalidThresholdValueError,
   isElevated,
+  listSecurityThresholds,
+  SECURITY_THRESHOLD_KEYS,
+  setSecurityThreshold,
   listActiveSessionsForUser,
   listAuditEvents,
   listControlCenterModules,
@@ -403,6 +407,57 @@ export function createAdminRouter(): Router {
     requireAnyPermission(["reports.view", "operations.dashboard.view"]),
     async (_req, res) => {
       return res.json(await getFeedbackSummary());
+    }
+  );
+
+  // Closes UX/NFR-011's "analyzing behaviors, preferences, and pain
+  // points" half - the plain summary above only reports a raw average;
+  // this breaks it down by app location and role (lowest-scoring first,
+  // i.e. real pain points) and shows a week-over-week trend direction.
+  router.get(
+    "/feedback-trend",
+    requireAnyPermission(["reports.view", "operations.dashboard.view"]),
+    async (_req, res) => {
+      return res.json(await getFeedbackTrend());
+    }
+  );
+
+  // Closes NFR-119 - a real, QR-facing capability to view/configure the
+  // app's own security anomaly-detection thresholds without a redeploy.
+  const SecurityThresholdUpdateRequestSchema = z.object({ value: z.number().int().positive() });
+  router.get("/security-thresholds", requirePermission("admin.roles.manage"), async (_req, res) => {
+    return res.json({ thresholds: listSecurityThresholds() });
+  });
+
+  router.patch(
+    "/security-thresholds/:key",
+    requirePermission("admin.roles.manage"),
+    rateLimit({ name: "admin-security-threshold", windowMs: 60_000, maxRequests: 20 }),
+    async (req: AuthorizedRequest, res, next) => {
+      try {
+        const key = req.params.key;
+        if (!SECURITY_THRESHOLD_KEYS.includes(key as (typeof SECURITY_THRESHOLD_KEYS)[number])) {
+          return res.status(404).json({ error: `Unknown security threshold key: ${key}` });
+        }
+        const parsed = SecurityThresholdUpdateRequestSchema.safeParse(req.body);
+        if (!parsed.success) {
+          return res.status(400).json({ error: "Invalid threshold update", details: parsed.error.flatten() });
+        }
+        const actor = req.securitySession;
+        if (!actor) {
+          return res.status(401).json({ error: "Authentication required" });
+        }
+        await setSecurityThreshold(key as (typeof SECURITY_THRESHOLD_KEYS)[number], parsed.data.value, {
+          userId: actor.user.id,
+          activeRole: actor.activeRole
+        });
+        return res.json({ thresholds: listSecurityThresholds() });
+      } catch (error) {
+        if (error instanceof InvalidThresholdValueError) {
+          return res.status(400).json({ error: error.message });
+        }
+        return next(error);
+      }
     }
   );
 
