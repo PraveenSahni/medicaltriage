@@ -524,7 +524,7 @@ function toRiskClassification(riskLevel: string | null): AuditEvent["risk"] {
  */
 export async function listPersistedAuditEvents(
   limit = 200,
-  filter?: { userId?: string; organization?: string; action?: string; since?: string; until?: string }
+  filter?: { userId?: string; organization?: string; action?: string; resource?: string; since?: string; until?: string }
 ): Promise<AuditEvent[]> {
   if (!shouldPersistAuditEventsInDatabase()) {
     return [];
@@ -535,6 +535,7 @@ export async function listPersistedAuditEvents(
       ...(filter?.userId ? { userId: filter.userId } : {}),
       ...(filter?.organization ? { organization: filter.organization } : {}),
       ...(filter?.action ? { action: filter.action } : {}),
+      ...(filter?.resource ? { resource: filter.resource } : {}),
       ...(filter?.since || filter?.until
         ? {
             timestamp: {

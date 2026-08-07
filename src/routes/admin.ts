@@ -345,6 +345,26 @@ export function createAdminRouter(): Router {
     }
   });
 
+  // Closes NFR-014's real remaining gap: the existing /audit-events route
+  // only ever returns a flat, unfiltered list - there was no way to ask
+  // "show me every recorded change to this specific record" without
+  // scrolling through everything. AuditEvent.resource already carries a
+  // real per-record identifier (e.g. "UserAccount:<id>", "Role:<code>:<permission>")
+  // at every existing recordAuditEvent() call site, so this route filters
+  // on that field directly - a real modification-history trace, in
+  // chronological order, per resource.
+  router.get("/audit-events/resource/:resource", requirePermission("audit.events.view"), async (req, res, next) => {
+    try {
+      const resource = decodeURIComponent(req.params.resource);
+      const events = shouldUseDatabasePersistence()
+        ? await listPersistedAuditEvents(200, { resource })
+        : listAuditEvents({ resource });
+      return res.json({ resource, events: [...events].sort((left, right) => left.timestampIso.localeCompare(right.timestampIso)) });
+    } catch (error) {
+      return next(error);
+    }
+  });
+
   // Closes NFR-036's real remaining gap: the automated
   // ACCESS_ENTITLEMENT_REVIEW_CERTIFIED audit event (written by
   // scripts/accessEntitlementReview.mjs) already exists, but there was no

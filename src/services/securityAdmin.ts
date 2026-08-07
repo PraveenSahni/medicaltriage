@@ -2951,10 +2951,13 @@ export function listEncryptionPolicies(): EncryptionPolicy[] {
   return encryptionPolicies;
 }
 
-export function listAuditEvents(filter?: { userId?: string; since?: string; until?: string }): AuditEvent[] {
+export function listAuditEvents(filter?: { userId?: string; resource?: string; since?: string; until?: string }): AuditEvent[] {
   return [...auditEvents]
     .filter((event) => {
       if (filter?.userId && event.userId !== filter.userId) {
+        return false;
+      }
+      if (filter?.resource && event.resource !== filter.resource) {
         return false;
       }
       if (filter?.since && event.timestampIso < filter.since) {

@@ -296,4 +296,39 @@ describe("Role-based Control Center bifurcation", () => {
         .expect(400);
     });
   });
+
+  it("traces the real modification history for a specific resource (NFR-014)", async () => {
+    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    await elevate(sysAdmin, "usr_system_admin_10001");
+
+    await sysAdmin
+      .patch("/api/v1/admin/users/usr_nurse_10001/status")
+      .send({ status: "suspended", reason: "history trace test" })
+      .expect(200);
+    await sysAdmin
+      .patch("/api/v1/admin/users/usr_nurse_10001/status")
+      .send({ status: "active", reason: "history trace test reactivate" })
+      .expect(200);
+
+    const auditor = await agentFor("audit@irisstar.tech", "compliance_auditor");
+    const history = await auditor
+      .get(`/api/v1/admin/audit-events/resource/${encodeURIComponent("UserAccount:usr_nurse_10001")}`)
+      .expect(200);
+
+    expect(history.body.resource).toBe("UserAccount:usr_nurse_10001");
+    expect(history.body.events.length).toBeGreaterThanOrEqual(2);
+    const actions = history.body.events.map((event: { action: string }) => event.action);
+    expect(actions).toContain("USER_ACCOUNT_STATUS_CHANGED");
+    // Chronological order (oldest first) - a real trace, not just a dump.
+    const timestamps = history.body.events.map((event: { timestampIso: string }) => event.timestampIso);
+    expect(timestamps).toEqual([...timestamps].sort());
+  });
+
+  it("returns an empty history for a resource with no recorded events", async () => {
+    const auditor = await agentFor("audit@irisstar.tech", "compliance_auditor");
+    const history = await auditor
+      .get(`/api/v1/admin/audit-events/resource/${encodeURIComponent("UserAccount:usr_never_touched")}`)
+      .expect(200);
+    expect(history.body.events).toEqual([]);
+  });
 });
