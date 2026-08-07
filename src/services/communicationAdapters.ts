@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { randomUUID } from "node:crypto";
 import { fetchWithRetry } from "../utils/httpRetry.js";
+import { persistIntegrationInboundLog } from "./persistence.js";
 import type {
   CcpOutboundChannel,
   CcpSendResult,
@@ -185,6 +186,15 @@ export class TwilioMessagingAdapter implements MessagingAdapter {
       form.set("MediaUrl", message.mediaUrl);
     }
 
+    // Closes NFR-111's real remaining gap for this integration: log the
+    // outbound payload before it's sent, using the same generic
+    // cross-integration primitive already wired into the HRMS sync route.
+    await persistIntegrationInboundLog("twilio-outbound", {
+      channel: message.channel,
+      to: message.to,
+      hasMediaUrl: Boolean(message.mediaUrl)
+    });
+
     const response = await fetchWithRetry(
       `https://api.twilio.com/2010-04-01/Accounts/${this.config.accountSid}/Messages.json`,
       {
@@ -303,6 +313,12 @@ export class MicrosoftGraphEmailAdapter implements EmailAdapter {
       },
       saveToSentItems: true
     };
+
+    await persistIntegrationInboundLog("microsoft-graph-outbound", {
+      from: mailbox,
+      to: message.to,
+      subject: message.subject
+    });
 
     const response = await fetchWithRetry(
       `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(mailbox)}/sendMail`,

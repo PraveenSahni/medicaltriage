@@ -8,6 +8,7 @@ import { isMockMode, shouldUseDatabasePersistence } from "../config/runtime.js";
 import { prisma } from "../db.js";
 import { assertHumanApprovalForExport } from "../services/safetyKernel.js";
 import { organizationWhereClause } from "../services/tenantScope.js";
+import { persistIntegrationInboundLog } from "../services/persistence.js";
 import type { AuthenticatedSession } from "../types/security.js";
 
 export const MOPH_ADDRESS_BUILDING_NUMBER_EXTENSION =
@@ -725,6 +726,17 @@ export async function executeWriteback(
   }
 
   try {
+    // Closes NFR-111's real remaining gap for this integration: log the
+    // outbound EMR/FHIR payload before it's sent, using the same generic
+    // cross-integration primitive already wired into HRMS sync and the
+    // Twilio/Graph outbound adapters.
+    await persistIntegrationInboundLog("emr-fhir-writeback", {
+      target,
+      endpoint,
+      patientId,
+      practitionerId,
+      requestId: options.requestId
+    });
     const providerResponse = await postDocumentReference(endpoint, emrToken, payload, options.requestId);
     const auditPersisted = await recordTransmissionAudit({
       encounterId,
