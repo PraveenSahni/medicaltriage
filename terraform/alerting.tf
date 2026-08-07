@@ -16,6 +16,41 @@
 # resource definitions. See docs/operations/anomaly-alerting-matrix.md for
 # full status and the exact activation steps remaining.
 
+# Closes NFR-054's real remaining gap: the DAST probe job already alerts
+# on its own failure by deliberate design (its scheduled trigger doubles
+# as a liveness check), but that pattern was never applied uniformly -
+# the other 4 real scheduled Cloud Run Jobs (retention purge, access-
+# entitlement review, privacy-request fulfillment, monthly SLI report)
+# had no failure alerting at all. Rather than 4 near-duplicate per-job
+# policies, this uses Cloud Run's own built-in job-execution metric
+# (run.googleapis.com/job/completed_task_count, labeled by result),
+# aggregated across every job in the project - genuinely uniform
+# coverage, and automatically covers any future job added without a
+# Terraform change.
+resource "google_monitoring_alert_policy" "scheduled_job_failure" {
+  display_name = "Any scheduled Cloud Run Job execution failed"
+  combiner     = "OR"
+  conditions {
+    display_name = "A job execution completed with a non-success result"
+    condition_threshold {
+      filter          = "resource.type=\"cloud_run_job\" AND metric.type=\"run.googleapis.com/job/completed_execution_count\" AND metric.labels.result!=\"succeeded\""
+      comparison      = "COMPARISON_GT"
+      threshold_value = 0
+      duration        = "0s"
+      aggregations {
+        alignment_period     = "300s"
+        per_series_aligner   = "ALIGN_SUM"
+        cross_series_reducer = "REDUCE_SUM"
+      }
+    }
+  }
+  notification_channels = var.notification_channel_ids
+  documentation {
+    content   = "A scheduled Cloud Run Job (retention purge, access-entitlement review, privacy-request fulfillment, DAST probe, or monthly SLI report) completed with a non-success result. Check the job's own execution logs (gcloud run jobs executions list/describe) for the real failure cause - this alert only signals that a failure happened, uniformly across every job, not which one or why."
+    mime_type = "text/markdown"
+  }
+}
+
 variable "notification_channel_ids" {
   description = "Cloud Monitoring notification channel IDs to attach to these policies. Left empty by default - engineering default, not a Qatar-Airways-approved paging destination."
   type        = list(string)
