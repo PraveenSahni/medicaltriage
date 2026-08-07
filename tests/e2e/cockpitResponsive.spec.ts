@@ -43,6 +43,105 @@ test.describe.serial("Nurse Cockpit responsive layout", () => {
     expect(mainBox!.width).toBeLessThanOrEqual(320);
   });
 
+  // Closes the UX/NFR-001 (Mobile Responsiveness) gap: WEB-010/WEB-011
+  // above only ever checked overflow before a call was claimed. This runs
+  // before WEB-012 (which claims a call and deliberately leaves it open,
+  // uncompleted, to test the tablist in isolation) - WEB-012's leftover
+  // held call would otherwise conflict with this test's own claim under
+  // this app's real one-held-call-at-a-time UI cap, so ordering matters
+  // here and this test must stay ahead of WEB-012 in this serial suite.
+  test("WEB-015 no horizontal overflow at any stage of a full claim-to-completion journey at 320px", async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 720 });
+    await browserLogin(page, personas.nurse);
+
+    const overflowNow = () =>
+      page.evaluate(() => ({
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth
+      }));
+    const expectNoOverflow = async (label: string) => {
+      const overflow = await overflowNow();
+      expect(overflow.scrollWidth, `${label}: scrollWidth=${overflow.scrollWidth} clientWidth=${overflow.clientWidth}`).toBeLessThanOrEqual(
+        overflow.clientWidth
+      );
+    };
+
+    await expectNoOverflow("before claiming a call");
+
+    // Uses a freshly generated synthetic call (POST /queue/simulate) rather
+    // than scanning the shared case-abd- seed fixtures - those rows are
+    // reused across many other tests/manual runs in this same dev database
+    // and repeated claim/reset cycles left them in a contended, sometimes
+    // stuck-open state that produced flaky failures unrelated to this
+    // test's actual purpose. A freshly created item is guaranteed
+    // unclaimed and not depended on by anything else.
+    let child: { id: string; reasonNarrative: string; preparedProtocol?: { primaryProtocolId?: string } } | undefined;
+    for (let attempt = 0; attempt < 10 && !child?.preparedProtocol?.primaryProtocolId; attempt += 1) {
+      const simulateResponse = await page.request.post("/api/v1/queue/simulate");
+      expect(simulateResponse.status(), await simulateResponse.text()).toBe(201);
+      child = (await simulateResponse.json()).item;
+    }
+    expect(child?.preparedProtocol?.primaryProtocolId).toBeTruthy();
+
+    await page.reload();
+    const card = page.getByText(child!.reasonNarrative, { exact: true }).first().locator("xpath=ancestor::li[1]");
+    const claimResponse = page.waitForResponse((response) =>
+      response.url().endsWith(`/api/v1/queue/${child!.id}/claim`) && response.request().method() === "POST"
+    );
+    await card.getByRole("button", { name: "Answer call →", exact: true }).click();
+    const claim = await claimResponse;
+    expect(claim.status(), await claim.text()).toBe(200);
+
+    await expect(page.getByRole("tab", { name: /Reason & Rule-Out/ })).toHaveAttribute("aria-selected", "true");
+    await expectNoOverflow("Reason & Rule-Out stage");
+
+    await page.getByRole("button", { name: "Triage Questions →", exact: true }).click();
+    await expect(page.getByRole("tab", { name: /^.\s*2 · Questions/ })).toHaveAttribute("aria-selected", "true");
+    await expectNoOverflow("Questions stage (initial)");
+
+    const dispositionTab = page.getByRole("tab", { name: /Disposition & Advice/ });
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      if ((await dispositionTab.getAttribute("aria-selected")) === "true") {
+        break;
+      }
+      const bulkNo = page.getByRole("button", { name: /No to all at this level/ });
+      if (await bulkNo.isVisible().catch(() => false)) {
+        await bulkNo.click();
+        await page.waitForTimeout(400);
+        continue;
+      }
+      const singleNo = page.locator(".choice").filter({ hasText: "No" }).first();
+      if (await singleNo.isVisible().catch(() => false)) {
+        await singleNo.click();
+        await page.waitForTimeout(400);
+        continue;
+      }
+      await page.waitForTimeout(400);
+    }
+    await expect(dispositionTab).toHaveAttribute("aria-selected", "true");
+    await expectNoOverflow("Disposition & Advice stage");
+
+    const moveResponse = page.waitForResponse((response) =>
+      response.url().endsWith(`/api/v1/queue/${child!.id}/move`) && response.request().method() === "POST"
+    );
+    await page.getByRole("button", { name: "Continue to SBAR →", exact: true }).click();
+    await moveResponse;
+    await expect(page.getByRole("tab", { name: /SBAR \/ Complete/ })).toHaveAttribute("aria-selected", "true");
+    await expectNoOverflow("SBAR / Complete stage");
+
+    const completeButton = page.getByRole("button", { name: "✓ Complete Call", exact: true });
+    await expect(completeButton).toBeEnabled();
+    const completionResponse = page.waitForResponse((response) =>
+      response.url().endsWith("/api/v1/triage/complete") && response.request().method() === "POST"
+    );
+    await completeButton.click();
+    const completion = await completionResponse;
+    expect(completion.status(), await completion.text()).toBe(200);
+
+    await expect(page.getByRole("tab", { name: /^Completed \d+/ })).toBeVisible();
+    await expectNoOverflow("after call completion (Completed tab)");
+  });
+
   test("WEB-012 stage tabs expose real tablist semantics and remain operable at 320px", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 720 });
     await browserLogin(page, personas.nurse);
@@ -79,4 +178,5 @@ test.describe.serial("Nurse Cockpit responsive layout", () => {
     }));
     expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
   });
+
 });

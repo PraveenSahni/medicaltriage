@@ -17,6 +17,17 @@ const vitalPlaceholders: Record<string, string> = {
   spo2: "95-100"
 };
 
+// Real smart-default/autocomplete suggestions (UX/NFR-014) - the most
+// common real-world values within each vital's normal range, offered via
+// a native <datalist> so a nurse can pick a typical value with one click
+// instead of typing every time, while still being free to enter any other
+// number.
+const vitalSuggestions: Record<string, number[]> = {
+  heartRate: [60, 72, 80, 90, 100],
+  respiratoryRate: [12, 14, 16, 18, 20],
+  spo2: [95, 97, 98, 99, 100]
+};
+
 // Real callers do not all sound the same - a stand-in variety of English
 // accents used for the demo speech playback below (see playReasonAudio),
 // picked deterministically per call so the same call always plays back
@@ -380,13 +391,12 @@ export function ReasonRuleOutStage({
         aria-expanded={vitalsExpanded}
         style={{ cursor: "pointer" }}
       >
-        <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <span style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, minWidth: 0 }}>
           <span className="sub-hdr-toggle-label">
             Vital Taking <span className="optional-tag">Optional</span>
           </span>
           <label
             className="vitals-unobtainable"
-            style={{ flexShrink: 0 }}
             onClick={(event) => event.stopPropagation()}
           >
             <input
@@ -409,11 +419,17 @@ export function ReasonRuleOutStage({
               <label>{vitalLabels[key]}</label>
               <input
                 type="number"
+                list={`vital-suggestions-${key}`}
                 placeholder={vitalPlaceholders[key]}
                 value={item.vitals?.[key] ?? ""}
                 disabled={isReadOnly || saving}
                 onChange={(event) => saveVital(key, Number(event.target.value))}
               />
+              <datalist id={`vital-suggestions-${key}`}>
+                {vitalSuggestions[key].map((suggestion) => (
+                  <option key={suggestion} value={suggestion} />
+                ))}
+              </datalist>
             </div>
           ))}
           <div className="vfield">

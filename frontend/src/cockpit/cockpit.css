@@ -598,6 +598,34 @@
   color: var(--muted) !important;
 }
 
+#cockpit-root .cockpit-onboarding-tip {
+  max-width: 420px !important;
+  margin-top: 20px !important;
+  padding: 12px 16px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 10px !important;
+  background: var(--bg2) !important;
+  text-align: left !important;
+}
+
+#cockpit-root .cockpit-onboarding-tip p {
+  max-width: none !important;
+  font-size: 0.85rem !important;
+  color: var(--ink) !important;
+  margin: 0 0 10px !important;
+}
+
+#cockpit-root .cockpit-onboarding-tip button {
+  border: 1px solid var(--accent) !important;
+  background: var(--card) !important;
+  color: var(--accent) !important;
+  border-radius: 6px !important;
+  padding: 4px 12px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+
 #cockpit-root .active-call-hdr {
   display: flex !important;
   align-items: flex-start !important;
@@ -896,15 +924,18 @@
 
 #cockpit-root .reason-label-row {
   display: flex !important;
+  flex-wrap: wrap !important;
   align-items: center !important;
   justify-content: space-between !important;
-  gap: 10px !important;
+  gap: 6px 10px !important;
 }
 
 #cockpit-root .reason-label-actions {
   display: flex !important;
+  flex-wrap: wrap !important;
   align-items: center !important;
   gap: 8px !important;
+  max-width: 100% !important;
 }
 
 #cockpit-root .reason-changed-flag {
@@ -1251,11 +1282,18 @@
 
 #cockpit-root .protocol-match-suggestion-head {
   display: flex !important;
+  flex-wrap: wrap !important;
   align-items: center !important;
   justify-content: space-between !important;
+  gap: 4px 8px !important;
   font-size: 0.85rem !important;
   font-weight: 600 !important;
   color: var(--ink) !important;
+}
+
+#cockpit-root .protocol-match-suggestion-title {
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;
 }
 
 #cockpit-root .protocol-match-suggestion-score {
