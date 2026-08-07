@@ -1,0 +1,1830 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "IST Health Tele-Triage API",
+    "version": "1.0.0",
+    "description": "Path/method/auth-level API map generated from this repo's real route registrations (scripts/generateOpenApiSpec.ts), not hand-maintained or aspirational. Request/response body schemas are not yet derived from this app's Zod validators (see the routes' *.Schema definitions in src/types/ and src/routes/) - that is a follow-on task, tracked separately."
+  },
+  "servers": [
+    {
+      "url": "https://triagedsoc2.irisstar.tech",
+      "description": "SOC 2 staging"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "ist_triage_session"
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/auth/session": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get the current session, if any.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Authenticate with username/password (rate-limited).",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "End the current session.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/sso/test": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "SSO test/diagnostic endpoint.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          }
+        }
+      }
+    },
+    "/api/v1/hrms/sync-users": {
+      "post": {
+        "tags": [
+          "HRMS"
+        ],
+        "summary": "Sync users from the Oracle Fusion HCM directory.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          }
+        }
+      }
+    },
+    "/api/v1/integrations/call-center/events": {
+      "post": {
+        "tags": [
+          "Call Center Integration"
+        ],
+        "summary": "Inbound call-center event webhook (signature-verified).",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/control-modules": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List admin control-center modules visible to the caller.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/summary": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Admin dashboard summary.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/users": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List admin users.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/roles": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List roles.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/responsibilities": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List responsibilities.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/permissions": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List permissions.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/sso-providers": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List configured SSO providers.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/encryption-policies": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List encryption policies.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/audit-events": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List audit events.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/reveal-directory": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List the reveal-request directory.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/governance": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List clinical governance work items.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/protocol-library": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List protocol library items.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/integrations": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List integration connectors.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/reports": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List the report catalog.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/support": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List the support ticket queue.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/reveal": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Request a controlled reveal of masked sensitive data.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/approval/queue": {
+      "get": {
+        "tags": [
+          "Clinical Approval"
+        ],
+        "summary": "Clinician HITL approval queue.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/approval/dashboard": {
+      "get": {
+        "tags": [
+          "Clinical Approval"
+        ],
+        "summary": "Safety/quality dashboard.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/approval/reviews/{encounterId}": {
+      "post": {
+        "tags": [
+          "Clinical Approval"
+        ],
+        "summary": "Record a clinician's approval/override decision for an encounter.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/ccp/communication/status": {
+      "get": {
+        "tags": [
+          "Care Communication Platform"
+        ],
+        "summary": "CCP integration status.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/ccp/messages/drafts": {
+      "get": {
+        "tags": [
+          "Care Communication Platform"
+        ],
+        "summary": "List outbound message drafts.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/ccp/messages/draft": {
+      "post": {
+        "tags": [
+          "Care Communication Platform"
+        ],
+        "summary": "Create an outbound message draft.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/ccp/messages/{draftId}/approve-send": {
+      "post": {
+        "tags": [
+          "Care Communication Platform"
+        ],
+        "summary": "Approve and send a drafted message.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/ccp/webhooks/twilio": {
+      "post": {
+        "tags": [
+          "Care Communication Platform"
+        ],
+        "summary": "Inbound Twilio webhook.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/ccp/webhooks/inbound-records": {
+      "get": {
+        "tags": [
+          "Care Communication Platform"
+        ],
+        "summary": "List persisted inbound webhook records.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/ccp/employee/{istStaffId}": {
+      "get": {
+        "tags": [
+          "Care Communication Platform"
+        ],
+        "summary": "Look up an employee by IST staff ID.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/staff/validate": {
+      "post": {
+        "tags": [
+          "Staff"
+        ],
+        "summary": "Validate a staff/dependent identity against HRMS (rate-limited).",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/protocols/releases/current": {
+      "get": {
+        "tags": [
+          "Clinical Protocols"
+        ],
+        "summary": "Get the currently active clinical content release.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/protocols/search": {
+      "get": {
+        "tags": [
+          "Clinical Protocols"
+        ],
+        "summary": "Search clinical protocols by keyword.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/protocols": {
+      "get": {
+        "tags": [
+          "Clinical Protocols"
+        ],
+        "summary": "List all clinical protocols.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/protocols/{protocolId}": {
+      "get": {
+        "tags": [
+          "Clinical Protocols"
+        ],
+        "summary": "Get a single protocol by ID.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/protocols/{protocolId}/care-advice": {
+      "get": {
+        "tags": [
+          "Clinical Protocols"
+        ],
+        "summary": "Get care advice for a protocol.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/queue": {
+      "get": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "List queue items visible to the caller.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "Create a new queue item (intake).",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/queue/simulate": {
+      "post": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "Simulate an incoming synthetic call (mock mode).",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/queue/next-best-call": {
+      "post": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "Claim the next highest-priority claimable call.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/queue/stats/completions": {
+      "get": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "Completion-count statistics.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/queue/{id}": {
+      "get": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "Get a single queue item.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "Delete a queue item (manager roles only).",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/queue/{id}/claim": {
+      "post": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "Claim and lock a queue item.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/queue/{id}/release": {
+      "post": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "Release a queue item's lock.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/queue/{id}/heartbeat": {
+      "post": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "Refresh a queue item's lock.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/queue/{id}/context": {
+      "patch": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "Update clinical context (vitals, severity, disposition, SBAR, etc.).",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/queue/{id}/reason-audio": {
+      "post": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "Attach a Reason-for-Call audio capture.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/queue/{id}/move": {
+      "post": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "Move a queue item to a new stage/status.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/queue/{id}/escalate": {
+      "post": {
+        "tags": [
+          "Triage Queue"
+        ],
+        "summary": "Escalate a queue item to another organization.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/call-center/events": {
+      "post": {
+        "tags": [
+          "Call Center"
+        ],
+        "summary": "Record a call-center event (signature-verified).",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/call-center/status": {
+      "get": {
+        "tags": [
+          "Call Center"
+        ],
+        "summary": "Get call-center gateway integration status.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/call-center/sessions": {
+      "get": {
+        "tags": [
+          "Call Center"
+        ],
+        "summary": "List call-center sessions.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/call-center/queue/{queueItemId}/command": {
+      "post": {
+        "tags": [
+          "Call Center"
+        ],
+        "summary": "Issue a call-control command for a queue item's call session.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/simulation/scenarios": {
+      "get": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "List available test scenarios.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/simulation/run": {
+      "post": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Run the default simulation suite.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/simulation/run/{scenarioId}": {
+      "post": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Run a specific simulation scenario.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/simulation/suite": {
+      "get": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Get the simulation suite definition.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/simulation/training-set": {
+      "get": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Get the training data set.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/simulation/generated": {
+      "get": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Get generated synthetic test data.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/triage/fit-to-fly-preview": {
+      "post": {
+        "tags": [
+          "Triage"
+        ],
+        "summary": "Preview fit-to-fly status for a hypothetical disposition.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/triage/start": {
+      "post": {
+        "tags": [
+          "Triage"
+        ],
+        "summary": "Start a triage encounter.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/triage/calculate-score": {
+      "post": {
+        "tags": [
+          "Triage"
+        ],
+        "summary": "Calculate a NEWS2-style triage score.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/triage/preview": {
+      "post": {
+        "tags": [
+          "Triage"
+        ],
+        "summary": "Preview the compiled SOAP/SBAR note (no persistence).",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/triage/complete": {
+      "post": {
+        "tags": [
+          "Triage"
+        ],
+        "summary": "Complete a triage encounter and persist the note (idempotent on queueItemId).",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/triage/encounters/evaluate": {
+      "post": {
+        "tags": [
+          "Triage"
+        ],
+        "summary": "Evaluate an encounter against the rules engine.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/voice-assessment/sessions": {
+      "post": {
+        "tags": [
+          "Voice Assessment"
+        ],
+        "summary": "Create a voice assessment session.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/voice-assessment/sessions/{sessionId}": {
+      "get": {
+        "tags": [
+          "Voice Assessment"
+        ],
+        "summary": "Get a voice assessment session.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/voice-assessment/sessions/{sessionId}/responses": {
+      "post": {
+        "tags": [
+          "Voice Assessment"
+        ],
+        "summary": "Record a response turn.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/voice-assessment/sessions/{sessionId}/turns/{turnId}/validate": {
+      "post": {
+        "tags": [
+          "Voice Assessment"
+        ],
+        "summary": "Validate a recorded turn.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/voice-assessment/sessions/{sessionId}/takeover": {
+      "post": {
+        "tags": [
+          "Voice Assessment"
+        ],
+        "summary": "Take over an in-progress session.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/voice-assessment/sessions/{sessionId}/training-examples": {
+      "get": {
+        "tags": [
+          "Voice Assessment"
+        ],
+        "summary": "Build interpretation-only training examples from a session (no clinical outcomes).",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/emr/writeback/{encounterId}": {
+      "post": {
+        "tags": [
+          "EMR / FHIR"
+        ],
+        "summary": "Write a completed encounter back to the EMR via FHIR.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/v1/help/help": {
+      "get": {
+        "tags": [
+          "Help"
+        ],
+        "summary": "Serve the standalone help page.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          }
+        }
+      }
+    },
+    "/api/v1/help/restricted-access/verify": {
+      "post": {
+        "tags": [
+          "Help"
+        ],
+        "summary": "Verify access to restricted help content (rate-limited).",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          }
+        }
+      }
+    },
+    "/api/v1/help/restricted-vault": {
+      "get": {
+        "tags": [
+          "Help"
+        ],
+        "summary": "Access the restricted-content vault (requires prior verification).",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          }
+        }
+      }
+    }
+  }
+}
