@@ -725,6 +725,27 @@ export async function listPersistedCcpOutboundDrafts(): Promise<CcpOutboundDraft
     .filter((draft): draft is CcpOutboundDraft => Boolean(draft));
 }
 
+/**
+ * Generic "log before processing" hook for inbound integration payloads
+ * beyond the CCP webhook path (NFR-111). Best-effort, never blocks the
+ * caller on a persistence failure - the raw payload is written to
+ * IntegrationInboundLog before the caller processes it.
+ */
+export async function persistIntegrationInboundLog(integration: string, payload: unknown): Promise<PersistenceResult> {
+  if (!shouldUseDatabasePersistence()) {
+    return { persisted: false, reason: "mock-mode" };
+  }
+  try {
+    const saved = await prisma.integrationInboundLog.create({
+      data: { integration, payload: jsonValue(payload) }
+    });
+    return { persisted: true, recordId: saved.id };
+  } catch (error) {
+    console.error(`Failed to persist integration inbound log for ${integration}:`, error);
+    return { persisted: false, reason: "mock-mode" };
+  }
+}
+
 export async function persistInboundWebhookRecord(record: InboundWebhookRecord, organizationId?: string): Promise<PersistenceResult> {
   if (!shouldUseDatabasePersistence()) {
     return { persisted: false, reason: "mock-mode" };

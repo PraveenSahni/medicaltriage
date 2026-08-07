@@ -1454,6 +1454,16 @@ model RetentionPolicy {
   @@map("retention_policies")
 }
 
+model IntegrationInboundLog {
+  id           String   @id @default(cuid())
+  integration  String
+  payload      Json
+  receivedAt   DateTime @default(now()) @map("received_at")
+
+  @@index([integration, receivedAt])
+  @@map("integration_inbound_logs")
+}
+
 model ArchivedRecord {
   id           String   @id @default(cuid())
   entityName   String   @map("entity_name")

@@ -6,6 +6,7 @@ import {
   HrmsSyncRequestSchema,
   syncUsersFromHrms
 } from "../services/hrmsSync.js";
+import { persistIntegrationInboundLog } from "../services/persistence.js";
 
 function safeSecretEquals(left: string, right: string): boolean {
   const leftBuffer = Buffer.from(left);
@@ -41,6 +42,8 @@ export function createHrmsRouter(): Router {
       if (!parsed.success) {
         return res.status(400).json({ error: "Invalid HRMS sync payload", details: parsed.error.flatten() });
       }
+
+      await persistIntegrationInboundLog("hrms-sync-users", parsed.data);
 
       const session = await readAuthenticatedSession(req);
       const summary = await syncUsersFromHrms({
