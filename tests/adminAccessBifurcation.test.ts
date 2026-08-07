@@ -1,8 +1,9 @@
+import { randomUUID } from "node:crypto";
 import { authenticator } from "otplib";
 import request from "supertest";
 import { createApp } from "../src/app.js";
 import { resetRateLimitBucketsForTests } from "../src/middleware/rateLimit.js";
-import { confirmMfaEnrollment, enrollMfa, resetSecurityStoreForTests } from "../src/services/securityAdmin.js";
+import { confirmMfaEnrollment, enrollMfa, recordAuditEvent, resetSecurityStoreForTests } from "../src/services/securityAdmin.js";
 
 const TEST_ADMIN_PASSWORD = "TestAdminPassword!2026";
 process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
@@ -162,6 +163,43 @@ describe("Role-based Control Center bifurcation", () => {
 
     const remoteNurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     await remoteNurse.get("/api/v1/admin/security-thresholds").expect(403);
+  });
+
+  it("lets a human stakeholder acknowledge a real access-entitlement-review certification (NFR-036)", async () => {
+    const certificationId = randomUUID();
+    await recordAuditEvent({
+      id: certificationId,
+      timestampIso: new Date().toISOString(),
+      userId: "usr_system_admin_10001",
+      activeRole: "system_administrator",
+      organization: "",
+      facility: "",
+      department: "",
+      action: "ACCESS_ENTITLEMENT_REVIEW_CERTIFIED",
+      module: "AccessGovernance",
+      resource: "AccessEntitlementReview",
+      purpose: "totalUsers=19 flagged=0",
+      ipAddress: "",
+      device: "",
+      success: true,
+      risk: "low"
+    });
+
+    const auditor = await agentFor("audit@irisstar.tech", "compliance_auditor");
+    const list = await auditor.get("/api/v1/admin/access-entitlement-reviews").expect(200);
+    const review = list.body.reviews.find((r: { id: string }) => r.id === certificationId);
+    expect(review).toMatchObject({ acknowledged: false });
+
+    await auditor.post(`/api/v1/admin/access-entitlement-reviews/${certificationId}/acknowledge`).expect(200);
+
+    const after = await auditor.get("/api/v1/admin/access-entitlement-reviews").expect(200);
+    const reviewAfter = after.body.reviews.find((r: { id: string }) => r.id === certificationId);
+    expect(reviewAfter).toMatchObject({ acknowledged: true });
+
+    await auditor.post("/api/v1/admin/access-entitlement-reviews/not-a-real-id/acknowledge").expect(404);
+
+    const remoteNurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    await remoteNurse.get("/api/v1/admin/access-entitlement-reviews").expect(403);
   });
 
   it("keeps Remote Triage Nurse out of the Control Center despite reveal permission", async () => {

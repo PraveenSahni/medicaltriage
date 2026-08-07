@@ -19,7 +19,9 @@ import {
   FieldNotRevealableError,
   getAccessRevocationMetricsReport,
   getSecurityDashboard,
+  acknowledgeAccessEntitlementReview,
   grantPermissionToRole,
+  ReviewCertificationNotFoundError,
   InvalidElevationCodeError,
   InvalidThresholdValueError,
   isElevated,
@@ -342,6 +344,58 @@ export function createAdminRouter(): Router {
       return next(error);
     }
   });
+
+  // Closes NFR-036's real remaining gap: the automated
+  // ACCESS_ENTITLEMENT_REVIEW_CERTIFIED audit event (written by
+  // scripts/accessEntitlementReview.mjs) already exists, but there was no
+  // way for a human stakeholder to explicitly acknowledge/sign off on a
+  // specific review inside the app. This lists certifications and lets an
+  // authorized human record a real, distinct sign-off event referencing
+  // the certification it acknowledges.
+  router.get("/access-entitlement-reviews", requirePermission("audit.events.view"), async (_req, res, next) => {
+    try {
+      const certifications = shouldUseDatabasePersistence()
+        ? await listPersistedAuditEvents(50, { action: "ACCESS_ENTITLEMENT_REVIEW_CERTIFIED" })
+        : listAuditEvents().filter((event) => event.action === "ACCESS_ENTITLEMENT_REVIEW_CERTIFIED");
+      const acknowledgements = shouldUseDatabasePersistence()
+        ? await listPersistedAuditEvents(50, { action: "ACCESS_ENTITLEMENT_REVIEW_ACKNOWLEDGED" })
+        : listAuditEvents().filter((event) => event.action === "ACCESS_ENTITLEMENT_REVIEW_ACKNOWLEDGED");
+      const acknowledgedIds = new Set(acknowledgements.map((event) => event.purpose?.match(/certificationId=(\S+)/)?.[1]));
+      return res.json({
+        reviews: certifications.map((event) => ({
+          id: event.id,
+          timestampIso: event.timestampIso,
+          purpose: event.purpose,
+          acknowledged: acknowledgedIds.has(event.id)
+        }))
+      });
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  router.post(
+    "/access-entitlement-reviews/:id/acknowledge",
+    requirePermission("audit.events.view"),
+    async (req: AuthorizedRequest, res, next) => {
+      try {
+        const actor = req.securitySession;
+        if (!actor) {
+          return res.status(401).json({ error: "Authentication required" });
+        }
+        await acknowledgeAccessEntitlementReview(req.params.id, {
+          userId: actor.user.id,
+          activeRole: actor.activeRole
+        });
+        return res.json({ acknowledged: true });
+      } catch (error) {
+        if (error instanceof ReviewCertificationNotFoundError) {
+          return res.status(404).json({ error: error.message });
+        }
+        return next(error);
+      }
+    }
+  );
 
   // CSQ IS.13: "metrics which track the speed with which access rights are
   // removed" - a read-only, least-privilege reporting surface over the

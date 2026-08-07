@@ -23,7 +23,8 @@ import {
   isMfaMandatory,
   isMockMode,
   shouldPersistRevealAnomalyCountersInDatabase,
-  shouldPersistSecurityAnomalyCountersInDatabase
+  shouldPersistSecurityAnomalyCountersInDatabase,
+  shouldUseDatabasePersistence
 } from "../config/runtime.js";
 import { decryptMfaSecret, encryptMfaSecret } from "./mfaCrypto.js";
 import type {
@@ -60,6 +61,7 @@ import {
   recordAndCountSecurityAnomalyEvents,
   persistRevealRequest,
   getPersistedRolePermissionOverrides,
+  listPersistedAuditEvents,
   persistRolePermissionOverride,
   persistSecurityThresholdOverride,
   persistSecurityAuditEvent,
@@ -2795,6 +2797,43 @@ export function listSecurityThresholds(): Array<{ key: SecurityThresholdKey; val
 }
 
 export class InvalidThresholdValueError extends Error {}
+
+export class ReviewCertificationNotFoundError extends Error {}
+
+// Closes NFR-036's real remaining gap - a human stakeholder explicitly
+// acknowledging a specific access-entitlement-review certification,
+// distinct from the existing automated certification record itself.
+export async function acknowledgeAccessEntitlementReview(
+  certificationId: string,
+  actor: { userId: string; activeRole: string }
+): Promise<void> {
+  const certification = shouldUseDatabasePersistence()
+    ? (await listPersistedAuditEvents(200, { action: "ACCESS_ENTITLEMENT_REVIEW_CERTIFIED" })).find(
+        (event) => event.id === certificationId
+      )
+    : listAuditEvents().find((event) => event.action === "ACCESS_ENTITLEMENT_REVIEW_CERTIFIED" && event.id === certificationId);
+  if (!certification) {
+    throw new ReviewCertificationNotFoundError(`No access-entitlement-review certification found with id ${certificationId}`);
+  }
+
+  await recordAuditEvent({
+    id: randomUUID(),
+    timestampIso: new Date().toISOString(),
+    userId: actor.userId,
+    activeRole: actor.activeRole,
+    organization: "",
+    facility: "",
+    department: "",
+    action: "ACCESS_ENTITLEMENT_REVIEW_ACKNOWLEDGED",
+    module: "AccessGovernance",
+    resource: `AuditEvent:${certificationId}`,
+    purpose: `certificationId=${certificationId}`,
+    ipAddress: "",
+    device: "",
+    success: true,
+    risk: "low"
+  });
+}
 
 // Real JIT privileged-access elevation (closes NFR-180's PAM capability gap:
 // just-in-time elevation + MFA + a real, queryable audit trail). A small,
