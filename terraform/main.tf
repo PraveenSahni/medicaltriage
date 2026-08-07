@@ -709,3 +709,114 @@ resource "google_cloud_scheduler_job" "monthly_sli_report_trigger" {
     }
   }
 }
+
+# --- Synthetic business-flow check (NFR-124) ---
+# Real dedicated secrets for the synthetic-monitoring identity's password
+# and MFA TOTP secret - never a real human persona's credentials. Values
+# are populated manually after the job's identity is enrolled live
+# (docs/operations/nfr-quick-wins-2026-08-07.md documents the exact steps),
+# same "secret created, value set out-of-band" pattern already used for
+# the other soc2 secrets.
+resource "google_secret_manager_secret" "synthetic_monitor_password" {
+  secret_id = "ist-triage-soc2-synthetic-monitor-password"
+
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret" "synthetic_monitor_mfa_secret" {
+  secret_id = "ist-triage-soc2-synthetic-monitor-mfa-secret"
+
+  replication {
+    auto {}
+  }
+}
+
+resource "google_cloud_run_v2_job" "synthetic_business_flow_check" {
+  name     = "synthetic-business-flow-check-soc2"
+  location = "me-central1"
+
+  template {
+    template {
+      service_account = "1096520215793-compute@developer.gserviceaccount.com"
+      max_retries     = 0
+      timeout         = "60s"
+
+      containers {
+        image   = "me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-soc2:synthetic-flow-fix-20260807"
+        command = ["node"]
+        # Targets the Cloud Run service's own origin URL, not the
+        # triagedsoc2.irisstar.tech custom domain - confirmed via direct
+        # testing that Firebase Hosting's cookie-forwarding limitation
+        # (already documented elsewhere this engagement) breaks the
+        # cookie-based session this check relies on when going through
+        # the custom domain, even though the underlying app and session
+        # logic work correctly.
+        args    = ["dist/scripts/syntheticBusinessFlowCheck.js", "https://ist-triage-soc2-gv6v4zyvuq-ww.a.run.app"]
+
+        env {
+          name = "SYNTHETIC_MONITOR_PASSWORD"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.synthetic_monitor_password.secret_id
+              version = "latest"
+            }
+          }
+        }
+        env {
+          name = "SYNTHETIC_MONITOR_MFA_SECRET"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.synthetic_monitor_mfa_secret.secret_id
+              version = "latest"
+            }
+          }
+        }
+      }
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [client, client_version]
+  }
+}
+
+resource "google_cloud_run_v2_job_iam_member" "synthetic_business_flow_check_invoker" {
+  name     = google_cloud_run_v2_job.synthetic_business_flow_check.name
+  location = "me-central1"
+  role     = "roles/run.invoker"
+  member   = "serviceAccount:1096520215793-compute@developer.gserviceaccount.com"
+}
+
+resource "google_cloud_scheduler_job" "synthetic_business_flow_check_trigger" {
+  name        = "synthetic-business-flow-check-soc2-trigger"
+  region      = "me-central1"
+  schedule    = "*/15 * * * *"
+  time_zone   = "Etc/UTC"
+  description = "Real business-flow synthetic transaction (login + MFA + authenticated queue read) against soc2 every 15 minutes (NFR-124). Job failure (non-zero exit) is the alert signal, same pattern as the DAST probe."
+
+  retry_config {
+    retry_count = 0
+  }
+
+  http_target {
+    uri         = "https://me-central1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/triage-502706/jobs/${google_cloud_run_v2_job.synthetic_business_flow_check.name}:run"
+    http_method = "POST"
+    oauth_token {
+      service_account_email = "1096520215793-compute@developer.gserviceaccount.com"
+    }
+  }
+}
+
+resource "google_secret_manager_secret_iam_member" "synthetic_monitor_password_accessor" {
+  secret_id = google_secret_manager_secret.synthetic_monitor_password.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:1096520215793-compute@developer.gserviceaccount.com"
+}
+
+resource "google_secret_manager_secret_iam_member" "synthetic_monitor_mfa_secret_accessor" {
+  secret_id = google_secret_manager_secret.synthetic_monitor_mfa_secret.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:1096520215793-compute@developer.gserviceaccount.com"
+}

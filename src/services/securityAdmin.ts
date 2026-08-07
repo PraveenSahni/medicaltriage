@@ -153,7 +153,8 @@ const demoPasswordByEmail: Record<string, string> = {
   "quality@irisstar.tech": "Quality@2026",
   "integration@irisstar.tech": "Integration@2026",
   "reports@irisstar.tech": "Reports@2026",
-  "helpdesk@irisstar.tech": "Helpdesk@2026"
+  "helpdesk@irisstar.tech": "Helpdesk@2026",
+  "synthetic-monitor@irisstar.tech": "SyntheticMonitor@2026"
 };
 
 function organizationByCode(code?: string): OrganizationDirectoryRecord {
@@ -999,6 +1000,44 @@ const initialUsers: AdminUser[] = [
     createdAtIso: "2026-07-01T08:20:00.000Z",
     updatedBy: "usr_platform_admin_10001",
     updatedAtIso: "2026-07-10T08:05:00.000Z"
+  },
+  {
+    // Dedicated low-privilege identity for automated synthetic monitoring
+    // (NFR-124) - deliberately separate from any real human persona, so a
+    // scheduled business-flow check never has to reuse a real nurse's
+    // credentials. Read-only real permissions (queue view only), never
+    // used interactively.
+    id: "usr_synthetic_monitor_10001",
+    employeeId: "IST-90099",
+    hrmsId: "HCM-90099",
+    fullName: "Synthetic Monitor",
+    email: "synthetic-monitor@irisstar.tech",
+    mobile: "+97455559999",
+    organization: "IST Tech",
+    facility: "HIA Midfield",
+    department: "Platform Operations",
+    clinicalSpecialty: "N/A",
+    jobTitle: "Automated Monitoring Identity",
+    professionalCategory: "System",
+    manager: "Platform Operations",
+    licenceNumber: "N/A",
+    licenceAuthority: "N/A",
+    licenceExpiry: "2099-12-31",
+    country: "QA",
+    preferredLanguage: "en",
+    timeZone: "Asia/Qatar",
+    authenticationMethod: "local",
+    mfaStatus: "enabled",
+    accountStatus: "active",
+    roles: ["remote_triage_nurse"],
+    responsibilities: ["conduct_nurse_triage"],
+    queues: ["HIA Staff Tele-triage"],
+    accessProfiles: ["remote-triage-nurse-profile"],
+    lastLoginIso: "2026-08-07T00:00:00.000Z",
+    createdBy: "bootstrap",
+    createdAtIso: "2026-08-07T00:00:00.000Z",
+    updatedBy: "bootstrap",
+    updatedAtIso: "2026-08-07T00:00:00.000Z"
   },
   {
     id: "usr_org_admin_10001",
