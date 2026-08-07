@@ -480,6 +480,31 @@ export async function persistRolePermissionOverride(override: RolePermissionOver
   return { persisted: true, recordId: created.id };
 }
 
+// Closes NFR-119 - real durable persistence for the QR-facing security
+// anomaly-threshold overrides, mirroring persistRolePermissionOverride's
+// exact best-effort shape above.
+export async function persistSecurityThresholdOverride(key: string, value: number, updatedBy: string): Promise<PersistenceResult> {
+  if (!shouldPersistSecurityAnomalyCountersInDatabase()) {
+    return { persisted: false, reason: "mock-mode" };
+  }
+
+  await prisma.securityThresholdOverride.upsert({
+    where: { key },
+    create: { key, value, updatedBy },
+    update: { value, updatedBy }
+  });
+
+  return { persisted: true, recordId: key };
+}
+
+export async function loadSecurityThresholdOverrides(): Promise<Array<{ key: string; value: number }>> {
+  if (!shouldPersistSecurityAnomalyCountersInDatabase()) {
+    return [];
+  }
+  const rows = await prisma.securityThresholdOverride.findMany();
+  return rows.map((row) => ({ key: row.key, value: row.value }));
+}
+
 const VALID_RISK_CLASSIFICATIONS = new Set(["low", "medium", "high", "critical"]);
 
 function toRiskClassification(riskLevel: string | null): AuditEvent["risk"] {

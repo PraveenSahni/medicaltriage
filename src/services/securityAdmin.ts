@@ -61,6 +61,7 @@ import {
   persistRevealRequest,
   getPersistedRolePermissionOverrides,
   persistRolePermissionOverride,
+  persistSecurityThresholdOverride,
   persistSecurityAuditEvent,
   persistUserSession,
   revokePersistedSession,
@@ -2730,7 +2731,70 @@ export function resetSecurityStoreForTests(): void {
   revealRequestTimestampsByUser.clear();
   accessRevocationMetrics = [];
   localSecurityAnomalyTimestamps.clear();
+  securityThresholdOverrides.clear();
 }
+
+// Closes NFR-119 - a real, QR-facing capability to configure the app's
+// own anomaly-detection thresholds at runtime, without a redeploy.
+// Terraform/Cloud Monitoring alert-policy thresholds (terraform/
+// alerting.tf) stay engineer-owned IaC - this is a separate,
+// application-level layer the two real anomaly-rate checks below read
+// from first, falling back to the existing env-var defaults untouched.
+export type SecurityThresholdKey = "AUTH_ANOMALY_FAILURE_THRESHOLD" | "REVEAL_ANOMALY_THRESHOLD";
+export const SECURITY_THRESHOLD_KEYS: SecurityThresholdKey[] = [
+  "AUTH_ANOMALY_FAILURE_THRESHOLD",
+  "REVEAL_ANOMALY_THRESHOLD"
+];
+
+const securityThresholdOverrides = new Map<string, number>();
+
+function effectiveThreshold(key: SecurityThresholdKey, envDefault: number): number {
+  return securityThresholdOverrides.get(key) ?? envDefault;
+}
+
+export async function setSecurityThreshold(
+  key: SecurityThresholdKey,
+  value: number,
+  actor: { userId: string; activeRole: string }
+): Promise<void> {
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new InvalidThresholdValueError(`${key} must be a positive integer`);
+  }
+  securityThresholdOverrides.set(key, value);
+  if (shouldPersistSecurityAnomalyCountersInDatabase()) {
+    try {
+      await persistSecurityThresholdOverride(key, value, actor.userId);
+    } catch (error) {
+      console.error("Failed to persist security threshold override", error);
+    }
+  }
+  await recordAuditEvent({
+    id: randomUUID(),
+    timestampIso: new Date().toISOString(),
+    userId: actor.userId,
+    activeRole: actor.activeRole,
+    organization: "",
+    facility: "",
+    department: "",
+    action: "SECURITY_THRESHOLD_UPDATED",
+    module: "AccessGovernance",
+    resource: `SecurityThreshold:${key}`,
+    purpose: `Set ${key} to ${value}`,
+    ipAddress: "",
+    device: "",
+    success: true,
+    risk: "medium"
+  });
+}
+
+export function listSecurityThresholds(): Array<{ key: SecurityThresholdKey; value: number; isOverridden: boolean }> {
+  return SECURITY_THRESHOLD_KEYS.map((key) => {
+    const envDefault = key === "AUTH_ANOMALY_FAILURE_THRESHOLD" ? getAuthAnomalyFailureThreshold() : getRevealAnomalyThreshold();
+    return { key, value: effectiveThreshold(key, envDefault), isOverridden: securityThresholdOverrides.has(key) };
+  });
+}
+
+export class InvalidThresholdValueError extends Error {}
 
 // Real JIT privileged-access elevation (closes NFR-180's PAM capability gap:
 // just-in-time elevation + MFA + a real, queryable audit trail). A small,
@@ -3703,7 +3767,7 @@ async function checkSecurityAnomalyRate(args: {
   organization?: string;
 }): Promise<void> {
   const windowSeconds = getAuthAnomalyWindowSeconds();
-  const threshold = getAuthAnomalyFailureThreshold();
+  const threshold = effectiveThreshold("AUTH_ANOMALY_FAILURE_THRESHOLD", getAuthAnomalyFailureThreshold());
 
   // Failure policy (documented, not silently fail-open) - identical
   // reasoning to checkRevealAnomalyRate: never deny the underlying action
@@ -3796,7 +3860,7 @@ async function checkSecurityAnomalyRate(args: {
 
 async function checkRevealAnomalyRate(requesterUserId: string): Promise<void> {
   const windowSeconds = getRevealAnomalyWindowSeconds();
-  const threshold = getRevealAnomalyThreshold();
+  const threshold = effectiveThreshold("REVEAL_ANOMALY_THRESHOLD", getRevealAnomalyThreshold());
   const requestingUser = users.find((candidate) => candidate.id === requesterUserId);
 
   // Failure policy (documented, not silently fail-open): the shared,

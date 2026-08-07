@@ -874,6 +874,22 @@ model RolePermission {
   @@map("role_permissions")
 }
 
+// Closes NFR-119 - a real, QR-facing capability to configure security
+// anomaly-detection thresholds (auth-failure/reveal-anomaly counts) at
+// runtime, without redeploying. Terraform-managed Cloud Monitoring alert
+// policies (terraform/alerting.tf) stay engineer-owned IaC - this is a
+// separate, application-level threshold layer the app's own anomaly
+// detection (securityAdmin.ts) reads from, mirroring RolePermission's
+// override-on-top-of-a-default pattern above.
+model SecurityThresholdOverride {
+  key       String   @id
+  value     Int
+  updatedBy String   @map("updated_by")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("security_threshold_overrides")
+}
+
 model UserResponsibility {
   id                 String    @id @default(cuid())
   userId             String    @map("user_id")

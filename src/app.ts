@@ -146,6 +146,11 @@ export function createApp() {
           "script-src": ["'self'"],
           "script-src-elem": ["'self'"],
           "style-src": ["'self'", "'unsafe-inline'"],
+          // Closes a real ZAP-baseline finding ("CSP: Wildcard Directive")
+          // - helmet's useDefaults font-src is 'self' https: data:, which
+          // is broader than this app actually needs. The only external
+          // font host in use is Google Fonts' static CSS/asset origin.
+          "font-src": ["'self'", "data:", "https://fonts.gstatic.com", "https://fonts.googleapis.com"],
           "upgrade-insecure-requests": null
         }
       }
