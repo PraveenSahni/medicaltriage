@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQueue, type QueueItem } from "../QueueContext";
 import type { AuthenticatedSession } from "../auth/session";
 import { FitToFlyBadge } from "./FitToFlyBadge";
+import { CallTimer } from "../utils/CallTimer";
 
 type ActiveCallHeaderProps = {
   item: QueueItem;
@@ -68,6 +69,19 @@ export function ActiveCallHeader({
       </div>
 
       <div className="active-call-hdr-right">
+        {!(item.status === "COMPLETED" && !item.completedAtIso) && (
+          <CallTimer
+            className="call-timer active-call-timer"
+            startIso={item.claimedAtIso}
+            endIso={item.completedAtIso}
+            title={
+              item.completedAtIso
+                ? "Total time from claim to close"
+                : "Time elapsed since this call was claimed"
+            }
+          />
+        )}
+
         {!isReadOnly && (
           <div className="active-call-actions">
             {actionError && (

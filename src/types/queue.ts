@@ -322,6 +322,11 @@ export type QueueItemDto = {
   sbarCopied: boolean;
   assignedNurseId?: string;
   claimedAtIso?: string;
+  // Set once, the moment the record first transitions to COMPLETED (see
+  // moveQueueItem) - the fixed end-point for computing "total time to close
+  // a call" (claimedAtIso -> completedAtIso), independent of currentStage,
+  // which can still change afterward if a supervisor reopens the record.
+  completedAtIso?: string;
   slaDeadlineIso: string;
   lockedBy?: string;
   lockedByName?: string;

@@ -212,6 +212,7 @@ export type QueueItem = {
   sbarCopied: boolean;
   assignedNurseId?: string;
   claimedAtIso?: string;
+  completedAtIso?: string;
   slaDeadlineIso: string;
   lockedBy?: string;
   lockedByName?: string;

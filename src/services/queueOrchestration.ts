@@ -392,6 +392,7 @@ function queuePayloadFromUnknown(value: unknown): {
   reasonNarrativeConfirmed?: boolean;
   matchedProtocolId?: string;
   dependentId?: string;
+  completedAtIso?: string;
 } {
   if (!isRecord(value)) {
     return {};
@@ -433,7 +434,8 @@ function queuePayloadFromUnknown(value: unknown): {
     safetyFloorSource:
       floorSource === "vitals" || floorSource === "symptom" || floorSource === "judgment" ? floorSource : undefined,
     matchedProtocolId: stringFromPayload(value.matchedProtocolId),
-    dependentId: stringFromPayload(value.dependentId)
+    dependentId: stringFromPayload(value.dependentId),
+    completedAtIso: stringFromPayload(value.completedAtIso)
   };
 }
 
@@ -465,6 +467,7 @@ function queuePayloadFor(record: QueueRecord): Record<string, unknown> {
   // Prisma Dependent table (which stays unseeded/legacy here) - the FK
   // column can't safely hold it, so it round-trips via the payload instead.
   if (record.dependentId) payload.dependentId = record.dependentId;
+  if (record.completedAtIso) payload.completedAtIso = record.completedAtIso;
   return payload;
 }
 
@@ -717,6 +720,7 @@ function dbRowToRecord(row: QueueDbRow): QueueRecord {
     fitToFlyStatus: queuePayload.fitToFlyStatus,
     vitalsUnobtainable: queuePayload.vitalsUnobtainable,
     reasonNarrativeConfirmed: queuePayload.reasonNarrativeConfirmed,
+    completedAtIso: queuePayload.completedAtIso,
     clinicalApproval: approvalFromUnknown(row.clinicalApproval),
     sbarCopied: row.sbarCopied,
     assignedNurseId: row.assignedNurseId ?? undefined,
@@ -2258,6 +2262,11 @@ export async function moveQueueItem(
     record.status = "IN_PROCESS";
   }
   if (previous.status !== "COMPLETED" && record.status === "COMPLETED") {
+    // The fixed end-point for "total time to close a call" (claimedAtIso ->
+    // completedAtIso), stamped once here rather than derived from
+    // updatedAtIso, since updatedAtIso keeps changing on any later edit
+    // (e.g. a supervisor annotation) even after the case is closed.
+    record.completedAtIso = nowIso();
     recordCompletion(record.id);
   }
 

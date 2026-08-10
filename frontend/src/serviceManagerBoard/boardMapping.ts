@@ -64,6 +64,30 @@ export function deriveWaitTime(item: QueueItem): string {
   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
+/**
+ * The manager-facing "how long did the nurse spend on this call" clock:
+ * elapsed time from the moment a nurse claimed the call (claimedAtIso) to
+ * either now (still in flight - a live figure) or completedAtIso (closed -
+ * the fixed, final total). Returns undefined when the call hasn't been
+ * claimed yet (waiting calls have no meaningful duration to show), and also
+ * for an already-COMPLETED call with no completedAtIso - a real case for
+ * any record closed before this field existed, where falling back to "now"
+ * would silently keep counting a call that's actually long since closed
+ * (confirmed live: a days-old closed demo record showed a growing
+ * multi-day "total time" instead of a fixed one).
+ */
+export function deriveCallDurationSeconds(item: QueueItem): number | undefined {
+  if (!item.claimedAtIso) {
+    return undefined;
+  }
+  if (item.status === "COMPLETED" && !item.completedAtIso) {
+    return undefined;
+  }
+  const startMs = new Date(item.claimedAtIso).getTime();
+  const endMs = item.completedAtIso ? new Date(item.completedAtIso).getTime() : Date.now();
+  return Math.max(0, (endMs - startMs) / 1000);
+}
+
 const MASK_PREFIX_LENGTH = 8;
 
 /**

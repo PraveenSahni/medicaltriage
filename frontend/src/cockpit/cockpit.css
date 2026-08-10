@@ -1840,6 +1840,20 @@
   gap: 8px !important;
 }
 
+#cockpit-root .active-call-timer {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  background: var(--tx3) !important;
+  color: var(--ink) !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: 0.02em !important;
+}
+
 #cockpit-root .fit-to-fly-badge {
   display: inline-flex !important;
   align-items: center !important;

@@ -2,6 +2,7 @@ import type { JSX } from "react";
 import type { QueueItem } from "../QueueContext";
 import { FitToFlyBadge } from "../cockpit/FitToFlyBadge";
 import { colorStyleForSeverity } from "../cockpit/severityColors";
+import { CallTimer } from "../utils/CallTimer";
 import { cardTitle, deriveWaitTime, friendlySeverity, maskId, type BoardColumnId } from "./boardMapping";
 
 type ManagerCallCardProps = {
@@ -73,6 +74,17 @@ export function ManagerCallCard({ item, column, onClick }: ManagerCallCardProps)
           <span>{item.stationCode ?? ""}</span>
         )}
       </div>
+      {item.claimedAtIso && !(isCompleted && !item.completedAtIso) && (
+        <div className="smb-card-duration">
+          <CallTimer
+            className="smb-call-timer"
+            startIso={item.claimedAtIso}
+            endIso={item.completedAtIso}
+            title={isCompleted ? "Total time from claim to close" : "Time elapsed since a nurse claimed this call"}
+          />
+          <span className="smb-call-timer-label">{isCompleted ? "total time" : "elapsed"}</span>
+        </div>
+      )}
       <div className="smb-card-fit-to-fly">
         <FitToFlyBadge item={item} />
       </div>

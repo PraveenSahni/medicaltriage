@@ -730,6 +730,27 @@
   font-weight: 700 !important;
 }
 
+#service-manager-board-root .smb-card-duration {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted, #6b6a66) !important;
+}
+
+#service-manager-board-root .smb-call-timer {
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink, #1c1b18) !important;
+}
+
+#service-manager-board-root .smb-call-timer-label {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 10px;
+}
+
 /* ---------- Read-only drawer ---------- */
 
 #service-manager-board-root .smb-drawer-backdrop {

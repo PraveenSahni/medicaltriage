@@ -3,6 +3,7 @@ import type { QueueItem } from "../QueueContext";
 import { fetchProtocolDetail, type ProtocolDetail } from "../cockpit/api/protocols";
 import { FitToFlyBadge } from "../cockpit/FitToFlyBadge";
 import { splitBilingualSbarNote } from "../utils/splitBilingualSbarNote";
+import { CallTimer } from "../utils/CallTimer";
 import {
   BOARD_COLUMNS,
   friendlyProtocolLabel,
@@ -122,6 +123,21 @@ export function ReadOnlyCallDrawer({ item, onClose }: ReadOnlyCallDrawerProps) {
               {maskId(item.id)} · {friendlyProtocolLabel(item)}
             </h2>
             {item.reasonNarrative && <p>{item.reasonNarrative}</p>}
+            {item.claimedAtIso && !(item.status === "COMPLETED" && !item.completedAtIso) && (
+              <div className="smb-card-duration">
+                <CallTimer
+                  className="smb-call-timer"
+                  startIso={item.claimedAtIso}
+                  endIso={item.completedAtIso}
+                  title={
+                    item.completedAtIso ? "Total time from claim to close" : "Time elapsed since a nurse claimed this call"
+                  }
+                />
+                <span className="smb-call-timer-label">
+                  {item.completedAtIso ? "total time" : "elapsed"}
+                </span>
+              </div>
+            )}
           </div>
           <button
             ref={closeButtonRef}
