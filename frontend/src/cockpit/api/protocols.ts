@@ -42,6 +42,7 @@ export type ProtocolCareAdvice = {
   dispositionCode?: string;
   patientSendable?: boolean;
   displayOrder?: number;
+  adviceCategory?: "DISPOSITION" | "NOTE_TO_TRIAGER" | "GENERAL" | "CALL_BACK_IF";
 };
 
 export type ProtocolSupplemental = {

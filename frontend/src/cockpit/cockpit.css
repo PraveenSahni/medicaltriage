@@ -1910,6 +1910,34 @@
   color: var(--ink) !important;
 }
 
+/* Separates "Call Back If" precautions and "Note to Triager" (nurse-only)
+   guidance from the primary patient-facing advice cards above, so the page
+   reads as clearly organized rather than one undifferentiated list - the
+   full text of every item is still shown in full, nothing is shortened. */
+#cockpit-root .disposition-advice-subsection {
+  margin-top: 14px !important;
+}
+
+#cockpit-root .disposition-advice-subsection-label {
+  font-weight: 700 !important;
+  font-size: 0.78rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+  color: var(--muted) !important;
+  margin-bottom: 6px !important;
+}
+
+#cockpit-root .disposition-advice-subsection-hint {
+  font-weight: 500 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+#cockpit-root .disposition-advice-subsection-triager .fc {
+  background: var(--bg2) !important;
+  border-style: dashed !important;
+}
+
 #cockpit-root .care-advice-rich-text {
   font-size: inherit !important;
 }

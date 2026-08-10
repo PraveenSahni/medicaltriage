@@ -173,6 +173,47 @@ export function DispositionStage({
     );
   }
 
+  // "Note to Triager" items are guidance for the nurse's own judgment, not
+  // something to read to the patient, and "Call Back If" items are patient
+  // precautions rather than the primary instruction - splitting them into
+  // their own labeled subsections (instead of mixing every advice item into
+  // one undifferentiated list) is what makes the page clear and precise at a
+  // glance without shortening or omitting any real clinical text.
+  const primaryAdvice = careAdvice.filter(
+    (advice) => advice.adviceCategory !== "CALL_BACK_IF" && advice.adviceCategory !== "NOTE_TO_TRIAGER"
+  );
+  const callBackAdvice = careAdvice.filter((advice) => advice.adviceCategory === "CALL_BACK_IF");
+  const noteToTriagerAdvice = careAdvice.filter((advice) => advice.adviceCategory === "NOTE_TO_TRIAGER");
+
+  function renderAdviceCard(advice: ProtocolCareAdvice) {
+    return (
+      <div key={advice.id} className="fc">
+        <b>{advice.titleEn}</b>
+        {advice.sanitizedHtmlEn ? (
+          <div className="care-advice-rich-text" dangerouslySetInnerHTML={{ __html: advice.sanitizedHtmlEn }} />
+        ) : (
+          advice.instructionTextEn
+        )}
+        <div style={{ marginTop: 8 }}>
+          <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "0.8rem", marginRight: 18 }}>
+            <input type="checkbox" checked disabled /> Given Now
+          </label>
+          <label
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              fontSize: "0.8rem",
+              opacity: advice.patientSendable && !isReadOnly ? 1 : 0.45
+            }}
+          >
+            <input type="checkbox" disabled={!advice.patientSendable || isReadOnly} /> Send Later
+          </label>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <section aria-label="Disposition and Advice">
       <div className="reason-card" style={{ marginBottom: 14 }}>
@@ -234,34 +275,27 @@ export function DispositionStage({
       )}
 
       {careAdvice.length > 0 && (
-        <div className="file-grid">
-          {careAdvice.map((advice) => (
-            <div key={advice.id} className="fc">
-              <b>{advice.titleEn}</b>
-              {advice.sanitizedHtmlEn ? (
-                <div className="care-advice-rich-text" dangerouslySetInnerHTML={{ __html: advice.sanitizedHtmlEn }} />
-              ) : (
-                advice.instructionTextEn
-              )}
-              <div style={{ marginTop: 8 }}>
-                <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "0.8rem", marginRight: 18 }}>
-                  <input type="checkbox" checked disabled /> Given Now
-                </label>
-                <label
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    fontSize: "0.8rem",
-                    opacity: advice.patientSendable && !isReadOnly ? 1 : 0.45
-                  }}
-                >
-                  <input type="checkbox" disabled={!advice.patientSendable || isReadOnly} /> Send Later
-                </label>
-              </div>
+        <>
+          <div className="file-grid">
+            {primaryAdvice.map((advice) => renderAdviceCard(advice))}
+          </div>
+
+          {callBackAdvice.length > 0 && (
+            <div className="disposition-advice-subsection">
+              <div className="disposition-advice-subsection-label">Call Back If</div>
+              <div className="file-grid">{callBackAdvice.map((advice) => renderAdviceCard(advice))}</div>
             </div>
-          ))}
-        </div>
+          )}
+
+          {noteToTriagerAdvice.length > 0 && (
+            <div className="disposition-advice-subsection disposition-advice-subsection-triager">
+              <div className="disposition-advice-subsection-label">
+                Note to Triager <span className="disposition-advice-subsection-hint">(not for patient)</span>
+              </div>
+              <div className="file-grid">{noteToTriagerAdvice.map((advice) => renderAdviceCard(advice))}</div>
+            </div>
+          )}
+        </>
       )}
 
       {supplementals.length > 0 && (

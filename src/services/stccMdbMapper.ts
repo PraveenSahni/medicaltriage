@@ -1,5 +1,5 @@
 import sanitizeHtml from "sanitize-html";
-import type { ClinicalContentPackageInput, InitialAssessmentResponseType } from "../types/clinicalContent.js";
+import type { CareAdviceCategory, ClinicalContentPackageInput, InitialAssessmentResponseType } from "../types/clinicalContent.js";
 import type { DispositionCode, Severity } from "../types/triage.js";
 import { prisma } from "../db.js";
 
@@ -193,6 +193,53 @@ function sanitizeXhtml(value: string): string {
   }).trim();
 }
 
+// The vendor's own Advice_XHTML always leads with a real, complete,
+// correctly-cased heading as its first tag (confirmed live against 20 real
+// Mdb_Advice rows, e.g. "<strong>Call EMS 911 Now:</strong>", "<strong>Note
+// to Triager - Ambulance Transport for Bedridden Patient:</strong>") - a far
+// better title source than AdviceSnap, which is a hard VARCHAR(30) DB
+// truncation that cuts off mid-word (e.g. "FIRST AID - DIRECT PRESSURE FO").
+const LEADING_HEADING_PATTERN = /<(strong|b)>([^<]+)<\/\1>/i;
+
+function extractAdviceTitle(advice: RawAdvice): string {
+  if (advice.Advice_XHTML) {
+    const match = LEADING_HEADING_PATTERN.exec(advice.Advice_XHTML);
+    if (match) {
+      const heading = stripHtml(match[2]).replace(/:\s*$/, "").trim();
+      if (heading) {
+        return heading;
+      }
+    }
+  }
+  if (advice.Advice) {
+    const firstLine = stripHtml(advice.Advice.split(/\r?\n/)[0]).replace(/:\s*$/, "").trim();
+    if (firstLine) {
+      return firstLine;
+    }
+  }
+  return advice.AdviceSnap?.trim() || `Care advice ${advice.AdviceID}`;
+}
+
+// No vendor-provided category column exists for Care Advice (confirmed
+// against the real Mdb_Advice schema - only PatientHealthInfo, already used
+// for patientSendable) - this is a small, explicit heuristic on the real
+// title text above, claiming only the 3 patterns actually observed verbatim
+// across every sampled protocol. Everything else defaults to GENERAL
+// (ordinary patient-facing instructions) rather than guessing further.
+function categorizeAdviceTitle(title: string): CareAdviceCategory {
+  const lower = title.toLowerCase();
+  if (lower.startsWith("note to triager")) {
+    return "NOTE_TO_TRIAGER";
+  }
+  if (lower.startsWith("call back if")) {
+    return "CALL_BACK_IF";
+  }
+  if (lower.startsWith("care advice")) {
+    return "DISPOSITION";
+  }
+  return "GENERAL";
+}
+
 function genderRestrictionFor(gender: string | null): ProtocolInput["genderRestriction"] {
   if (gender === "M") return "male";
   if (gender === "F") return "female";
@@ -355,15 +402,17 @@ function buildProtocol(
         (adviceOrderByQuestion.get(q.QuestionID) ?? []).some((qa) => qa.AdviceID === advice.AdviceID)
       );
       const level = owningQuestion?.DispositionLevel ?? undefined;
+      const titleEn = extractAdviceTitle(advice);
       return {
         id: `${protocolId}-advice-${advice.AdviceID}`,
-        titleEn: advice.AdviceSnap?.trim() || `Care advice ${advice.AdviceID}`,
+        titleEn,
         instructionTextEn: advice.Advice ? stripHtml(advice.Advice) : advice.AdviceSnap?.trim() || "See guideline.",
         sanitizedHtmlEn: advice.Advice_XHTML ? sanitizeXhtml(advice.Advice_XHTML) : undefined,
         dispositionCode: level ? LEVEL_TO_DISPOSITION_CODE[level] : undefined,
         warningSigns: [],
         displayOrder: advice.AlgorithmOrder ?? 0,
-        patientSendable: advice.PatientHealthInfo ?? false
+        patientSendable: advice.PatientHealthInfo ?? false,
+        adviceCategory: categorizeAdviceTitle(titleEn)
       } satisfies CareAdviceInput;
     });
 
