@@ -98,6 +98,46 @@ export function ReasonRuleOutStage({
 
   const temperature = item.vitals?.temperature ?? 37;
 
+  // Numeric vitals fields used to be fully server-controlled (value bound
+  // directly to item.vitals) and saved on every keystroke - since the
+  // backend's QueueVitalsSchema enforces real clinical bounds (e.g.
+  // heartRate 20-260), the very first digit of "60" (a lone "6") failed
+  // validation and the input snapped back to its old (unset) value,
+  // making it look like vitals entry was blocked entirely (confirmed live:
+  // a nurse could not type a heart rate at all). Buffering the typed text
+  // locally and only persisting a parsed number once the field is blurred
+  // means every keystroke is always visible, and only a value the nurse
+  // has actually finished entering is ever sent to the server.
+  const [vitalDrafts, setVitalDrafts] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {};
+    for (const key of numericVitalKeys) {
+      const value = item.vitals?.[key];
+      initial[key] = value === undefined ? "" : String(value);
+    }
+    return initial;
+  });
+
+  useEffect(() => {
+    const next: Record<string, string> = {};
+    for (const key of numericVitalKeys) {
+      const value = item.vitals?.[key];
+      next[key] = value === undefined ? "" : String(value);
+    }
+    setVitalDrafts(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item.id]);
+
+  function saveVitalDraftOnBlur(key: string) {
+    const raw = vitalDrafts[key]?.trim() ?? "";
+    if (raw === "") {
+      return;
+    }
+    const parsed = Number(raw);
+    if (Number.isFinite(parsed)) {
+      saveVital(key, parsed);
+    }
+  }
+
   // Persist the checked-by-default state the first time this stage is
   // opened for a call that has never had this field saved before, so the
   // default is real server state, not just a visual default the nurse could
@@ -421,9 +461,12 @@ export function ReasonRuleOutStage({
                 type="number"
                 list={`vital-suggestions-${key}`}
                 placeholder={vitalPlaceholders[key]}
-                value={item.vitals?.[key] ?? ""}
+                value={vitalDrafts[key] ?? ""}
                 disabled={isReadOnly || saving}
-                onChange={(event) => saveVital(key, Number(event.target.value))}
+                onChange={(event) =>
+                  setVitalDrafts((current) => ({ ...current, [key]: event.target.value }))
+                }
+                onBlur={() => saveVitalDraftOnBlur(key)}
               />
               <datalist id={`vital-suggestions-${key}`}>
                 {vitalSuggestions[key].map((suggestion) => (
