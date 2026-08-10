@@ -1604,6 +1604,33 @@
   background: var(--bg2) !important;
 }
 
+/* Marks the start of the current disposition tier's group of questions -
+   everything from here to the next .step-asked boundary (or the terminal
+   card) is "the bunch" a nurse should scan together, per the grouped-TAQ
+   display (QuestionsStage.tsx's tierGroupContaining). */
+#cockpit-root .taq-group-header {
+  display: flex !important;
+  align-items: baseline !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  margin: 14px 0 6px !important;
+  padding-bottom: 4px !important;
+  border-bottom: 2px solid var(--line) !important;
+}
+
+#cockpit-root .taq-group-header-tier {
+  font-weight: 800 !important;
+  font-size: 0.85rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  color: var(--ink) !important;
+}
+
+#cockpit-root .taq-group-header-count {
+  font-size: 0.75rem !important;
+  color: var(--muted) !important;
+}
+
 #cockpit-root .choices {
   display: flex !important;
   gap: 8px !important;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useQueue, type QueueItem, type QueueSeverity } from "../../QueueContext";
 import { colorStyleForSeverity } from "../severityColors";
 import { fetchProtocolDetail, type ProtocolTaqQuestion } from "../api/protocols";
@@ -203,7 +203,39 @@ export function QuestionsStage({
     return questions!.length;
   }
 
-  const lastVisible = yesAt !== -1 ? yesAt : Math.min(frontierIndex(), questions.length - 1);
+  // The real STCC question list is sorted by disposition level descending
+  // (see stccMdbMapper.ts's algorithmQuestions sort), and every numeric
+  // level maps onto exactly one of the 4 named severity tiers (Emergency/
+  // Urgent/Routine/Self-care) - so a contiguous run of same-severity
+  // questions starting at any index is always a real, complete disposition
+  // tier, never a partial or interleaved one. Grouping by this coarser tier
+  // (rather than the finer numeric dispositionLevel already used by
+  // noToAllInTier below) is the whole point of this view: showing every
+  // question that could justify "Emergency" (or whichever tier) together,
+  // so a nurse can rule the entire tier in or out at a glance instead of
+  // working through it one numeric sub-level at a time.
+  function tierGroupContaining(start: number): number[] {
+    if (start >= questions!.length) {
+      return [];
+    }
+    const tier = questions![start].severity;
+    const group: number[] = [];
+    for (let i = start; i < questions!.length; i++) {
+      if (questions![i].severity !== tier) {
+        break;
+      }
+      group.push(i);
+    }
+    return group;
+  }
+
+  const frontierTierGroup = tierGroupContaining(frontierIndex());
+  const lastVisible =
+    yesAt !== -1
+      ? yesAt
+      : frontierTierGroup.length > 0
+        ? frontierTierGroup[frontierTierGroup.length - 1]
+        : questions.length - 1;
   const progressPct =
     yesAt !== -1 || allAnsweredNo ? 100 : Math.round((frontierIndex() / questions.length) * 100);
 
@@ -211,14 +243,18 @@ export function QuestionsStage({
     if (isReadOnly || alreadyDecided) {
       return;
     }
-    const next: Record<number, boolean> = {};
-    for (const key of Object.keys(answers)) {
-      const numKey = Number(key);
-      if (numKey < index) {
-        next[numKey] = answers[numKey];
-      }
-    }
-    next[index] = yes;
+    // Every real STCC TAQ question is an independent clinical criterion, not
+    // one derived from a sibling's answer - now that a whole disposition
+    // tier's questions render together (see frontierTierGroup below), a
+    // nurse can answer them in any order, so a later answer must never wipe
+    // out an earlier one just because it has a lower array index. (The old
+    // one-question-at-a-time UI never hit this: only the single frontier
+    // question was ever interactive, so answers were always added in
+    // strictly ascending index order and this never mattered.) Once any
+    // answer is Yes, lastVisible below clamps display back down to that
+    // question regardless of what else is in `answers`, so nothing stale
+    // is ever shown.
+    const next: Record<number, boolean> = { ...answers, [index]: yes };
     setAnswers(next);
     setReviewOpenIndex(null);
     setBusy(true);
@@ -286,35 +322,18 @@ export function QuestionsStage({
     setReviewOpenIndex((current) => (current === index ? null : index));
   }
 
-  // Scoped "No to all": clears every not-yet-answered question at the SAME
-  // real STCC disposition level as the current frontier question only - never
-  // past it, unlike a blanket "answer everything No" button, which would
-  // silently skip lower-acuity questions the nurse hasn't actually ruled out
-  // (a real safety regression). Mirrors the per-level grouping already used
-  // in the other nurse workspace (NurseWorkspaceRedesign.tsx), computed here
-  // on the fly against the flat question list rather than requiring a
-  // restructured grouped UI.
-  function frontierLevelGroup(): number[] {
-    const start = frontierIndex();
-    if (start >= questions!.length) {
-      return [];
-    }
-    const level = questions![start].dispositionLevel;
-    const group: number[] = [];
-    for (let i = start; i < questions!.length; i++) {
-      if (questions![i].dispositionLevel !== level) {
-        break;
-      }
-      group.push(i);
-    }
-    return group;
-  }
-
-  async function noToAllAtLevel() {
+  // Scoped "No to all": clears every not-yet-answered question in the
+  // current disposition TIER only - never past it, unlike a blanket
+  // "answer everything No" button, which would silently skip lower-acuity
+  // tiers the nurse hasn't actually ruled out (a real safety regression).
+  // Scoped to the same tierGroupContaining() grouping the display below
+  // uses, so "the whole bunch shown on screen" and "the whole bunch this
+  // button clears" are always the exact same set.
+  async function noToAllInTier() {
     if (isReadOnly || alreadyDecided || busy) {
       return;
     }
-    const group = frontierLevelGroup();
+    const group = frontierTierGroup;
     if (group.length === 0) {
       return;
     }
@@ -358,13 +377,20 @@ export function QuestionsStage({
   return (
     <section aria-label="Questions">
       <div className="action-sub-note">
-        Questions are presented high-to-low acuity; a Yes fixes the disposition, a No unlocks the
-        next item.
+        Questions are grouped by disposition tier, high-to-low acuity - every question that could
+        justify the current tier appears together, in any order. A Yes fixes the disposition; once
+        the whole group is No, the next tier's questions appear.
       </div>
 
       <div className="prog-wrap">
         <div className="prog-row">
-          <span>{dispositionReached ? "Complete - disposition reached" : `Question ${frontierIndex() + 1} of ${questions.length}`}</span>
+          <span>
+            {dispositionReached
+              ? "Complete - disposition reached"
+              : frontierTierGroup.length > 0
+                ? `${questions[frontierTierGroup[0]].severity} group - ${frontierTierGroup.filter((idx) => idx in answers).length} of ${frontierTierGroup.length} answered`
+                : `Question ${frontierIndex() + 1} of ${questions.length}`}
+          </span>
           <span>{progressPct}%</span>
         </div>
         <div className="prog-track">
@@ -372,54 +398,71 @@ export function QuestionsStage({
         </div>
       </div>
 
-      {!alreadyDecided && !dispositionReached && frontierLevelGroup().length > 1 && (
+      {!alreadyDecided && !dispositionReached && frontierTierGroup.length > 1 && (
         <div className="taq-level-actions">
-          <button type="button" className="no-to-all-btn" onClick={noToAllAtLevel} disabled={busy}>
-            No to all at this level ({frontierLevelGroup().length} questions)
+          <button type="button" className="no-to-all-btn" onClick={noToAllInTier} disabled={busy}>
+            No to all in this {questions[frontierTierGroup[0]].severity} group ({frontierTierGroup.length} questions)
           </button>
         </div>
       )}
 
       <div id="flow">
         {questions.slice(0, lastVisible + 1).map((question, index) => {
+            // A visual divider marking where the current disposition tier's
+            // group starts - everything before it is a fully-resolved
+            // earlier tier (rendered collapsed, same as always); everything
+            // from here on is "the bunch" the nurse is meant to scan
+            // together at a glance.
+            const isGroupStart = yesAt === -1 && !alreadyDecided && index === frontierTierGroup[0];
+            const groupHeader = isGroupStart && (
+              <div key={`group-header-${question.severity}-${index}`} className="taq-group-header">
+                <span className="taq-group-header-tier">{question.severity} group</span>
+                <span className="taq-group-header-count">{frontierTierGroup.length} related questions</span>
+              </div>
+            );
+
             const answered = index in answers;
             if (!answered) {
               return (
-                <div key={question.id} className="step" style={colorStyleForSeverity(question.severity)}>
-                  <div className="step-hdr">
-                    <div className="step-num">{index + 1}</div>
-                    <div>
-                      <div className="gtag">
-                        {question.severity}
-                        {question.telemedicineEligible && (
-                          <span className="telemedicine-badge" title="Telemedicine eligible">
-                            &#128249; Video
-                          </span>
-                        )}
+                <Fragment key={question.id}>
+                  {groupHeader}
+                  <div className="step" style={colorStyleForSeverity(question.severity)}>
+                    <div className="step-hdr">
+                      <div className="step-num">{index + 1}</div>
+                      <div>
+                        <div className="gtag">
+                          {question.severity}
+                          {question.telemedicineEligible && (
+                            <span className="telemedicine-badge" title="Telemedicine eligible">
+                              &#128249; Video
+                            </span>
+                          )}
+                        </div>
+                        <QuestionTitle text={question.questionTextEn} />
+                        {question.rationaleEn && <div className="step-rationale">{question.rationaleEn}</div>}
                       </div>
-                      <QuestionTitle text={question.questionTextEn} />
-                      {question.rationaleEn && <div className="step-rationale">{question.rationaleEn}</div>}
+                    </div>
+                    <div className="choices">
+                      <div className="choice" onClick={() => choose(index, true)}>
+                        Yes
+                      </div>
+                      <div className="choice" onClick={() => choose(index, false)}>
+                        No
+                      </div>
                     </div>
                   </div>
-                  <div className="choices">
-                    <div className="choice" onClick={() => choose(index, true)}>
-                      Yes
-                    </div>
-                    <div className="choice" onClick={() => choose(index, false)}>
-                      No
-                    </div>
-                  </div>
-                </div>
+                </Fragment>
               );
             }
 
             const isOpenForReview = reviewOpenIndex === index;
             return (
-              <div
-                key={question.id}
-                className={`step asked${isOpenForReview ? " open" : ""}`}
-                style={colorStyleForSeverity(question.severity)}
-              >
+              <Fragment key={question.id}>
+                {groupHeader}
+                <div
+                  className={`step asked${isOpenForReview ? " open" : ""}`}
+                  style={colorStyleForSeverity(question.severity)}
+                >
                 <div className="step-hdr" onClick={() => toggleReview(index)} style={{ cursor: "pointer" }}>
                   <div className="step-num">&#10003;</div>
                   <div style={{ flex: 1 }}>
@@ -452,7 +495,8 @@ export function QuestionsStage({
                     </div>
                   </div>
                 )}
-              </div>
+                </div>
+              </Fragment>
             );
           })}
 
