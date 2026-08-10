@@ -200,7 +200,7 @@ function mockApprovalQueue() {
     {
       encounterId: "enc-ai-review-10002",
       submittedAtIso: "2026-07-12T08:24:00.000Z",
-      assignedRole: "senior_triage_nurse",
+      assignedRole: "remote_triage_nurse",
       protocol: "Fever - Child",
       rulesEngineSeverity: "Urgent",
       aiRecommendation: "Urgent",
@@ -392,10 +392,7 @@ async function liveApprovalQueue(session: AuthenticatedSession | undefined) {
       return {
         encounterId: encounter.id,
         submittedAtIso: encounter.createdAt.toISOString(),
-        assignedRole:
-          safetyLog?.rulesEngineSeverity === "EMERGENCY" || safetyLog?.overrideStatusFlag === "NURSE_OVERRIDE_DOWN_BLOCKED"
-            ? "senior_triage_nurse"
-            : "remote_triage_nurse",
+        assignedRole: "remote_triage_nurse",
         protocol: encounter.protocolUsed?.title ?? "Phase I clinical triage protocol",
         patient:
           encounter.dependent?.fullName ??

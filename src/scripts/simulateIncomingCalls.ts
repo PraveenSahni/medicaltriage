@@ -13,8 +13,8 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 
 const API_BASE = process.env.API_BASE ?? "http://localhost:8080";
-const INTAKE_USERNAME = "intake@irisstar.tech";
-const INTAKE_PASSWORD = "Intake@2026";
+const INTAKE_USERNAME = "layla@irisstar.tech";
+const INTAKE_PASSWORD = "Layla@2026";
 const SEED_DATA_PATH = path.resolve(process.cwd(), "data", "generated", "ist_qatar_seed_data.json");
 
 const CALLS_PER_TICK = Number(process.argv[2] ?? 2);

@@ -239,7 +239,7 @@ describe("English Voice AI initial-assessment foundation", () => {
 
   it("VOICE-RBAC-001 exports only nurse-approved examples to an authorized reviewer", async () => {
     const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
-    const governance = await agentFor("governance@irisstar.tech", "clinical_governance_lead");
+    const governance = await agentFor("khalid@irisstar.tech", "triage_service_manager");
     const started = await startSession(nurse);
     const sessionId = started.body.session.id as string;
     const answered = await nurse

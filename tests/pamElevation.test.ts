@@ -9,7 +9,7 @@ process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
 
 const app = createApp();
 
-const SYS_ADMIN_ID = "usr_system_admin_10001";
+const SYS_ADMIN_ID = "usr_platform_admin_10001";
 
 async function agentFor(username: string, simulateRole: string) {
   const agent = request.agent(app);
@@ -36,7 +36,7 @@ describe("PAM: JIT privileged-access elevation", () => {
   });
 
   it("rejects a privileged mutation with elevationRequired before elevating", async () => {
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const response = await sysAdmin
       .patch("/api/v1/admin/users/usr_nurse_10001/status")
       .send({ status: "suspended", reason: "test" })
@@ -45,12 +45,12 @@ describe("PAM: JIT privileged-access elevation", () => {
   });
 
   it("rejects elevation when MFA is not enrolled", async () => {
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     await sysAdmin.post("/api/v1/admin/elevate").send({ code: "123456" }).expect(403);
   });
 
   it("allows the privileged mutation after elevating with a correct TOTP code", async () => {
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const secret = enrollAndConfirmMfa(SYS_ADMIN_ID);
 
     const elevated = await sysAdmin.post("/api/v1/admin/elevate").send({ code: authenticator.generate(secret) }).expect(200);
@@ -64,7 +64,7 @@ describe("PAM: JIT privileged-access elevation", () => {
   });
 
   it("rejects an incorrect TOTP code at elevation", async () => {
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const secret = enrollAndConfirmMfa(SYS_ADMIN_ID);
     const wrongCode = String((Number(authenticator.generate(secret)) + 1) % 1000000).padStart(6, "0");
     await sysAdmin.post("/api/v1/admin/elevate").send({ code: wrongCode }).expect(401);
@@ -73,7 +73,7 @@ describe("PAM: JIT privileged-access elevation", () => {
   it("expires the elevation after its TTL and rejects the privileged action again", async () => {
     jest.useFakeTimers({ doNotFake: ["nextTick", "setImmediate"] });
     try {
-      const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+      const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
       const secret = enrollAndConfirmMfa(SYS_ADMIN_ID);
       await sysAdmin.post("/api/v1/admin/elevate").send({ code: authenticator.generate(secret) }).expect(200);
 
@@ -90,7 +90,7 @@ describe("PAM: JIT privileged-access elevation", () => {
   });
 
   it("revokes access immediately on explicit de-elevation, before the TTL", async () => {
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const secret = enrollAndConfirmMfa(SYS_ADMIN_ID);
     await sysAdmin.post("/api/v1/admin/elevate").send({ code: authenticator.generate(secret) }).expect(200);
 
@@ -104,7 +104,7 @@ describe("PAM: JIT privileged-access elevation", () => {
   });
 
   it("returns a real audit trail bounded by the elevation's grant/end events", async () => {
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const secret = enrollAndConfirmMfa(SYS_ADMIN_ID);
 
     const elevated = await sysAdmin.post("/api/v1/admin/elevate").send({ code: authenticator.generate(secret) }).expect(200);

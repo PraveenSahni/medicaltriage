@@ -26,8 +26,8 @@ const API_BASE = process.env.API_BASE ?? "http://localhost:8080";
 // securityAdmin.ts), same as layla@irisstar.tech; khalid@ (HMC-scoped)
 // would generate cross-org calls the nurse can never claim, per real
 // multi-tenant RBAC boundaries (confirmed earlier this session).
-const GENERATOR_USERNAME = "intake@irisstar.tech";
-const GENERATOR_PASSWORD = "Intake@2026";
+const GENERATOR_USERNAME = "layla@irisstar.tech";
+const GENERATOR_PASSWORD = "Layla@2026";
 const NURSE_USERNAME = "layla@irisstar.tech";
 const NURSE_PASSWORD = "Layla@2026";
 

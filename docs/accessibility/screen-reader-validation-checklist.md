@@ -31,7 +31,7 @@ engagement's automated and manual validation:
 | Help Center (unauthenticated fallback) | none | n/a |
 | Nurse Cockpit | `layla@irisstar.tech` | `Layla@2026` |
 | Triage Service Manager Board | `khalid@irisstar.tech` | `Khalid@2026` |
-| Control Center Admin | `pa@irisstar.tech` | `PlatformAdmin@2026` |
+| Control Center Admin | `rishma@irisstar.tech` | `PlatformAdmin@2026` |
 
 ## Checklist
 

@@ -1,26 +1,6 @@
 import { canAccessNurseCockpit, canAccessServiceManagerBoard, type RoleCode } from "../cockpit/roles";
 
-const ALL_ROLE_CODES: RoleCode[] = [
-  "platform_super_administrator",
-  "organization_administrator",
-  "system_administrator",
-  "security_administrator",
-  "privacy_officer",
-  "compliance_auditor",
-  "clinical_governance_lead",
-  "triage_service_manager",
-  "call_intake_coordinator",
-  "remote_triage_nurse",
-  "senior_triage_nurse",
-  "pediatric_triage_nurse",
-  "teleconsult_physician",
-  "occupational_health_clinician",
-  "protocol_content_manager",
-  "quality_reviewer",
-  "integration_administrator",
-  "reporting_analyst",
-  "helpdesk_support"
-];
+const ALL_ROLE_CODES: RoleCode[] = ["platform_super_administrator", "triage_service_manager", "remote_triage_nurse"];
 
 describe("canAccessServiceManagerBoard", () => {
   it("allows only the triage_service_manager role", () => {

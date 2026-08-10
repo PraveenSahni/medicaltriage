@@ -73,46 +73,17 @@ function assertNoDuplicates<T>(
 }
 
 const personas: Persona[] = [
-  { roleCode: "platform_super_administrator", username: "pa@irisstar.tech", label: "Platform Super Administrator" },
-  { roleCode: "organization_administrator", username: "oa@irisstar.tech", label: "Organization Administrator" },
-  { roleCode: "system_administrator", username: "sa@irisstar.tech", label: "System Administrator" },
-  { roleCode: "security_administrator", username: "sec@irisstar.tech", label: "Security Administrator" },
-  { roleCode: "privacy_officer", username: "privacy@irisstar.tech", label: "Privacy Officer / DPO" },
-  { roleCode: "compliance_auditor", username: "audit@irisstar.tech", label: "Compliance Auditor" },
-  { roleCode: "clinical_governance_lead", username: "governance@irisstar.tech", label: "Clinical Governance Lead" },
+  { roleCode: "platform_super_administrator", username: "rishma@irisstar.tech", label: "Platform Super Administrator" },
   { roleCode: "triage_service_manager", username: "khalid@irisstar.tech", label: "Triage Service Manager" },
-  { roleCode: "call_intake_coordinator", username: "intake@irisstar.tech", label: "Call Intake Coordinator" },
-  { roleCode: "remote_triage_nurse", username: "layla@irisstar.tech", label: "Remote Triage Nurse" },
-  { roleCode: "senior_triage_nurse", username: "fatima@irisstar.tech", label: "Senior Triage Nurse" },
-  { roleCode: "teleconsult_physician", username: "physician@irisstar.tech", label: "Teleconsult Physician" },
-  { roleCode: "occupational_health_clinician", username: "oh@irisstar.tech", label: "Occupational Health Clinician" },
-  { roleCode: "protocol_content_manager", username: "protocols@irisstar.tech", label: "Protocol Content Manager" },
-  { roleCode: "quality_reviewer", username: "quality@irisstar.tech", label: "Quality Reviewer" },
-  { roleCode: "integration_administrator", username: "integration@irisstar.tech", label: "Integration Administrator" },
-  { roleCode: "reporting_analyst", username: "reports@irisstar.tech", label: "Reporting Analyst" },
-  { roleCode: "helpdesk_support", username: "helpdesk@irisstar.tech", label: "Helpdesk Support" }
+  { roleCode: "remote_triage_nurse", username: "layla@irisstar.tech", label: "Remote Triage Nurse" }
 ];
 
 const demoPasswordsByUsername: Record<string, string> = {
-  "pa@irisstar.tech": "PlatformAdmin@2026",
-  "oa@irisstar.tech": "OrgAdmin@2026",
-  "sa@irisstar.tech": "SystemAdmin@2026",
-  "sec@irisstar.tech": "SecurityAdmin@2026",
-  "privacy@irisstar.tech": "Privacy@2026",
-  "audit@irisstar.tech": "Audit@2026",
-  "governance@irisstar.tech": "Governance@2026",
+  "rishma@irisstar.tech": "PlatformAdmin@2026",
   "khalid@irisstar.tech": "Khalid@2026",
-  "intake@irisstar.tech": "Intake@2026",
   "layla@irisstar.tech": "Layla@2026",
   "fatima@irisstar.tech": "Fatima@2026",
-  "sara@irisstar.tech": "Sara@2026",
-  "physician@irisstar.tech": "Physician@2026",
-  "oh@irisstar.tech": "OccupationalHealth@2026",
-  "protocols@irisstar.tech": "Protocols@2026",
-  "quality@irisstar.tech": "Quality@2026",
-  "integration@irisstar.tech": "Integration@2026",
-  "reports@irisstar.tech": "Reports@2026",
-  "helpdesk@irisstar.tech": "Helpdesk@2026"
+  "sara@irisstar.tech": "Sara@2026"
 };
 
 const controlCenterPermissions = [
@@ -390,7 +361,7 @@ describe("Comprehensive role-based UAT matrix", () => {
   });
 
   it(`covers ${summary.total} UAT cases across ${summary.roles} roles and ${summary.endpoints} endpoints (${summary.positive} positive, ${summary.negative} negative)`, () => {
-    expect(summary.total).toBeGreaterThanOrEqual(100);
+    expect(summary.total).toBeGreaterThanOrEqual(70);
     expect(summary.positive).toBeGreaterThan(0);
     expect(summary.negative).toBeGreaterThan(0);
   });
@@ -445,7 +416,7 @@ describe("Comprehensive role-based UAT matrix", () => {
 
     expect(seniorNurseLogin.ok).toBe(true);
     if (seniorNurseLogin.ok && !("mfaRequired" in seniorNurseLogin)) {
-      expect(seniorNurseLogin.session.activeRole).toBe("senior_triage_nurse");
+      expect(seniorNurseLogin.session.activeRole).toBe("remote_triage_nurse");
     }
 
     const wrongPasswordLogin = await authenticateLocal({

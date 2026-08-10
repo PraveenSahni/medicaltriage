@@ -274,7 +274,7 @@ const initialTestCases: TestCase[] = [
     module: "RBAC",
     objective: "Verify a platform administrator is routed to administration rather than the nurse workspace.",
     preconditions: ["Platform Administrator user active"],
-    testData: ["pa@irisstar.tech", "platform_super_administrator"],
+    testData: ["rishma@irisstar.tech", "platform_super_administrator"],
     steps: [
       passedStep("Simulate Platform Administrator", "Redirect to #/admin", "Admin route loaded"),
       passedStep("Inspect landing content", "Control Center visible", "Administration surface rendered")

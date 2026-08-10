@@ -30,103 +30,107 @@ describe("Two-step approval-gated reveal workflow", () => {
   });
 
   it("rejects a non-allow-listed field", async () => {
-    const privacyOfficer = await agentFor("privacy@irisstar.tech", "privacy_officer");
-    await privacyOfficer
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    await nurse
       .post("/api/v1/admin/reveal/request")
-      .send({ resourceType: "ApplicationUser", resourceId: "usr_nurse_10001", field: "fullName", purpose: "test purpose" })
+      .send({ resourceType: "ApplicationUser", resourceId: "usr_senior_nurse_10001", field: "fullName", purpose: "test purpose" })
       .expect(400);
   });
 
   it("rejects fetching a value that was never requested/approved", async () => {
-    const privacyOfficer = await agentFor("privacy@irisstar.tech", "privacy_officer");
-    await privacyOfficer.get("/api/v1/admin/reveal/not-a-real-id/value").expect(404);
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    await nurse.get("/api/v1/admin/reveal/not-a-real-id/value").expect(404);
   });
 
+  // Only the platform admin (Rishma) holds both privacy.reveal.request and
+  // privacy.reveal.approve among the surviving demo accounts, so this guard
+  // is now proven with the same account attempting both steps of its own
+  // request.
   it("rejects a decision from the same account that made the request", async () => {
-    const privacyOfficer = await agentFor("privacy@irisstar.tech", "privacy_officer");
-    const requested = await privacyOfficer
+    const admin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
+    const requested = await admin
       .post("/api/v1/admin/reveal/request")
-      .send({ resourceType: "ApplicationUser", resourceId: "usr_nurse_10001", field: "mobile", purpose: "test purpose" })
+      .send({ resourceType: "ApplicationUser", resourceId: "usr_senior_nurse_10001", field: "mobile", purpose: "test purpose" })
       .expect(202);
 
-    await privacyOfficer
+    await admin
       .post(`/api/v1/admin/reveal/${requested.body.id}/decision`)
       .send({ decision: "approved" })
       .expect(409);
   });
 
   it("rejects fetching a value by anyone other than the original requester", async () => {
-    const privacyOfficer = await agentFor("privacy@irisstar.tech", "privacy_officer");
-    const complianceAuditor = await agentFor("audit@irisstar.tech", "compliance_auditor");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    const admin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
 
-    const requested = await privacyOfficer
+    const requested = await nurse
       .post("/api/v1/admin/reveal/request")
-      .send({ resourceType: "ApplicationUser", resourceId: "usr_nurse_10001", field: "mobile", purpose: "test purpose" })
+      .send({ resourceType: "ApplicationUser", resourceId: "usr_senior_nurse_10001", field: "mobile", purpose: "test purpose" })
       .expect(202);
-    await complianceAuditor.post(`/api/v1/admin/reveal/${requested.body.id}/decision`).send({ decision: "approved" }).expect(200);
+    await admin.post(`/api/v1/admin/reveal/${requested.body.id}/decision`).send({ decision: "approved" }).expect(200);
 
     // The approver is not the requester, so they may not fetch the value.
-    await complianceAuditor.get(`/api/v1/admin/reveal/${requested.body.id}/value`).expect(403);
+    await admin.get(`/api/v1/admin/reveal/${requested.body.id}/value`).expect(403);
   });
 
   it("never produces a fetchable value for a denied request", async () => {
-    const privacyOfficer = await agentFor("privacy@irisstar.tech", "privacy_officer");
-    const complianceAuditor = await agentFor("audit@irisstar.tech", "compliance_auditor");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    const admin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
 
-    const requested = await privacyOfficer
+    const requested = await nurse
       .post("/api/v1/admin/reveal/request")
-      .send({ resourceType: "ApplicationUser", resourceId: "usr_nurse_10001", field: "mobile", purpose: "test purpose" })
+      .send({ resourceType: "ApplicationUser", resourceId: "usr_senior_nurse_10001", field: "mobile", purpose: "test purpose" })
       .expect(202);
-    await complianceAuditor.post(`/api/v1/admin/reveal/${requested.body.id}/decision`).send({ decision: "denied" }).expect(200);
+    await admin.post(`/api/v1/admin/reveal/${requested.body.id}/decision`).send({ decision: "denied" }).expect(200);
 
-    await privacyOfficer.get(`/api/v1/admin/reveal/${requested.body.id}/value`).expect(409);
+    await nurse.get(`/api/v1/admin/reveal/${requested.body.id}/value`).expect(409);
   });
 
   it("shows a pending request in the approver queue, and no longer once decided", async () => {
-    const privacyOfficer = await agentFor("privacy@irisstar.tech", "privacy_officer");
-    const complianceAuditor = await agentFor("audit@irisstar.tech", "compliance_auditor");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    const admin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
 
-    const requested = await privacyOfficer
+    const requested = await nurse
       .post("/api/v1/admin/reveal/request")
-      .send({ resourceType: "ApplicationUser", resourceId: "usr_nurse_10001", field: "mobile", purpose: "test purpose" })
+      .send({ resourceType: "ApplicationUser", resourceId: "usr_senior_nurse_10001", field: "mobile", purpose: "test purpose" })
       .expect(202);
 
-    const pendingBefore = await complianceAuditor.get("/api/v1/admin/reveal/pending").expect(200);
+    const pendingBefore = await admin.get("/api/v1/admin/reveal/pending").expect(200);
     expect(pendingBefore.body.requests.some((r: { id: string }) => r.id === requested.body.id)).toBe(true);
 
-    await complianceAuditor.post(`/api/v1/admin/reveal/${requested.body.id}/decision`).send({ decision: "approved" }).expect(200);
+    await admin.post(`/api/v1/admin/reveal/${requested.body.id}/decision`).send({ decision: "approved" }).expect(200);
 
-    const pendingAfter = await complianceAuditor.get("/api/v1/admin/reveal/pending").expect(200);
+    const pendingAfter = await admin.get("/api/v1/admin/reveal/pending").expect(200);
     expect(pendingAfter.body.requests.some((r: { id: string }) => r.id === requested.body.id)).toBe(false);
   });
 
   it("rejects fetching the same approved value a second time (single-use)", async () => {
-    const { id } = await requestReveal("usr_privacy_10001", {
+    const { id } = await requestReveal("usr_nurse_10001", {
       resourceType: "ApplicationUser",
-      resourceId: "usr_nurse_10001",
+      resourceId: "usr_senior_nurse_10001",
       field: "mobile",
       purpose: "test purpose"
     });
-    await decideReveal(id, "usr_compliance_10001", "approved");
+    await decideReveal(id, "usr_platform_admin_10001", "approved");
 
-    await expect(fetchApprovedRevealValue(id, "usr_privacy_10001")).resolves.toEqual(expect.any(String));
-    await expect(fetchApprovedRevealValue(id, "usr_privacy_10001")).rejects.toThrow(/already been fetched/i);
+    await expect(fetchApprovedRevealValue(id, "usr_nurse_10001")).resolves.toEqual(expect.any(String));
+    await expect(fetchApprovedRevealValue(id, "usr_nurse_10001")).rejects.toThrow(/already been fetched/i);
   });
 
   it("rejects fetching an approved value once its TTL has expired", async () => {
     jest.useFakeTimers({ doNotFake: ["nextTick", "queueMicrotask"] });
     try {
-      const { id } = await requestReveal("usr_privacy_10001", {
+      const { id } = await requestReveal("usr_nurse_10001", {
         resourceType: "ApplicationUser",
-        resourceId: "usr_nurse_10001",
+        resourceId: "usr_senior_nurse_10001",
         field: "mobile",
         purpose: "test purpose"
       });
-      await decideReveal(id, "usr_compliance_10001", "approved");
+      await decideReveal(id, "usr_platform_admin_10001", "approved");
 
       jest.advanceTimersByTime(61_000);
 
-      await expect(fetchApprovedRevealValue(id, "usr_privacy_10001")).rejects.toThrow(/expired/i);
+      await expect(fetchApprovedRevealValue(id, "usr_nurse_10001")).rejects.toThrow(/expired/i);
     } finally {
       jest.useRealTimers();
     }

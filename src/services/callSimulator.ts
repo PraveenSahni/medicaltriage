@@ -14,8 +14,8 @@
 import { buildSimulatedQueueCreateRequest, loadStaffCandidatePool, type SimulatorCandidate } from "./queueCallGenerator.js";
 import { sanitizeForLog } from "../utils/logSanitizer.js";
 
-const INTAKE_USERNAME = "intake@irisstar.tech";
-const INTAKE_PASSWORD = "Intake@2026";
+const INTAKE_USERNAME = "layla@irisstar.tech";
+const INTAKE_PASSWORD = "Layla@2026";
 // Must be a real PHCC-scoped nurse identity - a HMC/SIDRA-scoped identity
 // (e.g. Senior/Pediatric Triage Nurse) can't see or claim PHCC-org calls at
 // all due to real multi-tenant RBAC boundaries (confirmed while testing

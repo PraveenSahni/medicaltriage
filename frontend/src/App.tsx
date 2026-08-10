@@ -54,21 +54,7 @@ const defaultRuntimeEnvironment: RuntimeEnvironment = {
   }
 };
 
-const controlCenterRoles = new Set([
-  "platform_super_administrator",
-  "organization_administrator",
-  "system_administrator",
-  "security_administrator",
-  "privacy_officer",
-  "compliance_auditor",
-  "clinical_governance_lead",
-  "triage_service_manager",
-  "protocol_content_manager",
-  "quality_reviewer",
-  "integration_administrator",
-  "reporting_analyst",
-  "helpdesk_support"
-]);
+const controlCenterRoles = new Set(["platform_super_administrator", "triage_service_manager"]);
 
 function canOpenAdminView(session: AuthenticatedSession) {
   return controlCenterRoles.has(session.activeRole);

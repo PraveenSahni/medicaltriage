@@ -177,8 +177,8 @@ test.describe.serial("Named-user browser journey", () => {
     await expect(page.getByRole("tab", { name: /^Completed \d+/ })).toBeVisible();
   });
 
-  test("WEB-006 a nurse claims an intake-created callback queue item", async ({ page, request }, testInfo) => {
-    await apiLogin(request, personas.intake);
+  test("WEB-006 a nurse claims a manager-created callback queue item", async ({ page, request }, testInfo) => {
+    await apiLogin(request, personas.manager);
     // Unique per invocation: this describe.serial block runs once per
     // configured browser/mobile project against the SAME shared e2e server
     // (see playwright.config.ts's single webServer), so a fixed literal
@@ -224,44 +224,6 @@ test.describe.serial("Named-user browser journey", () => {
     // investigation of why the old "Active triage focus" dialog assertion
     // was stale).
     await expect(page.getByRole("tablist", { name: "Clinical workflow stage" })).toBeVisible();
-  });
-
-  test("WEB-007 an unauthorized role cannot claim or complete a queue item through the real UI", async ({ page }) => {
-    // call_intake_coordinator holds triage.workspace.view (can see the
-    // queue and land on the Cockpit route) but is not a clinical operator
-    // or manager role, so claimQueueItem() rejects it server-side
-    // (QUEUE_ROLE_DENIED) - this proves the authorization boundary holds
-    // through the real browser UI, not just at the API layer.
-    await browserLogin(page, personas.intake);
-    const queueResponse = await page.request.get("/api/v1/queue");
-    expect(queueResponse.status()).toBe(200);
-    const queueBody = await queueResponse.json();
-    const child = queueBody.queue.find(
-      (item: { id: string; status: string }) => item.status === "INCOMING"
-    );
-    expect(child).toBeTruthy();
-
-    const card = page.getByText(child.reasonNarrative, { exact: true }).first().locator("xpath=ancestor::li[1]");
-    const answerButton = card.getByRole("button", { name: "Answer call →", exact: true });
-    // The intake persona's UI may or may not render the Answer button at
-    // all for this role - either way, a direct claim attempt through the
-    // real API (as this session's real cookies) must be denied.
-    if (await answerButton.isVisible().catch(() => false)) {
-      const claimResponse = page.waitForResponse((response) =>
-        response.url().endsWith(`/api/v1/queue/${child.id}/claim`) && response.request().method() === "POST"
-      );
-      await answerButton.click();
-      const claim = await claimResponse;
-      expect(claim.status()).toBe(403);
-    } else {
-      const denied = await page.request.post(`/api/v1/queue/${child.id}/claim`);
-      expect(denied.status()).toBe(403);
-      const deniedBody = await denied.json();
-      expect(deniedBody.code).toBe("QUEUE_ROLE_DENIED");
-    }
-    // Confirms the UI never lands the intake role on the stage-tabbed
-    // clinical workflow, regardless of the claim outcome above.
-    await expect(page.getByRole("tablist", { name: "Clinical workflow stage" })).not.toBeVisible();
   });
 
   test("WEB-008 opens the Help Center in a new tab (by design) without disturbing the active Cockpit page", async ({ page, context }) => {

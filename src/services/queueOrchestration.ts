@@ -131,24 +131,9 @@ const STAGE_ORDER: QueueClinicalStage[] = ["INTAKE", "IDENTITY", "VITALS", "PROT
 const COMPLETED_STAGE: QueueClinicalStage = "SBAR";
 const ACTIVE_LOCK_MINUTES = 5;
 
-const clinicalOperatorRoles = new Set([
-  "remote_triage_nurse",
-  "senior_triage_nurse",
-  "pediatric_triage_nurse",
-  "teleconsult_physician",
-  "occupational_health_clinician"
-]);
-const supervisorRoles = new Set([
-  "senior_triage_nurse",
-  "triage_service_manager",
-  "platform_super_administrator",
-  "system_administrator"
-]);
-const managerRoles = new Set([
-  "triage_service_manager",
-  "platform_super_administrator",
-  "system_administrator"
-]);
+const clinicalOperatorRoles = new Set(["remote_triage_nurse"]);
+const supervisorRoles = new Set(["triage_service_manager", "platform_super_administrator"]);
+const managerRoles = new Set(["triage_service_manager", "platform_super_administrator"]);
 
 const globalForQueue = globalThis as unknown as {
   istTriageQueueStore?: Map<string, QueueRecord>;
@@ -1260,7 +1245,7 @@ function requireQueueAccess(session: AuthenticatedSession): void {
 }
 
 function isGlobalTenantExempt(session: AuthenticatedSession): boolean {
-  return session.activeRole === "platform_super_administrator" || session.activeRole === "system_administrator";
+  return session.activeRole === "platform_super_administrator";
 }
 
 function requireTenantAccess(record: QueueRecord, session: AuthenticatedSession): void {

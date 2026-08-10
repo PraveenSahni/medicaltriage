@@ -260,25 +260,6 @@ describe("Enterprise queue orchestration", () => {
     ]);
   });
 
-  it("blocks call intake from editing vitals or clinical context", async () => {
-    const intake = await agentFor("intake@irisstar.tech", "call_intake_coordinator");
-
-    const response = await intake
-      .patch("/api/v1/queue/case-10002/context")
-      .send({
-        vitals: {
-          heartRate: 80,
-          respiratoryRate: 16,
-          spo2: 99,
-          temperature: 36.8,
-          consciousLevel: "alert"
-        }
-      })
-      .expect(403);
-
-    expect(response.body.code).toBe("QUEUE_ROLE_DENIED");
-  });
-
   it("rejects direct completion when clinical prerequisites are missing", async () => {
     const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
@@ -460,14 +441,7 @@ describe("Enterprise queue orchestration", () => {
     });
   });
 
-  it("persists structured initial-assessment answers on the queue item and blocks intake from writing them", async () => {
-    const intake = await agentFor("intake@irisstar.tech", "call_intake_coordinator");
-    const denied = await intake
-      .patch("/api/v1/queue/case-10002/context")
-      .send({ initialAssessmentResponses: { Prompt: "Answer" } })
-      .expect(403);
-    expect(denied.body.code).toBe("QUEUE_ROLE_DENIED");
-
+  it("persists structured initial-assessment answers on the queue item", async () => {
     const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
     await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
 
@@ -527,17 +501,11 @@ describe("Enterprise queue orchestration", () => {
   // NFR-004 UX cross-browser validation batch (call-center-gateway session
   // remediation).
   describe("claim authorization and audit evidence", () => {
-    it("denies claim for a role with queue-read access but no clinical-operator/manager control", async () => {
-      const intake = await agentFor("intake@irisstar.tech", "call_intake_coordinator");
-      const denied = await intake.post("/api/v1/queue/case-10002/claim").expect(403);
-      expect(denied.body.code).toBe("QUEUE_ROLE_DENIED");
-    });
-
     it("persists a durable audit event for a successful claim", async () => {
       const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
       await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
 
-      const admin = await agentFor("pa@irisstar.tech", "platform_super_administrator");
+      const admin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
       const events = await admin.get("/api/v1/admin/audit-events").expect(200);
       const claimEvents = (events.body.events as Array<{ action: string; resource: string }>).filter(
         (event) => event.resource?.includes("case-10002")

@@ -76,11 +76,6 @@ function directoryStatusFromHrms(status: string | undefined): DirectoryStatus {
 function roleFor(record: z.infer<typeof HrmsEmployeeRecordSchema>): string {
   const text = `${record.jobTitle ?? record.job_title ?? ""} ${record.department ?? ""}`.toLowerCase();
   if (text.includes("service manager") || text.includes("triage manager")) return "triage_service_manager";
-  if (text.includes("intake") || text.includes("call handler") || text.includes("coordinator")) return "call_intake_coordinator";
-  if (text.includes("pediatric") || text.includes("paediatric")) return "pediatric_triage_nurse";
-  if (text.includes("senior")) return "senior_triage_nurse";
-  if (text.includes("physician") || text.includes("doctor")) return "teleconsult_physician";
-  if (text.includes("occupational")) return "occupational_health_clinician";
   return "remote_triage_nurse";
 }
 
@@ -89,8 +84,7 @@ function isAuthorized(session: AuthenticatedSession | undefined, cronAuthorized:
     return true;
   }
   return Boolean(
-    session &&
-      ["triage_service_manager", "platform_super_administrator", "system_administrator"].includes(session.activeRole)
+    session && ["triage_service_manager", "platform_super_administrator"].includes(session.activeRole)
   );
 }
 

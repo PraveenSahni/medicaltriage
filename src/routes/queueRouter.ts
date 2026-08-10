@@ -63,8 +63,7 @@ const queueTierRateLimit = rateLimit({
   tierResolver: (req) => (req as AuthorizedRequest).securitySession?.activeRole,
   tierMaxRequests: {
     triage_service_manager: 300,
-    platform_super_administrator: 300,
-    system_administrator: 300
+    platform_super_administrator: 300
   }
 });
 

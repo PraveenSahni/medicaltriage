@@ -47,7 +47,7 @@ const TOPIC_GROUPS: TopicGroup[] = [
           <p>Sign in with your assigned username and password at the application root URL. The workspace you land on depends on your session's active role (<code>session.activeRole</code>), evaluated in <code>frontend/src/App.tsx</code>:</p>
           <ul>
             <li>An active role of <code>triage_service_manager</code> lands directly on the Triage Service Manager Board.</li>
-            <li>Any of the seven Nurse Cockpit roles (<code>call_intake_coordinator</code>, <code>remote_triage_nurse</code>, <code>senior_triage_nurse</code>, <code>pediatric_triage_nurse</code>, <code>teleconsult_physician</code>, <code>occupational_health_clinician</code>, or <code>triage_service_manager</code> itself) can also open the Nurse Cockpit.</li>
+            <li><code>remote_triage_nurse</code> (or <code>triage_service_manager</code> itself) can also open the Nurse Cockpit.</li>
             <li>Other roles land on the existing Triage workspace or Control Center, depending on their permissions.</li>
           </ul>
           <p>If your account holds both a nurse role and the Triage Service Manager role, a topbar button lets you switch between the Nurse Cockpit and the Service Manager Board without signing out.</p>
@@ -216,34 +216,18 @@ const TOPIC_GROUPS: TopicGroup[] = [
       },
       {
         id: "roles-catalog",
-        title: "The 19 role codes and their permissions",
+        title: "The 3 role codes and their permissions",
         body: `
           <p>Every account is assigned one or more of these role codes; the permission list is what backend routes actually check.</p>
           <table class="ref-table">
             <thead><tr><th>Role</th><th>Key permissions</th></tr></thead>
             <tbody>
               <tr><td>platform_super_administrator</td><td>Every permission in the system</td></tr>
-              <tr><td>organization_administrator</td><td>admin.users.manage, admin.roles.manage, operations.dashboard.view, reports.view, audit.events.view</td></tr>
-              <tr><td>system_administrator</td><td>admin.users.manage, admin.roles.manage, support.tickets.manage, audit.events.view</td></tr>
-              <tr><td>security_administrator</td><td>security.sso.manage, crypto.policy.manage, audit.events.view</td></tr>
-              <tr><td>privacy_officer</td><td>privacy.assessment.manage, privacy.reveal.request, crypto.policy.manage, audit.events.view, reports.view</td></tr>
-              <tr><td>compliance_auditor</td><td>audit.events.view, reports.view, reports.export</td></tr>
-              <tr><td>clinical_governance_lead</td><td>clinical.governance.approve, protocol.library.manage, triage.recommendation.view, audit.events.view, reports.view</td></tr>
               <tr><td>triage_service_manager</td><td>triage.queue.manage, operations.dashboard.view, reports.view, audit.events.view</td></tr>
-              <tr><td>call_intake_coordinator</td><td>triage.workspace.view, triage.call.intake</td></tr>
               <tr><td>remote_triage_nurse</td><td>triage.workspace.view, triage.recommendation.view, privacy.reveal.request</td></tr>
-              <tr><td>senior_triage_nurse</td><td>triage.workspace.view, triage.call.intake, triage.recommendation.view, triage.disposition.override, triage.queue.manage, privacy.reveal.request</td></tr>
-              <tr><td>pediatric_triage_nurse</td><td>triage.workspace.view, triage.recommendation.view, triage.pediatric.manage, privacy.reveal.request</td></tr>
-              <tr><td>teleconsult_physician</td><td>triage.workspace.view, triage.recommendation.view, triage.teleconsult.manage, triage.disposition.override, privacy.reveal.request</td></tr>
-              <tr><td>occupational_health_clinician</td><td>triage.workspace.view, triage.recommendation.view, triage.disposition.override, privacy.reveal.request</td></tr>
-              <tr><td>protocol_content_manager</td><td>protocol.library.manage, reports.view, audit.events.view</td></tr>
-              <tr><td>quality_reviewer</td><td>audit.events.view, reports.view</td></tr>
-              <tr><td>integration_administrator</td><td>integration.hrms.manage, integration.emr.manage, integration.callcenter.manage, security.sso.manage, audit.events.view</td></tr>
-              <tr><td>reporting_analyst</td><td>reports.view, reports.export</td></tr>
-              <tr><td>helpdesk_support</td><td>support.tickets.manage</td></tr>
             </tbody>
           </table>
-          <p>Of these, the roles that can open the Nurse Cockpit or use the queue API are the ones holding <code>triage.workspace.view</code>, <code>triage.queue.manage</code>, or <code>admin.users.manage</code>: <code>call_intake_coordinator</code>, <code>remote_triage_nurse</code>, <code>senior_triage_nurse</code>, <code>pediatric_triage_nurse</code>, <code>teleconsult_physician</code>, <code>occupational_health_clinician</code>, <code>triage_service_manager</code>, plus the administrator roles.</p>
+          <p>Of these, the roles that can open the Nurse Cockpit or use the queue API are the ones holding <code>triage.workspace.view</code>, <code>triage.queue.manage</code>, or <code>admin.users.manage</code>: <code>remote_triage_nurse</code>, <code>triage_service_manager</code>, and <code>platform_super_administrator</code>.</p>
         `
       },
       {
@@ -265,7 +249,7 @@ const TOPIC_GROUPS: TopicGroup[] = [
         body: `
           <p>The Control Center (<code>frontend/src/AdminPortal.tsx</code>, route <code>#/admin</code>) is a named-user access and enterprise-controls surface split into 11 tabs: Overview, Users, Access, Security, Privacy, Audit, Governance, Protocol Library, Integration, Reports, and Support. Each tab is shown only if your session holds the permission it requires - a tab you lack permission for is not shown disabled, it is simply absent from the tab bar.</p>
           <p><strong>Across all 11 tabs, the only action that actually changes anything server-side today is the masked-data "Reveal" request</strong> (on the Users and Privacy tabs). Every other tab - Overview, Access, Security, Audit, Governance, Protocol Library, Integration, Reports, Support - is read-only reporting: it displays data fetched from <code>src/routes/admin.ts</code>'s <code>GET</code> endpoints. There are no account-lock, role-edit, or approval-workflow controls wired up in the Control Center as it stands.</p>
-          <p><strong>Access is further restricted by role</strong>, independent of individual tab permissions: the six clinical roles (<code>call_intake_coordinator</code>, <code>remote_triage_nurse</code>, <code>senior_triage_nurse</code>, <code>pediatric_triage_nurse</code>, <code>teleconsult_physician</code>, <code>occupational_health_clinician</code>) cannot open the Control Center at all, even if one of them individually holds a permission like <code>privacy.reveal.request</code>.</p>
+          <p><strong>Access is further restricted by role</strong>, independent of individual tab permissions: the clinical role (<code>remote_triage_nurse</code>) cannot open the Control Center at all, even though it individually holds a permission like <code>privacy.reveal.request</code>.</p>
           <p>The "31 ACCESS CONTROLS" figure shown on the Control Center banner is a fixed label, not a live count derived from any permission, role, or responsibility list in this system - don't treat it as an enumerable total.</p>
         `
       },

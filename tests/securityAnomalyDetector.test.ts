@@ -93,7 +93,7 @@ describe("CSQ AR.21 / NFR-118 - detector behavior via real login/MFA/elevation p
 
       consoleSpy.mockClear();
       const agentB = await loginAgent();
-      await agentB.post("/api/v1/auth/login").send({ username: "pa@irisstar.tech", password: "wrong-once" });
+      await agentB.post("/api/v1/auth/login").send({ username: "rishma@irisstar.tech", password: "wrong-once" });
       const emittedForAdmin = consoleSpy.mock.calls.map((call) => String(call[0])).filter((line) => line.includes("SECURITY_ANOMALY_DETECTED"));
       expect(emittedForAdmin.length).toBe(0);
       consoleSpy.mockRestore();
@@ -110,7 +110,7 @@ describe("CSQ AR.21 / NFR-118 - detector behavior via real login/MFA/elevation p
       const agent = await loginAgent();
       const loginRes = await agent
         .post("/api/v1/auth/login")
-        .send({ username: "pa@irisstar.tech", password: TEST_ADMIN_PASSWORD })
+        .send({ username: "rishma@irisstar.tech", password: TEST_ADMIN_PASSWORD })
         .expect(202);
       const { challengeId } = loginRes.body;
 

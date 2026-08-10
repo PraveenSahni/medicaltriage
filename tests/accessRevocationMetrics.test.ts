@@ -21,7 +21,7 @@ process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
 const app = createApp();
 
 const PLATFORM_ADMIN = "usr_platform_admin_10001";
-const SYSTEM_ADMIN = "usr_system_admin_10001";
+const SYSTEM_ADMIN = "usr_senior_nurse_10001";
 const NURSE = "usr_nurse_10001";
 const NURSE_EMPLOYEE_ID = "IST-10001";
 
@@ -145,7 +145,7 @@ describe("CSQ IS.13 - access-revocation timing metrics", () => {
   });
 
   it("serves the report over HTTP for a platform administrator", async () => {
-    const agent = await agentFor("pa@irisstar.tech", "platform_super_administrator");
+    const agent = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     await elevate(agent, PLATFORM_ADMIN);
     await updateUserAccountStatus(SYSTEM_ADMIN, "suspended", { userId: PLATFORM_ADMIN, reason: "http test" });
     const res = await agent.get("/api/v1/admin/access-revocation-metrics?days=7").expect(200);

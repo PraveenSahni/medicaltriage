@@ -246,7 +246,7 @@ describe("Provider-neutral call-center gateway integration", () => {
 
   it("CCG-PHI-001 exposes only a masked ANI through the operational session API", async () => {
     await postSignedEvent(event()).expect(202);
-    const integrationAdmin = await agentFor("integration@irisstar.tech", "integration_administrator");
+    const integrationAdmin = await agentFor("khalid@irisstar.tech", "triage_service_manager");
     const response = await integrationAdmin.get("/api/v1/call-center/sessions").expect(200);
 
     expect(response.body.sessions[0].aniMasked).toBe("+97******234");
@@ -334,7 +334,7 @@ describe("Provider-neutral call-center gateway integration", () => {
   });
 
   it("CCG-RBAC-001 denies intake-only users access to call-control commands", async () => {
-    const intake = await agentFor("intake@irisstar.tech", "call_intake_coordinator");
+    const intake = await agentFor("khalid@irisstar.tech", "triage_service_manager");
     await intake
       .post("/api/v1/call-center/queue/case-10002/command")
       .send({ action: "ANSWER", provider: "dry-run" })
@@ -342,7 +342,7 @@ describe("Provider-neutral call-center gateway integration", () => {
   });
 
   it("CCG-OPS-001 reports the active provider, persistence mode, and recording boundary", async () => {
-    const integrationAdmin = await agentFor("integration@irisstar.tech", "integration_administrator");
+    const integrationAdmin = await agentFor("khalid@irisstar.tech", "triage_service_manager");
     const response = await integrationAdmin.get("/api/v1/call-center/status").expect(200);
 
     expect(response.body.gateway).toMatchObject({

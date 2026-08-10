@@ -14,7 +14,7 @@ const TEST_ADMIN_PASSWORD = "TestAdminPassword!2026";
 process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
 
 const app = createApp();
-const SYS_ADMIN_ID = "usr_system_admin_10001";
+const SYS_ADMIN_ID = "usr_platform_admin_10001";
 
 async function agentFor(username: string, simulateRole: string) {
   const agent = request.agent(app);
@@ -77,7 +77,7 @@ describe("Concurrent session limit and single-session termination", () => {
   });
 
   it("lists a user's active sessions and terminates exactly one, leaving others intact", async () => {
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const nurseA = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 
     const otherLogin = await authenticateLocal({
@@ -106,7 +106,7 @@ describe("Concurrent session limit and single-session termination", () => {
   });
 
   it("returns 404 for an unknown session id", async () => {
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const { secret } = enrollMfa(SYS_ADMIN_ID);
     confirmMfaEnrollment(SYS_ADMIN_ID, authenticator.generate(secret));
     await sysAdmin.post("/api/v1/admin/elevate").send({ code: authenticator.generate(secret) }).expect(200);

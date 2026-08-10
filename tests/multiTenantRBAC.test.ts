@@ -96,7 +96,7 @@ describe("HRMS-driven session and queue-lock lifecycle", () => {
       })
       .expect(403);
 
-    const admin = await agentFor("pa@irisstar.tech", "platform_super_administrator");
+    const admin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const released = await admin.get("/api/v1/queue/case-10002").expect(200);
     expect(released.body.item.lockedBy).toBeUndefined();
     expect(released.body.item.status).toBe("INCOMING");

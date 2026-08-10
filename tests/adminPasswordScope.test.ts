@@ -37,7 +37,7 @@ describe("ADMIN_PASSWORD scope (live mode)", () => {
 
   it("still allows ADMIN_PASSWORD login as the platform admin bootstrap account in live mode", async () => {
     const result = await authenticateLocal({
-      username: "pa@irisstar.tech",
+      username: "rishma@irisstar.tech",
       password: TEST_ADMIN_PASSWORD,
       rememberMe: false,
       ipAddress: "127.0.0.1",

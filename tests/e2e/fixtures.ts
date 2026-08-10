@@ -6,13 +6,13 @@ import { expect, type APIRequestContext, type Page } from "@playwright/test";
 // App.tsx's post-login handler overrides the backend's `redirectTo`
 // client-side for any role on the Nurse Cockpit allow-list
 // (frontend/src/cockpit/roles.ts's NURSE_COCKPIT_ALLOWED_ROLES, which
-// includes both remote_triage_nurse and call_intake_coordinator) - those
+// includes both remote_triage_nurse and triage_service_manager) - those
 // roles land on "cockpit" in a real browser, even though the backend's own
 // field still literally says "workspace".
 export const personas = {
   platformAdmin: {
     simulationUserId: "platform-administrator",
-    username: "pa@irisstar.tech",
+    username: "rishma@irisstar.tech",
     password: "PlatformAdmin@2026",
     role: "platform_super_administrator",
     redirectTo: "admin",
@@ -26,21 +26,13 @@ export const personas = {
     redirectTo: "workspace",
     landingView: "cockpit"
   },
-  intake: {
-    simulationUserId: "call-intake-coordinator",
-    username: "intake@irisstar.tech",
-    password: "Intake@2026",
-    role: "call_intake_coordinator",
-    redirectTo: "workspace",
-    landingView: "cockpit"
-  },
-  integrationAdmin: {
-    simulationUserId: "integration-administrator",
-    username: "integration@irisstar.tech",
-    password: "Integration@2026",
-    role: "integration_administrator",
+  manager: {
+    simulationUserId: "triage-service-manager",
+    username: "khalid@irisstar.tech",
+    password: "Khalid@2026",
+    role: "triage_service_manager",
     redirectTo: "admin",
-    landingView: "admin"
+    landingView: "serviceManagerBoard"
   }
 } as const;
 

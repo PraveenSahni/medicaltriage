@@ -287,7 +287,7 @@ function integrationSession(organizationId?: string): AuthenticatedSession {
   const expiresAtIso = new Date(Date.now() + 5 * 60_000).toISOString();
   return {
     sessionId: `call-center-integration-${randomUUID()}`,
-    activeRole: "call_intake_coordinator",
+    activeRole: "remote_triage_nurse",
     permissions: ["triage.workspace.view", "triage.call.intake"],
     responsibilities: ["register_triage_call"],
     expiresAtIso,
@@ -316,7 +316,7 @@ function integrationSession(organizationId?: string): AuthenticatedSession {
       mfaStatus: "enabled",
       accountStatus: "active",
       directoryStatus: "active",
-      roles: ["call_intake_coordinator"],
+      roles: ["remote_triage_nurse"],
       responsibilities: ["register_triage_call"],
       queues: ["tele-triage"],
       accessProfiles: ["integration-intake"],

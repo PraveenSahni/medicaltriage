@@ -22,9 +22,9 @@ function sessionWith(activeRole: string, organizationId?: string): Authenticated
 }
 
 describe("tenantScope helpers", () => {
-  it("treats platform_super_administrator and system_administrator as globally exempt", () => {
+  it("treats platform_super_administrator as globally exempt", () => {
     expect(isGlobalTenantExempt(sessionWith("platform_super_administrator", "org_a"))).toBe(true);
-    expect(isGlobalTenantExempt(sessionWith("system_administrator", "org_a"))).toBe(true);
+    expect(isGlobalTenantExempt(sessionWith("triage_service_manager", "org_a"))).toBe(false);
     expect(isGlobalTenantExempt(sessionWith("remote_triage_nurse", "org_a"))).toBe(false);
   });
 
@@ -49,9 +49,9 @@ describe("tenantScope helpers", () => {
   });
 
   it("canAccessOrganizationRecord allows exempt roles regardless of record org", () => {
-    expect(canAccessOrganizationRecord({ organizationId: "org_b" }, sessionWith("system_administrator", "org_a"))).toBe(
-      true
-    );
+    expect(
+      canAccessOrganizationRecord({ organizationId: "org_b" }, sessionWith("platform_super_administrator", "org_a"))
+    ).toBe(true);
   });
 
   it("canAccessOrganizationRecord denies a non-exempt user with no bound org", () => {

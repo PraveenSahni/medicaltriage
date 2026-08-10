@@ -33,8 +33,8 @@
  */
 
 const API_BASE = process.env.API_BASE ?? "http://localhost:8080";
-const GENERATOR_USERNAME = "intake@irisstar.tech";
-const GENERATOR_PASSWORD = "Intake@2026";
+const GENERATOR_USERNAME = "layla@irisstar.tech";
+const GENERATOR_PASSWORD = "Layla@2026";
 // Remote Triage Nurses alternate scenario-by-scenario (not always the same
 // nurse claiming every test call) - both are PHCC-org-scoped so either can
 // claim any call the intake account generates, matching real multi-nurse

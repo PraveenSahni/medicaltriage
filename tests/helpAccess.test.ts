@@ -56,7 +56,7 @@ describe("Help & Library access", () => {
   });
 
   it("renders the restricted vault section (locked) only for a permitted role", async () => {
-    const securityAdmin = await agentFor("sec@irisstar.tech", "security_administrator");
+    const securityAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const response = await securityAdmin.get("/help").expect(200);
     expect(response.text).toContain("Restricted Operations Vault");
     expect(response.text).toContain("vault-password");
@@ -71,7 +71,7 @@ describe("Help & Library access", () => {
   });
 
   it("rejects an incorrect restricted-vault password for a permitted role", async () => {
-    const securityAdmin = await agentFor("sec@irisstar.tech", "security_administrator");
+    const securityAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const response = await securityAdmin
       .post("/api/v1/help/restricted-access/verify")
       .send({ password: "wrong-password" });
@@ -79,7 +79,7 @@ describe("Help & Library access", () => {
   });
 
   it("grants restricted-vault content only after correct password verification for a permitted role, and never returns secret values", async () => {
-    const securityAdmin = await agentFor("sec@irisstar.tech", "security_administrator");
+    const securityAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
 
     // Vault content is unreachable before verification.
     const beforeVerify = await securityAdmin.get("/api/v1/help/restricted-vault");
@@ -106,7 +106,7 @@ describe("Help & Library access", () => {
   });
 
   it("rate-limits repeated restricted-access verification attempts", async () => {
-    const securityAdmin = await agentFor("sec@irisstar.tech", "security_administrator");
+    const securityAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     let lastStatus = 0;
     for (let attempt = 0; attempt < 7; attempt += 1) {
       const response = await securityAdmin
@@ -118,7 +118,7 @@ describe("Help & Library access", () => {
   });
 
   it("never includes the restricted-access password or its hash in any response body", async () => {
-    const securityAdmin = await agentFor("sec@irisstar.tech", "security_administrator");
+    const securityAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const helpPage = await securityAdmin.get("/help").expect(200);
     expect(helpPage.text).not.toContain(VAULT_PLAINTEXT_PASSWORD);
     expect(helpPage.text).not.toContain(process.env.HELP_RESTRICTED_ACCESS_PASSWORD_HASH as string);

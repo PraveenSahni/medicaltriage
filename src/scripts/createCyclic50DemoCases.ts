@@ -12,8 +12,8 @@
  */
 
 const API_BASE = process.env.API_BASE ?? "https://triaged.irisstar.tech";
-const GENERATOR_USERNAME = "intake@irisstar.tech";
-const GENERATOR_PASSWORD = "Intake@2026";
+const GENERATOR_USERNAME = "layla@irisstar.tech";
+const GENERATOR_PASSWORD = "Layla@2026";
 
 type CookieJar = { cookie?: string; token?: string };
 

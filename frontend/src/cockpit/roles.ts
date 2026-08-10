@@ -3,40 +3,15 @@
  * These are the exact strings the backend uses for `AdminUser.roles` /
  * `AuthenticatedSession.activeRole` - never match on display labels.
  */
-export type RoleCode =
-  | "platform_super_administrator"
-  | "organization_administrator"
-  | "system_administrator"
-  | "security_administrator"
-  | "privacy_officer"
-  | "compliance_auditor"
-  | "clinical_governance_lead"
-  | "triage_service_manager"
-  | "call_intake_coordinator"
-  | "remote_triage_nurse"
-  | "senior_triage_nurse"
-  | "pediatric_triage_nurse"
-  | "teleconsult_physician"
-  | "occupational_health_clinician"
-  | "protocol_content_manager"
-  | "quality_reviewer"
-  | "integration_administrator"
-  | "reporting_analyst"
-  | "helpdesk_support";
+export type RoleCode = "platform_super_administrator" | "triage_service_manager" | "remote_triage_nurse";
 
 /**
  * "B - Business and Clinical Operations" allow-list: the only roles that may
- * see the Nurse Cockpit. Every other role code (admin/security/governance/
- * content/quality/integration/reporting/helpdesk) is explicitly excluded.
+ * see the Nurse Cockpit. Every other role code (admin) is explicitly excluded.
  */
 export const NURSE_COCKPIT_ALLOWED_ROLES: ReadonlySet<RoleCode> = new Set([
   "triage_service_manager",
-  "call_intake_coordinator",
   "remote_triage_nurse",
-  "senior_triage_nurse",
-  "pediatric_triage_nurse",
-  "teleconsult_physician",
-  "occupational_health_clinician",
 ]);
 
 export function isNurseCockpitRole(roleCode: string | undefined | null): roleCode is RoleCode {

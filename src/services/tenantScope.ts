@@ -6,7 +6,7 @@ import type { AuthenticatedSession } from "../types/security.js";
 // tenantWhereClause()/isGlobalTenantExempt() semantics exactly.
 
 export function isGlobalTenantExempt(session: AuthenticatedSession): boolean {
-  return session.activeRole === "platform_super_administrator" || session.activeRole === "system_administrator";
+  return session.activeRole === "platform_super_administrator";
 }
 
 // Where-clause fragment for any model carrying a plain `organizationId`

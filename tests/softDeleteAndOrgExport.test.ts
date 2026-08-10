@@ -9,7 +9,7 @@ const TEST_ADMIN_PASSWORD = "TestAdminPassword!2026";
 process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
 
 const app = createApp();
-const SYS_ADMIN_ID = "usr_system_admin_10001";
+const SYS_ADMIN_ID = "usr_platform_admin_10001";
 
 async function agentFor(username: string, simulateRole: string) {
   const agent = request.agent(app);
@@ -52,7 +52,7 @@ describe("Queue-item soft delete and org-scoped export", () => {
     const listing = await manager.get("/api/v1/queue").expect(200);
     expect(listing.body.queue.some((item: { id: string }) => item.id === caseId)).toBe(false);
 
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     await elevate(sysAdmin);
     const orgExport = await sysAdmin.get(`/api/v1/admin/organizations/${organizationId}/export`).expect(200);
     expect(orgExport.headers["content-disposition"]).toMatch(/attachment; filename="ist-health-org-export-/);
@@ -77,14 +77,14 @@ describe("Queue-item soft delete and org-scoped export", () => {
     const caseId = created.body.item.id as string;
     const organizationId = created.body.item.organizationId as string;
 
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     await elevate(sysAdmin);
     const orgExport = await sysAdmin.get(`/api/v1/admin/organizations/${organizationId}/export`).expect(200);
     expect(orgExport.body.queueItems.some((item: { id: string }) => item.id === caseId)).toBe(true);
   });
 
   it("requires PAM elevation for the org export endpoint", async () => {
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const response = await sysAdmin.get("/api/v1/admin/organizations/org_ist_tech/export").expect(403);
     expect(response.body).toMatchObject({ elevationRequired: true });
   });

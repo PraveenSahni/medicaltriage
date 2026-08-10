@@ -40,7 +40,7 @@ describe("Admin scheduled-jobs control (NFR-049/050/051)", () => {
     (listScheduledJobs as jest.Mock).mockResolvedValue([
       { name: "purge-expired-queue-data-soc2-trigger", schedule: "0 3 * * 0", state: "ENABLED", lastAttemptTimeIso: null, scheduleTimeIso: null }
     ]);
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const response = await sysAdmin.get("/api/v1/admin/scheduled-jobs").expect(200);
     expect(response.body.jobs).toHaveLength(1);
     expect(response.body.jobs[0].name).toBe("purge-expired-queue-data-soc2-trigger");
@@ -48,14 +48,14 @@ describe("Admin scheduled-jobs control (NFR-049/050/051)", () => {
 
   it("pauses a real job by name", async () => {
     (pauseScheduledJob as jest.Mock).mockResolvedValue({ name: "dast-probe-soc2-trigger", state: "PAUSED" });
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const response = await sysAdmin.post("/api/v1/admin/scheduled-jobs/dast-probe-soc2-trigger/pause").expect(200);
     expect(response.body.job.state).toBe("PAUSED");
   });
 
   it("returns 404 for an unknown job name", async () => {
     (pauseScheduledJob as jest.Mock).mockRejectedValue(new ScheduledJobNotFoundError("No scheduled job named \"does-not-exist\" exists."));
-    const sysAdmin = await agentFor("sa@irisstar.tech", "system_administrator");
+    const sysAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     await sysAdmin.post("/api/v1/admin/scheduled-jobs/does-not-exist/pause").expect(404);
   });
 });

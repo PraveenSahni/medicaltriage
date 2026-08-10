@@ -32,8 +32,8 @@
  */
 
 const API_BASE = process.env.API_BASE ?? "http://localhost:8080";
-const GENERATOR_USERNAME = "intake@irisstar.tech";
-const GENERATOR_PASSWORD = "Intake@2026";
+const GENERATOR_USERNAME = "layla@irisstar.tech";
+const GENERATOR_PASSWORD = "Layla@2026";
 const NURSE_USERNAME = "sara@irisstar.tech";
 const NURSE_PASSWORD = "Sara@2026";
 const PROTOCOL_ID = "stcc-ankle-pain";
