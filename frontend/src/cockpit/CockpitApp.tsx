@@ -96,6 +96,41 @@ export function CockpitApp({ session, onLogout, onBack }: CockpitAppProps) {
     setStage(stageKeyForQueueItem(item));
   }
 
+  // The Service Manager Board buckets a call into its "Reason & Rule-Out"
+  // vs "Questions" column purely from the backend's currentStage
+  // (boardMapping.ts) - clicking "Continue" here previously only flipped
+  // this component's own local `stage` state, so the backend record stayed
+  // at INTAKE for the entire Reason & Rule-Out + Questions workflow and the
+  // board never reflected real progress (confirmed live: a call still deep
+  // in TAQ questions kept showing under Reason & Rule-Out). Advancing
+  // currentStage to PROTOCOL here is the real signal the board needs.
+  async function continueToQuestions() {
+    if (!activeItem) {
+      setStage("questions");
+      return;
+    }
+    try {
+      // validateClinicalSequence (queueOrchestration.ts) requires a
+      // matchedProtocolId before accepting a move to PROTOCOL -
+      // ProtocolMatchPanel defaults display to the top suggestion without
+      // ever persisting it unless the nurse explicitly clicks "Use this
+      // guideline", so persist that same default here if nothing was
+      // explicitly chosen yet.
+      if (!activeItem.matchedProtocolId && activeItem.preparedProtocol?.primaryProtocolId) {
+        await updateItemContext(activeItem.id, {
+          matchedProtocolId: activeItem.preparedProtocol.primaryProtocolId
+        });
+      }
+      await moveItem(activeItem.id, "PROTOCOL");
+    } catch {
+      // Non-critical - the nurse should never be blocked from continuing
+      // her review because a background stage-sync PATCH failed; the
+      // Service Manager Board simply won't reflect this call's true stage
+      // until a later successful transition.
+    }
+    setStage("questions");
+  }
+
   async function escalateEmergencyNow() {
     if (!activeItem) {
       return;
@@ -181,7 +216,7 @@ export function CockpitApp({ session, onLogout, onBack }: CockpitAppProps) {
 
               <div className="cockpit-stage-body" id="cockpit-stage-body" role="tabpanel" aria-label={`${stage} stage`}>
                 {stage === "reason" && (
-                  <ReasonRuleOutStage item={activeItem} isReadOnly={isReadOnly} onContinue={() => setStage("questions")} />
+                  <ReasonRuleOutStage item={activeItem} isReadOnly={isReadOnly} onContinue={continueToQuestions} />
                 )}
                 {stage === "questions" && (
                   <QuestionsStage
