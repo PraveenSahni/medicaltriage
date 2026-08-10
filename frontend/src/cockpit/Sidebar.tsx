@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type JSX } from "react";
 import { useQueue, type QueueItem, type QueueSeverity } from "../QueueContext";
 import { CockpitUtilityBar } from "./CockpitUtilityBar";
 import { generateDemoStccCall } from "../serviceManagerBoard/demoStccCallGenerator";

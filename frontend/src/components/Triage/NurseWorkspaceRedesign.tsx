@@ -867,7 +867,7 @@ export default function NurseWorkspace() {
   const [syntheticSeverity, setSyntheticSeverity] = useState<Severity | "All">("All");
   const [syntheticRole, setSyntheticRole] = useState("All");
   const [syntheticAgeGroup, setSyntheticAgeGroup] = useState<SyntheticReviewRecord["ageGroup"] | "All">("All");
-  const previousActiveItemIdRef = useRef<string | undefined>();
+  const previousActiveItemIdRef = useRef<string | undefined>(undefined);
 
   const activeCard = activeCardId ? cardsById[activeCardId] : undefined;
   const activeScore = activeCardId ? scoreByCardId[activeCardId] : undefined;
@@ -1037,7 +1037,7 @@ export default function NurseWorkspace() {
     }));
   }
 
-  const initialAssessmentPatchTimer = useRef<number | undefined>();
+  const initialAssessmentPatchTimer = useRef<number | undefined>(undefined);
 
   function updateInitialAssessmentAnswers(cardId: string, answers: Record<string, string>) {
     updateCard(cardId, { initialAssessmentResponses: answers });
@@ -1048,7 +1048,7 @@ export default function NurseWorkspace() {
     }, 600);
   }
 
-  const careAdvicePatchTimer = useRef<number | undefined>();
+  const careAdvicePatchTimer = useRef<number | undefined>(undefined);
 
   function acknowledgeCareAdvice(cardId: string, adviceId: string, patch: { givenNow?: boolean; sendLater?: boolean }) {
     const card = cardsById[cardId];

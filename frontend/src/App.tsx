@@ -24,6 +24,7 @@ import { LabeledIconButton, WorkspaceModeSwitch } from "./components/ui/Navigati
 import { CockpitApp } from "./cockpit/CockpitApp";
 import { canAccessNurseCockpit, canAccessServiceManagerBoard } from "./cockpit/roles";
 import { TriageServiceManagerBoard } from "./serviceManagerBoard/TriageServiceManagerBoard";
+import { formatRole } from "./admin/shared/roleLabels";
 
 type ViewKey = "workspace" | "cockpitV2" | "cockpit" | "kanban" | "ccp" | "help" | "admin" | "serviceManagerBoard";
 type ThemeMode = "light" | "dark";
@@ -53,28 +54,6 @@ const defaultRuntimeEnvironment: RuntimeEnvironment = {
   }
 };
 
-const roleLabels: Record<string, string> = {
-  platform_super_administrator: "Platform Super Administrator",
-  organization_administrator: "Organization Administrator",
-  system_administrator: "System Administrator",
-  security_administrator: "Security Administrator",
-  privacy_officer: "Privacy Officer / DPO",
-  compliance_auditor: "Compliance Auditor",
-  clinical_governance_lead: "Clinical Governance Lead",
-  triage_service_manager: "Triage Service Manager",
-  call_intake_coordinator: "Call Intake Coordinator",
-  remote_triage_nurse: "Remote Triage Nurse",
-  senior_triage_nurse: "Senior Triage Nurse",
-  pediatric_triage_nurse: "Pediatric Triage Nurse",
-  teleconsult_physician: "Teleconsult Physician",
-  occupational_health_clinician: "Occupational Health Clinician",
-  protocol_content_manager: "Protocol Content Manager",
-  quality_reviewer: "Quality Reviewer",
-  integration_administrator: "Integration Administrator",
-  reporting_analyst: "Reporting Analyst",
-  helpdesk_support: "Helpdesk Support"
-};
-
 const controlCenterRoles = new Set([
   "platform_super_administrator",
   "organization_administrator",
@@ -93,15 +72,6 @@ const controlCenterRoles = new Set([
 
 function canOpenAdminView(session: AuthenticatedSession) {
   return controlCenterRoles.has(session.activeRole);
-}
-
-function formatRole(role: string) {
-  return (
-    roleLabels[role] ??
-    role
-      .replace(/_/g, " ")
-      .replace(/\b\w/g, (character) => character.toUpperCase())
-  );
 }
 
 export default function App() {
@@ -180,16 +150,6 @@ export default function App() {
   }, []);
 
   const heading = useMemo(() => {
-    if (activeView === "admin") {
-      return {
-        eyebrow: "CONTROL CENTER",
-        title: "Role-Based Control Center",
-        subtitle: "Users, access, security, privacy, audit, governance, protocol library, integrations, reports, and support are split by named-user responsibility.",
-        metric: "31",
-        metricLabel: "ACCESS CONTROLS"
-      };
-    }
-
     if (activeView === "help") {
       return {
         eyebrow: "HELP CENTER",
@@ -231,10 +191,6 @@ export default function App() {
   }, [activeView]);
 
   const renderView = () => {
-    if (activeView === "admin" && session) {
-      return <AdminPortal session={session} />;
-    }
-
     if (activeView === "help") {
       return <HelpCenter />;
     }
@@ -330,7 +286,11 @@ export default function App() {
         return;
       }
 
-      if ((target === "admin" || target === "dashboard") && hasAdminAccess) {
+      // "admin/users", "admin/roles", etc. (TanStack Router's own sub-routes,
+      // mounted only inside the Admin subtree) must still resolve to the
+      // "admin" view here - this listener only cares about the first path
+      // segment and leaves everything after it to the router mounted inside.
+      if ((target === "admin" || target === "dashboard" || target.startsWith("admin/")) && hasAdminAccess) {
         setActiveView("admin");
       }
     }
@@ -424,6 +384,21 @@ export default function App() {
     );
   }
 
+  // The Control Center (Admin) is a third, distinct route that also bypasses
+  // the old application shell entirely, mirroring the Nurse Cockpit and
+  // Triage Service Manager Board bypasses above - a genuinely separate page,
+  // not one tab among many inside the generic workspace shell.
+  if (activeView === "admin") {
+    if (!canOpenAdminView(session)) {
+      return (
+        <div className="minimal-boundary">
+          <AccessDenied onLogout={logout} workspaceLabel="Control Center" />
+        </div>
+      );
+    }
+    return <AdminPortal session={session} onLogout={logout} />;
+  }
+
   return (
     <div>
       <div className="app-shell">
@@ -473,7 +448,7 @@ export default function App() {
                 <LabeledIconButton
                   icon={Settings}
                   label="Control"
-                  active={activeView === "admin"}
+                  active={false}
                   onClick={() => openView("admin")}
                   title="Control Center"
                 />

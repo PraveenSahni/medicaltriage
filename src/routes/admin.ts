@@ -70,13 +70,40 @@ import {
   SessionNotFoundError,
   updateUserAccountStatus,
   UserNotFoundError,
-  SelfStatusChangeError
+  SelfStatusChangeError,
+  createUser,
+  DuplicateUserEmailError,
+  InvalidRoleCodeError,
+  InvalidEmailDomainError
 } from "../services/securityAdmin.js";
 import { AccountStatusSchema, RevealRequestSchema } from "../types/security.js";
 import { z } from "zod";
 
 const UpdateUserStatusRequestSchema = z.object({
   status: AccountStatusSchema,
+  reason: z.string().min(1).max(500)
+});
+
+// Every real named-user account in this application is an IST Tech
+// employee/contractor account - enforced here, not just by convention, so
+// the one place that creates users can't silently mint an out-of-domain
+// account.
+const ORGANIZATION_EMAIL_DOMAIN = "@irisstar.tech";
+
+const CreateUserRequestSchema = z.object({
+  fullName: z.string().min(1).max(200),
+  email: z
+    .string()
+    .email()
+    .refine((value) => value.trim().toLowerCase().endsWith(ORGANIZATION_EMAIL_DOMAIN), {
+      message: `Email must be on the ${ORGANIZATION_EMAIL_DOMAIN} domain.`
+    }),
+  mobile: z.string().min(1).max(40),
+  organization: z.string().min(1).max(200),
+  facility: z.string().min(1).max(200),
+  department: z.string().min(1).max(200),
+  jobTitle: z.string().min(1).max(200),
+  roles: z.array(z.string().min(1)).min(1).max(10),
   reason: z.string().min(1).max(500)
 });
 
@@ -136,6 +163,38 @@ export function createAdminRouter(): Router {
     const { users, totalCount } = listUsers(parsed.data);
     return res.json({ users, totalCount });
   });
+
+  // The Control Center's Users tab is the only place in the application
+  // that creates a new named-user account - elevation-gated (account
+  // creation is at least as sensitive as the existing status-change route)
+  // and rate-limited the same way.
+  router.post(
+    "/users",
+    requireElevatedPermission("admin.users.manage"),
+    userStatusRateLimit,
+    async (req: AuthorizedRequest, res, next) => {
+      const parsed = CreateUserRequestSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid request body", details: parsed.error.flatten() });
+      }
+      const actorUserId = req.securitySession?.user.id ?? "unknown";
+      try {
+        const { user, temporaryPassword } = await createUser(parsed.data, {
+          userId: actorUserId,
+          reason: parsed.data.reason
+        });
+        return res.status(201).json({ user, temporaryPassword });
+      } catch (error) {
+        if (error instanceof DuplicateUserEmailError) {
+          return res.status(409).json({ error: error.message });
+        }
+        if (error instanceof InvalidRoleCodeError || error instanceof InvalidEmailDomainError) {
+          return res.status(400).json({ error: error.message });
+        }
+        return next(error);
+      }
+    }
+  );
 
   // Closes CSQ CO.13 ("isolate and recover data for a specific customer")
   // and LG.04 ("data portability... port data from one data center to

@@ -15,7 +15,22 @@ module.exports = {
           mint: "#C5A064",
           ink: "#071022",
           panel: "#F8FAFC"
-        }
+        },
+        // shadcn/ui component contract - resolved via CSS variables declared
+        // under #admin-root in frontend/src/admin/administration.css. Outside
+        // that scope these variables are undefined, so these utilities are a
+        // no-op harmless anywhere else in the app.
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        card: { DEFAULT: "var(--card)", foreground: "var(--card-foreground)" },
+        popover: { DEFAULT: "var(--popover)", foreground: "var(--popover-foreground)" },
+        primary: { DEFAULT: "var(--primary)", foreground: "var(--primary-foreground)" },
+        muted: { DEFAULT: "var(--muted)", foreground: "var(--muted-foreground)" },
+        accent: { DEFAULT: "var(--accent)", foreground: "var(--accent-foreground)" },
+        destructive: { DEFAULT: "var(--destructive)", foreground: "#ffffff" },
+        border: "var(--border)",
+        input: "var(--input)",
+        ring: "var(--ring)"
       },
       boxShadow: {
         "clinical-card": "0 18px 45px -32px rgba(7, 16, 34, 0.42)",

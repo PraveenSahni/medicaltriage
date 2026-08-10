@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import type { QueueItem } from "../QueueContext";
 import { FitToFlyBadge } from "../cockpit/FitToFlyBadge";
 import { colorStyleForSeverity } from "../cockpit/severityColors";

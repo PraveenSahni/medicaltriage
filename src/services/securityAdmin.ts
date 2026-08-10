@@ -157,6 +157,11 @@ const demoPasswordByEmail: Record<string, string> = {
   "synthetic-monitor@irisstar.tech": "SyntheticMonitor@2026"
 };
 
+// Emails added to demoPasswordByEmail by createUser() below (as opposed to
+// the 20 seed entries above) - tracked separately so resetSecurityStoreForTests()
+// can strip only the dynamically-created ones without touching the fixed seed set.
+const dynamicallyCreatedUserEmails = new Set<string>();
+
 function organizationByCode(code?: string): OrganizationDirectoryRecord {
   return (
     organizationDirectory.find((organization) => organization.code === code) ??
@@ -2285,6 +2290,111 @@ export function listUsers(pagination?: { limit?: number; offset?: number }): { u
 
 export class UserNotFoundError extends Error {}
 export class SelfStatusChangeError extends Error {}
+export class DuplicateUserEmailError extends Error {}
+export class InvalidRoleCodeError extends Error {}
+export class InvalidEmailDomainError extends Error {}
+
+// Every real named-user account here is an IST Tech employee/contractor -
+// checked again at this layer (not just the route's zod schema) so any
+// future caller of createUser() can't bypass the domain restriction.
+const ORGANIZATION_EMAIL_DOMAIN = "@irisstar.tech";
+
+export type CreateUserInput = {
+  fullName: string;
+  email: string;
+  mobile: string;
+  organization: string;
+  facility: string;
+  department: string;
+  jobTitle: string;
+  roles: string[];
+};
+
+/**
+ * The only place in this application that mints a new named-user account -
+ * closes the real gap that every AdminUser today is static seed data with
+ * zero create path. Consistent with this codebase's existing "in-memory
+ * mock user store is out of scope for real persistence" posture (the whole
+ * `users` array is unpersisted), so this stays in-memory too, not a new
+ * Prisma model. A real, random temporary password is minted and wired into
+ * the same demoPasswordByEmail map authenticateLocal() already reads in
+ * mock mode, so the new account can genuinely sign in immediately - a
+ * cosmetic "created" row with no way to log in would defeat the point.
+ */
+export async function createUser(
+  input: CreateUserInput,
+  actor: { userId: string; reason: string }
+): Promise<{ user: SafeAdminUser; temporaryPassword: string }> {
+  const email = input.email.trim().toLowerCase();
+  if (!email.endsWith(ORGANIZATION_EMAIL_DOMAIN)) {
+    throw new InvalidEmailDomainError(`Email must be on the ${ORGANIZATION_EMAIL_DOMAIN} domain.`);
+  }
+  if (users.some((candidate) => candidate.email.toLowerCase() === email)) {
+    throw new DuplicateUserEmailError(`A user with email ${email} already exists.`);
+  }
+  const knownRoleCodes = new Set(roles.map((role) => role.code));
+  const requestedRoles = [...new Set(input.roles)];
+  if (requestedRoles.length === 0 || requestedRoles.some((code) => !knownRoleCodes.has(code))) {
+    throw new InvalidRoleCodeError("One or more requested role codes are not recognized.");
+  }
+
+  const nowIso = new Date().toISOString();
+  const newUser: AdminUser = {
+    id: `usr_${randomBytes(8).toString("hex")}`,
+    employeeId: `IST-${randomBytes(4).toString("hex").toUpperCase()}`,
+    hrmsId: "",
+    fullName: input.fullName.trim(),
+    email,
+    mobile: input.mobile.trim(),
+    organization: input.organization.trim(),
+    facility: input.facility.trim(),
+    department: input.department.trim(),
+    clinicalSpecialty: "Not applicable",
+    jobTitle: input.jobTitle.trim(),
+    professionalCategory: "Administrator",
+    manager: "",
+    country: "QA",
+    preferredLanguage: "en",
+    timeZone: "Asia/Qatar",
+    authenticationMethod: "local",
+    mfaStatus: "disabled",
+    accountStatus: "active",
+    directoryStatus: "active",
+    roles: requestedRoles,
+    responsibilities: [],
+    queues: [],
+    accessProfiles: [],
+    createdBy: actor.userId,
+    createdAtIso: nowIso,
+    updatedBy: actor.userId,
+    updatedAtIso: nowIso
+  };
+  users.push(newUser);
+
+  const temporaryPassword = randomBytes(9).toString("base64url");
+  demoPasswordByEmail[email] = temporaryPassword;
+  dynamicallyCreatedUserEmails.add(email);
+
+  await recordAuditEvent({
+    id: randomUUID(),
+    timestampIso: nowIso,
+    userId: actor.userId,
+    activeRole: "system_administrator",
+    organization: newUser.organization,
+    facility: newUser.facility,
+    department: newUser.department,
+    action: "USER_ACCOUNT_CREATED",
+    module: "AccessGovernance",
+    resource: `UserAccount:${newUser.id}`,
+    purpose: actor.reason,
+    ipAddress: "",
+    device: "",
+    success: true,
+    risk: "medium"
+  });
+
+  return { user: maskUser(newUser), temporaryPassword };
+}
 
 /**
  * Real account-status mutation (suspend/reactivate/deactivate) - closes
@@ -2769,6 +2879,10 @@ export async function setDirectoryStatusForEmployee(
 
 export function resetSecurityStoreForTests(): void {
   users = cloneInitialUsers();
+  for (const email of dynamicallyCreatedUserEmails) {
+    delete demoPasswordByEmail[email];
+  }
+  dynamicallyCreatedUserEmails.clear();
   sessions.clear();
   failedLoginAttempts.clear();
   rolePermissionOverrides = [];

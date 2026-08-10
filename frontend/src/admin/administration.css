@@ -1,0 +1,507 @@
+/* Administration page (Users/Roles/Responsibilities/Access Control) -
+   scoped stylesheet, following the same per-feature-folder convention as
+   cockpit.css and serviceManagerBoard.css.
+
+   Visual language is intentionally matched to the Nurse Cockpit
+   (frontend/src/cockpit/cockpit.css) rather than the rest of the app's
+   global.css theme, per explicit instruction. Tokens below are the exact
+   values from #cockpit-root's :root block.
+
+   Everything is scoped under the #admin-root ID (not just .admin-shell)
+   because global.css ends with an app-wide "blank reset" rule
+   (html body [class]x6 !important) deliberately given higher specificity
+   than any class-only selector, including !important ones. cockpit.css
+   already beats that same reset by scoping under #cockpit-root - an ID
+   selector always outranks 6 chained [class] attribute selectors. This
+   file follows the identical technique. */
+
+#admin-root {
+  --a-bg: #f7f6f3;
+  --a-bg2: #f1efe9;
+  --a-card: #ffffff;
+  --a-ink: #1a1a19;
+  --a-muted: #6b6a66;
+  --a-tx3: #9c9a92;
+  --a-line: #e0dfd9;
+  --a-accent: #185fa5;
+  --a-ems: #a32d2d;
+  --a-emsbg: #fcebeb;
+  --a-emsbd: #f09595;
+  --a-hcp4: #7a5d00;
+  --a-hcp4bg: #faf3d1;
+  --a-hcp4bd: #d9bc2b;
+  --a-home: #0f6e56;
+  --a-homebg: #e1f5ee;
+  --a-homebd: #5dcaa5;
+
+  /* shadcn/ui component contract - every new component under
+     admin/components/ui/ references these names via Tailwind utilities
+     (bg-background, text-foreground, border-border, etc, wired in
+     tailwind.config.cjs). Aliased to the --a-* tokens above rather than
+     duplicated, so this stays the single source of truth for the admin
+     palette - no shadcn-default slate/zinc/Inter identity is introduced. */
+  --background: var(--a-bg);
+  --foreground: var(--a-ink);
+  --card: var(--a-card);
+  --card-foreground: var(--a-ink);
+  --popover: var(--a-card);
+  --popover-foreground: var(--a-ink);
+  --primary: var(--a-accent);
+  --primary-foreground: #ffffff;
+  --muted: var(--a-bg2);
+  --muted-foreground: var(--a-muted);
+  --accent: var(--a-bg2);
+  --accent-foreground: var(--a-ink);
+  --destructive: var(--a-ems);
+  --border: var(--a-line);
+  --input: var(--a-line);
+  --ring: var(--a-accent);
+  --radius: 10px;
+
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif !important;
+  color: var(--a-ink) !important;
+  background: var(--a-bg) !important;
+  min-height: 100vh !important;
+}
+
+#admin-root * {
+  box-sizing: border-box;
+}
+
+#admin-root button,
+#admin-root input,
+#admin-root select,
+#admin-root textarea {
+  min-height: 0 !important;
+  height: auto !important;
+  letter-spacing: normal !important;
+  box-shadow: none !important;
+  font-family: inherit !important;
+}
+
+/* ---------- Sidebar shell frame (this page bypasses the old app shell) ---------- */
+
+#admin-root .admin-shell-frame {
+  display: flex !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+}
+
+#admin-root .admin-shell-main {
+  flex: 1 !important;
+  min-width: 0 !important;
+  padding: 20px 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+#admin-root .admin-logo {
+  width: 22px !important;
+  height: 22px !important;
+}
+
+/* ---------- Hero / session card ---------- */
+
+#admin-root .admin-hero {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 0 4px !important;
+}
+
+#admin-root .admin-hero .tag-label {
+  color: var(--a-accent) !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+#admin-root .admin-hero h2 {
+  color: var(--a-ink) !important;
+  font-size: 1.3rem !important;
+  font-weight: 700 !important;
+}
+
+#admin-root .admin-hero p {
+  color: var(--a-muted) !important;
+  font-size: 0.85rem !important;
+}
+
+#admin-root .admin-session-card {
+  border: 1px solid var(--a-line) !important;
+  border-radius: 10px !important;
+  background: var(--a-card) !important;
+}
+
+#admin-root .admin-session-card strong {
+  color: var(--a-ink) !important;
+}
+
+#admin-root .admin-session-card span {
+  color: var(--a-accent) !important;
+}
+
+#admin-root .admin-session-card small {
+  color: var(--a-muted) !important;
+}
+
+/* ---------- Section tabs (mirrors cockpit's .stage-tabs style) ---------- */
+
+#admin-root .ist-section-tabs {
+  border-bottom: 1px solid var(--a-line) !important;
+  background: transparent !important;
+}
+
+#admin-root .ist-section-tab {
+  color: var(--a-tx3) !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+}
+
+#admin-root .ist-section-tab:hover {
+  background: transparent !important;
+  color: var(--a-muted) !important;
+}
+
+#admin-root .ist-section-tab-active,
+#admin-root .ist-section-tab-active:hover {
+  color: var(--a-accent) !important;
+  border-bottom-color: var(--a-accent) !important;
+  font-weight: 800 !important;
+}
+
+/* ---------- Status pills (masked-directory / privileged tag) ---------- */
+
+#admin-root .status-pill {
+  border-radius: 999px !important;
+}
+
+/* ---------- Cards (mirrors cockpit's white card + subtle border) ---------- */
+
+#admin-root .help-card,
+#admin-root .admin-metric,
+#admin-root .admin-table,
+#admin-root .admin-list > div,
+#admin-root .admin-role-detail {
+  border: 1px solid var(--a-line) !important;
+  border-radius: 10px !important;
+  background: var(--a-card) !important;
+  box-shadow: none !important;
+}
+
+#admin-root .help-title {
+  color: var(--a-ink) !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+}
+
+#admin-root .help-card p,
+#admin-root .help-card small {
+  color: var(--a-muted) !important;
+}
+
+#admin-root .help-icon {
+  background: var(--a-bg2) !important;
+  color: var(--a-accent) !important;
+  border-radius: 8px !important;
+}
+
+/* ---------- Tables ---------- */
+
+#admin-root .admin-table-head {
+  color: var(--a-muted) !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  background: var(--a-bg2) !important;
+  border-bottom: 1px solid var(--a-line) !important;
+}
+
+#admin-root .admin-table-row {
+  border-bottom: 1px solid var(--a-line) !important;
+}
+
+#admin-root .admin-table-row strong {
+  color: var(--a-ink) !important;
+}
+
+#admin-root .admin-table-row small {
+  color: var(--a-muted) !important;
+}
+
+#admin-root .admin-metric strong {
+  color: var(--a-accent) !important;
+}
+
+#admin-root .admin-metric span {
+  color: var(--a-muted) !important;
+}
+
+/* ---------- Buttons (mirrors cockpit's rounded, bold action buttons) ---------- */
+
+#admin-root .ist-labeled-icon-action {
+  border-radius: 6px !important;
+  color: var(--a-muted) !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  border-bottom: none !important;
+}
+
+#admin-root .ist-labeled-icon-action:hover {
+  background: var(--a-bg2) !important;
+  color: var(--a-ink) !important;
+}
+
+#admin-root .ist-labeled-icon-action-active,
+#admin-root .ist-labeled-icon-action-active:hover {
+  border-bottom: none !important;
+  background: var(--a-accent) !important;
+  color: #fff !important;
+}
+
+/* ---------- Pagination ---------- */
+
+#admin-root .admin-pagination {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 12px !important;
+  flex-wrap: wrap !important;
+}
+
+#admin-root .admin-pagination button {
+  border: 1px solid var(--a-line) !important;
+  background: var(--a-card) !important;
+  color: var(--a-ink) !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+  font-size: 0.8rem !important;
+  cursor: pointer;
+}
+
+#admin-root .admin-pagination button:hover:not(:disabled) {
+  background: var(--a-bg2) !important;
+}
+
+#admin-root .admin-pagination button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed;
+}
+
+#admin-root .admin-pagination label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 0.78rem !important;
+  color: var(--a-muted) !important;
+}
+
+#admin-root .admin-pagination select {
+  border: 1px solid var(--a-line) !important;
+  border-radius: 6px !important;
+  background: var(--a-card) !important;
+  color: var(--a-ink) !important;
+  padding: 4px 6px !important;
+}
+
+/* ---------- Inline forms (grant permission / audit trace / reveal request) ---------- */
+
+#admin-root .admin-inline-input {
+  border: 1px solid var(--a-line) !important;
+  border-radius: 6px !important;
+  background: var(--a-card) !important;
+  color: var(--a-ink) !important;
+  padding: 5px 8px !important;
+  font-size: 0.8rem !important;
+  min-width: 140px;
+}
+
+#admin-root .admin-inline-form {
+  display: flex !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  padding: 10px 0 !important;
+}
+
+#admin-root .admin-inline-form input,
+#admin-root .admin-inline-form select {
+  border: 1px solid var(--a-line) !important;
+  border-radius: 6px !important;
+  background: var(--a-card) !important;
+  color: var(--a-ink) !important;
+  padding: 6px 8px !important;
+  font-size: 0.8rem !important;
+  min-width: 160px;
+}
+
+#admin-root .admin-inline-form button {
+  border: 1px solid var(--a-accent) !important;
+  background: var(--a-accent) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  padding: 6px 14px !important;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  cursor: pointer;
+}
+
+#admin-root .admin-inline-form button:hover {
+  opacity: 0.9;
+}
+
+/* ---------- Role detail (expanded permission list) ---------- */
+
+#admin-root .admin-role-detail {
+  padding: 12px !important;
+  border-bottom: 1px solid var(--a-line) !important;
+  background: var(--a-bg2) !important;
+}
+
+#admin-root .admin-role-detail .status-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+#admin-root .admin-role-detail .status-pill button {
+  border: none !important;
+  background: transparent !important;
+  cursor: pointer;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  color: inherit !important;
+}
+
+/* ---------- Elevation modal (PAM code-entry dialog) ---------- */
+
+#admin-root .admin-elevation-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(26, 26, 25, 0.45) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 60 !important;
+}
+
+#admin-root .admin-elevation-modal {
+  background: var(--a-card) !important;
+  border: 1px solid var(--a-line) !important;
+  border-radius: 10px !important;
+  padding: 20px !important;
+  max-width: 360px;
+  width: 100%;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif !important;
+  color: var(--a-ink) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+}
+
+#admin-root .admin-elevation-modal .help-title {
+  color: var(--a-ink) !important;
+}
+
+#admin-root .admin-elevation-modal p {
+  color: var(--a-muted) !important;
+  font-size: 0.85rem !important;
+}
+
+#admin-root .admin-elevation-modal input {
+  width: 100%;
+  border: 1px solid var(--a-line) !important;
+  border-radius: 6px !important;
+  padding: 10px !important;
+  font-size: 18px !important;
+  letter-spacing: 0.2em !important;
+  text-align: center !important;
+  margin: 12px 0 !important;
+  color: var(--a-ink) !important;
+  background: var(--a-card) !important;
+}
+
+#admin-root .admin-elevation-modal button[type="submit"] {
+  border: 1px solid var(--a-accent) !important;
+  background: var(--a-accent) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  padding: 8px 16px !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+}
+
+#admin-root .admin-elevation-modal button[type="submit"]:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed;
+}
+
+#admin-root .admin-elevation-modal button[type="button"] {
+  border: 1px solid var(--a-line) !important;
+  background: var(--a-card) !important;
+  color: var(--a-ink) !important;
+  border-radius: 6px !important;
+  padding: 8px 16px !important;
+  cursor: pointer;
+}
+
+/* ---------- shadcn/ui utility overrides ---------- *
+ * global.css's app-wide "blank reset" (html body [class]x6 !important,
+ * specificity (0,6,0)) nukes background/border/color/border-radius/
+ * box-shadow/font-weight/text-transform/letter-spacing on ANY element that
+ * has a class attribute at all, everywhere in the app - not just elements
+ * with 6+ actual classes. Tailwind's own generated utility rules (each a
+ * plain single-class selector, specificity (0,1,0)) can never beat that.
+ * Only an ID-anchored selector can (ID tier always outranks class tier),
+ * so every Tailwind utility class the new admin/components/ui/* components
+ * rely on for color/border/radius needs an explicit #admin-root-scoped
+ * mirror here - the same technique already used above for the old
+ * .admin-star and .help-star classes, extended to shadcn's utility vocabulary. */
+
+#admin-root .bg-background { background-color: var(--background) !important; }
+#admin-root .bg-card { background-color: var(--card) !important; }
+#admin-root .bg-popover { background-color: var(--popover) !important; }
+#admin-root .bg-primary { background-color: var(--primary) !important; }
+#admin-root .bg-muted { background-color: var(--muted) !important; }
+#admin-root .bg-accent { background-color: var(--accent) !important; }
+#admin-root .bg-destructive { background-color: var(--destructive) !important; }
+#admin-root .bg-transparent { background-color: transparent !important; }
+#admin-root .bg-black\/45 { background-color: rgba(0, 0, 0, 0.45) !important; }
+
+#admin-root .text-foreground { color: var(--foreground) !important; }
+#admin-root .text-card-foreground { color: var(--card-foreground) !important; }
+#admin-root .text-popover-foreground { color: var(--popover-foreground) !important; }
+#admin-root .text-primary { color: var(--primary) !important; }
+#admin-root .text-primary-foreground { color: var(--primary-foreground) !important; }
+#admin-root .text-muted-foreground { color: var(--muted-foreground) !important; }
+#admin-root .text-accent-foreground { color: var(--accent-foreground) !important; }
+#admin-root .text-destructive { color: var(--destructive) !important; }
+
+#admin-root .border-border { border-color: var(--border) !important; }
+#admin-root .border-input { border-color: var(--input) !important; }
+#admin-root .border-transparent { border-color: transparent !important; }
+#admin-root .border-primary { border-color: var(--primary) !important; }
+
+#admin-root .rounded-sm { border-radius: 0.125rem !important; }
+#admin-root .rounded-md { border-radius: 0.375rem !important; }
+#admin-root .rounded-lg { border-radius: 0.5rem !important; }
+#admin-root .rounded-full { border-radius: 9999px !important; }
+
+#admin-root .font-medium { font-weight: 500 !important; }
+#admin-root .font-semibold { font-weight: 600 !important; }
+#admin-root .font-bold { font-weight: 700 !important; }
+#admin-root .font-extrabold { font-weight: 800 !important; }
+#admin-root .uppercase { text-transform: uppercase !important; }
+#admin-root .tracking-wide { letter-spacing: 0.025em !important; }
+#admin-root .tracking-\[0\.3em\] { letter-spacing: 0.3em !important; }
+#admin-root .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1) !important; }
+#admin-root .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1) !important; }
+
+/* Hover/focus/data-state variants that also set the reset properties -
+   these need the exact same treatment since the reset rule matches
+   regardless of pseudo-class/attribute-selector state. */
+#admin-root .hover\:bg-muted:hover { background-color: var(--muted) !important; }
+#admin-root .hover\:bg-muted\/60:hover { background-color: color-mix(in srgb, var(--muted) 60%, transparent) !important; }
+#admin-root .hover\:text-foreground:hover { color: var(--foreground) !important; }
+#admin-root .focus\:bg-muted:focus { background-color: var(--muted) !important; }
+#admin-root [data-state="checked"].data-\[state\=checked\]\:bg-primary { background-color: var(--primary) !important; }
+#admin-root [data-state="checked"].data-\[state\=checked\]\:border-primary { border-color: var(--primary) !important; }
