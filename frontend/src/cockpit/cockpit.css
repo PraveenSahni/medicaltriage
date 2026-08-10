@@ -1453,6 +1453,13 @@
   border-color: var(--accent);
 }
 
+#cockpit-root .vfield-error {
+  color: var(--ems) !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  margin: 4px 0 0 !important;
+}
+
 #cockpit-root .vitals-card.disabled .vitals-grid {
   opacity: 0.4 !important;
   pointer-events: none !important;

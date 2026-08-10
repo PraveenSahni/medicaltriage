@@ -17,6 +17,16 @@ const vitalPlaceholders: Record<string, string> = {
   spo2: "95-100"
 };
 
+// Mirrors the backend's QueueVitalsSchema clinical bounds exactly (src/types/queue.ts) -
+// a value outside these is always rejected server-side, so checking here first means a
+// nurse tabbing away mid-digit (e.g. "6" on the way to typing "60") never triggers a
+// failed save; the draft just stays locally with a clear reason why it hasn't been sent.
+const vitalBounds: Record<string, [number, number]> = {
+  heartRate: [20, 260],
+  respiratoryRate: [4, 80],
+  spo2: [50, 100]
+};
+
 // Real smart-default/autocomplete suggestions (UX/NFR-014) - the most
 // common real-world values within each vital's normal range, offered via
 // a native <datalist> so a nurse can pick a typical value with one click
@@ -127,15 +137,30 @@ export function ReasonRuleOutStage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item.id]);
 
+  const [vitalDraftErrors, setVitalDraftErrors] = useState<Record<string, string>>({});
+
   function saveVitalDraftOnBlur(key: string) {
     const raw = vitalDrafts[key]?.trim() ?? "";
     if (raw === "") {
+      setVitalDraftErrors((current) => {
+        const next = { ...current };
+        delete next[key];
+        return next;
+      });
       return;
     }
     const parsed = Number(raw);
-    if (Number.isFinite(parsed)) {
-      saveVital(key, parsed);
+    const [min, max] = vitalBounds[key];
+    if (!Number.isFinite(parsed) || parsed < min || parsed > max) {
+      setVitalDraftErrors((current) => ({ ...current, [key]: `Enter a value between ${min} and ${max}.` }));
+      return;
     }
+    setVitalDraftErrors((current) => {
+      const next = { ...current };
+      delete next[key];
+      return next;
+    });
+    saveVital(key, parsed);
   }
 
   // Persist the checked-by-default state the first time this stage is
@@ -473,6 +498,7 @@ export function ReasonRuleOutStage({
                   <option key={suggestion} value={suggestion} />
                 ))}
               </datalist>
+              {vitalDraftErrors[key] && <p className="vfield-error">{vitalDraftErrors[key]}</p>}
             </div>
           ))}
           <div className="vfield">
