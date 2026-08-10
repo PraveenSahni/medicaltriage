@@ -155,7 +155,13 @@ export function ProtocolMatchPanel({ item, isReadOnly }: { item: QueueItem; isRe
       )}
 
       {prepared.status === "NO_MATCH" && (
-        <div className="protocol-match-empty">No matching guideline found for the current reason and keywords.</div>
+        <>
+          <div className="protocol-match-empty">No matching guideline found for the current reason and keywords.</div>
+          <div className="protocol-match-select-hint">
+            This demo&rsquo;s content library currently covers a limited set of protocols and may not include a
+            match for every reason or age group.
+          </div>
+        </>
       )}
 
       {prepared.status === "PREPARED" && (
@@ -168,7 +174,13 @@ export function ProtocolMatchPanel({ item, isReadOnly }: { item: QueueItem; isRe
               )}
             </div>
           ) : (
-            <div className="protocol-match-empty">No matching guideline found for the current reason and keywords.</div>
+            <>
+              <div className="protocol-match-empty">No matching guideline found for the current reason and keywords.</div>
+              <div className="protocol-match-select-hint">
+                This demo&rsquo;s content library currently covers a limited set of protocols and may not include a
+                match for every reason or age group.
+              </div>
+            </>
           )}
 
           {canSelect && (

@@ -156,7 +156,11 @@ export function QuestionsStage({
   if (!item.preparedProtocol) {
     return (
       <section aria-label="Questions">
-        <p className="action-sub-note">No protocol questions are available for this call yet.</p>
+        <p className="action-sub-note">
+          No protocol questions are available for this call yet. This demo&rsquo;s content library
+          currently covers a limited set of protocols and may not include a match for every reason or
+          age group.
+        </p>
       </section>
     );
   }
@@ -180,7 +184,11 @@ export function QuestionsStage({
   if (questions.length === 0) {
     return (
       <section aria-label="Questions">
-        <p className="action-sub-note">No protocol questions are available for this call yet.</p>
+        <p className="action-sub-note">
+          No protocol questions are available for this call yet. This demo&rsquo;s content library
+          currently covers a limited set of protocols and may not include a match for every reason or
+          age group.
+        </p>
       </section>
     );
   }
