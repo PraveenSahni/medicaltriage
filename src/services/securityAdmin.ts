@@ -640,7 +640,23 @@ const roles: Role[] = [
     code: "triage_service_manager",
     name: "Triage Service Manager",
     description: "Monitors queue health, staffing coverage, case allocation, operational KPIs, and escalation throughput.",
-    permissions: ["triage.queue.manage", "operations.dashboard.view", "reports.view", "audit.events.view"],
+    // privacy.reveal.approve added here (not remote_triage_nurse, which
+    // already holds privacy.reveal.request) so real dual-control - a
+    // requester and approver being distinct people - is actually possible
+    // with the seeded roles. Previously only platform_super_administrator
+    // held this permission, so a nurse's reveal request could only ever be
+    // approved by the same super-admin account that can also request one,
+    // making the "distinct approver" segregation-of-duties guarantee
+    // untestable and, in a real deployment, practically unusable for the
+    // common case of a nurse's request needing an operational manager's
+    // sign-off rather than the platform's top-level administrator.
+    permissions: [
+      "triage.queue.manage",
+      "operations.dashboard.view",
+      "reports.view",
+      "audit.events.view",
+      "privacy.reveal.approve"
+    ],
     responsibilities: ["coordinate_triage_queue", "view_operational_reports"],
     dataScopes: ["assigned_queues", "operational_dashboards"],
     clinicalScopes: ["adult", "pediatric", "aviation", "operations"],
