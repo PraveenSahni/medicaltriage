@@ -384,7 +384,7 @@ function biologicalSexFromOracleGender(gender: string): "male" | "female" {
   return gender === "F" ? "female" : "male";
 }
 
-function ageFromDateOfBirth(dateOfBirthIso: string): number {
+export function ageFromDateOfBirth(dateOfBirthIso: string): number {
   const dob = new Date(dateOfBirthIso);
   if (Number.isNaN(dob.getTime())) {
     return 0;
