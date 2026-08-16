@@ -106,7 +106,7 @@ jobs:
 
       - name: Upload sanitized plan artefact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: drift-plan-soc2-${{ github.run_id }}
           path: ${{ env.TF_WORKING_DIR }}/plan_sanitized.txt
