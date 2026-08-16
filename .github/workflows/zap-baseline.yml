@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.14.0
+        uses: zaproxy/action-baseline@v0.15.0
         with:
           # Fixed to the approved soc2 environment only - never the live
           # customer-facing demo (triaged.irisstar.tech).
