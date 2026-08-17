@@ -32,7 +32,7 @@ Current top blockers:
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Zero-traffic canary passed; clinical sign-off and promotion pending | Exact-question advice enforced; live 30/30 five-protocol matrix and fail-closed negatives passed |
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Zero-traffic canary passed; promotion pending | Live incremental merge, cross-revision reload and disposition-lock regression passed |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
-| PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Open — live access required | Dedicated keyless runtime identity; scheduled-workload disposition; least-privilege IAM and canary evidence from `triage-502706` |
+| PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Zero-traffic identity canary passed; promotion pending | Dedicated keyless runtime identity; narrow IAM; SOC2-only jobs assigned to PR-008 decommission |
 | PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Source complete; deployment pending | Append-only DB role, HMAC chain, integrity verification and live tamper-negative evidence |
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Decision and source complete; deployment rehearsal pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Infrastructure cleanup complete; certificate issuance pending | Healthy triage serving chain documented; marketing TLS active; post-change validation |
@@ -394,25 +394,65 @@ PR-008 therefore requires no separate Cloud SQL instance for the remediation env
 
 The authoritative demo environment is project `triage-502706` (project number `1096520215793`) in `me-central1`, not `aimltriage`. The earlier 2026-08-17 inspection of `aimltriage` was performed against an unrelated project and is explicitly invalid as PR-009 closure evidence.
 
-Current authoritative baseline, pending a fresh control-plane read:
+Authoritative baseline and decision:
 
 1. Cloud Run service `ist-triage-demo` serves `triaged.irisstar.tech` through Firebase Hosting.
 2. Recorded revision is `ist-triage-demo-00033-fmh`, using image `me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-demo:20260812-hotfix-112943`.
-3. The demo service still uses the default Compute identity `1096520215793-compute@developer.gserviceaccount.com`; therefore PR-009 remains open.
+3. The production-traffic revision still uses the default Compute identity
+   `1096520215793-compute@developer.gserviceaccount.com`; the tested zero-traffic
+   replacement revision uses the dedicated identity recorded below.
 4. The existing 2026-08-06 IAM review records that the SOC2 web service was moved to `ist-triage-cloudrun-sa@triage-502706.iam.gserviceaccount.com`, while demo, jobs and schedulers were deliberately deferred.
 5. Repository infrastructure still assigns the default Compute identity to scheduled SOC2 workloads. Under PR-008, workloads that exist only for the temporary SOC2 environment should be deleted through controlled decommission instead of migrated. Any scheduled workload that survives must receive its own least-privilege identity.
 6. The live runtime endpoint was reported healthy with `environment=demo`, `dataProfile=synthetic` and `is_mock=true`; this does not prove the configured service account or IAM bindings.
-7. `praveen@irisstar.tech` currently receives `PERMISSION_DENIED` for `run.services.get` in `triage-502706`. No live IAM mutation or fresh configuration verification has therefore been performed in this remediation step.
+7. Live control-plane access was restored with approved principal
+   `sahni.ps@gmail.com`, and the current configuration and IAM bindings were
+   verified directly in `triage-502706`.
 
 Required closure sequence:
 
 - Authenticate an approved principal with enough read access to inventory Cloud Run, IAM, Secret Manager IAM, Cloud Run Jobs and Cloud Scheduler in `triage-502706`.
 - Capture the demo service configuration, active revision/image digest, attached service account, Cloud SQL attachment, secret references, project IAM, service-account keys and all scheduled workloads.
-- Attach a dedicated keyless demo runtime identity with Cloud SQL Client and access only to the three required demo secrets. Do not grant Editor, Owner or IAM administration.
+- Attach a dedicated keyless demo runtime identity with Cloud SQL Client and access only to the five required demo secrets. Do not grant Editor, Owner or IAM administration.
 - Create a no-traffic revision using the same approved image and configuration, then validate startup, `/healthz/`, `/api/v1/runtime/environment`, database connectivity, authentication and a representative triage workflow before shifting traffic.
 - Confirm logs contain no permission failures and preserve the previous revision as the tested rollback target until the observation window completes.
 - Delete SOC2-only scheduled workloads during the approved PR-008 decommission. If any job remains temporarily, assign a separate job identity with only Cloud SQL Client, per-secret accessor, and Monitoring Viewer only where the job actually queries Monitoring.
 - Record command output, IAM bindings, revision name, immutable image digest, validation results, rollback target, operator and timestamp here before changing PR-009 to complete.
+
+### 2026-08-17 zero-traffic identity-canary evidence
+
+- Dedicated identity:
+  `ist-triage-cloudrun-sa@triage-502706.iam.gserviceaccount.com`.
+- The identity has no user-managed service-account keys and therefore uses
+  Cloud Run's keyless workload identity path.
+- Project roles are limited to `roles/cloudsql.client`,
+  `roles/monitoring.viewer`, and custom role
+  `projects/triage-502706/roles/istTriageRuntimeSchedulerOperator`. It has no
+  Editor, Owner or IAM-administration role.
+- The custom Scheduler role contains only `cloudscheduler.jobs.get`, `list`,
+  `run`, `pause` and `enable`, matching the operations exposed by the
+  administrator API; it cannot create, delete or arbitrarily update jobs.
+- `roles/secretmanager.secretAccessor` is granted on exactly five named demo
+  secrets: database URL, authentication JWT, audit HMAC, administrator password
+  and MFA encryption key. It is not granted project-wide.
+- Zero-traffic revision `ist-triage-demo-pr009-iam`, tagged `pr009-canary`, uses
+  immutable image digest
+  `sha256:6c421ea1677d50484bb11f97f16ea94eeea9ab61c09f28b7a1b72b19f84e531a`.
+  The revision directly reports service account
+  `ist-triage-cloudrun-sa@triage-502706.iam.gserviceaccount.com`.
+- Health, persisted session and Scheduler-list requests returned HTTP 200; the
+  Scheduler response contained all six current jobs. Runtime provenance matched
+  Git `24a634f98b25740d395f31a40c9c12cce5598d6f`, Cloud Build
+  `86f36895-1e4c-48ac-9d64-aa56b2a6519c`, and the PR-009 revision. All eight
+  persistence flags remained enabled.
+- No severity-ERROR log entry was returned for the PR-009 revision during the
+  validation window. The temporary session was revoked.
+- All six remaining default-identity jobs are named `*-soc2` and belong only to
+  the temporary SOC2 environment. Under the accepted PR-008 decision, they will
+  be deleted during controlled SOC2 decommission rather than migrated. Any job
+  retained beyond that decommission must receive its own least-privilege job
+  identity before it may run.
+- Production traffic remained 100% on `ist-triage-demo-00035-wlm`; promotion of
+  the dedicated identity is pending the shared PR-001 operator-MFA custody gate.
 
 ## PR-010 implementation record — append-only chained audit ledger
 
@@ -485,6 +525,7 @@ Outstanding deployment gates:
 - 2026-08-17: PR-007 zero-traffic canary passed in `triage-502706`. Six incremental IAQ/TAQ/approval patches survived a PR-006 cross-revision reload; idempotent post-disposition retry returned 200, a late clinical answer returned 409 / `QUEUE_DISPOSITION_LOCKED`, and the final reload proved no forbidden key was stored. Synthetic records and sessions were cleaned; production traffic was unchanged.
 - 2026-08-17: PR-008 risk decision recorded. The shared Cloud SQL instance is accepted only for the temporary remediation topology; SOC2 will be safely decommissioned after customer security validation, leaving one authoritative system.
 - 2026-08-17: PR-009 evidence correction: `aimltriage` was the wrong project and its inventory is invalid for closure. The authoritative target is `triage-502706`; its demo baseline still uses the default Compute service account. PR-009 is open pending authorized live inventory, least-privilege cutover and canary evidence.
+- 2026-08-17: PR-009 zero-traffic identity canary passed in `triage-502706`. The dedicated keyless runtime account has Cloud SQL Client, Monitoring Viewer, a five-permission Scheduler custom role and access to exactly five demo secrets, with no Editor/Owner role or user-managed key. Health, persisted session and Scheduler listing returned 200 with no severity-ERROR canary logs. SOC2-only jobs remain assigned to the PR-008 controlled decommission; production identity promotion remains blocked by PR-001 MFA custody.
 - 2026-08-17: PR-010 source remediation completed. New audit events use a serialized HMAC chain and dedicated insert/select-only database connection; database triggers prohibit mutation and unsigned/forked inserts; integrity verification and tamper regressions were added. Isolated Cloud SQL migration and no-traffic demo canary evidence remain pending.
 - 2026-08-17: PR-011 business decision and source remediation completed for a 365-day completed-queue retention policy. Execute mode now requires the approved policy, legal holds are revalidated transactionally, and privacy erasure remains open when held records survive. Isolated `ist_triage_demo` rehearsal remains pending.
 - 2026-08-17: PR-012 investigation completed. Both triage domains are healthy on Firebase Hosting with a valid shared Google Trust Services certificate. `aimltriage.com` still fails hostname-valid TLS across its two published Firebase IPs. The additive external load-balancer chain is a stale-resource candidate, but the current identity cannot read its live inventory or Firebase custom-domain state. No destructive action was taken. Exact evidence, resource candidates, access requirements and cleanup order are in `docs/infrastructure/pr-012-certificate-remediation.md`.
