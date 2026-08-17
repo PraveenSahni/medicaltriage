@@ -94,6 +94,9 @@ export const QueueContextUpdateSchema = z.object({
   floorSource: SafetyFloorSourceSchema.optional(),
   dispositionCode: z.string().min(2).max(120).optional(),
   destinationName: z.string().min(2).max(200).optional(),
+  // These maps are PATCH fragments, not replacement documents. The backend
+  // merges their keys into the stored clinical record so a later approval or
+  // single-question save cannot erase earlier protocol lineage or answers.
   clinicalApproval: z.record(z.unknown()).optional(),
   initialAssessmentResponses: z.record(z.string().max(400)).optional(),
   taqResponses: z.record(z.boolean()).optional(),

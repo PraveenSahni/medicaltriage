@@ -87,6 +87,7 @@ async function processCall(jar: CookieJar, id: string): Promise<{ id: string; ou
   const answerYesFirst = Number(id.slice(-1).charCodeAt(0)) % 3 === 0;
 
   let dispositionCode: string | undefined;
+  let terminalQuestionId: string | undefined;
   if (answerYesFirst) {
     const q = questions[0];
     const destinationByCode: Record<string, string> = {
@@ -112,6 +113,7 @@ async function processCall(jar: CookieJar, id: string): Promise<{ id: string; ou
     });
     if (!update.ok) return { id, outcome: `context-update-failed-${update.status}` };
     dispositionCode = q.dispositionCode;
+    terminalQuestionId = q.id;
   } else {
     const lastQ = questions[questions.length - 1];
     const update = await request(jar, `/api/v1/queue/${id}/context`, {
@@ -140,7 +142,12 @@ async function processCall(jar: CookieJar, id: string): Promise<{ id: string; ou
 
   await request(jar, `/api/v1/queue/${id}/context`, {
     method: "PATCH",
-    body: JSON.stringify({ clinicalApproval: { approvedAtIso: new Date().toISOString() } })
+    body: JSON.stringify({
+      clinicalApproval: {
+        ...(terminalQuestionId ? { terminalQuestionId } : {}),
+        approvedAtIso: new Date().toISOString()
+      }
+    })
   });
 
   await request(jar, `/api/v1/queue/${id}/context`, {

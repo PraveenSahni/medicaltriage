@@ -459,6 +459,103 @@ describe("Enterprise queue orchestration", () => {
     expect(reloaded.body.item.initialAssessmentResponses).toEqual(answers);
   });
 
+  it("PR-007 merges partial IAQ, TAQ and approval JSON updates without losing earlier fields", async () => {
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
+
+    await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ initialAssessmentResponses: { "iaq-location": "lower abdomen" } })
+      .expect(200);
+    await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ initialAssessmentResponses: { "iaq-duration": "two hours" } })
+      .expect(200);
+
+    await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ taqResponses: { "taq-emergency": false } })
+      .expect(200);
+    await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ taqResponses: { "taq-urgent": true } })
+      .expect(200);
+
+    await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ clinicalApproval: { terminalQuestionId: "taq-urgent" } })
+      .expect(200);
+    await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ clinicalApproval: { approvedAtIso: "2026-08-17T12:00:00.000Z", approvedBy: "Layla" } })
+      .expect(200);
+
+    const reloaded = await nurse.get("/api/v1/queue/case-10002").expect(200);
+    expect(reloaded.body.item.initialAssessmentResponses).toEqual({
+      "iaq-location": "lower abdomen",
+      "iaq-duration": "two hours"
+    });
+    expect(reloaded.body.item.taqResponses).toEqual({
+      "taq-emergency": false,
+      "taq-urgent": true
+    });
+    expect(reloaded.body.item.clinicalApproval).toEqual({
+      terminalQuestionId: "taq-urgent",
+      approvedAtIso: "2026-08-17T12:00:00.000Z",
+      approvedBy: "Layla"
+    });
+  });
+
+  it("PR-007 permits idempotent partial JSON after disposition but rejects new clinical answers", async () => {
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
+    await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({
+        vitals: {
+          heartRate: 135,
+          respiratoryRate: 42,
+          spo2: 91,
+          temperature: 38.2,
+          consciousLevel: "alert"
+        },
+        matchedProtocolId: "sample-fever-child",
+        calculatedSeverity: "EMERGENCY",
+        dispositionCode: "SIDRA_PEDIATRIC_ED",
+        destinationName: "Sidra Medicine Emergency Department",
+        initialAssessmentResponses: { "iaq-duration": "two hours" },
+        taqResponses: { "taq-emergency": true },
+        clinicalApproval: { terminalQuestionId: "taq-emergency" }
+      })
+      .expect(200);
+    await nurse
+      .post("/api/v1/queue/case-10002/move")
+      .send({ toStage: "DISPOSITION", toStatus: "IN_PROCESS", reason: "Assessment completed" })
+      .expect(200);
+
+    await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({
+        initialAssessmentResponses: { "iaq-duration": "two hours" },
+        taqResponses: { "taq-emergency": true },
+        clinicalApproval: { approvedAtIso: "2026-08-17T12:00:00.000Z" }
+      })
+      .expect(200);
+
+    const rejected = await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ taqResponses: { "taq-late-change": false } })
+      .expect(409);
+    expect(rejected.body.code).toBe("QUEUE_DISPOSITION_LOCKED");
+
+    const reloaded = await nurse.get("/api/v1/queue/case-10002").expect(200);
+    expect(reloaded.body.item.taqResponses).toEqual({ "taq-emergency": true });
+    expect(reloaded.body.item.clinicalApproval).toEqual({
+      terminalQuestionId: "taq-emergency",
+      approvedAtIso: "2026-08-17T12:00:00.000Z"
+    });
+  });
+
   it("labels the seeded symptom-reported red-floor cases with their floor source", async () => {
     const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 

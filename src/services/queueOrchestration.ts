@@ -2111,13 +2111,19 @@ export async function updateQueueContext(
     );
   }
   if (stageIndex(record.currentStage) >= stageIndex("DISPOSITION") && record.dispositionCode) {
+    const mergedInitialAssessmentResponses = update.initialAssessmentResponses
+      ? { ...record.initialAssessmentResponses, ...update.initialAssessmentResponses }
+      : record.initialAssessmentResponses ?? {};
+    const mergedTaqResponses = update.taqResponses
+      ? { ...record.taqResponses, ...update.taqResponses }
+      : record.taqResponses ?? {};
     const editsClinicalFields =
       (update.vitals && partialVitalsChanged(update.vitals, record.vitals)) ||
       (typeof update.vitalsUnobtainable === "boolean" && update.vitalsUnobtainable !== record.vitalsUnobtainable) ||
       (update.matchedProtocolId && update.matchedProtocolId !== record.matchedProtocolId) ||
       (update.initialAssessmentResponses &&
-        JSON.stringify(update.initialAssessmentResponses) !== JSON.stringify(record.initialAssessmentResponses)) ||
-      (update.taqResponses && JSON.stringify(update.taqResponses) !== JSON.stringify(record.taqResponses)) ||
+        JSON.stringify(mergedInitialAssessmentResponses) !== JSON.stringify(record.initialAssessmentResponses ?? {})) ||
+      (update.taqResponses && JSON.stringify(mergedTaqResponses) !== JSON.stringify(record.taqResponses ?? {})) ||
       (update.calculatedSeverity && update.calculatedSeverity !== record.calculatedSeverity) ||
       (update.dispositionCode && update.dispositionCode !== record.dispositionCode) ||
       (update.destinationName && update.destinationName !== record.destinationName);
@@ -2172,12 +2178,24 @@ export async function updateQueueContext(
   }
   if (update.dispositionCode && !floorBlocksDowngrade) record.dispositionCode = update.dispositionCode;
   if (update.destinationName && !floorBlocksDowngrade) record.destinationName = update.destinationName;
-  if (update.initialAssessmentResponses) record.initialAssessmentResponses = update.initialAssessmentResponses;
-  if (update.taqResponses) record.taqResponses = update.taqResponses;
+  if (update.initialAssessmentResponses) {
+    record.initialAssessmentResponses = {
+      ...record.initialAssessmentResponses,
+      ...update.initialAssessmentResponses
+    };
+  }
+  if (update.taqResponses) {
+    record.taqResponses = { ...record.taqResponses, ...update.taqResponses };
+  }
   if (update.sbarNoteText) record.sbarNoteText = update.sbarNoteText;
   if (update.fitToFlyStatus) record.fitToFlyStatus = update.fitToFlyStatus;
   if (typeof update.vitalsUnobtainable === "boolean") record.vitalsUnobtainable = update.vitalsUnobtainable;
-  if (update.clinicalApproval) record.clinicalApproval = update.clinicalApproval;
+  if (update.clinicalApproval) {
+    record.clinicalApproval = {
+      ...(isRecord(record.clinicalApproval) ? record.clinicalApproval : {}),
+      ...update.clinicalApproval
+    };
+  }
   if (typeof update.sbarCopied === "boolean") record.sbarCopied = update.sbarCopied;
   if (update.summary) record.summary = update.summary;
   if (update.reasonNarrative) {

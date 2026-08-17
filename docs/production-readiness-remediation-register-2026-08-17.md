@@ -29,7 +29,7 @@ Current top blockers:
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Source complete; deployment pending | Assignment-time SoD validator and negative tests |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Source complete; deployment pending | Approved canonical role catalog reconciled across API, UI and documentation |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Source complete; deployment pending | Exact-question advice enforced; implicit fallback prohibited; exhaustive regression matrix |
-| PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Open | Backend merge invariant and all-surface regression tests |
+| PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Source complete; deployment pending | Backend merge invariant; legacy caller reconciliation; lifecycle regression tests |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Open/decision required | Accepted risk or isolated instance with restore test |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Open | Dedicated least-privilege accounts and IAM evidence |
 | PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Open | Append-only DB role plus chaining or immutable external export |
@@ -190,6 +190,33 @@ Outstanding deployment gates:
 - Confirm no generic or same-disposition sibling advice appears in network responses or the UI; record protocol ID, question ID, advice IDs and revision for each run.
 - Promote demo only after clinical review; repeat on SOC2 before marking PR-006 fully closed.
 
+## PR-007 implementation record — structured clinical JSON merge invariant
+
+Source remediation complete:
+
+1. The queue-context backend now treats `initialAssessmentResponses`, `taqResponses` and `clinicalApproval` as partial PATCH maps and shallow-merges their keys into the existing record instead of replacing the entire JSON object.
+2. The invariant is enforced centrally, so cockpit, legacy workspaces, scripts and direct API callers receive the same preservation behavior even if a caller submits only its newest field.
+3. The post-disposition clinical lock now compares the merged candidate object with the stored record. An idempotent partial retry is allowed, while adding or changing an IAQ/TAQ after disposition still returns `QUEUE_DISPOSITION_LOCKED`.
+4. Both legacy nurse workspaces preserve existing approval metadata when adding completion approval fields.
+5. The bulk queue simulation preserves its terminal question ID when it subsequently records approval time. Other all-No simulation paths legitimately have no terminal positive question.
+6. The database save path receives the fully merged record and continues writing the complete maps to `clinicalApproval` and `queuePayload`; API reload regression proves the complete merged structure round-trips through the configured queue store.
+
+Verification completed:
+
+- Focused queue orchestration: 21/21 tests passed, including two new PR-007 multi-request regression cases.
+- New coverage proves incremental IAQ answers, incremental TAQ answers and later approval metadata preserve all earlier keys after reload.
+- New lifecycle coverage proves idempotent partial retries remain accepted after disposition, late clinical answers remain rejected, and terminal question lineage survives later approval.
+- Adjacent backend clinical suites: 74/74 tests passed across queue orchestration, triage and five-protocol PR-006 lineage.
+- Complete frontend suite: 66/66 tests passed.
+- Backend build/typecheck and frontend typecheck: pass.
+
+Outstanding deployment gates:
+
+- Deploy the isolated PR-007 commit to a no-traffic demo canary.
+- Against Cloud SQL, submit separate IAQ, TAQ and approval PATCH requests, reload through a separate application instance, and verify every key remains present.
+- Repeat across active cockpit, legacy completion path, hold/resume and handoff; verify a post-disposition new-answer attempt returns HTTP 409 without changing stored JSON.
+- Promote demo only after canary evidence; repeat against SOC2 before marking PR-007 fully closed.
+
 ## Change log
 
 - 2026-08-17: PR-001 source remediation completed and verified locally. Production runtime now fails closed for shared and seeded demo credentials unless `ALLOW_DEMO_CREDENTIALS=true` is deliberately configured. Focused authentication/session regression: 35/35 tests passed; backend typecheck passed. Deployment closure remains pending.
@@ -200,3 +227,4 @@ Outstanding deployment gates:
 - 2026-08-17: PR-004 and PR-005 source remediation completed around three protected system roles plus governed custom roles. SoD validation, durable schema/API, Platform Administrator UI, audit behavior and documentation were added; all focused and adjacent recorded suites passed. Database migration and no-traffic canary evidence remain pending.
 - 2026-08-17: PR-006 source remediation completed. Questions, TAQs, disposition and care advice now share one selected protocol lineage; care advice requires exact question linkage and fails closed without it. Repeated exhaustive and negative regression tests, backend build and both typechecks passed. Canary and live multi-protocol clinical verification remain pending.
 - 2026-08-17: PR-006 validation was tightened to the five licensed protocols only. A named 30-case cross-protocol matrix and three exhaustive passes over all 126 licensed TAQs passed; synthetic sample protocols are not counted as clinical validation evidence.
+- 2026-08-17: PR-007 source remediation completed. Structured IAQ, TAQ and approval JSON now merge at the backend boundary; legacy callers preserve existing approval lineage; idempotent post-disposition retries remain allowed while new clinical answers stay locked. Focused, adjacent and complete frontend regression suites passed. Cloud SQL canary verification remains pending.

@@ -1180,6 +1180,7 @@ export default function NurseWorkspace() {
         const severity = activeSeverityFromAssessment(card, activeScoreResult, assessmentResponses);
         await updateItemContext(card.id, {
           clinicalApproval: {
+            ...(activeItem.clinicalApproval ?? {}),
             approvedBy: "Remote Triage Nurse",
             approvedAtIso: new Date().toISOString(),
             approvalType: "sbar-copy-and-close"
