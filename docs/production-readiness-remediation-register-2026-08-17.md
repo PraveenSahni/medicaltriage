@@ -29,7 +29,7 @@ Current top blockers:
 | PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | Zero-traffic canary passed; promotion pending | Eight flags enabled; migrations current; cross-revision MFA, session and queue durability proven |
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Zero-traffic canary healthy; elevated mutation UAT blocked by PR-001 MFA custody | Assignment-time SoD validator; 135/135 regression; nurse mutation denied live |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Zero-traffic canary passed; promotion pending | Exactly 3 protected roles confirmed live; governed custom-role migration current |
-| PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Source complete; deployment pending | Exact-question advice enforced; implicit fallback prohibited; exhaustive regression matrix |
+| PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Zero-traffic canary passed; clinical sign-off and promotion pending | Exact-question advice enforced; live 30/30 five-protocol matrix and fail-closed negatives passed |
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Source complete; deployment pending | Backend merge invariant; legacy caller reconciliation; lifecycle regression tests |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Open — live access required | Dedicated keyless runtime identity; scheduled-workload disposition; least-privilege IAM and canary evidence from `triage-502706` |
@@ -283,12 +283,39 @@ Verification completed:
 - Cockpit canonical protocol selection and exact terminal-question filtering: 4/4 tests passed.
 - Backend build/typecheck and frontend typecheck: pass.
 
+### 2026-08-17 zero-traffic deployment evidence
+
+- Clean committed source: `0acf38ef860d62415f3dd60ad580fc4aa5cd3a7e`.
+- Local clinical regression: 53/53 backend tests and 13/13 frontend tests
+  passed; backend and frontend TypeScript checks passed. The backend matrix
+  includes 30 named cases across exactly five licensed protocols plus three
+  exhaustive passes over all 126 authored TAQs.
+- Cloud Build: `1f3bb6d1-580d-4ae9-9c47-edcbd9133aa5`, status `SUCCESS`.
+- Immutable image digest:
+  `sha256:ff8d47b7af40added3f8a66146025c8e8af09e9c525d38fa15c4b1e211dfd01b`.
+- Zero-traffic revision: `ist-triage-demo-pr006-0acf38e`, tagged
+  `pr006-canary`, labelled `git-sha=0acf38e` and `release=pr-006`.
+- Health returned HTTP 200. Runtime provenance matched the exact commit, build
+  and revision; all eight persistence flags remained enabled.
+- A live 30-case API matrix passed across exactly the five licensed protocols.
+  For every case, `selectionMode` was `EXACT_QUESTION`, protocol and question
+  lineage matched the request, and returned advice IDs exactly equalled the
+  selected question's authored `careAdviceIds`.
+- One direct positive check for each of the five protocols also passed, with
+  exact advice counts of 3, 2, 3, 3 and 2 respectively.
+- Authenticated negative checks passed: missing question lineage returned HTTP
+  422 / `CARE_ADVICE_QUESTION_REQUIRED`; unknown and cross-protocol question
+  IDs returned HTTP 422 / `CARE_ADVICE_PROTOCOL_MISMATCH`.
+- All temporary sessions were revoked. The validation was read-only and created
+  no clinical or queue records.
+- Production traffic remained 100% on `ist-triage-demo-00035-wlm`.
+
 Outstanding deployment gates:
 
-- Build from the isolated PR-006 commit and deploy to a no-traffic demo canary.
 - Exercise multiple real protocols in the browser: auto-selected and nurse-overridden protocol, IAQs, every TAQ tier, terminal disposition, exact advice, all-No behavior, hold/resume and handoff.
 - Confirm no generic or same-disposition sibling advice appears in network responses or the UI; record protocol ID, question ID, advice IDs and revision for each run.
-- Promote demo only after clinical review; repeat on SOC2 before marking PR-006 fully closed.
+- Obtain named Clinical QA approval before promotion. Repeat on SOC2 only if
+  that temporary environment remains in scope under PR-008.
 
 ## PR-007 implementation record — structured clinical JSON merge invariant
 
@@ -429,6 +456,7 @@ Outstanding deployment gates:
 - 2026-08-17: PR-004/PR-005 zero-traffic canary deployed in `triage-502706`. The custom-role migration is current, 135/135 focused regressions and both typechecks passed, exactly three protected roles were confirmed live, and nurse administration attempts returned 403. PR-005 canary evidence is complete; PR-004 positive elevated mutation UAT remains blocked by the PR-001 operator-MFA custody gate and was not bypassed.
 - 2026-08-17: PR-006 source remediation completed. Questions, TAQs, disposition and care advice now share one selected protocol lineage; care advice requires exact question linkage and fails closed without it. Repeated exhaustive and negative regression tests, backend build and both typechecks passed. Canary and live multi-protocol clinical verification remain pending.
 - 2026-08-17: PR-006 validation was tightened to the five licensed protocols only. A named 30-case cross-protocol matrix and three exhaustive passes over all 126 licensed TAQs passed; synthetic sample protocols are not counted as clinical validation evidence.
+- 2026-08-17: PR-006 zero-traffic canary passed in `triage-502706`. The live 30-case exact-question matrix passed across all five licensed protocols; missing, unknown and cross-protocol lineage failed closed with the expected HTTP 422 codes. Production traffic was unchanged. Browser workflow UAT and named Clinical QA approval remain required before promotion.
 - 2026-08-17: PR-007 source remediation completed. Structured IAQ, TAQ and approval JSON now merge at the backend boundary; legacy callers preserve existing approval lineage; idempotent post-disposition retries remain allowed while new clinical answers stay locked. Focused, adjacent and complete frontend regression suites passed. Cloud SQL canary verification remains pending.
 - 2026-08-17: PR-008 risk decision recorded. The shared Cloud SQL instance is accepted only for the temporary remediation topology; SOC2 will be safely decommissioned after customer security validation, leaving one authoritative system.
 - 2026-08-17: PR-009 evidence correction: `aimltriage` was the wrong project and its inventory is invalid for closure. The authoritative target is `triage-502706`; its demo baseline still uses the default Compute service account. PR-009 is open pending authorized live inventory, least-privilege cutover and canary evidence.
