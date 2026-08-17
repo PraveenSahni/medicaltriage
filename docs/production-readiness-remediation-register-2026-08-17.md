@@ -31,7 +31,7 @@ Current top blockers:
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Source complete; deployment pending | Exact-question advice enforced; implicit fallback prohibited; exhaustive regression matrix |
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Source complete; deployment pending | Backend merge invariant; legacy caller reconciliation; lifecycle regression tests |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
-| PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Open | Dedicated least-privilege accounts and IAM evidence |
+| PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Current-system identity remediated; live availability revalidation blocked by disabled billing | Dedicated keyless runtime identity and IAM evidence; no jobs/schedulers in surviving project |
 | PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Open | Append-only DB role plus chaining or immutable external export |
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Blocked on approval | Approved period; execute-mode rehearsal; legal-hold negative test |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Open | Serving certificate chain and ownership documented; stale resources removed |
@@ -239,6 +239,28 @@ Required decommissioning controls when customer security validation completes:
 
 PR-008 therefore requires no separate Cloud SQL instance for the remediation environment. Its decision gate is complete; operational follow-through is the controlled SOC2 decommission after customer requirements are satisfied.
 
+## PR-009 implementation record — dedicated identity for the surviving system
+
+Live GCP inventory on 2026-08-17 corrected the audit baseline for the surviving `aimltriage` project:
+
+1. `ist-triage-demo` runs as `ist-triage-cloudrun-sa@aimltriage.iam.gserviceaccount.com`, revision `ist-triage-demo-00004-srz`.
+2. `ist-triage-simulation` uses the same dedicated identity, revision `ist-triage-simulation-00005-pbb`; this temporary service will be removed under the approved single-system/SOC2 decommission decision.
+3. Neither current Cloud Run service uses `747398852986-compute@developer.gserviceaccount.com`.
+4. No Cloud Run Jobs exist in `aimltriage`; Cloud Scheduler API is disabled and therefore there are no active scheduled-job identities to migrate in the surviving project.
+5. The dedicated runtime identity has only `roles/cloudsql.client` and `roles/secretmanager.secretAccessor` at project scope. It does not hold Editor, Owner, IAM administration, service-account impersonation or other administrative roles.
+6. The runtime identity has only GCP-managed keys; no downloadable user-managed service-account key exists.
+7. The default Compute identity still has the project-level Editor role, but it is not configured on either current application service or any Cloud Run Job. Removing that legacy project binding requires a separate dependency review because newer Cloud Build configurations can also use the default Compute identity; it is not necessary to establish the application runtime boundary.
+8. Historical SOC2 jobs referenced in the old `triage-502706` Terraform are outside the surviving system, inaccessible to the current `aimltriage` owner account, and scheduled for deletion rather than migration under PR-008.
+
+Important operational condition discovered during verification:
+
+- Billing is disabled on `aimltriage`. Secret Manager inventory calls fail with `BILLING_DISABLED`.
+- Both live `/healthz/` checks returned HTTP 500 and both runtime-environment checks returned HTTP 503 on 2026-08-17 at approximately 12:34 UTC.
+- Cloud Run control-plane metadata still reports both revisions Ready, but no successful application response was obtained.
+- Because billing is disabled, no IAM narrowing or new-revision canary was attempted; making an unvalidated permission change while rollback/restart validation is unavailable would be unsafe.
+
+PR-009's workload-identity defect is remediated for the intended single system: the application is attached to a dedicated, keyless, non-administrative identity and no scheduled workloads exist in that project. Production availability and any optional secret-level IAM narrowing must be revalidated after billing is restored; the current 500/503 condition is a release blocker independent of the configured runtime principal.
+
 ## Change log
 
 - 2026-08-17: PR-001 source remediation completed and verified locally. Production runtime now fails closed for shared and seeded demo credentials unless `ALLOW_DEMO_CREDENTIALS=true` is deliberately configured. Focused authentication/session regression: 35/35 tests passed; backend typecheck passed. Deployment closure remains pending.
@@ -251,3 +273,4 @@ PR-008 therefore requires no separate Cloud SQL instance for the remediation env
 - 2026-08-17: PR-006 validation was tightened to the five licensed protocols only. A named 30-case cross-protocol matrix and three exhaustive passes over all 126 licensed TAQs passed; synthetic sample protocols are not counted as clinical validation evidence.
 - 2026-08-17: PR-007 source remediation completed. Structured IAQ, TAQ and approval JSON now merge at the backend boundary; legacy callers preserve existing approval lineage; idempotent post-disposition retries remain allowed while new clinical answers stay locked. Focused, adjacent and complete frontend regression suites passed. Cloud SQL canary verification remains pending.
 - 2026-08-17: PR-008 risk decision recorded. The shared Cloud SQL instance is accepted only for the temporary remediation topology; SOC2 will be safely decommissioned after customer security validation, leaving one authoritative system.
+- 2026-08-17: PR-009 live inventory confirmed both surviving-project Cloud Run services already use the dedicated keyless `ist-triage-cloudrun-sa` identity and no Cloud Run Jobs/Scheduler jobs exist in `aimltriage`. The identity holds only Cloud SQL Client and Secret Manager Accessor, while the default Compute Editor identity is not attached to application workloads. Live health revalidation is blocked because project billing is disabled and both services currently return 500/503.

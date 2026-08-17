@@ -4,6 +4,14 @@ _Executed 2026-08-06. Real live-infrastructure change against
 `triage-502706`, environment: soc2 web service only (demo/jobs/schedulers
 deliberately deferred - see below)._
 
+## 2026-08-17 addendum — surviving `aimltriage` system
+
+The permanent-system decision supersedes the older two-project rollout assumptions below. Live inspection of `aimltriage` shows both current Cloud Run services (`ist-triage-demo` and the temporary `ist-triage-simulation`) already run as the dedicated, keyless `ist-triage-cloudrun-sa@aimltriage.iam.gserviceaccount.com`; neither uses the default Compute identity. The dedicated identity holds only project-level Cloud SQL Client and Secret Manager Accessor. No Cloud Run Jobs exist in `aimltriage`, and Cloud Scheduler is disabled there.
+
+The historical `triage-502706` SOC2 jobs remain part of the temporary remediation environment and are to be deleted, not migrated, under the PR-008 decommission decision. The current owner account cannot administer that historical project.
+
+Live application revalidation could not complete because billing is disabled on `aimltriage`: both service health requests returned HTTP 500 and runtime diagnostic requests returned HTTP 503. No IAM mutation was attempted while a new-revision canary and rollback validation were unavailable. See the PR-009 record in `docs/production-readiness-remediation-register-2026-08-17.md`.
+
 ## Phase 1: Permission dependency map
 
 Built from real source inspection (not assumed), per service/job:
