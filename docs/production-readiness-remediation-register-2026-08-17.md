@@ -37,12 +37,12 @@ Current top blockers:
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Decision and source complete; deployment rehearsal pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Infrastructure cleanup complete; certificate issuance pending | Healthy triage serving chain documented; marketing TLS active; post-change validation |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Source complete; CI execution pending | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
-| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Open | Exact HTTP evidence in both environments; test records cleaned through approved process |
+| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Local 97/97; live failed 2 SoD cases; cleanup verified | Deploy current SoD enforcement; rerun exact HTTP matrix; clean test records; resolve former SOC2 scope |
 | PR-015 | High | Five-protocol adversarial auto-match matrix missing | Clinical QA | Open | Signed ambiguity/no-match matrix with nurse override evidence |
 
 ## GCP baseline captured 2026-08-17
 
-- Demo revision: `ist-triage-demo-00033-fmh`, image tag `20260812-hotfix-112943`.
+- Demo revision at baseline: `ist-triage-demo-00033-fmh`, image tag `20260812-hotfix-112943`. PR-014 cleanup rolled the same unchanged image to `ist-triage-demo-00035-wlm`.
 - SOC2 revision: `ist-triage-soc2-00073-mad`, image tag `synthetic-flow-fix-20260807`.
 - Both services: `MOCK_MODE=true`, `APP_ENVIRONMENT=demo`, `APP_DATA_PROFILE=synthetic`.
 - Separate database secrets, database names and database users; shared PostgreSQL 15 instance in `me-central1`.
@@ -362,3 +362,22 @@ Validation completed on the audit workstation:
 The workstation has no Docker/PostgreSQL runtime, so the closure gate remains
 the first GitHub Actions run showing the migrated PostgreSQL service and all
 backend Jest suites passing. Technical test completion is not clinical UAT.
+
+## PR-014 execution record — admin user and permission boundaries
+
+- Added a 56-case create-user/permission boundary suite and a guarded live UAT
+  runner. The focused suite plus adjacent authorization/PAM regressions passed
+  97/97 locally.
+- Live demo execution recorded 22/24 expected HTTP outcomes. The deployed
+  `20260812-hotfix-112943` image incorrectly accepted a conflicting nurse plus
+  service-manager user (`201`, expected `409`) and incorrectly granted
+  `privacy.reveal.approve` to the requester nurse role (`200`, expected `409`).
+- The current source rejects both cases, proving the live image predates the
+  PR-004/PR-005 SoD remediation.
+- All transient permissions and synthetic accounts were removed by a fresh
+  unchanged revision. Post-recovery verification on
+  `ist-triage-demo-00035-wlm` confirmed the synthetic demo runtime, normal
+  administrator login, clean nurse permissions and no active PR-014 users.
+- PR-014 remains open until the current source is built/deployed and the live
+  matrix passes. Detailed matrix and evidence interpretation are in
+  `docs/security/pr-014-admin-user-permission-uat.md`.
