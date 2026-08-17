@@ -33,7 +33,7 @@ Current top blockers:
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Zero-traffic canary passed; promotion pending | Live incremental merge, cross-revision reload and disposition-lock regression passed |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Zero-traffic identity canary passed; promotion pending | Dedicated keyless runtime identity; narrow IAM; SOC2-only jobs assigned to PR-008 decommission |
-| PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Source complete; deployment pending | Append-only DB role, HMAC chain, integrity verification and live tamper-negative evidence |
+| PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Zero-traffic canary passed; promotion pending | Append-only DB role, HMAC chain, integrity verification and live tamper-negative evidence |
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Decision and source complete; deployment rehearsal pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Infrastructure cleanup complete; certificate issuance pending | Healthy triage serving chain documented; marketing TLS active; post-change validation |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Source complete; CI execution pending | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
@@ -475,13 +475,50 @@ Validation completed locally:
 - Static source scan finds no remaining direct `prisma.auditEvent.create/update/delete/deleteMany/upsert` call in `src/` or operational `scripts/`.
 - Complete backend run: 441/447 tests passed. The six failures are the already-registered PR-013 database-backed SSO/security-anomaly cases because no PostgreSQL server was available at `127.0.0.1:5433`; the PR-010-focused and adjacent 70/70 tests passed.
 
-Outstanding deployment gates:
+### 2026-08-18 zero-traffic deployment evidence
 
-- Apply migration `20260817190000_add_append_only_audit_chain` to an isolated clone of `ist_triage_demo`, then test `UPDATE`, `DELETE`, `TRUNCATE`, unsigned `INSERT` and wrong-predecessor `INSERT` all fail.
-- Run `scripts/configureAuditWriterRole.sql` as the approved database administrator, create a dedicated Cloud SQL login, grant it membership in `ist_audit_writer`, store its connection URL as a demo Secret Manager secret, and expose it only as `AUDIT_DATABASE_URL` to the Cloud Run service and retained jobs.
-- Deploy a no-traffic `ist-triage-demo` revision in project `triage-502706`; write events through API, queue, FHIR and job paths, run integrity verification, restart and verify again.
-- Confirm the normal application database login cannot update/delete/truncate the audit table and the audit login cannot mutate non-audit application tables.
-- Record revision, image digest, migration output, role grants, negative SQL evidence, chain head and rollback result before marking PR-010 complete.
+- Migration `20260817190000_add_append_only_audit_chain` was applied to
+  `ist_triage_demo`. The existing application login remained non-superuser,
+  non-`CREATEROLE` and non-`CREATEDB`.
+- Dedicated roles `ist_audit_writer` (`NOLOGIN`) and
+  `ist_audit_writer_login` (`LOGIN`) were provisioned. Live privilege
+  inspection confirmed membership plus `SELECT=true`, `INSERT=true`,
+  `UPDATE=false`, `DELETE=false` and `TRUNCATE=false` on `audit_events`.
+  The login also has no application-table mutation grant.
+- `ist-triage-demo-audit-database-url` is readable only by
+  `ist-triage-cloudrun-sa@triage-502706.iam.gserviceaccount.com`. The database
+  password was rotated after the first canary exposed an invalid credential;
+  the rejected revision received no traffic.
+- Database tamper-negative execution passed 6/6: `UPDATE`, `DELETE`,
+  `TRUNCATE`, unsigned `INSERT`, wrong-predecessor `INSERT` and application
+  table mutation were all blocked.
+- Live validation found and corrected a second fail-closed defect: the
+  integrity route used the general non-mock persistence switch instead of
+  `AUDIT_EVENT_DB_PERSISTENCE`. Focused audit/admin/runtime tests and backend
+  typecheck passed; the correction is commit
+  `47e10f3d2be2ce25c30c8e3952a7f64d6d395139`.
+- Cloud Build `cc8e5390-50d6-40f8-8a17-4a95c39b245b` completed `SUCCESS`.
+  Immutable image digest:
+  `sha256:52a72b053c57bee3977d15f80022cb3645033160f5a673ff1c988b9843d63feb`.
+- Zero-traffic revision `ist-triage-demo-pr010d-47e10f3`, tagged
+  `pr010-canary`, reported the exact commit, build and revision. It runs as the
+  dedicated PR-009 service account with all eight persistence controls active.
+- An intentional failed login returned HTTP 401 and created a chained event.
+  Authenticated integrity verification returned HTTP 200 with `valid=true`,
+  `checkedEvents=2`, `legacyUnsignedEvents=3287` and chain head
+  `c4ee4122ec6bded526420dca26dfe3c4569134a5fa402f35d1766e5381a5c42d`.
+  Historical unsigned rows remain explicitly outside the authenticity claim.
+- All temporary database-admin users, secrets, Cloud Run jobs, local
+  credential files and validation sessions were removed. Production traffic
+  remained 100% on `ist-triage-demo-00035-wlm` throughout.
+
+Outstanding promotion gates:
+
+- Exercise and verify chained writes through queue, FHIR and retained job
+  paths, then restart the zero-traffic revision and re-run integrity
+  verification.
+- Obtain Security Architecture approval. Promotion remains blocked by the
+  shared PR-001 operator-MFA custody gate.
 
 ## PR-011 implementation record — 365-day retention and hold-safe privacy execution
 
@@ -527,6 +564,7 @@ Outstanding deployment gates:
 - 2026-08-17: PR-009 evidence correction: `aimltriage` was the wrong project and its inventory is invalid for closure. The authoritative target is `triage-502706`; its demo baseline still uses the default Compute service account. PR-009 is open pending authorized live inventory, least-privilege cutover and canary evidence.
 - 2026-08-17: PR-009 zero-traffic identity canary passed in `triage-502706`. The dedicated keyless runtime account has Cloud SQL Client, Monitoring Viewer, a five-permission Scheduler custom role and access to exactly five demo secrets, with no Editor/Owner role or user-managed key. Health, persisted session and Scheduler listing returned 200 with no severity-ERROR canary logs. SOC2-only jobs remain assigned to the PR-008 controlled decommission; production identity promotion remains blocked by PR-001 MFA custody.
 - 2026-08-17: PR-010 source remediation completed. New audit events use a serialized HMAC chain and dedicated insert/select-only database connection; database triggers prohibit mutation and unsigned/forked inserts; integrity verification and tamper regressions were added. Isolated Cloud SQL migration and no-traffic demo canary evidence remain pending.
+- 2026-08-18: PR-010 zero-traffic canary passed after live validation corrected the audit-integrity persistence guard and audit-login credential/grant configuration. Tamper-negative execution passed 6/6, the live chain verified as valid, temporary access was removed and production traffic remained unchanged. Queue/FHIR/job-path verification, restart evidence and Security Architecture approval remain promotion gates.
 - 2026-08-17: PR-011 business decision and source remediation completed for a 365-day completed-queue retention policy. Execute mode now requires the approved policy, legal holds are revalidated transactionally, and privacy erasure remains open when held records survive. Isolated `ist_triage_demo` rehearsal remains pending.
 - 2026-08-17: PR-012 investigation completed. Both triage domains are healthy on Firebase Hosting with a valid shared Google Trust Services certificate. `aimltriage.com` still fails hostname-valid TLS across its two published Firebase IPs. The additive external load-balancer chain is a stale-resource candidate, but the current identity cannot read its live inventory or Firebase custom-domain state. No destructive action was taken. Exact evidence, resource candidates, access requirements and cleanup order are in `docs/infrastructure/pr-012-certificate-remediation.md`.
 - 2026-08-17: PR-012 live remediation executed with explicit approval. Correct Firebase ownership/DNS records were installed for the marketing apex and `www`; Firebase accepted the apex and began certificate minting. The unused `ist-triage-url-map` chain, both inactive certificates, both backend services, both serverless NEGs and reserved address `ist-triage-lb-ip` (`8.233.232.24`) were deleted and their absence verified in the console. The Terraform declaration was removed. Final closure awaits Firebase `Connected` and hostname-valid TLS for `aimltriage.com` and `www.aimltriage.com`.
