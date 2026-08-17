@@ -6,9 +6,11 @@ Generated 2026-08-05._
 
 ## IG.09 - Retention period for `AviationTriageEncounter` and `AuditEvent`
 
+**Decision recorded 2026-08-17:** the business owner approved a 365-day retention baseline for the operational triage/privacy scope. The executable policy implemented by PR-011 applies to completed `TriageQueueItem` records and remains subordinate to active record-level or organization-level legal holds. Clinical encounters and the append-only audit ledger are not silently deleted by this operational job; extending destructive execution to those record classes requires their own dependency-safe archive/export procedure and a new approved change.
+
 - **Requirement ID**: IG.09 (extend `RetentionPolicy` beyond the single
   existing `TriageQueueItem`/`COMPLETED` policy).
-- **Decision needed**: how long should a completed clinical encounter
+- **Decision resolved for the current executable scope**: 365 days. The original broader question was how long a completed clinical encounter
   record (`AviationTriageEncounter`) and the security audit trail
   (`AuditEvent`) be retained before deletion?
 - **Why engineering cannot decide this**: these are clinical-record and

@@ -40,6 +40,7 @@
  */
 import { PrismaClient } from "@prisma/client";
 import { appendOperationalAuditEvent } from "../services/auditLedger.js";
+import { approvedRetentionDays, excludeLegallyHeld } from "../services/retentionGovernance.js";
 
 const prisma = new PrismaClient();
 
@@ -49,39 +50,14 @@ function jsonValue(value: unknown) {
   return JSON.parse(JSON.stringify(value));
 }
 
-async function resolveRetentionDays(cliOverride: number | undefined): Promise<{ days: number; source: string }> {
-  if (cliOverride !== undefined) {
-    return { days: cliOverride, source: "--retention-days flag" };
-  }
-  const policy = await prisma.retentionPolicy.findUnique({ where: { code: RETENTION_POLICY_CODE } });
-  if (policy && policy.status === "active") {
-    const period = policy.retentionPeriod as { days?: number } | null;
-    if (period && typeof period.days === "number" && period.days > 0) {
-      return { days: period.days, source: `RetentionPolicy row (${policy.code})` };
-    }
-  }
-  return { days: 90, source: "hardcoded default (no active RetentionPolicy row found)" };
-}
-
-async function resolveDeletionMode(): Promise<string> {
-  const policy = await prisma.retentionPolicy.findUnique({ where: { code: RETENTION_POLICY_CODE } });
-  if (policy && policy.status === "active" && policy.deletionMode) {
-    return policy.deletionMode;
-  }
-  return "archive_then_delete";
-}
-
 async function main() {
   const retentionArg = process.argv.find((a) => a.startsWith("--retention-days="));
   const cliOverride = retentionArg ? Number(retentionArg.split("=")[1]) : undefined;
   const execute = process.argv.includes("--execute");
 
-  if (cliOverride !== undefined && (!Number.isFinite(cliOverride) || cliOverride < 1)) {
-    throw new Error("retention-days must be a positive number");
-  }
-
-  const { days: retentionDays, source: retentionSource } = await resolveRetentionDays(cliOverride);
-  const deletionMode = await resolveDeletionMode();
+  const policy = await prisma.retentionPolicy.findUnique({ where: { code: RETENTION_POLICY_CODE } });
+  const { days: retentionDays, source: retentionSource } = approvedRetentionDays(policy, execute, cliOverride);
+  const deletionMode = policy?.status === "active" ? policy.deletionMode : "archive_then_delete";
   console.log(`Retention period source: ${retentionSource} (${retentionDays} days)`);
   console.log(`Deletion mode: ${deletionMode}`);
 
@@ -109,9 +85,7 @@ async function main() {
   });
   const heldOrgIds = new Set(activeOrgHolds.map((h) => h.resourceId));
 
-  const candidates = allExpired.filter(
-    (c) => !heldIds.has(c.id) && !(c.organizationId && heldOrgIds.has(c.organizationId))
-  );
+  const { eligible: candidates } = excludeLegallyHeld(allExpired, heldIds, heldOrgIds);
   const heldCount = allExpired.length - candidates.length;
 
   console.log(
@@ -126,20 +100,33 @@ async function main() {
   }
 
   if (execute && candidates.length > 0) {
-    const ids = candidates.map((c) => c.id);
-    if (deletionMode === "archive_then_delete") {
-      await prisma.archivedRecord.createMany({
-        data: candidates.map((c) => ({
-          entityName: "TriageQueueItem",
-          recordId: c.id,
-          policyCode: RETENTION_POLICY_CODE,
-          payload: jsonValue(c)
-        }))
-      });
-      console.log(`Archived ${candidates.length} queue item(s) to ArchivedRecord before deletion.`);
-    }
-    const result = await prisma.triageQueueItem.deleteMany({ where: { id: { in: ids } } });
-    console.log(`Deleted ${result.count} queue item(s).`);
+    const result = await prisma.$transaction(async (tx) => {
+      // Re-read candidates and holds inside a serializable transaction. A
+      // concurrent legal-hold insert forces serialization failure instead of
+      // allowing a record checked before the hold to be deleted afterward.
+      const expired = await tx.triageQueueItem.findMany({ where: { status: "COMPLETED", updatedAt: { lt: cutoff } } });
+      const [recordHolds, organizationHolds] = await Promise.all([
+        tx.legalHold.findMany({ where: { resourceType: "TriageQueueItem", status: "active" }, select: { resourceId: true } }),
+        tx.legalHold.findMany({ where: { resourceType: "Organization", status: "active" }, select: { resourceId: true } })
+      ]);
+      const finalCandidates = excludeLegallyHeld(
+        expired,
+        new Set(recordHolds.map((hold) => hold.resourceId)),
+        new Set(organizationHolds.map((hold) => hold.resourceId))
+      ).eligible;
+      if (deletionMode === "archive_then_delete" && finalCandidates.length > 0) {
+        await tx.archivedRecord.createMany({
+          data: finalCandidates.map((candidate) => ({
+            entityName: "TriageQueueItem",
+            recordId: candidate.id,
+            policyCode: RETENTION_POLICY_CODE,
+            payload: jsonValue(candidate)
+          }))
+        });
+      }
+      return tx.triageQueueItem.deleteMany({ where: { id: { in: finalCandidates.map((candidate) => candidate.id) } } });
+    }, { isolationLevel: "Serializable" });
+    console.log(`Archived/deleted ${result.count} eligible queue item(s) under the approved policy.`);
   }
 
   await appendOperationalAuditEvent({

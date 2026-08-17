@@ -79,7 +79,9 @@ privacy, and business risk).
 > Archival tier (if any) before final deletion: ______
 > Regulatory basis cited: ______________________
 
-**This pack does not choose a retention period.** Once the template
+**Decision update 2026-08-17:** the business owner selected 365 days for the PR-011 operational triage/privacy scope, recorded as decision `PR-011-2026-08-17`. Active legal holds always override deletion. The application does not infer that this operational decision authorizes deletion of the append-only audit ledger or dependency-linked clinical encounters.
+
+The original template did not choose a retention period. Once the template
 above is completed and signed, engineering can implement it using the
 existing `RetentionPolicy` + purge-job pattern within an estimated 1
 engineering day.

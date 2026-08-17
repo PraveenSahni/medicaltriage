@@ -33,7 +33,7 @@ Current top blockers:
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Open — live access required | Dedicated keyless runtime identity; scheduled-workload disposition; least-privilege IAM and canary evidence from `triage-502706` |
 | PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Source complete; deployment pending | Append-only DB role, HMAC chain, integrity verification and live tamper-negative evidence |
-| PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Blocked on approval | Approved period; execute-mode rehearsal; legal-hold negative test |
+| PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Decision and source complete; deployment rehearsal pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Open | Serving certificate chain and ownership documented; stale resources removed |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Open | Ephemeral PostgreSQL CI run with all suites passing |
 | PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Open | Exact HTTP evidence in both environments; test records cleaned through approved process |
@@ -292,6 +292,27 @@ Outstanding deployment gates:
 - Confirm the normal application database login cannot update/delete/truncate the audit table and the audit login cannot mutate non-audit application tables.
 - Record revision, image digest, migration output, role grants, negative SQL evidence, chain head and rollback result before marking PR-010 complete.
 
+## PR-011 implementation record — 365-day retention and hold-safe privacy execution
+
+Decision `PR-011-2026-08-17` approves a 365-day retention period for completed operational triage queue records in the surviving system. Active record-level and organization-level legal holds override retention and privacy erasure.
+
+Source controls:
+
+1. Migration `20260817210000_approve_365_day_retention` installs an active `TRIAGE_QUEUE_ITEM_COMPLETED` policy with 365 days, an explicit decision reference, legal basis and `archive_then_delete` mode.
+2. Execute mode fails closed unless that exact active policy and legal basis exist. Command-line period overrides are permitted for dry-run analysis only and rejected with `--execute`.
+3. The former unapproved 90-day execution fallback is removed.
+4. Retention execution re-reads eligible records and both levels of active legal hold inside a serializable transaction before archive and deletion. A concurrent hold creation produces a serialization conflict rather than a stale-check deletion.
+5. Privacy erasure revalidates records and holds inside a serializable transaction; deletion and request-state update are atomic. If any record is held, the request remains open with a partial-execution explanation instead of being falsely marked fulfilled.
+6. Pure regression coverage proves the approved policy gate, rejects missing/inactive/wrong-period/wrong-decision/no-legal-basis policies, rejects execute overrides, and proves record, organization and released-hold behavior.
+7. The operational job does not silently extend destructive deletion to dependency-linked clinical encounters or the append-only audit ledger. Any later scope expansion requires a dependency-safe archive/export design and separately approved change.
+
+Outstanding deployment gates:
+
+- Apply the policy migration to an isolated clone of `ist_triage_demo` in project `triage-502706`.
+- Seed synthetic expired, held, organization-held and released-hold records; run dry-run and execute-mode rehearsals and reconcile exact row/archive/audit counts.
+- Prove an unapproved/missing policy and a concurrent hold block deletion.
+- Configure the retained production job against the surviving demo only after SOC2 job disposition under PR-008, then record revision, image digest, operator, approver and rollback evidence.
+
 ## Change log
 
 - 2026-08-17: PR-001 source remediation completed and verified locally. Production runtime now fails closed for shared and seeded demo credentials unless `ALLOW_DEMO_CREDENTIALS=true` is deliberately configured. Focused authentication/session regression: 35/35 tests passed; backend typecheck passed. Deployment closure remains pending.
@@ -306,3 +327,4 @@ Outstanding deployment gates:
 - 2026-08-17: PR-008 risk decision recorded. The shared Cloud SQL instance is accepted only for the temporary remediation topology; SOC2 will be safely decommissioned after customer security validation, leaving one authoritative system.
 - 2026-08-17: PR-009 evidence correction: `aimltriage` was the wrong project and its inventory is invalid for closure. The authoritative target is `triage-502706`; its demo baseline still uses the default Compute service account. PR-009 is open pending authorized live inventory, least-privilege cutover and canary evidence.
 - 2026-08-17: PR-010 source remediation completed. New audit events use a serialized HMAC chain and dedicated insert/select-only database connection; database triggers prohibit mutation and unsigned/forked inserts; integrity verification and tamper regressions were added. Isolated Cloud SQL migration and no-traffic demo canary evidence remain pending.
+- 2026-08-17: PR-011 business decision and source remediation completed for a 365-day completed-queue retention policy. Execute mode now requires the approved policy, legal holds are revalidated transactionally, and privacy erasure remains open when held records survive. Isolated `ist_triage_demo` rehearsal remains pending.

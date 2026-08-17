@@ -26,6 +26,7 @@
 import { PrismaClient } from "@prisma/client";
 import { sanitizeForLog } from "../utils/logSanitizer.js";
 import { appendOperationalAuditEvent } from "../services/auditLedger.js";
+import { excludeLegallyHeld } from "../services/retentionGovernance.js";
 
 // Masks a person identifier for console output (NFR-078/NFR-004 AI-tab) -
 // the durable AuditEvent.metadata below still records the real, unmasked
@@ -122,19 +123,42 @@ async function main() {
           `${eligible.length} eligible for deletion`
       );
 
-      if (execute && eligible.length > 0) {
-        const result = await prisma.triageQueueItem.deleteMany({ where: { id: { in: eligible.map((i) => i.id) } } });
-        console.log(`Deleted ${result.count} queue item(s) for erasure request ${request.id}.`);
-      }
-
+      let executionResult: { deletedCount: number; heldCount: number } | undefined;
       if (execute) {
-        await prisma.privacyRequest.update({
-          where: { id: request.id },
-          data: {
-            status: "fulfilled",
-            notes: `Erasure completed ${new Date().toISOString()}: ${eligible.length} record(s) deleted, ${heldCount} retained under active legal hold.`
-          }
-        });
+        const execution = await prisma.$transaction(async (tx) => {
+          const currentItems = await tx.triageQueueItem.findMany({
+            where: { istStaffId: request.requesterRef },
+            select: { id: true, organizationId: true }
+          });
+          const [recordHolds, organizationHolds] = await Promise.all([
+            tx.legalHold.findMany({
+              where: { resourceType: "TriageQueueItem", resourceId: { in: currentItems.map((item) => item.id) }, status: "active" },
+              select: { resourceId: true }
+            }),
+            tx.legalHold.findMany({ where: { resourceType: "Organization", status: "active" }, select: { resourceId: true } })
+          ]);
+          const final = excludeLegallyHeld(
+            currentItems,
+            new Set(recordHolds.map((hold) => hold.resourceId)),
+            new Set(organizationHolds.map((hold) => hold.resourceId))
+          );
+          const deleted = final.eligible.length
+            ? await tx.triageQueueItem.deleteMany({ where: { id: { in: final.eligible.map((item) => item.id) } } })
+            : { count: 0 };
+          await tx.privacyRequest.update({
+            where: { id: request.id },
+            data: {
+              status: final.excluded.length === 0 ? "fulfilled" : "open",
+              notes:
+                final.excluded.length === 0
+                  ? `Erasure completed ${new Date().toISOString()}: ${deleted.count} record(s) deleted.`
+                  : `Erasure partially executed ${new Date().toISOString()}: ${deleted.count} record(s) deleted, ${final.excluded.length} retained under active legal hold; request remains open.`
+            }
+          });
+          return { deletedCount: deleted.count, heldCount: final.excluded.length };
+        }, { isolationLevel: "Serializable" });
+        executionResult = execution;
+        console.log(`Deleted ${execution.deletedCount} record(s); ${execution.heldCount} retained under legal hold.`);
       }
 
       await appendOperationalAuditEvent({
@@ -147,8 +171,8 @@ async function main() {
             requestId: request.id,
             requesterRef: request.requesterRef,
             totalRecords: items.length,
-            excludedByLegalHoldCount: heldCount,
-            eligibleForDeletionCount: eligible.length
+            excludedByLegalHoldCount: executionResult?.heldCount ?? heldCount,
+            eligibleForDeletionCount: executionResult?.deletedCount ?? eligible.length
           }
       });
       continue;
