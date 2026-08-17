@@ -8,7 +8,10 @@ import {
   requireElevatedPermission,
   type AuthorizedRequest
 } from "../services/authorization.js";
-import { shouldUseDatabasePersistence } from "../config/runtime.js";
+import {
+  shouldPersistAuditEventsInDatabase,
+  shouldUseDatabasePersistence
+} from "../config/runtime.js";
 import { countPersistedAuditEvents, listPersistedAuditEvents } from "../services/persistence.js";
 import { verifyAuditEventChain } from "../services/auditLedger.js";
 import { rateLimit } from "../middleware/rateLimit.js";
@@ -486,7 +489,7 @@ export function createAdminRouter(): Router {
 
   router.get("/audit-events/integrity", requirePermission("audit.events.view"), async (_req, res, next) => {
     try {
-      if (!shouldUseDatabasePersistence()) {
+      if (!shouldPersistAuditEventsInDatabase()) {
         return res.status(503).json({ error: "Durable audit persistence is not enabled." });
       }
       const verification = await verifyAuditEventChain();
