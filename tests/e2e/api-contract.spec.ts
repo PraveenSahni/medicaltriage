@@ -134,7 +134,7 @@ test.describe.serial("API contracts from login through clinical completion", () 
       // narrative (pediatric fever/fast-breathing) that legitimately has no
       // corresponding real protocol. Only assert the PREPARED-specific
       // lineage fields when a match actually occurred.
-      expect(["PREPARED", "NO_MATCH"]).toContain(item.preparedProtocol.status);
+      expect(["PREPARED", "AMBIGUOUS", "NO_MATCH"]).toContain(item.preparedProtocol.status);
       if (item.preparedProtocol.status !== "PREPARED") {
         continue;
       }

@@ -131,7 +131,7 @@ export type QueueCareAdvice = {
 };
 
 export type QueuePreparedProtocol = {
-  status: "PENDING_REASON" | "PREPARED" | "NO_MATCH";
+  status: "PENDING_REASON" | "PREPARED" | "AMBIGUOUS" | "NO_MATCH";
   sourceType:
     | "synthetic-sample"
     | "licensed-stcc"

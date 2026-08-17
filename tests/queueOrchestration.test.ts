@@ -142,17 +142,15 @@ describe("Enterprise queue orchestration", () => {
 
     expect(loaded.body.item.reasonNarrative).toBe("Fever with fast breathing reported by parent.");
     expect(loaded.body.item.preparedProtocol).toMatchObject({
-      status: "PREPARED",
-      sourceType: "synthetic-sample",
-      primaryProtocolId: "sample-fever-child",
-      primaryProtocolTitle: "Fever - Child"
+      status: "NO_MATCH",
+      sourceType: "synthetic-sample"
     });
+    expect(loaded.body.item.preparedProtocol.primaryProtocolId).toBeUndefined();
+    expect(loaded.body.item.preparedProtocol.suggestions.map((item: { protocolId: string }) => item.protocolId)).toEqual(
+      expect.arrayContaining(["sample-fever-child"])
+    );
     expect(loaded.body.item.preparedProtocol.extractedKeywords).toContain("fever");
-    expect(loaded.body.item.preparedProtocol.acuityQuestionPreview[0]).toMatchObject({
-      acuityOrder: 1,
-      severity: "Emergency",
-      redFlag: true
-    });
+    expect(loaded.body.item.preparedProtocol.acuityQuestionPreview).toEqual([]);
     expect(loaded.body.item.stccProcess).toMatchObject({
       processName: "Telehealth Triage Encounter",
       averageDurationMinutes: "11-13",
@@ -176,9 +174,7 @@ describe("Enterprise queue orchestration", () => {
       cannotDecideDisposition: true,
       requiresNurseReview: true,
       comparison: {
-        deterministicPrimaryProtocolId: "sample-fever-child",
-        shadowPrimaryProtocolId: "sample-fever-child",
-        agreement: "FULL_MATCH"
+        agreement: "NO_DETERMINISTIC_CANDIDATE"
       }
     });
     expect(loaded.body.item.preparedProtocol.ragShadow.prohibitedActionAcknowledgement).toEqual(

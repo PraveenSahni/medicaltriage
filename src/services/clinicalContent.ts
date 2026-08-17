@@ -248,6 +248,40 @@ function queryTerms(query: string): string[] {
   return [...new Set(normalize(query).split(" ").filter((part) => part.length >= 3))];
 }
 
+const NEGATION_WORDS = new Set(["no", "not", "without", "denies", "denied", "never"]);
+const NORMAL_WORDS = new Set(["normal", "normally"]);
+
+function tokenIsNegated(words: string[], tokenIndex: number): boolean {
+  return words.slice(Math.max(0, tokenIndex - 3), tokenIndex).some((word) => NEGATION_WORDS.has(word));
+}
+
+function affirmedPhraseMatch(normalizedQuery: string, phrase: string): boolean {
+  const queryWords = normalizedQuery.split(" ");
+  const phraseWords = phrase.split(" ");
+  for (let index = 0; index <= queryWords.length - phraseWords.length; index += 1) {
+    const followedByNormal = queryWords
+      .slice(index + phraseWords.length, index + phraseWords.length + 3)
+      .some((word) => NORMAL_WORDS.has(word));
+    if (phraseWords.every((word, offset) => queryWords[index + offset] === word) && !tokenIsNegated(queryWords, index) && !followedByNormal) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function affirmedTermMatch(normalizedQuery: string, term: string): boolean {
+  const words = normalizedQuery.split(" ");
+  return words.some((word, index) =>
+    word === term &&
+    !tokenIsNegated(words, index) &&
+    !words.slice(index + 1, index + 4).some((candidate) => NORMAL_WORDS.has(candidate))
+  );
+}
+
+function hasNegation(normalizedQuery: string): boolean {
+  return normalizedQuery.split(" ").some((word) => NEGATION_WORDS.has(word));
+}
+
 function modeMatches(protocolMode: ProtocolMode, requestedMode: ProtocolMode): boolean {
   return protocolMode === "both" || requestedMode === "both" || protocolMode === requestedMode;
 }
@@ -292,6 +326,12 @@ function scoreProtocol(protocol: ClinicalContentProtocol, query: string): { scor
   const title = normalize(protocol.titleEn);
   const definition = normalize(protocol.clinicalDefinitionEn ?? "");
 
+  const explicitlyNegatedTitleTerm = title
+    .split(" ")
+    .filter((term) => term.length >= 4)
+    .some((term) => normalizedQuery.split(" ").includes(term) && !affirmedTermMatch(normalizedQuery, term));
+  if (explicitlyNegatedTitleTerm) return { score: 0, matchedTerms: [] };
+
   if (title.includes(normalizedQuery)) {
     score += 150;
     matchedTerms.add(protocol.titleEn);
@@ -314,7 +354,7 @@ function scoreProtocol(protocol: ClinicalContentProtocol, query: string): { scor
   let bestPhraseMatch: { weight: number; phrase: string } | undefined;
   for (const keyword of protocol.keywords) {
     const phrase = normalize(keyword.phrase);
-    if (normalizedQuery.includes(phrase) || phrase.includes(normalizedQuery)) {
+    if (affirmedPhraseMatch(normalizedQuery, phrase) || (!hasNegation(normalizedQuery) && phrase.includes(normalizedQuery))) {
       if (!bestPhraseMatch || keyword.weight > bestPhraseMatch.weight) {
         bestPhraseMatch = { weight: keyword.weight, phrase: keyword.phrase };
       }
@@ -337,6 +377,7 @@ function scoreProtocol(protocol: ClinicalContentProtocol, query: string): { scor
   // phrases contain the same term, the highest-weight phrase wins the credit
   // (not first-seen), so a protocol's strongest matching phrase still governs.
   for (const term of terms) {
+    if (!affirmedTermMatch(normalizedQuery, term)) continue;
     let bestMatch: { weight: number; phrase: string } | undefined;
     for (const keyword of protocol.keywords) {
       const phrase = normalize(keyword.phrase);
@@ -359,7 +400,7 @@ function scoreProtocol(protocol: ClinicalContentProtocol, query: string): { scor
   for (const question of protocol.questions) {
     for (const keyword of question.keywords) {
       const phrase = normalize(keyword);
-      if (normalizedQuery.includes(phrase) || phrase.includes(normalizedQuery)) {
+      if (affirmedPhraseMatch(normalizedQuery, phrase) || (!hasNegation(normalizedQuery) && phrase.includes(normalizedQuery))) {
         score += question.redFlag ? 12 : 8;
         matchedTerms.add(keyword);
       }

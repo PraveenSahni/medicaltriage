@@ -38,7 +38,7 @@ Current top blockers:
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Infrastructure cleanup complete; certificate issuance pending | Healthy triage serving chain documented; marketing TLS active; post-change validation |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Source complete; CI execution pending | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
 | PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Local 97/97; live failed 2 SoD cases; cleanup verified | Deploy current SoD enforcement; rerun exact HTTP matrix; clean test records; resolve former SOC2 scope |
-| PR-015 | High | Five-protocol adversarial auto-match matrix missing | Clinical QA | Open | Signed ambiguity/no-match matrix with nurse override evidence |
+| PR-015 | High | Five-protocol adversarial auto-match matrix missing | Clinical QA | Source complete; clinical signature and deployment pending | 25/25 ambiguity/no-match matrix; 100/100 clinical regressions; nurse override evidence; named Clinical QA signature |
 
 ## GCP baseline captured 2026-08-17
 
@@ -381,3 +381,21 @@ backend Jest suites passing. Technical test completion is not clinical UAT.
 - PR-014 remains open until the current source is built/deployed and the live
   matrix passes. Detailed matrix and evidence interpretation are in
   `docs/security/pr-014-admin-user-permission-uat.md`.
+
+## PR-015 implementation record — adversarial protocol matching
+
+- Added explicit `AMBIGUOUS` behavior: close candidates produce no automatic
+  primary protocol and no protocol-derived acuity preview.
+- Added a minimum decisive-match score and suppressed negated/normal-state
+  complaint wording so phrases such as `no diarrhea`, `without injury` and
+  `baby moving normally` cannot create a false positive.
+- The nurse can explicitly choose among ambiguous or weak candidates before
+  TAQ/disposition; read-only and post-question selection locks remain active.
+- The durable high-risk queue audit entry records the previous protocol, the
+  nurse-selected protocol and the prepared-match status for override evidence.
+- The five-protocol matrix passed 25/25, adjacent backend clinical suites
+  passed 100/100, the protocol-selection UI passed 10/10, and backend/frontend
+  TypeScript checks passed.
+- Source remediation is complete. Closure still requires deployment evidence
+  and a named qualified Clinical QA reviewer signature. The review artifact is
+  `docs/protocol-review/pr-015-five-protocol-adversarial-matrix.md`.

@@ -314,7 +314,7 @@ function preparedProtocolFromUnknown(value: unknown): QueuePreparedProtocolDto |
   const releaseVersion = stringFromPayload(value.releaseVersion);
   const preparedAtIso = stringFromPayload(value.preparedAtIso);
   if (
-    (status !== "PENDING_REASON" && status !== "PREPARED" && status !== "NO_MATCH") ||
+    (status !== "PENDING_REASON" && status !== "PREPARED" && status !== "AMBIGUOUS" && status !== "NO_MATCH") ||
     (sourceType !== "synthetic-sample" && sourceType !== "licensed-stcc" && sourceType !== "local-qatar-override") ||
     !reasonNarrative ||
     !releaseVersion ||
@@ -600,6 +600,21 @@ function resourceAvailabilityFor(protocol: ClinicalContentProtocol | undefined, 
   };
 }
 
+const AUTO_MATCH_MINIMUM_SCORE = 100;
+const AMBIGUITY_SCORE_RATIO = 0.95;
+
+export function classifyProtocolSuggestions(suggestions: QueueProtocolSuggestionDto[]): {
+  status: "PREPARED" | "AMBIGUOUS" | "NO_MATCH";
+  primarySuggestion?: QueueProtocolSuggestionDto;
+} {
+  const first = suggestions[0];
+  if (!first) return { status: "NO_MATCH" };
+  const second = suggestions[1];
+  if (second && second.score >= first.score * AMBIGUITY_SCORE_RATIO) return { status: "AMBIGUOUS" };
+  if (first.score < AUTO_MATCH_MINIMUM_SCORE) return { status: "NO_MATCH" };
+  return { status: "PREPARED", primarySuggestion: first };
+}
+
 function buildPreparedProtocol(record: QueueRecord, preparedAtIso: string): QueuePreparedProtocolDto {
   const contentPackage = getCurrentClinicalContentPackage();
   const reasonNarrative = (record.reasonNarrative ?? record.summary).trim();
@@ -636,12 +651,13 @@ function buildPreparedProtocol(record: QueueRecord, preparedAtIso: string): Queu
     mode: contentPackage.release.mode,
     limit: 5
   }).map(suggestionFromSearchResult);
-  const primarySuggestion = suggestions[0];
+  const classification = classifyProtocolSuggestions(suggestions);
+  const primarySuggestion = classification.primarySuggestion;
   const primaryProtocol = primarySuggestion ? getClinicalProtocolById(primarySuggestion.protocolId) : undefined;
 
   return {
     ...base,
-    status: primarySuggestion ? "PREPARED" : "NO_MATCH",
+    status: classification.status,
     primaryProtocolId: primarySuggestion?.protocolId,
     primaryProtocolTitle: primarySuggestion?.titleEn,
     suggestions,
@@ -2100,6 +2116,7 @@ export async function updateQueueContext(
   const record = await getRecord(id, session);
   requireTenantAccess(record, session);
   requireUnlockedOrOwned(record, session);
+  const previousMatchedProtocolId = record.matchedProtocolId;
   if (record.status === "COMPLETED") {
     throw new QueueOrchestrationError(
       409,
@@ -2244,7 +2261,16 @@ export async function updateQueueContext(
     recordId: record.id,
     success: true,
     riskLevel: clinicalFieldsChanged ? "high" : "medium",
-    metadata: { changedFields }
+    metadata: {
+      changedFields,
+      ...(changedFields.includes("matchedProtocolId")
+        ? {
+            previousMatchedProtocolId: previousMatchedProtocolId ?? null,
+            selectedMatchedProtocolId: record.matchedProtocolId ?? null,
+            preparedProtocolStatus: record.preparedProtocol?.status ?? null
+          }
+        : {})
+    }
   });
   return toDto(saved);
 }

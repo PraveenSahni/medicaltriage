@@ -117,6 +117,21 @@ describe("ProtocolMatchPanel", () => {
     expect(screen.getByText(/No matching guideline found/)).toBeInTheDocument();
   });
 
+  it("requires an explicit nurse selection when deterministic candidates are ambiguous", async () => {
+    const user = userEvent.setup();
+    const item = makeItem({
+      preparedProtocol: makePrepared({ status: "AMBIGUOUS", primaryProtocolId: undefined, primaryProtocolTitle: undefined })
+    });
+    render(<ProtocolMatchPanel item={item} isReadOnly={false} />);
+
+    expect(screen.getByText(/Multiple guidelines match closely/)).toBeInTheDocument();
+    expect(screen.queryByText(/Selected guideline:/)).not.toBeInTheDocument();
+    const buttons = screen.getAllByRole("button", { name: "Use this guideline" });
+    expect(buttons).toHaveLength(2);
+    await user.click(buttons[1]);
+    expect(updateItemContext).toHaveBeenCalledWith("queue-item-abcdef123456", { matchedProtocolId: "oscg-cold-flu" });
+  });
+
   it("never renders a selection control in read-only mode", () => {
     const item = makeItem({ preparedProtocol: makePrepared() });
     render(<ProtocolMatchPanel item={item} isReadOnly />);

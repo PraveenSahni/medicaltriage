@@ -252,7 +252,7 @@ export type RagShadowSuggestionDto = {
 };
 
 export type QueuePreparedProtocolDto = {
-  status: "PENDING_REASON" | "PREPARED" | "NO_MATCH";
+  status: "PENDING_REASON" | "PREPARED" | "AMBIGUOUS" | "NO_MATCH";
   sourceType:
     | "synthetic-sample"
     | "licensed-stcc"

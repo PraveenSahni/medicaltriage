@@ -161,6 +161,33 @@ export function ProtocolMatchPanel({ item, isReadOnly }: { item: QueueItem; isRe
             This demo&rsquo;s content library currently covers a limited set of protocols and may not include a
             match for every reason or age group.
           </div>
+          {canSelect && suggestions.map((suggestion) => (
+            <SuggestionRow
+              key={suggestion.protocolId}
+              suggestion={suggestion}
+              isSelected={false}
+              canSelect
+              busy={busy}
+              onSelect={() => selectProtocol(suggestion.protocolId)}
+            />
+          ))}
+        </>
+      )}
+
+      {prepared.status === "AMBIGUOUS" && (
+        <>
+          <div className="protocol-match-empty">Multiple guidelines match closely. No guideline was selected automatically.</div>
+          <div className="protocol-match-select-hint">Review the candidates and explicitly select the clinically appropriate guideline.</div>
+          {suggestions.map((suggestion) => (
+            <SuggestionRow
+              key={suggestion.protocolId}
+              suggestion={suggestion}
+              isSelected={item.matchedProtocolId === suggestion.protocolId}
+              canSelect={canSelect}
+              busy={busy}
+              onSelect={() => selectProtocol(suggestion.protocolId)}
+            />
+          ))}
         </>
       )}
 
