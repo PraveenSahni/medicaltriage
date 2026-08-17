@@ -27,8 +27,8 @@ Current top blockers:
 | PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Zero-traffic canary passed; operator MFA custody and promotion pending | 38/38 focused tests; unsafe passwords return 401; protected login requires enrollment/MFA and verifies successfully |
 | PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Zero-traffic provenance chain complete; promotion pending | Git SHA, Cloud Build, immutable digest, revision labels and live runtime response match |
 | PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | Zero-traffic canary passed; promotion pending | Eight flags enabled; migrations current; cross-revision MFA, session and queue durability proven |
-| PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Source complete; deployment pending | Assignment-time SoD validator and negative tests |
-| PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Source complete; deployment pending | Approved canonical role catalog reconciled across API, UI and documentation |
+| PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Zero-traffic canary healthy; elevated mutation UAT blocked by PR-001 MFA custody | Assignment-time SoD validator; 135/135 regression; nurse mutation denied live |
+| PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Zero-traffic canary passed; promotion pending | Exactly 3 protected roles confirmed live; governed custom-role migration current |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Source complete; deployment pending | Exact-question advice enforced; implicit fallback prohibited; exhaustive regression matrix |
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Source complete; deployment pending | Backend merge invariant; legacy caller reconciliation; lifecycle regression tests |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
@@ -222,10 +222,44 @@ Source remediation complete:
 
 Remaining deployment closure gates:
 
-- Apply the custom-role migration to isolated demo and SOC2 logical databases after gcloud reauthentication.
-- Deploy a no-traffic demo canary and prove create, restart/hydrate, assign, login and conflict rejection using a disposable custom role.
-- Confirm all three protected roles remain visible and existing Triage Nurse, Service Manager and Platform Administrator workflows are unchanged.
-- Promote demo only after canary evidence; repeat against SOC2 and record exact revisions.
+- Restore controlled operator MFA custody/recovery under PR-001, then prove
+  create, restart/hydrate, assign, login and conflict rejection using a
+  disposable custom role through the supported elevated API.
+- Confirm the existing Triage Nurse, Service Manager and Platform Administrator
+  user workflows in browser UAT; role-catalog visibility and the nurse's
+  administrative denial are already proven below.
+- Promote demo only after the elevated mutation and browser gates pass. Repeat
+  against SOC2 only if that temporary environment remains in scope under
+  PR-008.
+
+### 2026-08-17 zero-traffic deployment evidence
+
+- Clean committed source: `6f46f47041b01d06e16cd4983457bbf59977597f`.
+- Focused role, permission, administrator-boundary and reveal regression:
+  135/135 tests passed across seven suites. Backend and frontend TypeScript
+  checks passed.
+- Cloud Build: `d5c0ac37-ecc8-4fdd-9ce2-a34c2e0cca53`, status `SUCCESS`.
+- Immutable image digest:
+  `sha256:6cc8ea2e35f648e0ba16244ec71e3e3e695650dbe222c706b682b6b3f3c1680b`.
+- Additive migration `20260817153000_add_durable_custom_roles` applied to
+  `ist_triage_demo`; an independent Prisma 5.22.0 status execution reported
+  `Database schema is up to date!`. The temporary migration job was deleted.
+- Zero-traffic revision: `ist-triage-demo-pr004-6f46f47`, tagged
+  `pr004-canary`, labelled `git-sha=6f46f47` and `release=pr-004-pr-005`.
+- Health returned HTTP 200. Runtime provenance matched the exact commit, build
+  and revision; all eight persistence flags remained enabled.
+- The live administrator role catalog returned exactly the three protected
+  system-role codes: `remote_triage_nurse`, `triage_service_manager` and
+  `platform_super_administrator`.
+- A Triage Nurse received HTTP 403 for both custom-role creation and access to
+  the administrative role catalog. The rejected role was not persisted and
+  the temporary session was revoked.
+- Production traffic remained 100% on `ist-triage-demo-00035-wlm`.
+- Positive custom-role create/assign/restart and live SoD-conflict mutations
+  require PAM elevation with a fresh TOTP. They were not bypassed and remain
+  blocked until PR-001 restores controlled operator custody/recovery of the
+  enrolled MFA credential. PR-005's canonical three-role deployment gate is
+  proven; PR-004's elevated live mutation gate is not yet claimed complete.
 
 ## PR-006 implementation record — exact protocol clinical lineage
 
@@ -392,6 +426,7 @@ Outstanding deployment gates:
 - 2026-08-17: PR-003 source validation completed: backend typecheck passed and 32/32 runnable focused tests passed. Two real PostgreSQL tests, database schema evidence and canary activation remain open pending interactive gcloud reauthentication.
 - 2026-08-17: PR-003 zero-traffic canary passed in `triage-502706`. All eight persistence flags are active, Cloud SQL migrations are current, and MFA, session and synthetic queue state crossed revision boundaries successfully. Synthetic data and sessions were cleaned. Production promotion remains blocked by PR-001 operator MFA custody; live audit/reveal/anomaly workflow exercises are explicitly not claimed.
 - 2026-08-17: PR-004 and PR-005 source remediation completed around three protected system roles plus governed custom roles. SoD validation, durable schema/API, Platform Administrator UI, audit behavior and documentation were added; all focused and adjacent recorded suites passed. Database migration and no-traffic canary evidence remain pending.
+- 2026-08-17: PR-004/PR-005 zero-traffic canary deployed in `triage-502706`. The custom-role migration is current, 135/135 focused regressions and both typechecks passed, exactly three protected roles were confirmed live, and nurse administration attempts returned 403. PR-005 canary evidence is complete; PR-004 positive elevated mutation UAT remains blocked by the PR-001 operator-MFA custody gate and was not bypassed.
 - 2026-08-17: PR-006 source remediation completed. Questions, TAQs, disposition and care advice now share one selected protocol lineage; care advice requires exact question linkage and fails closed without it. Repeated exhaustive and negative regression tests, backend build and both typechecks passed. Canary and live multi-protocol clinical verification remain pending.
 - 2026-08-17: PR-006 validation was tightened to the five licensed protocols only. A named 30-case cross-protocol matrix and three exhaustive passes over all 126 licensed TAQs passed; synthetic sample protocols are not counted as clinical validation evidence.
 - 2026-08-17: PR-007 source remediation completed. Structured IAQ, TAQ and approval JSON now merge at the backend boundary; legacy callers preserve existing approval lineage; idempotent post-disposition retries remain allowed while new clinical answers stay locked. Focused, adjacent and complete frontend regression suites passed. Cloud SQL canary verification remains pending.
