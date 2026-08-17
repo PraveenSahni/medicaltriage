@@ -47,10 +47,13 @@ environments to begin with.
 
 `RetentionPolicy` (Prisma model) drives an automated, scheduled purge job
 (`src/scripts/purgeExpiredQueueData.ts`, Cloud Scheduler-triggered weekly)
-that deletes queue items past their configured retention window. Currently
-one real, active policy (`TriageQueueItem`/`COMPLETED`, 90-day window) - see
-`docs/qr-questionnaire-backlog-tracker.md` for the status of extending this
-to more entity types.
+that archives and deletes eligible queue items past their configured retention
+window. The active executable policy is **365 days** for
+`TriageQueueItem`/`COMPLETED`, measured from `updatedAt`, under decision
+`PR-011-2026-08-17`. Execute mode rejects period overrides and fails closed
+unless the approved policy and legal basis are active. See
+`docs/retention-policy.md` for scope, exclusions, legal-hold precedence and
+deployment requirements.
 
 ## 3. Legal hold
 

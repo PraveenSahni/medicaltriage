@@ -12,9 +12,9 @@ below is unsigned and unapproved until a named owner acts._
   notes, disposition, fit-to-fly status).
 - `AuditEvent` - the security/compliance audit trail (every sensitive
   action across the platform).
-- (Already decided, not part of this pack): `TriageQueueItem` -
-  90-day retention post-`COMPLETED`, enforced today via a real
-  `RetentionPolicy` row and automated purge job.
+- (Decision completed by PR-011): `TriageQueueItem` - **365-day** retention
+  post-`COMPLETED`, measured from `updatedAt`, with `archive_then_delete`
+  execution and active legal holds taking precedence.
 
 **Regulatory considerations** (for the decision owners to weigh, not
 decided here):
@@ -64,27 +64,15 @@ DPO/Privacy Officer + Business/Executive Sponsor (joint decision - no
 single owner can decide this alone, since it spans clinical, legal,
 privacy, and business risk).
 
-**Final decision template** (for the approvers to complete):
+**Recorded operational decision:** on 2026-08-17, the business owner selected
+**365 days** for completed `TriageQueueItem` records under decision
+`PR-011-2026-08-17`. The source implementation is complete and documented in
+`docs/retention-policy.md`. Active legal holds always override deletion.
 
-> Retention decision for IG.09, approved 2026-__-__ by:
-> Clinical Governance Lead: ______________________
-> Legal Counsel: ______________________
-> DPO/Privacy Officer: ______________________
-> Business/Executive Sponsor: ______________________
->
-> `AviationTriageEncounter` retention period: ______ (days/years) from
-> ______ (encounter completion / disposition date / other trigger).
-> `AuditEvent` retention period: ______ (days/years) from event
-> creation.
-> Archival tier (if any) before final deletion: ______
-> Regulatory basis cited: ______________________
-
-**Decision update 2026-08-17:** the business owner selected 365 days for the PR-011 operational triage/privacy scope, recorded as decision `PR-011-2026-08-17`. Active legal holds always override deletion. The application does not infer that this operational decision authorizes deletion of the append-only audit ledger or dependency-linked clinical encounters.
-
-The original template did not choose a retention period. Once the template
-above is completed and signed, engineering can implement it using the
-existing `RetentionPolicy` + purge-job pattern within an estimated 1
-engineering day.
+This decision does not authorize deletion of `AviationTriageEncounter` or the
+append-only `AuditEvent` ledger. The candidate options above remain background
+for a future, separately approved decision covering those excluded classes;
+they do not replace or alter the approved 365-day operational policy.
 
 ## LG.01 - NDA execution
 

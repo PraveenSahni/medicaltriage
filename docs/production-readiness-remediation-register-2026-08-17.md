@@ -17,7 +17,8 @@ Current top blockers:
 2. Deployed images are not traceable to exact Git SHAs and differ from the audited checkout.
 3. Both services run `MOCK_MODE=true`; security persistence is incomplete on demo and security-anomaly DB persistence is unset on both.
 4. Care-advice fallback, JSON merge invariants, RBAC/SoD enforcement and full database-backed test evidence remain open.
-5. Retention and privacy fulfillment jobs are deployed without `--execute` pending governance approval.
+5. Retention and privacy fulfillment jobs remain without `--execute` pending
+   an isolated rehearsal of the approved 365-day policy and deployment authorization.
 
 ## Remediation register
 
@@ -295,6 +296,10 @@ Outstanding deployment gates:
 ## PR-011 implementation record — 365-day retention and hold-safe privacy execution
 
 Decision `PR-011-2026-08-17` approves a 365-day retention period for completed operational triage queue records in the surviving system. Active record-level and organization-level legal holds override retention and privacy erasure.
+
+The canonical policy is `docs/retention-policy.md`. It defines the period in
+days, retention trigger, archive/delete action, legal-hold precedence,
+execution evidence, and excluded record classes.
 
 Source controls:
 
