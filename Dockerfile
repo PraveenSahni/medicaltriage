@@ -1,3 +1,6 @@
+ARG SOURCE_GIT_SHA=unknown
+ARG SOURCE_BUILD_ID=unknown
+
 FROM node:20-bookworm-slim AS dependencies
 
 WORKDIR /app
@@ -29,8 +32,18 @@ RUN pnpm prune --prod
 
 FROM node:20-bookworm-slim AS runner
 
+ARG SOURCE_GIT_SHA
+ARG SOURCE_BUILD_ID
+
 ENV NODE_ENV=production
 ENV PORT=8080
+ENV APP_GIT_SHA=${SOURCE_GIT_SHA}
+ENV APP_BUILD_ID=${SOURCE_BUILD_ID}
+
+LABEL org.opencontainers.image.title="AiMLTriage"
+LABEL org.opencontainers.image.source="https://github.com/irisstar-tech/AiMlTriage"
+LABEL org.opencontainers.image.revision=${SOURCE_GIT_SHA}
+LABEL tech.irisstar.cloud-build-id=${SOURCE_BUILD_ID}
 
 WORKDIR /app
 RUN apt-get update -y \

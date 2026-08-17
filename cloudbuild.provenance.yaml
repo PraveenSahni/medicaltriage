@@ -1,0 +1,25 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --build-arg
+      - SOURCE_GIT_SHA=${_GIT_SHA}
+      - --build-arg
+      - SOURCE_BUILD_ID=${BUILD_ID}
+      - --label
+      - org.opencontainers.image.revision=${_GIT_SHA}
+      - --label
+      - tech.irisstar.cloud-build-id=${BUILD_ID}
+      - --tag
+      - ${_IMAGE_URI}:${_GIT_SHA}
+      - .
+
+images:
+  - ${_IMAGE_URI}:${_GIT_SHA}
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+substitutions:
+  _GIT_SHA: unknown
+  _IMAGE_URI: me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-release

@@ -83,7 +83,24 @@ describe("runtime credential guardrails", () => {
         visible: true,
         label: "SIMULATION",
         tone: "simulation"
+      },
+      provenance: {
+        gitSha: "unknown",
+        buildId: "unknown",
+        cloudRunRevision: "local"
       }
+    });
+  });
+
+  it("exposes non-secret deployment provenance from the image and Cloud Run runtime", () => {
+    process.env.APP_GIT_SHA = "c3f36a512345678901234567890123456789abcd";
+    process.env.APP_BUILD_ID = "build-123";
+    process.env.K_REVISION = "ist-triage-demo-00034-test";
+
+    expect(publicRuntimeEnvironment().provenance).toEqual({
+      gitSha: "c3f36a512345678901234567890123456789abcd",
+      buildId: "build-123",
+      cloudRunRevision: "ist-triage-demo-00034-test"
     });
   });
 

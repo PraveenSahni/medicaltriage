@@ -24,7 +24,7 @@ Current top blockers:
 | ID | Severity | Finding | Owner | Status | Closure evidence |
 |---|---|---|---|---|---|
 | PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Source complete; deployment pending | Focused tests; deploy; shared and seeded passwords return 401; approved named login requires MFA |
-| PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Next | Immutable digest and Git SHA label exposed by runtime endpoint; build provenance recorded; deployed revision matches approved commit |
+| PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Source implementation in progress | Immutable digest and Git SHA label exposed by runtime endpoint; build provenance recorded; deployed revision matches approved commit |
 | PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | Open | Flags enabled; cross-instance tests and live persistence query pass |
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Open | Assignment-time SoD validator and negative tests |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Open | Approved canonical role catalog reconciled across API, UI and documentation |
@@ -95,7 +95,25 @@ PR-002 closes only when both demo and SOC2 can be mapped:
 
 `Git commit -> Cloud Build -> Artifact Registry digest -> Cloud Run revision -> live runtime response`.
 
+Source implementation completed so far:
+
+- Docker image accepts Git SHA and Cloud Build ID as build arguments and writes them to OCI labels and runtime environment variables.
+- `GET /api/v1/runtime/environment` exposes `gitSha`, `buildId` and the automatic Cloud Run `K_REVISION` value without exposing credentials.
+- `cloudbuild.provenance.yaml` tags every image with the full 40-character Git SHA and records the Cloud Build ID.
+- `scripts/buildProvenanceRelease.ps1` refuses a production build from a dirty tree, resolves the exact committed SHA, invokes the provenance build, and prints the immutable Artifact Registry digest.
+- Runtime tests and backend typecheck pass; PowerShell release-script syntax passes.
+
+Remaining PR-002 gates:
+
+- Build the committed implementation from a clean checkout.
+- Confirm OCI revision/build labels on the resulting image.
+- Deploy as a no-traffic demo canary with commit/release revision labels.
+- Match live runtime provenance to the commit, build and digest.
+- Add/verify the corresponding CI or release-policy enforcement.
+- Repeat against SOC2 only after demo verification.
+
 ## Change log
 
 - 2026-08-17: PR-001 source remediation completed and verified locally. Production runtime now fails closed for shared and seeded demo credentials unless `ALLOW_DEMO_CREDENTIALS=true` is deliberately configured. Focused authentication/session regression: 35/35 tests passed; backend typecheck passed. Deployment closure remains pending.
 - 2026-08-17: PR-002 elevated to next critical remediation with an explicit end-to-end provenance chain and closure criteria.
+- 2026-08-17: PR-002 source implementation added: clean-tree build guard, full-SHA image tag, OCI labels, Cloud Build ID, immutable-digest output and live runtime provenance fields. Build/deployment evidence remains pending.

@@ -42,6 +42,11 @@ export type PublicRuntimeEnvironment = {
     description: string;
     tone: RuntimeEnvironmentTone;
   };
+  provenance: {
+    gitSha: string;
+    buildId: string;
+    cloudRunRevision: string;
+  };
 };
 
 function envFlag(name: string, defaultValue: boolean): boolean {
@@ -370,6 +375,11 @@ export function publicRuntimeEnvironment(): PublicRuntimeEnvironment {
       label: process.env.APP_ENVIRONMENT_LABEL?.trim() || selected.label,
       description: process.env.APP_ENVIRONMENT_DESCRIPTION?.trim() || selected.description,
       tone: environment
+    },
+    provenance: {
+      gitSha: process.env.APP_GIT_SHA?.trim() || "unknown",
+      buildId: process.env.APP_BUILD_ID?.trim() || "unknown",
+      cloudRunRevision: process.env.K_REVISION?.trim() || "local"
     }
   };
 }
@@ -413,7 +423,11 @@ export function runtimeModeSummary() {
       provider: process.env.CALL_CENTER_PROVIDER ?? (isMockMode() ? "dry-run" : "not-configured")
     },
     allowedCorsOrigins: getAllowedCorsOrigins(),
-    adminPasswordSource: process.env.ADMIN_PASSWORD ? "environment" : "mock-local-fallback"
+    adminPasswordSource: process.env.ADMIN_PASSWORD
+      ? "environment"
+      : areDemoCredentialsEnabled()
+        ? "mock-local-fallback"
+        : "disabled"
   };
 }
 
