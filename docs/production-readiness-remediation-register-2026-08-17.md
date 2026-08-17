@@ -26,7 +26,7 @@ Current top blockers:
 |---|---|---|---|---|---|
 | PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Zero-traffic canary passed; operator MFA custody and promotion pending | 38/38 focused tests; unsafe passwords return 401; protected login requires enrollment/MFA and verifies successfully |
 | PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Zero-traffic provenance chain complete; promotion pending | Git SHA, Cloud Build, immutable digest, revision labels and live runtime response match |
-| PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | In progress | Flags enabled; cross-instance tests and live persistence query pass |
+| PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | Zero-traffic canary passed; promotion pending | Eight flags enabled; migrations current; cross-revision MFA, session and queue durability proven |
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Source complete; deployment pending | Assignment-time SoD validator and negative tests |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Source complete; deployment pending | Approved canonical role catalog reconciled across API, UI and documentation |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Source complete; deployment pending | Exact-question advice enforced; implicit fallback prohibited; exhaustive regression matrix |
@@ -158,22 +158,50 @@ GCP baseline:
 - SOC2 has queue, session, MFA, audit events, role overrides, reveal workflow and reveal-anomaly persistence enabled; security-anomaly persistence is not enabled.
 - Both logical databases are on the same Cloud SQL instance but use separate database names, users and Secret Manager connection secrets.
 
-Source remediation in progress:
+Source remediation complete:
 
 1. Defined one canonical eight-flag production persistence set covering queue, sessions, MFA, audit events, role overrides, reveal workflow, reveal anomaly and security anomaly.
 2. `NODE_ENV=production` now fails startup when `DATABASE_URL` or any required persistence flag is absent, including when `MOCK_MODE=true`.
 3. The public runtime diagnostic reports the boolean persistence posture without exposing connection details.
 4. `.env.example` documents every required flag explicitly.
-5. Backend typecheck passes. The focused runtime and mocked/cross-instance persistence regression has 32/32 runnable tests passing; two real PostgreSQL cases are deliberately excluded pending live connectivity.
-6. Cloud SQL validation is currently blocked because the selected gcloud user token requires interactive reauthentication. The downloaded Cloud SQL Auth Proxy v2.23.0 was verified as validly signed by Google LLC before the connection attempt.
+5. Backend typecheck passes. The focused runtime and mocked/cross-instance persistence regression has 32/32 runnable tests passing. Two additional local real-PostgreSQL cases could not connect because no database was listening at the test-only `127.0.0.1:5433` endpoint; live Cloud SQL evidence below replaces that unavailable workstation fixture for the deployment gate.
+
+### 2026-08-17 zero-traffic deployment evidence
+
+- Clean committed source: `be21174db40c0aa559416058d647d6a7287921af`.
+- Cloud Build: `d683860f-af71-4dcc-a4ad-13a967847368`, status `SUCCESS`.
+- Immutable image digest:
+  `sha256:4e43dc7cab56f2939a46dd2cd488e663f0be286e0050539aedc8d2df211c30a2`.
+- Cloud SQL PostgreSQL 15 instance `ist-triage-postgres-uat` was `RUNNABLE`,
+  with backups and point-in-time recovery enabled. The three pending additive
+  migrations were reviewed, deployed successfully and a subsequent
+  `prisma migrate status` reported the database schema up to date.
+- Zero-traffic revision: `ist-triage-demo-pr003-be21174`, tagged
+  `pr003-canary`, labelled `git-sha=be21174` and `release=pr-003`.
+- The canary has all eight required persistence flags enabled. Health returned
+  HTTP 200 and the live runtime response matched the exact Git SHA, Cloud Build
+  ID and revision.
+- Cross-revision MFA durability passed: the fresh PR-003 revision recognized
+  the previously enrolled administrator MFA credential and returned an MFA
+  challenge rather than enrollment.
+- Cross-revision session durability passed: a session created by the rollback
+  revision was accepted by PR-003, then explicitly revoked.
+- Cross-revision queue durability passed: PR-003 created synthetic record
+  `case-f3686c81-62a5-4ec3-87af-c0037e661856` with HTTP 201; the PR-002 revision
+  read the exact ID and marker with HTTP 200; deletion returned HTTP 204 and
+  session cleanup returned HTTP 200.
+- No Prisma or persistence failures were observed in the canary logs.
+- Production traffic remained 100% on `ist-triage-demo-00035-wlm`.
 
 Remaining closure gates:
 
-- Verify every required migration/table in both logical databases.
-- Run the real PostgreSQL cross-instance suites against each database.
-- Enable missing flags on a no-traffic demo canary and prove health, login/MFA, audit, reveal and anomaly durability.
-- Promote demo only after the canary passes; repeat on SOC2.
-- Confirm restart and multi-instance behavior, then record the exact revisions and evidence here.
+- Promotion remains blocked by PR-001 controlled operator MFA custody/recovery.
+- Before promotion, exercise live audit, reveal and both anomaly write/read paths
+  if those workflows are available without weakening the MFA gate. The flags,
+  schema and startup posture are proven, but those four live business workflows
+  were not individually mutated during this canary run.
+- Repeat against SOC2 only if that temporary environment remains in scope under
+  the accepted PR-008 consolidation decision.
 
 ## PR-004 and PR-005 implementation record — governed three-role model
 
@@ -362,6 +390,7 @@ Outstanding deployment gates:
 - 2026-08-17: PR-002 source implementation added: clean-tree build guard, full-SHA image tag, OCI labels, Cloud Build ID, immutable-digest output and live runtime provenance fields. Build/deployment evidence remains pending.
 - 2026-08-17: PR-003 started. Added a fail-closed production persistence policy and safe runtime posture reporting; database and canary validation remain in progress.
 - 2026-08-17: PR-003 source validation completed: backend typecheck passed and 32/32 runnable focused tests passed. Two real PostgreSQL tests, database schema evidence and canary activation remain open pending interactive gcloud reauthentication.
+- 2026-08-17: PR-003 zero-traffic canary passed in `triage-502706`. All eight persistence flags are active, Cloud SQL migrations are current, and MFA, session and synthetic queue state crossed revision boundaries successfully. Synthetic data and sessions were cleaned. Production promotion remains blocked by PR-001 operator MFA custody; live audit/reveal/anomaly workflow exercises are explicitly not claimed.
 - 2026-08-17: PR-004 and PR-005 source remediation completed around three protected system roles plus governed custom roles. SoD validation, durable schema/API, Platform Administrator UI, audit behavior and documentation were added; all focused and adjacent recorded suites passed. Database migration and no-traffic canary evidence remain pending.
 - 2026-08-17: PR-006 source remediation completed. Questions, TAQs, disposition and care advice now share one selected protocol lineage; care advice requires exact question linkage and fails closed without it. Repeated exhaustive and negative regression tests, backend build and both typechecks passed. Canary and live multi-protocol clinical verification remain pending.
 - 2026-08-17: PR-006 validation was tightened to the five licensed protocols only. A named 30-case cross-protocol matrix and three exhaustive passes over all 126 licensed TAQs passed; synthetic sample protocols are not counted as clinical validation evidence.
