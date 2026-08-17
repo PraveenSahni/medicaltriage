@@ -24,6 +24,7 @@ import {
   isMfaMandatory,
   isMockMode,
   shouldPersistRevealAnomalyCountersInDatabase,
+  shouldPersistRolePermissionOverridesInDatabase,
   shouldPersistSecurityAnomalyCountersInDatabase,
   shouldUseDatabasePersistence
 } from "../config/runtime.js";
@@ -62,7 +63,9 @@ import {
   recordAndCountSecurityAnomalyEvents,
   persistRevealRequest,
   getPersistedRolePermissionOverrides,
+  loadPersistedCustomRoles,
   listPersistedAuditEvents,
+  persistCustomRole,
   persistRolePermissionOverride,
   persistSecurityThresholdOverride,
   persistSecurityAuditEvent,
@@ -622,20 +625,19 @@ const responsibilities: Responsibility[] = [
 ];
 
 const allPermissionCodes = permissions.map((permission) => permission.code);
-const allResponsibilityCodes = responsibilities.map((responsibility) => responsibility.code);
-
 const roles: Role[] = [
   {
     code: "platform_super_administrator",
     name: "Platform Super Administrator",
     description: "Demo-only complete system access for local simulation across triage, administration, security, privacy, audit, and cryptography.",
     permissions: allPermissionCodes,
-    responsibilities: allResponsibilityCodes,
+    responsibilities: ["manage_users", "administer_organization", "manage_sso", "manage_enterprise_integrations", "manage_encryption_policy"],
     dataScopes: ["organization:IST Tech", "all_users", "all_encounters"],
     clinicalScopes: ["adult", "pediatric", "aviation", "quality_review"],
     integrationScopes: ["sso", "kms", "hrms.read", "insurance.read", "audit"],
     status: "active",
-    requiresApproval: true
+    requiresApproval: true,
+    system: true
   },
   {
     code: "triage_service_manager",
@@ -658,26 +660,31 @@ const roles: Role[] = [
       "audit.events.view",
       "privacy.reveal.approve"
     ],
-    responsibilities: ["coordinate_triage_queue", "view_operational_reports"],
+    responsibilities: ["verify_employee_id", "register_triage_call", "coordinate_triage_queue", "view_operational_reports"],
     dataScopes: ["assigned_queues", "operational_dashboards"],
     clinicalScopes: ["adult", "pediatric", "aviation", "operations"],
     integrationScopes: ["hrms.read", "audit"],
     status: "active",
-    requiresApproval: true
+    requiresApproval: true,
+    system: true
   },
   {
     code: "remote_triage_nurse",
     name: "Remote Triage Nurse",
     description: "Conducts assigned remote triage encounters with clinical protocol access.",
     permissions: ["triage.workspace.view", "triage.recommendation.view", "privacy.reveal.request"],
-    responsibilities: ["conduct_nurse_triage", "view_ai_recommendation"],
+    responsibilities: ["verify_employee_id", "conduct_nurse_triage", "view_ai_recommendation"],
     dataScopes: ["assigned_queue"],
     clinicalScopes: ["adult", "pediatric", "aviation"],
     integrationScopes: ["hrms.read", "insurance.read"],
     status: "active",
-    requiresApproval: true
+    requiresApproval: true,
+    system: true
   },
 ];
+
+const SYSTEM_ROLE_CODES = new Set(roles.map((role) => role.code));
+let customRoles: Role[] = [];
 
 const initialUsers: AdminUser[] = [
   {
@@ -701,7 +708,7 @@ const initialUsers: AdminUser[] = [
     mfaStatus: "enabled",
     accountStatus: "active",
     roles: ["platform_super_administrator"],
-    responsibilities: allResponsibilityCodes,
+    responsibilities: [...roles[0].responsibilities],
     queues: ["HIA Staff Tele-triage", "Outstation Support", "Security Administration"],
     accessProfiles: ["platform-super-admin-profile", "security-admin-profile"],
     lastLoginIso: "2026-07-09T09:00:00.000Z",
@@ -1584,8 +1591,146 @@ export function listResponsibilities(): Responsibility[] {
   return responsibilities;
 }
 
+function allRoles(): Role[] {
+  return [...roles, ...customRoles];
+}
+
 export function listRoles(): Role[] {
-  return roles.map(applyRolePermissionOverrides);
+  return allRoles().map(applyRolePermissionOverrides);
+}
+
+export class DuplicateRoleCodeError extends Error {}
+export class InvalidRoleDefinitionError extends Error {
+  constructor(message: string, readonly conflicts: string[] = []) {
+    super(message);
+  }
+}
+
+export type CreateCustomRoleInput = {
+  code: string;
+  name: string;
+  description: string;
+  permissions: string[];
+  responsibilities: string[];
+  dataScopes?: string[];
+  clinicalScopes?: string[];
+  integrationScopes?: string[];
+  requiresApproval?: boolean;
+};
+
+const CONFLICTING_PERMISSION_PAIRS: ReadonlyArray<readonly [string, string]> = [
+  ["privacy.reveal.request", "privacy.reveal.approve"],
+  ["protocol.library.manage", "clinical.governance.approve"]
+];
+
+export function validateRoleDefinition(input: Pick<CreateCustomRoleInput, "permissions" | "responsibilities">): void {
+  const selectedPermissions = new Set(input.permissions);
+  const selectedResponsibilities = new Set(input.responsibilities);
+  const knownPermissions = new Set(permissions.map((permission) => permission.code));
+  const knownResponsibilities = new Map(responsibilities.map((responsibility) => [responsibility.code, responsibility]));
+  const findings: string[] = [];
+
+  for (const code of selectedPermissions) {
+    if (!knownPermissions.has(code)) findings.push(`Unknown permission: ${code}`);
+  }
+  for (const code of selectedResponsibilities) {
+    const responsibility = knownResponsibilities.get(code);
+    if (!responsibility) {
+      findings.push(`Unknown responsibility: ${code}`);
+      continue;
+    }
+    for (const prerequisite of responsibility.prerequisiteResponsibilities) {
+      if (!selectedResponsibilities.has(prerequisite)) {
+        findings.push(`${code} requires responsibility ${prerequisite}`);
+      }
+    }
+    for (const conflict of responsibility.conflictingResponsibilities) {
+      if (knownResponsibilities.has(conflict) && selectedResponsibilities.has(conflict)) {
+        findings.push(`${code} conflicts with responsibility ${conflict}`);
+      }
+    }
+  }
+  for (const [left, right] of CONFLICTING_PERMISSION_PAIRS) {
+    if (selectedPermissions.has(left) && selectedPermissions.has(right)) {
+      findings.push(`${left} conflicts with ${right}`);
+    }
+  }
+  if (findings.length > 0) {
+    throw new InvalidRoleDefinitionError("Role violates segregation-of-duties policy.", [...new Set(findings)]);
+  }
+}
+
+function validateRoleAssignments(roleCodes: string[]): void {
+  const assignedRoles = roleCodes.map((code) => allRoles().find((role) => role.code === code));
+  if (assignedRoles.some((role) => !role)) {
+    throw new InvalidRoleCodeError("One or more requested role codes are not recognized.");
+  }
+  // The existing demo platform administrator is a protected break-glass-like
+  // system role whose transactional self-approval guards remain enforced at
+  // each workflow. Do not reinterpret that single established role as a new
+  // assignment conflict; adding any second role is still evaluated below.
+  if (assignedRoles.length === 1 && assignedRoles[0]?.system) {
+    return;
+  }
+  validateRoleDefinition({
+    permissions: assignedRoles.flatMap((role) => role?.permissions ?? []),
+    responsibilities: assignedRoles.flatMap((role) => role?.responsibilities ?? [])
+  });
+}
+
+export async function createCustomRole(
+  input: CreateCustomRoleInput,
+  actor: { userId: string; activeRole: string; reason: string }
+): Promise<Role> {
+  const code = input.code.trim().toLowerCase();
+  if (!/^[a-z][a-z0-9_]{2,63}$/.test(code)) {
+    throw new InvalidRoleDefinitionError("Role code must be 3-64 lowercase letters, numbers, or underscores and start with a letter.");
+  }
+  if (allRoles().some((role) => role.code === code)) {
+    throw new DuplicateRoleCodeError(`Role code ${code} already exists.`);
+  }
+  validateRoleDefinition(input);
+  const role: Role = {
+    code,
+    name: input.name.trim(),
+    description: input.description.trim(),
+    permissions: [...new Set(input.permissions)],
+    responsibilities: [...new Set(input.responsibilities)],
+    dataScopes: [...new Set(input.dataScopes ?? [])],
+    clinicalScopes: [...new Set(input.clinicalScopes ?? [])],
+    integrationScopes: [...new Set(input.integrationScopes ?? [])],
+    status: "active",
+    requiresApproval: input.requiresApproval ?? true,
+    system: false
+  };
+
+  try {
+    await persistCustomRole(role, actor.userId);
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code === "P2002") {
+      throw new DuplicateRoleCodeError(`Role code ${code} already exists.`);
+    }
+    throw error;
+  }
+  customRoles.push(role);
+  await recordAuditEvent({
+    id: `audit-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    timestampIso: new Date().toISOString(),
+    userId: actor.userId,
+    activeRole: actor.activeRole,
+    organization: "",
+    facility: "",
+    department: "",
+    action: "CUSTOM_ROLE_CREATED",
+    module: "AccessGovernance",
+    resource: `Role:${code}`,
+    purpose: actor.reason,
+    ipAddress: "",
+    device: "",
+    success: true,
+    risk: "high"
+  });
+  return role;
 }
 
 // Closes NFR-144's real remaining gap: the same opt-in limit/offset
@@ -1647,11 +1792,11 @@ export async function createUser(
   if (users.some((candidate) => candidate.email.toLowerCase() === email)) {
     throw new DuplicateUserEmailError(`A user with email ${email} already exists.`);
   }
-  const knownRoleCodes = new Set(roles.map((role) => role.code));
   const requestedRoles = [...new Set(input.roles)];
-  if (requestedRoles.length === 0 || requestedRoles.some((code) => !knownRoleCodes.has(code))) {
+  if (requestedRoles.length === 0) {
     throw new InvalidRoleCodeError("One or more requested role codes are not recognized.");
   }
+  validateRoleAssignments(requestedRoles);
 
   const nowIso = new Date().toISOString();
   const newUser: AdminUser = {
@@ -1787,12 +1932,19 @@ async function mutateRolePermission(
   action: "GRANT" | "REVOKE",
   actor: { userId: string; activeRole: string; reason: string }
 ): Promise<Role> {
-  const baseRole = roles.find((candidate) => candidate.code === roleCode);
+  const baseRole = allRoles().find((candidate) => candidate.code === roleCode);
   if (!baseRole) {
     throw new RoleNotFoundError(`No role found with code ${roleCode}`);
   }
   if (!permissions.some((candidate) => candidate.code === permissionCode)) {
     throw new PermissionNotFoundError(`No permission found with code ${permissionCode}`);
+  }
+  if (roleCode !== "platform_super_administrator") {
+    const effective = applyRolePermissionOverrides(baseRole);
+    const prospectivePermissions = new Set(effective.permissions);
+    if (action === "GRANT") prospectivePermissions.add(permissionCode);
+    else prospectivePermissions.delete(permissionCode);
+    validateRoleDefinition({ permissions: [...prospectivePermissions], responsibilities: effective.responsibilities });
   }
   // Prevents an admin from revoking admin.roles.manage from their own
   // currently-active role, which would lock them out of the Control
@@ -1944,6 +2096,12 @@ function directoryStatusToAccountStatus(status: DirectoryStatus): AccountStatus 
 }
 
 export function upsertDirectoryUserFromHrms(input: DirectoryUserUpsert): { user: SafeAdminUser; created: boolean } {
+  if (input.roles) {
+    validateRoleAssignments([...new Set(input.roles)]);
+  }
+  if (input.responsibilities) {
+    validateRoleDefinition({ permissions: [], responsibilities: input.responsibilities });
+  }
   const existingIndex = users.findIndex((user) => user.employeeId.toLowerCase() === input.employeeId.toLowerCase());
   const organization = organizationByCode(input.organizationCode);
   const timestampIso = new Date().toISOString();
@@ -2201,6 +2359,7 @@ export function resetSecurityStoreForTests(): void {
   sessions.clear();
   failedLoginAttempts.clear();
   rolePermissionOverrides = [];
+  customRoles = [];
   mfaCredentials.clear();
   pendingMfaChallenges.clear();
   pendingEnrollmentTokens.clear();
@@ -2520,7 +2679,24 @@ let rolePermissionOverrides: RolePermissionOverrideRecord[] = [];
 // it started (a disclosed residual limitation - would need a periodic
 // refresh or a pub/sub invalidation signal to close fully).
 export async function hydrateRolePermissionOverridesFromDatabase(): Promise<void> {
-  const roleCodes = new Set(roles.map((role) => role.code));
+  if (!shouldPersistRolePermissionOverridesInDatabase()) {
+    return;
+  }
+  const persistedCustomRoles = await loadPersistedCustomRoles();
+  customRoles = persistedCustomRoles.filter((role) => {
+    if (SYSTEM_ROLE_CODES.has(role.code)) {
+      console.error(`Ignored persisted custom role that collides with protected system role ${role.code}.`);
+      return false;
+    }
+    try {
+      validateRoleDefinition(role);
+      return true;
+    } catch (error) {
+      console.error(`Ignored invalid persisted custom role ${role.code}:`, sanitizeForLog(error));
+      return false;
+    }
+  });
+  const roleCodes = new Set(allRoles().map((role) => role.code));
   const hydrated: RolePermissionOverrideRecord[] = [];
   for (const roleCode of roleCodes) {
     try {
@@ -2535,6 +2711,20 @@ export async function hydrateRolePermissionOverridesFromDatabase(): Promise<void
   if (hydrated.length > 0) {
     rolePermissionOverrides = hydrated;
   }
+}
+
+export function startRoleCatalogRefresh(): void {
+  if (!shouldPersistRolePermissionOverridesInDatabase()) {
+    return;
+  }
+  const rawSeconds = Number(process.env.ROLE_CATALOG_REFRESH_SECONDS ?? 30);
+  const intervalMs = (Number.isFinite(rawSeconds) && rawSeconds >= 5 ? rawSeconds : 30) * 1_000;
+  const timer = setInterval(() => {
+    void hydrateRolePermissionOverridesFromDatabase().catch((error) => {
+      console.error("Failed to refresh durable role catalog:", sanitizeForLog(error));
+    });
+  }, intervalMs);
+  timer.unref();
 }
 
 function applyRolePermissionOverrides(role: Role): Role {
@@ -2563,7 +2753,7 @@ function applyRolePermissionOverrides(role: Role): Role {
 }
 
 function roleByCode(roleCode: string): Role | undefined {
-  const role = roles.find((candidate) => candidate.code === roleCode);
+  const role = allRoles().find((candidate) => candidate.code === roleCode);
   return role ? applyRolePermissionOverrides(role) : undefined;
 }
 

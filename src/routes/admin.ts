@@ -72,6 +72,9 @@ import {
   UserNotFoundError,
   SelfStatusChangeError,
   createUser,
+  createCustomRole,
+  DuplicateRoleCodeError,
+  InvalidRoleDefinitionError,
   DuplicateUserEmailError,
   InvalidRoleCodeError,
   InvalidEmailDomainError
@@ -104,6 +107,19 @@ const CreateUserRequestSchema = z.object({
   department: z.string().min(1).max(200),
   jobTitle: z.string().min(1).max(200),
   roles: z.array(z.string().min(1)).min(1).max(10),
+  reason: z.string().min(1).max(500)
+});
+
+const CreateRoleRequestSchema = z.object({
+  code: z.string().min(3).max(64).regex(/^[a-z][a-z0-9_]*$/),
+  name: z.string().min(1).max(120),
+  description: z.string().min(1).max(500),
+  permissions: z.array(z.string().min(1)).max(100),
+  responsibilities: z.array(z.string().min(1)).max(100),
+  dataScopes: z.array(z.string().min(1)).max(100).optional(),
+  clinicalScopes: z.array(z.string().min(1)).max(100).optional(),
+  integrationScopes: z.array(z.string().min(1)).max(100).optional(),
+  requiresApproval: z.boolean().optional(),
   reason: z.string().min(1).max(500)
 });
 
@@ -190,6 +206,9 @@ export function createAdminRouter(): Router {
         }
         if (error instanceof InvalidRoleCodeError || error instanceof InvalidEmailDomainError) {
           return res.status(400).json({ error: error.message });
+        }
+        if (error instanceof InvalidRoleDefinitionError) {
+          return res.status(409).json({ error: error.message, conflicts: error.conflicts });
         }
         return next(error);
       }
@@ -315,25 +334,51 @@ export function createAdminRouter(): Router {
     }
   );
 
-  router.get("/roles", requirePermission("admin.roles.manage"), (_req, res) => {
-    // Closes NFR-140 (caching) - the role/permission baseline itself only
-    // changes on a deploy, but grant/revoke overrides via the endpoints
-    // below (closing NFR-030/031/032) apply immediately; this short cache
-    // window just means a change may take up to 5 minutes to show up here.
-    res.set("Cache-Control", "private, max-age=300");
-    return res.json({ roles: listRoles() });
-  });
-
-  // Closes NFR-030/031/032 - real, permission-gated, audited role-permission
-  // mutation, no source change or redeploy required. Mirrors the PATCH
-  // /users/:id/status endpoint's shape (dedicated error classes, rate
-  // limiting, audit trail).
   const rolePermissionRateLimit = rateLimit({
     name: "admin-role-permission",
     windowMs: 60_000,
     maxRequests: 20
   });
 
+  router.get("/roles", requirePermission("admin.roles.manage"), (_req, res) => {
+    // Role definitions and permission overrides are mutable security state;
+    // never serve a cached pre-change authorization catalog.
+    res.set("Cache-Control", "private, no-store");
+    return res.json({ roles: listRoles() });
+  });
+
+  router.post(
+    "/roles",
+    requireElevatedPermission("admin.roles.manage"),
+    rolePermissionRateLimit,
+    async (req: AuthorizedRequest, res, next) => {
+      try {
+        const parsed = CreateRoleRequestSchema.safeParse(req.body);
+        if (!parsed.success) {
+          return res.status(400).json({ error: "Invalid role definition", details: parsed.error.flatten() });
+        }
+        const role = await createCustomRole(parsed.data, {
+          userId: req.securitySession?.user.id ?? "unknown",
+          activeRole: req.securitySession?.activeRole ?? "unknown",
+          reason: parsed.data.reason
+        });
+        return res.status(201).json({ role });
+      } catch (error) {
+        if (error instanceof DuplicateRoleCodeError) {
+          return res.status(409).json({ error: error.message });
+        }
+        if (error instanceof InvalidRoleDefinitionError) {
+          return res.status(409).json({ error: error.message, conflicts: error.conflicts });
+        }
+        return next(error);
+      }
+    }
+  );
+
+  // Closes NFR-030/031/032 - real, permission-gated, audited role-permission
+  // mutation, no source change or redeploy required. Mirrors the PATCH
+  // /users/:id/status endpoint's shape (dedicated error classes, rate
+  // limiting, audit trail).
   const RolePermissionMutationRequestSchema = z.object({
     permissionCode: z.string().min(1),
     reason: z.string().min(1).max(500)
@@ -360,6 +405,9 @@ export function createAdminRouter(): Router {
       } catch (error) {
         if (error instanceof RoleNotFoundError || error instanceof PermissionNotFoundError) {
           return res.status(404).json({ error: error.message });
+        }
+        if (error instanceof InvalidRoleDefinitionError) {
+          return res.status(409).json({ error: error.message, conflicts: error.conflicts });
         }
         return next(error);
       }
@@ -390,6 +438,9 @@ export function createAdminRouter(): Router {
         }
         if (error instanceof SelfPermissionRevocationError) {
           return res.status(409).json({ error: error.message });
+        }
+        if (error instanceof InvalidRoleDefinitionError) {
+          return res.status(409).json({ error: error.message, conflicts: error.conflicts });
         }
         return next(error);
       }

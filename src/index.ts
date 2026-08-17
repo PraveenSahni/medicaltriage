@@ -1,7 +1,7 @@
 import { createApp } from "./app.js";
 import { contentPackageReady } from "./services/clinicalContent.js";
 import { startIncomingCallSimulator } from "./services/callSimulator.js";
-import { hydrateRolePermissionOverridesFromDatabase } from "./services/securityAdmin.js";
+import { hydrateRolePermissionOverridesFromDatabase, startRoleCatalogRefresh } from "./services/securityAdmin.js";
 
 const port = Number(process.env.PORT ?? 8080);
 
@@ -15,6 +15,7 @@ await contentPackageReady;
 // instance to restart (or a future periodic refresh) to see it, a
 // disclosed residual limitation, not a full fix.
 await hydrateRolePermissionOverridesFromDatabase();
+startRoleCatalogRefresh();
 const app = createApp();
 
 app.listen(port, () => {

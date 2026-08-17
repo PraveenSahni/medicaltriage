@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Settings, X } from "lucide-react";
+import { Plus, Settings, X } from "lucide-react";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
@@ -17,6 +17,7 @@ type Role = {
   permissions: string[];
   responsibilities: string[];
   status: string;
+  system: boolean;
 };
 
 type Permission = {
@@ -27,25 +28,45 @@ type Permission = {
   risk: string;
 };
 
+type Responsibility = {
+  code: string;
+  name: string;
+  risk: string;
+};
+
+const emptyRoleDraft = {
+  code: "",
+  name: "",
+  description: "",
+  reason: "",
+  permissions: [] as string[],
+  responsibilities: [] as string[]
+};
+
 export function RolesPanel() {
   const [roles, setRoles] = useState<Role[]>([]);
   const [permissions, setPermissions] = useState<Permission[]>([]);
+  const [responsibilities, setResponsibilities] = useState<Responsibility[]>([]);
   const [status, setStatus] = useState("Loading roles.");
   const [manageRole, setManageRole] = useState<string | null>(null);
   const [grantDrafts, setGrantDrafts] = useState<Record<string, string>>({});
   const [reasonDrafts, setReasonDrafts] = useState<Record<string, string>>({});
   const [rowError, setRowError] = useState("");
+  const [createOpen, setCreateOpen] = useState(false);
+  const [roleDraft, setRoleDraft] = useState(emptyRoleDraft);
   const elevation = useElevatedAction();
 
   async function load() {
     setStatus("Loading roles.");
     try {
-      const [rolesResult, permissionsResult] = await Promise.all([
+      const [rolesResult, permissionsResult, responsibilitiesResult] = await Promise.all([
         fetchJson<{ roles: Role[] }>("/api/v1/admin/roles"),
-        fetchJson<{ permissions: Permission[] }>("/api/v1/admin/permissions")
+        fetchJson<{ permissions: Permission[] }>("/api/v1/admin/permissions"),
+        fetchJson<{ responsibilities: Responsibility[] }>("/api/v1/admin/responsibilities")
       ]);
       setRoles(rolesResult.roles);
       setPermissions(permissionsResult.permissions);
+      setResponsibilities(responsibilitiesResult.responsibilities);
       setStatus(`${rolesResult.roles.length} role(s) loaded.`);
     } catch {
       setStatus("Unable to load roles.");
@@ -88,12 +109,37 @@ export function RolesPanel() {
     setRowError("");
     await elevation.runElevated(async () => {
       try {
-        await deleteJson(`/api/v1/admin/roles/${roleCode}/permissions/${encodeURIComponent(permissionCode)}`);
+        await deleteJson(`/api/v1/admin/roles/${roleCode}/permissions/${encodeURIComponent(permissionCode)}`, { reason });
         await load();
       } catch (error) {
         // Real self-lockout guard: revoking admin.roles.manage from the
         // actor's own active role returns 409 - surfaced here, not swallowed.
         setRowError(error instanceof Error ? error.message : "Unable to revoke permission.");
+      }
+    });
+  }
+
+  function toggleDraftValue(field: "permissions" | "responsibilities", value: string) {
+    setRoleDraft((current) => ({
+      ...current,
+      [field]: current[field].includes(value) ? current[field].filter((item) => item !== value) : [...current[field], value]
+    }));
+  }
+
+  async function createRole() {
+    if (!roleDraft.code.trim() || !roleDraft.name.trim() || !roleDraft.description.trim() || !roleDraft.reason.trim()) {
+      setRowError("Role code, name, description, and reason are required.");
+      return;
+    }
+    setRowError("");
+    await elevation.runElevated(async () => {
+      try {
+        await postJson("/api/v1/admin/roles", { ...roleDraft, requiresApproval: true });
+        setRoleDraft(emptyRoleDraft);
+        setCreateOpen(false);
+        await load();
+      } catch (error) {
+        setRowError(error instanceof Error ? error.message : "Unable to create role.");
       }
     });
   }
@@ -107,7 +153,7 @@ export function RolesPanel() {
       label: "Role",
       render: (role) => (
         <div>
-          <strong className="block">{role.name}</strong>
+          <strong className="block">{role.name} {role.system && <Badge>System</Badge>}</strong>
           <small className="text-muted-foreground">{role.description}</small>
         </div>
       )
@@ -127,7 +173,10 @@ export function RolesPanel() {
 
   return (
     <section className="admin-stack">
-      <div className="status-pill border border-emerald-200 bg-emerald-50 text-emerald-700">{status}</div>
+      <div className="flex items-center justify-between gap-3">
+        <div className="status-pill border border-emerald-200 bg-emerald-50 text-emerald-700">{status}</div>
+        <Button onClick={() => setCreateOpen(true)}><Plus className="h-4 w-4" /> Create role</Button>
+      </div>
       {rowError && <div className="login-alert">{rowError}</div>}
       <DataTable columns={columns} rows={roles} getRowKey={(role) => role.code} emptyMessage="No roles found." />
 
@@ -179,6 +228,32 @@ export function RolesPanel() {
               </div>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader><DialogTitle>Create governed custom role</DialogTitle></DialogHeader>
+          <div className="grid gap-3">
+            <Input placeholder="Role code (example: reporting_specialist)" value={roleDraft.code} onChange={(event) => setRoleDraft((current) => ({ ...current, code: event.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "_") }))} />
+            <Input placeholder="Role name" value={roleDraft.name} onChange={(event) => setRoleDraft((current) => ({ ...current, name: event.target.value }))} />
+            <Input placeholder="Description" value={roleDraft.description} onChange={(event) => setRoleDraft((current) => ({ ...current, description: event.target.value }))} />
+            <Input placeholder="Business reason (required)" value={roleDraft.reason} onChange={(event) => setRoleDraft((current) => ({ ...current, reason: event.target.value }))} />
+            <div>
+              <strong className="text-sm">Permissions</strong>
+              <div className="mt-2 grid max-h-40 grid-cols-2 gap-2 overflow-y-auto rounded border p-3">
+                {permissions.map((permission) => <label key={permission.code} className="flex items-start gap-2 text-xs"><input type="checkbox" checked={roleDraft.permissions.includes(permission.code)} onChange={() => toggleDraftValue("permissions", permission.code)} /><span>{permission.code} ({permission.risk})</span></label>)}
+              </div>
+            </div>
+            <div>
+              <strong className="text-sm">Responsibilities</strong>
+              <div className="mt-2 grid max-h-40 grid-cols-2 gap-2 overflow-y-auto rounded border p-3">
+                {responsibilities.map((responsibility) => <label key={responsibility.code} className="flex items-start gap-2 text-xs"><input type="checkbox" checked={roleDraft.responsibilities.includes(responsibility.code)} onChange={() => toggleDraftValue("responsibilities", responsibility.code)} /><span>{responsibility.name} ({responsibility.risk})</span></label>)}
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">Segregation-of-duties and prerequisite checks run before the role is saved. The three system roles remain protected.</p>
+            <Button onClick={createRole}>Create custom role</Button>
+          </div>
         </DialogContent>
       </Dialog>
 

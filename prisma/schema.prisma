@@ -773,7 +773,14 @@ model Role {
   updatedBy        String?  @map("updated_by")
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
+  permissions      Json     @default("[]")
+  responsibilities Json     @default("[]")
+  dataScopes       Json     @default("[]") @map("data_scopes")
+  clinicalScopes   Json     @default("[]") @map("clinical_scopes")
+  integrationScopes Json    @default("[]") @map("integration_scopes")
+  roleOrigin       String   @default("legacy") @map("role_origin")
 
+  @@index([roleOrigin, status])
   @@map("roles")
 }
 

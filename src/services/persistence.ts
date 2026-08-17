@@ -27,7 +27,7 @@ import type {
   TriageEvaluationRequest
 } from "../types/triage.js";
 import { DispositionCodeSchema } from "../types/triage.js";
-import type { AuditEvent, AuthenticatedSession } from "../types/security.js";
+import type { AuditEvent, AuthenticatedSession, Role } from "../types/security.js";
 import type {
   CcpOutboundDraft,
   CcpSendResult,
@@ -478,6 +478,57 @@ export async function persistRolePermissionOverride(override: RolePermissionOver
   });
 
   return { persisted: true, recordId: created.id };
+}
+
+function roleStringArray(value: Prisma.JsonValue): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+}
+
+export async function loadPersistedCustomRoles(): Promise<Role[]> {
+  if (!shouldPersistRolePermissionOverridesInDatabase()) {
+    return [];
+  }
+  const rows = await prisma.role.findMany({
+    where: { roleOrigin: "custom", status: { in: ["active", "draft"] } },
+    orderBy: { createdAt: "asc" }
+  });
+  return rows.map((row) => ({
+    code: row.code,
+    name: row.name,
+    description: row.description ?? "",
+    permissions: roleStringArray(row.permissions),
+    responsibilities: roleStringArray(row.responsibilities),
+    dataScopes: roleStringArray(row.dataScopes),
+    clinicalScopes: roleStringArray(row.clinicalScopes),
+    integrationScopes: roleStringArray(row.integrationScopes),
+    status: row.status as Role["status"],
+    requiresApproval: row.requiresApproval,
+    system: false
+  }));
+}
+
+export async function persistCustomRole(role: Role, actorUserId: string): Promise<PersistenceResult> {
+  if (!shouldPersistRolePermissionOverridesInDatabase()) {
+    return { persisted: false, reason: "mock-mode" };
+  }
+  const row = await prisma.role.create({
+    data: {
+      code: role.code,
+      name: role.name,
+      description: role.description,
+      status: role.status,
+      requiresApproval: role.requiresApproval,
+      permissions: jsonValue(role.permissions),
+      responsibilities: jsonValue(role.responsibilities),
+      dataScopes: jsonValue(role.dataScopes),
+      clinicalScopes: jsonValue(role.clinicalScopes),
+      integrationScopes: jsonValue(role.integrationScopes),
+      roleOrigin: "custom",
+      createdBy: actorUserId,
+      updatedBy: actorUserId
+    }
+  });
+  return { persisted: true, recordId: row.id };
 }
 
 // Closes NFR-119 - real durable persistence for the QR-facing security

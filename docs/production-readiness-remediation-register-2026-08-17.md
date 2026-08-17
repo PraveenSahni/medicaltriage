@@ -26,8 +26,8 @@ Current top blockers:
 | PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Source complete; deployment pending | Focused tests; deploy; shared and seeded passwords return 401; approved named login requires MFA |
 | PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Source implementation in progress | Immutable digest and Git SHA label exposed by runtime endpoint; build provenance recorded; deployed revision matches approved commit |
 | PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | In progress | Flags enabled; cross-instance tests and live persistence query pass |
-| PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Open | Assignment-time SoD validator and negative tests |
-| PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Open | Approved canonical role catalog reconciled across API, UI and documentation |
+| PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Source complete; deployment pending | Assignment-time SoD validator and negative tests |
+| PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Source complete; deployment pending | Approved canonical role catalog reconciled across API, UI and documentation |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Open | Exact-question advice by default; explicit governed fallback; regression tests |
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Open | Backend merge invariant and all-surface regression tests |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Open/decision required | Accepted risk or isolated instance with restore test |
@@ -137,6 +137,30 @@ Remaining closure gates:
 - Promote demo only after the canary passes; repeat on SOC2.
 - Confirm restart and multi-instance behavior, then record the exact revisions and evidence here.
 
+## PR-004 and PR-005 implementation record — governed three-role model
+
+Agreed canonical model:
+
+- Three protected system roles: Triage Nurse, Triage Service Manager and Platform Administrator.
+- Platform Administrators can create additional governed custom roles for approved requirements; custom roles do not become additional system roles.
+
+Source remediation complete:
+
+1. Added one central role-definition validator for unknown codes, responsibility prerequisites, static responsibility conflicts and sensitive permission conflict pairs.
+2. Applied validation to custom-role creation, role-permission grants, new-user multi-role assignments and HRMS-supplied roles/responsibilities.
+3. Added an elevated and rate-limited `POST /api/v1/admin/roles` endpoint with duplicate/protected-code rejection, audit logging and PostgreSQL persistence.
+4. Added durable custom-role bundle fields and migration `20260817153000_add_durable_custom_roles`; startup plus configurable periodic hydration loads only records explicitly marked `custom` and rejects collisions or invalid persisted definitions.
+5. Updated the Roles screen to display protected system roles and provide permission/responsibility selection for custom-role creation. The existing permission-revocation UI now sends its required reason body.
+6. Reconciled current Help Center and canonical role documentation to the three-system-role model while retaining older 19-role material only as explicitly historical evidence.
+7. Backend and frontend typechecks pass; Prisma validates and generates. The three-role UAT/governance/permission run passed 101/101, the adjacent admin/reveal run passed 41/41, and the final focused role regression passed 17/17 after adding custom-role assignment coverage.
+
+Remaining deployment closure gates:
+
+- Apply the custom-role migration to isolated demo and SOC2 logical databases after gcloud reauthentication.
+- Deploy a no-traffic demo canary and prove create, restart/hydrate, assign, login and conflict rejection using a disposable custom role.
+- Confirm all three protected roles remain visible and existing Triage Nurse, Service Manager and Platform Administrator workflows are unchanged.
+- Promote demo only after canary evidence; repeat against SOC2 and record exact revisions.
+
 ## Change log
 
 - 2026-08-17: PR-001 source remediation completed and verified locally. Production runtime now fails closed for shared and seeded demo credentials unless `ALLOW_DEMO_CREDENTIALS=true` is deliberately configured. Focused authentication/session regression: 35/35 tests passed; backend typecheck passed. Deployment closure remains pending.
@@ -144,3 +168,4 @@ Remaining closure gates:
 - 2026-08-17: PR-002 source implementation added: clean-tree build guard, full-SHA image tag, OCI labels, Cloud Build ID, immutable-digest output and live runtime provenance fields. Build/deployment evidence remains pending.
 - 2026-08-17: PR-003 started. Added a fail-closed production persistence policy and safe runtime posture reporting; database and canary validation remain in progress.
 - 2026-08-17: PR-003 source validation completed: backend typecheck passed and 32/32 runnable focused tests passed. Two real PostgreSQL tests, database schema evidence and canary activation remain open pending interactive gcloud reauthentication.
+- 2026-08-17: PR-004 and PR-005 source remediation completed around three protected system roles plus governed custom roles. SoD validation, durable schema/API, Platform Administrator UI, audit behavior and documentation were added; all focused and adjacent recorded suites passed. Database migration and no-traffic canary evidence remain pending.

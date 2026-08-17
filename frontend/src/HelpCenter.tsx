@@ -2895,23 +2895,23 @@ const securityAdminHelpTopics: SecurityAdminHelpTopic[] = [
     summary:
       "The security layer separates role permissions, clinical responsibilities, and active-role session behavior so menus and APIs can be controlled consistently.",
     built: [
-      "Seeded roles now cover Platform Super Administrator, Organization Administrator, System Administrator, Security Administrator, Privacy Officer / DPO, Compliance Auditor, Clinical Governance Lead, Triage Service Manager, Call Intake Coordinator, Remote Triage Nurse, Senior Triage Nurse, Pediatric Triage Nurse, Teleconsult Physician, Occupational Health Clinician, Protocol Content Manager, Quality Reviewer, Integration Administrator, Reporting Analyst, and Helpdesk Support.",
+      "The canonical system catalog contains exactly three protected roles: Triage Nurse, Triage Service Manager, and Platform Administrator. Platform administrators can create governed custom roles for approved requirements.",
       "Named User Mode means every action is tied to a real authenticated user, active role, session, queue assignment, and audit identity rather than a generic actor selector.",
       "The active role is derived from the named user and controls permissions for the current session instead of granting every role at once.",
-      "Every seeded role is intended to have a distinct effective access profile across permissions, responsibilities, data scopes, clinical scopes, and integration scopes.",
+      "Every system or custom role has a distinct effective access profile across permissions, responsibilities, data scopes, clinical scopes, and integration scopes.",
       "The old global Actor selector was removed so the authenticated role is the single source of truth for menus, API access, data scope, and audit.",
       "A central authorization helper protects administration APIs independently of frontend menu visibility.",
       "Admin navigation and admin tabs appear only when the active session has the matching administration, security, privacy, or audit permissions."
     ],
     controls: [
       "Platform Super Administrator has all current permissions for local simulation and demonstration.",
-      "Clinical roles such as nurse, pediatric nurse, physician, and occupational-health clinician land in the triage workspace with role-specific clinical scopes.",
-      "Governance, quality, privacy, integration, and administration roles see only the Control Center modules allowed by their active permissions.",
+      "Triage Nurses land in the clinical workspace; Service Managers receive operational oversight and independent approval capabilities.",
+      "Platform Administrators see the protected role catalog and can create custom roles only through the elevated, audited, segregation-validated workflow.",
       "Queue locking remains named-user based: one nurse claims one call, lock ownership is audited, and HRMS status changes can release locks."
     ],
     production: [
-      "Add editable role templates, access profiles, effective dates, explicit deny, queue/facility/clinical scopes, and approval workflows.",
-      "Add segregation-of-duties checks such as preventing a user from approving their own elevated access.",
+      "Add effective dates and explicit-deny semantics to custom role assignments.",
+      "Expand the centralized segregation policy as Qatar Airways approves additional custom role patterns.",
       "Extend authorization guards around every clinical, queue, note, integration, export, and content-management endpoint."
     ]
   },
@@ -3067,14 +3067,14 @@ const securityAdminHelpTopics: SecurityAdminHelpTopic[] = [
   }
 ];
 
-const roleAccessRows: RoleAccessRow[] = [
+const legacyRoleAccessRows: RoleAccessRow[] = [
   {
     category: "A - Administration",
     prefix: "A",
     role: "Platform Super Administrator",
     access: "Demo-only full-system access across triage, administration, security, privacy, audit, cryptography, integrations, and reports.",
     permissions: ["all current permissions"],
-    responsibilities: ["all current responsibilities"],
+    responsibilities: ["manage users", "administer organization", "manage SSO", "manage integrations", "manage encryption policy"],
     scopes: ["all users", "all encounters", "all integration scopes"]
   },
   {
@@ -3154,8 +3154,8 @@ const roleAccessRows: RoleAccessRow[] = [
     prefix: "B",
     role: "Triage Service Manager",
     access: "Queue health, staffing coverage, case allocation, operational KPIs, and escalation throughput.",
-    permissions: ["triage.queue.manage", "operations.dashboard.view", "reports.view", "audit.events.view"],
-    responsibilities: ["coordinate_triage_queue", "view_operational_reports"],
+    permissions: ["triage.queue.manage", "operations.dashboard.view", "reports.view", "audit.events.view", "privacy.reveal.approve"],
+    responsibilities: ["verify_employee_id", "register_triage_call", "coordinate_triage_queue", "view_operational_reports"],
     scopes: ["assigned queues", "operational dashboards", "hrms.read", "audit"]
   },
   {
@@ -3173,7 +3173,7 @@ const roleAccessRows: RoleAccessRow[] = [
     role: "Remote Triage Nurse",
     access: "Assigned remote triage encounters with clinical protocol access and RAG shadow suggestion visibility.",
     permissions: ["triage.workspace.view", "triage.recommendation.view", "privacy.reveal.request"],
-    responsibilities: ["conduct_nurse_triage", "view_rag_shadow_suggestion"],
+    responsibilities: ["verify_employee_id", "conduct_nurse_triage", "view_ai_recommendation"],
     scopes: ["assigned queue", "adult", "aviation", "hrms.read", "insurance.read"]
   },
   {
@@ -3303,6 +3303,10 @@ const securityAdminApiRows: ApiCatalogRow[] = [
     status: "Built read APIs"
   }
 ];
+
+const roleAccessRows = legacyRoleAccessRows.filter((row) =>
+  ["Platform Super Administrator", "Triage Service Manager", "Remote Triage Nurse"].includes(row.role)
+);
 
 export default function HelpCenter() {
   const [activeTab, setActiveTab] = useState<TabKey>("help");

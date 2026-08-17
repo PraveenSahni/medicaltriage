@@ -21,7 +21,7 @@ risk-based view of the same landscape.
 
 | Trust Service Criterion | Real controls mapped | Reference |
 |---|---|---|
-| Security | Tenant isolation, RBAC (66 permissions across 19 roles), MFA/OIDC SSO, PAM/JIT elevation, rate limiting, CSP/Helmet, dependency scanning (`pnpm audit`), SAST (CodeQL) | `docs/soc2-control-matrix.md` §Security |
+| Security | Tenant isolation, three protected system roles plus segregation-validated custom roles, MFA/OIDC SSO, PAM/JIT elevation, rate limiting, CSP/Helmet, dependency scanning (`pnpm audit`), SAST (CodeQL) | `docs/soc2-control-matrix.md` §Security |
 | Availability | Uptime monitoring/alerting, automated backups + PITR, cross-region DB replica, canary-then-cutover deploys | `docs/soc2-control-matrix.md` §Availability, `docs/backup-disaster-recovery-plan.md` |
 | Processing Integrity | Faithfully-mirrored vendor clinical content (`Mdb*` tables), HRMS identity validation before queue creation, completed-encounter edit locking, `tsc`/full test suite gating in CI | `docs/soc2-control-matrix.md` §Processing Integrity |
 | Confidentiality | Tenant-scoped isolation, Secret Manager-backed secrets (soc2), field-level masking with approval-gated reveal | `docs/soc2-control-matrix.md` §Confidentiality, `docs/data-management-policy.md` |

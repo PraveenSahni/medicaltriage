@@ -95,6 +95,7 @@ export type Role = {
   integrationScopes: string[];
   status: "active" | "draft" | "retired";
   requiresApproval: boolean;
+  system: boolean;
 };
 
 export type AdminUser = {

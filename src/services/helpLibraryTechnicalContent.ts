@@ -491,10 +491,10 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
           <p>The security layer separates role permissions, clinical responsibilities, and active-role session behavior so menus and APIs can be controlled consistently.</p>
           <p><strong>Built:</strong></p>
           ${ul([
-            "Seeded roles cover all 19 role codes documented in <a href=\"#\" data-topic=\"roles-access\">Roles, Responsibilities &amp; Access</a>.",
+            "The canonical system catalog contains exactly three protected roles: Triage Nurse, Triage Service Manager, and Platform Administrator. Platform administrators can create governed custom roles for approved requirements.",
             "Named User Mode means every action is tied to a real authenticated user, active role, session, queue assignment, and audit identity rather than a generic actor selector.",
             "The active role is derived from the named user and controls permissions for the current session instead of granting every role at once.",
-            "Every seeded role has a distinct effective access profile across permissions, responsibilities, data scopes, clinical scopes, and integration scopes.",
+            "Every system or custom role has a distinct effective access profile across permissions, responsibilities, data scopes, clinical scopes, and integration scopes.",
             "The old global Actor selector was removed so the authenticated role is the single source of truth for menus, API access, data scope, and audit.",
             "A central authorization helper protects administration APIs independently of frontend menu visibility.",
             "Admin navigation and admin tabs appear only when the active session has the matching administration, security, privacy, or audit permissions."
@@ -502,14 +502,14 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
           <p><strong>Controls:</strong></p>
           ${ul([
             "Platform Super Administrator has all current permissions for local simulation and demonstration.",
-            "Clinical roles such as nurse, pediatric nurse, physician, and occupational-health clinician land in the triage workspace with role-specific clinical scopes.",
-            "Governance, quality, privacy, integration, and administration roles see only the Control Center modules allowed by their active permissions.",
+            "Triage Nurses land in the clinical workspace; Service Managers receive operational oversight and independent approval capabilities.",
+            "Platform Administrators see the protected role catalog and can create custom roles only through the elevated, audited, segregation-validated workflow.",
             "Queue locking remains named-user based: one nurse claims one call, lock ownership is audited, and HRMS status changes can release locks."
           ])}
           <p><strong>Production gaps:</strong></p>
           ${ul([
-            "Add editable role templates, access profiles, effective dates, explicit deny, queue/facility/clinical scopes, and approval workflows.",
-            "Add segregation-of-duties checks such as preventing a user from approving their own elevated access.",
+            "Add effective dates and explicit-deny semantics to custom role assignments.",
+            "Expand the centralized segregation policy as Qatar Airways approves additional custom role patterns.",
             "Extend authorization guards around every clinical, queue, note, integration, export, and content-management endpoint."
           ])}
         `
@@ -638,29 +638,13 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
         id: "secadmin-role-catalog",
         title: "All roles and their access (full catalog with scopes)",
         body: `
-          <p>This is the same 19 roles listed in <a href="#" data-topic="roles-access">Roles, Responsibilities &amp; Access</a>, shown here with the additional access-intent and data-scope columns from the security administration matrix.</p>
+          <p>The canonical catalog contains three protected system roles. Additional approved roles are created as governed custom roles by a PAM-elevated Platform Administrator.</p>
           <table class="ref-table">
             <thead><tr><th>Category</th><th>Role</th><th>Access intent</th><th>Data scopes</th></tr></thead>
             <tbody>
               <tr><td>A</td><td>Platform Super Administrator</td><td>Demo-only full-system access across triage, administration, security, privacy, audit, cryptography, integrations, and reports.</td><td>all users, all encounters, all integration scopes</td></tr>
-              <tr><td>A</td><td>Organization Administrator</td><td>Tenant, facility, department, queue, user, and access configuration for IST Health.</td><td>organization:IST Health, facility:*, hrms.read</td></tr>
-              <tr><td>A</td><td>System Administrator</td><td>Application and user administration without automatic clinical-data reveal or clinical workflow rights.</td><td>organization:IST Health, support tickets, masked users</td></tr>
-              <tr><td>S</td><td>Security Administrator</td><td>Authentication, SSO, security policy, session, KMS policy, and security-event administration.</td><td>organization:IST Health, sso, kms</td></tr>
-              <tr><td>S</td><td>Privacy Officer / DPO</td><td>Privacy assessment, purpose-based reveal governance, data-law evidence, and disclosure controls.</td><td>privacy register, masked users, reveal requests, kms, audit</td></tr>
-              <tr><td>G</td><td>Compliance Auditor</td><td>Audit evidence, privacy events, access activity, and approved de-identified management reports.</td><td>audit events, deidentified reports, completed encounters</td></tr>
-              <tr><td>G</td><td>Clinical Governance Lead</td><td>Clinical protocol approval, safety rules, escalation policy, release governance, and quality review.</td><td>protocol library, governance register, quality review, adult/pediatric/aviation</td></tr>
-              <tr><td>G</td><td>Protocol Content Manager</td><td>Approved triage algorithms, keyword indexes, care advice, and localized clinical library content.</td><td>protocol library, care advice, keyword index, content management</td></tr>
-              <tr><td>G</td><td>Quality Reviewer</td><td>Completed encounter review without changing signed clinical notes.</td><td>completed encounters, quality review</td></tr>
               <tr><td>B</td><td>Triage Service Manager</td><td>Queue health, staffing coverage, case allocation, operational KPIs, and escalation throughput.</td><td>assigned queues, operational dashboards, hrms.read, audit</td></tr>
-              <tr><td>B</td><td>Call Intake Coordinator</td><td>Inbound call registration, identity context, non-clinical intake capture, and routing to clinical queues.</td><td>intake queue, identity verification, hrms.read</td></tr>
               <tr><td>B</td><td>Remote Triage Nurse</td><td>Assigned remote triage encounters with clinical protocol access and RAG shadow suggestion visibility.</td><td>assigned queue, adult, aviation, hrms.read, insurance.read</td></tr>
-              <tr><td>B</td><td>Senior Triage Nurse</td><td>Complex triage, queue supervision, protocol adherence, and upward disposition override.</td><td>assigned queue, supervised queue, escalation, hrms.read, insurance.read</td></tr>
-              <tr><td>B</td><td>Pediatric Triage Nurse</td><td>Pediatric and dependent triage with guardian, age, and emergency routing rules.</td><td>dependent encounters, pediatric, emergency, hrms.read, insurance.read</td></tr>
-              <tr><td>B</td><td>Teleconsult Physician</td><td>Escalated teleconsult review, physician-level disposition, and clinical override decisions.</td><td>escalated encounters, physician escalation, emr.write, insurance.read</td></tr>
-              <tr><td>B</td><td>Occupational Health Clinician</td><td>Fit-to-work, fit-to-fly, sickness, occupational visit, and medical commission pathways.</td><td>occupational cases, fit-to-fly, sickness, hrms.read, emr.write</td></tr>
-              <tr><td>I</td><td>Integration Administrator</td><td>HRMS, EMR/FHIR, call-center, roster, insurance, SSO connector, and API integration configuration.</td><td>integration config, connector logs, hrms.manage, emr.manage, callcenter.manage, sso, insurance.manage</td></tr>
-              <tr><td>R</td><td>Reporting Analyst</td><td>Approved de-identified operating, quality, safety, and adoption reports.</td><td>deidentified reports, analytics</td></tr>
-              <tr><td>U</td><td>Helpdesk Support</td><td>Access support, device guidance, training questions, and non-clinical user service requests.</td><td>support tickets, masked users</td></tr>
             </tbody>
           </table>
         `

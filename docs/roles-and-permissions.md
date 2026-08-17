@@ -1,6 +1,23 @@
 # IST Health Roles and Permissions
 
-Reference doc compiled 2026-07-21 from a direct audit of the actual RBAC code
+Canonical model updated 2026-08-17 from the implemented RBAC code.
+
+The application has exactly three protected system roles:
+
+1. **Triage Nurse** (`remote_triage_nurse`)
+2. **Triage Service Manager** (`triage_service_manager`)
+3. **Platform Administrator** (`platform_super_administrator`)
+
+Platform Administrators can create additional governed custom roles through
+the elevated Roles screen. Custom role definitions are validated for known
+permissions, responsibility prerequisites, and segregation-of-duties
+conflicts, then persisted in PostgreSQL. The three system roles cannot be
+recreated, renamed, or replaced by custom definitions.
+
+The material below is the dated 2026-07-21 audit baseline retained for change
+history; it is not the current role catalog.
+
+Reference baseline compiled 2026-07-21 from a direct audit of the actual RBAC code
 (`src/services/securityAdmin.ts`'s `roles` array, `requirePermission`/
 `requireAnyPermission` calls across `src/routes/*.ts`, and the service-layer
 helpers in `src/services/queueOrchestration.ts`) - not just the login
@@ -8,13 +25,12 @@ dropdown labels. Every claim below about what a role "can do" was verified
 against an actual permission check in code, or explicitly flagged as
 **not yet enforced** where no such check exists.
 
-**Status: reference only.** No role changes have been made yet. This
-documents the current 19-role state plus a proposed 15-role reduction to
-revisit later.
+**Status: historical baseline.** It documents the former 19-role claim and
+must not be used as the current authorization model.
 
 ---
 
-## 1. Current state: 19 roles
+## 1. Historical state: 19-role proposal
 
 ### A - Administration
 
