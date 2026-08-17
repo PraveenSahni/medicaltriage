@@ -36,7 +36,7 @@ Current top blockers:
 | PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Zero-traffic canary passed; promotion pending | Append-only DB role, HMAC chain, integrity verification and live tamper-negative evidence |
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Isolated rehearsal passed; production activation pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Complete | Healthy triage and marketing serving chains documented; stale load-balancer resources removed; post-change DNS/TLS/HTTP validation passed |
-| PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Source complete; CI execution pending | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
+| PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Complete | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
 | PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Local 97/97; live failed 2 SoD cases; cleanup verified | Deploy current SoD enforcement; rerun exact HTTP matrix; clean test records; resolve former SOC2 scope |
 | PR-015 | High | Five-protocol adversarial auto-match matrix missing | Clinical QA | Source complete; clinical signature and deployment pending | 25/25 ambiguity/no-match matrix; 100/100 clinical regressions; nurse override evidence; named Clinical QA signature |
 
@@ -612,6 +612,7 @@ Outstanding activation gates:
 - 2026-08-17: PR-012 investigation completed. Both triage domains are healthy on Firebase Hosting with a valid shared Google Trust Services certificate. `aimltriage.com` still fails hostname-valid TLS across its two published Firebase IPs. The additive external load-balancer chain is a stale-resource candidate, but the current identity cannot read its live inventory or Firebase custom-domain state. No destructive action was taken. Exact evidence, resource candidates, access requirements and cleanup order are in `docs/infrastructure/pr-012-certificate-remediation.md`.
 - 2026-08-17: PR-012 live remediation executed with explicit approval. Correct Firebase ownership/DNS records were installed for the marketing apex and `www`; Firebase accepted the apex and began certificate minting. The unused `ist-triage-url-map` chain, both inactive certificates, both backend services, both serverless NEGs and reserved address `ist-triage-lb-ip` (`8.233.232.24`) were deleted and their absence verified in the console. The Terraform declaration was removed. Final closure awaits Firebase `Connected` and hostname-valid TLS for `aimltriage.com` and `www.aimltriage.com`.
 - 2026-08-18: PR-012 closed. The apex and `www` marketing domains now return HTTPS 200 with separate hostname-valid Google Trust Services certificates and HSTS; the triage domain remains healthy. Live GCP inventory reconfirmed the abandoned load-balancer chain is absent, and its Terraform declaration remains removed.
+- 2026-08-18: PR-013 closed. The fail-closed guard approved only the isolated `_test` database, all 20 migrations applied, and the complete database-backed backend run passed 50/50 suites and 539/539 tests. Every temporary database, secret, job, image and build file was removed after evidence capture.
 
 ## PR-013 implementation record — isolated database-backed CI
 
@@ -636,9 +637,33 @@ Validation completed on the audit workstation:
 - Prisma schema validation passed; and
 - backend TypeScript validation passed.
 
-The workstation has no Docker/PostgreSQL runtime, so the closure gate remains
-the first GitHub Actions run showing the migrated PostgreSQL service and all
-backend Jest suites passing. Technical test completion is not clinical UAT.
+### 2026-08-18 isolated database-backed execution
+
+- Exact committed source `47e10f3d2be2ce25c30c8e3952a7f64d6d395139`
+  was packaged into a temporary CI-only image. Corrected Cloud Build
+  `f70b421d-f480-4b33-a7fa-0cb65d4e691e` completed `SUCCESS`; image digest was
+  `sha256:2703e16b4126955211d8027e441fb1cdc0c7255eefd9faeab7dec6c38558b703`.
+- The test target was an isolated database named `ist_triage_pr013_test` with
+  a temporary secret scoped only to the dedicated runtime service account.
+  The guard explicitly approved `localhost/ist_triage_pr013_test`; no demo or
+  production database credentials or rows were used.
+- All 20 committed Prisma migrations applied successfully, including durable
+  roles, append-only audit chaining and the approved retention policy.
+- Complete backend execution passed: 50/50 suites and 539/539 tests, zero
+  snapshots, 69.786 seconds. This includes the SSO and security-anomaly
+  database suites that were previously blocked on the audit workstation.
+- The first complete-suite attempt reached Node's default heap limit after the
+  guard and migrations passed. The identical image passed after setting a
+  3 GiB Node heap inside a 4 GiB test container; no application source was
+  changed to obtain the passing result.
+- Successful execution `pr013-database-test-9vqxd` completed in 1m24.22s.
+  The isolated database, temporary secret and Cloud Run job, both temporary
+  image digests and all three build-only local files were removed; absence was
+  verified.
+
+PR-013 is complete. The checked-in GitHub Actions PostgreSQL 15 service now
+provides repeatable enforcement on pushes and pull requests. This technical
+test completion is not clinical UAT.
 
 ## PR-014 execution record — admin user and permission boundaries
 
