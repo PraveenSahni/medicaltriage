@@ -10,7 +10,19 @@ An inspection performed against `aimltriage` was unrelated to the registered dem
 
 The authoritative baseline records that the demo service still runs as the default Compute identity `1096520215793-compute@developer.gserviceaccount.com`. The 2026-08-06 review below remains relevant: only the SOC2 web service was cut over to the dedicated `ist-triage-cloudrun-sa@triage-502706.iam.gserviceaccount.com`; demo, jobs and schedulers were deliberately deferred.
 
-The approved PR-008 direction is to decommission SOC2 after customer security validation. SOC2-only jobs should therefore be deleted through that controlled change, not migrated merely to preserve a temporary environment. Any job that remains must use a separate least-privilege identity. The current `praveen@irisstar.tech` session lacks `run.services.get` on `triage-502706`, so no fresh live IAM read, mutation or cutover was performed. PR-009 remains open; see the remediation register for its canary and evidence requirements.
+The approved PR-008 direction is to decommission SOC2 after customer security validation. SOC2-only jobs should therefore be deleted through that controlled change, not migrated merely to preserve a temporary environment. Any job that remains must use a separate least-privilege identity.
+
+### 2026-08-17 PR-009 demo checkpoint
+
+The earlier access limitation described above was subsequently resolved for the
+bounded remediation run. A zero-traffic demo identity canary passed in the
+authoritative project `triage-502706`: the dedicated keyless runtime identity had
+Cloud SQL Client, Monitoring Viewer, a five-permission Scheduler custom role and
+access to exactly five demo secrets, with no Editor/Owner binding or user-managed
+key. Health, persisted-session and Scheduler-listing checks passed with no
+severity-ERROR canary logs. Production identity promotion remains pending the
+PR-001 operator MFA-custody gate. The canonical register contains the deployment
+record; this historical review remains the detailed permission-dependency analysis.
 
 ## Phase 1: Permission dependency map
 

@@ -87,7 +87,7 @@ Read-only post-recovery verification passed:
 - roles list `200`, with neither temporary permission present; and
 - users list `200`, with no active PR-014 synthetic account.
 
-## Closure decision
+## Initial closure decision (superseded by the checkpoint below)
 
 PR-014 remains **open**. Deploy an image built from the current approved Git
 commit, rerun this live matrix, require both SoD cases to return `409`, and

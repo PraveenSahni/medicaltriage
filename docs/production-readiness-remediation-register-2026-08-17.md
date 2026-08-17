@@ -2,6 +2,8 @@
 
 Date opened: 2026-08-17
 
+Last reconciled: 2026-08-18
+
 Target decision: end of week
 Scope: `triaged.irisstar.tech`, `triagedsoc2.irisstar.tech`, application source, CI, Cloud Run, Cloud SQL and scheduled jobs.
 
@@ -13,12 +15,36 @@ Current decision: **NO-GO**
 
 Current top blockers:
 
-1. Demo accepts a shared seeded password and creates an authenticated administrator session without MFA.
-2. Deployed images are not traceable to exact Git SHAs and differ from the audited checkout.
-3. Both services run `MOCK_MODE=true`; security persistence is incomplete on demo and security-anomaly DB persistence is unset on both.
-4. Care-advice fallback, JSON merge invariants, RBAC/SoD enforcement and full database-backed test evidence remain open.
-5. Retention and privacy fulfillment jobs remain without `--execute` pending
-   an isolated rehearsal of the approved 365-day policy and deployment authorization.
+1. PR-001 passed zero-traffic deployment verification, but production promotion
+   remains blocked until an authorized operator takes custody of the protected
+   administrator credential, TOTP enrollment and recovery procedure.
+2. PR-004 and PR-014 PAM-elevated live mutation UAT cannot be completed until that
+   PR-001 operator-controlled login/MFA path is available. The application correctly
+   rejected the legacy shared password; no control was bypassed.
+3. PR-006 and PR-015 technical matrices passed on deployed candidates, but named
+   qualified Clinical QA approval is still required before clinical promotion.
+4. PR-010 still requires cross-path/restart evidence and Security Architecture
+   approval before promotion.
+5. PR-011 passed an isolated execute-mode rehearsal of the approved 365-day policy,
+   but production migration, scheduled activation, concurrent-hold race evidence
+   and Privacy/Legal approval remain pending.
+6. PR-008 is an accepted temporary shared-boundary risk. The SOC2 environment must
+   be decommissioned through a controlled process after customer security validation,
+   leaving one authoritative system.
+
+PR-012 and PR-013 are complete. PR-002, PR-003, PR-005, PR-007 and PR-009 passed
+their recorded zero-traffic technical canaries but have not been promoted.
+Production traffic remains 100% on `ist-triage-demo-00035-wlm`; therefore the
+overall release decision remains **NO-GO**.
+
+Status interpretation:
+
+- **Complete**: all recorded closure gates passed.
+- **Technical/canary passed**: implementation and stated technical evidence passed,
+  but promotion, business UAT or named approval remains.
+- **Risk accepted**: an explicitly documented temporary risk with a required exit.
+- Historical change-log entries preserve their point-in-time state; the register
+  table and this reconciled release decision are current.
 
 ## Remediation register
 
@@ -40,7 +66,10 @@ Current top blockers:
 | PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Zero-traffic canary healthy; elevated live UAT blocked by PR-001 | Operator-controlled login/MFA; rerun exact HTTP matrix; clean test records |
 | PR-015 | High | Five-protocol adversarial auto-match matrix missing | Clinical QA | Technical deployment matrix passed; clinical signature pending | 25/25 deployed ambiguity/no-match matrix; 100/100 clinical regressions; nurse override evidence; named Clinical QA signature |
 
-## GCP baseline captured 2026-08-17
+## Historical GCP baseline captured 2026-08-17
+
+This is the pre-remediation baseline. It is retained for audit traceability and is
+superseded where later dated deployment evidence appears below.
 
 - Demo revision at baseline: `ist-triage-demo-00033-fmh`, image tag `20260812-hotfix-112943`. PR-014 cleanup rolled the same unchanged image to `ist-triage-demo-00035-wlm`.
 - SOC2 revision: `ist-triage-soc2-00073-mad`, image tag `synthetic-flow-fix-20260807`.
@@ -52,7 +81,9 @@ Current top blockers:
 
 ## PR-001 completion record
 
-Source remediation is complete. Full production closure remains gated on deployment and live verification, in accordance with the four-gate definition above.
+Source remediation and zero-traffic deployment verification are complete. Production
+promotion remains gated on operator-controlled credential/TOTP custody and recovery,
+in accordance with the four-gate definition above.
 
 How the source issue was fixed:
 
@@ -69,14 +100,13 @@ Verification completed:
 - Authentication/MFA/PAM/session focused regression: 35/35 tests passed.
 - New negative tests prove both `LocalMockAdmin!2026` and the seeded `PlatformAdmin@2026` credential are rejected when `NODE_ENV=production` and the escape hatch is absent.
 
-Outstanding deployment gates:
+Remaining promotion gates:
 
-- Build from the isolated remediation commit.
-- Configure an approved named/bootstrap access path and mandatory MFA without locking out administrators.
-- Deploy to demo first.
-- Verify both unsafe credentials return HTTP 401.
-- Verify approved named login requires MFA and succeeds after MFA.
-- Record revision, image digest and rollback result. These deployment facts will also provide the first live proof for PR-002.
+- Transfer the protected administrator credential, enrolled TOTP factor and recovery
+  procedure to an authorized operator-controlled custody process.
+- Use that governed access path to complete PR-004 and PR-014 elevated live UAT.
+- Promote only after the remaining release gates in this register pass; do not
+  re-enable shared or seeded demo credentials.
 
 ### 2026-08-17 zero-traffic deployment evidence
 
@@ -98,9 +128,10 @@ Outstanding deployment gates:
 - Promotion remains pending controlled operator custody/recovery of the
   enrolled TOTP credential; no demo-credential bypass was re-enabled.
 
-## PR-002 implementation plan — deployed-image Git traceability
+## PR-002 implementation and deployment record — deployed-image Git traceability
 
-PR-002 is the next critical remediation. A human-readable image tag is insufficient: every release must be traceable to one immutable source commit and one immutable container digest.
+PR-002 proves that a human-readable image tag is insufficient: every release must
+be traceable to one immutable source commit and one immutable container digest.
 
 Required implementation:
 
@@ -112,7 +143,7 @@ Required implementation:
 6. Record commit, Cloud Build ID, image URI/digest, Cloud Run revision and verification timestamp in this register.
 7. Add CI/release validation that fails when the deployed revision lacks source provenance or does not match the approved commit.
 
-PR-002 closes only when both demo and SOC2 can be mapped:
+The authoritative demo deployment is mapped end to end as follows:
 
 `Git commit -> Cloud Build -> Artifact Registry digest -> Cloud Run revision -> live runtime response`.
 
@@ -124,14 +155,11 @@ Source implementation completed so far:
 - `scripts/buildProvenanceRelease.ps1` refuses a production build from a dirty tree, resolves the exact committed SHA, invokes the provenance build, and prints the immutable Artifact Registry digest.
 - Runtime tests and backend typecheck pass; PowerShell release-script syntax passes.
 
-Remaining PR-002 gates:
+Remaining PR-002 gate:
 
-- Build the committed implementation from a clean checkout.
-- Confirm OCI revision/build labels on the resulting image.
-- Deploy as a no-traffic demo canary with commit/release revision labels.
-- Match live runtime provenance to the commit, build and digest.
-- Add/verify the corresponding CI or release-policy enforcement.
-- Repeat against SOC2 only after demo verification.
+- Promote the proven immutable image only after the PR-001 access gate and remaining
+  release gates pass. Under PR-008, SOC2 is assigned to controlled decommission; it
+  requires a separate provenance deployment only if it remains an active release target.
 
 ### 2026-08-17 zero-traffic deployment evidence
 
@@ -682,9 +710,21 @@ test completion is not clinical UAT.
   unchanged revision. Post-recovery verification on
   `ist-triage-demo-00035-wlm` confirmed the synthetic demo runtime, normal
   administrator login, clean nurse permissions and no active PR-014 users.
-- PR-014 remains open until the current source is built/deployed and the live
-  matrix passes. Detailed matrix and evidence interpretation are in
+- This initial live run established the deployment gap. It is superseded by the
+  current-candidate checkpoint below. Detailed matrix and evidence interpretation are in
   `docs/security/pr-014-admin-user-permission-uat.md`.
+
+### 2026-08-18 current-candidate checkpoint
+
+- Current source passed 97/97 locally and was deployed as healthy zero-traffic
+  revision `ist-triage-demo-pr014c-47e10f3` using the dedicated runtime service
+  account with persistent MFA enabled.
+- Non-mutating live checks passed. Elevated mutation UAT stopped at authentication
+  because the remediated runtime correctly returned HTTP 401 for the legacy shared
+  administrator password. No synthetic user, role or permission mutation occurred.
+- PR-014 therefore remains open and blocked by the PR-001 operator credential/MFA
+  custody gate. Once custody is available, execute the guarded exact-HTTP matrix,
+  verify cleanup and record the resulting audit evidence.
 
 ## PR-015 implementation record — adversarial protocol matching
 
@@ -700,6 +740,8 @@ test completion is not clinical UAT.
 - The five-protocol matrix passed 25/25, adjacent backend clinical suites
   passed 100/100, the protocol-selection UI passed 10/10, and backend/frontend
   TypeScript checks passed.
-- Source remediation is complete. Closure still requires deployment evidence
-  and a named qualified Clinical QA reviewer signature. The review artifact is
+- Source remediation and technical deployment evidence are complete. The immutable
+  deployed candidate passed 25/25 adversarial ambiguity/no-match cases; the temporary
+  execution job was removed and production traffic was unchanged. Closure now
+  requires a named qualified Clinical QA reviewer signature. The review artifact is
   `docs/protocol-review/pr-015-five-protocol-adversarial-matrix.md`.
