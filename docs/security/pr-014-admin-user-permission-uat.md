@@ -94,3 +94,28 @@ commit, rerun this live matrix, require both SoD cases to return `409`, and
 retain the HTTP evidence. The former SOC2 environment was not mutated during
 this run; if it remains a closure target, it requires the same successful
 matrix or an approved decommissioning decision.
+
+## 2026-08-18 zero-traffic deployment checkpoint
+
+- Current source again passed the complete 97/97 local boundary and adjacent
+  security matrix; backend and frontend TypeScript checks passed.
+- Image digest
+  `sha256:52a72b053c57bee3977d15f80022cb3645033160f5a673ff1c988b9843d63feb`
+  was deployed as zero-traffic revision
+  `ist-triage-demo-pr014c-47e10f3`, tagged `pr014-canary`, with the exact Git
+  SHA and Cloud Build ID in runtime provenance. Production traffic remained
+  100% on `ist-triage-demo-00035-wlm`.
+- A proposed ephemeral-MFA revision was rejected by the production
+  fail-closed configuration because durable MFA is mandatory. It received no
+  traffic and the required `MFA_DB_PERSISTENCE=true` setting was restored.
+- Non-mutating live verification returned runtime HTTP 200. The old shared
+  administrator password returned HTTP 401, as required by PR-001's current
+  source. Therefore the PAM-elevated mutation matrix cannot be authorized
+  until an operator-controlled login and TOTP seed are available.
+- No synthetic user, permission, MFA credential or session mutation was made.
+  The runner now treats failed HTTP evidence in verify/recovery modes as a
+  process failure; the previous implementation could print a clean-state
+  message after failed authentication.
+
+PR-014 remains open and explicitly blocked by the PR-001 operator credential
+and MFA-custody gate. The control was not bypassed.

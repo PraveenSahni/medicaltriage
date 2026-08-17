@@ -37,8 +37,8 @@ Current top blockers:
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Isolated rehearsal passed; production activation pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Complete | Healthy triage and marketing serving chains documented; stale load-balancer resources removed; post-change DNS/TLS/HTTP validation passed |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Complete | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
-| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Local 97/97; live failed 2 SoD cases; cleanup verified | Deploy current SoD enforcement; rerun exact HTTP matrix; clean test records; resolve former SOC2 scope |
-| PR-015 | High | Five-protocol adversarial auto-match matrix missing | Clinical QA | Source complete; clinical signature and deployment pending | 25/25 ambiguity/no-match matrix; 100/100 clinical regressions; nurse override evidence; named Clinical QA signature |
+| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Zero-traffic canary healthy; elevated live UAT blocked by PR-001 | Operator-controlled login/MFA; rerun exact HTTP matrix; clean test records |
+| PR-015 | High | Five-protocol adversarial auto-match matrix missing | Clinical QA | Technical deployment matrix passed; clinical signature pending | 25/25 deployed ambiguity/no-match matrix; 100/100 clinical regressions; nurse override evidence; named Clinical QA signature |
 
 ## GCP baseline captured 2026-08-17
 
@@ -613,6 +613,8 @@ Outstanding activation gates:
 - 2026-08-17: PR-012 live remediation executed with explicit approval. Correct Firebase ownership/DNS records were installed for the marketing apex and `www`; Firebase accepted the apex and began certificate minting. The unused `ist-triage-url-map` chain, both inactive certificates, both backend services, both serverless NEGs and reserved address `ist-triage-lb-ip` (`8.233.232.24`) were deleted and their absence verified in the console. The Terraform declaration was removed. Final closure awaits Firebase `Connected` and hostname-valid TLS for `aimltriage.com` and `www.aimltriage.com`.
 - 2026-08-18: PR-012 closed. The apex and `www` marketing domains now return HTTPS 200 with separate hostname-valid Google Trust Services certificates and HSTS; the triage domain remains healthy. Live GCP inventory reconfirmed the abandoned load-balancer chain is absent, and its Terraform declaration remains removed.
 - 2026-08-18: PR-013 closed. The fail-closed guard approved only the isolated `_test` database, all 20 migrations applied, and the complete database-backed backend run passed 50/50 suites and 539/539 tests. Every temporary database, secret, job, image and build file was removed after evidence capture.
+- 2026-08-18: PR-014 current source passed 97/97 locally and a healthy zero-traffic canary was deployed. Non-mutating live verification proved runtime availability but the remediated application rejected the legacy shared administrator password, so PAM-elevated mutation UAT remains blocked by PR-001 operator credential/MFA custody. No security control was bypassed and no synthetic mutation occurred.
+- 2026-08-18: PR-015 deployed-candidate matrix passed 25/25 inside the immutable application image, matching the local 100/100 backend lineage and 10/10 UI override results. The temporary job was removed and production traffic was unchanged. Named qualified Clinical QA signature remains the only closure gate.
 
 ## PR-013 implementation record — isolated database-backed CI
 

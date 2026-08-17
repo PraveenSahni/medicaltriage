@@ -4,7 +4,9 @@ import { authenticator } from "otplib";
 const API_BASE = (process.env.API_BASE ?? "").replace(/\/$/, "");
 const allowedTargets = new Set([
   "https://triaged.irisstar.tech",
-  "https://ist-triage-demo-1096520215793.me-central1.run.app"
+  "https://ist-triage-demo-1096520215793.me-central1.run.app",
+  "https://pr010-canary---ist-triage-demo-gv6v4zyvuq-ww.a.run.app",
+  "https://pr014-canary---ist-triage-demo-gv6v4zyvuq-ww.a.run.app"
 ]);
 
 if (process.env.ALLOW_LIVE_ADMIN_UAT !== "PR014") throw new Error("Set ALLOW_LIVE_ADMIN_UAT=PR014 to authorize synthetic live mutations.");
@@ -41,6 +43,13 @@ async function login(label: string, username: string, password: string) {
   return jar;
 }
 
+function requireAllEvidencePassed(mode: string) {
+  const failed = evidence.filter((item) => !item.pass);
+  if (failed.length > 0) {
+    throw new Error(`${mode} recorded ${failed.length} failed HTTP control(s): ${failed.map((item) => item.id).join(", ")}`);
+  }
+}
+
 async function main() {
   const anonymous: Jar = {};
   const stamp = new Date().toISOString().replace(/\D/g, "").slice(0, 14);
@@ -67,6 +76,7 @@ async function main() {
       user.fullName === "PR-014 Synthetic UAT User" && user.jobTitle === "Synthetic Test Account" && user.accountStatus === "active"
     );
     if (activeSyntheticUsers.length > 0) throw new Error(`${activeSyntheticUsers.length} active PR-014 synthetic users remain`);
+    requireAllEvidencePassed("PR-014 verify-only mode");
     console.log("PASS VERIFY clean synthetic identity state");
     return;
   }
@@ -93,6 +103,7 @@ async function main() {
       await call(admin, `RECOVERY-DEACTIVATE-${user.id}`, "PATCH", `/api/v1/admin/users/${user.id}/status`, [200], { status: "deactivated", reason: `PR-014 recovery cleanup ${stamp}` });
     }
     if (activeSyntheticUsers.length === 0) console.log("PASS RECOVERY no active PR-014 synthetic users remained");
+    requireAllEvidencePassed("PR-014 recovery mode");
     return;
   }
 

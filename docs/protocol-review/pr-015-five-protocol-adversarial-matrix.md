@@ -82,3 +82,23 @@ wording or thresholds. PR-015 closes only after a qualified reviewer completes:
 The signed artifact must be retained with the release evidence, and the same
 matrix must pass against the deployed candidate image before production
 approval.
+
+## 2026-08-18 deployed-candidate evidence
+
+- The complete local PR-015 backend lineage run again passed 100/100; the
+  dedicated UI override suite passed 10/10; backend and frontend TypeScript
+  checks passed.
+- The exact deployed candidate image digest was
+  `sha256:52a72b053c57bee3977d15f80022cb3645033160f5a673ff1c988b9843d63feb`
+  from Git `47e10f3d2be2ce25c30c8e3952a7f64d6d395139` and Cloud Build
+  `cc8e5390-50d6-40f8-8a17-4a95c39b245b`.
+- A temporary Cloud Run job executed all 25 cases inside that immutable image.
+  Every clear and synonym case selected the exact intended protocol; every
+  negation and no-match case returned `NO_MATCH`; every ambiguity case
+  returned `AMBIGUOUS` with no primary protocol. Result: **25/25 passed**.
+- The temporary job was deleted after logs were captured. It used no patient,
+  queue or database records, and production traffic was unchanged.
+
+Technical deployment evidence is complete. PR-015 still requires the named
+qualified Clinical QA signature above; technical execution cannot supply that
+clinical approval.
