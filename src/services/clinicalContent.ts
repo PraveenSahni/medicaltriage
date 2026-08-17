@@ -439,11 +439,23 @@ export function deriveProtocolSafetyFloor(protocolId?: string, selectedQuestionI
   dispositionCode?: DispositionCode;
   trace: RuleTrace[];
 } {
+  return deriveProtocolSafetyFloorFromPackage(contentPackage, protocolId, selectedQuestionIds);
+}
+
+export function deriveProtocolSafetyFloorFromPackage(
+  sourcePackage: ClinicalContentPackage,
+  protocolId?: string,
+  selectedQuestionIds: string[] = []
+): {
+  severity: Severity;
+  dispositionCode?: DispositionCode;
+  trace: RuleTrace[];
+} {
   if (!protocolId || selectedQuestionIds.length === 0) {
     return { severity: "Self-care", trace: [] };
   }
 
-  const protocol = getClinicalProtocolById(protocolId);
+  const protocol = sourcePackage.protocols.find((candidate) => candidate.id === protocolId);
   if (!protocol) {
     return {
       severity: "Self-care",
@@ -489,7 +501,15 @@ export function getCareAdviceForProtocol(
   protocolId: string,
   selectedQuestionIds: string[]
 ): ClinicalContentCareAdvice[] {
-  const protocol = getClinicalProtocolById(protocolId);
+  return getCareAdviceForProtocolFromPackage(contentPackage, protocolId, selectedQuestionIds);
+}
+
+export function getCareAdviceForProtocolFromPackage(
+  sourcePackage: ClinicalContentPackage,
+  protocolId: string,
+  selectedQuestionIds: string[]
+): ClinicalContentCareAdvice[] {
+  const protocol = sourcePackage.protocols.find((candidate) => candidate.id === protocolId);
   if (!protocol) {
     return [];
   }

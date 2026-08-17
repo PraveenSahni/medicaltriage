@@ -177,7 +177,7 @@ No governed fallback is enabled. Introducing one requires a separately approved 
 
 Verification completed:
 
-- Exhaustive active-content question/advice/disposition matrix executed three times per test run, then repeated in a second clean run: pass.
+- Named 30-case matrix distributed across exactly the five licensed protocols: pass. The five-protocol source contains 126 authored TAQs in total; the exhaustive question/advice/disposition matrix checks all 126 and executes three complete passes per test run.
 - Negative coverage proves missing question IDs, unknown IDs, cross-protocol IDs and same-disposition sibling advice fail closed.
 - Care-advice API lineage and failure contracts: pass.
 - Cockpit canonical protocol selection and exact terminal-question filtering: 4/4 tests passed.
@@ -199,3 +199,4 @@ Outstanding deployment gates:
 - 2026-08-17: PR-003 source validation completed: backend typecheck passed and 32/32 runnable focused tests passed. Two real PostgreSQL tests, database schema evidence and canary activation remain open pending interactive gcloud reauthentication.
 - 2026-08-17: PR-004 and PR-005 source remediation completed around three protected system roles plus governed custom roles. SoD validation, durable schema/API, Platform Administrator UI, audit behavior and documentation were added; all focused and adjacent recorded suites passed. Database migration and no-traffic canary evidence remain pending.
 - 2026-08-17: PR-006 source remediation completed. Questions, TAQs, disposition and care advice now share one selected protocol lineage; care advice requires exact question linkage and fails closed without it. Repeated exhaustive and negative regression tests, backend build and both typechecks passed. Canary and live multi-protocol clinical verification remain pending.
+- 2026-08-17: PR-006 validation was tightened to the five licensed protocols only. A named 30-case cross-protocol matrix and three exhaustive passes over all 126 licensed TAQs passed; synthetic sample protocols are not counted as clinical validation evidence.

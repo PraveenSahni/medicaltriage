@@ -1,20 +1,59 @@
 import express from "express";
 import request from "supertest";
+import { stccLicensedContent } from "../src/data/stccLicensedContent/index.js";
 import { createProtocolsRouter } from "../src/routes/protocols.js";
+import { ClinicalContentPackageSchema } from "../src/types/clinicalContent.js";
 import {
-  deriveProtocolSafetyFloor,
-  getCareAdviceForProtocol,
+  deriveProtocolSafetyFloorFromPackage,
+  getCareAdviceForProtocolFromPackage,
   getCurrentClinicalContentPackage
 } from "../src/services/clinicalContent.js";
 
 describe("PR-006 exact protocol clinical lineage", () => {
   const clinicalPackage = getCurrentClinicalContentPackage();
+  const fiveProtocolPackage = ClinicalContentPackageSchema.parse(stccLicensedContent);
+  const thirtyCaseMatrix = Array.from({
+    length: Math.max(...fiveProtocolPackage.protocols.map((protocol) => protocol.questions.length))
+  })
+    .flatMap((_, questionIndex) =>
+      fiveProtocolPackage.protocols.flatMap((protocol) => {
+        const question = protocol.questions[questionIndex];
+        return question ? [{ protocol, question }] : [];
+      })
+    )
+    .slice(0, 30);
+
+  test("the named validation matrix contains 30 cases across exactly five licensed protocols", () => {
+    expect(fiveProtocolPackage.protocols).toHaveLength(5);
+    expect(thirtyCaseMatrix).toHaveLength(30);
+    expect(new Set(thirtyCaseMatrix.map(({ protocol }) => protocol.id)).size).toBe(5);
+  });
+
+  test.each(thirtyCaseMatrix)(
+    "five-protocol validation: $protocol.id / $question.id",
+    ({ protocol, question }) => {
+      const actualAdvice = getCareAdviceForProtocolFromPackage(fiveProtocolPackage, protocol.id, [question.id]);
+      const expectedAdviceIds = protocol.careAdvice
+        .filter((advice) => question.careAdviceIds.includes(advice.id))
+        .map((advice) => advice.id);
+      const floor = deriveProtocolSafetyFloorFromPackage(fiveProtocolPackage, protocol.id, [question.id]);
+
+      expect(actualAdvice.map((advice) => advice.id)).toEqual(expectedAdviceIds);
+      expect(actualAdvice.every((advice) => protocol.careAdvice.some((candidate) => candidate.id === advice.id))).toBe(
+        true
+      );
+      expect(floor).toMatchObject({
+        severity: question.severity,
+        dispositionCode: question.dispositionCode
+      });
+    }
+  );
 
   test.each([1, 2, 3])("exhaustive question/advice/disposition matrix pass %i", () => {
-    for (const protocol of clinicalPackage.protocols) {
+    for (const protocol of fiveProtocolPackage.protocols) {
       const adviceById = new Map(protocol.careAdvice.map((advice) => [advice.id, advice]));
       for (const question of protocol.questions) {
-        const actual = getCareAdviceForProtocol(protocol.id, [question.id]);
+        const actual = getCareAdviceForProtocolFromPackage(fiveProtocolPackage, protocol.id, [question.id]);
         const expectedIds = protocol.careAdvice
           .filter((advice) => question.careAdviceIds.includes(advice.id))
           .map((advice) => advice.id);
@@ -22,7 +61,7 @@ describe("PR-006 exact protocol clinical lineage", () => {
         expect(actual.map((advice) => advice.id)).toEqual(expectedIds);
         expect(actual.every((advice) => adviceById.has(advice.id))).toBe(true);
 
-        const floor = deriveProtocolSafetyFloor(protocol.id, [question.id]);
+        const floor = deriveProtocolSafetyFloorFromPackage(fiveProtocolPackage, protocol.id, [question.id]);
         expect(floor.severity).toBe(question.severity);
         expect(floor.dispositionCode).toBe(question.dispositionCode);
       }
@@ -30,26 +69,28 @@ describe("PR-006 exact protocol clinical lineage", () => {
   });
 
   test("does not include sibling advice merely because disposition codes match", () => {
-    for (const protocol of clinicalPackage.protocols) {
+    for (const protocol of fiveProtocolPackage.protocols) {
       for (const question of protocol.questions) {
         const approvedIds = new Set(question.careAdviceIds);
         const sameDispositionSibling = protocol.careAdvice.find(
           (advice) => advice.dispositionCode === question.dispositionCode && !approvedIds.has(advice.id)
         );
         if (sameDispositionSibling) {
-          expect(getCareAdviceForProtocol(protocol.id, [question.id]).map((advice) => advice.id)).not.toContain(
-            sameDispositionSibling.id
-          );
+          expect(
+            getCareAdviceForProtocolFromPackage(fiveProtocolPackage, protocol.id, [question.id]).map(
+              (advice) => advice.id
+            )
+          ).not.toContain(sameDispositionSibling.id);
         }
       }
     }
   });
 
   test("unknown and cross-protocol question identifiers return no advice", () => {
-    const [first, second] = clinicalPackage.protocols;
-    expect(getCareAdviceForProtocol(first.id, ["not-a-real-question"])).toEqual([]);
+    const [first, second] = fiveProtocolPackage.protocols;
+    expect(getCareAdviceForProtocolFromPackage(fiveProtocolPackage, first.id, ["not-a-real-question"])).toEqual([]);
     if (second?.questions[0]) {
-      expect(getCareAdviceForProtocol(first.id, [second.questions[0].id])).toEqual([]);
+      expect(getCareAdviceForProtocolFromPackage(fiveProtocolPackage, first.id, [second.questions[0].id])).toEqual([]);
     }
   });
 
