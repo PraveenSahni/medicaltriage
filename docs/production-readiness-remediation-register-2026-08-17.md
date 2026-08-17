@@ -24,8 +24,8 @@ Current top blockers:
 
 | ID | Severity | Finding | Owner | Status | Closure evidence |
 |---|---|---|---|---|---|
-| PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Source complete; deployment pending | Focused tests; deploy; shared and seeded passwords return 401; approved named login requires MFA |
-| PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Source implementation in progress | Immutable digest and Git SHA label exposed by runtime endpoint; build provenance recorded; deployed revision matches approved commit |
+| PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Zero-traffic canary passed; operator MFA custody and promotion pending | 38/38 focused tests; unsafe passwords return 401; protected login requires enrollment/MFA and verifies successfully |
+| PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Zero-traffic provenance chain complete; promotion pending | Git SHA, Cloud Build, immutable digest, revision labels and live runtime response match |
 | PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | In progress | Flags enabled; cross-instance tests and live persistence query pass |
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Source complete; deployment pending | Assignment-time SoD validator and negative tests |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Source complete; deployment pending | Approved canonical role catalog reconciled across API, UI and documentation |
@@ -78,6 +78,26 @@ Outstanding deployment gates:
 - Verify approved named login requires MFA and succeeds after MFA.
 - Record revision, image digest and rollback result. These deployment facts will also provide the first live proof for PR-002.
 
+### 2026-08-17 zero-traffic deployment evidence
+
+- Clean committed source: `c3f36a5bab407c73919e8ace55908041539e7263`.
+- Expanded focused authentication/MFA/PAM/session regression: 38/38 passed;
+  backend TypeScript passed.
+- Cloud Build: `82b349c4-6f57-43d6-8aa0-a33264b98e0e`.
+- Immutable image digest:
+  `sha256:00b79e9d21c27b144714ecc4dcf253325f59ba996f5033ba9d0ce7c00a6582dc`.
+- Final test revision: `ist-triage-demo-pr001-mfa4-c3f36a5`, serving zero
+  percent of traffic with administrator-password secret version 2 and MFA
+  encryption-key secret version 1 pinned explicitly.
+- Health returned HTTP 200. `LocalMockAdmin!2026` and
+  `PlatformAdmin@2026` both returned HTTP 401.
+- The protected Platform Administrator path returned enrollment-required,
+  completed TOTP enrollment, then returned an MFA challenge and successfully
+  authenticated only after a valid TOTP code.
+- Production traffic remained 100% on `ist-triage-demo-00035-wlm`.
+- Promotion remains pending controlled operator custody/recovery of the
+  enrolled TOTP credential; no demo-credential bypass was re-enabled.
+
 ## PR-002 implementation plan — deployed-image Git traceability
 
 PR-002 is the next critical remediation. A human-readable image tag is insufficient: every release must be traceable to one immutable source commit and one immutable container digest.
@@ -112,6 +132,23 @@ Remaining PR-002 gates:
 - Match live runtime provenance to the commit, build and digest.
 - Add/verify the corresponding CI or release-policy enforcement.
 - Repeat against SOC2 only after demo verification.
+
+### 2026-08-17 zero-traffic deployment evidence
+
+- Clean committed source: `1fad3f8ba4f27a4031527d470e2ee288dd2c81f2`.
+- Focused runtime provenance tests: 8/8 passed; backend TypeScript and the
+  guarded PowerShell release-script syntax passed.
+- Cloud Build: `d23924a4-be20-4f86-b855-7ece4d617dc6`, status `SUCCESS`.
+- Immutable image:
+  `me-central1-docker.pkg.dev/triage-502706/ist-triage-repo/ist-triage-release@sha256:c62634cc8235ec4f4a36a253e77a32fda6a31ff2102bf217b8c7703092ffa6a0`.
+- Zero-traffic revision: `ist-triage-demo-pr002-1fad3f8`, labelled
+  `git-sha=1fad3f8` and `release=pr-002`.
+- The live tagged runtime response returned the same full Git SHA, Cloud Build
+  ID and Cloud Run revision. Health returned HTTP 200.
+- Production traffic remained 100% on `ist-triage-demo-00035-wlm`.
+- Promotion is deliberately pending the PR-001 operator-MFA custody gate; the
+  provenance implementation itself is proven against the authoritative demo
+  project `triage-502706`.
 
 ## PR-003 implementation record — durable production state
 
