@@ -110,3 +110,29 @@ PR-012 can close only when:
 - unused `PROVISIONING` load-balancer certificates and their abandoned
   dependency chain are removed from GCP and source/state; and
 - post-change DNS, TLS, HTTP and application health checks pass.
+
+## Closure evidence — 2026-08-18
+
+PR-012 is closed. Post-change validation produced the following live evidence:
+
+- `aimltriage.com` resolves only to Firebase Hosting address
+  `199.36.158.100`; `www.aimltriage.com` is a CNAME to
+  `aimltriage-marketing.web.app`.
+- Both marketing hostnames return HTTPS 200 and publish HSTS.
+- `aimltriage.com` serves a Google Trust Services certificate with exact SAN
+  `aimltriage.com`, thumbprint `A689949B2B7D5EBD22147F7EEBD7747AF42D40A5`,
+  valid from 2026-08-17T14:14:42Z through 2026-11-15T12:59:28Z.
+- `www.aimltriage.com` serves a Google Trust Services certificate with exact
+  SAN `www.aimltriage.com`, thumbprint
+  `425C6DC5F7F539014B3953A978D74A0602F78461`, valid from
+  2026-08-17T14:19:54Z through 2026-11-15T14:04:42Z.
+- `triaged.irisstar.tech` continues returning HTTPS 200 with its existing
+  hostname-valid Google Trust Services chain.
+- Live Compute inventory returned no URL map, inactive certificates, backend
+  services, serverless NEGs or global address from the abandoned
+  `ist-triage-*` load-balancer chain. `terraform/load_balancer.tf` remains
+  absent.
+- The Firebase custom-domain management API remained permission-denied for the
+  command-line identity, but the independently validated serving chains prove
+  certificate issuance and hostname activation. Firebase Hosting owns and
+  automatically renews these active certificates.
