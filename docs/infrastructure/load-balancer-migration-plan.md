@@ -1,5 +1,12 @@
 # External HTTPS Load Balancer Migration Plan
 
+> **Superseded 2026-08-17 by PR-012.** Production DNS remained on Firebase
+> Hosting and this proposed external load balancer was never placed in the
+> serving path. The unused `ist-triage-url-map` chain and inactive managed
+> certificates were removed from `triage-502706`; its Terraform declaration
+> was removed to prevent recreation. This document is retained as historical
+> design context only and must not be used as an active deployment procedure.
+
 _Written 2026-08-06. Addresses two real, confirmed gaps by replacing
 Firebase Hosting's `run` rewrite (currently in front of both custom
 domains) with a real external HTTPS Load Balancer + Serverless NEG._

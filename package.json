@@ -42,6 +42,8 @@
     "db:local:logs": "docker compose logs -f postgres",
     "db:seed": "tsx prisma/seed.ts",
     "test": "jest --runInBand",
+    "test:db:guard": "node scripts/assertIsolatedTestDatabase.mjs",
+    "test:db": "pnpm run test:db:guard && prisma migrate deploy && jest --runInBand",
     "test:api": "jest --runInBand tests/triage.test.ts",
     "test:frontend": "jest --config jest.config.frontend.cjs --runInBand",
     "test:help-catalog": "jest --runInBand --json --outputFile=test-results/jest-results.json && tsx scripts/generateHelpTestCatalog.ts",

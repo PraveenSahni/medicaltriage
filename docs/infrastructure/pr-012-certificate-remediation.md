@@ -41,7 +41,27 @@ Firebase rather than pointing at the load balancer. This is an inference from
 the source and public DNS; live inventory must confirm existence, status,
 dependencies, and Terraform state before deletion.
 
-## Access blocker
+## Execution record — 2026-08-17
+
+- GoDaddy authoritative DNS now returns only `199.36.158.100` for
+  `aimltriage.com` and publishes TXT ownership value
+  `hosting-site=aimltriage-marketing`.
+- `www.aimltriage.com` was changed to
+  `aimltriage-marketing.web.app`; recursive resolver caches may retain its
+  former apex alias until the previous one-hour TTL expires.
+- Firebase accepted the apex-domain setup and reports `Minting certificate`.
+- The unused `ist-triage-url-map` load balancer was deleted with both backend
+  services and inactive certificates `ist-triage-demo-cert` and
+  `ist-triage-soc2-cert`.
+- Both serverless endpoint groups, `ist-triage-demo-neg` and
+  `ist-triage-soc2-neg`, were removed after dependency propagation completed.
+- The now-unused reserved external address `ist-triage-lb-ip`
+  (`8.233.232.24`) was released and its absence was verified in the IP-address
+  inventory.
+- `terraform/load_balancer.tf` was removed so an infrastructure apply cannot
+  recreate the abandoned topology.
+
+## Original access blocker
 
 The current `gcloud` identity was denied these permissions in
 `triage-502706`:
@@ -52,7 +72,8 @@ The current `gcloud` identity was denied these permissions in
 - `compute.globalAddresses.list`
 - Firebase Hosting custom-domain read access
 
-No GCP or DNS resource was changed or deleted during this investigation.
+This blocker applied during the initial investigation and was later resolved
+through the authenticated `sahni.ps@gmail.com` console session described above.
 
 ## Controlled remediation procedure
 

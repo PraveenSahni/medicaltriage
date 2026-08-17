@@ -9,6 +9,26 @@ on:
 jobs:
   typecheck-and-test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: triage_test
+          POSTGRES_PASSWORD: triage_test_password
+          POSTGRES_DB: ist_triage_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U triage_test -d ist_triage_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      CI: "true"
+      NODE_ENV: test
+      DATABASE_URL: postgresql://triage_test:triage_test_password@127.0.0.1:5432/ist_triage_test?schema=public
+      AUDIT_DATABASE_URL: postgresql://triage_test:triage_test_password@127.0.0.1:5432/ist_triage_test?schema=public
+      AUDIT_HMAC_SECRET: ci-only-audit-hmac-secret-not-for-production
     steps:
       - uses: actions/checkout@v7
 
@@ -30,7 +50,10 @@ jobs:
       - name: Frontend typecheck
         run: pnpm run typecheck:web
 
-      - name: Backend tests
+      - name: Validate isolated test database and apply migrations
+        run: pnpm run test:db:guard && pnpm exec prisma migrate deploy
+
+      - name: Backend tests (including database-backed suites)
         run: pnpm run test
 
       - name: Frontend tests
