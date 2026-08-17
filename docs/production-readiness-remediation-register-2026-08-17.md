@@ -34,7 +34,7 @@ Current top blockers:
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Zero-traffic identity canary passed; promotion pending | Dedicated keyless runtime identity; narrow IAM; SOC2-only jobs assigned to PR-008 decommission |
 | PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Zero-traffic canary passed; promotion pending | Append-only DB role, HMAC chain, integrity verification and live tamper-negative evidence |
-| PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Decision and source complete; deployment rehearsal pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
+| PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Isolated rehearsal passed; production activation pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Infrastructure cleanup complete; certificate issuance pending | Healthy triage serving chain documented; marketing TLS active; post-change validation |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Source complete; CI execution pending | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
 | PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Local 97/97; live failed 2 SoD cases; cleanup verified | Deploy current SoD enforcement; rerun exact HTTP matrix; clean test records; resolve former SOC2 scope |
@@ -538,12 +538,54 @@ Source controls:
 6. Pure regression coverage proves the approved policy gate, rejects missing/inactive/wrong-period/wrong-decision/no-legal-basis policies, rejects execute overrides, and proves record, organization and released-hold behavior.
 7. The operational job does not silently extend destructive deletion to dependency-linked clinical encounters or the append-only audit ledger. Any later scope expansion requires a dependency-safe archive/export design and separately approved change.
 
-Outstanding deployment gates:
+### 2026-08-18 isolated execute-mode rehearsal
 
-- Apply the policy migration to an isolated clone of `ist_triage_demo` in project `triage-502706`.
-- Seed synthetic expired, held, organization-held and released-hold records; run dry-run and execute-mode rehearsals and reconcile exact row/archive/audit counts.
-- Prove an unapproved/missing policy and a concurrent hold block deletion.
-- Configure the retained production job against the surviving demo only after SOC2 job disposition under PR-008, then record revision, image digest, operator, approver and rollback evidence.
+- The 10-case retention-governance suite passed in both the main and exact
+  deployment worktree copies (20 observed assertions); backend TypeScript
+  validation passed.
+- An isolated database named `ist_triage_pr011_rehearsal_20260818` was created
+  on the authoritative `triage-502706` Cloud SQL instance. It used a temporary
+  connection secret available only to the dedicated runtime service account;
+  no `ist_triage_demo` records were in scope.
+- Migration execution installed the exact approved policy:
+  `TRIAGE_QUEUE_ITEM_COMPLETED`, 365 days, decision
+  `PR-011-2026-08-17`, `archive_then_delete`, active legal basis.
+- Six explicitly marked synthetic queue records covered expired eligible,
+  expired record-held, expired organization-held, expired released-hold,
+  fresh completed and old in-process boundaries. Three synthetic hold rows
+  covered active record, active organization and released states.
+- Dry-run reconciliation found exactly four expired completed records, excluded
+  the two active holds and selected only the eligible plus released-hold
+  records. No row changed.
+- Execute reconciliation repeated those counts transactionally and
+  archived/deleted exactly two records. Final evidence retained the active
+  record-held and organization-held rows, plus the fresh completed and old
+  in-process controls. Archives existed only for
+  `pr011-expired-eligible` and `pr011-expired-released`.
+- The audit ledger contained one `RETENTION_PURGE_DRY_RUN` and one
+  `RETENTION_PURGE_EXECUTED` event.
+- Live fail-closed evidence changed only the isolated policy to `draft`; the
+  execute job failed with the expected requirement for an active 365-day
+  policy, decision reference and legal basis. The isolated policy was restored
+  to active before cleanup.
+- Cloud Build `fffc2961-9b5e-4943-a1de-0c4148b1f737` produced the temporary
+  migration-tool digest
+  `sha256:51f0b9b886da96a18eca7f7a23c9342551c696ec4bb57854c8d9d23658432af8`.
+  The execute job used application digest
+  `sha256:52a72b053c57bee3977d15f80022cb3645033160f5a673ff1c988b9843d63feb`,
+  which contains the committed PR-011 source.
+- The isolated database, temporary secret, four Cloud Run jobs,
+  migration-only image and local build file were deleted and absence verified.
+  Production traffic and the surviving demo database were unchanged.
+
+Outstanding activation gates:
+
+- Apply the 365-day policy migration to `ist_triage_demo` through the approved
+  release window and configure the retained scheduled job only after the
+  PR-008 SOC2 job disposition.
+- Perform a controlled concurrent-hold race rehearsal, record operator and
+  Privacy/Legal approver sign-off, and confirm rollback/disable procedure
+  before enabling scheduled execute mode.
 
 ## Change log
 
@@ -566,6 +608,7 @@ Outstanding deployment gates:
 - 2026-08-17: PR-010 source remediation completed. New audit events use a serialized HMAC chain and dedicated insert/select-only database connection; database triggers prohibit mutation and unsigned/forked inserts; integrity verification and tamper regressions were added. Isolated Cloud SQL migration and no-traffic demo canary evidence remain pending.
 - 2026-08-18: PR-010 zero-traffic canary passed after live validation corrected the audit-integrity persistence guard and audit-login credential/grant configuration. Tamper-negative execution passed 6/6, the live chain verified as valid, temporary access was removed and production traffic remained unchanged. Queue/FHIR/job-path verification, restart evidence and Security Architecture approval remain promotion gates.
 - 2026-08-17: PR-011 business decision and source remediation completed for a 365-day completed-queue retention policy. Execute mode now requires the approved policy, legal holds are revalidated transactionally, and privacy erasure remains open when held records survive. Isolated `ist_triage_demo` rehearsal remains pending.
+- 2026-08-18: PR-011 isolated Cloud SQL rehearsal passed. Dry-run and execute counts reconciled exactly; record and organization holds blocked deletion, a released hold permitted deletion, archive and audit counts matched, and an inactive policy failed closed. All temporary resources were removed. Production migration, scheduled activation, concurrent-hold race evidence and Privacy/Legal approval remain gated.
 - 2026-08-17: PR-012 investigation completed. Both triage domains are healthy on Firebase Hosting with a valid shared Google Trust Services certificate. `aimltriage.com` still fails hostname-valid TLS across its two published Firebase IPs. The additive external load-balancer chain is a stale-resource candidate, but the current identity cannot read its live inventory or Firebase custom-domain state. No destructive action was taken. Exact evidence, resource candidates, access requirements and cleanup order are in `docs/infrastructure/pr-012-certificate-remediation.md`.
 - 2026-08-17: PR-012 live remediation executed with explicit approval. Correct Firebase ownership/DNS records were installed for the marketing apex and `www`; Firebase accepted the apex and began certificate minting. The unused `ist-triage-url-map` chain, both inactive certificates, both backend services, both serverless NEGs and reserved address `ist-triage-lb-ip` (`8.233.232.24`) were deleted and their absence verified in the console. The Terraform declaration was removed. Final closure awaits Firebase `Connected` and hostname-valid TLS for `aimltriage.com` and `www.aimltriage.com`.
 
