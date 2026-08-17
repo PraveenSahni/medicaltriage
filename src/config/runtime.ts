@@ -89,6 +89,17 @@ export function isMockMode(): boolean {
   return envFlag("MOCK_MODE", true);
 }
 
+/**
+ * Seeded/shared demo credentials are a local simulation convenience, never a
+ * safe production authentication mechanism. Cloud Run images set
+ * NODE_ENV=production, so these credentials fail closed there unless an
+ * operator deliberately enables the escape hatch for an isolated synthetic
+ * environment.
+ */
+export function areDemoCredentialsEnabled(): boolean {
+  return isMockMode() && envFlag("ALLOW_DEMO_CREDENTIALS", process.env.NODE_ENV !== "production");
+}
+
 export function getAllowedCorsOrigins(): string[] {
   return splitOrigins(process.env.CORS_ALLOWED_ORIGINS);
 }
@@ -310,7 +321,7 @@ export function isMfaMandatory(): boolean {
 }
 
 export function getAdminPassword(): string {
-  return process.env.ADMIN_PASSWORD ?? (isMockMode() ? MOCK_LOCAL_ADMIN_PASSWORD : "");
+  return process.env.ADMIN_PASSWORD ?? (areDemoCredentialsEnabled() ? MOCK_LOCAL_ADMIN_PASSWORD : "");
 }
 
 function runtimeEnvironment(): RuntimeEnvironmentTone {

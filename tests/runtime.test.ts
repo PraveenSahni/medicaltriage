@@ -29,6 +29,24 @@ describe("runtime credential guardrails", () => {
     expect(() => assertRuntimeConfiguration()).not.toThrow();
   });
 
+  it("disables the mock password fallback in production even when mock mode is enabled", () => {
+    delete process.env.ADMIN_PASSWORD;
+    delete process.env.ALLOW_DEMO_CREDENTIALS;
+    process.env.MOCK_MODE = "true";
+    process.env.NODE_ENV = "production";
+
+    expect(getAdminPassword()).toBe("");
+  });
+
+  it("requires an explicit escape hatch to enable demo credentials in production", () => {
+    delete process.env.ADMIN_PASSWORD;
+    process.env.MOCK_MODE = "true";
+    process.env.NODE_ENV = "production";
+    process.env.ALLOW_DEMO_CREDENTIALS = "true";
+
+    expect(getAdminPassword()).toBe("LocalMockAdmin!2026");
+  });
+
   it("rejects live mode when the admin password is missing", () => {
     process.env = {
       ...originalEnv,

@@ -46,3 +46,48 @@ describe("ADMIN_PASSWORD scope (live mode)", () => {
     expect(result.ok).toBe(true);
   });
 });
+
+describe("demo credential production guard", () => {
+  const originalEnv = { ...process.env };
+
+  afterEach(() => {
+    process.env = { ...originalEnv };
+    resetSecurityStoreForTests();
+  });
+
+  it("rejects the shared mock fallback when NODE_ENV=production", async () => {
+    delete process.env.ADMIN_PASSWORD;
+    delete process.env.ALLOW_DEMO_CREDENTIALS;
+    process.env.MOCK_MODE = "true";
+    process.env.NODE_ENV = "production";
+    resetSecurityStoreForTests();
+
+    const result = await authenticateLocal({
+      username: "rishma@irisstar.tech",
+      password: "LocalMockAdmin!2026",
+      rememberMe: false,
+      ipAddress: "127.0.0.1",
+      device: "jest"
+    });
+
+    expect(result.ok).toBe(false);
+  });
+
+  it("rejects seeded per-user demo passwords when NODE_ENV=production", async () => {
+    delete process.env.ADMIN_PASSWORD;
+    delete process.env.ALLOW_DEMO_CREDENTIALS;
+    process.env.MOCK_MODE = "true";
+    process.env.NODE_ENV = "production";
+    resetSecurityStoreForTests();
+
+    const result = await authenticateLocal({
+      username: "rishma@irisstar.tech",
+      password: "PlatformAdmin@2026",
+      rememberMe: false,
+      ipAddress: "127.0.0.1",
+      device: "jest"
+    });
+
+    expect(result.ok).toBe(false);
+  });
+});

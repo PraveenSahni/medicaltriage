@@ -15,6 +15,7 @@ import {
 import { authenticator } from "otplib";
 import { createIncidentCandidate } from "./privacyIncidentWorkflow.js";
 import {
+  areDemoCredentialsEnabled,
   getAdminPassword,
   getAuthAnomalyFailureThreshold,
   getAuthAnomalyWindowSeconds,
@@ -2622,23 +2623,18 @@ export async function authenticateLocal(args: {
     return { ok: false, message: "Account is temporarily locked. Contact the helpdesk.", locked: true };
   }
 
-  // Local credential gate for development and UAT scaffolding. In mock mode
-  // (synthetic demo/test data), ADMIN_PASSWORD is deliberately allowed to log
-  // in as any seeded demo user - a testing convenience relied on throughout
-  // this suite and the demo environment. In live mode it must NOT do that:
-  // it is a break-glass credential for the platform/system admin bootstrap
-  // accounts only. Previously this restriction didn't exist at all, so a live
-  // deployment's shared ADMIN_PASSWORD could authenticate as any real user
-  // (nurse/doctor/manager) just by typing their username - the fix scopes
-  // that down to admin bootstrap accounts specifically once MOCK_MODE=false.
+  // Seeded/shared credentials are permitted only in explicitly enabled local
+  // simulation. NODE_ENV=production fails closed even when MOCK_MODE=true.
+  // A separately configured ADMIN_PASSWORD remains restricted to the platform
+  // bootstrap account and is still subject to the MFA gate below.
   const configuredPassword = getAdminPassword();
   const isAdminBootstrapAccount = Boolean(user?.roles.includes("platform_super_administrator"));
   const adminPasswordOk =
-    (isMockMode() || isAdminBootstrapAccount) &&
+    (areDemoCredentialsEnabled() || isAdminBootstrapAccount) &&
     configuredPassword.length > 0 &&
     safeCompare(args.password, configuredPassword);
   const demoPassword = user ? demoPasswordByEmail[user.email.toLowerCase()] : undefined;
-  const demoPasswordOk = Boolean(isMockMode() && demoPassword && safeCompare(args.password, demoPassword));
+  const demoPasswordOk = Boolean(areDemoCredentialsEnabled() && demoPassword && safeCompare(args.password, demoPassword));
   const passwordOk = adminPasswordOk || demoPasswordOk;
   if (!user || !passwordOk) {
     failedLoginAttempts.set(username, currentFailures + 1);
