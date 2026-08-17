@@ -30,7 +30,7 @@ Current top blockers:
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Source complete; deployment pending | Approved canonical role catalog reconciled across API, UI and documentation |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Source complete; deployment pending | Exact-question advice enforced; implicit fallback prohibited; exhaustive regression matrix |
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Source complete; deployment pending | Backend merge invariant; legacy caller reconciliation; lifecycle regression tests |
-| PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Open/decision required | Accepted risk or isolated instance with restore test |
+| PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Open | Dedicated least-privilege accounts and IAM evidence |
 | PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Open | Append-only DB role plus chaining or immutable external export |
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Blocked on approval | Approved period; execute-mode rehearsal; legal-hold negative test |
@@ -217,6 +217,28 @@ Outstanding deployment gates:
 - Repeat across active cockpit, legacy completion path, hold/resume and handoff; verify a post-disposition new-answer attempt returns HTTP 409 without changing stored JSON.
 - Promote demo only after canary evidence; repeat against SOC2 before marking PR-007 fully closed.
 
+## PR-008 decision record — temporary shared Cloud SQL boundary
+
+Decision: risk accepted for the remediation period. The demo and SOC2 environments are not intended to become two permanent production systems. SOC2 exists only to validate and demonstrate customer security requirements; after those requirements are met, SOC2 will be decommissioned and the platform will operate as one system.
+
+Rationale:
+
+1. The current shared Cloud SQL instance is a temporary remediation topology, not the target production architecture.
+2. Demo and SOC2 already use separate logical databases, database users, connection secrets and Cloud Run services, limiting ordinary application-level crossover during remediation.
+3. Provisioning a second long-lived Cloud SQL instance would add cost and migration work for an environment that is scheduled for removal.
+4. The remaining shared instance-level outage and administrator blast radius is acknowledged and accepted for this temporary period.
+
+Required decommissioning controls when customer security validation completes:
+
+- Confirm which single environment and database become authoritative before deleting anything.
+- Retain or export required audit/security evidence according to the approved retention policy.
+- Take and verify a final recoverable backup before SOC2 removal.
+- Remove the SOC2 Cloud Run service, database, database user, Secret Manager secrets, scheduled jobs, service-account grants, DNS/hosting routes and monitoring resources through an approved change.
+- Verify the surviving system has no references to removed SOC2 resources and complete a health, login, clinical workflow and restore-readiness check.
+- Record the decommission date, approver, retained evidence and deletion verification in this register.
+
+PR-008 therefore requires no separate Cloud SQL instance for the remediation environment. Its decision gate is complete; operational follow-through is the controlled SOC2 decommission after customer requirements are satisfied.
+
 ## Change log
 
 - 2026-08-17: PR-001 source remediation completed and verified locally. Production runtime now fails closed for shared and seeded demo credentials unless `ALLOW_DEMO_CREDENTIALS=true` is deliberately configured. Focused authentication/session regression: 35/35 tests passed; backend typecheck passed. Deployment closure remains pending.
@@ -228,3 +250,4 @@ Outstanding deployment gates:
 - 2026-08-17: PR-006 source remediation completed. Questions, TAQs, disposition and care advice now share one selected protocol lineage; care advice requires exact question linkage and fails closed without it. Repeated exhaustive and negative regression tests, backend build and both typechecks passed. Canary and live multi-protocol clinical verification remain pending.
 - 2026-08-17: PR-006 validation was tightened to the five licensed protocols only. A named 30-case cross-protocol matrix and three exhaustive passes over all 126 licensed TAQs passed; synthetic sample protocols are not counted as clinical validation evidence.
 - 2026-08-17: PR-007 source remediation completed. Structured IAQ, TAQ and approval JSON now merge at the backend boundary; legacy callers preserve existing approval lineage; idempotent post-disposition retries remain allowed while new clinical answers stay locked. Focused, adjacent and complete frontend regression suites passed. Cloud SQL canary verification remains pending.
+- 2026-08-17: PR-008 risk decision recorded. The shared Cloud SQL instance is accepted only for the temporary remediation topology; SOC2 will be safely decommissioned after customer security validation, leaving one authoritative system.
