@@ -104,14 +104,29 @@ export function createProtocolsRouter(): Router {
       return res.status(400).json({ error: "Invalid dispositionCode" });
     }
 
+    if (positiveQuestionIds.length === 0) {
+      return res.status(422).json({
+        error: "Exact protocol question lineage is required for care advice",
+        code: "CARE_ADVICE_QUESTION_REQUIRED"
+      });
+    }
+
+    const protocolQuestionIds = new Set(protocol.questions.map((question) => question.id));
+    const unknownQuestionIds = positiveQuestionIds.filter((questionId) => !protocolQuestionIds.has(questionId));
+    if (unknownQuestionIds.length > 0) {
+      return res.status(422).json({
+        error: "One or more questions do not belong to the selected protocol",
+        code: "CARE_ADVICE_PROTOCOL_MISMATCH",
+        unknownQuestionIds
+      });
+    }
+
     return res.json({
       release: getCurrentClinicalContentPackage().release,
       protocolId: protocol.id,
-      careAdvice: getCareAdviceForProtocol(
-        protocol.id,
-        positiveQuestionIds,
-        dispositionCode?.success ? dispositionCode.data : undefined
-      )
+      questionIds: positiveQuestionIds,
+      selectionMode: "EXACT_QUESTION",
+      careAdvice: getCareAdviceForProtocol(protocol.id, positiveQuestionIds)
     });
   });
 

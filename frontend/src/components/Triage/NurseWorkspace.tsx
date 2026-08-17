@@ -453,49 +453,13 @@ function routeFromAssessment(
 function careAdviceFor(
   card: Card,
   responses: AssessmentResponseState,
-  route: { code: string; destination: string; rationale: string }
+  _route: { code: string; destination: string; rationale: string }
 ): Array<{ title: string; body: string }> {
-  const selectedQuestion = selectedAssessmentQuestion(card, responses);
-  const ids = selectedQuestion?.careAdviceIds ?? [];
-  const reason = card.symptomTextRaw.toLowerCase();
-
-  if (route.code === "SIDRA_PEDIATRIC_ED" || route.code === "HMC_EMERGENCY_DEPARTMENT") {
-    return [
-      {
-        title: "First aid while arranging emergency care",
-        body: "Keep the patient safe, avoid food or drink if urgent transfer is likely, and do not allow duty continuation or travel until emergency care clears the patient."
-      }
-    ];
-  }
-
-  if (reason.includes("ankle") || reason.includes("foot") || ids.includes("ankle-foot-injury-care")) {
-    return [
-      {
-        title: "Apply a cold pack",
-        body: "Apply a wrapped cold pack for 20 minutes, repeat as needed, elevate the limb, and avoid painful weight-bearing."
-      },
-      {
-        title: "Pain medicines and warnings",
-        body: "Use only approved medicines per local policy. Escalate if pain, swelling, numbness, color change, or walking ability worsens."
-      }
-    ];
-  }
-
-  if (route.code === "SELF_CARE_WITH_CALLBACK_PRECAUTIONS") {
-    return [
-      {
-        title: "Self-care with callback precautions",
-        body: "Give clear home-care advice, expected recovery window, and red-flag callback instructions. No duty clearance is implied."
-      }
-    ];
-  }
-
-  return [
-    {
-      title: "Clinic review and safety-net advice",
-      body: "Book or direct the patient to the routed clinical service and provide red-flag callback precautions before ending the call."
-    }
-  ];
+  const approvedIds = new Set(selectedAssessmentQuestion(card, responses)?.careAdviceIds ?? []);
+  const realAdvice = preparedProtocolFor(card)?.careAdviceItems ?? [];
+  return realAdvice
+    .filter((item) => approvedIds.has(item.id))
+    .map((item) => ({ title: item.titleEn, body: item.instructionTextEn }));
 }
 
 function crewCategoryFrom(item: QueueItem): Card["crewCategory"] {

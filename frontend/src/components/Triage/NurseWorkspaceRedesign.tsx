@@ -458,80 +458,19 @@ function routeFromAssessment(
 function careAdviceFor(
   card: Card,
   responses: AssessmentResponseState,
-  route: { code: string; destination: string; rationale: string }
+  _route: { code: string; destination: string; rationale: string }
 ): Array<{ id: string; title: string; body: string; patientSendable: boolean }> {
+  const approvedIds = new Set(selectedAssessmentQuestion(card, responses)?.careAdviceIds ?? []);
   const realAdvice = preparedProtocolFor(card)?.careAdviceItems;
-  if (realAdvice && realAdvice.length > 0) {
-    return realAdvice.map((item) => ({
+  if (realAdvice && approvedIds.size > 0) {
+    return realAdvice.filter((item) => approvedIds.has(item.id)).map((item) => ({
       id: item.id,
       title: item.titleEn,
       body: item.instructionTextEn,
       patientSendable: item.patientSendable
     }));
   }
-
-  return fallbackCareAdviceFor(card, responses, route);
-}
-
-// Used only when the matched protocol has no real care-advice content authored
-// yet (most synthetic/legacy protocols) - keyword/route-code heuristics that
-// predate real content wiring, kept for backward-compatible coverage.
-function fallbackCareAdviceFor(
-  card: Card,
-  responses: AssessmentResponseState,
-  route: { code: string; destination: string; rationale: string }
-): Array<{ id: string; title: string; body: string; patientSendable: boolean }> {
-  const selectedQuestion = selectedAssessmentQuestion(card, responses);
-  const ids = selectedQuestion?.careAdviceIds ?? [];
-  const reason = card.symptomTextRaw.toLowerCase();
-
-  if (route.code === "SIDRA_PEDIATRIC_ED" || route.code === "HMC_EMERGENCY_DEPARTMENT") {
-    return [
-      {
-        id: "fallback-emergency-first-aid",
-        title: "First aid while arranging emergency care",
-        body: "Keep the patient safe, avoid food or drink if urgent transfer is likely, and do not allow duty continuation or travel until emergency care clears the patient.",
-        patientSendable: false
-      }
-    ];
-  }
-
-  if (reason.includes("ankle") || reason.includes("foot") || ids.includes("ankle-foot-injury-care")) {
-    return [
-      {
-        id: "fallback-ankle-cold-pack",
-        title: "Apply a cold pack",
-        body: "Apply a wrapped cold pack for 20 minutes, repeat as needed, elevate the limb, and avoid painful weight-bearing.",
-        patientSendable: true
-      },
-      {
-        id: "fallback-ankle-pain-meds",
-        title: "Pain medicines and warnings",
-        body: "Use only approved medicines per local policy. Escalate if pain, swelling, numbness, color change, or walking ability worsens.",
-        patientSendable: true
-      }
-    ];
-  }
-
-  if (route.code === "SELF_CARE_WITH_CALLBACK_PRECAUTIONS") {
-    return [
-      {
-        id: "fallback-self-care-callback",
-        title: "Self-care with callback precautions",
-        body: "Give clear home-care advice, expected recovery window, and red-flag callback instructions. No duty clearance is implied.",
-        patientSendable: true
-      }
-    ];
-  }
-
-  return [
-    {
-      id: "fallback-clinic-review",
-      title: "Clinic review and safety-net advice",
-      body: "Book or direct the patient to the routed clinical service and provide red-flag callback precautions before ending the call.",
-      patientSendable: false
-    }
-  ];
+  return [];
 }
 
 function crewCategoryFrom(item: QueueItem): Card["crewCategory"] {

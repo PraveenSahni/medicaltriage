@@ -223,10 +223,14 @@ test.describe.serial("API contracts from login through clinical completion", () 
     expect(detailBody.protocol.questions.length).toBeGreaterThan(0);
 
     const advice = await request.get(`/api/v1/protocols/${protocolId}/care-advice`, {
-      params: { dispositionCode: "SIDRA_PEDIATRIC_ED" }
+      params: { positiveQuestionIds: detailBody.protocol.questions[0].id }
     });
     expect(advice.status()).toBe(200);
-    expect((await advice.json()).protocolId).toBe(protocolId);
+    expect(await advice.json()).toMatchObject({
+      protocolId,
+      questionIds: [detailBody.protocol.questions[0].id],
+      selectionMode: "EXACT_QUESTION"
+    });
   });
 
   test("API-006 enforces deterministic adult, pediatric, and stable safety outcomes", async ({ request }) => {

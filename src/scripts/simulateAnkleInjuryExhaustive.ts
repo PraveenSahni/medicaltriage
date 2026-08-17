@@ -333,13 +333,13 @@ async function processScenario(
 
   // Care advice presence - part of "case history is perfect and visible on
   // frontend" (DispositionStage.tsx renders this from the same endpoint).
-  const careAdviceResp = await request(
-    jar,
-    `/api/v1/protocols/${PROTOCOL_ID}/care-advice?dispositionCode=${expectedDispositionCode}`,
-    {}
-  );
-  const careAdviceBody = await careAdviceResp.json().catch(() => ({ careAdvice: [] }));
-  const careAdviceCount: number = (careAdviceBody.careAdvice ?? []).length;
+  const careAdviceCount = yesIndex === -1
+    ? 0
+    : ((await (await request(
+        jar,
+        `/api/v1/protocols/${PROTOCOL_ID}/care-advice?positiveQuestionIds=${encodeURIComponent(questions[yesIndex].id)}`,
+        {}
+      )).json().catch(() => ({ careAdvice: [] }))).careAdvice ?? []).length;
 
   const finalResp = await request(jar, `/api/v1/queue/${id}`, {});
   const finalItem = (await finalResp.json()).item;

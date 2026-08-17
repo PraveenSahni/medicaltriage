@@ -473,7 +473,10 @@ export function deriveProtocolSafetyFloor(protocolId?: string, selectedQuestionI
         : `Question ${question.id} was not selected as positive.`
     });
 
-    if (matched && severityRank[question.severity] > severityRank[severity]) {
+    if (
+      matched &&
+      (dispositionCode === undefined || severityRank[question.severity] > severityRank[severity])
+    ) {
       severity = question.severity;
       dispositionCode = question.dispositionCode;
     }
@@ -484,8 +487,7 @@ export function deriveProtocolSafetyFloor(protocolId?: string, selectedQuestionI
 
 export function getCareAdviceForProtocol(
   protocolId: string,
-  selectedQuestionIds: string[],
-  dispositionCode?: DispositionCode
+  selectedQuestionIds: string[]
 ): ClinicalContentCareAdvice[] {
   const protocol = getClinicalProtocolById(protocolId);
   if (!protocol) {
@@ -499,19 +501,15 @@ export function getCareAdviceForProtocol(
     }
   }
 
-  const protocolCareAdvice = protocol.careAdvice;
   const seen = new Set<string>();
 
-  return protocolCareAdvice.filter((advice) => {
+  return protocol.careAdvice.filter((advice) => {
     if (seen.has(advice.id)) {
       return false;
     }
 
     seen.add(advice.id);
-    return (
-      careAdviceIds.has(advice.id) ||
-      (dispositionCode && advice.dispositionCode === dispositionCode)
-    );
+    return careAdviceIds.has(advice.id);
   });
 }
 

@@ -28,7 +28,7 @@ Current top blockers:
 | PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | In progress | Flags enabled; cross-instance tests and live persistence query pass |
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Source complete; deployment pending | Assignment-time SoD validator and negative tests |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Source complete; deployment pending | Approved canonical role catalog reconciled across API, UI and documentation |
-| PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Open | Exact-question advice by default; explicit governed fallback; regression tests |
+| PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Source complete; deployment pending | Exact-question advice enforced; implicit fallback prohibited; exhaustive regression matrix |
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Open | Backend merge invariant and all-surface regression tests |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Open/decision required | Accepted risk or isolated instance with restore test |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Open | Dedicated least-privilege accounts and IAM evidence |
@@ -161,6 +161,35 @@ Remaining deployment closure gates:
 - Confirm all three protected roles remain visible and existing Triage Nurse, Service Manager and Platform Administrator workflows are unchanged.
 - Promote demo only after canary evidence; repeat against SOC2 and record exact revisions.
 
+## PR-006 implementation record — exact protocol clinical lineage
+
+Source remediation complete:
+
+1. The care-advice service now returns only advice IDs explicitly linked by the selected question or questions in the selected protocol. Disposition-code matching is no longer a fallback.
+2. `GET /api/v1/protocols/:protocolId/care-advice` fails closed with HTTP 422 when no exact question is supplied or when a question does not belong to that protocol. Successful responses expose `selectionMode: EXACT_QUESTION`, `protocolId` and `questionIds` as lineage evidence.
+3. Initial Assessment Questions, TAQs and the Disposition/Care Advice stage now resolve one canonical protocol ID. A nurse-selected override takes precedence consistently over the automatic suggestion across all stages.
+4. The active cockpit stores the exact terminal TAQ question and filters care advice through only that question's `careAdviceIds`. Missing or invalid terminal lineage produces no patient-sendable advice and a visible clinical-lineage error.
+5. Both legacy nurse workspaces no longer generate generic emergency, ankle/foot, self-care or clinic-review text. They also fail closed unless the selected question has an explicit protocol-authored advice link.
+6. The protocol safety-floor reducer now retains the authored disposition for an exact Self-care terminal question; the repeated exhaustive matrix discovered and verified this correction.
+7. All five existing exhaustive protocol simulation scripts now call the advice API with the exact positive question ID. An all-No path does not request unlinked generic advice.
+
+No governed fallback is enabled. Introducing one requires a separately approved clinical-content policy, an explicit request mode, attributable approval evidence and its own regression matrix; disposition equality alone is prohibited.
+
+Verification completed:
+
+- Exhaustive active-content question/advice/disposition matrix executed three times per test run, then repeated in a second clean run: pass.
+- Negative coverage proves missing question IDs, unknown IDs, cross-protocol IDs and same-disposition sibling advice fail closed.
+- Care-advice API lineage and failure contracts: pass.
+- Cockpit canonical protocol selection and exact terminal-question filtering: 4/4 tests passed.
+- Backend build/typecheck and frontend typecheck: pass.
+
+Outstanding deployment gates:
+
+- Build from the isolated PR-006 commit and deploy to a no-traffic demo canary.
+- Exercise multiple real protocols in the browser: auto-selected and nurse-overridden protocol, IAQs, every TAQ tier, terminal disposition, exact advice, all-No behavior, hold/resume and handoff.
+- Confirm no generic or same-disposition sibling advice appears in network responses or the UI; record protocol ID, question ID, advice IDs and revision for each run.
+- Promote demo only after clinical review; repeat on SOC2 before marking PR-006 fully closed.
+
 ## Change log
 
 - 2026-08-17: PR-001 source remediation completed and verified locally. Production runtime now fails closed for shared and seeded demo credentials unless `ALLOW_DEMO_CREDENTIALS=true` is deliberately configured. Focused authentication/session regression: 35/35 tests passed; backend typecheck passed. Deployment closure remains pending.
@@ -169,3 +198,4 @@ Remaining deployment closure gates:
 - 2026-08-17: PR-003 started. Added a fail-closed production persistence policy and safe runtime posture reporting; database and canary validation remain in progress.
 - 2026-08-17: PR-003 source validation completed: backend typecheck passed and 32/32 runnable focused tests passed. Two real PostgreSQL tests, database schema evidence and canary activation remain open pending interactive gcloud reauthentication.
 - 2026-08-17: PR-004 and PR-005 source remediation completed around three protected system roles plus governed custom roles. SoD validation, durable schema/API, Platform Administrator UI, audit behavior and documentation were added; all focused and adjacent recorded suites passed. Database migration and no-traffic canary evidence remain pending.
+- 2026-08-17: PR-006 source remediation completed. Questions, TAQs, disposition and care advice now share one selected protocol lineage; care advice requires exact question linkage and fails closed without it. Repeated exhaustive and negative regression tests, backend build and both typechecks passed. Canary and live multi-protocol clinical verification remain pending.

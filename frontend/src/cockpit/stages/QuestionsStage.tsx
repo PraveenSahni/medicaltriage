@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useQueue, type QueueItem, type QueueSeverity } from "../../QueueContext";
 import { colorStyleForSeverity } from "../severityColors";
 import { fetchProtocolDetail, type ProtocolTaqQuestion } from "../api/protocols";
+import { resolveClinicalProtocolId } from "../clinicalLineage";
 import { QATAR_DESTINATION_BY_CODE } from "../qatarDestinations";
 
 const severityMap: Record<string, QueueSeverity> = {
@@ -103,7 +104,7 @@ export function QuestionsStage({
   // before any TAQ has been answered) - that choice takes precedence over the
   // preparedProtocol's keyword-search suggestion for which question set is
   // actually presented and committed here.
-  const protocolId = item.matchedProtocolId ?? item.preparedProtocol?.primaryProtocolId;
+  const protocolId = resolveClinicalProtocolId(item);
 
   useEffect(() => {
     let cancelled = false;

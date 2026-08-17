@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQueue, type QueueItem } from "../QueueContext";
 import { fetchProtocolDetail, type InitialAssessmentQuestion } from "./api/protocols";
+import { resolveClinicalProtocolId } from "./clinicalLineage";
 import { colorStyleForSeverity } from "./severityColors";
 
 // IAQ questions carry no severity (they're pure history-taking, not
@@ -59,7 +60,7 @@ export function InitialAssessmentQuestions({ item, isReadOnly }: { item: QueueIt
   const [draftText, setDraftText] = useState<Record<string, string>>({});
   const [saveError, setSaveError] = useState("");
 
-  const protocolId = item.preparedProtocol?.primaryProtocolId;
+  const protocolId = resolveClinicalProtocolId(item);
 
   useEffect(() => {
     let cancelled = false;

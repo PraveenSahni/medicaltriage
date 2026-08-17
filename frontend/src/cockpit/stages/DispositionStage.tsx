@@ -3,6 +3,7 @@ import { Plane } from "lucide-react";
 import { useQueue, type QueueItem } from "../../QueueContext";
 import { colorStyleForSeverity } from "../severityColors";
 import { fetchProtocolDetail, type ProtocolCareAdvice, type ProtocolSupplemental } from "../api/protocols";
+import { exactQuestionCareAdvice, resolveClinicalProtocolId } from "../clinicalLineage";
 import { fetchFitToFlyPreview } from "../api/triageCompletion";
 import { colorStyleForFitToFly, FIT_TO_FLY_LABEL, FIT_TO_FLY_RATIONALE, type FitToFlyStatus } from "../fitToFlyDisplay";
 import { QATAR_DESTINATION_BY_CODE } from "../qatarDestinations";
@@ -20,7 +21,7 @@ const severityForDispositionCode: Record<string, string> = {
 
 /**
  * Care advice is fetched from GET /api/v1/protocols/:protocolId and filtered
- * to the items matching the reached dispositionCode - the queue item's own
+ * to the exact terminal question's careAdviceIds - the queue item's own
  * preparedProtocol has no field carrying full care-advice content at all
  * (only `careAdviceIds: string[]` on each TAQ preview and a boolean
  * `resourceSectionsAvailable.careAdvice` flag), so reading
@@ -56,7 +57,7 @@ export function DispositionStage({
   const [referenceExpanded, setReferenceExpanded] = useState(false);
   const [fitToFlyStatus, setFitToFlyStatus] = useState<FitToFlyStatus | undefined>(item.fitToFlyStatus);
 
-  const protocolId = item.preparedProtocol?.primaryProtocolId;
+  const protocolId = resolveClinicalProtocolId(item);
   const severity = severityForDispositionCode[item.dispositionCode ?? ""] ?? item.calculatedSeverity;
   const terminalQuestionId =
     typeof item.clinicalApproval?.terminalQuestionId === "string" ? item.clinicalApproval.terminalQuestionId : undefined;
@@ -80,9 +81,7 @@ export function DispositionStage({
         const terminalQuestion = terminalQuestionId
           ? detail.protocol.questions.find((q) => q.id === terminalQuestionId)
           : undefined;
-        const matched = terminalQuestion
-          ? detail.protocol.careAdvice.filter((advice) => terminalQuestion.careAdviceIds?.includes(advice.id))
-          : detail.protocol.careAdvice.filter((advice) => advice.dispositionCode === item.dispositionCode);
+        const matched = exactQuestionCareAdvice(detail.protocol, terminalQuestionId);
         setCareAdvice(matched);
         setSupplementals(detail.protocol.supplementals ?? []);
         // The first matched advice item's own title is the real STCC
@@ -90,6 +89,11 @@ export function DispositionStage({
         // terminal question was resolved - more specific than the collapsed
         // dispositionCode label.
         setHeadingOverride(terminalQuestion ? matched[0]?.titleEn : undefined);
+        setLoadError(
+          terminalQuestion
+            ? ""
+            : "Approved care advice is unavailable because the exact terminal protocol question was not recorded."
+        );
       })
       .catch((caught) => {
         if (!cancelled) {
@@ -147,7 +151,18 @@ export function DispositionStage({
       // actually edited it to something different from what's persisted -
       // that's a legitimate override attempt the backend gets to accept or
       // reject on its own terms, not something this UI should paper over.
-      const update: Record<string, unknown> = { clinicalApproval: { approvedAtIso: new Date().toISOString() } };
+      // Merge, don't replace - clinicalApproval also carries terminalQuestionId
+      // (set by QuestionsStage when the terminal "Yes" was answered), which
+      // the Disposition stage's own advice-filtering logic (above) depends on
+      // to show the precise real STCC question's care advice rather than
+      // every advice item that happens to share the same collapsed
+      // dispositionCode. A wholesale replace here was silently discarding it
+      // on every approval, which is why care advice was showing the whole
+      // protocol's advice library mixed together instead of the specific
+      // advice tied to what was actually answered.
+      const update: Record<string, unknown> = {
+        clinicalApproval: { ...(item.clinicalApproval ?? {}), approvedAtIso: new Date().toISOString() }
+      };
       if (destinationName && destinationName !== item.destinationName) {
         update.destinationName = destinationName;
       }
