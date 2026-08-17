@@ -1,4 +1,9 @@
-import { assertRuntimeConfiguration, getAdminPassword, publicRuntimeEnvironment } from "../src/config/runtime.js";
+import {
+  assertRuntimeConfiguration,
+  getAdminPassword,
+  persistenceConfigurationSummary,
+  publicRuntimeEnvironment
+} from "../src/config/runtime.js";
 
 const REQUIRED_LIVE_ENV = {
   DATABASE_URL: "postgresql://triage_user:triage_password@localhost:5432/ist_triage?schema=public",
@@ -45,6 +50,59 @@ describe("runtime credential guardrails", () => {
     process.env.ALLOW_DEMO_CREDENTIALS = "true";
 
     expect(getAdminPassword()).toBe("LocalMockAdmin!2026");
+  });
+
+  it("rejects a production runtime when any dedicated persistence control is missing", () => {
+    process.env = {
+      ...originalEnv,
+      NODE_ENV: "production",
+      MOCK_MODE: "true",
+      DATABASE_URL: REQUIRED_LIVE_ENV.DATABASE_URL,
+      QUEUE_DB_PERSISTENCE: "true",
+      SESSION_DB_PERSISTENCE: "true"
+    };
+
+    expect(() => assertRuntimeConfiguration()).toThrow(/MFA_DB_PERSISTENCE=true/);
+  });
+
+  it("accepts mock-mode production only when every dedicated persistence control is enabled", () => {
+    process.env = {
+      ...originalEnv,
+      NODE_ENV: "production",
+      MOCK_MODE: "true",
+      DATABASE_URL: REQUIRED_LIVE_ENV.DATABASE_URL,
+      QUEUE_DB_PERSISTENCE: "true",
+      SESSION_DB_PERSISTENCE: "true",
+      MFA_DB_PERSISTENCE: "true",
+      AUDIT_EVENT_DB_PERSISTENCE: "true",
+      ROLE_PERMISSION_DB_PERSISTENCE: "true",
+      REVEAL_WORKFLOW_DB_PERSISTENCE: "true",
+      REVEAL_ANOMALY_DB_PERSISTENCE: "true",
+      SECURITY_ANOMALY_DB_PERSISTENCE: "true"
+    };
+
+    expect(() => assertRuntimeConfiguration()).not.toThrow();
+    expect(Object.values(persistenceConfigurationSummary()).every(Boolean)).toBe(true);
+    expect(Object.values(publicRuntimeEnvironment().persistence).every(Boolean)).toBe(true);
+  });
+
+  it("rejects a whitespace-only production database URL", () => {
+    process.env = {
+      ...originalEnv,
+      NODE_ENV: "production",
+      MOCK_MODE: "true",
+      DATABASE_URL: "   ",
+      QUEUE_DB_PERSISTENCE: "true",
+      SESSION_DB_PERSISTENCE: "true",
+      MFA_DB_PERSISTENCE: "true",
+      AUDIT_EVENT_DB_PERSISTENCE: "true",
+      ROLE_PERMISSION_DB_PERSISTENCE: "true",
+      REVEAL_WORKFLOW_DB_PERSISTENCE: "true",
+      REVEAL_ANOMALY_DB_PERSISTENCE: "true",
+      SECURITY_ANOMALY_DB_PERSISTENCE: "true"
+    };
+
+    expect(() => assertRuntimeConfiguration()).toThrow(/DATABASE_URL/);
   });
 
   it("rejects live mode when the admin password is missing", () => {

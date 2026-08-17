@@ -47,7 +47,21 @@ export type PublicRuntimeEnvironment = {
     buildId: string;
     cloudRunRevision: string;
   };
+  persistence: Record<ProductionPersistenceFlag, boolean>;
 };
+
+const PRODUCTION_PERSISTENCE_FLAGS = [
+  "QUEUE_DB_PERSISTENCE",
+  "SESSION_DB_PERSISTENCE",
+  "MFA_DB_PERSISTENCE",
+  "AUDIT_EVENT_DB_PERSISTENCE",
+  "ROLE_PERMISSION_DB_PERSISTENCE",
+  "REVEAL_WORKFLOW_DB_PERSISTENCE",
+  "REVEAL_ANOMALY_DB_PERSISTENCE",
+  "SECURITY_ANOMALY_DB_PERSISTENCE"
+] as const;
+
+type ProductionPersistenceFlag = (typeof PRODUCTION_PERSISTENCE_FLAGS)[number];
 
 function envFlag(name: string, defaultValue: boolean): boolean {
   const value = process.env[name];
@@ -223,6 +237,17 @@ export function shouldPersistSecurityAnomalyCountersInDatabase(): boolean {
   return envFlag("SECURITY_ANOMALY_DB_PERSISTENCE", false);
 }
 
+export function persistenceConfigurationSummary(): Record<ProductionPersistenceFlag, boolean> {
+  return Object.fromEntries(
+    PRODUCTION_PERSISTENCE_FLAGS.map((flag) => [flag, envFlag(flag, false)])
+  ) as Record<ProductionPersistenceFlag, boolean>;
+}
+
+function missingProductionPersistenceControls(): ProductionPersistenceFlag[] {
+  const summary = persistenceConfigurationSummary();
+  return PRODUCTION_PERSISTENCE_FLAGS.filter((flag) => !summary[flag]);
+}
+
 // Engineering-judgment defaults, NOT Qatar-Airways-confirmed figures -
 // owner: CISO; review alongside the annual risk-register cadence, or
 // immediately if QR specifies different thresholds. See
@@ -380,11 +405,25 @@ export function publicRuntimeEnvironment(): PublicRuntimeEnvironment {
       gitSha: process.env.APP_GIT_SHA?.trim() || "unknown",
       buildId: process.env.APP_BUILD_ID?.trim() || "unknown",
       cloudRunRevision: process.env.K_REVISION?.trim() || "local"
-    }
+    },
+    persistence: persistenceConfigurationSummary()
   };
 }
 
 export function assertRuntimeConfiguration(): void {
+  if (process.env.NODE_ENV === "production") {
+    const missingPersistenceControls = missingProductionPersistenceControls();
+    if (!process.env.DATABASE_URL?.trim() || missingPersistenceControls.length > 0) {
+      throw new Error(
+        [
+          "Production runtime requires durable database-backed security and clinical state.",
+          ...(!process.env.DATABASE_URL?.trim() ? ["- DATABASE_URL"] : []),
+          ...missingPersistenceControls.map((flag) => `- ${flag}=true`)
+        ].join("\n")
+      );
+    }
+  }
+
   if (isMockMode()) {
     return;
   }

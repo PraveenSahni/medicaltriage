@@ -25,7 +25,7 @@ Current top blockers:
 |---|---|---|---|---|---|
 | PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Source complete; deployment pending | Focused tests; deploy; shared and seeded passwords return 401; approved named login requires MFA |
 | PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Source implementation in progress | Immutable digest and Git SHA label exposed by runtime endpoint; build provenance recorded; deployed revision matches approved commit |
-| PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | Open | Flags enabled; cross-instance tests and live persistence query pass |
+| PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | In progress | Flags enabled; cross-instance tests and live persistence query pass |
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Open | Assignment-time SoD validator and negative tests |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Open | Approved canonical role catalog reconciled across API, UI and documentation |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Open | Exact-question advice by default; explicit governed fallback; regression tests |
@@ -112,8 +112,35 @@ Remaining PR-002 gates:
 - Add/verify the corresponding CI or release-policy enforcement.
 - Repeat against SOC2 only after demo verification.
 
+## PR-003 implementation record — durable production state
+
+GCP baseline:
+
+- Demo has only queue and session DB persistence enabled; MFA, audit events, role overrides, reveal workflow and both anomaly stores are not enabled.
+- SOC2 has queue, session, MFA, audit events, role overrides, reveal workflow and reveal-anomaly persistence enabled; security-anomaly persistence is not enabled.
+- Both logical databases are on the same Cloud SQL instance but use separate database names, users and Secret Manager connection secrets.
+
+Source remediation in progress:
+
+1. Defined one canonical eight-flag production persistence set covering queue, sessions, MFA, audit events, role overrides, reveal workflow, reveal anomaly and security anomaly.
+2. `NODE_ENV=production` now fails startup when `DATABASE_URL` or any required persistence flag is absent, including when `MOCK_MODE=true`.
+3. The public runtime diagnostic reports the boolean persistence posture without exposing connection details.
+4. `.env.example` documents every required flag explicitly.
+5. Backend typecheck passes. The focused runtime and mocked/cross-instance persistence regression has 32/32 runnable tests passing; two real PostgreSQL cases are deliberately excluded pending live connectivity.
+6. Cloud SQL validation is currently blocked because the selected gcloud user token requires interactive reauthentication. The downloaded Cloud SQL Auth Proxy v2.23.0 was verified as validly signed by Google LLC before the connection attempt.
+
+Remaining closure gates:
+
+- Verify every required migration/table in both logical databases.
+- Run the real PostgreSQL cross-instance suites against each database.
+- Enable missing flags on a no-traffic demo canary and prove health, login/MFA, audit, reveal and anomaly durability.
+- Promote demo only after the canary passes; repeat on SOC2.
+- Confirm restart and multi-instance behavior, then record the exact revisions and evidence here.
+
 ## Change log
 
 - 2026-08-17: PR-001 source remediation completed and verified locally. Production runtime now fails closed for shared and seeded demo credentials unless `ALLOW_DEMO_CREDENTIALS=true` is deliberately configured. Focused authentication/session regression: 35/35 tests passed; backend typecheck passed. Deployment closure remains pending.
 - 2026-08-17: PR-002 elevated to next critical remediation with an explicit end-to-end provenance chain and closure criteria.
 - 2026-08-17: PR-002 source implementation added: clean-tree build guard, full-SHA image tag, OCI labels, Cloud Build ID, immutable-digest output and live runtime provenance fields. Build/deployment evidence remains pending.
+- 2026-08-17: PR-003 started. Added a fail-closed production persistence policy and safe runtime posture reporting; database and canary validation remain in progress.
+- 2026-08-17: PR-003 source validation completed: backend typecheck passed and 32/32 runnable focused tests passed. Two real PostgreSQL tests, database schema evidence and canary activation remain open pending interactive gcloud reauthentication.
