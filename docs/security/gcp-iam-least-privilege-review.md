@@ -4,13 +4,13 @@ _Executed 2026-08-06. Real live-infrastructure change against
 `triage-502706`, environment: soc2 web service only (demo/jobs/schedulers
 deliberately deferred - see below)._
 
-## 2026-08-17 addendum — surviving `aimltriage` system
+## 2026-08-17 correction — authoritative project remains `triage-502706`
 
-The permanent-system decision supersedes the older two-project rollout assumptions below. Live inspection of `aimltriage` shows both current Cloud Run services (`ist-triage-demo` and the temporary `ist-triage-simulation`) already run as the dedicated, keyless `ist-triage-cloudrun-sa@aimltriage.iam.gserviceaccount.com`; neither uses the default Compute identity. The dedicated identity holds only project-level Cloud SQL Client and Secret Manager Accessor. No Cloud Run Jobs exist in `aimltriage`, and Cloud Scheduler is disabled there.
+An inspection performed against `aimltriage` was unrelated to the registered demo environment and must not be used as IAM or PR-009 closure evidence. The authoritative target is project `triage-502706` (project number `1096520215793`), region `me-central1`, Cloud Run service `ist-triage-demo`.
 
-The historical `triage-502706` SOC2 jobs remain part of the temporary remediation environment and are to be deleted, not migrated, under the PR-008 decommission decision. The current owner account cannot administer that historical project.
+The authoritative baseline records that the demo service still runs as the default Compute identity `1096520215793-compute@developer.gserviceaccount.com`. The 2026-08-06 review below remains relevant: only the SOC2 web service was cut over to the dedicated `ist-triage-cloudrun-sa@triage-502706.iam.gserviceaccount.com`; demo, jobs and schedulers were deliberately deferred.
 
-Live application revalidation could not complete because billing is disabled on `aimltriage`: both service health requests returned HTTP 500 and runtime diagnostic requests returned HTTP 503. No IAM mutation was attempted while a new-revision canary and rollback validation were unavailable. See the PR-009 record in `docs/production-readiness-remediation-register-2026-08-17.md`.
+The approved PR-008 direction is to decommission SOC2 after customer security validation. SOC2-only jobs should therefore be deleted through that controlled change, not migrated merely to preserve a temporary environment. Any job that remains must use a separate least-privilege identity. The current `praveen@irisstar.tech` session lacks `run.services.get` on `triage-502706`, so no fresh live IAM read, mutation or cutover was performed. PR-009 remains open; see the remediation register for its canary and evidence requirements.
 
 ## Phase 1: Permission dependency map
 
