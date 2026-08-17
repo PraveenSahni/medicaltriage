@@ -32,7 +32,7 @@ Current top blockers:
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Source complete; deployment pending | Backend merge invariant; legacy caller reconciliation; lifecycle regression tests |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Open — live access required | Dedicated keyless runtime identity; scheduled-workload disposition; least-privilege IAM and canary evidence from `triage-502706` |
-| PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Open | Append-only DB role plus chaining or immutable external export |
+| PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Source complete; deployment pending | Append-only DB role, HMAC chain, integrity verification and live tamper-negative evidence |
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Blocked on approval | Approved period; execute-mode rehearsal; legal-hold negative test |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Open | Serving certificate chain and ownership documented; stale resources removed |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Open | Ephemeral PostgreSQL CI run with all suites passing |
@@ -263,6 +263,35 @@ Required closure sequence:
 - Delete SOC2-only scheduled workloads during the approved PR-008 decommission. If any job remains temporarily, assign a separate job identity with only Cloud SQL Client, per-secret accessor, and Monitoring Viewer only where the job actually queries Monitoring.
 - Record command output, IAM bindings, revision name, immutable image digest, validation results, rollback target, operator and timestamp here before changing PR-009 to complete.
 
+## PR-010 implementation record — append-only chained audit ledger
+
+Source remediation is complete for events written after the PR-010 migration:
+
+1. Every production audit writer now uses `src/services/auditLedger.ts`; direct Prisma audit inserts and the benchmark cleanup deletion were removed from application and operational scripts.
+2. Each new event carries a database sequence number, predecessor hash, HMAC-SHA256 event hash and key version. A PostgreSQL transaction advisory lock serializes writers so concurrent Cloud Run instances cannot fork the chain.
+3. Production requires a dedicated `AUDIT_HMAC_SECRET`, `AUDIT_HMAC_KEY_VERSION` and separate `AUDIT_DATABASE_URL` connection. The audit database role is limited to `SELECT`/`INSERT` on the ledger and sequence.
+4. Database triggers reject `UPDATE`, `DELETE` and `TRUNCATE`, reject unsigned inserts, validate predecessor linkage, and acquire the same advisory lock even for direct SQL inserts.
+5. `verifyAuditEventChain()` and the authenticated `GET /api/v1/admin/audit-events/integrity` surface detect modified, removed and reordered records. `dist/scripts/verifyAuditLedger.js` provides an operational verification command.
+6. Audit persistence now retains record, approval, session and metadata fields that the previous persistence adapter dropped.
+7. Pre-migration rows are counted as `legacyUnsignedEvents`; the implementation does not falsely claim retroactive authenticity for historical records.
+
+Validation completed locally:
+
+- Prisma schema validation and client generation passed.
+- Backend TypeScript validation passed.
+- Focused audit-ledger tests cover valid chaining, predecessor linkage, modification, middle deletion, reordering, missing-secret fail-closed behavior and legacy unsigned reporting.
+- Existing audit persistence, runtime configuration and scheduled-report regressions pass after migration to the centralized writer.
+- Static source scan finds no remaining direct `prisma.auditEvent.create/update/delete/deleteMany/upsert` call in `src/` or operational `scripts/`.
+- Complete backend run: 441/447 tests passed. The six failures are the already-registered PR-013 database-backed SSO/security-anomaly cases because no PostgreSQL server was available at `127.0.0.1:5433`; the PR-010-focused and adjacent 70/70 tests passed.
+
+Outstanding deployment gates:
+
+- Apply migration `20260817190000_add_append_only_audit_chain` to an isolated clone of `ist_triage_demo`, then test `UPDATE`, `DELETE`, `TRUNCATE`, unsigned `INSERT` and wrong-predecessor `INSERT` all fail.
+- Run `scripts/configureAuditWriterRole.sql` as the approved database administrator, create a dedicated Cloud SQL login, grant it membership in `ist_audit_writer`, store its connection URL as a demo Secret Manager secret, and expose it only as `AUDIT_DATABASE_URL` to the Cloud Run service and retained jobs.
+- Deploy a no-traffic `ist-triage-demo` revision in project `triage-502706`; write events through API, queue, FHIR and job paths, run integrity verification, restart and verify again.
+- Confirm the normal application database login cannot update/delete/truncate the audit table and the audit login cannot mutate non-audit application tables.
+- Record revision, image digest, migration output, role grants, negative SQL evidence, chain head and rollback result before marking PR-010 complete.
+
 ## Change log
 
 - 2026-08-17: PR-001 source remediation completed and verified locally. Production runtime now fails closed for shared and seeded demo credentials unless `ALLOW_DEMO_CREDENTIALS=true` is deliberately configured. Focused authentication/session regression: 35/35 tests passed; backend typecheck passed. Deployment closure remains pending.
@@ -276,3 +305,4 @@ Required closure sequence:
 - 2026-08-17: PR-007 source remediation completed. Structured IAQ, TAQ and approval JSON now merge at the backend boundary; legacy callers preserve existing approval lineage; idempotent post-disposition retries remain allowed while new clinical answers stay locked. Focused, adjacent and complete frontend regression suites passed. Cloud SQL canary verification remains pending.
 - 2026-08-17: PR-008 risk decision recorded. The shared Cloud SQL instance is accepted only for the temporary remediation topology; SOC2 will be safely decommissioned after customer security validation, leaving one authoritative system.
 - 2026-08-17: PR-009 evidence correction: `aimltriage` was the wrong project and its inventory is invalid for closure. The authoritative target is `triage-502706`; its demo baseline still uses the default Compute service account. PR-009 is open pending authorized live inventory, least-privilege cutover and canary evidence.
+- 2026-08-17: PR-010 source remediation completed. New audit events use a serialized HMAC chain and dedicated insert/select-only database connection; database triggers prohibit mutation and unsigned/forked inserts; integrity verification and tamper regressions were added. Isolated Cloud SQL migration and no-traffic demo canary evidence remain pending.

@@ -28,6 +28,7 @@ import type {
 } from "../types/triage.js";
 import { DispositionCodeSchema } from "../types/triage.js";
 import type { AuditEvent, AuthenticatedSession, Role } from "../types/security.js";
+import { appendAuditEvent } from "./auditLedger.js";
 import type {
   CcpOutboundDraft,
   CcpSendResult,
@@ -140,24 +141,7 @@ export async function persistSecurityAuditEvent(event: AuditEvent): Promise<Pers
     return { persisted: false, reason: "mock-mode" };
   }
 
-  const created = await prisma.auditEvent.create({
-    data: {
-      timestamp: new Date(event.timestampIso),
-      userId: event.userId,
-      activeRole: event.activeRole,
-      organization: event.organization,
-      facility: event.facility,
-      department: event.department,
-      action: event.action,
-      module: event.module,
-      resource: event.resource,
-      purpose: event.purpose,
-      ipAddress: event.ipAddress,
-      device: event.device,
-      success: event.success,
-      riskLevel: event.risk
-    }
-  });
+  const created = await appendAuditEvent(event);
 
   return { persisted: true, recordId: created.id };
 }
@@ -612,11 +596,19 @@ export async function listPersistedAuditEvents(
     action: row.action,
     module: row.module,
     resource: row.resource ?? "",
+    recordReference: row.recordReference ?? undefined,
     purpose: row.purpose ?? undefined,
+    approvalReference: row.approvalReference ?? undefined,
     ipAddress: row.ipAddress ?? "",
     device: row.device ?? "",
+    sessionHash: row.sessionHash ?? undefined,
     success: row.success,
-    risk: toRiskClassification(row.riskLevel)
+    risk: toRiskClassification(row.riskLevel),
+    metadata: (row.metadata as Record<string, unknown> | null) ?? undefined,
+    sequenceNumber: row.sequenceNumber.toString(),
+    previousHash: row.previousHash ?? undefined,
+    eventHash: row.eventHash ?? undefined,
+    keyVersion: row.keyVersion ?? undefined
   }));
 }
 

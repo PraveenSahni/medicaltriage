@@ -39,6 +39,7 @@
  *   npx tsx src/scripts/purgeExpiredQueueData.ts --retention-days=90 --execute
  */
 import { PrismaClient } from "@prisma/client";
+import { appendOperationalAuditEvent } from "../services/auditLedger.js";
 
 const prisma = new PrismaClient();
 
@@ -141,22 +142,19 @@ async function main() {
     console.log(`Deleted ${result.count} queue item(s).`);
   }
 
-  await prisma.auditEvent.create({
-    data: {
-      timestamp: new Date(),
+  await appendOperationalAuditEvent({
       action: execute ? "RETENTION_PURGE_EXECUTED" : "RETENTION_PURGE_DRY_RUN",
       module: "DataRetention",
       resource: "TriageQueueItem",
       success: true,
-      riskLevel: execute ? "high" : "medium",
-      metadata: jsonValue({
+      risk: execute ? "high" : "medium",
+      metadata: {
         retentionDays,
         retentionSource,
         cutoffIso: cutoff.toISOString(),
         candidateCount: candidates.length,
         excludedByLegalHoldCount: heldCount
-      })
-    }
+      }
   });
 
   await prisma.$disconnect();

@@ -413,11 +413,13 @@ export function publicRuntimeEnvironment(): PublicRuntimeEnvironment {
 export function assertRuntimeConfiguration(): void {
   if (process.env.NODE_ENV === "production") {
     const missingPersistenceControls = missingProductionPersistenceControls();
-    if (!process.env.DATABASE_URL?.trim() || missingPersistenceControls.length > 0) {
+    if (!process.env.DATABASE_URL?.trim() || !process.env.AUDIT_DATABASE_URL?.trim() || !process.env.AUDIT_HMAC_SECRET?.trim() || missingPersistenceControls.length > 0) {
       throw new Error(
         [
           "Production runtime requires durable database-backed security and clinical state.",
           ...(!process.env.DATABASE_URL?.trim() ? ["- DATABASE_URL"] : []),
+          ...(!process.env.AUDIT_DATABASE_URL?.trim() ? ["- AUDIT_DATABASE_URL"] : []),
+          ...(!process.env.AUDIT_HMAC_SECRET?.trim() ? ["- AUDIT_HMAC_SECRET"] : []),
           ...missingPersistenceControls.map((flag) => `- ${flag}=true`)
         ].join("\n")
       );

@@ -7,6 +7,7 @@ import {
 
 const REQUIRED_LIVE_ENV = {
   DATABASE_URL: "postgresql://triage_user:triage_password@localhost:5432/ist_triage?schema=public",
+  AUDIT_DATABASE_URL: "postgresql://audit_writer:audit_password@localhost:5432/ist_triage?schema=public",
   ORACLE_HCM_BASE_URL: "https://example.fa.oraclecloud.com",
   EMR_BASE_URL: "https://example-emr.local",
   QHIE_BASE_URL: "https://example-qhie.local/fhir",
@@ -58,6 +59,8 @@ describe("runtime credential guardrails", () => {
       NODE_ENV: "production",
       MOCK_MODE: "true",
       DATABASE_URL: REQUIRED_LIVE_ENV.DATABASE_URL,
+      AUDIT_DATABASE_URL: REQUIRED_LIVE_ENV.AUDIT_DATABASE_URL,
+      AUDIT_HMAC_SECRET: "production-audit-test-secret",
       QUEUE_DB_PERSISTENCE: "true",
       SESSION_DB_PERSISTENCE: "true"
     };
@@ -71,6 +74,8 @@ describe("runtime credential guardrails", () => {
       NODE_ENV: "production",
       MOCK_MODE: "true",
       DATABASE_URL: REQUIRED_LIVE_ENV.DATABASE_URL,
+      AUDIT_DATABASE_URL: REQUIRED_LIVE_ENV.AUDIT_DATABASE_URL,
+      AUDIT_HMAC_SECRET: "production-audit-test-secret",
       QUEUE_DB_PERSISTENCE: "true",
       SESSION_DB_PERSISTENCE: "true",
       MFA_DB_PERSISTENCE: "true",
@@ -92,6 +97,8 @@ describe("runtime credential guardrails", () => {
       NODE_ENV: "production",
       MOCK_MODE: "true",
       DATABASE_URL: "   ",
+      AUDIT_DATABASE_URL: REQUIRED_LIVE_ENV.AUDIT_DATABASE_URL,
+      AUDIT_HMAC_SECRET: "production-audit-test-secret",
       QUEUE_DB_PERSISTENCE: "true",
       SESSION_DB_PERSISTENCE: "true",
       MFA_DB_PERSISTENCE: "true",
@@ -103,6 +110,27 @@ describe("runtime credential guardrails", () => {
     };
 
     expect(() => assertRuntimeConfiguration()).toThrow(/DATABASE_URL/);
+  });
+
+  it("rejects production when the dedicated audit-chain secret is missing", () => {
+    process.env = {
+      ...originalEnv,
+      NODE_ENV: "production",
+      MOCK_MODE: "true",
+      DATABASE_URL: REQUIRED_LIVE_ENV.DATABASE_URL,
+      AUDIT_DATABASE_URL: REQUIRED_LIVE_ENV.AUDIT_DATABASE_URL,
+      QUEUE_DB_PERSISTENCE: "true",
+      SESSION_DB_PERSISTENCE: "true",
+      MFA_DB_PERSISTENCE: "true",
+      AUDIT_EVENT_DB_PERSISTENCE: "true",
+      ROLE_PERMISSION_DB_PERSISTENCE: "true",
+      REVEAL_WORKFLOW_DB_PERSISTENCE: "true",
+      REVEAL_ANOMALY_DB_PERSISTENCE: "true",
+      SECURITY_ANOMALY_DB_PERSISTENCE: "true"
+    };
+    delete process.env.AUDIT_HMAC_SECRET;
+
+    expect(() => assertRuntimeConfiguration()).toThrow(/AUDIT_HMAC_SECRET/);
   });
 
   it("rejects live mode when the admin password is missing", () => {

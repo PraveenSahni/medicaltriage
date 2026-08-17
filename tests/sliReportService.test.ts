@@ -11,17 +11,23 @@ import {
 // purgeExpiredQueueData.ts) - no real DB connection needed for these tests.
 const auditEvents: Array<Record<string, unknown>> = [];
 jest.mock("@prisma/client", () => {
+  const auditEvent = {
+    create: jest.fn(async ({ data }: { data: Record<string, unknown> }) => {
+      auditEvents.push(data);
+      return data;
+    }),
+    findFirst: jest.fn(async () => {
+      const previous = auditEvents.at(-1);
+      return previous ? { eventHash: previous.eventHash } : null;
+    }),
+    findMany: jest.fn(async ({ where }: { where: { action: string; resource: string } }) =>
+      auditEvents.filter((e) => e.action === where.action && e.resource === where.resource)
+    )
+  };
   return {
     PrismaClient: jest.fn().mockImplementation(() => ({
-      auditEvent: {
-        create: jest.fn(async ({ data }: { data: Record<string, unknown> }) => {
-          auditEvents.push(data);
-          return data;
-        }),
-        findMany: jest.fn(async ({ where }: { where: { action: string; resource: string } }) =>
-          auditEvents.filter((e) => e.action === where.action && e.resource === where.resource)
-        )
-      },
+      auditEvent,
+      $transaction: jest.fn(async (callback) => callback({ auditEvent, $executeRawUnsafe: jest.fn(async () => 1) })),
       $disconnect: jest.fn(async () => undefined)
     }))
   };
@@ -206,6 +212,7 @@ describe("sliReportService: report formatting", () => {
 
 describe("sliReportService: generateMonthlyReport (audit trail + idempotency + email)", () => {
   beforeEach(() => {
+    process.env.AUDIT_HMAC_SECRET = "sli-audit-ledger-test-secret";
     auditEvents.length = 0;
     sendMock.mockClear();
   });

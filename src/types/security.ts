@@ -200,10 +200,18 @@ export type AuditEvent = {
   module: string;
   resource: string;
   purpose?: string;
+  recordReference?: string;
+  approvalReference?: string;
+  sessionHash?: string;
+  metadata?: Record<string, unknown>;
   ipAddress: string;
   device: string;
   success: boolean;
   risk: RiskClassification;
+  sequenceNumber?: string;
+  previousHash?: string;
+  eventHash?: string;
+  keyVersion?: string;
 };
 
 export type ControlCenterModule = {

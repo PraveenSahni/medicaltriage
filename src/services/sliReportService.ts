@@ -11,6 +11,7 @@ import { MetricServiceClient } from "@google-cloud/monitoring";
 import { randomUUID } from "node:crypto";
 import { PrismaClient } from "@prisma/client";
 import { getEmailAdapter } from "./communicationAdapters.js";
+import { appendOperationalAuditEvent } from "./auditLedger.js";
 
 // Standalone-job audit trail, matching the exact pattern already used by
 // src/scripts/purgeExpiredQueueData.ts and fulfillPrivacyRequests.ts (a
@@ -24,16 +25,13 @@ function jsonValue(value: unknown) {
 
 async function recordJobAuditEvent(args: { action: string; resource: string; success: boolean; metadata?: Record<string, unknown> }): Promise<void> {
   try {
-    await prisma.auditEvent.create({
-      data: {
-        timestamp: new Date(),
+    await appendOperationalAuditEvent({
         action: args.action,
         module: "SliReporting",
         resource: args.resource,
         success: args.success,
-        riskLevel: "low",
-        metadata: args.metadata ? jsonValue(args.metadata) : undefined
-      }
+        risk: "low",
+        metadata: args.metadata
     });
   } catch (error) {
     console.error(`Failed to persist audit event ${args.action} (job continues):`, error);

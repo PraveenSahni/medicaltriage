@@ -1,14 +1,26 @@
 const auditEventCreateMock = jest.fn();
 const auditEventFindManyMock = jest.fn();
+const auditEventFindFirstMock = jest.fn();
+const executeRawMock = jest.fn();
 
-jest.mock("../src/db.js", () => ({
-  prisma: {
+const auditTransaction = {
+  $executeRawUnsafe: (...args: unknown[]) => executeRawMock(...args),
+  auditEvent: {
+    create: (...args: unknown[]) => auditEventCreateMock(...args),
+    findFirst: (...args: unknown[]) => auditEventFindFirstMock(...args)
+  }
+};
+
+jest.mock("../src/db.js", () => {
+  const client = {
+    $transaction: (callback: (tx: typeof auditTransaction) => unknown) => callback(auditTransaction),
     auditEvent: {
       create: (...args: unknown[]) => auditEventCreateMock(...args),
       findMany: (...args: unknown[]) => auditEventFindManyMock(...args)
     }
-  }
-}));
+  };
+  return { prisma: client, auditPrisma: client };
+});
 
 import { persistSecurityAuditEvent, listPersistedAuditEvents } from "../src/services/persistence.js";
 import type { AuditEvent } from "../src/types/security.js";
@@ -22,6 +34,7 @@ import type { AuditEvent } from "../src/types/security.js";
 describe("AuditEvent durable persistence gating", () => {
   const ORIGINAL_MOCK_MODE = process.env.MOCK_MODE;
   const ORIGINAL_AUDIT_FLAG = process.env.AUDIT_EVENT_DB_PERSISTENCE;
+  const ORIGINAL_AUDIT_SECRET = process.env.AUDIT_HMAC_SECRET;
 
   const sampleEvent: AuditEvent = {
     id: "evt_1",
@@ -43,8 +56,11 @@ describe("AuditEvent durable persistence gating", () => {
   beforeEach(() => {
     auditEventCreateMock.mockReset();
     auditEventFindManyMock.mockReset();
+    auditEventFindFirstMock.mockReset().mockResolvedValue(null);
+    executeRawMock.mockReset().mockResolvedValue(1);
     auditEventCreateMock.mockResolvedValue({ id: "row_1" });
     auditEventFindManyMock.mockResolvedValue([]);
+    process.env.AUDIT_HMAC_SECRET = "audit-ledger-test-secret";
   });
 
   afterEach(() => {
@@ -52,6 +68,8 @@ describe("AuditEvent durable persistence gating", () => {
     else process.env.MOCK_MODE = ORIGINAL_MOCK_MODE;
     if (ORIGINAL_AUDIT_FLAG === undefined) delete process.env.AUDIT_EVENT_DB_PERSISTENCE;
     else process.env.AUDIT_EVENT_DB_PERSISTENCE = ORIGINAL_AUDIT_FLAG;
+    if (ORIGINAL_AUDIT_SECRET === undefined) delete process.env.AUDIT_HMAC_SECRET;
+    else process.env.AUDIT_HMAC_SECRET = ORIGINAL_AUDIT_SECRET;
   });
 
   it("does NOT write to the database when AUDIT_EVENT_DB_PERSISTENCE is unset, even if MOCK_MODE=false", async () => {
@@ -75,6 +93,8 @@ describe("AuditEvent durable persistence gating", () => {
     const callArgs = auditEventCreateMock.mock.calls[0][0];
     expect(callArgs.data.action).toBe("LOGIN");
     expect(callArgs.data.userId).toBe("usr_nurse_10001");
+    expect(callArgs.data.previousHash).toBe("0".repeat(64));
+    expect(callArgs.data.eventHash).toMatch(/^[a-f0-9]{64}$/);
   });
 
   it("never includes password/token/secret-shaped fields in the persisted row (AuditEvent type carries none)", async () => {

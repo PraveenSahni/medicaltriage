@@ -1535,12 +1535,17 @@ model AuditEvent {
   success           Boolean
   riskLevel         String   @default("medium") @map("risk_level")
   metadata          Json?
+  sequenceNumber    BigInt   @unique @default(autoincrement()) @map("sequence_number")
+  previousHash      String?  @map("previous_hash")
+  eventHash         String?  @unique @map("event_hash")
+  keyVersion        String?  @map("key_version")
 
   @@index([timestamp])
   @@index([userId, action])
   @@index([organization, timestamp])
   @@index([action, timestamp])
   @@index([riskLevel, timestamp])
+  @@index([sequenceNumber])
   @@map("audit_events")
 }
 

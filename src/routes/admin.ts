@@ -10,6 +10,7 @@ import {
 } from "../services/authorization.js";
 import { shouldUseDatabasePersistence } from "../config/runtime.js";
 import { countPersistedAuditEvents, listPersistedAuditEvents } from "../services/persistence.js";
+import { verifyAuditEventChain } from "../services/auditLedger.js";
 import { rateLimit } from "../middleware/rateLimit.js";
 import {
   listScheduledJobs,
@@ -478,6 +479,18 @@ export function createAdminRouter(): Router {
       }
       const events = listAuditEvents(parsed.data);
       return res.json({ events, totalCount: listAuditEvents().length });
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  router.get("/audit-events/integrity", requirePermission("audit.events.view"), async (_req, res, next) => {
+    try {
+      if (!shouldUseDatabasePersistence()) {
+        return res.status(503).json({ error: "Durable audit persistence is not enabled." });
+      }
+      const verification = await verifyAuditEventChain();
+      return res.status(verification.valid ? 200 : 409).json(verification);
     } catch (error) {
       return next(error);
     }

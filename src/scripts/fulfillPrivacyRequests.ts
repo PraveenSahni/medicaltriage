@@ -25,6 +25,7 @@
  */
 import { PrismaClient } from "@prisma/client";
 import { sanitizeForLog } from "../utils/logSanitizer.js";
+import { appendOperationalAuditEvent } from "../services/auditLedger.js";
 
 // Masks a person identifier for console output (NFR-078/NFR-004 AI-tab) -
 // the durable AuditEvent.metadata below still records the real, unmasked
@@ -99,16 +100,13 @@ async function main() {
         });
       }
 
-      await prisma.auditEvent.create({
-        data: {
-          timestamp: new Date(),
+      await appendOperationalAuditEvent({
           action: execute ? "PRIVACY_REQUEST_ACCESS_FULFILLED" : "PRIVACY_REQUEST_ACCESS_DRY_RUN",
           module: "DataPrivacy",
           resource: "PrivacyRequest",
           success: true,
-          riskLevel: "medium",
-          metadata: jsonValue({ requestId: request.id, requesterRef: request.requesterRef, summary })
-        }
+          risk: "medium",
+          metadata: { requestId: request.id, requesterRef: request.requesterRef, summary }
       });
       continue;
     }
@@ -139,22 +137,19 @@ async function main() {
         });
       }
 
-      await prisma.auditEvent.create({
-        data: {
-          timestamp: new Date(),
+      await appendOperationalAuditEvent({
           action: execute ? "PRIVACY_REQUEST_ERASURE_FULFILLED" : "PRIVACY_REQUEST_ERASURE_DRY_RUN",
           module: "DataPrivacy",
           resource: "PrivacyRequest",
           success: true,
-          riskLevel: "high",
-          metadata: jsonValue({
+          risk: "high",
+          metadata: {
             requestId: request.id,
             requesterRef: request.requesterRef,
             totalRecords: items.length,
             excludedByLegalHoldCount: heldCount,
             eligibleForDeletionCount: eligible.length
-          })
-        }
+          }
       });
       continue;
     }

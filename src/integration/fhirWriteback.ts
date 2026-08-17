@@ -9,6 +9,7 @@ import { prisma } from "../db.js";
 import { assertHumanApprovalForExport } from "../services/safetyKernel.js";
 import { organizationWhereClause } from "../services/tenantScope.js";
 import { persistIntegrationInboundLog } from "../services/persistence.js";
+import { appendOperationalAuditEvent } from "../services/auditLedger.js";
 import type { AuthenticatedSession } from "../types/security.js";
 
 export const MOPH_ADDRESS_BUILDING_NUMBER_EXTENSION =
@@ -509,17 +510,15 @@ async function recordTransmissionAudit(args: {
     return false;
   }
 
-  await prisma.auditEvent.create({
-    data: {
-      timestamp: new Date(),
+  await appendOperationalAuditEvent({
       action: "EMR_FHIR_WRITEBACK",
       module: "Integration",
       resource: "DocumentReference",
       recordReference: args.encounterId,
       purpose: "Nurse-approved tele-triage clinical document handoff",
       success: args.success,
-      riskLevel: args.success ? "medium" : "high",
-      metadata: jsonValue({
+      risk: args.success ? "medium" : "high",
+      metadata: {
         target: args.target,
         endpoint: args.endpoint,
         status: args.status,
@@ -528,8 +527,7 @@ async function recordTransmissionAudit(args: {
         docStatus: args.payloadSummary.docStatus,
         typeCode: args.payloadSummary.typeCode,
         failureReason: args.failureReason
-      })
-    }
+      }
   });
   return true;
 }

@@ -9,25 +9,23 @@
  */
 import { PrismaClient } from "@prisma/client";
 import { createHash, randomBytes } from "node:crypto";
+import { appendOperationalAuditEvent } from "../src/services/auditLedger.js";
 
 const prisma = new PrismaClient();
 const ITERATIONS = 200;
 
-function auditEventPayload(i: number) {
-  return {
-    timestamp: new Date(),
-    action: "BENCHMARK_TEST_EVENT",
-    module: "Benchmark",
-    resource: `benchmark:${i}`,
-    success: true,
-    riskLevel: "low" as const
-  };
-}
-
 async function timeAuditWrites(): Promise<number> {
+  const runId = new Date().toISOString();
   const start = performance.now();
   for (let i = 0; i < ITERATIONS; i++) {
-    await prisma.auditEvent.create({ data: auditEventPayload(i) });
+    await appendOperationalAuditEvent({
+      action: "BENCHMARK_TEST_EVENT",
+      module: "Benchmark",
+      resource: `benchmark:${runId}:${i}`,
+      success: true,
+      risk: "low",
+      metadata: { runId, iteration: i }
+    });
   }
   return performance.now() - start;
 }
@@ -52,7 +50,8 @@ async function main() {
   console.log(`Baseline (no DB call): ${withoutAuditMs.toFixed(1)}ms for ${ITERATIONS} iterations.`);
   console.log(`Real overhead attributable to the audit write itself: ~${perWriteMs.toFixed(2)}ms per action.`);
 
-  await prisma.auditEvent.deleteMany({ where: { action: "BENCHMARK_TEST_EVENT" } });
+  // Audit history is append-only. Benchmark rows deliberately remain as
+  // identified test evidence and are never deleted by this script.
   await prisma.$disconnect();
 }
 

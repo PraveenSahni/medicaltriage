@@ -3,6 +3,7 @@ import type { Prisma } from "@prisma/client";
 import { isMockMode, shouldPersistQueueInDatabase } from "../config/runtime.js";
 import { prisma } from "../db.js";
 import { auditSignatureFor } from "./safetyKernel.js";
+import { appendOperationalAuditEvent } from "./auditLedger.js";
 import { getOrganizationById, listUsers, recordAuditEvent } from "./securityAdmin.js";
 import { findDependent, resolvePatientAgeFromDirectory, validateStaffMember } from "./hrms.js";
 import {
@@ -1272,10 +1273,9 @@ function jsonValue(value: unknown): Prisma.InputJsonValue {
 // Real audit-trail coverage for routine clinical queue actions (claim,
 // disposition/status moves, deletion) - previously only FHIR writeback and
 // completed-encounter persistence wrote AuditEvent rows, leaving the far more
-// common day-to-day actions unaudited. Mirrors fhirWriteback.ts's direct
-// prisma.auditEvent.create pattern rather than the stricter, HTTP-request-only
-// persistSecurityAuditEvent() helper, since no request/IP/device context is
-// available here.
+// common day-to-day actions unaudited. All durable writes now pass through
+// the centralized chained ledger writer even when request/IP/device context
+// is unavailable.
 async function recordQueueAuditEvent(args: {
   session: AuthenticatedSession;
   action: string;
@@ -1310,9 +1310,7 @@ async function recordQueueAuditEvent(args: {
   if (!shouldPersistQueueInDatabase()) {
     return;
   }
-  await prisma.auditEvent.create({
-    data: {
-      timestamp: new Date(),
+  await appendOperationalAuditEvent({
       userId: args.session.user.id,
       activeRole: args.session.activeRole,
       organization: args.session.user.organizationId ?? undefined,
@@ -1321,9 +1319,8 @@ async function recordQueueAuditEvent(args: {
       resource: "TriageQueueItem",
       recordReference: args.recordId,
       success: args.success,
-      riskLevel: args.riskLevel ?? "medium",
-      metadata: args.metadata ? jsonValue(args.metadata) : undefined
-    }
+      risk: (args.riskLevel as "low" | "medium" | "high" | "critical" | undefined) ?? "medium",
+      metadata: args.metadata
   });
 }
 

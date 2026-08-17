@@ -37,10 +37,23 @@ export const prisma =
     ...(datasourceUrl ? { datasourceUrl } : {})
   });
 
+// PR-010: production audit writes use a separate database principal whose
+// grants are limited to SELECT/INSERT on the append-only audit ledger. Local
+// development can reuse the primary client when AUDIT_DATABASE_URL is absent.
+export const auditPrisma = process.env.AUDIT_DATABASE_URL
+  ? new PrismaClient({
+      log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
+      datasourceUrl: withConnectionLimit(process.env.AUDIT_DATABASE_URL)
+    })
+  : prisma;
+
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.istTriagePrisma = prisma;
 }
 
 export async function disconnectPrisma(): Promise<void> {
+  if (auditPrisma !== prisma) {
+    await auditPrisma.$disconnect();
+  }
   await prisma.$disconnect();
 }

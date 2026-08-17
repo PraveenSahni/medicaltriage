@@ -4,8 +4,8 @@
 // entitlements for all system users and administrators").
 //
 // Certification recording (added 2026-08-04): after producing the report,
-// this now writes a real AuditEvent row (action
-// ACCESS_ENTITLEMENT_REVIEW_CERTIFIED) directly to the database via Prisma,
+// this now writes a real chained AuditEvent row (action
+// ACCESS_ENTITLEMENT_REVIEW_CERTIFIED) through the centralized ledger writer,
 // recording the reviewer identity, timestamp, total/flagged account counts,
 // and the full flagged list - the actual "who reviewed it, when" record a
 // certification requires. Remediation actions taken as a result of a given
@@ -19,6 +19,7 @@
 // pattern.
 // Usage: node scripts/accessEntitlementReview.mjs [baseUrl] [--execute]
 import { PrismaClient } from "@prisma/client";
+import { appendOperationalAuditEvent } from "../dist/services/auditLedger.js";
 
 const BASE_URL = process.argv[2] ?? "https://triagedsoc2.irisstar.tech";
 const EXECUTE = process.argv.includes("--execute");
@@ -114,17 +115,14 @@ async function main() {
     }
   }
 
-  const certification = await prisma.auditEvent.create({
-    data: {
-      timestamp: new Date(),
+  const certification = await appendOperationalAuditEvent({
       userId: ADMIN_USERNAME,
       action: "ACCESS_ENTITLEMENT_REVIEW_CERTIFIED",
       module: "AccessGovernance",
       resource: "UserAccount",
       success: true,
-      riskLevel: flagged.length > 0 ? "medium" : "low",
-      metadata: JSON.parse(
-        JSON.stringify({
+      risk: flagged.length > 0 ? "medium" : "low",
+      metadata: {
           baseUrl: BASE_URL,
           totalAccounts: users.length,
           flaggedCount: flagged.length,
@@ -132,9 +130,7 @@ async function main() {
           remediableCount,
           remediatedCount: remediated.length,
           remediated
-        })
-      )
-    }
+      }
   });
 
   console.log(`\nCertification recorded: AuditEvent ${certification.id} (reviewer=${ADMIN_USERNAME}, ${certification.timestamp.toISOString()}).`);
