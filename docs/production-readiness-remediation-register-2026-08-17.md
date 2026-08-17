@@ -30,7 +30,7 @@ Current top blockers:
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Zero-traffic canary healthy; elevated mutation UAT blocked by PR-001 MFA custody | Assignment-time SoD validator; 135/135 regression; nurse mutation denied live |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Zero-traffic canary passed; promotion pending | Exactly 3 protected roles confirmed live; governed custom-role migration current |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Zero-traffic canary passed; clinical sign-off and promotion pending | Exact-question advice enforced; live 30/30 five-protocol matrix and fail-closed negatives passed |
-| PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Source complete; deployment pending | Backend merge invariant; legacy caller reconciliation; lifecycle regression tests |
+| PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Zero-traffic canary passed; promotion pending | Live incremental merge, cross-revision reload and disposition-lock regression passed |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Open — live access required | Dedicated keyless runtime identity; scheduled-workload disposition; least-privilege IAM and canary evidence from `triage-502706` |
 | PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Source complete; deployment pending | Append-only DB role, HMAC chain, integrity verification and live tamper-negative evidence |
@@ -337,12 +337,36 @@ Verification completed:
 - Complete frontend suite: 66/66 tests passed.
 - Backend build/typecheck and frontend typecheck: pass.
 
+### 2026-08-17 zero-traffic deployment evidence
+
+- Clean committed source: `24a634f98b25740d395f31a40c9c12cce5598d6f`.
+- Focused backend/clinical regression: 74/74 passed. Complete frontend suite:
+  66/66 passed. Backend and frontend TypeScript checks passed. The frontend
+  run emitted existing React `act(...)` warnings but no test failures.
+- Cloud Build: `86f36895-1e4c-48ac-9d64-aa56b2a6519c`, status `SUCCESS`.
+- Immutable image digest:
+  `sha256:6c421ea1677d50484bb11f97f16ea94eeea9ab61c09f28b7a1b72b19f84e531a`.
+- Zero-traffic revision: `ist-triage-demo-pr007-24a634f`, tagged
+  `pr007-canary`, labelled `git-sha=24a634f` and `release=pr-007`.
+- Health returned HTTP 200. Runtime provenance matched the exact commit, build
+  and revision; all eight persistence flags remained enabled.
+- Six separate live PATCH requests added two IAQ keys, two TAQ keys and three
+  approval fields. A reload through the PR-006 revision returned every field,
+  proving backend merge behavior and Cloud SQL cross-revision durability.
+- The disposition lifecycle regression passed: initial context save, move to
+  `DISPOSITION` and an idempotent partial retry each returned HTTP 200. A new
+  late TAQ answer returned HTTP 409 / `QUEUE_DISPOSITION_LOCKED`.
+- A final PR-006 cross-revision reload retained terminal question and approval
+  lineage and proved the rejected late-answer key was absent.
+- Both synthetic queue records used by the live checks were deleted with HTTP
+  204 and verified absent; all temporary sessions were revoked.
+- Production traffic remained 100% on `ist-triage-demo-00035-wlm`.
+
 Outstanding deployment gates:
 
-- Deploy the isolated PR-007 commit to a no-traffic demo canary.
-- Against Cloud SQL, submit separate IAQ, TAQ and approval PATCH requests, reload through a separate application instance, and verify every key remains present.
 - Repeat across active cockpit, legacy completion path, hold/resume and handoff; verify a post-disposition new-answer attempt returns HTTP 409 without changing stored JSON.
-- Promote demo only after canary evidence; repeat against SOC2 before marking PR-007 fully closed.
+- Promote demo only after browser workflow UAT. Repeat against SOC2 only if
+  that temporary environment remains in scope under PR-008.
 
 ## PR-008 decision record — temporary shared Cloud SQL boundary
 
@@ -458,6 +482,7 @@ Outstanding deployment gates:
 - 2026-08-17: PR-006 validation was tightened to the five licensed protocols only. A named 30-case cross-protocol matrix and three exhaustive passes over all 126 licensed TAQs passed; synthetic sample protocols are not counted as clinical validation evidence.
 - 2026-08-17: PR-006 zero-traffic canary passed in `triage-502706`. The live 30-case exact-question matrix passed across all five licensed protocols; missing, unknown and cross-protocol lineage failed closed with the expected HTTP 422 codes. Production traffic was unchanged. Browser workflow UAT and named Clinical QA approval remain required before promotion.
 - 2026-08-17: PR-007 source remediation completed. Structured IAQ, TAQ and approval JSON now merge at the backend boundary; legacy callers preserve existing approval lineage; idempotent post-disposition retries remain allowed while new clinical answers stay locked. Focused, adjacent and complete frontend regression suites passed. Cloud SQL canary verification remains pending.
+- 2026-08-17: PR-007 zero-traffic canary passed in `triage-502706`. Six incremental IAQ/TAQ/approval patches survived a PR-006 cross-revision reload; idempotent post-disposition retry returned 200, a late clinical answer returned 409 / `QUEUE_DISPOSITION_LOCKED`, and the final reload proved no forbidden key was stored. Synthetic records and sessions were cleaned; production traffic was unchanged.
 - 2026-08-17: PR-008 risk decision recorded. The shared Cloud SQL instance is accepted only for the temporary remediation topology; SOC2 will be safely decommissioned after customer security validation, leaving one authoritative system.
 - 2026-08-17: PR-009 evidence correction: `aimltriage` was the wrong project and its inventory is invalid for closure. The authoritative target is `triage-502706`; its demo baseline still uses the default Compute service account. PR-009 is open pending authorized live inventory, least-privilege cutover and canary evidence.
 - 2026-08-17: PR-010 source remediation completed. New audit events use a serialized HMAC chain and dedicated insert/select-only database connection; database triggers prohibit mutation and unsigned/forked inserts; integrity verification and tamper regressions were added. Isolated Cloud SQL migration and no-traffic demo canary evidence remain pending.
