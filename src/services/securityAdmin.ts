@@ -29,6 +29,13 @@ import {
   shouldUseDatabasePersistence
 } from "../config/runtime.js";
 import { decryptMfaSecret, encryptMfaSecret } from "./mfaCrypto.js";
+import { verifyGovernedPassword } from "./governedAccountCrypto.js";
+import {
+  findGovernedAccount,
+  listGovernedAccounts,
+  persistGovernedAccount,
+  persistGovernedAccountStatus
+} from "./governedAccountPersistence.js";
 import type {
   AdminUser,
   AuditEvent,
@@ -1748,6 +1755,18 @@ export function listUsers(pagination?: { limit?: number; offset?: number }): { u
   return { users: masked.slice(offset, offset + limit), totalCount };
 }
 
+function cacheGovernedUser(user: AdminUser): void {
+  const index = users.findIndex((candidate) => candidate.id === user.id || candidate.email.toLowerCase() === user.email.toLowerCase());
+  if (index >= 0) users[index] = user;
+  else users.push(user);
+  dynamicallyCreatedUserEmails.add(user.email.toLowerCase());
+}
+
+export async function hydrateGovernedUsers(): Promise<void> {
+  const accounts = await listGovernedAccounts();
+  for (const account of accounts) cacheGovernedUser(account.user);
+}
+
 export class UserNotFoundError extends Error {}
 export class SelfStatusChangeError extends Error {}
 export class DuplicateUserEmailError extends Error {}
@@ -1829,9 +1848,9 @@ export async function createUser(
     updatedBy: actor.userId,
     updatedAtIso: nowIso
   };
-  users.push(newUser);
-
   const temporaryPassword = randomBytes(9).toString("base64url");
+  await persistGovernedAccount(newUser, temporaryPassword);
+  users.push(newUser);
   demoPasswordByEmail[email] = temporaryPassword;
   dynamicallyCreatedUserEmails.add(email);
 
@@ -1881,6 +1900,9 @@ export async function updateUserAccountStatus(
     throw new SelfStatusChangeError("Cannot suspend, lock, or deactivate your own account.");
   }
   user.accountStatus = status;
+  user.updatedBy = actor.userId;
+  user.updatedAtIso = new Date().toISOString();
+  await persistGovernedAccountStatus(user);
 
   // A suspended/locked/deactivated account must not be able to keep using
   // an already-established session - without this, the status change is
@@ -2805,6 +2827,8 @@ export async function authenticateLocal(args: {
   device: string;
 }): Promise<AuthenticateLocalResult> {
   const username = args.username.trim().toLowerCase();
+  const persistedGovernedAccount = await findGovernedAccount(username);
+  if (persistedGovernedAccount) cacheGovernedUser(persistedGovernedAccount.user);
   const user = users.find((candidate) => candidate.email.toLowerCase() === username || candidate.employeeId.toLowerCase() === username);
   const genericMessage = "Invalid username or password.";
   const currentFailures = failedLoginAttempts.get(username) ?? 0;
@@ -2825,7 +2849,13 @@ export async function authenticateLocal(args: {
     safeCompare(args.password, configuredPassword);
   const demoPassword = user ? demoPasswordByEmail[user.email.toLowerCase()] : undefined;
   const demoPasswordOk = Boolean(areDemoCredentialsEnabled() && demoPassword && safeCompare(args.password, demoPassword));
-  const passwordOk = adminPasswordOk || demoPasswordOk;
+  const inMemoryGovernedPasswordOk = Boolean(
+    user && dynamicallyCreatedUserEmails.has(user.email.toLowerCase()) && demoPassword && safeCompare(args.password, demoPassword)
+  );
+  const persistedGovernedPasswordOk = Boolean(
+    persistedGovernedAccount && verifyGovernedPassword(args.password, persistedGovernedAccount.passwordHash)
+  );
+  const passwordOk = adminPasswordOk || demoPasswordOk || inMemoryGovernedPasswordOk || persistedGovernedPasswordOk;
   if (!user || !passwordOk) {
     failedLoginAttempts.set(username, currentFailures + 1);
     await recordAuditEvent({

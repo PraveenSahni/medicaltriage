@@ -55,6 +55,7 @@ import {
   listSsoProviders,
   listSupportQueueItems,
   listUsers,
+  hydrateGovernedUsers,
   MfaNotEnrolledError,
   PermissionNotFoundError,
   requestElevation,
@@ -175,13 +176,18 @@ export function createAdminRouter(): Router {
     return res.json({ dashboard: getSecurityDashboard() });
   });
 
-  router.get("/users", requirePermission("admin.users.manage"), (req, res) => {
+  router.get("/users", requirePermission("admin.users.manage"), async (req, res, next) => {
     const parsed = PaginationQuerySchema.safeParse(req.query);
     if (!parsed.success) {
       return res.status(400).json({ error: "Invalid pagination parameters", details: parsed.error.flatten() });
     }
-    const { users, totalCount } = listUsers(parsed.data);
-    return res.json({ users, totalCount });
+    try {
+      await hydrateGovernedUsers();
+      const { users, totalCount } = listUsers(parsed.data);
+      return res.json({ users, totalCount });
+    } catch (error) {
+      return next(error);
+    }
   });
 
   // The Control Center's Users tab is the only place in the application
