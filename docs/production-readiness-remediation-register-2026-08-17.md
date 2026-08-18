@@ -29,7 +29,7 @@ Current top blockers:
    be decommissioned through a controlled process after customer security validation,
    leaving one authoritative system.
 
-PR-001, PR-002, PR-003, PR-012 and PR-013 are complete. PR-005, PR-007 and PR-009 passed
+PR-001, PR-002, PR-003, PR-005, PR-012 and PR-013 are complete. PR-007 and PR-009 passed
 their recorded zero-traffic technical canaries but have not been promoted.
 Production traffic remains 100% on `ist-triage-demo-00035-wlm`; therefore the
 overall release decision remains **NO-GO**.
@@ -51,7 +51,7 @@ Status interpretation:
 | PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Complete | Guarded clean-tree release; Git SHA, Cloud Build, immutable digest, revision labels and live runtime response match on current zero-traffic candidate |
 | PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | Complete | Eight flags enabled; migrations current; cross-revision MFA/session/queue durability; live audit, reveal and both anomaly stores verified |
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Zero-traffic canary healthy; elevated mutation UAT ready | Assignment-time SoD validator; 135/135 regression; nurse mutation denied live; operator MFA available |
-| PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Zero-traffic canary passed; promotion pending | Exactly 3 protected roles confirmed live; governed custom-role migration current |
+| PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Complete | Exactly 3 protected roles confirmed on the current immutable candidate; Platform Administrator sees governed custom-role creation; historical 19-role material is labelled historical |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Zero-traffic canary passed; clinical sign-off and promotion pending | Exact-question advice enforced; live 30/30 five-protocol matrix and fail-closed negatives passed |
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Zero-traffic canary passed; promotion pending | Live incremental merge, cross-revision reload and disposition-lock regression passed |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
@@ -328,6 +328,22 @@ Remaining deployment closure gates:
   require PAM elevation with a fresh TOTP. Operator custody is now established,
   so this UAT is ready to execute. PR-005's canonical three-role deployment gate is
   proven; PR-004's elevated live mutation gate is not yet claimed complete.
+
+### 2026-08-18 current-candidate PR-005 closure evidence
+
+- Authenticated browser UAT on current immutable zero-traffic candidate
+  `ist-triage-demo-00065-xuf` displayed exactly three protected system roles:
+  Platform Administrator, Triage Service Manager and Triage Nurse.
+- The Platform Administrator could open the governed custom-role screen, which
+  exposes permission and responsibility selection, mandatory business reason and
+  explicit segregation/prerequisite validation. Custom roles remain distinct from
+  the protected system catalog.
+- The prepared PR-004 unsafe reveal-request/reveal-approval role was never created;
+  the catalog remained at exactly three roles and the unsubmitted form was cleared.
+  PR-004 remains open because fresh PAM elevation was not completed during this
+  interaction. That does not reopen PR-005's role-model/documentation finding.
+- Existing 135/135 focused canary regression, current schema and role hydration
+  evidence remain applicable. Production traffic was unchanged. PR-005 is complete.
 
 ## PR-006 implementation record — exact protocol clinical lineage
 
@@ -685,6 +701,7 @@ Outstanding activation gates:
 - 2026-08-18: PR-001 closed. The authorized operator requested an audited recovery of the protected Platform Administrator after the validation authenticator was unavailable, completed fresh TOTP enrollment and successfully authenticated with password plus TOTP. The temporary recovery job was deleted; production traffic and existing demo-user access were unchanged. PR-004 and PR-014 elevated UAT are now unblocked.
 - 2026-08-18: PR-002 closed against the current source. A stale inherited revision label was detected and rejected; the deployment workflow was strengthened. Clean commit `8e002bdde9c2d788dd249ac8c35d0aab5f022f99`, Cloud Build `05bd55ee-58f6-4e5a-a5d8-798a3bddb11d`, immutable digest `sha256:aeba36ac095d01c93fbd327d9b576720cb0adaee85c0dd87522f030cda5d427d`, revision `ist-triage-demo-00065-xuf`, revision labels and live runtime response all matched. Health returned 200 and production traffic was unchanged.
 - 2026-08-18: PR-003 closed against the current immutable candidate. All eight flags were active; prior cross-revision MFA/session/queue evidence remained valid; live Cloud SQL execution `pr003-persistence-close-20260818-pjxxd` proved reveal workflow reload, reveal/security anomaly cross-call counts and append-only audit persistence. Synthetic mutable rows and the temporary job were removed; production traffic was unchanged.
+- 2026-08-18: PR-005 closed on current immutable zero-traffic candidate `ist-triage-demo-00065-xuf`. Authenticated Platform Administrator browser UAT displayed exactly the three protected system roles and the governed custom-role screen with business-reason, permission, responsibility and SoD controls. The catalog remained at three; production traffic was unchanged. PR-004 remains separately open pending completed PAM-elevated mutation UAT.
 
 ## PR-013 implementation record — isolated database-backed CI
 
