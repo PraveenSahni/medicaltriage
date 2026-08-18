@@ -29,7 +29,7 @@ Current top blockers:
    be decommissioned through a controlled process after customer security validation,
    leaving one authoritative system.
 
-PR-001, PR-002, PR-012 and PR-013 are complete. PR-003, PR-005, PR-007 and PR-009 passed
+PR-001, PR-002, PR-003, PR-012 and PR-013 are complete. PR-005, PR-007 and PR-009 passed
 their recorded zero-traffic technical canaries but have not been promoted.
 Production traffic remains 100% on `ist-triage-demo-00035-wlm`; therefore the
 overall release decision remains **NO-GO**.
@@ -49,7 +49,7 @@ Status interpretation:
 |---|---|---|---|---|---|
 | PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Complete | 38/38 focused tests; unsafe passwords return 401; protected login requires mandatory MFA; operator reset, fresh enrollment and successful login completed |
 | PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Complete | Guarded clean-tree release; Git SHA, Cloud Build, immutable digest, revision labels and live runtime response match on current zero-traffic candidate |
-| PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | Zero-traffic canary passed; promotion pending | Eight flags enabled; migrations current; cross-revision MFA, session and queue durability proven |
+| PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | Complete | Eight flags enabled; migrations current; cross-revision MFA/session/queue durability; live audit, reveal and both anomaly stores verified |
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Zero-traffic canary healthy; elevated mutation UAT ready | Assignment-time SoD validator; 135/135 regression; nurse mutation denied live; operator MFA available |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Zero-traffic canary passed; promotion pending | Exactly 3 protected roles confirmed live; governed custom-role migration current |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Zero-traffic canary passed; clinical sign-off and promotion pending | Exact-question advice enforced; live 30/30 five-protocol matrix and fail-closed negatives passed |
@@ -247,14 +247,30 @@ Source remediation complete:
 - No Prisma or persistence failures were observed in the canary logs.
 - Production traffic remained 100% on `ist-triage-demo-00035-wlm`.
 
-Remaining closure gates:
+PR-003 is complete. Promotion remains part of the overall release decision. Repeat
+against SOC2 only if that temporary environment remains in scope under the accepted
+PR-008 consolidation decision.
 
-- Before promotion, exercise live audit, reveal and both anomaly write/read paths
-  if those workflows are available without weakening the MFA gate. The flags,
-  schema and startup posture are proven, but those four live business workflows
-  were not individually mutated during this canary run.
-- Repeat against SOC2 only if that temporary environment remains in scope under
-  the accepted PR-008 consolidation decision.
+### 2026-08-18 current-candidate closure evidence
+
+- Current immutable candidate `ist-triage-demo-00065-xuf` reports all eight required
+  persistence controls enabled. Its Git SHA, Cloud Build ID and immutable image digest
+  are recorded in the PR-002 closure evidence above; health returned HTTP 200 and it
+  continued to receive zero percent of traffic.
+- The focused local persistence regression recorded 82/86 passing assertions. The
+  only four failures were the known real-PostgreSQL cases attempting the unavailable
+  workstation endpoint `127.0.0.1:5433`; PR-013's isolated PostgreSQL execution had
+  already passed the complete database-backed run, 50/50 suites and 539/539 tests.
+- Single-purpose Cloud Run execution
+  `pr003-persistence-close-20260818-pjxxd` completed successfully against Cloud SQL.
+  Its fail-closed invariant required: reveal-request write and reload, reveal-event
+  write, two-call reveal-anomaly count of 2, two-call security-anomaly count of 2,
+  and presence of the chained audit event. Any missing write/read would have failed
+  the execution.
+- The job's `finally` cleanup removed the synthetic reveal request/event and both
+  anomaly-counter records. The append-only audit evidence was retained by design.
+  The temporary Cloud Run job and local structured-test output were deleted and their
+  absence verified. Production traffic was unchanged. PR-003 is complete.
 
 ## PR-004 and PR-005 implementation record — governed three-role model
 
@@ -668,6 +684,7 @@ Outstanding activation gates:
 - 2026-08-18: PR-015 deployed-candidate matrix passed 25/25 inside the immutable application image, matching the local 100/100 backend lineage and 10/10 UI override results. The temporary job was removed and production traffic was unchanged. Named qualified Clinical QA signature remains the only closure gate.
 - 2026-08-18: PR-001 closed. The authorized operator requested an audited recovery of the protected Platform Administrator after the validation authenticator was unavailable, completed fresh TOTP enrollment and successfully authenticated with password plus TOTP. The temporary recovery job was deleted; production traffic and existing demo-user access were unchanged. PR-004 and PR-014 elevated UAT are now unblocked.
 - 2026-08-18: PR-002 closed against the current source. A stale inherited revision label was detected and rejected; the deployment workflow was strengthened. Clean commit `8e002bdde9c2d788dd249ac8c35d0aab5f022f99`, Cloud Build `05bd55ee-58f6-4e5a-a5d8-798a3bddb11d`, immutable digest `sha256:aeba36ac095d01c93fbd327d9b576720cb0adaee85c0dd87522f030cda5d427d`, revision `ist-triage-demo-00065-xuf`, revision labels and live runtime response all matched. Health returned 200 and production traffic was unchanged.
+- 2026-08-18: PR-003 closed against the current immutable candidate. All eight flags were active; prior cross-revision MFA/session/queue evidence remained valid; live Cloud SQL execution `pr003-persistence-close-20260818-pjxxd` proved reveal workflow reload, reveal/security anomaly cross-call counts and append-only audit persistence. Synthetic mutable rows and the temporary job were removed; production traffic was unchanged.
 
 ## PR-013 implementation record — isolated database-backed CI
 
