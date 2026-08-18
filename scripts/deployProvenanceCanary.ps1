@@ -43,53 +43,61 @@ if (-not (Test-Path -LiteralPath $gcloud)) {
   throw "Google Cloud CLI was not found at the configured operator path."
 }
 
-$digest = (& $gcloud artifacts docker images describe "$ImageUri`:$GitSha" `
-  --project $Project `
-  --account $Account `
-  --format "value(image_summary.digest)").Trim()
-if ($LASTEXITCODE -ne 0 -or $digest -notmatch "^sha256:[0-9a-f]{64}$") {
+function Invoke-Gcloud {
+  param([Parameter(Mandatory = $true)][string[]]$Arguments)
+  $output = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $gcloud @Arguments
+  if ($LASTEXITCODE -ne 0) {
+    throw "gcloud failed: $($Arguments -join ' ')"
+  }
+  return $output
+}
+
+$digest = (Invoke-Gcloud @(
+  "artifacts", "docker", "images", "describe", "$ImageUri`:$GitSha",
+  "--project", $Project,
+  "--account", $Account,
+  "--format", "value(image_summary.digest)"
+)).Trim()
+if ($digest -notmatch "^sha256:[0-9a-f]{64}$") {
   throw "The immutable Artifact Registry digest could not be resolved."
 }
 
 $shortSha = $GitSha.Substring(0, 7)
 $immutableImage = "$ImageUri@$digest"
 
-& $gcloud run deploy $Service `
-  --project $Project `
-  --account $Account `
-  --region $Region `
-  --image $immutableImage `
-  --no-traffic `
-  --tag $Tag `
-  --update-labels "git-sha=$shortSha,release=$Release" `
-  --update-env-vars "APP_GIT_SHA=$GitSha,APP_BUILD_ID=$BuildId" `
-  --quiet
-if ($LASTEXITCODE -ne 0) {
-  throw "Cloud Run zero-traffic deployment failed."
-}
+Invoke-Gcloud @(
+  "run", "deploy", $Service,
+  "--project", $Project,
+  "--account", $Account,
+  "--region", $Region,
+  "--image", $immutableImage,
+  "--no-traffic",
+  "--tag", $Tag,
+  "--update-labels", "git-sha=$shortSha,release=$Release",
+  "--update-env-vars", "APP_GIT_SHA=$GitSha,APP_BUILD_ID=$BuildId",
+  "--quiet"
+) | Write-Output
 
-$serviceJson = & $gcloud run services describe $Service `
-  --project $Project `
-  --account $Account `
-  --region $Region `
-  --format json | ConvertFrom-Json
-if ($LASTEXITCODE -ne 0) {
-  throw "Unable to inspect the deployed Cloud Run service."
-}
+$serviceJson = Invoke-Gcloud @(
+  "run", "services", "describe", $Service,
+  "--project", $Project,
+  "--account", $Account,
+  "--region", $Region,
+  "--format", "json"
+) | ConvertFrom-Json
 
 $revision = [string]$serviceJson.status.latestReadyRevisionName
 if ([string]::IsNullOrWhiteSpace($revision)) {
   throw "Unable to resolve the deployed Cloud Run revision."
 }
 
-$revisionJson = & $gcloud run revisions describe $revision `
-  --project $Project `
-  --account $Account `
-  --region $Region `
-  --format json | ConvertFrom-Json
-if ($LASTEXITCODE -ne 0) {
-  throw "Unable to inspect the deployed Cloud Run revision."
-}
+$revisionJson = Invoke-Gcloud @(
+  "run", "revisions", "describe", $revision,
+  "--project", $Project,
+  "--account", $Account,
+  "--region", $Region,
+  "--format", "json"
+) | ConvertFrom-Json
 
 $revisionImage = [string]$revisionJson.spec.containers[0].image
 $revisionGitLabel = [string]$revisionJson.metadata.labels.'git-sha'

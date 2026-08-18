@@ -24,19 +24,31 @@ if (-not (Test-Path -LiteralPath $gcloud)) {
   throw "Google Cloud CLI was not found at the configured project-local operator path."
 }
 
-& $gcloud builds submit . `
-  --config cloudbuild.provenance.yaml `
-  --project $Project `
-  --account $Account `
-  --substitutions "_GIT_SHA=$gitSha,_IMAGE_URI=$ImageUri"
-if ($LASTEXITCODE -ne 0) {
-  throw "Cloud Build failed."
+function Invoke-Gcloud {
+  param([Parameter(Mandatory = $true)][string[]]$Arguments)
+  $output = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $gcloud @Arguments
+  if ($LASTEXITCODE -ne 0) {
+    throw "gcloud failed: $($Arguments -join ' ')"
+  }
+  return $output
 }
 
-& $gcloud artifacts docker images describe "$ImageUri`:$gitSha" `
-  --project $Project `
-  --account $Account `
-  --format "value(image_summary.digest)"
-if ($LASTEXITCODE -ne 0) {
+Invoke-Gcloud @(
+  "builds", "submit", ".",
+  "--config", "cloudbuild.provenance.yaml",
+  "--project", $Project,
+  "--account", $Account,
+  "--substitutions", "_GIT_SHA=$gitSha,_IMAGE_URI=$ImageUri"
+) | Write-Output
+
+$digest = (Invoke-Gcloud @(
+  "artifacts", "docker", "images", "describe", "$ImageUri`:$gitSha",
+  "--project", $Project,
+  "--account", $Account,
+  "--format", "value(image_summary.digest)"
+)).Trim()
+if ($digest -notmatch "^sha256:[0-9a-f]{64}$") {
   throw "The immutable Artifact Registry digest could not be resolved."
 }
+
+$digest
