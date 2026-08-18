@@ -15,9 +15,10 @@ Current decision: **NO-GO**
 
 Current top blockers:
 
-1. PR-004 and PR-014 require the now-unblocked PAM-elevated live mutation UAT and
-   cleanup evidence using the operator-controlled login/MFA path established by
-   completed PR-001.
+1. PR-004 still requires PAM-elevated conflict UAT. PR-014 live browser UAT
+   exposed a production-mode authentication defect: governed user creation returns
+   a temporary password, but non-administrator local authentication rejects it.
+   The controlled test account was suspended without ever obtaining a session.
 2. PR-006 and PR-015 technical matrices passed on deployed candidates, but named
    qualified Clinical QA approval is still required before clinical promotion.
 3. PR-010 still requires cross-path/restart evidence and Security Architecture
@@ -53,14 +54,14 @@ Status interpretation:
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Zero-traffic canary healthy; elevated mutation UAT ready | Assignment-time SoD validator; 135/135 regression; nurse mutation denied live; operator MFA available |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Complete | Exactly 3 protected roles confirmed on the current immutable candidate; Platform Administrator sees governed custom-role creation; historical 19-role material is labelled historical |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Zero-traffic canary passed; clinical sign-off and promotion pending | Exact-question advice enforced; live 30/30 five-protocol matrix and fail-closed negatives passed |
-| PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Zero-traffic canary passed; promotion pending | Live incremental merge, cross-revision reload and disposition-lock regression passed |
+| PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Technical canary passed; browser workflow UAT blocked by PR-014 | Live incremental merge, cross-revision reload and disposition-lock regression passed; nurse browser paths require an authenticating governed account |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Zero-traffic identity canary passed; promotion pending | Dedicated keyless runtime identity; narrow IAM; SOC2-only jobs assigned to PR-008 decommission |
 | PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Zero-traffic canary passed; promotion pending | Append-only DB role, HMAC chain, integrity verification and live tamper-negative evidence |
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Isolated rehearsal passed; production activation pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Complete | Healthy triage and marketing serving chains documented; stale load-balancer resources removed; post-change DNS/TLS/HTTP validation passed |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Complete | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
-| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Zero-traffic canary healthy; elevated live UAT ready | Operator-controlled login/MFA established; rerun exact HTTP matrix; clean test records |
+| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Open - governed temporary password cannot authenticate in production mode | PAM-elevated user creation succeeded, but the issued nurse credential returned 401; controlled account suspended and no session established |
 | PR-015 | High | Five-protocol adversarial auto-match matrix missing | Clinical QA | Technical deployment matrix passed; clinical signature pending | 25/25 deployed ambiguity/no-match matrix; 100/100 clinical regressions; nurse override evidence; named Clinical QA signature |
 
 ## Historical GCP baseline captured 2026-08-17
@@ -449,6 +450,10 @@ Verification completed:
 Outstanding deployment gates:
 
 - Repeat across active cockpit, legacy completion path, hold/resume and handoff; verify a post-disposition new-answer attempt returns HTTP 409 without changing stored JSON.
+- The 2026-08-18 live browser attempt could not enter those nurse workflows:
+  PAM-elevated governed account creation succeeded, but the issued temporary
+  password was rejected by production-mode authentication. Resolve PR-014 and
+  repeat this browser matrix with a governed nurse identity.
 - Promote demo only after browser workflow UAT. Repeat against SOC2 only if
   that temporary environment remains in scope under PR-008.
 
@@ -788,6 +793,25 @@ test completion is not clinical UAT.
 
 The PR-001 custody gate was completed later on 2026-08-18. PR-014 is now unblocked
 and ready for the guarded exact-HTTP matrix; it is not yet closed.
+
+### 2026-08-18 governed-account browser finding
+
+- The operator authenticated with the protected Platform Administrator account
+  and completed PAM elevation. The live UI created a controlled
+  `remote_triage_nurse` account and displayed a random temporary password once.
+- Immediate sign-in with that exact issued credential returned the generic HTTP
+  401 authentication failure. Current source explains the result: dynamically
+  created passwords are stored in the in-memory demo-password map, while
+  production mode permits that map only when demo credentials are explicitly
+  enabled. Enabling shared/seeded demo credentials would violate PR-001 and was
+  not used as a workaround.
+- The failed nurse login created no authenticated session. The administrator
+  reauthenticated, completed a second PAM elevation and suspended the controlled
+  account with the recorded cleanup reason.
+- This is a real PR-014 closure defect and also blocks PR-007 browser workflow
+  evidence. PR-014 requires a durable governed credential lifecycle (or approved
+  enterprise identity path) that works with demo credentials disabled, followed
+  by successful create-user/login UAT and cleanup verification.
 
 ## PR-015 implementation record — adversarial protocol matching
 

@@ -126,3 +126,27 @@ The authorized operator completed fresh TOTP enrollment and a successful protect
 Platform Administrator login on the current remediation candidate. PR-001 is closed;
 PR-014 is now unblocked and ready for the guarded elevated HTTP matrix. No password,
 TOTP secret, enrollment token or one-time code is recorded here.
+
+## 2026-08-18 governed temporary-password browser finding
+
+The operator authenticated with the protected Platform Administrator account and
+completed PAM elevation. The live UI successfully created a controlled
+`remote_triage_nurse` account and returned a random temporary password exactly
+once. Immediate browser sign-in with that exact credential failed with the
+generic authentication error (HTTP 401 behavior).
+
+This is consistent with the current implementation: `createUser()` stores the
+credential in the in-memory `demoPasswordByEmail` map, while
+`authenticateLocal()` accepts that map only when demo credentials are enabled.
+Production mode correctly keeps those shared/seeded demo credentials disabled
+under PR-001, so the governed account is created but cannot authenticate. PR-001
+was not weakened as a workaround.
+
+The controlled account never obtained a session. The operator reauthenticated,
+completed PAM elevation again and suspended the account with a specific cleanup
+reason. No password, MFA code or administrator secret is recorded in this file.
+
+PR-014 remains open. Closure now requires a durable governed credential lifecycle
+or approved enterprise identity path that works while demo credentials remain
+disabled, followed by successful live create-user/login evidence and approved
+test-record cleanup. This finding also blocks PR-007 browser workflow UAT.
