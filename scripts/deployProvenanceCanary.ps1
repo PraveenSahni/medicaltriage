@@ -106,7 +106,11 @@ if ($LASTEXITCODE -ne 0 -or $tagUrl -notmatch "^https://") {
 }
 
 $runtime = Invoke-RestMethod -Uri "$tagUrl/api/v1/runtime/environment" -TimeoutSec 30
-if ($runtime.gitSha -ne $GitSha -or $runtime.buildId -ne $BuildId -or $runtime.revision -ne $revision) {
+if (
+  $runtime.provenance.gitSha -ne $GitSha -or
+  $runtime.provenance.buildId -ne $BuildId -or
+  $runtime.provenance.cloudRunRevision -ne $revision
+) {
   throw "Live runtime provenance does not match the approved commit, build and revision."
 }
 
