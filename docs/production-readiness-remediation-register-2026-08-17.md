@@ -29,7 +29,7 @@ Current top blockers:
    be decommissioned through a controlled process after customer security validation,
    leaving one authoritative system.
 
-PR-001, PR-012 and PR-013 are complete. PR-002, PR-003, PR-005, PR-007 and PR-009 passed
+PR-001, PR-002, PR-012 and PR-013 are complete. PR-003, PR-005, PR-007 and PR-009 passed
 their recorded zero-traffic technical canaries but have not been promoted.
 Production traffic remains 100% on `ist-triage-demo-00035-wlm`; therefore the
 overall release decision remains **NO-GO**.
@@ -48,7 +48,7 @@ Status interpretation:
 | ID | Severity | Finding | Owner | Status | Closure evidence |
 |---|---|---|---|---|---|
 | PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Complete | 38/38 focused tests; unsafe passwords return 401; protected login requires mandatory MFA; operator reset, fresh enrollment and successful login completed |
-| PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Zero-traffic provenance chain complete; promotion pending | Git SHA, Cloud Build, immutable digest, revision labels and live runtime response match |
+| PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Complete | Guarded clean-tree release; Git SHA, Cloud Build, immutable digest, revision labels and live runtime response match on current zero-traffic candidate |
 | PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | Zero-traffic canary passed; promotion pending | Eight flags enabled; migrations current; cross-revision MFA, session and queue durability proven |
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Zero-traffic canary healthy; elevated mutation UAT ready | Assignment-time SoD validator; 135/135 regression; nurse mutation denied live; operator MFA available |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Zero-traffic canary passed; promotion pending | Exactly 3 protected roles confirmed live; governed custom-role migration current |
@@ -162,11 +162,10 @@ Source implementation completed so far:
 - `scripts/buildProvenanceRelease.ps1` refuses a production build from a dirty tree, resolves the exact committed SHA, invokes the provenance build, and prints the immutable Artifact Registry digest.
 - Runtime tests and backend typecheck pass; PowerShell release-script syntax passes.
 
-Remaining PR-002 gate:
-
-- Promote the proven immutable image only after the remaining release gates pass.
-  Under PR-008, SOC2 is assigned to controlled decommission; it
-  requires a separate provenance deployment only if it remains an active release target.
+PR-002 is closed. Promotion of the proven immutable image remains part of the
+overall release decision rather than a PR-002 remediation gap. Under PR-008, SOC2
+is assigned to controlled decommission and requires a separate provenance deployment
+only if it remains an active release target.
 
 ### 2026-08-17 zero-traffic deployment evidence
 
@@ -184,6 +183,26 @@ Remaining PR-002 gate:
 - At the time of this canary, promotion was pending the PR-001 operator-MFA
   custody gate; that gate closed on 2026-08-18. The provenance implementation
   itself is proven against the authoritative demo project `triage-502706`.
+
+### 2026-08-18 current-candidate closure evidence
+
+- A stale inherited label on a later remediation canary was detected and was not
+  accepted as PR-002 closure evidence. The release workflow was strengthened with
+  `scripts/deployProvenanceCanary.ps1`, which rejects a dirty checkout, requires the
+  requested full SHA to equal `HEAD`, resolves the immutable digest, deploys at zero
+  traffic and fails on label, image, runtime or health mismatch.
+- The definitive clean committed source was
+  `8e002bdde9c2d788dd249ac8c35d0aab5f022f99`. Cloud Build
+  `05bd55ee-58f6-4e5a-a5d8-798a3bddb11d` completed `SUCCESS` and produced digest
+  `sha256:aeba36ac095d01c93fbd327d9b576720cb0adaee85c0dd87522f030cda5d427d`.
+- Zero-traffic revision `ist-triage-demo-00065-xuf` carries labels
+  `git-sha=8e002bd` and `release=pr-002-close` and uses that exact digest.
+- The live tagged runtime returned the same full Git SHA, Cloud Build ID and Cloud
+  Run revision; health returned HTTP 200. Independent authoritative inspection was
+  retained because the local Google CLI wrapper did not emit the script's final
+  summary object after deployment; no mismatch was concealed.
+- Production traffic remained 100% on `ist-triage-demo-00035-wlm`; the closure
+  candidate received zero percent. PR-002 is complete.
 
 ## PR-003 implementation record — durable production state
 
@@ -648,6 +667,7 @@ Outstanding activation gates:
 - 2026-08-18: PR-014 current source passed 97/97 locally and a healthy zero-traffic canary was deployed. Non-mutating live verification proved runtime availability but the remediated application rejected the legacy shared administrator password, so PAM-elevated mutation UAT remains blocked by PR-001 operator credential/MFA custody. No security control was bypassed and no synthetic mutation occurred.
 - 2026-08-18: PR-015 deployed-candidate matrix passed 25/25 inside the immutable application image, matching the local 100/100 backend lineage and 10/10 UI override results. The temporary job was removed and production traffic was unchanged. Named qualified Clinical QA signature remains the only closure gate.
 - 2026-08-18: PR-001 closed. The authorized operator requested an audited recovery of the protected Platform Administrator after the validation authenticator was unavailable, completed fresh TOTP enrollment and successfully authenticated with password plus TOTP. The temporary recovery job was deleted; production traffic and existing demo-user access were unchanged. PR-004 and PR-014 elevated UAT are now unblocked.
+- 2026-08-18: PR-002 closed against the current source. A stale inherited revision label was detected and rejected; the deployment workflow was strengthened. Clean commit `8e002bdde9c2d788dd249ac8c35d0aab5f022f99`, Cloud Build `05bd55ee-58f6-4e5a-a5d8-798a3bddb11d`, immutable digest `sha256:aeba36ac095d01c93fbd327d9b576720cb0adaee85c0dd87522f030cda5d427d`, revision `ist-triage-demo-00065-xuf`, revision labels and live runtime response all matched. Health returned 200 and production traffic was unchanged.
 
 ## PR-013 implementation record — isolated database-backed CI
 
