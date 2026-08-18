@@ -543,6 +543,26 @@ Required closure sequence:
 - Production traffic remained 100% on `ist-triage-demo-00035-wlm`; promotion of
   the dedicated identity remains part of the overall release decision.
 
+### 2026-08-18 current-candidate identity revalidation
+
+- The newest zero-traffic revision `ist-triage-demo-pr014g-0e30f43` is ready and
+  healthy under `ist-triage-cloudrun-sa@triage-502706.iam.gserviceaccount.com`.
+  Its immutable digest is
+  `sha256:ee5e153c285cb7d6decd5574a7eb82b5e31864ac4b6203ce3694f5fdba6c4c81`.
+- The dedicated identity still has no user-managed keys. Its project roles remain
+  limited to Cloud SQL Client, Monitoring Viewer and the five-operation Scheduler
+  custom role; it has no project-level Secret Accessor, Editor, Owner or IAM role.
+- Secret Accessor remains granted separately on exactly the five required demo
+  secrets. The current candidate returned runtime HTTP 200 with exact Git/build
+  provenance and all eight persistence controls active; no severity-ERROR log
+  entry was found for the revision.
+- Production traffic remains 100% on `ist-triage-demo-00035-wlm`, which was
+  directly reconfirmed to use the default Compute service account. PR-009 cannot
+  be marked complete until the fully regression-tested aggregate candidate is
+  promoted. Rolling traffic to the older PR-009-only canary would regress later
+  remediations, while promoting the newest candidate before PR-014/PR-007 browser
+  UAT would bypass their release gates. No traffic change was made.
+
 ## PR-010 implementation record — append-only chained audit ledger
 
 Source remediation is complete for events written after the PR-010 migration:
