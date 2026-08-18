@@ -15,24 +15,21 @@ Current decision: **NO-GO**
 
 Current top blockers:
 
-1. PR-001 passed zero-traffic deployment verification, but production promotion
-   remains blocked until an authorized operator takes custody of the protected
-   administrator credential, TOTP enrollment and recovery procedure.
-2. PR-004 and PR-014 PAM-elevated live mutation UAT cannot be completed until that
-   PR-001 operator-controlled login/MFA path is available. The application correctly
-   rejected the legacy shared password; no control was bypassed.
-3. PR-006 and PR-015 technical matrices passed on deployed candidates, but named
+1. PR-004 and PR-014 require the now-unblocked PAM-elevated live mutation UAT and
+   cleanup evidence using the operator-controlled login/MFA path established by
+   completed PR-001.
+2. PR-006 and PR-015 technical matrices passed on deployed candidates, but named
    qualified Clinical QA approval is still required before clinical promotion.
-4. PR-010 still requires cross-path/restart evidence and Security Architecture
+3. PR-010 still requires cross-path/restart evidence and Security Architecture
    approval before promotion.
-5. PR-011 passed an isolated execute-mode rehearsal of the approved 365-day policy,
+4. PR-011 passed an isolated execute-mode rehearsal of the approved 365-day policy,
    but production migration, scheduled activation, concurrent-hold race evidence
    and Privacy/Legal approval remain pending.
-6. PR-008 is an accepted temporary shared-boundary risk. The SOC2 environment must
+5. PR-008 is an accepted temporary shared-boundary risk. The SOC2 environment must
    be decommissioned through a controlled process after customer security validation,
    leaving one authoritative system.
 
-PR-012 and PR-013 are complete. PR-002, PR-003, PR-005, PR-007 and PR-009 passed
+PR-001, PR-012 and PR-013 are complete. PR-002, PR-003, PR-005, PR-007 and PR-009 passed
 their recorded zero-traffic technical canaries but have not been promoted.
 Production traffic remains 100% on `ist-triage-demo-00035-wlm`; therefore the
 overall release decision remains **NO-GO**.
@@ -50,10 +47,10 @@ Status interpretation:
 
 | ID | Severity | Finding | Owner | Status | Closure evidence |
 |---|---|---|---|---|---|
-| PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Zero-traffic canary passed; operator MFA custody and promotion pending | 38/38 focused tests; unsafe passwords return 401; protected login requires enrollment/MFA and verifies successfully |
+| PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Complete | 38/38 focused tests; unsafe passwords return 401; protected login requires mandatory MFA; operator reset, fresh enrollment and successful login completed |
 | PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Zero-traffic provenance chain complete; promotion pending | Git SHA, Cloud Build, immutable digest, revision labels and live runtime response match |
 | PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | Zero-traffic canary passed; promotion pending | Eight flags enabled; migrations current; cross-revision MFA, session and queue durability proven |
-| PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Zero-traffic canary healthy; elevated mutation UAT blocked by PR-001 MFA custody | Assignment-time SoD validator; 135/135 regression; nurse mutation denied live |
+| PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Zero-traffic canary healthy; elevated mutation UAT ready | Assignment-time SoD validator; 135/135 regression; nurse mutation denied live; operator MFA available |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Zero-traffic canary passed; promotion pending | Exactly 3 protected roles confirmed live; governed custom-role migration current |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Zero-traffic canary passed; clinical sign-off and promotion pending | Exact-question advice enforced; live 30/30 five-protocol matrix and fail-closed negatives passed |
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Zero-traffic canary passed; promotion pending | Live incremental merge, cross-revision reload and disposition-lock regression passed |
@@ -63,7 +60,7 @@ Status interpretation:
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Isolated rehearsal passed; production activation pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Complete | Healthy triage and marketing serving chains documented; stale load-balancer resources removed; post-change DNS/TLS/HTTP validation passed |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Complete | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
-| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Zero-traffic canary healthy; elevated live UAT blocked by PR-001 | Operator-controlled login/MFA; rerun exact HTTP matrix; clean test records |
+| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Zero-traffic canary healthy; elevated live UAT ready | Operator-controlled login/MFA established; rerun exact HTTP matrix; clean test records |
 | PR-015 | High | Five-protocol adversarial auto-match matrix missing | Clinical QA | Technical deployment matrix passed; clinical signature pending | 25/25 deployed ambiguity/no-match matrix; 100/100 clinical regressions; nurse override evidence; named Clinical QA signature |
 
 ## Historical GCP baseline captured 2026-08-17
@@ -81,9 +78,8 @@ superseded where later dated deployment evidence appears below.
 
 ## PR-001 completion record
 
-Source remediation and zero-traffic deployment verification are complete. Production
-promotion remains gated on operator-controlled credential/TOTP custody and recovery,
-in accordance with the four-gate definition above.
+Source remediation, zero-traffic deployment verification and operator-controlled
+credential/TOTP custody are complete, in accordance with the four-gate definition above.
 
 How the source issue was fixed:
 
@@ -100,13 +96,9 @@ Verification completed:
 - Authentication/MFA/PAM/session focused regression: 35/35 tests passed.
 - New negative tests prove both `LocalMockAdmin!2026` and the seeded `PlatformAdmin@2026` credential are rejected when `NODE_ENV=production` and the escape hatch is absent.
 
-Remaining promotion gates:
-
-- Transfer the protected administrator credential, enrolled TOTP factor and recovery
-  procedure to an authorized operator-controlled custody process.
-- Use that governed access path to complete PR-004 and PR-014 elevated live UAT.
-- Promote only after the remaining release gates in this register pass; do not
-  re-enable shared or seeded demo credentials.
+PR-001 is closed. The governed access path must now be used for PR-004 and PR-014
+elevated live UAT. Production promotion remains a release-level decision and must
+not re-enable shared or seeded demo credentials.
 
 ### 2026-08-17 zero-traffic deployment evidence
 
@@ -127,6 +119,21 @@ Remaining promotion gates:
 - Production traffic remained 100% on `ist-triage-demo-00035-wlm`.
 - Promotion remains pending controlled operator custody/recovery of the
   enrolled TOTP credential; no demo-credential bypass was re-enabled.
+
+### 2026-08-18 operator custody and closure evidence
+
+- The authorized operator `sahni.ps@gmail.com` requested recovery of the protected
+  Platform Administrator account `rishma@irisstar.tech` after the validation-owned
+  authenticator was found unavailable.
+- A single-purpose zero-traffic recovery execution changed the durable credential
+  to `reset_required`, revoked existing sessions and used the application recovery
+  service so the reset was audited. The temporary Cloud Run job was deleted and its
+  absence verified.
+- A fresh remediation instance returned enrollment-required. The operator completed
+  fresh TOTP enrollment and confirmed successful password-plus-TOTP login. No password,
+  enrollment token, TOTP secret or one-time code is retained in this register.
+- Production traffic and nurse/Service Manager demo access were unchanged. PR-001 is
+  complete; the established operator-controlled MFA path unblocks PR-004 and PR-014.
 
 ## PR-002 implementation and deployment record — deployed-image Git traceability
 
@@ -157,8 +164,8 @@ Source implementation completed so far:
 
 Remaining PR-002 gate:
 
-- Promote the proven immutable image only after the PR-001 access gate and remaining
-  release gates pass. Under PR-008, SOC2 is assigned to controlled decommission; it
+- Promote the proven immutable image only after the remaining release gates pass.
+  Under PR-008, SOC2 is assigned to controlled decommission; it
   requires a separate provenance deployment only if it remains an active release target.
 
 ### 2026-08-17 zero-traffic deployment evidence
@@ -174,9 +181,9 @@ Remaining PR-002 gate:
 - The live tagged runtime response returned the same full Git SHA, Cloud Build
   ID and Cloud Run revision. Health returned HTTP 200.
 - Production traffic remained 100% on `ist-triage-demo-00035-wlm`.
-- Promotion is deliberately pending the PR-001 operator-MFA custody gate; the
-  provenance implementation itself is proven against the authoritative demo
-  project `triage-502706`.
+- At the time of this canary, promotion was pending the PR-001 operator-MFA
+  custody gate; that gate closed on 2026-08-18. The provenance implementation
+  itself is proven against the authoritative demo project `triage-502706`.
 
 ## PR-003 implementation record — durable production state
 
@@ -223,7 +230,6 @@ Source remediation complete:
 
 Remaining closure gates:
 
-- Promotion remains blocked by PR-001 controlled operator MFA custody/recovery.
 - Before promotion, exercise live audit, reveal and both anomaly write/read paths
   if those workflows are available without weakening the MFA gate. The flags,
   schema and startup posture are proven, but those four live business workflows
@@ -250,8 +256,8 @@ Source remediation complete:
 
 Remaining deployment closure gates:
 
-- Restore controlled operator MFA custody/recovery under PR-001, then prove
-  create, restart/hydrate, assign, login and conflict rejection using a
+- Using the operator MFA custody established under completed PR-001, prove create,
+  restart/hydrate, assign, login and conflict rejection using a
   disposable custom role through the supported elevated API.
 - Confirm the existing Triage Nurse, Service Manager and Platform Administrator
   user workflows in browser UAT; role-catalog visibility and the nurse's
@@ -284,9 +290,8 @@ Remaining deployment closure gates:
   the temporary session was revoked.
 - Production traffic remained 100% on `ist-triage-demo-00035-wlm`.
 - Positive custom-role create/assign/restart and live SoD-conflict mutations
-  require PAM elevation with a fresh TOTP. They were not bypassed and remain
-  blocked until PR-001 restores controlled operator custody/recovery of the
-  enrolled MFA credential. PR-005's canonical three-role deployment gate is
+  require PAM elevation with a fresh TOTP. Operator custody is now established,
+  so this UAT is ready to execute. PR-005's canonical three-role deployment gate is
   proven; PR-004's elevated live mutation gate is not yet claimed complete.
 
 ## PR-006 implementation record — exact protocol clinical lineage
@@ -480,7 +485,7 @@ Required closure sequence:
   retained beyond that decommission must receive its own least-privilege job
   identity before it may run.
 - Production traffic remained 100% on `ist-triage-demo-00035-wlm`; promotion of
-  the dedicated identity is pending the shared PR-001 operator-MFA custody gate.
+  the dedicated identity remains part of the overall release decision.
 
 ## PR-010 implementation record — append-only chained audit ledger
 
@@ -545,8 +550,7 @@ Outstanding promotion gates:
 - Exercise and verify chained writes through queue, FHIR and retained job
   paths, then restart the zero-traffic revision and re-run integrity
   verification.
-- Obtain Security Architecture approval. Promotion remains blocked by the
-  shared PR-001 operator-MFA custody gate.
+- Obtain Security Architecture approval before promotion.
 
 ## PR-011 implementation record — 365-day retention and hold-safe privacy execution
 
@@ -643,6 +647,7 @@ Outstanding activation gates:
 - 2026-08-18: PR-013 closed. The fail-closed guard approved only the isolated `_test` database, all 20 migrations applied, and the complete database-backed backend run passed 50/50 suites and 539/539 tests. Every temporary database, secret, job, image and build file was removed after evidence capture.
 - 2026-08-18: PR-014 current source passed 97/97 locally and a healthy zero-traffic canary was deployed. Non-mutating live verification proved runtime availability but the remediated application rejected the legacy shared administrator password, so PAM-elevated mutation UAT remains blocked by PR-001 operator credential/MFA custody. No security control was bypassed and no synthetic mutation occurred.
 - 2026-08-18: PR-015 deployed-candidate matrix passed 25/25 inside the immutable application image, matching the local 100/100 backend lineage and 10/10 UI override results. The temporary job was removed and production traffic was unchanged. Named qualified Clinical QA signature remains the only closure gate.
+- 2026-08-18: PR-001 closed. The authorized operator requested an audited recovery of the protected Platform Administrator after the validation authenticator was unavailable, completed fresh TOTP enrollment and successfully authenticated with password plus TOTP. The temporary recovery job was deleted; production traffic and existing demo-user access were unchanged. PR-004 and PR-014 elevated UAT are now unblocked.
 
 ## PR-013 implementation record — isolated database-backed CI
 
@@ -725,6 +730,9 @@ test completion is not clinical UAT.
 - PR-014 therefore remains open and blocked by the PR-001 operator credential/MFA
   custody gate. Once custody is available, execute the guarded exact-HTTP matrix,
   verify cleanup and record the resulting audit evidence.
+
+The PR-001 custody gate was completed later on 2026-08-18. PR-014 is now unblocked
+and ready for the guarded exact-HTTP matrix; it is not yet closed.
 
 ## PR-015 implementation record — adversarial protocol matching
 

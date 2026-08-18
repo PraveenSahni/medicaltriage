@@ -117,5 +117,12 @@ matrix or an approved decommissioning decision.
   process failure; the previous implementation could print a clean-state
   message after failed authentication.
 
-PR-014 remains open and explicitly blocked by the PR-001 operator credential
-and MFA-custody gate. The control was not bypassed.
+PR-014 remained open and explicitly blocked by the PR-001 operator credential
+and MFA-custody gate at this checkpoint. The control was not bypassed.
+
+## 2026-08-18 operator-custody update
+
+The authorized operator completed fresh TOTP enrollment and a successful protected
+Platform Administrator login on the current remediation candidate. PR-001 is closed;
+PR-014 is now unblocked and ready for the guarded elevated HTTP matrix. No password,
+TOTP secret, enrollment token or one-time code is recorded here.

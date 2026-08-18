@@ -90,6 +90,19 @@ audit event id there.
   (already guaranteed by the automatic session revocation above, but
   worth a verbal confirmation with the user).
 
+## 2026-08-18 executed recovery record
+
+- Target: protected Platform Administrator `rishma@irisstar.tech` in the synthetic
+  zero-traffic remediation environment.
+- Authorization: explicitly requested by operator `sahni.ps@gmail.com` after the
+  previous validation authenticator was unavailable.
+- Execution: the application recovery service set the durable credential to
+  `reset_required`, revoked active sessions and recorded the reset through the audit
+  path. The single-purpose Cloud Run recovery job was deleted after execution.
+- Verification: a fresh remediation instance required enrollment; the operator
+  completed new TOTP enrollment and successfully authenticated with password plus
+  TOTP. No authentication secret or one-time value is retained in this document.
+
 ## Emergency escalation
 
 If the sole enrolled administrator(s) become unavailable or locked

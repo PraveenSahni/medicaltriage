@@ -20,9 +20,10 @@ authoritative project `triage-502706`: the dedicated keyless runtime identity ha
 Cloud SQL Client, Monitoring Viewer, a five-permission Scheduler custom role and
 access to exactly five demo secrets, with no Editor/Owner binding or user-managed
 key. Health, persisted-session and Scheduler-listing checks passed with no
-severity-ERROR canary logs. Production identity promotion remains pending the
-PR-001 operator MFA-custody gate. The canonical register contains the deployment
-record; this historical review remains the detailed permission-dependency analysis.
+severity-ERROR canary logs. The PR-001 operator MFA-custody gate subsequently
+closed on 2026-08-18; production identity promotion remains part of the overall
+release decision. The canonical register contains the deployment record; this
+historical review remains the detailed permission-dependency analysis.
 
 ## Phase 1: Permission dependency map
 
