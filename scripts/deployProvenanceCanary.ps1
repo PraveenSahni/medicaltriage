@@ -38,7 +38,7 @@ if ($LASTEXITCODE -ne 0 -or $headSha -ne $GitSha) {
   throw "GitSha does not match the clean checkout HEAD."
 }
 
-$gcloud = "C:\Users\PraveenSAHNI\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\gcloud.cmd"
+$gcloud = "C:\Users\PraveenSAHNI\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\gcloud.ps1"
 if (-not (Test-Path -LiteralPath $gcloud)) {
   throw "Google Cloud CLI was not found at the configured operator path."
 }

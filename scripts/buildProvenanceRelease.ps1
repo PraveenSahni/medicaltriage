@@ -19,7 +19,7 @@ if ($LASTEXITCODE -ne 0 -or $gitSha -notmatch "^[0-9a-f]{40}$") {
   throw "Unable to resolve a full Git commit SHA."
 }
 
-$gcloud = "C:\Users\PraveenSAHNI\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\gcloud.cmd"
+$gcloud = "C:\Users\PraveenSAHNI\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\gcloud.ps1"
 if (-not (Test-Path -LiteralPath $gcloud)) {
   throw "Google Cloud CLI was not found at the configured project-local operator path."
 }
