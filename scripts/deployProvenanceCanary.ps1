@@ -68,12 +68,17 @@ if ($LASTEXITCODE -ne 0) {
   throw "Cloud Run zero-traffic deployment failed."
 }
 
-$revision = (& $gcloud run services describe $Service `
+$serviceJson = & $gcloud run services describe $Service `
   --project $Project `
   --account $Account `
   --region $Region `
-  --format "value(status.latestCreatedRevisionName)").Trim()
-if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($revision)) {
+  --format json | ConvertFrom-Json
+if ($LASTEXITCODE -ne 0) {
+  throw "Unable to inspect the deployed Cloud Run service."
+}
+
+$revision = [string]$serviceJson.status.latestReadyRevisionName
+if ([string]::IsNullOrWhiteSpace($revision)) {
   throw "Unable to resolve the deployed Cloud Run revision."
 }
 
@@ -96,12 +101,12 @@ if ($revisionGitLabel -ne $shortSha -or $revisionReleaseLabel -ne $Release) {
   throw "Revision labels do not match the approved Git SHA and release."
 }
 
-$tagUrl = (& $gcloud run services describe $Service `
-  --project $Project `
-  --account $Account `
-  --region $Region `
-  --format "value(status.traffic[?tag='$Tag'].url)").Trim()
-if ($LASTEXITCODE -ne 0 -or $tagUrl -notmatch "^https://") {
+$tagTraffic = @($serviceJson.status.traffic | Where-Object { $_.tag -eq $Tag })
+if ($tagTraffic.Count -ne 1) {
+  throw "Expected exactly one tagged canary traffic entry."
+}
+$tagUrl = [string]$tagTraffic[0].url
+if ($tagUrl -notmatch "^https://") {
   throw "Unable to resolve the tagged canary URL."
 }
 
