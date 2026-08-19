@@ -938,6 +938,12 @@ while demo remains available for synthetic end-user testing. This supersedes the
 earlier plan to decommission SOC2 before completing the remaining remediation UAT.
 It does not remove the eventual PR-008 consolidation requirement.
 
+After validating the demo administrator transition, the owner explicitly froze the
+demo environment. No remaining remediation deployment, database operation,
+credential change, traffic change or UAT mutation may target demo; all subsequent
+remediation work and evidence must target `ist-triage-soc2` and
+`ist_triage_soc2` unless the owner issues a new explicit instruction.
+
 SOC2 deployment evidence:
 
 - Cloud SQL database `ist_triage_soc2` was migrated through all 20 repository
