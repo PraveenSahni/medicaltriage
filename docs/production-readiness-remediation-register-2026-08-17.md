@@ -61,7 +61,7 @@ Status interpretation:
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Isolated rehearsal passed; production activation pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Complete | Healthy triage and marketing serving chains documented; stale load-balancer resources removed; post-change DNS/TLS/HTTP validation passed |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Complete | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
-| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Credential defect fixed on zero-traffic candidate; MFA-gated UAT pending | Durable encrypted governed identifiers and scrypt password hashes deployed; 99/99 focused credential/boundary tests passed; administrator login reached mandatory MFA on the candidate |
+| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Governed nurse/manager credentials issued; first-login MFA and workflow UAT pending | PAM-protected existing-user transition deployed; Layla and Khalid passwords accepted with MFA enrollment required; roles preserved |
 | PR-015 | High | Five-protocol adversarial auto-match matrix missing | Clinical QA | Technical deployment matrix passed; clinical signature pending | 25/25 deployed ambiguity/no-match matrix; 100/100 clinical regressions; nurse override evidence; named Clinical QA signature |
 
 ## Historical GCP baseline captured 2026-08-17
@@ -730,6 +730,7 @@ Outstanding activation gates:
 - 2026-08-18: PR-005 closed on current immutable zero-traffic candidate `ist-triage-demo-00065-xuf`. Authenticated Platform Administrator browser UAT displayed exactly the three protected system roles and the governed custom-role screen with business-reason, permission, responsibility and SoD controls. The catalog remained at three; production traffic was unchanged. PR-004 remains separately open pending completed PAM-elevated mutation UAT.
 - 2026-08-19: PR-014's governed-password defect was fixed and deployed to zero-traffic revision `ist-triage-demo-pr014g-0e30f43`. Exact commit/build/digest provenance, dedicated identity, all persistence flags, 346/346 focused backend tests, 4/4 cockpit lineage tests and both TypeScript checks passed. Browser login reached mandatory administrator MFA; final PAM create/login/cleanup UAT remains pending because no current operator TOTP was available. Production traffic remained unchanged.
 - 2026-08-19: Production traffic was promoted to `ist-triage-demo-pr014g-0e30f43` to repair the PR-010 schema/writer compatibility failure on legacy revision `ist-triage-demo-00035-wlm`. Direct and custom-domain provenance matched, protected queue access returned 401 instead of 500, the dedicated PR-009 identity became active, and no post-cutover error-level candidate logs were present. The append-only database trigger remained enforced.
+- 2026-08-19: A PAM-protected seeded-to-governed transition was deployed as `ist-triage-demo-cred-73beab9` and promoted after zero-traffic gates. Layla retained the nurse role and Khalid retained the service-manager role; their issued passwords were accepted by production with mandatory MFA enrollment. Seeded passwords remain disabled. First-login MFA and role-specific workflow evidence remain open.
 
 ## PR-013 implementation record — isolated database-backed CI
 
@@ -885,6 +886,30 @@ and ready for the guarded exact-HTTP matrix; it is not yet closed.
   `sha256:ee5e153c285cb7d6decd5574a7eb82b5e31864ac4b6203ce3694f5fdba6c4c81`.
   The former revision is not a database-compatible rollback target. Any
   rollback must use a revision containing the chained audit writer.
+
+### 2026-08-19 seeded-to-governed credential transition
+
+- Commit `73beab907e2cf1931dc43706e45d8414cdbc1afa` adds a PAM-protected
+  existing-user credential action. It preserves identity and role assignments,
+  generates a 24-character random temporary password, persists only a versioned
+  scrypt hash and records a high-risk `USER_GOVERNED_CREDENTIAL_ISSUED` audit
+  event. It does not enable `ALLOW_DEMO_CREDENTIALS`.
+- Focused credential, PR-014 boundary, role-governance and audit-ledger suites
+  passed 145/145; backend and frontend TypeScript checks passed.
+- Cloud Build `9f9d365b-b973-4509-b59f-8c3c4225a4f7` produced immutable digest
+  `sha256:0c96cee19f3f286a5b204efbac29a0dff7f570ee0c67f6e451cbd787290e65d7`.
+  Revision `ist-triage-demo-cred-73beab9` passed zero-traffic provenance,
+  persistence, dedicated-identity, authorization-negative and error-log gates,
+  then received 100% traffic.
+- The authorized Platform Administrator issued governed temporary credentials
+  for Layla Hassan (`remote_triage_nurse`) and Khalid Al-Marri
+  (`triage_service_manager`). Direct production authentication accepted both
+  passwords and returned `mfaEnrollmentRequired=true`; neither returned invalid
+  credentials. Temporary passwords and enrollment tokens are deliberately not
+  recorded in this register.
+- Remaining evidence: each user must complete first-login MFA enrollment, then
+  Layla must complete the nurse claim/release path and Khalid must confirm the
+  manager-only surface. Verify the resulting chained audit events afterward.
 
 ## PR-015 implementation record — adversarial protocol matching
 
