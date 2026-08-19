@@ -69,6 +69,7 @@ export async function fetchFitToFlyPreview(request: {
   jobTitle?: string;
   finalDispositionCode: string;
   customAviationTags: string[];
+  calculatedSeverity?: "EMERGENCY" | "URGENT" | "ROUTINE" | "SELF_CARE";
 }): Promise<FitToFlyPreviewResponse> {
   const response = await fetch(`${apiBase}/api/v1/triage/fit-to-fly-preview`, {
     method: "POST",

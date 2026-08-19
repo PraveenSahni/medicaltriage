@@ -106,6 +106,25 @@ const TOPIC_GROUPS: TopicGroup[] = [
         `
       },
       {
+        id: "cockpit-fit-to-fly",
+        title: "Fit-to-Fly decision requirements",
+        body: `
+          <p><strong>Fit-to-Fly is a separate governed aviation decision and can never weaken the clinical disposition.</strong> The exact terminal protocol question's <code>calculatedSeverity</code> is authoritative. A routing destination is not an acuity classification: for example, <code>PHCC_URGENT_CARE_OR_TELECONSULT</code> is shared by both Urgent and Routine STCC levels, so the destination code must not be used by itself to decide clearance.</p>
+          <table>
+            <thead><tr><th>Clinical or governance condition</th><th>Required Fit-to-Fly result</th></tr></thead>
+            <tbody>
+              <tr><td><code>EMERGENCY</code></td><td><code>RESTRICTED</code></td></tr>
+              <tr><td><code>URGENT</code></td><td><code>RESTRICTED</code></td></tr>
+              <tr><td><code>ROUTINE</code> plus safety-sensitive crew</td><td><code>MEDICAL_REVIEW_REQUIRED</code></td></tr>
+              <tr><td><code>SELF_CARE</code> plus <code>fit-to-fly-review</code>, <code>duty-restriction</code>, or <code>sickness-validation</code></td><td><code>MEDICAL_REVIEW_REQUIRED</code></td></tr>
+              <tr><td>Missing calculated severity</td><td><code>MEDICAL_REVIEW_REQUIRED</code>; never automatic clearance</td></tr>
+            </tbody>
+          </table>
+          <p>Safety-sensitive role coverage includes <strong>Pilot, Captain, First Officer, Flight Deck, Cabin Crew, and Cabin Supervisor</strong>. A structured crew category is preferred where available; the governed job-title mapping is the compatibility fallback.</p>
+          <p><code>CLEARED</code> is permitted only when the required severity is present and no clinical, role, duty, sickness, or review rule requires restriction or medical review. The Disposition preview and final Completion request must carry the same calculated severity so their results remain consistent.</p>
+        `
+      },
+      {
         id: "cockpit-identity",
         title: "HRMS identity and employment validation",
         body: `

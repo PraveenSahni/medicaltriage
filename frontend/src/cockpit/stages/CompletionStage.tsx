@@ -64,6 +64,7 @@ export function CompletionStage({ item, isReadOnly, onCallCompleted }: Completio
     ist_staff_id: item.istStaffId,
     chief_complaint: item.reasonNarrative ?? item.summary ?? "Reason not captured.",
     final_disposition_code: item.dispositionCode ?? "PENDING",
+    calculated_severity: item.calculatedSeverity,
     routing_destination: item.destinationName ?? "Pending routing"
   };
 

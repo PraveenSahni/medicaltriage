@@ -252,6 +252,7 @@ describe("IST Qatar Phase I API", () => {
           assessment: "Emergency safety floor triggered.",
           recommendation: "Immediate emergency department escalation.",
           final_disposition_code: "HMC_EMERGENCY_DEPARTMENT",
+          calculated_severity: "EMERGENCY",
           routing_destination: "Hamad Medical Corporation (HMC) Emergency Department",
           safety_rationale: "SpO2 below 92% and heart rate above 130 bpm triggered mandatory escalation.",
           custom_aviation_tags: ["fit-to-fly-review", "duty-restriction"]
@@ -280,6 +281,7 @@ describe("IST Qatar Phase I API", () => {
           assessment: "Emergency pediatric tachypnea safety floor triggered.",
           recommendation: "Immediate pediatric emergency department escalation.",
           final_disposition_code: "SIDRA_PEDIATRIC_ED",
+          calculated_severity: "EMERGENCY",
           routing_destination: "Sidra Medicine Emergency Department",
           safety_rationale:
             "Age-banded pediatric tachypnea threshold triggered mandatory pediatric emergency escalation.",
@@ -289,6 +291,71 @@ describe("IST Qatar Phase I API", () => {
 
       expect(response.body.fitToFlyStatus).toBe("RESTRICTED");
       expect(response.body.notePayload).toContain("Sidra Medicine Emergency Department");
+    });
+
+    it("restricts an urgent result even when its protocol disposition is outside the legacy whitelist", async () => {
+      const agent = await authenticatedAgent();
+      const response = await agent
+        .post("/api/v1/triage/complete")
+        .set("Accept", "application/json")
+        .send({
+          encounter_id: "enc-fit-to-fly-urgent-nonlegacy-001",
+          ist_staff_id: "IST-1001",
+          nurse_id: "nurse-phase1",
+          chief_complaint: "Urgent protocol outcome",
+          final_disposition_code: "PHCC_URGENT_CARE_OR_TELECONSULT",
+          calculated_severity: "URGENT",
+          routing_destination: "PHCC urgent care or teleconsult",
+          custom_aviation_tags: []
+        })
+        .expect(200);
+
+      expect(response.body.fitToFlyStatus).toBe("RESTRICTED");
+    });
+  });
+
+  describe("POST /api/v1/triage/fit-to-fly-preview", () => {
+    it.each([
+      ["EMERGENCY", "UNLISTED_PROTOCOL_DESTINATION", "Office administrator", [], "RESTRICTED"],
+      ["URGENT", "PHCC_URGENT_CARE_OR_TELECONSULT", "Office administrator", [], "RESTRICTED"],
+      ["ROUTINE", "PHCC_URGENT_CARE_OR_TELECONSULT", "Office administrator", [], "CLEARED"],
+      ["SELF_CARE", "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", "Pilot", [], "CLEARED"],
+      ["ROUTINE", "PHCC_URGENT_CARE_OR_TELECONSULT", "Pilot", [], "MEDICAL_REVIEW_REQUIRED"],
+      ["ROUTINE", "PHCC_URGENT_CARE_OR_TELECONSULT", "Captain", [], "MEDICAL_REVIEW_REQUIRED"],
+      ["ROUTINE", "PHCC_URGENT_CARE_OR_TELECONSULT", "First Officer", [], "MEDICAL_REVIEW_REQUIRED"],
+      ["ROUTINE", "PHCC_URGENT_CARE_OR_TELECONSULT", "Cabin Crew", [], "MEDICAL_REVIEW_REQUIRED"],
+      ["ROUTINE", "PHCC_URGENT_CARE_OR_TELECONSULT", "Cabin Supervisor", [], "MEDICAL_REVIEW_REQUIRED"],
+      ["SELF_CARE", "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", "Office administrator", ["fit-to-fly-review"], "MEDICAL_REVIEW_REQUIRED"],
+      ["SELF_CARE", "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", "Office administrator", ["duty-restriction"], "MEDICAL_REVIEW_REQUIRED"],
+      ["SELF_CARE", "SELF_CARE_WITH_CALLBACK_PRECAUTIONS", "Office administrator", ["sickness-validation"], "MEDICAL_REVIEW_REQUIRED"]
+    ])("maps %s / %s / %s to the governed result", async (severity, disposition, jobTitle, tags, expected) => {
+      const agent = await authenticatedAgent();
+      const response = await agent.post("/api/v1/triage/fit-to-fly-preview").send({
+        jobTitle,
+        finalDispositionCode: disposition,
+        customAviationTags: tags,
+        calculatedSeverity: severity
+      }).expect(200);
+      expect(response.body.fitToFlyStatus).toBe(expected);
+    });
+
+    it("requires medical review when calculated severity is missing", async () => {
+      const agent = await authenticatedAgent();
+      const response = await agent.post("/api/v1/triage/fit-to-fly-preview").send({
+        jobTitle: "Office administrator",
+        finalDispositionCode: "PHCC_URGENT_CARE_OR_TELECONSULT",
+        customAviationTags: []
+      }).expect(200);
+      expect(response.body.fitToFlyStatus).toBe("MEDICAL_REVIEW_REQUIRED");
+    });
+
+    it("rejects an unknown severity instead of silently clearing it", async () => {
+      const agent = await authenticatedAgent();
+      await agent.post("/api/v1/triage/fit-to-fly-preview").send({
+        finalDispositionCode: "UNLISTED_PROTOCOL_DESTINATION",
+        customAviationTags: [],
+        calculatedSeverity: "HIGH"
+      }).expect(400);
     });
   });
 

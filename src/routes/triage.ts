@@ -23,29 +23,44 @@ function deriveCompletionFitToFlyStatus(args: {
   jobTitle?: string;
   finalDispositionCode: string;
   customAviationTags: string[];
+  calculatedSeverity?: "EMERGENCY" | "URGENT" | "ROUTINE" | "SELF_CARE";
 }): "CLEARED" | "RESTRICTED" | "MEDICAL_REVIEW_REQUIRED" {
   const jobTitle = args.jobTitle?.toLowerCase() ?? "";
-  const safetySensitiveCrew = jobTitle.includes("pilot") || jobTitle.includes("cabin crew");
-  const dispositionRequiresRestriction = new Set([
-    "HMC_EMERGENCY_DEPARTMENT",
-    "SIDRA_PEDIATRIC_ED",
-    "HMC_URGENT_REVIEW",
-    "OUTSTATION_TELECONSULT_ESCALATION"
-  ]).has(args.finalDispositionCode);
-  const selfCare = args.finalDispositionCode === "SELF_CARE_WITH_CALLBACK_PRECAUTIONS";
+  const safetySensitiveCrew = [
+    "pilot",
+    "captain",
+    "first officer",
+    "flight deck",
+    "cabin crew",
+    "cabin supervisor"
+  ].some((role) => jobTitle.includes(role));
   const taggedForReview = args.customAviationTags.some((tag) =>
     ["fit-to-fly-review", "duty-restriction", "sickness-validation"].includes(tag)
   );
+
+  // A routing destination is not an acuity classification. For example,
+  // PHCC_URGENT_CARE_OR_TELECONSULT is used by both Urgent level 79 and
+  // several Routine STCC levels. The terminal question's calculated severity
+  // is therefore authoritative for Fit-to-Fly.
+  if (!args.calculatedSeverity) {
+    return "MEDICAL_REVIEW_REQUIRED";
+  }
+
+  const dispositionRequiresRestriction =
+    args.calculatedSeverity === "EMERGENCY" ||
+    args.calculatedSeverity === "URGENT" ||
+    new Set([
+      "HMC_EMERGENCY_DEPARTMENT",
+      "SIDRA_PEDIATRIC_ED",
+      "HMC_URGENT_REVIEW",
+      "OUTSTATION_TELECONSULT_ESCALATION"
+    ]).has(args.finalDispositionCode);
 
   if (dispositionRequiresRestriction) {
     return "RESTRICTED";
   }
 
-  if (safetySensitiveCrew && (!selfCare || taggedForReview)) {
-    return "RESTRICTED";
-  }
-
-  if (taggedForReview) {
+  if ((args.calculatedSeverity === "ROUTINE" && safetySensitiveCrew) || taggedForReview) {
     return "MEDICAL_REVIEW_REQUIRED";
   }
 
@@ -55,7 +70,8 @@ function deriveCompletionFitToFlyStatus(args: {
 const FitToFlyPreviewRequestSchema = z.object({
   jobTitle: z.string().optional(),
   finalDispositionCode: z.string(),
-  customAviationTags: z.array(z.string()).default([])
+  customAviationTags: z.array(z.string()).default([]),
+  calculatedSeverity: z.enum(["EMERGENCY", "URGENT", "ROUTINE", "SELF_CARE"]).optional()
 });
 
 export function createTriageRouter(): Router {
@@ -177,7 +193,8 @@ export function createTriageRouter(): Router {
     const fitToFlyStatus = deriveCompletionFitToFlyStatus({
       jobTitle: staff?.profile?.jobTitle,
       finalDispositionCode: parsed.data.finalDispositionCode,
-      customAviationTags: parsed.data.customAviationTags
+      customAviationTags: parsed.data.customAviationTags,
+      calculatedSeverity: parsed.data.calculatedSeverity
     });
     const ageResolution = parsed.data.istStaffId
       ? await resolvePatientAgeFromHrms({

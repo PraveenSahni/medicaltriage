@@ -713,8 +713,10 @@ const aviationDataTableCards: MatrixCard[] = [
     body:
       "The platform parses occupational parameters for airport and flight staff, then converts those fields into aviation tags, fit-to-duty controls, and clinician-visible routing evidence.",
     bullets: [
-      "Fit-to-Fly: STCC clinical disposition is evaluated first; Emergency and Urgent outcomes force RESTRICTED until clinician clearance.",
-      "Routine STCC outcomes for safety-sensitive crew remain RESTRICTED; self-care outcomes can still become MEDICAL_REVIEW_REQUIRED when duty, outstation, sickness, or operational symptom triggers are present.",
+      "Fit-to-Fly: the exact terminal protocol question's calculated severity is authoritative; a shared routing destination such as PHCC/teleconsult must never be used to infer acuity.",
+      "Emergency and Urgent outcomes force RESTRICTED. Routine outcomes for safety-sensitive crew require MEDICAL_REVIEW_REQUIRED.",
+      "Self-care with a fit-to-fly-review, duty-restriction, or sickness-validation tag requires MEDICAL_REVIEW_REQUIRED. A missing calculated severity also fails safely to MEDICAL_REVIEW_REQUIRED and never auto-clears.",
+      "Safety-sensitive role coverage includes Pilot, Captain, First Officer, Flight Deck, Cabin Crew, and Cabin Supervisor; structured crew category remains the preferred source when available.",
       "Outstation Validation: station and outstation flags create a teleconsult escalation path and preserve local-care coordination context.",
       "Sickness Validation: the system compiles standardized medical leave telemetry for nurse review instead of automatically approving leave.",
       "Vaccine Reactions: post-vaccination fever, rash, swelling, or related symptoms create structured follow-up and duty-rest review, such as ground-duty only until clinical clearance."
@@ -2015,7 +2017,9 @@ const libraryAreas: LibraryArea[] = [
       "Adds airline-specific logic for flight deck, cabin crew, outstation staff, sickness validation, vaccination reactions, and occupational visits.",
     usedBy: ["evaluateAviationRules", "aviationContext", "customAviationTags"],
     details: [
-      "Safety-sensitive crew with dizziness, syncope, chest symptoms, shortness of breath, or altered consciousness require medical review before duty.",
+      "Emergency and Urgent clinical severity always produce RESTRICTED; Fit-to-Fly can never weaken the clinical disposition.",
+      "Routine severity for Pilot, Captain, First Officer, Flight Deck, Cabin Crew, or Cabin Supervisor produces MEDICAL_REVIEW_REQUIRED.",
+      "Self-care with fit-to-fly-review, duty-restriction, or sickness-validation evidence produces MEDICAL_REVIEW_REQUIRED; missing severity also fails safely to medical review rather than clearance.",
       "Outstation cases create teleconsult escalation and station-code telemetry.",
       "Recent vaccination plus rash, fever, or swelling creates a structured follow-up flag."
     ]

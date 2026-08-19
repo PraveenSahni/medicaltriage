@@ -58,7 +58,10 @@ export function DispositionStage({
   const [fitToFlyStatus, setFitToFlyStatus] = useState<FitToFlyStatus | undefined>(item.fitToFlyStatus);
 
   const protocolId = resolveClinicalProtocolId(item);
-  const severity = severityForDispositionCode[item.dispositionCode ?? ""] ?? item.calculatedSeverity;
+  // A destination can serve more than one STCC acuity level (PHCC is used by
+  // both Urgent and Routine questions), so the terminal question's calculated
+  // severity is authoritative. The code map is legacy display fallback only.
+  const severity = item.calculatedSeverity ?? severityForDispositionCode[item.dispositionCode ?? ""];
   const terminalQuestionId =
     typeof item.clinicalApproval?.terminalQuestionId === "string" ? item.clinicalApproval.terminalQuestionId : undefined;
 
@@ -117,7 +120,8 @@ export function DispositionStage({
     fetchFitToFlyPreview({
       jobTitle: item.jobTitle,
       finalDispositionCode: item.dispositionCode,
-      customAviationTags: item.customAviationTags
+      customAviationTags: item.customAviationTags,
+      calculatedSeverity: item.calculatedSeverity
     })
       .then(async (result) => {
         if (cancelled) {
