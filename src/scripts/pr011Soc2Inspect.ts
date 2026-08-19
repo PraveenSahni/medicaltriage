@@ -4,12 +4,16 @@ if (process.env.ALLOW_LIVE_PR011_VERIFY !== "SOC2") throw new Error("Set ALLOW_L
 
 async function main() {
   const cutoff = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000);
-  const [policy, migrationRows, expired, recordHolds, organizationHolds, archives, auditRows] = await Promise.all([
+  const [policy, migrationRows, expired, recordHolds, organizationHolds, archives, auditRows, raceQueueRows, raceHoldRows] = await Promise.all([
     prisma.retentionPolicy.findUnique({ where: { code: "TRIAGE_QUEUE_ITEM_COMPLETED" } }),
     prisma.$queryRaw<Array<{ migration_name: string; finished_at: Date | null; rolled_back_at: Date | null }>>`
       SELECT migration_name, finished_at, rolled_back_at
       FROM _prisma_migrations
-      WHERE migration_name = '20260817210000_approve_365_day_retention'
+      WHERE migration_name IN (
+        '20260817210000_approve_365_day_retention',
+        '20260819090000_serialize_legal_hold_mutations'
+      )
+      ORDER BY migration_name
     `,
     prisma.triageQueueItem.findMany({
       where: { status: "COMPLETED", updatedAt: { lt: cutoff } },
@@ -23,7 +27,9 @@ async function main() {
       orderBy: { timestamp: "desc" },
       take: 10,
       select: { action: true, timestamp: true, success: true }
-    })
+    }),
+    prisma.triageQueueItem.count({ where: { id: { startsWith: "pr011-race-item-" } } }),
+    prisma.legalHold.count({ where: { id: { startsWith: "pr011-race-hold-" } } })
   ]);
   const heldRecords = new Set(recordHolds.map((row) => row.resourceId));
   const heldOrganizations = new Set(organizationHolds.map((row) => row.resourceId));
@@ -45,7 +51,8 @@ async function main() {
     activeRecordHolds: recordHolds.length,
     activeOrganizationHolds: organizationHolds.length,
     archiveCount: archives,
-    recentRetentionAuditEvents: auditRows.map((row) => ({ action: row.action, timestamp: row.timestamp.toISOString(), success: row.success }))
+    recentRetentionAuditEvents: auditRows.map((row) => ({ action: row.action, timestamp: row.timestamp.toISOString(), success: row.success })),
+    controlledRaceArtifacts: { queueRows: raceQueueRows, holdRows: raceHoldRows }
   }, null, 2));
 }
 

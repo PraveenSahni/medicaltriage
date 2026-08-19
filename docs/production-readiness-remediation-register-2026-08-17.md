@@ -58,7 +58,7 @@ Status interpretation:
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted - temporary remediation topology | Separate databases/users/secrets remain on one instance; SOC2 is the remediation authority and final consolidation/decommission requires a separately approved change |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Complete | Demo and SOC2 services plus all six SOC2 jobs use the dedicated keyless runtime identity; per-secret access is scoped and live inventory was reverified |
 | PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Technical remediation complete on SOC2; approval pending | SOC2 uses an insert/select-only audit login; 2,376 legacy unsigned rows are bounded; new signed chain verified; live UPDATE denied |
-| PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Technical activation complete on SOC2; recurring execute approval pending | Active 365-day policy; isolated hold-safe rehearsal; SOC2 dry-run and zero-candidate execute evidence; recurring scheduler remains dry-run |
+| PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Technical activation and concurrent-hold race complete; recurring execute approval pending | Active 365-day policy; database-trigger serialization; live hold-first race retained the record; SOC2 scheduler remains dry-run |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Complete | Healthy triage and marketing serving chains documented; stale load-balancer resources removed; post-change DNS/TLS/HTTP validation passed |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Complete | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
 | PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Complete | SOC2 exact-HTTP UAT passed authenticated admin/manager/nurse boundaries, PAM elevation, create/duplicate/invalid/conflict cases, reversible permission grant, audit lookup and approved cleanup |
@@ -704,7 +704,10 @@ Source controls:
 1. Migration `20260817210000_approve_365_day_retention` installs an active `TRIAGE_QUEUE_ITEM_COMPLETED` policy with 365 days, an explicit decision reference, legal basis and `archive_then_delete` mode.
 2. Execute mode fails closed unless that exact active policy and legal basis exist. Command-line period overrides are permitted for dry-run analysis only and rejected with `--execute`.
 3. The former unapproved 90-day execution fallback is removed.
-4. Retention execution re-reads eligible records and both levels of active legal hold inside a serializable transaction before archive and deletion. A concurrent hold creation produces a serialization conflict rather than a stale-check deletion.
+4. Retention execution and privacy erasure acquire the same database advisory
+   lock enforced by legal-hold mutation triggers, then re-read eligible records
+   and both levels of active hold before deletion. This serializes direct SQL
+   and application writers instead of relying on `SERIALIZABLE` alone.
 5. Privacy erasure revalidates records and holds inside a serializable transaction; deletion and request-state update are atomic. If any record is held, the request remains open with a partial-execution explanation instead of being falsely marked fulfilled.
 6. Pure regression coverage proves the approved policy gate, rejects missing/inactive/wrong-period/wrong-decision/no-legal-basis policies, rejects execute overrides, and proves record, organization and released-hold behavior.
 7. The operational job does not silently extend destructive deletion to dependency-linked clinical encounters or the append-only audit ledger. Any later scope expansion requires a dependency-safe archive/export design and separately approved change.
@@ -749,12 +752,11 @@ Source controls:
   migration-only image and local build file were deleted and absence verified.
   Production traffic and the surviving demo database were unchanged.
 
-Outstanding activation gates:
+Outstanding activation gate:
 
-- Perform a controlled concurrent-hold race rehearsal and record the
-  Privacy/Legal approver sign-off before enabling recurring execute mode. The
-  rollback/disable procedure is now documented and the retained schedule remains
-  dry-run.
+- Record Privacy/Legal approver sign-off before enabling recurring execute
+  mode. The controlled concurrent-hold race and rollback/disable procedure are
+  complete; the retained schedule remains dry-run.
 
 ### 2026-08-19 SOC2 technical activation evidence
 
@@ -788,8 +790,36 @@ Outstanding activation gates:
   passed.
 - The disable/rollback procedure is recorded in `docs/retention-policy.md`.
   Demo was not changed. Technical activation is complete; recurring destructive
-  scheduling remains gated on recorded Privacy/Legal approval and the controlled
-  concurrent-hold race rehearsal.
+  scheduling remains gated on recorded Privacy/Legal approval.
+
+### 2026-08-19 concurrent legal-hold race closure
+
+- Review found the prior `SERIALIZABLE`-only claim was not sufficient to prove a
+  concurrent hold would block deletion. The remediation now uses advisory lock
+  `1096520211011` as the shared database boundary.
+- Migration `20260819090000_serialize_legal_hold_mutations` installs triggers
+  that acquire the lock before legal-hold INSERT, UPDATE, DELETE and TRUNCATE.
+  Retention purge and privacy erasure acquire the same lock before re-reading
+  records and active record/organization holds.
+- Focused governance and migration-contract regressions passed 24/24; Prisma
+  schema validation and backend TypeScript validation passed.
+- The migration applied successfully to `ist_triage_soc2`. A controlled race
+  created one uniquely named synthetic expired queue record and an uncommitted
+  active hold. The purge transaction remained blocked until the hold committed,
+  then found the hold, deleted nothing and retained the record.
+- Exact cleanup removed the synthetic hold and queue record. Read-only
+  verification returned zero remaining `pr011-race-*` artifacts.
+- Commit `be4f10ba70abb691fdcf0f92b9d93cce3d81f70b`, Cloud Build
+  `c1d3c53e-d269-4819-8e8b-7b2e61fb7027`, immutable digest
+  `sha256:0dfd950a6e360699107dc5250b3b02bfdb68567c1fbaeab2a16e7094177b5856`.
+- Jobs `purge-expired-queue-data-soc2` and
+  `fulfill-privacy-requests-soc2` were upgraded to that image. Dry-run
+  executions `purge-expired-queue-data-soc2-cw7b4` and
+  `fulfill-privacy-requests-soc2-gcrs9` completed successfully. The weekly
+  purge job still contains no `--execute` argument.
+- Demo and Cloud Run service traffic were untouched. The technical concurrency
+  gate is closed; recorded Privacy/Legal approval is the remaining PR-011 gate
+  before recurring destructive scheduling.
 
 ## Change log
 

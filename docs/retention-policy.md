@@ -26,6 +26,11 @@ An active record-level or organization-level legal hold overrides the
 365-day deletion schedule. Held records must not be archived or deleted by
 the retention job or a privacy-erasure request. Eligibility and both hold
 levels are rechecked transactionally immediately before archive and deletion.
+All legal-hold mutations and retention/privacy deletion checks acquire the same
+database advisory lock. This gives a single database-enforced order even for
+direct SQL writers: a hold committed first is visible to deletion, while a
+deletion committed first legally precedes a later hold. Application-only
+coordination is not accepted as the enforcement boundary.
 
 When a privacy-erasure request encounters held data, the protected records
 remain in place and the request remains open for further governance action.
@@ -80,10 +85,11 @@ policy change.
 ## 6. Implementation references
 
 - Policy migration: `prisma/migrations/20260817210000_approve_365_day_retention/migration.sql`
+- Hold serialization migration: `prisma/migrations/20260819090000_serialize_legal_hold_mutations/migration.sql`
 - Governance invariant: `src/services/retentionGovernance.ts`
 - Retention executor: `src/scripts/purgeExpiredQueueData.ts`
 - Privacy executor: `src/scripts/fulfillPrivacyRequests.ts`
-- Regression evidence: `tests/retentionGovernance.test.ts`
+- Regression evidence: `tests/retentionGovernance.test.ts`, `tests/legalHoldSerialization.test.ts`
 - Remediation record: `docs/production-readiness-remediation-register-2026-08-17.md`
 
 This policy must be reviewed when the data model, legal obligations, customer
