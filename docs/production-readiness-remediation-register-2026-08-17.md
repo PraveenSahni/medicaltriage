@@ -973,3 +973,12 @@ Demo testing evidence:
 - The same revision then received 100% demo traffic, and both logins were repeated
   successfully through the primary demo URL. SOC2 remains governed and
   MFA-enforced.
+- At the owner's request, Rishma's existing demo-only MFA credential was moved to
+  `reset_required` through the governed reset service; the action generated the
+  high-risk `MFA_RESET_COMPLETED` audit event and found no active sessions to
+  revoke. SOC2 credentials were not changed.
+- Fresh zero-traffic revision `ist-triage-demo-00072-luk` proved that the seeded
+  Rishma credential signs in without an MFA challenge, retains
+  `platform_super_administrator`, and can read the protected administrator roles
+  surface. The revision then received 100% demo traffic and the password-only login
+  was repeated successfully through the primary demo URL.
