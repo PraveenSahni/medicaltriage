@@ -2,7 +2,7 @@
 
 Date opened: 2026-08-17
 
-Last reconciled: 2026-08-18
+Last reconciled: 2026-08-19
 
 Target decision: end of week
 Scope: `triaged.irisstar.tech`, `triagedsoc2.irisstar.tech`, application source, CI, Cloud Run, Cloud SQL and scheduled jobs.
@@ -15,25 +15,24 @@ Current decision: **NO-GO**
 
 Current top blockers:
 
-1. PR-004 still requires PAM-elevated conflict UAT. PR-014 live browser UAT
-   exposed a production-mode authentication defect: governed user creation returns
-   a temporary password, but non-administrator local authentication rejects it.
-   The controlled test account was suspended without ever obtaining a session.
+1. PR-004 and PR-014 still require their recorded elevated/browser mutation UAT.
+   SOC2 is now the MFA-enforced remediation environment; demo is explicitly a
+   synthetic password-only user-testing environment.
 2. PR-006 and PR-015 technical matrices passed on deployed candidates, but named
    qualified Clinical QA approval is still required before clinical promotion.
-3. PR-010 still requires cross-path/restart evidence and Security Architecture
-   approval before promotion.
+3. PR-010 is deployed and technically verified on SOC2; Security Architecture
+   approval remains a governance closure gate.
 4. PR-011 passed an isolated execute-mode rehearsal of the approved 365-day policy,
    but production migration, scheduled activation, concurrent-hold race evidence
    and Privacy/Legal approval remain pending.
-5. PR-008 is an accepted temporary shared-boundary risk. The SOC2 environment must
-   be decommissioned through a controlled process after customer security validation,
-   leaving one authoritative system.
+5. PR-008 remains an accepted temporary shared-boundary risk. SOC2 is the
+   authoritative remediation environment during customer security validation and
+   will be decommissioned only after an approved final consolidation decision.
 
-PR-001, PR-002, PR-003, PR-005, PR-012 and PR-013 are complete. PR-007 and PR-009 passed
-their recorded zero-traffic technical canaries but have not been promoted.
-Production traffic remains 100% on `ist-triage-demo-00035-wlm`; therefore the
-overall release decision remains **NO-GO**.
+PR-001, PR-002, PR-003, PR-005, PR-009, PR-012 and PR-013 are complete. The
+remediated SOC2 revision is promoted, and demo has a documented PR-001 testing
+exception. The overall release decision remains **NO-GO** until the remaining
+clinical, privacy/legal and live UAT gates are closed.
 
 Status interpretation:
 
@@ -48,16 +47,16 @@ Status interpretation:
 
 | ID | Severity | Finding | Owner | Status | Closure evidence |
 |---|---|---|---|---|---|
-| PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Complete | 38/38 focused tests; unsafe passwords return 401; protected login requires mandatory MFA; operator reset, fresh enrollment and successful login completed |
+| PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Complete with explicit demo-only exception | Credentials fail closed by default; SOC2 requires governed credentials and MFA; synthetic demo deliberately sets `ALLOW_DEMO_CREDENTIALS=true` and `MFA_MANDATORY=false` for user testing |
 | PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Complete | Guarded clean-tree release; Git SHA, Cloud Build, immutable digest, revision labels and live runtime response match on current zero-traffic candidate |
 | PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | Complete | Eight flags enabled; migrations current; cross-revision MFA/session/queue durability; live audit, reveal and both anomaly stores verified |
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Zero-traffic canary healthy; elevated mutation UAT ready | Assignment-time SoD validator; 135/135 regression; nurse mutation denied live; operator MFA available |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Complete | Exactly 3 protected roles confirmed on the current immutable candidate; Platform Administrator sees governed custom-role creation; historical 19-role material is labelled historical |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Zero-traffic canary passed; clinical sign-off and promotion pending | Exact-question advice enforced; live 30/30 five-protocol matrix and fail-closed negatives passed |
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Technical canary passed; browser workflow UAT blocked by PR-014 | Live incremental merge, cross-revision reload and disposition-lock regression passed; nurse browser paths require an authenticating governed account |
-| PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
-| PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Complete for surviving demo; SOC2-only jobs tracked by PR-008 decommission | Dedicated keyless runtime identity promoted with narrow IAM; SOC2-only jobs are not part of the surviving system |
-| PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Production-compatible writer promoted; cross-path approval evidence pending | Append-only DB role, HMAC chain, integrity verification and live tamper-negative evidence |
+| PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted - temporary remediation topology | Separate databases/users/secrets remain on one instance; SOC2 is the remediation authority and final consolidation/decommission requires a separately approved change |
+| PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Complete | Demo and SOC2 services plus all six SOC2 jobs use the dedicated keyless runtime identity; per-secret access is scoped and live inventory was reverified |
+| PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Technical remediation complete on SOC2; approval pending | SOC2 uses an insert/select-only audit login; 2,376 legacy unsigned rows are bounded; new signed chain verified; live UPDATE denied |
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Isolated rehearsal passed; production activation pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Complete | Healthy triage and marketing serving chains documented; stale load-balancer resources removed; post-change DNS/TLS/HTTP validation passed |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Complete | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
@@ -97,9 +96,10 @@ Verification completed:
 - Authentication/MFA/PAM/session focused regression: 35/35 tests passed.
 - New negative tests prove both `LocalMockAdmin!2026` and the seeded `PlatformAdmin@2026` credential are rejected when `NODE_ENV=production` and the escape hatch is absent.
 
-PR-001 is closed. The governed access path must now be used for PR-004 and PR-014
-elevated live UAT. Production promotion remains a release-level decision and must
-not re-enable shared or seeded demo credentials.
+PR-001 is closed. Governed credentials remain mandatory on SOC2. On 2026-08-19,
+the owner explicitly designated demo as synthetic user testing and authorized the
+auditable escape hatch there only; this does not authorize seeded credentials in
+SOC2 or any future live-data environment.
 
 ### 2026-08-17 zero-traffic deployment evidence
 
@@ -930,3 +930,46 @@ and ready for the guarded exact-HTTP matrix; it is not yet closed.
   execution job was removed and production traffic was unchanged. Closure now
   requires a named qualified Clinical QA reviewer signature. The review artifact is
   `docs/protocol-review/pr-015-five-protocol-adversarial-matrix.md`.
+
+## 2026-08-19 SOC2 remediation cutover and demo testing exception
+
+The owner changed the operating sequence: remediation is now performed on SOC2,
+while demo remains available for synthetic end-user testing. This supersedes the
+earlier plan to decommission SOC2 before completing the remaining remediation UAT.
+It does not remove the eventual PR-008 consolidation requirement.
+
+SOC2 deployment evidence:
+
+- Cloud SQL database `ist_triage_soc2` was migrated through all 20 repository
+  migrations, including the append-only audit-chain and approved 365-day retention
+  migrations. The separate database, application user and secrets were preserved;
+  demo data was not copied into the SOC2 database.
+- Missing SOC2 secrets were created for the administrator bootstrap, MFA encryption
+  and dedicated audit connection. Secret payloads are not recorded here.
+- Audit login `ist_audit_writer_soc2` receives only membership in the restricted
+  audit role. Live verification through that connection reported 2,376 explicitly
+  bounded legacy unsigned rows, one initial signed/linked event, and a denied
+  `UPDATE`. Subsequent authenticated checks append additional signed events.
+- Immutable image digest
+  `sha256:0c96cee19f3f286a5b204efbac29a0dff7f570ee0c67f6e451cbd787290e65d7`,
+  Git `73beab907e2cf1931dc43706e45d8414cdbc1afa` and build
+  `9f9d365b-b973-4509-b59f-8c3c4225a4f7` were deployed first at zero traffic.
+- Revision `ist-triage-soc2-00078-qul` passed health, all-eight-persistence,
+  provenance, governed synthetic-monitor password, mandatory MFA and authenticated
+  queue checks, then received 100% SOC2 traffic.
+- All six `*-soc2` Cloud Run jobs now use
+  `ist-triage-cloudrun-sa@triage-502706.iam.gserviceaccount.com`; the two monitoring
+  secrets grant accessor only to the runtime identities that require them. No job
+  was executed as part of the IAM change.
+
+Demo testing evidence:
+
+- Zero-traffic revision `ist-triage-demo-00070-nuh` deliberately sets
+  `ALLOW_DEMO_CREDENTIALS=true` and `MFA_MANDATORY=false`. This exception is limited
+  to the `MOCK_MODE=true`, synthetic-data demo environment.
+- Seeded Layla and Khalid authentication passed with the expected
+  `remote_triage_nurse` and `triage_service_manager` roles, respectively, and both
+  completed an authenticated queue read before promotion.
+- The same revision then received 100% demo traffic, and both logins were repeated
+  successfully through the primary demo URL. SOC2 remains governed and
+  MFA-enforced.
