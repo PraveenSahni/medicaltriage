@@ -1,7 +1,7 @@
 ARG SOURCE_GIT_SHA=unknown
 ARG SOURCE_BUILD_ID=unknown
 
-FROM node:20-bookworm-slim AS dependencies
+FROM node:26-bookworm-slim AS dependencies
 
 WORKDIR /app
 RUN apt-get update -y \
@@ -30,7 +30,7 @@ RUN pnpm run build
 RUN pnpm run build:web
 RUN pnpm prune --prod
 
-FROM node:20-bookworm-slim AS runner
+FROM node:26-bookworm-slim AS runner
 
 ARG SOURCE_GIT_SHA
 ARG SOURCE_BUILD_ID
