@@ -56,8 +56,8 @@ Status interpretation:
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Zero-traffic canary passed; clinical sign-off and promotion pending | Exact-question advice enforced; live 30/30 five-protocol matrix and fail-closed negatives passed |
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Technical canary passed; browser workflow UAT blocked by PR-014 | Live incremental merge, cross-revision reload and disposition-lock regression passed; nurse browser paths require an authenticating governed account |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted — temporary remediation topology | SOC2 is temporary and will be decommissioned after customer security validation; one production system remains |
-| PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Zero-traffic identity canary passed; promotion pending | Dedicated keyless runtime identity; narrow IAM; SOC2-only jobs assigned to PR-008 decommission |
-| PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Zero-traffic canary passed; promotion pending | Append-only DB role, HMAC chain, integrity verification and live tamper-negative evidence |
+| PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Complete for surviving demo; SOC2-only jobs tracked by PR-008 decommission | Dedicated keyless runtime identity promoted with narrow IAM; SOC2-only jobs are not part of the surviving system |
+| PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Production-compatible writer promoted; cross-path approval evidence pending | Append-only DB role, HMAC chain, integrity verification and live tamper-negative evidence |
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Isolated rehearsal passed; production activation pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Complete | Healthy triage and marketing serving chains documented; stale load-balancer resources removed; post-change DNS/TLS/HTTP validation passed |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Complete | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
@@ -729,6 +729,7 @@ Outstanding activation gates:
 - 2026-08-18: PR-003 closed against the current immutable candidate. All eight flags were active; prior cross-revision MFA/session/queue evidence remained valid; live Cloud SQL execution `pr003-persistence-close-20260818-pjxxd` proved reveal workflow reload, reveal/security anomaly cross-call counts and append-only audit persistence. Synthetic mutable rows and the temporary job were removed; production traffic was unchanged.
 - 2026-08-18: PR-005 closed on current immutable zero-traffic candidate `ist-triage-demo-00065-xuf`. Authenticated Platform Administrator browser UAT displayed exactly the three protected system roles and the governed custom-role screen with business-reason, permission, responsibility and SoD controls. The catalog remained at three; production traffic was unchanged. PR-004 remains separately open pending completed PAM-elevated mutation UAT.
 - 2026-08-19: PR-014's governed-password defect was fixed and deployed to zero-traffic revision `ist-triage-demo-pr014g-0e30f43`. Exact commit/build/digest provenance, dedicated identity, all persistence flags, 346/346 focused backend tests, 4/4 cockpit lineage tests and both TypeScript checks passed. Browser login reached mandatory administrator MFA; final PAM create/login/cleanup UAT remains pending because no current operator TOTP was available. Production traffic remained unchanged.
+- 2026-08-19: Production traffic was promoted to `ist-triage-demo-pr014g-0e30f43` to repair the PR-010 schema/writer compatibility failure on legacy revision `ist-triage-demo-00035-wlm`. Direct and custom-domain provenance matched, protected queue access returned 401 instead of 500, the dedicated PR-009 identity became active, and no post-cutover error-level candidate logs were present. The append-only database trigger remained enforced.
 
 ## PR-013 implementation record — isolated database-backed CI
 
@@ -861,6 +862,29 @@ and ready for the guarded exact-HTTP matrix; it is not yet closed.
   complete nurse MFA enrollment, verify authorization/persistence, and remove
   the controlled record through the approved cleanup path. PR-014 is not closed
   until that evidence exists.
+
+### 2026-08-19 production compatibility incident and recovery
+
+- The PR-010 append-only database migration had been applied while production
+  traffic still served legacy revision `ist-triage-demo-00035-wlm`. That
+  revision wrote the pre-chain audit shape, so the database trigger rejected
+  queue-claim audit inserts and the public demo returned HTTP 500. GCP request
+  logs tie the failures directly to `ist-triage-demo-00035-wlm`.
+- The database trigger was not weakened or removed. After confirming exact
+  runtime provenance, all eight persistence controls, public UI availability,
+  successful administrator password-plus-MFA authentication and no candidate
+  error logs, production traffic was changed to 100% revision
+  `ist-triage-demo-pr014g-0e30f43`.
+- Both the direct Cloud Run URL and `https://triaged.irisstar.tech` then reported
+  commit `0e30f43e74e25f619e22c5ee3830133b9e2bc92f`, build
+  `226268bd-2d2b-4f11-9724-573ed0b042de` and the promoted revision. Protected
+  queue access returned the expected HTTP 401 without credentials instead of
+  HTTP 500, and the post-cutover candidate error-log query returned no entries.
+- The promoted revision runs as the dedicated keyless service account and
+  immutable digest
+  `sha256:ee5e153c285cb7d6decd5574a7eb82b5e31864ac4b6203ce3694f5fdba6c4c81`.
+  The former revision is not a database-compatible rollback target. Any
+  rollback must use a revision containing the chained audit writer.
 
 ## PR-015 implementation record — adversarial protocol matching
 
