@@ -45,6 +45,7 @@
     "test:db:guard": "node scripts/assertIsolatedTestDatabase.mjs",
     "test:db": "pnpm run test:db:guard && prisma migrate deploy && jest --runInBand",
     "test:pr014:live": "tsx src/scripts/pr014LiveUat.ts",
+    "test:pr007:soc2-live": "tsx src/scripts/pr007Soc2LiveUat.ts",
     "test:api": "jest --runInBand tests/triage.test.ts",
     "test:frontend": "jest --config jest.config.frontend.cjs --runInBand",
     "test:help-catalog": "jest --runInBand --json --outputFile=test-results/jest-results.json && tsx scripts/generateHelpTestCatalog.ts",

@@ -53,7 +53,7 @@ Status interpretation:
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Complete | Assignment-time SoD validator; 135/135 regression; SOC2 administrator PAM UAT proved conflicting role assignment and conflicting permission grant return 409; cleanup verified |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Complete | Exactly 3 protected roles confirmed on the current immutable candidate; Platform Administrator sees governed custom-role creation; historical 19-role material is labelled historical |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Zero-traffic canary passed; clinical sign-off and promotion pending | Exact-question advice enforced; live 30/30 five-protocol matrix and fail-closed negatives passed |
-| PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Technical canary passed; browser workflow UAT blocked by PR-014 | Live incremental merge, cross-revision reload and disposition-lock regression passed; nurse browser paths require an authenticating governed account |
+| PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Complete | Governed SOC2 nurse MFA UAT passed incremental IAQ/TAQ/approval merge, answer, hold/resume reload, disposition, idempotent retry, late-answer 409, unchanged storage and audited cleanup |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted - temporary remediation topology | Separate databases/users/secrets remain on one instance; SOC2 is the remediation authority and final consolidation/decommission requires a separately approved change |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Complete | Demo and SOC2 services plus all six SOC2 jobs use the dedicated keyless runtime identity; per-secret access is scoped and live inventory was reverified |
 | PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Technical remediation complete on SOC2; approval pending | SOC2 uses an insert/select-only audit login; 2,376 legacy unsigned rows are bounded; new signed chain verified; live UPDATE denied |
@@ -1029,3 +1029,25 @@ returned 403. The administrator self-deactivation guard correctly required an au
 maintenance cleanup, which recorded `USER_STATUS_CHANGED`. All six temporary secrets
 were then deleted. Machine-readable evidence is
 `test-results/pr014-live-uat-20260819061647.json`.
+
+## 2026-08-19 PR-007 SOC2 nurse workflow closure UAT
+
+The guarded `test:pr007:soc2-live` runner targets only the primary SOC2 URL and
+requires the governed synthetic-monitor nurse password plus TOTP secret. The monitor
+was bound to the existing `org_ist_tech` tenant so tenant enforcement remained
+active; demo was not accessed or changed.
+
+The live sequence passed password + MFA authentication, controlled case creation,
+claim, answer, two incremental IAQ patches, two incremental TAQ patches, approval
+lineage, HOLD, RESUME and a database reload. The reload retained every earlier map
+key. Complete synthetic vitals and the selected abdominal-pain protocol were saved,
+the case moved to `DISPOSITION`, and an idempotent partial retry returned 200. A new
+post-disposition TAQ key returned 409; the final reload proved the rejected key was
+absent and all earlier IAQ/TAQ/approval data remained intact. Release returned 200.
+
+Two setup attempts were safely rejected before clinical mutation: an invalid HRMS
+identity returned 404, and an unbound-tenant claim was denied. The one controlled
+record created by the tenant-denial attempt and the final successful UAT record were
+soft-deleted through audited SOC2 maintenance after exact ID and synthetic job-title
+validation. Machine-readable evidence is
+`test-results/pr007-soc2-live-uat-20260819063049.json`.

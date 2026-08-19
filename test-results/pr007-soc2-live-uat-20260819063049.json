@@ -1,0 +1,210 @@
+{
+  "control": "PR-007",
+  "target": "https://ist-triage-soc2-gv6v4zyvuq-ww.a.run.app",
+  "executedAt": "2026-08-19T06:30:49.516Z",
+  "queueItemId": "case-69ee913d-2016-4cc0-bd1c-489387edce4d",
+  "evidence": [
+    {
+      "id": "AUTH-001",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        202
+      ],
+      "actual": 202,
+      "pass": true
+    },
+    {
+      "id": "AUTH-002",
+      "method": "POST",
+      "path": "/api/v1/auth/mfa/verify",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-001",
+      "method": "POST",
+      "path": "/api/v1/queue",
+      "expected": [
+        201
+      ],
+      "actual": 201,
+      "pass": true
+    },
+    {
+      "id": "PR007-002",
+      "method": "POST",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/claim",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-003",
+      "method": "POST",
+      "path": "/api/v1/call-center/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/command",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-004",
+      "method": "PATCH",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/context",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-005",
+      "method": "PATCH",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/context",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-006",
+      "method": "PATCH",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/context",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-007",
+      "method": "PATCH",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/context",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-008",
+      "method": "PATCH",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/context",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-009",
+      "method": "POST",
+      "path": "/api/v1/call-center/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/command",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-010",
+      "method": "POST",
+      "path": "/api/v1/call-center/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/command",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-011",
+      "method": "GET",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-012",
+      "method": "PATCH",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/context",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-013",
+      "method": "POST",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/move",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-014",
+      "method": "PATCH",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/context",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-015",
+      "method": "PATCH",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/context",
+      "expected": [
+        409
+      ],
+      "actual": 409,
+      "pass": true
+    },
+    {
+      "id": "PR007-016",
+      "method": "GET",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "PR007-017",
+      "method": "POST",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/release",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "CLEAN-001",
+      "method": "POST",
+      "path": "/api/v1/queue/case-69ee913d-2016-4cc0-bd1c-489387edce4d/release",
+      "expected": [
+        200,
+        409
+      ],
+      "actual": 200,
+      "pass": true
+    }
+  ],
+  "passed": true
+}
