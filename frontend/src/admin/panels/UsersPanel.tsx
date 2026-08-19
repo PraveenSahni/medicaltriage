@@ -212,6 +212,24 @@ export function UsersPanel() {
     });
   }
 
+  async function issueTemporaryCredential(user: SafeAdminUser) {
+    const reason = reasonDrafts[user.id]?.trim();
+    if (!reason) {
+      setRowError("A reason is required before issuing a temporary credential.");
+      return;
+    }
+    setRowError("");
+    await elevation.runElevated(async () => {
+      try {
+        const result = await postJson<{ temporaryPassword: string }>(`/api/v1/admin/users/${user.id}/temporary-credential`, { reason });
+        setCreatedCredential({ email: user.email, temporaryPassword: result.temporaryPassword });
+        await load();
+      } catch (error) {
+        setRowError(error instanceof Error ? error.message : "Unable to issue temporary credential.");
+      }
+    });
+  }
+
   // Real bulk action - loops the same PATCH .../status endpoint per selected
   // user (no dedicated bulk-status route exists), each elevation-checked the
   // same way a single-row change is. One shared reason applies to the whole
@@ -326,6 +344,7 @@ export function UsersPanel() {
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem onClick={() => resetMfa(user.id)}>Reset MFA</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => issueTemporaryCredential(user)}>Issue temporary credential</DropdownMenuItem>
               <DropdownMenuItem onClick={() => openSessions(user.id)}>View sessions</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

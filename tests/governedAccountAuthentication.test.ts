@@ -1,6 +1,7 @@
 import {
   authenticateLocal,
   createUser,
+  issueGovernedTemporaryCredential,
   resetSecurityStoreForTests
 } from "../src/services/securityAdmin.js";
 import {
@@ -78,5 +79,22 @@ describe("PR-014 governed local-account credentials", () => {
     expect(hash).not.toContain("temporary-password");
     expect(verifyGovernedPassword("temporary-password", hash)).toBe(true);
     expect(verifyGovernedPassword("wrong-password", hash)).toBe(false);
+  });
+
+  test("an existing nurse receives a governed temporary credential without changing role", async () => {
+    const issued = await issueGovernedTemporaryCredential(
+      "usr_nurse_10001",
+      { userId: "usr_platform_admin_10001", reason: "PR-001 seed-to-governed transition" }
+    );
+    expect(issued.user.roles).toEqual(["remote_triage_nurse"]);
+    expect(issued.temporaryPassword).toHaveLength(24);
+    expect(await authenticateLocal({
+      username: "layla@irisstar.tech",
+      password: issued.temporaryPassword,
+      rememberMe: false,
+      simulateRole: "remote_triage_nurse",
+      ipAddress: "127.0.0.1",
+      device: "jest"
+    })).toMatchObject({ ok: false, mfaEnrollmentRequired: true });
   });
 });

@@ -82,7 +82,9 @@ import {
   InvalidRoleDefinitionError,
   DuplicateUserEmailError,
   InvalidRoleCodeError,
-  InvalidEmailDomainError
+  InvalidEmailDomainError,
+  issueGovernedTemporaryCredential,
+  SelfCredentialProvisionError
 } from "../services/securityAdmin.js";
 import { AccountStatusSchema, RevealRequestSchema } from "../types/security.js";
 import { z } from "zod";
@@ -380,6 +382,26 @@ export function createAdminRouter(): Router {
         if (error instanceof InvalidRoleDefinitionError) {
           return res.status(409).json({ error: error.message, conflicts: error.conflicts });
         }
+        return next(error);
+      }
+    }
+  );
+
+  const CredentialProvisionRequestSchema = z.object({ reason: z.string().min(1).max(500) });
+  router.post(
+    "/users/:id/temporary-credential",
+    requireElevatedPermission("admin.users.manage"),
+    userStatusRateLimit,
+    async (req: AuthorizedRequest, res, next) => {
+      const parsed = CredentialProvisionRequestSchema.safeParse(req.body);
+      if (!parsed.success) return res.status(400).json({ error: "Invalid credential provision request", details: parsed.error.flatten() });
+      try {
+        const actorUserId = req.securitySession?.user.id ?? "unknown";
+        const result = await issueGovernedTemporaryCredential(req.params.id, { userId: actorUserId, reason: parsed.data.reason });
+        return res.json(result);
+      } catch (error) {
+        if (error instanceof UserNotFoundError) return res.status(404).json({ error: error.message });
+        if (error instanceof SelfCredentialProvisionError) return res.status(409).json({ error: error.message });
         return next(error);
       }
     }

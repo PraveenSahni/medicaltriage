@@ -1772,6 +1772,7 @@ export class SelfStatusChangeError extends Error {}
 export class DuplicateUserEmailError extends Error {}
 export class InvalidRoleCodeError extends Error {}
 export class InvalidEmailDomainError extends Error {}
+export class SelfCredentialProvisionError extends Error {}
 
 // Every real named-user account here is an IST Tech employee/contractor -
 // checked again at this layer (not just the route's zod schema) so any
@@ -1873,6 +1874,42 @@ export async function createUser(
   });
 
   return { user: maskUser(newUser), temporaryPassword };
+}
+
+/**
+ * Replaces a disabled seed-only login with a governed credential without
+ * changing the user's identity or role assignments. The random password is
+ * returned exactly once and only a scrypt hash is persisted.
+ */
+export async function issueGovernedTemporaryCredential(
+  userId: string,
+  actor: { userId: string; reason: string }
+): Promise<{ user: SafeAdminUser; temporaryPassword: string }> {
+  if (userId === actor.userId) {
+    throw new SelfCredentialProvisionError("Administrators cannot provision their own credential through this action.");
+  }
+  const user = users.find((candidate) => candidate.id === userId);
+  if (!user) throw new UserNotFoundError(`No user found with id ${userId}`);
+
+  const nowIso = new Date().toISOString();
+  const temporaryPassword = randomBytes(18).toString("base64url");
+  user.authenticationMethod = "local";
+  user.accountStatus = "active";
+  user.updatedBy = actor.userId;
+  user.updatedAtIso = nowIso;
+  await persistGovernedAccount(user, temporaryPassword);
+  demoPasswordByEmail[user.email.toLowerCase()] = temporaryPassword;
+  dynamicallyCreatedUserEmails.add(user.email.toLowerCase());
+
+  await recordAuditEvent({
+    id: randomUUID(), timestampIso: nowIso, userId: actor.userId,
+    activeRole: "platform_super_administrator", organization: user.organization,
+    facility: user.facility, department: user.department,
+    action: "USER_GOVERNED_CREDENTIAL_ISSUED", module: "AccessGovernance",
+    resource: `UserAccount:${user.id}`, purpose: actor.reason,
+    ipAddress: "", device: "", success: true, risk: "high"
+  });
+  return { user: maskUser(user), temporaryPassword };
 }
 
 /**
