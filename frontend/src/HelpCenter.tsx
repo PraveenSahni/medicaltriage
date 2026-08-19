@@ -34,8 +34,9 @@ import { SystemPurposeTab } from "./components/HelpCenter/SystemPurposeTab";
 import { TestEvidenceCenter } from "./components/HelpCenter/TestEvidenceCenter";
 import { ApiCatalogTable, HelpCard, MatrixHelpCard, MiniDefinition } from "./components/HelpCenter/shared";
 import { SectionNavigation, SectionTabs } from "./components/ui/NavigationControls";
+import { REMEDIATION_APPROVAL_ITEMS } from "../../src/shared/remediationDocumentation";
 
-type TabKey = "help" | "tests" | "library" | "overview" | "workflow" | "qatar" | "integration" | "governance" | "security";
+type TabKey = "documentation" | "tests" | "library" | "overview" | "workflow" | "qatar" | "integration" | "governance" | "security";
 
 type HelpTab = {
   key: TabKey;
@@ -113,14 +114,6 @@ type ValidationReviewItem = {
   nextStep: string;
 };
 
-type RemediationApprovalItem = {
-  id: "PR-006" | "PR-010" | "PR-011" | "PR-015";
-  owner: string;
-  technicalStatus: string;
-  evidence: string;
-  approvalRequired: string;
-};
-
 type ApiCatalogRow = {
   area: string;
   api: string;
@@ -175,7 +168,7 @@ type DispositionRouteDetail = {
 };
 
 const tabs: HelpTab[] = [
-  { key: "help", label: "Help", icon: HelpCircle },
+  { key: "documentation", label: "Documentation", icon: FileCheck2 },
   { key: "tests", label: "Test Results", icon: ClipboardCheck },
   { key: "library", label: "Library", icon: BookOpen },
   { key: "overview", label: "System Map", icon: ShieldCheck },
@@ -541,7 +534,7 @@ const validationReviewItems: ValidationReviewItem[] = [
     verdict: "Correct",
     evidence:
       "POST /api/v1/triage/complete returns clipboard text by default and JSON with notePayload/fitToFlyStatus when the caller asks for application/json.",
-    nextStep: "Connect signed clinical note persistence and EMR/FHIR writeback only after retention and writeback policy approval."
+    nextStep: "Keep signed persistence under the 365-day policy; enable live EMR/FHIR writeback only after consent, integration, and writeback approval."
   },
   {
     area: "Nurse workspace modes",
@@ -549,7 +542,7 @@ const validationReviewItems: ValidationReviewItem[] = [
     evidence:
       "Step and Board now share /api/v1/queue through QueueContext. Queue items can be claimed, locked, moved with sequence validation, prioritized by safety/SLA, and handed from Board into Step.",
     nextStep:
-      "Run live PostgreSQL migration/UAT, connect Oracle HCM call intake, and capture production queue-transition audit evidence."
+      "Cloud SQL queue persistence and SOC2 nurse UAT are complete. Remaining production work is approved Oracle HCM call intake and release monitoring."
   },
   {
     area: "Named user HRMS and tenant queue",
@@ -563,15 +556,15 @@ const validationReviewItems: ValidationReviewItem[] = [
     area: "Data ingestion",
     verdict: "Partially built",
     evidence:
-      "prisma/seed.ts is typed and ready, and docker-compose.yml now provides a local PostgreSQL 15 target for live-mode write/read validation.",
-    nextStep: "Run npm run db:local:up, npm run prisma:migrate, npm run db:seed, then capture seed evidence in the audit dashboard."
+      "PostgreSQL/Cloud SQL persistence and migrations are active. The import shape, checksums, relationship validation, and release model are prepared for governed clinical packages.",
+    nextStep: "Retain technical validation and obtain licensed-package plus named clinical release approval before production activation."
   },
   {
     area: "Python AI safety wrapper",
     verdict: "Correct",
     evidence:
       "python/test_safety_wrapper.py verifies normal HOMECARE pass-through, RED vital downgrade blocking, EMERGENCY severity upgrade, and SQLite audit row creation.",
-    nextStep: "Promote audit storage from local SQLite to the approved production audit datastore."
+    nextStep: "Keep SQLite limited to the isolated Python test harness; application audit events already use the governed PostgreSQL chained ledger."
   },
   {
     area: "Live enterprise integrations",
@@ -801,45 +794,6 @@ const workflowSteps = [
     icon: FileCheck2,
     body:
       "The nurse closes the call with approved instructions, copies the SBAR/SOAP note, opens CCP follow-up when needed, and leaves an audit trace for safety, governance, and future RAG comparison."
-  }
-];
-
-const remediationApprovalItems: RemediationApprovalItem[] = [
-  {
-    id: "PR-006",
-    owner: "Clinical QA",
-    technicalStatus: "Technical verification complete; named clinical approval pending",
-    evidence:
-      "The five-protocol SOC2 regression passed 30/30 governed cases plus three negative cases. Care advice is resolved through the selected protocol and exact TAQ question to its disposition and authored advice; broad disposition-code fallback is not the default.",
-    approvalRequired:
-      "Clinical QA must approve the protocol wording, TAQ-to-disposition mapping, and care-advice content before this item is governance-closed."
-  },
-  {
-    id: "PR-015",
-    owner: "Clinical QA",
-    technicalStatus: "Technical verification complete; named clinical approval pending",
-    evidence:
-      "The five-protocol adversarial auto-match matrix verifies PREPARED, AMBIGUOUS, and NO_MATCH outcomes. Ambiguous or unmatched complaints require nurse selection/override before protocol questions and disposition advice continue.",
-    approvalRequired:
-      "Clinical QA must sign the ambiguity/no-match thresholds, selected examples, and nurse-override behavior before governance closure."
-  },
-  {
-    id: "PR-010",
-    owner: "Security Architecture",
-    technicalStatus: "Technical control and authenticated verification complete; architecture approval pending",
-    evidence:
-      "Audit events use an append-only database path with HMAC chaining, restricted write permissions, mutation-denial checks, and authenticated ledger verification. Historical migration bounds remain disclosed rather than silently represented as newly signed events.",
-    approvalRequired:
-      "Security Architecture must accept the ledger design, key custody/rotation, database-role boundary, historical-event treatment, and external immutable-export roadmap."
-  },
-  {
-    id: "PR-011",
-    owner: "Privacy and Legal",
-    technicalStatus: "365-day control and rehearsal complete; recurring destructive execution approval pending",
-    evidence:
-      "The documented retention period is 365 days. Execution follows archive-before-delete, legal holds override deletion, concurrent runs are serialized with a database advisory lock, and the scheduler remains in dry-run mode.",
-    approvalRequired:
-      "Privacy and Legal must approve the 365-day period, legal-hold process, archive evidence, and recurring execute-mode schedule before destructive automation is enabled."
   }
 ];
 
@@ -1639,7 +1593,7 @@ const libraryAreas: LibraryArea[] = [
       "ProtocolRelease, ClinicalContentImportJob, ClinicalContentImportError, source hashes/checksums, and reconciliation fields preserve import lineage and annual update evidence.",
       "StaffMember and Dependent are normalized triage projections of Oracle Fusion HCM worker/contact data, not the long-term HR source of truth.",
       "TriageQueueItem and QueueTransitionLog preserve named-user queue state, call locks, STCC process snapshots, and signed movement traces.",
-      "AviationTriageEncounter and SafetyAuditDeviationLog preserve the route, score, final disposition, RAG shadow suggestion, override rationale, and explainability trace once persistence is approved.",
+      "AviationTriageEncounter and SafetyAuditDeviationLog persist the route, score, final disposition, RAG shadow suggestion, override rationale, and explainability trace under the active persistence controls.",
       "RagRetrievalEvent, LlmShadowSuggestion, NurseSelectionEvent, ProtocolComparisonEvent, LearningFeedbackEvent, ModelEvaluationRun, and SafetyBlockedOutput preserve bounded AI/ML evidence separately from source clinical content.",
       "Security administration models define application users, roles, responsibilities, permissions, access profiles, reveal events, encryption policy metadata, and audit events."
     ],
@@ -1652,7 +1606,7 @@ const libraryAreas: LibraryArea[] = [
       {
         title: "Current limitation",
         body:
-          "The schema is aligned, but importer population, live Cloud SQL migration, retention policy, and licensed STCC activation are still separate governed tasks."
+          "Schema and Cloud SQL persistence are active, and the 365-day retention control is implemented. Licensed STCC activation, importer/release approval, and named clinical governance remain separate gates."
       }
     ]
   },
@@ -1923,7 +1877,7 @@ const libraryAreas: LibraryArea[] = [
       },
       {
         title: "Evidence gap",
-        body: "Database seed execution can now be tested locally through Docker Compose PostgreSQL before moving the same schema to Cloud SQL in GCP Doha."
+        body: "Isolated PostgreSQL and Cloud SQL persistence evidence are complete. Licensed-content import and production activation still require controlled release evidence and named clinical approval."
       }
     ]
   },
@@ -2868,7 +2822,7 @@ const governanceItems = [
     title: "Privacy and retention",
     icon: LockKeyhole,
     body:
-      "The scaffold returns PHI in memory only. Prisma persistence should be enabled only after retention, security, and EMR-write policies are approved."
+      "Database persistence is active under the documented 365-day policy. Archive-before-delete, legal-hold precedence, concurrent-run serialization, and dry-run scheduling are implemented; Privacy and Legal approval is still required before recurring destructive execution."
   },
   {
     title: "Quality analytics",
@@ -2930,7 +2884,7 @@ const securityAdminHelpTopics: SecurityAdminHelpTopic[] = [
     production: [
       "ADMIN_PASSWORD is now environment-driven; MOCK_MODE=false rejects startup when the password is missing or still uses the mock local fallback.",
       "Replace the local password gate with Argon2id hashes and an enterprise identity store.",
-      "Add password reset, MFA/OTP screens, CAPTCHA after repeated failures, refresh-token rotation, and forced logout controls.",
+      "MFA enrollment, challenge, administrator-assisted reset, persistent sessions, and forced revocation are implemented. Remaining hardening includes CAPTCHA after repeated failures, refresh-token rotation, and enterprise identity integration.",
       "Connect planned-maintenance, password-expiry, and session-timeout notices to policy configuration."
     ]
   },
@@ -2951,7 +2905,7 @@ const securityAdminHelpTopics: SecurityAdminHelpTopic[] = [
       "Admin navigation and admin tabs appear only when the active session has the matching administration, security, privacy, or audit permissions."
     ],
     controls: [
-      "Platform Super Administrator has all current permissions for local simulation and demonstration.",
+      "Platform Administrator is the protected administration role; it can create governed custom roles only through elevated, audited controls.",
       "Triage Nurses land in the clinical workspace; Service Managers receive operational oversight and independent approval capabilities.",
       "Platform Administrators see the protected role catalog and can create custom roles only through the elevated, audited, segregation-validated workflow.",
       "Queue locking remains named-user based: one nurse claims one call, lock ownership is audited, and HRMS status changes can release locks."
@@ -3027,7 +2981,7 @@ const securityAdminHelpTopics: SecurityAdminHelpTopic[] = [
       "Email, mobile, employee ID, and licence values are returned masked in admin/user views.",
       "Reveal endpoint validates the session and reveal permission before returning a value.",
       "Reveal requests require a business purpose and return an auto-remask timer for the UI message.",
-      "Reveal actions are written to the demo audit event stream."
+      "Reveal actions are persisted in the governed audit stream when production persistence is enabled."
     ],
     controls: [
       "Administrators do not automatically receive unrestricted plaintext personal data.",
@@ -3035,8 +2989,8 @@ const securityAdminHelpTopics: SecurityAdminHelpTopic[] = [
       "Audit events do not store decrypted values."
     ],
     production: [
-      "Add MFA step-up, supervisor or dual approval, per-field reveal policy, watermarks, disable-copy controls, and remask-on-blur behavior.",
-      "Move reveal approval, reveal event, and privacy request flows into persistent database tables.",
+      "PAM/MFA step-up is implemented for elevated administration. Remaining privacy hardening includes supervisor or dual approval for reveal, per-field policy, watermarks, disable-copy controls, and remask-on-blur behavior.",
+      "Reveal and privacy events use persistent database records; remaining work is approval workflow depth and customer policy configuration.",
       "Enforce clinical relationship, queue assignment, and purpose-of-access checks for patient-level data."
     ]
   },
@@ -3107,7 +3061,7 @@ const securityAdminHelpTopics: SecurityAdminHelpTopic[] = [
       "Audit visibility is restricted to sessions with audit permissions."
     ],
     production: [
-      "Move audit to an immutable append-only store with retention policy and SIEM export.",
+      "The database audit path is append-only and HMAC-chained with restricted write roles and authenticated verification. Security Architecture approval and immutable external/SIEM export remain outstanding.",
       "Add break-glass review, identifiable export tracking, access-change history, and incident workflow.",
       "Add centralized redaction for logs, traces, API errors, and support diagnostics."
     ]
@@ -3118,7 +3072,7 @@ const legacyRoleAccessRows: RoleAccessRow[] = [
   {
     category: "A - Administration",
     prefix: "A",
-    role: "Platform Super Administrator",
+    role: "Platform Administrator",
     access: "Demo-only full-system access across triage, administration, security, privacy, audit, cryptography, integrations, and reports.",
     permissions: ["all current permissions"],
     responsibilities: ["manage users", "administer organization", "manage SSO", "manage integrations", "manage encryption policy"],
@@ -3352,11 +3306,11 @@ const securityAdminApiRows: ApiCatalogRow[] = [
 ];
 
 const roleAccessRows = legacyRoleAccessRows.filter((row) =>
-  ["Platform Super Administrator", "Triage Service Manager", "Remote Triage Nurse"].includes(row.role)
+  ["Platform Administrator", "Triage Service Manager", "Remote Triage Nurse"].includes(row.role)
 );
 
 export default function HelpCenter() {
-  const [activeTab, setActiveTab] = useState<TabKey>("help");
+  const [activeTab, setActiveTab] = useState<TabKey>("documentation");
   const [selectedAreaId, setSelectedAreaId] = useState(libraryAreas[0].id);
 
   const selectedArea = useMemo(
@@ -3367,7 +3321,9 @@ export default function HelpCenter() {
   useEffect(() => {
     function syncTabFromHash() {
       const target = window.location.hash.replace(/^#\/?/, "").split("?")[0].toLowerCase();
-      if (tabs.some((tab) => tab.key === target)) {
+      if (target === "help") {
+        setActiveTab("documentation");
+      } else if (tabs.some((tab) => tab.key === target)) {
         setActiveTab(target as TabKey);
       }
     }
@@ -3412,7 +3368,7 @@ export default function HelpCenter() {
         ariaLabel="Help library sections"
       />
 
-      {activeTab === "help" && (
+      {activeTab === "documentation" && (
         <HelpManualPanel
           onOpenLibraryTopic={openLibraryTopic}
           onOpenTab={setActiveTab}
@@ -3577,9 +3533,7 @@ function HelpManualPanel({
           </span>
           <div>
             <span className="tag-label">REMEDIATION AND APPROVAL REGISTER</span>
-            <h3 id="remediation-approval-title" className="help-title">
-              PR-006, PR-010, PR-011, and PR-015
-            </h3>
+            <h3 id="remediation-approval-title" className="help-title">PR-001 through PR-015</h3>
             <p>
               Technical evidence and governance approval are separate gates. A completed test or
               implemented control does not by itself record clinical, security, privacy, or legal
@@ -3589,7 +3543,7 @@ function HelpManualPanel({
         </div>
 
         <div className="help-integration-table">
-          {remediationApprovalItems.map((item) => (
+          {REMEDIATION_APPROVAL_ITEMS.map((item) => (
             <div key={item.id} className="help-integration-row">
               <strong>{item.id} — {item.owner}</strong>
               <span>{item.evidence}</span>
@@ -3601,7 +3555,9 @@ function HelpManualPanel({
         <div className="help-route-governance">
           <h4>Controlled record</h4>
           <p>
-            Formal sign-off is recorded in
+            The detailed evidence register is
+            <code> docs/production-readiness-remediation-register-2026-08-17.md</code>. Formal
+            pending sign-off is recorded in
             <code> docs/production-readiness-approval-closure-pack-2026-08-19.md</code>. PR-008
             infrastructure decommissioning is outside these four approval blocks and must be
             evidenced separately.
@@ -3972,10 +3928,11 @@ function GovernancePanel() {
           <div>
             <h3 className="help-title">Production readiness notes</h3>
             <p>
-              This MVP proves system wiring. Production needs licensed clinical protocols, local
-              medical governance, role-based access control, encryption review, audit retention
-              rules, JCI/ISO/MOPH-aligned controls, EMR-write approvals, and a protocol review
-              cadence owned by lead physician and lead nurse.
+              Engineering remediation is recorded above without converting pending approvals into
+              completed governance. Release remains NO-GO until Clinical QA approves PR-006 and
+              PR-015, Security Architecture approves PR-010, Privacy and Legal authorize PR-011
+              recurring execution, and the accepted PR-008 consolidation exit is completed when
+              approved. Licensed clinical content and local medical governance remain release gates.
             </p>
           </div>
         </div>

@@ -59,19 +59,25 @@ describe("Help & Library access", () => {
     const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
     const response = await manager.get("/help").expect(200);
 
-    expect(response.text).toContain("Remediation and approval register");
-    for (const remediationId of ["PR-006", "PR-010", "PR-011", "PR-015"]) {
+    expect(response.text).toContain("Consolidated remediation register");
+    for (const remediationId of Array.from({ length: 15 }, (_, index) => `PR-${String(index + 1).padStart(3, "0")}`)) {
       expect(response.text).toContain(remediationId);
     }
-    expect(response.text).toContain("30/30 governed cases plus three negative cases");
+    expect(response.text).toContain("30/30 governed cases plus three fail-closed negatives");
     expect(response.text).toContain("The retention period is 365 days");
-    expect(response.text).toContain("named clinical approval pending");
+    expect(response.text).toContain("Complete with explicit demo-only exception");
+    expect(response.text).toContain("Risk accepted");
+    expect(response.text).toContain("clinical sign-off and promotion pending");
     expect(response.text).toContain("architecture approval pending");
-    expect(response.text).toContain("recurring destructive execution approval pending");
+    expect(response.text).toContain("recurring execute approval pending");
     expect(response.text).not.toContain("PR-006 approved");
     expect(response.text).not.toContain("PR-010 approved");
     expect(response.text).not.toContain("PR-011 approved");
     expect(response.text).not.toContain("PR-015 approved");
+    expect(response.text).not.toContain("returns PHI in memory only");
+    expect(response.text).not.toContain("Move audit to an immutable append-only store");
+    expect(response.text).not.toContain("Add password reset, MFA/OTP screens");
+    expect(response.text).not.toContain("loads real, licensed Schmitt-Thompson Clinical Content");
   });
 
   it("renders the restricted vault section (locked) only for a permitted role", async () => {

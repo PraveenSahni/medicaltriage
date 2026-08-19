@@ -12,6 +12,7 @@
  * future connector, or "not yet live," that status is preserved as-is -
  * this file does not upgrade any status to "built" or vice versa.
  */
+import { REMEDIATION_APPROVAL_ITEMS } from "../shared/remediationDocumentation.js";
 
 type TopicArticle = {
   id: string;
@@ -424,7 +425,7 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
           `<strong>AI downgrade blocking</strong> - if deterministic rules classify an encounter as Emergency, a RAG shadow suggestion below that floor is blocked and logged as a safety event.`,
           `<strong>LLM model governance</strong> - MedGemma or any future LLM must pass synthetic and clinically reviewed evaluations before UAT. Model outputs remain preliminary, nurse-verified, auditable, and blocked from changing red-floor rules.`,
           `<strong>Protocol governance</strong> - production use needs licensed clinical content, lead physician and lead nurse review, local disposition approval, and a defined update cadence.`,
-          `<strong>Privacy and retention</strong> - the scaffold returns PHI in memory only. Prisma persistence should be enabled only after retention, security, and EMR-write policies are approved.`,
+          `<strong>Privacy and retention</strong> - database persistence is active under the documented 365-day policy. Archive-before-delete, legal-hold precedence, concurrent-run serialization, and dry-run scheduling are implemented; Privacy and Legal approval remains required before recurring destructive execution.`,
           `<strong>Quality analytics</strong> - call volumes, categories, nurse response time, outcome trends, recontact rates, randomized review, incident reporting, and exportable dashboards are the intended reporting scope.`,
           `<strong>Multilingual operations</strong> - English and Arabic are represented in the current UI and SBAR labels; Hindi, Tagalog, and governed translation are planned capabilities.`
         ])
@@ -448,19 +449,16 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
       },
       {
         id: "gov-remediation-approval-register",
-        title: "Remediation and approval register (PR-006, PR-010, PR-011, PR-015)",
+        title: "Consolidated remediation register (PR-001 through PR-015)",
         body: `
           <p><strong>Control boundary:</strong> technical verification and governance approval are separate gates. A passing test or implemented control does not itself record clinical, security, privacy, or legal approval.</p>
           <table class="ref-table">
             <thead><tr><th>Item / owner</th><th>Technical evidence</th><th>Current status and closure gate</th></tr></thead>
-            <tbody>
-              <tr><td><strong>PR-006</strong><br>Clinical QA</td><td>Five-protocol SOC2 regression passed 30/30 governed cases plus three negative cases. Care advice follows the selected protocol and exact TAQ question to its disposition and authored advice; broad disposition-code fallback is not the default.</td><td>Technical verification complete; named clinical approval pending. Clinical QA must approve protocol wording, TAQ-to-disposition mapping, and care-advice content.</td></tr>
-              <tr><td><strong>PR-015</strong><br>Clinical QA</td><td>The five-protocol adversarial matrix verifies PREPARED, AMBIGUOUS, and NO_MATCH outcomes. Ambiguous or unmatched complaints require nurse selection/override before protocol questions and disposition advice continue.</td><td>Technical verification complete; named clinical approval pending. Clinical QA must sign the thresholds, examples, and nurse-override behavior.</td></tr>
-              <tr><td><strong>PR-010</strong><br>Security Architecture</td><td>Audit events use an append-only database path with HMAC chaining, restricted write permissions, mutation-denial checks, and authenticated ledger verification. Historical migration bounds remain disclosed.</td><td>Technical control and authenticated verification complete; architecture approval pending. Security Architecture must accept the ledger, key custody/rotation, database-role boundary, historical-event treatment, and immutable-export roadmap.</td></tr>
-              <tr><td><strong>PR-011</strong><br>Privacy and Legal</td><td>The retention period is 365 days. Execution uses archive-before-delete, legal holds override deletion, concurrent runs use a database advisory lock, and the scheduler remains dry-run.</td><td>365-day control and rehearsal complete; recurring destructive execution approval pending. Privacy and Legal must approve the period, hold process, archive evidence, and execute-mode schedule.</td></tr>
-            </tbody>
+            <tbody>${REMEDIATION_APPROVAL_ITEMS.map(
+              (item) => `<tr><td><strong>${item.id}</strong><br>${item.owner}</td><td>${item.evidence}</td><td>${item.technicalStatus}. ${item.approvalRequired}</td></tr>`
+            ).join("")}</tbody>
           </table>
-          <p><strong>Controlled record:</strong> formal sign-off is recorded in <code>docs/production-readiness-approval-closure-pack-2026-08-19.md</code>. PR-008 infrastructure decommissioning is outside these four approval blocks and requires separate evidence.</p>
+          <p><strong>Controlled record:</strong> detailed evidence is in <code>docs/production-readiness-remediation-register-2026-08-17.md</code>; pending formal sign-off is in <code>docs/production-readiness-approval-closure-pack-2026-08-19.md</code>. PR-008 requires separate consolidation/decommission evidence.</p>
         `
       }
     ]
@@ -496,7 +494,7 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
           ${ul([
             "ADMIN_PASSWORD is environment-driven; MOCK_MODE=false rejects startup when the password is missing or still uses the mock local fallback.",
             "Replace the local password gate with Argon2id hashes and an enterprise identity store.",
-            "Add password reset, MFA/OTP screens, CAPTCHA after repeated failures, refresh-token rotation, and forced logout controls.",
+            "MFA enrollment, challenge, administrator-assisted reset, persistent sessions, and forced revocation are implemented. Remaining hardening includes CAPTCHA after repeated failures, refresh-token rotation, and enterprise identity integration.",
             "Connect planned-maintenance, password-expiry, and session-timeout notices to policy configuration."
           ])}
         `
@@ -518,7 +516,7 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
           ])}
           <p><strong>Controls:</strong></p>
           ${ul([
-            "Platform Super Administrator has all current permissions for local simulation and demonstration.",
+            "Platform Administrator is the protected administration role; it can create governed custom roles only through elevated, audited controls.",
             "Triage Nurses land in the clinical workspace; Service Managers receive operational oversight and independent approval capabilities.",
             "Platform Administrators see the protected role catalog and can create custom roles only through the elevated, audited, segregation-validated workflow.",
             "Queue locking remains named-user based: one nurse claims one call, lock ownership is audited, and HRMS status changes can release locks."
@@ -570,8 +568,8 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
           ])}
           <p><strong>Production gaps:</strong></p>
           ${ul([
-            "Add MFA step-up, supervisor or dual approval, per-field reveal policy, watermarks, disable-copy controls, and remask-on-blur behavior.",
-            "Move reveal approval, reveal event, and privacy request flows into persistent database tables.",
+            "PAM/MFA step-up is implemented for elevated administration. Remaining privacy hardening includes supervisor or dual approval for reveal, per-field policy, watermarks, disable-copy controls, and remask-on-blur behavior.",
+            "Reveal and privacy events use persistent database records; remaining work is approval workflow depth and customer policy configuration.",
             "Enforce clinical relationship, queue assignment, and purpose-of-access checks for patient-level data."
           ])}
         `
@@ -645,7 +643,7 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
           ])}
           <p><strong>Production gaps:</strong></p>
           ${ul([
-            "Move audit to an immutable append-only store with retention policy and SIEM export.",
+            "The database audit path is append-only and HMAC-chained with restricted write roles and authenticated verification. Security Architecture approval and immutable external/SIEM export remain outstanding.",
             "Add break-glass review, identifiable export tracking, access-change history, and incident workflow.",
             "Add centralized redaction for logs, traces, API errors, and support diagnostics."
           ])}
@@ -659,7 +657,7 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
           <table class="ref-table">
             <thead><tr><th>Category</th><th>Role</th><th>Access intent</th><th>Data scopes</th></tr></thead>
             <tbody>
-              <tr><td>A</td><td>Platform Super Administrator</td><td>Demo-only full-system access across triage, administration, security, privacy, audit, cryptography, integrations, and reports.</td><td>all users, all encounters, all integration scopes</td></tr>
+              <tr><td>A</td><td>Platform Administrator</td><td>Governed administration through permission checks, PAM elevation, segregation validation, and audit.</td><td>approved administration scopes</td></tr>
               <tr><td>B</td><td>Triage Service Manager</td><td>Queue health, staffing coverage, case allocation, operational KPIs, and escalation throughput.</td><td>assigned queues, operational dashboards, hrms.read, audit</td></tr>
               <tr><td>B</td><td>Remote Triage Nurse</td><td>Assigned remote triage encounters with clinical protocol access and RAG shadow suggestion visibility.</td><td>assigned queue, adult, aviation, hrms.read, insurance.read</td></tr>
             </tbody>
@@ -859,11 +857,11 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
             "ProtocolRelease, ClinicalContentImportJob, ClinicalContentImportError, source hashes/checksums, and reconciliation fields preserve import lineage and annual update evidence.",
             "StaffMember and Dependent are normalized triage projections of Oracle Fusion HCM worker/contact data, not the long-term HR source of truth.",
             "TriageQueueItem and QueueTransitionLog preserve named-user queue state, call locks, STCC process snapshots, and signed movement traces.",
-            "AviationTriageEncounter and SafetyAuditDeviationLog preserve the route, score, final disposition, RAG shadow suggestion, override rationale, and explainability trace once persistence is approved.",
+            "AviationTriageEncounter and SafetyAuditDeviationLog persist the route, score, final disposition, RAG shadow suggestion, override rationale, and explainability trace under the active persistence controls.",
             "RagRetrievalEvent, LlmShadowSuggestion, NurseSelectionEvent, ProtocolComparisonEvent, LearningFeedbackEvent, ModelEvaluationRun, and SafetyBlockedOutput preserve bounded AI/ML evidence separately from source clinical content.",
             "Security administration models define application users, roles, responsibilities, permissions, access profiles, reveal events, encryption policy metadata, and audit events."
           ])}
-          <p><strong>Current limitation:</strong> the schema is aligned, but importer population, live Cloud SQL migration, retention policy, and licensed STCC activation are still separate governed tasks.</p>
+          <p><strong>Current limitation:</strong> schema and Cloud SQL persistence are active, and the 365-day retention control is implemented. Licensed STCC activation, importer/release approval, and named clinical governance remain separate gates.</p>
         `
       },
       {
@@ -966,11 +964,11 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
             <tbody>
               <tr><td>Staff validation</td><td>Correct</td><td>The API exposes staff validation, and the queue service auto-validates staff/dependent identity, stores HRMS age snapshots, and prevents manual nurse-side age entry. Next: replace mock HRMS records with the Oracle Fusion HCM adapter after HR and privacy approval.</td></tr>
               <tr><td>Vital-sign safety floor</td><td>Correct</td><td>The scoring endpoint applies mandatory RED floors for consciousness, SpO2, respiratory rate, heart rate, and pediatric tachypnea before NEWS2 scoring. Next: expand pediatric age bands and validate thresholds with clinical governance.</td></tr>
-              <tr><td>SOAP/SBAR completion</td><td>Correct</td><td>The completion endpoint returns clipboard text by default and JSON with note payload/fit-to-fly status when requested. Next: connect signed clinical note persistence and EMR/FHIR writeback only after retention and writeback policy approval.</td></tr>
-              <tr><td>Nurse workspace modes</td><td>Correct</td><td>Step and Board share the queue API; items can be claimed, locked, moved with sequence validation, prioritized by safety/SLA, and handed from Board into Step. Next: run live PostgreSQL migration/UAT, connect Oracle HCM call intake, capture production audit evidence.</td></tr>
+              <tr><td>SOAP/SBAR completion</td><td>Correct</td><td>The completion endpoint returns clipboard text by default and JSON with note payload/fit-to-fly status when requested. Signed persistence remains under the 365-day policy; live EMR/FHIR requires consent, integration, and writeback approval.</td></tr>
+              <tr><td>Nurse workspace modes</td><td>Correct</td><td>Step and Board share the queue API; Cloud SQL queue persistence and SOC2 nurse UAT are complete. Remaining production work is approved Oracle HCM call intake and release monitoring.</td></tr>
               <tr><td>Named user HRMS and tenant queue</td><td>Correct</td><td>The backend has organization-bound sessions, HRMS sync, tenant-scoped queue visibility, session revocation, lock release, and cross-tenant escalation handover tests. Next: replace the mock Oracle-style feed with approved Oracle Fusion HCM credentials and production audit evidence.</td></tr>
-              <tr><td>Data ingestion</td><td>Partially built</td><td>The seed script is typed and ready, and a local PostgreSQL 15 target exists for live-mode write/read validation. Next: run the local DB up/migrate/seed sequence and capture seed evidence in the audit dashboard.</td></tr>
-              <tr><td>Python AI safety wrapper</td><td>Correct</td><td>Verifies normal HOMECARE pass-through, RED vital downgrade blocking, EMERGENCY severity upgrade, and SQLite audit row creation. Next: promote audit storage from local SQLite to the approved production audit datastore.</td></tr>
+              <tr><td>Data ingestion</td><td>Partially built</td><td>PostgreSQL/Cloud SQL persistence and migrations are active. The importer/release shape is prepared, but licensed-package and named clinical release approval remain required.</td></tr>
+              <tr><td>Python AI safety wrapper</td><td>Correct</td><td>Verifies normal HOMECARE pass-through, RED vital downgrade blocking, EMERGENCY severity upgrade, and isolated SQLite test evidence. Application audit events use the governed PostgreSQL chained ledger.</td></tr>
               <tr><td>Live enterprise integrations</td><td>Pending production</td><td>Oracle HCM, EMR, scheduling, Twilio/Graph live transport, insurer verification, transcription, and analytics are documented as adapters, not live production connectors. Next: approve secrets, scopes, data residency, service accounts, signed webhooks, and least-privilege policies.</td></tr>
               <tr><td>LLM / MedGemma strategy</td><td>Pending production</td><td>The repository has rules-first simulation data and LLM-ready JSONL rows, but no live MedGemma endpoint, provider key, model registry, or cloud inference adapter is enabled yet. Next: build the evaluation and provider-adapter layer first, then deploy a private GCP Doha inference endpoint only after approvals.</td></tr>
             </tbody>
@@ -1014,7 +1012,7 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
             "Frontend typecheck and build (<code>npm run typecheck:web</code>, <code>npm run build:web</code>) validate that Help/Library content compiles and renders with the current React application.",
             "<code>prisma validate</code> and <code>generate</code> confirm the schema is syntactically valid and the client reflects the latest model names."
           ])}
-          <p><strong>Release gate:</strong> a release should not proceed if the RED floor, pediatric routing, SBAR, or AI downgrade tests fail. <strong>Evidence gap:</strong> database seed execution can be tested locally through Docker Compose PostgreSQL before moving the same schema to Cloud SQL in GCP Doha.</p>
+          <p><strong>Release gate:</strong> a release should not proceed if the RED floor, pediatric routing, SBAR, AI downgrade, isolated PostgreSQL, or remediation-specific tests fail. Cloud SQL persistence is active; technical database evidence does not replace licensed-content or named clinical approval.</p>
         `
       },
       {
