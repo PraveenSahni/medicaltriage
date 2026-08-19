@@ -32,9 +32,9 @@
 
 const API_BASE = process.env.API_BASE ?? "http://localhost:8080";
 const GENERATOR_USERNAME = "layla@irisstar.tech";
-const GENERATOR_PASSWORD = "Layla@2026";
+const GENERATOR_PASSWORD = process.env.TEST_NURSE_PASSWORD ?? "";
 const NURSE_USERNAME = "layla@irisstar.tech";
-const NURSE_PASSWORD = "Layla@2026";
+const NURSE_PASSWORD = process.env.TEST_NURSE_PASSWORD ?? "";
 
 // Real intake calls don't all arrive at once - spacing generation out (and
 // rotating across protocols, which the 5 curated cases already do simply by

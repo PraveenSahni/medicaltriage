@@ -14,9 +14,9 @@ if (process.env.ALLOW_LIVE_ADMIN_UAT !== "PR014") throw new Error("Set ALLOW_LIV
 if (!allowedTargets.has(API_BASE)) throw new Error(`Refusing unapproved PR-014 target: ${API_BASE || "<empty>"}`);
 
 const credentials = {
-  admin: { username: process.env.PR014_ADMIN_USERNAME ?? "rishma@irisstar.tech", password: process.env.PR014_ADMIN_PASSWORD ?? "PlatformAdmin@2026", mfaSecret: process.env.PR014_ADMIN_MFA_SECRET },
-  manager: { username: process.env.PR014_MANAGER_USERNAME ?? "khalid@irisstar.tech", password: process.env.PR014_MANAGER_PASSWORD ?? "Khalid@2026", mfaSecret: process.env.PR014_MANAGER_MFA_SECRET },
-  nurse: { username: process.env.PR014_NURSE_USERNAME ?? "layla@irisstar.tech", password: process.env.PR014_NURSE_PASSWORD ?? "Layla@2026", mfaSecret: process.env.PR014_NURSE_MFA_SECRET }
+  admin: { username: process.env.PR014_ADMIN_USERNAME ?? "rishma@irisstar.tech", password: process.env.PR014_ADMIN_PASSWORD ?? "", mfaSecret: process.env.PR014_ADMIN_MFA_SECRET },
+  manager: { username: process.env.PR014_MANAGER_USERNAME ?? "khalid@irisstar.tech", password: process.env.PR014_MANAGER_PASSWORD ?? "", mfaSecret: process.env.PR014_MANAGER_MFA_SECRET },
+  nurse: { username: process.env.PR014_NURSE_USERNAME ?? "layla@irisstar.tech", password: process.env.PR014_NURSE_PASSWORD ?? "", mfaSecret: process.env.PR014_NURSE_MFA_SECRET }
 };
 
 type Jar = { cookie?: string; token?: string };

@@ -12,9 +12,9 @@ import { authenticator } from "otplib";
 const API_BASE = process.env.API_BASE ?? "http://localhost:8080";
 
 const ACCOUNTS = {
-  superAdmin: { username: "rishma@irisstar.tech", password: "PlatformAdmin@2026" },
-  serviceManager: { username: "khalid@irisstar.tech", password: "Khalid@2026" },
-  nurse: { username: "layla@irisstar.tech", password: "Layla@2026" }
+  superAdmin: { username: "rishma@irisstar.tech", password: process.env.TEST_ADMIN_PASSWORD ?? "" },
+  serviceManager: { username: "khalid@irisstar.tech", password: process.env.TEST_MANAGER_PASSWORD ?? "" },
+  nurse: { username: "layla@irisstar.tech", password: process.env.TEST_NURSE_PASSWORD ?? "" }
 };
 
 type CookieJar = { cookie?: string; token?: string };

@@ -3,8 +3,8 @@ import { authenticator } from "otplib";
 const BASE_URL = process.argv[2];
 if (!BASE_URL) throw new Error("usage: node _ar13ValidateEnforcement.mjs <canaryUrl>");
 
-const ADMIN = { username: "pa@irisstar.tech", password: "PlatformAdmin@2026", role: "platform_super_administrator" };
-const UNENROLLED = { username: "sara@irisstar.tech", password: "Sara@2026", role: "remote_triage_nurse" };
+const ADMIN = { username: "pa@irisstar.tech", password: process.env.TEST_ADMIN_PASSWORD ?? "", role: "platform_super_administrator" };
+const UNENROLLED = { username: "sara@irisstar.tech", password: process.env.TEST_SECONDARY_NURSE_PASSWORD ?? "", role: "remote_triage_nurse" };
 
 async function login(account) {
   const res = await fetch(`${BASE_URL}/api/v1/auth/login`, {

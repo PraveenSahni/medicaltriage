@@ -11,9 +11,9 @@
 
 const API_BASE = process.env.API_BASE ?? "http://localhost:8080";
 const GENERATOR_USERNAME = "layla@irisstar.tech";
-const GENERATOR_PASSWORD = "Layla@2026";
+const GENERATOR_PASSWORD = process.env.TEST_NURSE_PASSWORD ?? "";
 const NURSE_USERNAME = "layla@irisstar.tech";
-const NURSE_PASSWORD = "Layla@2026";
+const NURSE_PASSWORD = process.env.TEST_NURSE_PASSWORD ?? "";
 
 type CookieJar = { cookie?: string; token?: string };
 

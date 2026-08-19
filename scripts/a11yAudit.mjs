@@ -19,8 +19,8 @@ const BASE_URL = process.argv[2] ?? "https://triagedsoc2.irisstar.tech";
 // carries the same real remote_triage_nurse role/permissions and has no
 // MFA credential enrolled, confirmed via a real login returning
 // authenticated:true.
-const NURSE = { username: "sara@irisstar.tech", password: "Sara@2026", role: "remote_triage_nurse" };
-const MANAGER = { username: "khalid@irisstar.tech", password: "Khalid@2026", role: "triage_service_manager" };
+const NURSE = { username: "sara@irisstar.tech", password: process.env.TEST_SECONDARY_NURSE_PASSWORD ?? "", role: "remote_triage_nurse" };
+const MANAGER = { username: "khalid@irisstar.tech", password: process.env.TEST_MANAGER_PASSWORD ?? "", role: "triage_service_manager" };
 // Switched from pa@irisstar.tech to sa@irisstar.tech for the same reason
 // as NURSE above - pa now has an enrolled MFA credential and cannot
 // complete a simple login. sa@irisstar.tech (system_administrator) is a

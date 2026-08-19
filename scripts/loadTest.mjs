@@ -9,7 +9,7 @@ const BASE_URL = process.argv[2] ?? "https://triagedsoc2.irisstar.tech";
 const CONCURRENCY = Number(process.argv[3] ?? 10);
 const REQUESTS_PER_WORKER = Number(process.argv[4] ?? 20);
 const NURSE_USERNAME = "layla@irisstar.tech";
-const NURSE_PASSWORD = "Layla@2026";
+const NURSE_PASSWORD = process.env.TEST_NURSE_PASSWORD ?? "";
 
 function percentile(sorted, p) {
   if (sorted.length === 0) return 0;

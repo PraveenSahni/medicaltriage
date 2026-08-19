@@ -15,7 +15,7 @@ import { buildSimulatedQueueCreateRequest, loadStaffCandidatePool, type Simulato
 import { sanitizeForLog } from "../utils/logSanitizer.js";
 
 const INTAKE_USERNAME = "layla@irisstar.tech";
-const INTAKE_PASSWORD = "Layla@2026";
+const INTAKE_PASSWORD = process.env.CALL_SIMULATOR_NURSE_PASSWORD?.trim() ?? "";
 // Must be a real PHCC-scoped nurse identity - a HMC/SIDRA-scoped identity
 // (e.g. Senior/Pediatric Triage Nurse) can't see or claim PHCC-org calls at
 // all due to real multi-tenant RBAC boundaries (confirmed while testing
@@ -24,7 +24,7 @@ const INTAKE_PASSWORD = "Layla@2026";
 // as the same account concurrently would share this session's lock/claim
 // activity, which is an acceptable demo-only tradeoff.
 const OTHER_NURSE_USERNAME = "layla@irisstar.tech";
-const OTHER_NURSE_PASSWORD = "Layla@2026";
+const OTHER_NURSE_PASSWORD = process.env.CALL_SIMULATOR_NURSE_PASSWORD?.trim() ?? "";
 
 type CookieJar = { cookie?: string };
 type Candidate = SimulatorCandidate;
@@ -83,6 +83,11 @@ function pick<T>(items: T[]): T {
 export function startIncomingCallSimulator(baseUrl: string, callsPerTick = 2, intervalMinutes = 5): void {
   if (process.env.SIMULATE_INCOMING_CALLS !== "true") {
     return;
+  }
+  if (!INTAKE_PASSWORD) {
+    throw new Error(
+      "SIMULATE_INCOMING_CALLS=true requires CALL_SIMULATOR_NURSE_PASSWORD from an approved secret source."
+    );
   }
   const candidates = loadCandidates();
   if (candidates.length === 0) {

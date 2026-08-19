@@ -23,7 +23,7 @@ async function mfaVerify(challengeId, code) {
 
 async function main() {
   // --- Admin: re-enroll (resets to pending), confirm, login, MFA verify, elevate, grant ---
-  const step1 = await login("pa@irisstar.tech", "PlatformAdmin@2026", "platform_super_administrator");
+  const step1 = await login("pa@irisstar.tech", process.env.TEST_ADMIN_PASSWORD ?? "", "platform_super_administrator");
   console.log("admin login step1:", step1.status);
   let token;
   if (step1.status === 202) {
@@ -39,7 +39,7 @@ async function main() {
   }
 
   // --- Reveal workflow: create a request as a nurse-adjacent role, verify persisted ---
-  const nurseLogin = await login("sara@irisstar.tech", "Sara@2026", "remote_triage_nurse");
+  const nurseLogin = await login("sara@irisstar.tech", process.env.TEST_SECONDARY_NURSE_PASSWORD ?? "", "remote_triage_nurse");
   console.log("sara login:", nurseLogin.status, JSON.stringify(nurseLogin.body).slice(0, 120));
 }
 

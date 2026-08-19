@@ -34,14 +34,14 @@
 
 const API_BASE = process.env.API_BASE ?? "http://localhost:8080";
 const GENERATOR_USERNAME = "layla@irisstar.tech";
-const GENERATOR_PASSWORD = "Layla@2026";
+const GENERATOR_PASSWORD = process.env.TEST_NURSE_PASSWORD ?? "";
 // Remote Triage Nurses alternate scenario-by-scenario (not always the same
 // nurse claiming every test call) - both are PHCC-org-scoped so either can
 // claim any call the intake account generates, matching real multi-nurse
 // queue distribution rather than one nurse doing all the work.
 const NURSES = [
-  { username: "layla@irisstar.tech", password: "Layla@2026" },
-  { username: "sara@irisstar.tech", password: "Sara@2026" }
+  { username: "layla@irisstar.tech", password: process.env.TEST_NURSE_PASSWORD ?? "" },
+  { username: "sara@irisstar.tech", password: process.env.TEST_SECONDARY_NURSE_PASSWORD ?? "" }
 ];
 
 const QATAR_DESTINATION_BY_CODE: Record<string, string> = {

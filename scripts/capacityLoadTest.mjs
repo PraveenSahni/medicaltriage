@@ -16,9 +16,9 @@ const THINK_TIME_MS = Number(process.argv[5] ?? 3000);
 // identities so no single account's rate-limit bucket is the constraint
 // being measured in this test.
 const ACCOUNTS = [
-  { username: "layla@irisstar.tech", password: "Layla@2026", role: "remote_triage_nurse" },
-  { username: "fatima@irisstar.tech", password: "Fatima@2026", role: "senior_triage_nurse" },
-  { username: "sara@irisstar.tech", password: "Sara@2026", role: "remote_triage_nurse" },
+  { username: "layla@irisstar.tech", password: process.env.TEST_NURSE_PASSWORD ?? "", role: "remote_triage_nurse" },
+  { username: "fatima@irisstar.tech", password: process.env.TEST_SENIOR_NURSE_PASSWORD ?? "", role: "senior_triage_nurse" },
+  { username: "sara@irisstar.tech", password: process.env.TEST_SECONDARY_NURSE_PASSWORD ?? "", role: "remote_triage_nurse" },
   { username: "physician@irisstar.tech", password: "Physician@2026", role: "teleconsult_physician" },
   { username: "oh@irisstar.tech", password: "OccupationalHealth@2026", role: "occupational_health_clinician" },
   { username: "intake@irisstar.tech", password: "Intake@2026", role: "call_intake_coordinator" }

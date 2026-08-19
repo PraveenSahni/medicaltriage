@@ -10,7 +10,7 @@
 
 const API_BASE = process.env.API_BASE ?? "http://localhost:8080";
 const USERNAME = "layla@irisstar.tech";
-const PASSWORD = "Layla@2026";
+const PASSWORD = process.env.TEST_NURSE_PASSWORD ?? "";
 
 // Bearer token attached alongside the cookie - Firebase Hosting's rewrite-
 // to-Cloud-Run proxy does not forward the Cookie header on the custom

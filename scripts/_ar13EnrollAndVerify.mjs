@@ -3,8 +3,8 @@ import { authenticator } from "otplib";
 const BASE_URL = process.argv[2] ?? "https://triagedsoc2.irisstar.tech";
 
 const ACCOUNTS = [
-  { username: "pa@irisstar.tech", password: "PlatformAdmin@2026", role: "platform_super_administrator", label: "admin" },
-  { username: "layla@irisstar.tech", password: "Layla@2026", role: "remote_triage_nurse", label: "nurse" }
+  { username: "pa@irisstar.tech", password: process.env.TEST_ADMIN_PASSWORD ?? "", role: "platform_super_administrator", label: "admin" },
+  { username: "layla@irisstar.tech", password: process.env.TEST_NURSE_PASSWORD ?? "", role: "remote_triage_nurse", label: "nurse" }
 ];
 
 async function login(account) {

@@ -27,9 +27,9 @@ const API_BASE = process.env.API_BASE ?? "http://localhost:8080";
 // would generate cross-org calls the nurse can never claim, per real
 // multi-tenant RBAC boundaries (confirmed earlier this session).
 const GENERATOR_USERNAME = "layla@irisstar.tech";
-const GENERATOR_PASSWORD = "Layla@2026";
+const GENERATOR_PASSWORD = process.env.TEST_NURSE_PASSWORD ?? "";
 const NURSE_USERNAME = "layla@irisstar.tech";
-const NURSE_PASSWORD = "Layla@2026";
+const NURSE_PASSWORD = process.env.TEST_NURSE_PASSWORD ?? "";
 
 const QATAR_DESTINATION_BY_CODE: Record<string, string> = {
   SIDRA_PEDIATRIC_ED: "Sidra Medicine Emergency Department",

@@ -18,7 +18,7 @@ async function main() {
   console.log("failed login:", fail.status);
 
   // 2. Enrolled admin: successful password step -> MFA challenge -> MFA success
-  const step1 = await login("pa@irisstar.tech", "PlatformAdmin@2026", "platform_super_administrator");
+  const step1 = await login("pa@irisstar.tech", process.env.TEST_ADMIN_PASSWORD ?? "", "platform_super_administrator");
   console.log("admin step1 (mfa required):", step1.status, JSON.stringify(step1.body));
   if (step1.status !== 202) throw new Error("expected MFA challenge for enrolled admin");
 
