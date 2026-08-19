@@ -1,5 +1,6 @@
 import {
   appendAuditEvent,
+  auditLedgerHash,
   AUDIT_LEDGER_GENESIS_HASH,
   verifyAuditEventChain
 } from "../src/services/auditLedger.js";
@@ -133,6 +134,58 @@ describe("append-only chained audit ledger", () => {
       valid: true,
       checkedEvents: 1,
       legacyUnsignedEvents: 1
+    });
+  });
+
+  it("signs the JSON-normalized metadata representation that is persisted", async () => {
+    const store = fakeClient();
+    const createEvent = event("event-1", "QUEUE_ITEM_CREATE");
+    createEvent.module = "Queue";
+    createEvent.metadata = { channel: "phone", stationCode: undefined };
+
+    await appendAuditEvent(createEvent, store.client);
+
+    expect(store.rows[0].metadata).toEqual({ channel: "phone" });
+    await expect(verifyAuditEventChain(store.client)).resolves.toMatchObject({ valid: true, checkedEvents: 1 });
+  });
+
+  it("verifies the narrow v1 legacy create-event undefined-property representation", async () => {
+    const store = fakeClient();
+    process.env.AUDIT_HMAC_KEY_VERSION = "v1";
+    const legacyEvent = event("event-1", "QUEUE_ITEM_CREATE");
+    legacyEvent.module = "Queue";
+    legacyEvent.metadata = { channel: "phone", stationCode: undefined };
+    const eventHash = auditLedgerHash(legacyEvent, AUDIT_LEDGER_GENESIS_HASH, "v1");
+    store.rows.push({
+      id: legacyEvent.id,
+      timestamp: new Date(legacyEvent.timestampIso),
+      userId: legacyEvent.userId,
+      activeRole: legacyEvent.activeRole,
+      organization: legacyEvent.organization,
+      facility: legacyEvent.facility,
+      department: legacyEvent.department,
+      action: legacyEvent.action,
+      module: legacyEvent.module,
+      resource: legacyEvent.resource,
+      recordReference: null,
+      purpose: legacyEvent.purpose,
+      approvalReference: null,
+      ipAddress: legacyEvent.ipAddress,
+      device: legacyEvent.device,
+      sessionHash: null,
+      success: legacyEvent.success,
+      riskLevel: legacyEvent.risk,
+      metadata: { channel: "phone" },
+      previousHash: AUDIT_LEDGER_GENESIS_HASH,
+      eventHash,
+      keyVersion: "v1",
+      sequenceNumber: 1n
+    });
+
+    await expect(verifyAuditEventChain(store.client)).resolves.toMatchObject({
+      valid: true,
+      checkedEvents: 1,
+      legacyNormalizedEvents: 1
     });
   });
 });

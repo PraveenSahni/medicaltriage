@@ -85,6 +85,10 @@ function jsonValue(value: Record<string, unknown> | undefined): Prisma.InputJson
   return value === undefined ? undefined : (JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue);
 }
 
+function normalizedMetadata(value: Record<string, unknown> | undefined): Record<string, unknown> | undefined {
+  return value === undefined ? undefined : JSON.parse(JSON.stringify(value)) as Record<string, unknown>;
+}
+
 export async function appendAuditEvent(event: AuditEvent, client: PrismaClient = auditPrisma): Promise<{ id: string; eventHash: string }> {
   return client.$transaction(async (tx: AuditTransaction) => {
     await tx.$executeRawUnsafe("SELECT pg_advisory_xact_lock($1)", AUDIT_LEDGER_LOCK_ID);
@@ -95,7 +99,11 @@ export async function appendAuditEvent(event: AuditEvent, client: PrismaClient =
     });
     const previousHash = previous?.eventHash ?? AUDIT_LEDGER_GENESIS_HASH;
     const keyVersion = auditKeyVersion();
-    const eventHash = auditLedgerHash(event, previousHash, keyVersion);
+    // Sign the exact JSON representation that PostgreSQL will retain. JSON
+    // serialization removes undefined object properties; signing the original
+    // in-memory object would otherwise make a freshly written row unverifiable.
+    const persistedEvent = { ...event, metadata: normalizedMetadata(event.metadata) };
+    const eventHash = auditLedgerHash(persistedEvent, previousHash, keyVersion);
     const created = await tx.auditEvent.create({
       data: {
         id: event.id,
@@ -116,7 +124,7 @@ export async function appendAuditEvent(event: AuditEvent, client: PrismaClient =
         sessionHash: event.sessionHash,
         success: event.success,
         riskLevel: event.risk,
-        metadata: jsonValue(event.metadata),
+        metadata: jsonValue(persistedEvent.metadata),
         previousHash,
         eventHash,
         keyVersion
@@ -186,6 +194,7 @@ export type AuditChainVerification = {
   valid: boolean;
   checkedEvents: number;
   legacyUnsignedEvents: number;
+  legacyNormalizedEvents: number;
   firstInvalidEventId?: string;
   headHash: string;
 };
@@ -196,6 +205,7 @@ export async function verifyAuditEventChain(client: PrismaClient = auditPrisma):
     client.auditEvent.count({ where: { eventHash: null } })
   ]);
   let previousHash = AUDIT_LEDGER_GENESIS_HASH;
+  let legacyNormalizedEvents = 0;
   for (const row of rows) {
     const event: AuditEvent = {
       id: row.id,
@@ -219,17 +229,36 @@ export async function verifyAuditEventChain(client: PrismaClient = auditPrisma):
       metadata: (row.metadata as Record<string, unknown> | null) ?? undefined
     };
     const keyVersion = row.keyVersion ?? "";
-    const expected = auditLedgerHash(event, previousHash, keyVersion, secretForKeyVersion(keyVersion));
-    if (row.previousHash !== previousHash || !row.eventHash || !safeHashEqual(expected, row.eventHash)) {
+    const secret = secretForKeyVersion(keyVersion);
+    const expected = auditLedgerHash(event, previousHash, keyVersion, secret);
+    // Three early v1 QUEUE_ITEM_CREATE records were signed before JSON
+    // persistence removed an undefined stationCode property. Preserve those
+    // immutable records and verify their original canonical payload narrowly;
+    // all other shapes remain fail-closed.
+    const legacyCreateEvent = event.action === "QUEUE_ITEM_CREATE"
+      && event.module === "Queue"
+      && keyVersion === "v1"
+      && event.metadata !== undefined
+      && !Object.prototype.hasOwnProperty.call(event.metadata, "stationCode")
+      ? { ...event, metadata: { ...event.metadata, stationCode: undefined } }
+      : undefined;
+    const matchesLegacyNormalization = Boolean(
+      legacyCreateEvent
+      && row.eventHash
+      && safeHashEqual(auditLedgerHash(legacyCreateEvent, previousHash, keyVersion, secret), row.eventHash)
+    );
+    if (row.previousHash !== previousHash || !row.eventHash || (!safeHashEqual(expected, row.eventHash) && !matchesLegacyNormalization)) {
       return {
         valid: false,
         checkedEvents: rows.indexOf(row),
         legacyUnsignedEvents,
+        legacyNormalizedEvents,
         firstInvalidEventId: row.id,
         headHash: previousHash
       };
     }
+    if (matchesLegacyNormalization) legacyNormalizedEvents += 1;
     previousHash = row.eventHash;
   }
-  return { valid: true, checkedEvents: rows.length, legacyUnsignedEvents, headHash: previousHash };
+  return { valid: true, checkedEvents: rows.length, legacyUnsignedEvents, legacyNormalizedEvents, headHash: previousHash };
 }
