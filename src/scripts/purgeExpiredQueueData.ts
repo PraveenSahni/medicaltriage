@@ -7,9 +7,8 @@
  * The retention window is read from the real `RetentionPolicy` table (code
  * `TRIAGE_QUEUE_ITEM_COMPLETED`) when a row exists - this is the first real
  * enforcement code path for that previously schema-only table. `--retention-days`
- * remains as an explicit override/fallback for when no policy row exists yet,
- * so this script still works standalone (e.g. in an environment that hasn't
- * seeded a policy row) rather than hard-failing.
+ * remains available for dry-run analysis only. Execute mode rejects an
+ * override and fails closed unless the approved active policy row exists.
  *
  * This is intentionally narrow: it purges only TriageQueueItem rows in
  * COMPLETED status whose updatedAt is older than the retention window. It
@@ -36,7 +35,8 @@
  *
  * Usage:
  *   npx tsx src/scripts/purgeExpiredQueueData.ts
- *   npx tsx src/scripts/purgeExpiredQueueData.ts --retention-days=90 --execute
+ *   npx tsx src/scripts/purgeExpiredQueueData.ts --retention-days=90
+ *   npx tsx src/scripts/purgeExpiredQueueData.ts --execute
  */
 import { PrismaClient } from "@prisma/client";
 import { appendOperationalAuditEvent } from "../services/auditLedger.js";

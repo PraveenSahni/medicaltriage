@@ -23,9 +23,9 @@ Current top blockers:
 3. PR-010 source and restart verification are technically complete on a
    zero-traffic SOC2 revision; Security Architecture approval remains the
    promotion and governance closure gate.
-4. PR-011 passed an isolated execute-mode rehearsal of the approved 365-day policy,
-   but production migration, scheduled activation, concurrent-hold race evidence
-   and Privacy/Legal approval remain pending.
+4. PR-011 technical activation is complete on SOC2 under the approved 365-day
+   policy. The weekly scheduler remains intentionally dry-run until Privacy/Legal
+   approves recurring destructive execution.
 5. PR-008 remains an accepted temporary shared-boundary risk. SOC2 is the
    authoritative remediation environment during customer security validation and
    will be decommissioned only after an approved final consolidation decision.
@@ -58,7 +58,7 @@ Status interpretation:
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted - temporary remediation topology | Separate databases/users/secrets remain on one instance; SOC2 is the remediation authority and final consolidation/decommission requires a separately approved change |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Complete | Demo and SOC2 services plus all six SOC2 jobs use the dedicated keyless runtime identity; per-secret access is scoped and live inventory was reverified |
 | PR-010 | High | Audit signatures are not an immutable/chained ledger | Security Architecture | Technical remediation complete on SOC2; approval pending | SOC2 uses an insert/select-only audit login; 2,376 legacy unsigned rows are bounded; new signed chain verified; live UPDATE denied |
-| PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Isolated rehearsal passed; production activation pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
+| PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Technical activation complete on SOC2; recurring execute approval pending | Active 365-day policy; isolated hold-safe rehearsal; SOC2 dry-run and zero-candidate execute evidence; recurring scheduler remains dry-run |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Complete | Healthy triage and marketing serving chains documented; stale load-balancer resources removed; post-change DNS/TLS/HTTP validation passed |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Complete | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
 | PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Complete | SOC2 exact-HTTP UAT passed authenticated admin/manager/nurse boundaries, PAM elevation, create/duplicate/invalid/conflict cases, reversible permission grant, audit lookup and approved cleanup |
@@ -724,12 +724,45 @@ Source controls:
 
 Outstanding activation gates:
 
-- Apply the 365-day policy migration to `ist_triage_demo` through the approved
-  release window and configure the retained scheduled job only after the
-  PR-008 SOC2 job disposition.
-- Perform a controlled concurrent-hold race rehearsal, record operator and
-  Privacy/Legal approver sign-off, and confirm rollback/disable procedure
-  before enabling scheduled execute mode.
+- Perform a controlled concurrent-hold race rehearsal and record the
+  Privacy/Legal approver sign-off before enabling recurring execute mode. The
+  rollback/disable procedure is now documented and the retained schedule remains
+  dry-run.
+
+### 2026-08-19 SOC2 technical activation evidence
+
+- Read-only inspection confirmed migration
+  `20260817210000_approve_365_day_retention` is applied and not rolled back in
+  `ist_triage_soc2`.
+- The active `TRIAGE_QUEUE_ITEM_COMPLETED` policy contains exactly 365 days,
+  decision `PR-011-2026-08-17`, a non-empty legal basis and
+  `archive_then_delete` mode.
+- At activation time the 365-day cutoff returned zero expired completed queue
+  records, zero legal-hold exclusions and zero eligible records; no archives or
+  deletions were created.
+- The retained Cloud Run job `purge-expired-queue-data-soc2` was upgraded to
+  immutable digest
+  `sha256:7e1a7e4077ff3bf417fd90a8c5a55e911ba1a89efc304355a87a37f5ba41ceb8`
+  from commit `74985a1b165326d3a7a330a2339b5e881ba49fa6`, uses the dedicated runtime
+  service account and restricted audit-writer secrets, and contains no
+  `--execute` argument.
+- Weekly scheduler `purge-expired-queue-data-soc2-trigger` remains enabled at
+  `0 3 * * 0` UTC and invokes the dry-run job only.
+- Dry-run execution `purge-expired-queue-data-soc2-f5tfp` succeeded using the
+  approved 365-day policy with zero changes and appended a valid
+  `RETENTION_PURGE_DRY_RUN` event.
+- One-time governed execute rehearsal
+  `purge-expired-queue-data-soc2-6txh8` succeeded with zero eligible records and
+  therefore zero deletions. It appended `RETENTION_PURGE_EXECUTED`; the retained
+  job definition remained dry-run afterward.
+- Subsequent ledger verification passed with 99 signed events and denied
+  `UPDATE`, `DELETE` and `TRUNCATE`. Focused retention governance tests passed
+  20/20 across the main and retained deployment copies; TypeScript validation
+  passed.
+- The disable/rollback procedure is recorded in `docs/retention-policy.md`.
+  Demo was not changed. Technical activation is complete; recurring destructive
+  scheduling remains gated on recorded Privacy/Legal approval and the controlled
+  concurrent-hold race rehearsal.
 
 ## Change log
 

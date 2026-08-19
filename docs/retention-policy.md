@@ -42,7 +42,27 @@ the deployed revision/image identity.
 Production execution requires an isolated rehearsal and a legal-hold negative
 test before the job is enabled against the authoritative database.
 
-## 4. Scope and exclusions
+The retained weekly SOC2 scheduler remains dry-run unless Privacy/Legal records
+approval for recurring destructive execution. A one-time `--execute` rehearsal
+with zero eligible records is evidence that the governed execute path loads the
+approved policy; it is not authorization to make the recurring scheduler
+destructive.
+
+## 4. Disable and rollback procedure
+
+1. Pause `purge-expired-queue-data-soc2-trigger` in Cloud Scheduler to stop new
+   executions.
+2. Confirm no `purge-expired-queue-data-soc2` execution is running.
+3. Keep the Cloud Run job arguments free of `--execute`; this restores dry-run
+   behavior without changing the approved policy or historical evidence.
+4. If execution exposed a defect, retain the append-only audit events and
+   archived records, place affected organizations or records under legal hold,
+   and restore deleted operational records only through an approved recovery
+   procedure. Do not delete or rewrite audit evidence.
+5. Record the incident, operator, execution ID, image digest and recovery result
+   before resuming the scheduler.
+
+## 5. Scope and exclusions
 
 This automatic 365-day policy covers completed `TriageQueueItem` records.
 It does **not** authorize automatic deletion of:
@@ -57,7 +77,7 @@ legal, or regulatory requirements that require longer preservation take
 precedence and must be recorded as a legal hold or a separately approved
 policy change.
 
-## 5. Implementation references
+## 6. Implementation references
 
 - Policy migration: `prisma/migrations/20260817210000_approve_365_day_retention/migration.sql`
 - Governance invariant: `src/services/retentionGovernance.ts`
