@@ -1,6 +1,8 @@
 # PR-010 Append-Only Audit Ledger
 
-This control applies to the authoritative demo in GCP project `triage-502706`, Cloud Run service `ist-triage-demo`, and logical database `ist_triage_demo`.
+This control applies to the SOC2 remediation environment in GCP project
+`triage-502706`, Cloud Run service `ist-triage-soc2`, and logical database
+`ist_triage_soc2`. Demo is excluded from current remediation changes.
 
 ## Security boundary
 
@@ -26,5 +28,12 @@ This control applies to the authoritative demo in GCP project `triage-502706`, C
 ## Legacy records and key rotation
 
 Rows written before this migration receive sequence numbers but no fabricated signatures. Verification reports them as `legacyUnsignedEvents`. Authenticity begins at the first chained record.
+
+Three immutable v1 `QUEUE_ITEM_CREATE` rows were signed with an undefined
+`stationCode` metadata property that JSON persistence subsequently omitted.
+Verification accepts only that proven action/module/key-version/missing-property
+shape and reports it separately as `legacyNormalizedEvents`; it does not rewrite
+or re-sign the rows. All new events are JSON-normalized before hashing so their
+signed representation is exactly the representation retained by PostgreSQL.
 
 Key rotation starts a new operational key version but does not remove old verification material. Before rotating, record the current chain head and key version in separately controlled security evidence and add the old key to `AUDIT_HMAC_KEYS_JSON`. Verification fails closed when any historical key version is unavailable.

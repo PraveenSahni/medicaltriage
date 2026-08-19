@@ -15,13 +15,14 @@ Current decision: **NO-GO**
 
 Current top blockers:
 
-1. PR-004 and PR-014 still require their recorded elevated/browser mutation UAT.
-   SOC2 is now the MFA-enforced remediation environment; demo is explicitly a
-   synthetic password-only user-testing environment.
+1. PR-004 and PR-014 administrator/conflict UAT is complete on the MFA-enforced
+   SOC2 remediation environment. Demo remains the synthetic password-only
+   user-testing environment and was not changed by that UAT.
 2. PR-006 and PR-015 technical matrices passed on deployed candidates, but named
    qualified Clinical QA approval is still required before clinical promotion.
-3. PR-010 is deployed and technically verified on SOC2; Security Architecture
-   approval remains a governance closure gate.
+3. PR-010 source and restart verification are technically complete on a
+   zero-traffic SOC2 revision; Security Architecture approval remains the
+   promotion and governance closure gate.
 4. PR-011 passed an isolated execute-mode rehearsal of the approved 365-day policy,
    but production migration, scheduled activation, concurrent-hold race evidence
    and Privacy/Legal approval remain pending.
@@ -627,6 +628,41 @@ Outstanding promotion gates:
   paths, then restart the zero-traffic revision and re-run integrity
   verification.
 - Obtain Security Architecture approval before promotion.
+
+### 2026-08-19 SOC2 cross-path and restart verification
+
+- Commit `74985a1b165326d3a7a330a2339b5e881ba49fa6` corrects a canonicalization
+  defect found during live verification: JSON persistence removed an undefined
+  `stationCode` metadata property after the event had been signed. New writes
+  now sign the exact JSON-normalized representation persisted to PostgreSQL.
+- The immutable historical rows were not updated or re-signed. Exactly three
+  v1 `QUEUE_ITEM_CREATE` events match the proven legacy undefined-property
+  representation and are reported as `legacyNormalizedEvents=3`; every other
+  event shape remains fail-closed.
+- Focused ledger regression tests passed 14/14 across the main and retained
+  deployment copies. Project TypeScript validation passed.
+- Pre-restart SOC2 evidence passed with 91 signed events, 2,376 explicitly
+  unsigned pre-migration events, all required authentication, user, role and
+  queue action families, and denied `UPDATE`, `DELETE` and `TRUNCATE` attempts.
+  Evidence: `test-results/pr010-soc2-pre-restart-20260819071225.json`.
+- Cloud Build `b80a06c2-18c7-4427-a5b9-ce85bed1d174` produced immutable digest
+  `sha256:7e1a7e4077ff3bf417fd90a8c5a55e911ba1a89efc304355a87a37f5ba41ceb8`.
+  Zero-traffic SOC2 revision `ist-triage-soc2-pr010b-74985a1`, tag
+  `pr010-restart`, reports the exact Git SHA, build ID and revision name and
+  retains the dedicated runtime service account and all eight persistence
+  controls.
+- A governed synthetic monitor completed password plus MFA authentication on
+  the restarted revision. Its attempt to call the administrator-only integrity
+  endpoint returned 403, confirming least privilege rather than granting the
+  nurse monitor audit access.
+- Post-restart restricted-role verification passed with 96 signed events,
+  `legacyUnsignedEvents=2376`, `legacyNormalizedEvents=3`, all cross-path action
+  families present, and all three mutation attempts denied. Evidence:
+  `test-results/pr010-soc2-post-restart-20260819072716.json`.
+- SOC2 production traffic remained 100% on `ist-triage-soc2-00078-qul`; demo
+  traffic and configuration were untouched. Technical remediation and restart
+  evidence are complete. Security Architecture approval is still required
+  before promotion and final governance closure.
 
 ## PR-011 implementation record — 365-day retention and hold-safe privacy execution
 
