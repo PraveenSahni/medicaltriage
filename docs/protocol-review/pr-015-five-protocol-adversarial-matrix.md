@@ -102,3 +102,23 @@ approval.
 Technical deployment evidence is complete. PR-015 still requires the named
 qualified Clinical QA signature above; technical execution cannot supply that
 clinical approval.
+
+## 2026-08-19 SOC2 remediation refresh
+
+- The current remediation branch again passed the complete backend lineage
+  command: 100/100 per source copy (200/200 observed because Jest also
+  discovered the retained deployment worktree).
+- The nurse ambiguity/override UI suite passed 10/10 using the frontend Jest
+  configuration, and frontend TypeScript validation passed.
+- Git comparison from deployed-evidence commit
+  `47e10f3d2be2ce25c30c8e3952a7f64d6d395139` through current immutable SOC2
+  image commit `74985a1b165326d3a7a330a2339b5e881ba49fa6` found no changes to the
+  protocol search, adversarial matrix, queue classification, match panel or
+  override test files. The existing deployed 25/25 evidence therefore covers
+  the same implementation now under SOC2 remediation.
+- No clinical content, protocol mapping, demo configuration or production
+  traffic was changed during this refresh.
+
+The remaining gate is unchanged: a qualified named Clinical QA reviewer must
+complete and sign the approval block above. Automated technical evidence cannot
+replace that clinical accountability.

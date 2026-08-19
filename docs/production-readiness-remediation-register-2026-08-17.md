@@ -999,6 +999,12 @@ and ready for the guarded exact-HTTP matrix; it is not yet closed.
   execution job was removed and production traffic was unchanged. Closure now
   requires a named qualified Clinical QA reviewer signature. The review artifact is
   `docs/protocol-review/pr-015-five-protocol-adversarial-matrix.md`.
+- 2026-08-19 refresh passed 100/100 backend lineage cases per source copy,
+  10/10 nurse-override UI cases and frontend TypeScript validation. Git
+  comparison confirmed the matching and override implementation is unchanged
+  between the prior deployed 25/25 evidence image and current SOC2 remediation
+  image commit `74985a1`; no redeployment was required. Named Clinical QA
+  signature remains the sole closure gate.
 
 ## 2026-08-19 SOC2 remediation cutover and demo testing exception
 
