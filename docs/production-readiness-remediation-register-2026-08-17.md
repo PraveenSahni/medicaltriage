@@ -35,6 +35,11 @@ remediated SOC2 revision is promoted, and demo has a documented PR-001 testing
 exception. The overall release decision remains **NO-GO** until the remaining
 clinical, privacy/legal and live UAT gates are closed.
 
+The remaining approval blocks and post-approval operator actions are
+consolidated in
+`docs/production-readiness-approval-closure-pack-2026-08-19.md`. Blank or
+partially completed blocks are not approvals.
+
 Status interpretation:
 
 - **Complete**: all recorded closure gates passed.
