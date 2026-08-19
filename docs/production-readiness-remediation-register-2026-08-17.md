@@ -53,7 +53,7 @@ Status interpretation:
 | PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | Complete | Eight flags enabled; migrations current; cross-revision MFA/session/queue durability; live audit, reveal and both anomaly stores verified |
 | PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Complete | Assignment-time SoD validator; 135/135 regression; SOC2 administrator PAM UAT proved conflicting role assignment and conflicting permission grant return 409; cleanup verified |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Complete | Exactly 3 protected roles confirmed on the current immutable candidate; Platform Administrator sees governed custom-role creation; historical 19-role material is labelled historical |
-| PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Zero-traffic canary passed; clinical sign-off and promotion pending | Exact-question advice enforced; live 30/30 five-protocol matrix and fail-closed negatives passed |
+| PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | SOC2 technical verification complete; clinical sign-off and promotion pending | Exact-question advice enforced; authenticated current-image 30/30 five-protocol matrix and fail-closed negatives passed |
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Complete | Governed SOC2 nurse MFA UAT passed incremental IAQ/TAQ/approval merge, answer, hold/resume reload, disposition, idempotent retry, late-answer 409, unchanged storage and audited cleanup |
 | PR-008 | High | Shared Cloud SQL instance is a common boundary | Cloud owner | Risk accepted - temporary remediation topology | Separate databases/users/secrets remain on one instance; SOC2 is the remediation authority and final consolidation/decommission requires a separately approved change |
 | PR-009 | High | Demo and scheduled jobs use default Compute service account | Cloud Security | Complete | Demo and SOC2 services plus all six SOC2 jobs use the dedicated keyless runtime identity; per-secret access is scoped and live inventory was reverified |
@@ -402,6 +402,33 @@ Outstanding deployment gates:
 - Confirm no generic or same-disposition sibling advice appears in network responses or the UI; record protocol ID, question ID, advice IDs and revision for each run.
 - Obtain named Clinical QA approval before promotion. Repeat on SOC2 only if
   that temporary environment remains in scope under PR-008.
+
+### 2026-08-19 current SOC2 verification
+
+- Current-source exact-lineage regression passed 38/38 per source copy (76/76
+  observed because Jest also discovered the retained deployment worktree).
+  This includes the named 30-case matrix across exactly five protocols, three
+  exhaustive passes over all 126 authored TAQs, same-disposition sibling
+  exclusion, unknown/cross-protocol rejection and API provenance contracts.
+- Focused frontend protocol and completion-stage tests passed 10/10. Backend
+  and frontend TypeScript validation passed.
+- Governed synthetic-monitor password plus MFA authentication succeeded against
+  zero-traffic SOC2 revision `ist-triage-soc2-pr010b-74985a1`.
+- The read-only live API matrix passed 30/30 positive cases across exactly the
+  five licensed protocols. Every response returned `selectionMode` =
+  `EXACT_QUESTION`, the requested protocol/question lineage, and exactly the
+  selected question's authored advice IDs with no disposition-sharing sibling
+  advice.
+- Missing question lineage, an unknown question and a cross-protocol question
+  each failed closed with HTTP 422. Evidence:
+  `test-results/pr006-soc2-live-20260819082606.json`.
+- Runtime provenance matched Git
+  `74985a1b165326d3a7a330a2339b5e881ba49fa6`; the validation created no queue
+  or clinical records and changed neither demo nor production traffic.
+- Technical verification on the current SOC2 image is complete. A qualified
+  named Clinical QA reviewer must still approve the clinical wording,
+  thresholds and protocol content before promotion; automated execution cannot
+  provide that approval.
 
 ## PR-007 implementation record — structured clinical JSON merge invariant
 
