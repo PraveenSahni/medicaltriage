@@ -26,7 +26,7 @@
 import { PrismaClient } from "@prisma/client";
 import { sanitizeForLog } from "../utils/logSanitizer.js";
 import { appendOperationalAuditEvent } from "../services/auditLedger.js";
-import { excludeLegallyHeld } from "../services/retentionGovernance.js";
+import { excludeLegallyHeld, LEGAL_HOLD_MUTATION_LOCK_ID } from "../services/retentionGovernance.js";
 
 // Masks a person identifier for console output (NFR-078/NFR-004 AI-tab) -
 // the durable AuditEvent.metadata below still records the real, unmasked
@@ -126,6 +126,7 @@ async function main() {
       let executionResult: { deletedCount: number; heldCount: number } | undefined;
       if (execute) {
         const execution = await prisma.$transaction(async (tx) => {
+          await tx.$executeRawUnsafe("SELECT pg_advisory_xact_lock($1)", LEGAL_HOLD_MUTATION_LOCK_ID);
           const currentItems = await tx.triageQueueItem.findMany({
             where: { istStaffId: request.requesterRef },
             select: { id: true, organizationId: true }

@@ -40,7 +40,7 @@
  */
 import { PrismaClient } from "@prisma/client";
 import { appendOperationalAuditEvent } from "../services/auditLedger.js";
-import { approvedRetentionDays, excludeLegallyHeld } from "../services/retentionGovernance.js";
+import { approvedRetentionDays, excludeLegallyHeld, LEGAL_HOLD_MUTATION_LOCK_ID } from "../services/retentionGovernance.js";
 
 const prisma = new PrismaClient();
 
@@ -101,9 +101,10 @@ async function main() {
 
   if (execute && candidates.length > 0) {
     const result = await prisma.$transaction(async (tx) => {
-      // Re-read candidates and holds inside a serializable transaction. A
-      // concurrent legal-hold insert forces serialization failure instead of
-      // allowing a record checked before the hold to be deleted afterward.
+      // Serialize against every legal-hold mutation at the database boundary,
+      // then re-read eligibility. A hold that wins the lock is visible before
+      // deletion; a purge that wins is legally ordered before the later hold.
+      await tx.$executeRawUnsafe("SELECT pg_advisory_xact_lock($1)", LEGAL_HOLD_MUTATION_LOCK_ID);
       const expired = await tx.triageQueueItem.findMany({ where: { status: "COMPLETED", updatedAt: { lt: cutoff } } });
       const [recordHolds, organizationHolds] = await Promise.all([
         tx.legalHold.findMany({ where: { resourceType: "TriageQueueItem", status: "active" }, select: { resourceId: true } }),

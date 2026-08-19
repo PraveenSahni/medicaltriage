@@ -2,7 +2,8 @@ import {
   approvedRetentionDays,
   excludeLegallyHeld,
   APPROVED_RETENTION_DECISION,
-  APPROVED_RETENTION_DAYS
+  APPROVED_RETENTION_DAYS,
+  LEGAL_HOLD_MUTATION_LOCK_ID
 } from "../src/services/retentionGovernance.js";
 
 const approvedPolicy = {
@@ -55,5 +56,9 @@ describe("PR-011 retention governance", () => {
 
   it("allows a record after its hold is released (absent from active-hold sets)", () => {
     expect(excludeLegallyHeld([{ id: "released", organizationId: "org-a" }], new Set(), new Set()).eligible).toHaveLength(1);
+  });
+
+  it("uses a stable database-boundary lock identity for hold/delete serialization", () => {
+    expect(LEGAL_HOLD_MUTATION_LOCK_ID).toBe(1_096_520_211_011n);
   });
 });

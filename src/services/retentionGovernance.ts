@@ -1,5 +1,6 @@
 export const APPROVED_RETENTION_DAYS = 365;
 export const APPROVED_RETENTION_DECISION = "PR-011-2026-08-17";
+export const LEGAL_HOLD_MUTATION_LOCK_ID = 1_096_520_211_011n;
 
 export type ActiveRetentionPolicy = {
   code: string;
