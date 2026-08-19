@@ -85,7 +85,7 @@
     "express": "^4.19.2",
     "helmet": "^7.1.0",
     "jose": "^6.2.8",
-    "lucide-react": "^0.474.0",
+    "lucide-react": "^1.31.0",
     "morgan": "^1.10.0",
     "openid-client": "^6.8.4",
     "otplib": "^12",
