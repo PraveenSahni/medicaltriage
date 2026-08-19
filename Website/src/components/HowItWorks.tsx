@@ -5,7 +5,7 @@ export function HowItWorks() {
     {
       icon: UserCheck,
       title: 'Caller Identity & Reason',
-      description: "Integrated with the client's HRMS and IVR systems. The caller is automatically verified (age, sex, role) the moment the call comes in — no manual lookup. The IVR captures the reason for the call as an audio clip, auto-transcribed for the nurse.",
+      description: "Integrated with your HRMS and IVR. The caller is verified — age, gender, role — the instant the call lands. No manual lookup. The reason for the call is captured as audio and auto-transcribed for the nurse.",
     },
     {
       icon: FileCode2,
@@ -15,7 +15,7 @@ export function HowItWorks() {
     {
       icon: MessagesSquare,
       title: 'Guided Questioning',
-      description: 'Structured, acuity-ordered questions walk the nurse from the most dangerous possible condition down to routine self-care, ruling out serious conditions one by one. The first "Yes" locks in the correct outcome instantly.',
+      description: 'Structured, acuity-ordered questions rule out the most dangerous condition first, then work down to routine self-care. The first "Yes" locks in the correct outcome.',
     },
     {
       icon: Send,

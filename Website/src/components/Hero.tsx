@@ -17,7 +17,7 @@ export function Hero() {
             </span>
           </h1>
           <p className="text-lg lg:text-xl text-neutral-600 leading-relaxed mb-10 max-w-xl font-medium">
-            AiMLTriage puts a licensed, nurse-backed clinical check in front of every employee health call — so people only escalate to costly care when it's actually needed.
+            A licensed nurse reviews every employee health call before it becomes a claim — so only real emergencies escalate to costly care.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center gap-6">

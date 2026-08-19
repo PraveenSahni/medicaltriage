@@ -13,7 +13,7 @@ export function BusinessProblem() {
             <span className="italic text-brand-800 underline decoration-neutral-300">It's unnecessary escalation.</span>
           </h2>
           <p className="text-lg text-neutral-600 leading-relaxed font-medium max-w-2xl">
-            Employee health insurance is one of the largest and fastest-growing costs for enterprises across the Middle East. But a major portion of that spend is completely avoidable.
+            Employee health insurance is one of the largest and fastest-growing costs for enterprises across the GCC. But a major portion of that spend is completely avoidable.
           </p>
         </div>
 

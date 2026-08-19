@@ -15,7 +15,7 @@ export function Features() {
     {
       icon: BadgeDollarSign,
       title: 'Cost-Aware Routing',
-      description: 'Every case is triaged against licensed clinical criteria, ensuring employees land on the lowest-cost care pathway that\'s still clinically safe.'
+      description: 'Every case is triaged against licensed clinical criteria — landing on the lowest-cost pathway that\'s still clinically safe.'
     },
     {
       icon: BookOpenCheck,

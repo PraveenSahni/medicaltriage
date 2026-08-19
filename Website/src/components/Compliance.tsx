@@ -47,7 +47,7 @@ export function Compliance() {
               <span className="italic text-emerald-400 underline decoration-neutral-600">within the region</span>
             </h2>
             <p className="text-lg text-neutral-400 leading-relaxed mb-8">
-              We understand the strict regulatory environment for health and employee data. By default, AiMLTriage is hosted entirely on regional cloud infrastructure with no data leaving the Middle East. For stricter internal requirements, it can be deployed <strong>directly on your own enterprise private cloud</strong>, giving you complete control over your data.
+              Health and employee data sit under a strict regulatory regime — so by default, AiMLTriage runs entirely on regional cloud infrastructure, with no data leaving the Middle East. For stricter requirements, deploy it <strong>directly on your own enterprise private cloud</strong> — full control, no exceptions.
             </p>
           </div>
         </div>

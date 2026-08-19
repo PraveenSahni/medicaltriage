@@ -14,7 +14,7 @@ export function Impact() {
               <span className="italic text-emerald-400 underline decoration-neutral-600">No more, no less.</span>
             </h2>
             <p className="text-lg text-neutral-400 mb-12 leading-relaxed">
-              By putting a licensed clinical triage layer in front of every employee health call, AiMLTriage makes sure each case goes to the correct level of care. The result: fewer unnecessary high-cost claims and a stronger position at renewal.
+              Every call gets triaged to the right level of care — nothing more, nothing less. Fewer unnecessary high-cost claims. A stronger position at renewal.
             </p>
 
             <div className="space-y-8">
