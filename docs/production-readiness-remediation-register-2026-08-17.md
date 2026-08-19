@@ -50,7 +50,7 @@ Status interpretation:
 | PR-001 | Critical | Shared/seeded demo credentials usable in production runtime | Engineering + IAM owner | Complete with explicit demo-only exception | Credentials fail closed by default; SOC2 requires governed credentials and MFA; synthetic demo deliberately sets `ALLOW_DEMO_CREDENTIALS=true` and `MFA_MANDATORY=false` for user testing |
 | PR-002 | Critical | Deployed image cannot be mapped to exact Git commit | DevOps | Complete | Guarded clean-tree release; Git SHA, Cloud Build, immutable digest, revision labels and live runtime response match on current zero-traffic candidate |
 | PR-003 | Critical | Incomplete security persistence flags | DevOps + Security | Complete | Eight flags enabled; migrations current; cross-revision MFA/session/queue durability; live audit, reveal and both anomaly stores verified |
-| PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Zero-traffic canary healthy; elevated mutation UAT ready | Assignment-time SoD validator; 135/135 regression; nurse mutation denied live; operator MFA available |
+| PR-004 | Critical | Responsibility conflicts declared but unenforced | Engineering + Security | Complete | Assignment-time SoD validator; 135/135 regression; SOC2 administrator PAM UAT proved conflicting role assignment and conflicting permission grant return 409; cleanup verified |
 | PR-005 | High | Backend has 3 roles while product/audit material claims 19 | Product + Security | Complete | Exactly 3 protected roles confirmed on the current immutable candidate; Platform Administrator sees governed custom-role creation; historical 19-role material is labelled historical |
 | PR-006 | Critical | Care advice can fall back to every item sharing a disposition code | Clinical Engineering | Zero-traffic canary passed; clinical sign-off and promotion pending | Exact-question advice enforced; live 30/30 five-protocol matrix and fail-closed negatives passed |
 | PR-007 | High | Free-form JSON overwrite remains in legacy workspaces/scripts | Engineering | Technical canary passed; browser workflow UAT blocked by PR-014 | Live incremental merge, cross-revision reload and disposition-lock regression passed; nurse browser paths require an authenticating governed account |
@@ -60,7 +60,7 @@ Status interpretation:
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Isolated rehearsal passed; production activation pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Complete | Healthy triage and marketing serving chains documented; stale load-balancer resources removed; post-change DNS/TLS/HTTP validation passed |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Complete | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
-| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Governed nurse/manager credentials issued; first-login MFA and workflow UAT pending | PAM-protected existing-user transition deployed; Layla and Khalid passwords accepted with MFA enrollment required; roles preserved |
+| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Complete | SOC2 exact-HTTP UAT passed authenticated admin/manager/nurse boundaries, PAM elevation, create/duplicate/invalid/conflict cases, reversible permission grant, audit lookup and approved cleanup |
 | PR-015 | High | Five-protocol adversarial auto-match matrix missing | Clinical QA | Technical deployment matrix passed; clinical signature pending | 25/25 deployed ambiguity/no-match matrix; 100/100 clinical regressions; nurse override evidence; named Clinical QA signature |
 
 ## Historical GCP baseline captured 2026-08-17
@@ -988,3 +988,44 @@ Demo testing evidence:
   `platform_super_administrator`, and can read the protected administrator roles
   surface. The revision then received 100% demo traffic and the password-only login
   was repeated successfully through the primary demo URL.
+
+## 2026-08-19 PR-004 and PR-014 SOC2 closure UAT
+
+The guarded live runner was extended to support the authoritative SOC2 endpoint and
+mandatory MFA for each protected test role. Backend TypeScript validation passed.
+The demo service and database were not accessed or changed during this UAT.
+
+Execution target and controls:
+
+- Primary target: `https://ist-triage-soc2-gv6v4zyvuq-ww.a.run.app`, revision
+  `ist-triage-soc2-00078-qul`; zero-traffic identity-loading revision
+  `ist-triage-soc2-00080-fax` was not promoted.
+- Three temporary governed identities were created with exactly one protected role
+  each: Platform Administrator, Service Manager and Triage Nurse. All three completed
+  mandatory TOTP enrollment. Their random passwords and TOTP seeds were held only in
+  six temporary Secret Manager records and were never printed or documented.
+
+Exact-HTTP results:
+
+- Anonymous create user: 401.
+- Service Manager create user: 403.
+- Triage Nurse grant permission: 403.
+- Platform Administrator create user before PAM elevation: 403.
+- Administrator password + MFA authentication: 202 then 200; PAM elevation: 200.
+- Valid controlled user creation: 201; issued password accepted and returned the
+  expected mandatory-MFA enrollment response.
+- Duplicate email: 409; external email: 400; unknown role: 400.
+- Conflicting Nurse + Service Manager role assignment: 409.
+- Reversible `reports.view` nurse grant: 200 and immediately visible; manager attempt
+  to grant it: 403; conflicting `privacy.reveal.approve` nurse grant: 409.
+- Resource-specific audit lookup: 200.
+- Permission rollback and controlled-user deactivation: 200.
+
+Independent post-run verification proved the reversible permissions were absent and
+no active controlled PR-014 user remained. The authenticated audit-integrity endpoint
+returned `valid=true`, 33 checked signed events and 2,376 explicitly bounded legacy
+unsigned events. The three UAT identities were deactivated; each subsequent login
+returned 403. The administrator self-deactivation guard correctly required an audited
+maintenance cleanup, which recorded `USER_STATUS_CHANGED`. All six temporary secrets
+were then deleted. Machine-readable evidence is
+`test-results/pr014-live-uat-20260819061647.json`.

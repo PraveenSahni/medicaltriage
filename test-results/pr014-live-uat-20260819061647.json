@@ -1,0 +1,263 @@
+{
+  "control": "PR-014",
+  "target": "https://ist-triage-soc2-gv6v4zyvuq-ww.a.run.app",
+  "executedAt": "2026-08-19T06:16:49.865Z",
+  "syntheticEmail": "pr014.uat.20260819061647@irisstar.tech",
+  "evidence": [
+    {
+      "id": "UAT-001",
+      "method": "POST",
+      "path": "/api/v1/admin/users",
+      "expected": [
+        401
+      ],
+      "actual": 401,
+      "pass": true
+    },
+    {
+      "id": "AUTH-ADMIN",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        200,
+        202
+      ],
+      "actual": 202,
+      "pass": true
+    },
+    {
+      "id": "AUTH-ADMIN-MFA",
+      "method": "POST",
+      "path": "/api/v1/auth/mfa/verify",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "AUTH-MANAGER",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        200,
+        202
+      ],
+      "actual": 202,
+      "pass": true
+    },
+    {
+      "id": "AUTH-MANAGER-MFA",
+      "method": "POST",
+      "path": "/api/v1/auth/mfa/verify",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "AUTH-NURSE",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        200,
+        202
+      ],
+      "actual": 202,
+      "pass": true
+    },
+    {
+      "id": "AUTH-NURSE-MFA",
+      "method": "POST",
+      "path": "/api/v1/auth/mfa/verify",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "UAT-002",
+      "method": "POST",
+      "path": "/api/v1/admin/users",
+      "expected": [
+        403
+      ],
+      "actual": 403,
+      "pass": true
+    },
+    {
+      "id": "UAT-003",
+      "method": "POST",
+      "path": "/api/v1/admin/roles/remote_triage_nurse/permissions",
+      "expected": [
+        403
+      ],
+      "actual": 403,
+      "pass": true
+    },
+    {
+      "id": "UAT-004",
+      "method": "POST",
+      "path": "/api/v1/admin/users",
+      "expected": [
+        403
+      ],
+      "actual": 403,
+      "pass": true
+    },
+    {
+      "id": "UAT-007",
+      "method": "POST",
+      "path": "/api/v1/admin/elevate",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "UAT-008",
+      "method": "POST",
+      "path": "/api/v1/admin/users",
+      "expected": [
+        201
+      ],
+      "actual": 201,
+      "pass": true
+    },
+    {
+      "id": "AUTH-CREATED-USER",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        200,
+        401
+      ],
+      "actual": 401,
+      "pass": true
+    },
+    {
+      "id": "UAT-009",
+      "method": "POST",
+      "path": "/api/v1/admin/users",
+      "expected": [
+        409
+      ],
+      "actual": 409,
+      "pass": true
+    },
+    {
+      "id": "UAT-010",
+      "method": "POST",
+      "path": "/api/v1/admin/users",
+      "expected": [
+        400
+      ],
+      "actual": 400,
+      "pass": true
+    },
+    {
+      "id": "UAT-011",
+      "method": "POST",
+      "path": "/api/v1/admin/users",
+      "expected": [
+        400
+      ],
+      "actual": 400,
+      "pass": true
+    },
+    {
+      "id": "UAT-012",
+      "method": "POST",
+      "path": "/api/v1/admin/users",
+      "expected": [
+        409
+      ],
+      "actual": 409,
+      "pass": true
+    },
+    {
+      "id": "UAT-013",
+      "method": "GET",
+      "path": "/api/v1/admin/roles",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "UAT-014",
+      "method": "POST",
+      "path": "/api/v1/admin/roles/remote_triage_nurse/permissions",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "UAT-015",
+      "method": "GET",
+      "path": "/api/v1/admin/roles",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "UAT-016",
+      "method": "POST",
+      "path": "/api/v1/admin/roles/remote_triage_nurse/permissions",
+      "expected": [
+        403
+      ],
+      "actual": 403,
+      "pass": true
+    },
+    {
+      "id": "UAT-017",
+      "method": "POST",
+      "path": "/api/v1/admin/roles/remote_triage_nurse/permissions",
+      "expected": [
+        409
+      ],
+      "actual": 409,
+      "pass": true
+    },
+    {
+      "id": "UAT-018",
+      "method": "GET",
+      "path": "/api/v1/admin/audit-events/resource/UserAccount:usr_a0d9fdbe3cb0388f",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "CLEAN-001",
+      "method": "DELETE",
+      "path": "/api/v1/admin/roles/remote_triage_nurse/permissions/reports.view",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "id": "CLEAN-002",
+      "method": "PATCH",
+      "path": "/api/v1/admin/users/usr_a0d9fdbe3cb0388f/status",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "pass": true
+    }
+  ],
+  "passed": true
+}

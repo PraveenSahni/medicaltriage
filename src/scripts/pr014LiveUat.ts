@@ -5,6 +5,7 @@ const API_BASE = (process.env.API_BASE ?? "").replace(/\/$/, "");
 const allowedTargets = new Set([
   "https://triaged.irisstar.tech",
   "https://ist-triage-demo-1096520215793.me-central1.run.app",
+  "https://ist-triage-soc2-gv6v4zyvuq-ww.a.run.app",
   "https://pr010-canary---ist-triage-demo-gv6v4zyvuq-ww.a.run.app",
   "https://pr014-canary---ist-triage-demo-gv6v4zyvuq-ww.a.run.app"
 ]);
@@ -13,9 +14,9 @@ if (process.env.ALLOW_LIVE_ADMIN_UAT !== "PR014") throw new Error("Set ALLOW_LIV
 if (!allowedTargets.has(API_BASE)) throw new Error(`Refusing unapproved PR-014 target: ${API_BASE || "<empty>"}`);
 
 const credentials = {
-  admin: { username: process.env.PR014_ADMIN_USERNAME ?? "rishma@irisstar.tech", password: process.env.PR014_ADMIN_PASSWORD ?? "PlatformAdmin@2026" },
-  manager: { username: process.env.PR014_MANAGER_USERNAME ?? "khalid@irisstar.tech", password: process.env.PR014_MANAGER_PASSWORD ?? "Khalid@2026" },
-  nurse: { username: process.env.PR014_NURSE_USERNAME ?? "layla@irisstar.tech", password: process.env.PR014_NURSE_PASSWORD ?? "Layla@2026" }
+  admin: { username: process.env.PR014_ADMIN_USERNAME ?? "rishma@irisstar.tech", password: process.env.PR014_ADMIN_PASSWORD ?? "PlatformAdmin@2026", mfaSecret: process.env.PR014_ADMIN_MFA_SECRET },
+  manager: { username: process.env.PR014_MANAGER_USERNAME ?? "khalid@irisstar.tech", password: process.env.PR014_MANAGER_PASSWORD ?? "Khalid@2026", mfaSecret: process.env.PR014_MANAGER_MFA_SECRET },
+  nurse: { username: process.env.PR014_NURSE_USERNAME ?? "layla@irisstar.tech", password: process.env.PR014_NURSE_PASSWORD ?? "Layla@2026", mfaSecret: process.env.PR014_NURSE_MFA_SECRET }
 };
 
 type Jar = { cookie?: string; token?: string };
@@ -36,10 +37,22 @@ async function call(jar: Jar, id: string, method: string, path: string, expected
   return { response, body: parsed as Record<string, any> };
 }
 
-async function login(label: string, username: string, password: string) {
+async function login(label: string, username: string, password: string, mfaSecret?: string, allowEnrollmentRequired = false) {
   const jar: Jar = {};
-  const result = await call(jar, `AUTH-${label}`, "POST", "/api/v1/auth/login", [200], { username, password });
-  jar.token = result.body.accessToken;
+  const expected = mfaSecret ? [200, 202] : allowEnrollmentRequired ? [200, 401] : [200];
+  const result = await call(jar, `AUTH-${label}`, "POST", "/api/v1/auth/login", expected, { username, password });
+  if (result.response.status === 202 && result.body.mfaRequired) {
+    if (!mfaSecret) throw new Error(`${label} requires MFA but no test secret was provided`);
+    const verified = await call(jar, `AUTH-${label}-MFA`, "POST", "/api/v1/auth/mfa/verify", [200], {
+      challengeId: result.body.challengeId,
+      code: authenticator.generate(mfaSecret)
+    });
+    jar.token = verified.body.accessToken;
+  } else if (result.response.status === 401 && result.body.mfaEnrollmentRequired) {
+    if (!allowEnrollmentRequired) throw new Error(`${label} unexpectedly requires MFA enrollment`);
+  } else {
+    jar.token = result.body.accessToken;
+  }
   return jar;
 }
 
@@ -65,7 +78,7 @@ async function main() {
     if (runtime.body.environment !== "demo" || runtime.body.dataProfile !== "synthetic") {
       throw new Error("PR-014 verification target is not the synthetic demo environment");
     }
-    const admin = await login("VERIFY-ADMIN", credentials.admin.username, credentials.admin.password);
+    const admin = await login("VERIFY-ADMIN", credentials.admin.username, credentials.admin.password, credentials.admin.mfaSecret);
     const roles = await call(admin, "VERIFY-ROLES", "GET", "/api/v1/admin/roles", [200]);
     const nurseRole = roles.body.roles?.find((role: { code: string }) => role.code === "remote_triage_nurse");
     for (const permissionCode of ["reports.view", "privacy.reveal.approve"]) {
@@ -82,7 +95,7 @@ async function main() {
   }
 
   if (process.env.PR014_RECOVERY === "true") {
-    const admin = await login("RECOVERY-ADMIN", credentials.admin.username, credentials.admin.password);
+    const admin = await login("RECOVERY-ADMIN", credentials.admin.username, credentials.admin.password, credentials.admin.mfaSecret);
     const enroll = await call(admin, "RECOVERY-MFA-ENROLL", "POST", "/api/v1/auth/mfa/enroll", [200]);
     const secret = enroll.body.secret;
     if (!secret) throw new Error("Recovery MFA enrollment returned no secret");
@@ -108,17 +121,20 @@ async function main() {
   }
 
   await call(anonymous, "UAT-001", "POST", "/api/v1/admin/users", [401], payload);
-  const admin = await login("ADMIN", credentials.admin.username, credentials.admin.password);
-  const manager = await login("MANAGER", credentials.manager.username, credentials.manager.password);
-  const nurse = await login("NURSE", credentials.nurse.username, credentials.nurse.password);
+  const admin = await login("ADMIN", credentials.admin.username, credentials.admin.password, credentials.admin.mfaSecret);
+  const manager = await login("MANAGER", credentials.manager.username, credentials.manager.password, credentials.manager.mfaSecret);
+  const nurse = await login("NURSE", credentials.nurse.username, credentials.nurse.password, credentials.nurse.mfaSecret);
   await call(manager, "UAT-002", "POST", "/api/v1/admin/users", [403], payload);
   await call(nurse, "UAT-003", "POST", "/api/v1/admin/roles/remote_triage_nurse/permissions", [403], { permissionCode: "reports.view", reason: "negative UAT" });
   await call(admin, "UAT-004", "POST", "/api/v1/admin/users", [403], payload);
 
-  const enroll = await call(admin, "UAT-005", "POST", "/api/v1/auth/mfa/enroll", [200]);
-  const secret = enroll.body.secret;
-  if (!secret) throw new Error("MFA enrollment returned no secret");
-  await call(admin, "UAT-006", "POST", "/api/v1/auth/mfa/enroll/confirm", [200], { code: authenticator.generate(secret) });
+  let secret = credentials.admin.mfaSecret;
+  if (!secret) {
+    const enroll = await call(admin, "UAT-005", "POST", "/api/v1/auth/mfa/enroll", [200]);
+    secret = enroll.body.secret;
+    if (!secret) throw new Error("MFA enrollment returned no secret");
+    await call(admin, "UAT-006", "POST", "/api/v1/auth/mfa/enroll/confirm", [200], { code: authenticator.generate(secret) });
+  }
   await call(admin, "UAT-007", "POST", "/api/v1/admin/elevate", [200], { code: authenticator.generate(secret) });
 
   let createdUserId: string | undefined;
@@ -131,7 +147,7 @@ async function main() {
     const temporaryPassword = created.body.temporaryPassword;
     if (!createdUserId || !temporaryPassword) throw new Error("Create user response omitted id or temporary password");
 
-    await login("CREATED-USER", email, temporaryPassword);
+    await login("CREATED-USER", email, temporaryPassword, undefined, true);
     await call(admin, "UAT-009", "POST", "/api/v1/admin/users", [409], payload);
     await call(admin, "UAT-010", "POST", "/api/v1/admin/users", [400], { ...payload, email: `pr014.${stamp}@example.com` });
     await call(admin, "UAT-011", "POST", "/api/v1/admin/users", [400], { ...payload, email: `pr014.badrole.${stamp}@irisstar.tech`, roles: ["not_a_role"] });
