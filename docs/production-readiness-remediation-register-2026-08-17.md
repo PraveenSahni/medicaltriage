@@ -61,7 +61,7 @@ Status interpretation:
 | PR-011 | High | Retention/legal-hold/privacy execution not fully operational | Privacy + Legal + Engineering | Isolated rehearsal passed; production activation pending | Approved 365-day policy; execute-mode rehearsal; legal-hold negative test on isolated demo clone |
 | PR-012 | Medium | Managed certificate resources remain PROVISIONING | DevOps | Complete | Healthy triage and marketing serving chains documented; stale load-balancer resources removed; post-change DNS/TLS/HTTP validation passed |
 | PR-013 | High | Database-backed Jest suites not green in the audit workstation | QA/DevOps | Complete | Isolated PostgreSQL 15 CI service, fail-closed database guard, migrations and complete Jest run passing |
-| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Open - governed temporary password cannot authenticate in production mode | PAM-elevated user creation succeeded, but the issued nurse credential returned 401; controlled account suspended and no session established |
+| PR-014 | High | Live Admin Create User and Grant Permission UAT incomplete | QA + Security | Credential defect fixed on zero-traffic candidate; MFA-gated UAT pending | Durable encrypted governed identifiers and scrypt password hashes deployed; 99/99 focused credential/boundary tests passed; administrator login reached mandatory MFA on the candidate |
 | PR-015 | High | Five-protocol adversarial auto-match matrix missing | Clinical QA | Technical deployment matrix passed; clinical signature pending | 25/25 deployed ambiguity/no-match matrix; 100/100 clinical regressions; nurse override evidence; named Clinical QA signature |
 
 ## Historical GCP baseline captured 2026-08-17
@@ -728,6 +728,7 @@ Outstanding activation gates:
 - 2026-08-18: PR-002 closed against the current source. A stale inherited revision label was detected and rejected; the deployment workflow was strengthened. Clean commit `8e002bdde9c2d788dd249ac8c35d0aab5f022f99`, Cloud Build `05bd55ee-58f6-4e5a-a5d8-798a3bddb11d`, immutable digest `sha256:aeba36ac095d01c93fbd327d9b576720cb0adaee85c0dd87522f030cda5d427d`, revision `ist-triage-demo-00065-xuf`, revision labels and live runtime response all matched. Health returned 200 and production traffic was unchanged.
 - 2026-08-18: PR-003 closed against the current immutable candidate. All eight flags were active; prior cross-revision MFA/session/queue evidence remained valid; live Cloud SQL execution `pr003-persistence-close-20260818-pjxxd` proved reveal workflow reload, reveal/security anomaly cross-call counts and append-only audit persistence. Synthetic mutable rows and the temporary job were removed; production traffic was unchanged.
 - 2026-08-18: PR-005 closed on current immutable zero-traffic candidate `ist-triage-demo-00065-xuf`. Authenticated Platform Administrator browser UAT displayed exactly the three protected system roles and the governed custom-role screen with business-reason, permission, responsibility and SoD controls. The catalog remained at three; production traffic was unchanged. PR-004 remains separately open pending completed PAM-elevated mutation UAT.
+- 2026-08-19: PR-014's governed-password defect was fixed and deployed to zero-traffic revision `ist-triage-demo-pr014g-0e30f43`. Exact commit/build/digest provenance, dedicated identity, all persistence flags, 346/346 focused backend tests, 4/4 cockpit lineage tests and both TypeScript checks passed. Browser login reached mandatory administrator MFA; final PAM create/login/cleanup UAT remains pending because no current operator TOTP was available. Production traffic remained unchanged.
 
 ## PR-013 implementation record — isolated database-backed CI
 
@@ -832,6 +833,34 @@ and ready for the guarded exact-HTTP matrix; it is not yet closed.
   evidence. PR-014 requires a durable governed credential lifecycle (or approved
   enterprise identity path) that works with demo credentials disabled, followed
   by successful create-user/login UAT and cleanup verification.
+
+### 2026-08-19 governed-account remediation and checkpoint
+
+- Commit `0e30f43e74e25f619e22c5ee3830133b9e2bc92f` implements durable governed
+  credentials without re-enabling seeded/demo passwords. Governed email/username
+  identifiers are encrypted with AES-256-GCM and located through an HMAC blind
+  index; temporary passwords are persisted only as versioned scrypt hashes in
+  the existing governed account tables.
+- Focused governed-account authentication passed 2/2 and the existing PR-014
+  create-user/permission boundary suite passed 57/57. The complete remediation
+  focus rerun passed 346/346 backend assertions (including duplicate retained
+  deployment-copy discovery), the cockpit protocol suite passed 4/4, and both
+  backend and frontend TypeScript checks passed.
+- Cloud Build `226268bd-2d2b-4f11-9724-573ed0b042de` produced immutable digest
+  `sha256:ee5e153c285cb7d6decd5574a7eb82b5e31864ac4b6203ce3694f5fdba6c4c81`.
+  Healthy zero-traffic revision `ist-triage-demo-pr014g-0e30f43` reports the
+  exact commit/build provenance, all eight persistence flags and dedicated
+  identity `ist-triage-cloudrun-sa@triage-502706.iam.gserviceaccount.com`.
+- Browser authentication with the protected Platform Administrator password
+  reached the mandatory MFA challenge on the new candidate, proving the
+  credential and first-factor path. The operator did not have a current MFA
+  code during this checkpoint, so no PAM mutation was attempted and no test
+  account was created.
+- Remaining PR-014 closure evidence is deliberately narrow: complete MFA/PAM,
+  create one controlled nurse, sign in with its issued temporary password,
+  complete nurse MFA enrollment, verify authorization/persistence, and remove
+  the controlled record through the approved cleanup path. PR-014 is not closed
+  until that evidence exists.
 
 ## PR-015 implementation record — adversarial protocol matching
 
