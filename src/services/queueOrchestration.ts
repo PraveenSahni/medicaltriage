@@ -5,7 +5,7 @@ import { prisma } from "../db.js";
 import { auditSignatureFor } from "./safetyKernel.js";
 import { appendOperationalAuditEvent } from "./auditLedger.js";
 import { getOrganizationById, listUsers, recordAuditEvent } from "./securityAdmin.js";
-import { findDependent, resolvePatientAgeFromDirectory, validateStaffMember } from "./hrms.js";
+import { findDependent, resolvePatientAgeFromDirectory, resolvePatientIdentifier, validateStaffMember } from "./hrms.js";
 import {
   getClinicalProtocolById,
   getCurrentClinicalContentPackage,
@@ -25,6 +25,7 @@ import type {
   QueueClinicalStage,
   QueueContextUpdate,
   QueueCreateRequest,
+  ManualQueueCreateRequest,
   QueueHandoverRequest,
   QueueItemDto,
   QueueListQuery,
@@ -1888,6 +1889,58 @@ export async function deleteQueueItem(session: AuthenticatedSession, id: string)
     return;
   }
   store().delete(id);
+}
+
+export type ResolvedManualPatient = {
+  patientIdentifier: string;
+  patientType: "Staff" | "Dependent";
+  istStaffId: string;
+  dependentId?: string;
+  department: string;
+  relationshipType?: string;
+};
+
+function resolveManualPatientOrThrow(patientIdentifier: string): ResolvedManualPatient {
+  const resolved = resolvePatientIdentifier(patientIdentifier);
+  if (!resolved || resolved.profile.dutyStatus === "inactive" || resolved.profile.dutyStatus === "suspended") {
+    throw new QueueOrchestrationError(404, "Employee ID or Dependent ID was not found or is not eligible.", "QUEUE_PATIENT_NOT_FOUND");
+  }
+  return {
+    patientIdentifier,
+    patientType: resolved.dependent ? "Dependent" : "Staff",
+    istStaffId: resolved.profile.istStaffId,
+    dependentId: resolved.dependent?.id,
+    department: resolved.profile.department,
+    relationshipType: resolved.dependent?.relationshipType
+  };
+}
+
+export async function resolveManualQueuePatient(
+  session: AuthenticatedSession,
+  patientIdentifier: string
+): Promise<ResolvedManualPatient> {
+  requireQueueAccess(session);
+  if (!isCallIntake(session) && !hasManagerControl(session) && !isClinicalOperator(session)) {
+    throw new QueueOrchestrationError(403, "Role cannot perform manual call intake.", "QUEUE_ROLE_DENIED");
+  }
+  return resolveManualPatientOrThrow(patientIdentifier);
+}
+
+export async function createManualQueueItem(
+  session: AuthenticatedSession,
+  request: ManualQueueCreateRequest
+): Promise<QueueItemDto> {
+  const patient = await resolveManualQueuePatient(session, request.patientIdentifier);
+  return createQueueItem(session, {
+    istStaffId: patient.istStaffId,
+    dependentId: patient.dependentId,
+    patientType: patient.patientType,
+    channel: request.channel,
+    reasonNarrative: request.reasonNarrative,
+    summary: request.reasonNarrative,
+    safetyFloorActive: false,
+    slaMinutes: 15
+  });
 }
 
 export async function createQueueItem(session: AuthenticatedSession, request: QueueCreateRequest): Promise<QueueItemDto> {

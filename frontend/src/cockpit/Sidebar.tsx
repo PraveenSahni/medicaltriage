@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type JSX } from "react";
 import { useQueue, type QueueItem, type QueueSeverity } from "../QueueContext";
 import { CockpitUtilityBar } from "./CockpitUtilityBar";
 import { generateDemoStccCall } from "../serviceManagerBoard/demoStccCallGenerator";
+import { AddCallModal } from "./AddCallModal";
 import type { AuthenticatedSession } from "../auth/session";
 
 type SidebarProps = {
@@ -163,6 +164,7 @@ export function Sidebar({
     const handle = window.setInterval(() => void tick(), 20_000);
     return () => window.clearInterval(handle);
   }, [autoGenerateOn, refreshQueue]);
+  const [addCallOpen, setAddCallOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"open" | "completed">("open");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortMode, setSortMode] = useState<SortMode>("smart");
@@ -298,7 +300,26 @@ export function Sidebar({
         >
           Completed <span className="cockpit-sidebar-tab-badge cockpit-sidebar-tab-badge-completed">{completedQueue.length}</span>
         </button>
+        <button
+          type="button"
+          className="cockpit-add-call-btn"
+          title="Add call manually"
+          aria-label="Add call manually"
+          onClick={() => setAddCallOpen(true)}
+        >
+          +
+        </button>
       </div>
+
+      {addCallOpen && (
+        <AddCallModal
+          onClose={() => setAddCallOpen(false)}
+          onCreated={() => {
+            setAddCallOpen(false);
+            setActiveTab("open");
+          }}
+        />
+      )}
 
       <div className="cockpit-queue-toolbar">
         <div className="cockpit-search">

@@ -453,3 +453,24 @@ export function resolveStaffProfile(istStaffId: string): StaffProfile | undefine
     dependents: dependentsForPerson(index, worker.PersonId)
   };
 }
+
+/** Resolves either an employee number or a globally unique dependent ID. */
+export function resolvePatientIdentifier(patientIdentifier: string):
+  | { profile: StaffProfile; dependent?: DependentProfile }
+  | undefined {
+  const normalized = patientIdentifier.trim();
+  if (!normalized) return undefined;
+
+  const staff = resolveStaffProfile(normalized);
+  if (staff) return { profile: staff };
+
+  const index = getIndex();
+  for (const worker of index.publicWorkerByPersonNumber.values()) {
+    const profile = resolveStaffProfile(worker.PersonNumber);
+    const dependent = profile?.dependents.find(
+      (candidate) => candidate.id.toUpperCase() === normalized.toUpperCase()
+    );
+    if (profile && dependent) return { profile, dependent };
+  }
+  return undefined;
+}

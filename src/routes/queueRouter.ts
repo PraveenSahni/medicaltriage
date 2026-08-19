@@ -4,6 +4,7 @@ import { rateLimit } from "../middleware/rateLimit.js";
 import type { AuthorizedRequest } from "../services/authorization.js";
 import {
   claimQueueItem,
+  createManualQueueItem,
   createQueueItem,
   deleteQueueItem,
   escalateQueueItemToOrganization,
@@ -15,11 +16,14 @@ import {
   nextBestCall,
   QueueOrchestrationError,
   releaseQueueItem,
+  resolveManualQueuePatient,
   updateQueueContext
 } from "../services/queueOrchestration.js";
 import {
   QueueContextUpdateSchema,
   QueueCreateRequestSchema,
+  ManualPatientLookupRequestSchema,
+  ManualQueueCreateRequestSchema,
   QueueHandoverRequestSchema,
   QueueListQuerySchema,
   QueueMoveRequestSchema
@@ -97,6 +101,28 @@ export function createQueueRouter(): Router {
         return res.status(400).json({ error: "Invalid queue item", details: parsed.error.flatten() });
       }
       const item = await createQueueItem(sessionFrom(req), parsed.data);
+      return res.status(201).json({ item });
+    } catch (error) {
+      return handleQueueError(error, next, res);
+    }
+  });
+
+  router.post("/manual/resolve-patient", async (req: AuthorizedRequest, res, next) => {
+    try {
+      const parsed = ManualPatientLookupRequestSchema.safeParse(req.body);
+      if (!parsed.success) return res.status(400).json({ error: "Employee ID or Dependent ID is required." });
+      const patient = await resolveManualQueuePatient(sessionFrom(req), parsed.data.patientIdentifier);
+      return res.json({ patient });
+    } catch (error) {
+      return handleQueueError(error, next, res);
+    }
+  });
+
+  router.post("/manual", async (req: AuthorizedRequest, res, next) => {
+    try {
+      const parsed = ManualQueueCreateRequestSchema.safeParse(req.body);
+      if (!parsed.success) return res.status(400).json({ error: "A resolved patient and reason for call are required.", details: parsed.error.flatten() });
+      const item = await createManualQueueItem(sessionFrom(req), parsed.data);
       return res.status(201).json({ item });
     } catch (error) {
       return handleQueueError(error, next, res);

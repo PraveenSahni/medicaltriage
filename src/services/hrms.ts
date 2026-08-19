@@ -1,5 +1,5 @@
 import type { StaffProfile, StaffValidationResult } from "../types/triage.js";
-import { resolveStaffProfile } from "./hrmsOracleAdapter.js";
+import { resolvePatientIdentifier as resolveOraclePatientIdentifier, resolveStaffProfile } from "./hrmsOracleAdapter.js";
 
 export type PatientAgeResolution =
   | {
@@ -50,6 +50,10 @@ export function findDependent(profile: StaffProfile, dependentId?: string) {
   }
 
   return profile.dependents.find((dependent) => dependent.id === dependentId);
+}
+
+export function resolvePatientIdentifier(patientIdentifier: string) {
+  return resolveOraclePatientIdentifier(patientIdentifier);
 }
 
 export function calculateAgeFromDateOfBirth(dateOfBirthIso: string, referenceDate = new Date()): {

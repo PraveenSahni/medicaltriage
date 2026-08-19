@@ -68,6 +68,17 @@ export const QueueCreateRequestSchema = z.object({
 });
 export type QueueCreateRequest = z.infer<typeof QueueCreateRequestSchema>;
 
+export const ManualPatientLookupRequestSchema = z.object({
+  patientIdentifier: z.string().trim().min(2).max(120)
+});
+
+export const ManualQueueCreateRequestSchema = z.object({
+  patientIdentifier: z.string().trim().min(2).max(120),
+  reasonNarrative: z.string().trim().min(3).max(1000),
+  channel: z.enum(["Phone", "WhatsApp", "Callback", "Email"]).default("Phone")
+});
+export type ManualQueueCreateRequest = z.infer<typeof ManualQueueCreateRequestSchema>;
+
 export const QueueMoveRequestSchema = z.object({
   toStatus: QueueStatusSchema.optional(),
   toStage: QueueClinicalStageSchema,

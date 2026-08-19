@@ -98,6 +98,74 @@ describe("Enterprise queue orchestration", () => {
     expect(["Staff", "Dependent"]).toContain(response.body.item.patientType);
   });
 
+  describe("mandatory manual initial triage intake", () => {
+    it("resolves an Employee ID before accepting the reason for call", async () => {
+      const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+      const resolved = await nurse
+        .post("/api/v1/queue/manual/resolve-patient")
+        .send({ patientIdentifier: "IST-10001" })
+        .expect(200);
+      expect(resolved.body.patient).toMatchObject({
+        patientIdentifier: "IST-10001",
+        patientType: "Staff",
+        istStaffId: "IST-10001"
+      });
+    });
+
+    it("resolves a Dependent ID to its employee and creates the correct patient", async () => {
+      const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+      const identifier = "dep_demo_10001_child";
+      const resolved = await nurse
+        .post("/api/v1/queue/manual/resolve-patient")
+        .send({ patientIdentifier: identifier })
+        .expect(200);
+      expect(resolved.body.patient).toMatchObject({
+        patientType: "Dependent",
+        istStaffId: "IST-10001",
+        dependentId: identifier
+      });
+
+      const created = await nurse.post("/api/v1/queue/manual").send({
+        patientIdentifier: identifier,
+        reasonNarrative: "Persistent cough and shortness of breath",
+        channel: "Phone"
+      }).expect(201);
+      expect(created.body.item).toMatchObject({
+        patientType: "Dependent",
+        istStaffId: "IST-10001",
+        dependentId: identifier,
+        reasonNarrative: "Persistent cough and shortness of breath",
+        summary: "Persistent cough and shortness of breath",
+        identityValidated: true
+      });
+      expect(created.body.item.preparedProtocol).toBeDefined();
+    });
+
+    it("rejects an unknown patient and a missing or blank reason", async () => {
+      const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+      await nurse.post("/api/v1/queue/manual/resolve-patient")
+        .send({ patientIdentifier: "UNKNOWN-999" }).expect(404);
+      await nurse.post("/api/v1/queue/manual")
+        .send({ patientIdentifier: "IST-10001" }).expect(400);
+      await nurse.post("/api/v1/queue/manual")
+        .send({ patientIdentifier: "IST-10001", reasonNarrative: "   " }).expect(400);
+    });
+
+    it("re-resolves identity at creation and ignores client-supplied patient and tenant fields", async () => {
+      const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+      const created = await nurse.post("/api/v1/queue/manual").send({
+        patientIdentifier: "IST-10001",
+        reasonNarrative: "Severe headache since this morning",
+        patientType: "Dependent",
+        dependentId: "forged-dependent",
+        organizationId: "forged-organization"
+      }).expect(201);
+      expect(created.body.item.patientType).toBe("Staff");
+      expect(created.body.item.dependentId).toBeUndefined();
+      expect(created.body.item.organizationId).not.toBe("forged-organization");
+    });
+  });
+
   it("locks a board case for Step cockpit handoff", async () => {
     const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 

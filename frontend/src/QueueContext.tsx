@@ -249,6 +249,19 @@ type QueueContextValue = {
   /** queueItemId -> CallCenterSession, joined on CallCenterSession.queueItemId === QueueItem.id */
   callCenterSessionsByQueueItemId: Record<string, CallCenterSession>;
   refreshQueue: () => Promise<void>;
+  resolvePatient: (patientIdentifier: string) => Promise<{
+    patientIdentifier: string;
+    patientType: "Staff" | "Dependent";
+    istStaffId: string;
+    dependentId?: string;
+    department: string;
+    relationshipType?: string;
+  }>;
+  createItem: (input: {
+    patientIdentifier: string;
+    channel?: "Phone" | "WhatsApp" | "Callback" | "Email";
+    reasonNarrative: string;
+  }) => Promise<QueueItem>;
   claimItem: (id: string) => Promise<QueueItem>;
   connectCall: (
     id: string,
@@ -338,6 +351,49 @@ export function QueueProvider({ children }: { children: ReactNode }) {
     setActiveItem(item);
     return item;
   }, []);
+
+  const resolvePatient = useCallback(async (patientIdentifier: string) => {
+    const payload = await readJson<{ patient: {
+      patientIdentifier: string;
+      patientType: "Staff" | "Dependent";
+      istStaffId: string;
+      dependentId?: string;
+      department: string;
+      relationshipType?: string;
+    } }>(await fetch(`${apiBase}/api/v1/queue/manual/resolve-patient`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ patientIdentifier })
+    }));
+    return payload.patient;
+  }, []);
+
+  // The dedicated manual-intake endpoint re-resolves the patient on submit
+  // and accepts no client-controlled organization or patient-type fields.
+  const createItem = useCallback(
+    async (input: {
+      patientIdentifier: string;
+      channel?: "Phone" | "WhatsApp" | "Callback" | "Email";
+      reasonNarrative: string;
+    }) => {
+      const payload = await readJson<{ item: QueueItem }>(
+        await fetch(`${apiBase}/api/v1/queue/manual`, {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            patientIdentifier: input.patientIdentifier,
+            channel: input.channel ?? "Phone",
+            reasonNarrative: input.reasonNarrative
+          })
+        })
+      );
+      setQueue((current) => [payload.item, ...current].sort((left, right) => right.priorityScore - left.priorityScore));
+      return payload.item;
+    },
+    []
+  );
 
   const claimItem = useCallback(
     async (id: string) => {
@@ -490,6 +546,8 @@ export function QueueProvider({ children }: { children: ReactNode }) {
       error,
       callCenterSessionsByQueueItemId,
       refreshQueue,
+      createItem,
+      resolvePatient,
       claimItem,
       connectCall,
       releaseItem,
@@ -507,6 +565,8 @@ export function QueueProvider({ children }: { children: ReactNode }) {
       claimItem,
       clearActiveItem,
       connectCall,
+      createItem,
+      resolvePatient,
       error,
       loading,
       moveItem,
