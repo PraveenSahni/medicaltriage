@@ -1,5 +1,5 @@
 import "./cockpit.css";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQueue, type QueueItem } from "../QueueContext";
 import type { AuthenticatedSession } from "../auth/session";
 import { Sidebar } from "./Sidebar";
@@ -21,7 +21,7 @@ export const COCKPIT_STAGES: Array<{ key: CockpitStageKey; label: string; icon: 
   { key: "sbar", label: "4 · SBAR / Complete", icon: "\u{1F4CB}" }
 ];
 
-const MAX_HELD_CALLS = 1;
+const MAX_HELD_CALLS = 2;
 
 function stageKeyForQueueItem(item: QueueItem): CockpitStageKey {
   switch (item.currentStage) {
@@ -70,6 +70,24 @@ export function CockpitApp({ session, onLogout, onBack }: CockpitAppProps) {
   const activeCall = activeItem && callCenterSessionsByQueueItemId[activeItem.id];
   const isActiveCallHeld = activeCall?.status === "HELD";
   const isReadOnly = activeItem?.status === "COMPLETED";
+  const navigationLocked = Boolean(activeItem && !isReadOnly && !isActiveCallHeld);
+
+  useEffect(() => {
+    if (!navigationLocked) return;
+    const blockUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    const restoreCockpitRoute = () => {
+      if (window.location.hash !== "#/cockpit") window.location.hash = "#/cockpit";
+    };
+    window.addEventListener("beforeunload", blockUnload);
+    window.addEventListener("hashchange", restoreCockpitRoute);
+    return () => {
+      window.removeEventListener("beforeunload", blockUnload);
+      window.removeEventListener("hashchange", restoreCockpitRoute);
+    };
+  }, [navigationLocked]);
 
   function openCall(item: QueueItem) {
     // A nurse who has already reached a disposition on the call she's
@@ -171,6 +189,7 @@ export function CockpitApp({ session, onLogout, onBack }: CockpitAppProps) {
           session={session}
           onLogout={onLogout}
           onBack={onBack}
+          navigationLocked={navigationLocked}
         />
 
         <main className="cockpit-main">

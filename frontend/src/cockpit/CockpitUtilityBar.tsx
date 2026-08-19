@@ -8,6 +8,7 @@ type CockpitUtilityBarProps = {
   onBack?: () => void;
   autoGenerateOn: boolean;
   onToggleGenerate: () => void;
+  navigationLocked?: boolean;
 };
 
 /**
@@ -20,7 +21,7 @@ type CockpitUtilityBarProps = {
  * without it there is no way back once a user enters here. The caller
  * decides the actual destination; this button is destination-agnostic.
  */
-export function CockpitUtilityBar({ session, onLogout, onBack, autoGenerateOn, onToggleGenerate }: CockpitUtilityBarProps) {
+export function CockpitUtilityBar({ session, onLogout, onBack, autoGenerateOn, onToggleGenerate, navigationLocked = false }: CockpitUtilityBarProps) {
   return (
     <div className="cockpit-utility-bar">
       <div className="cockpit-utility-user">
@@ -38,6 +39,7 @@ export function CockpitUtilityBar({ session, onLogout, onBack, autoGenerateOn, o
               : "Continuously generate demo incoming calls across the available protocol content"
           }
           aria-label={autoGenerateOn ? "Stop generating calls" : "Generate calls"}
+          disabled={navigationLocked}
         >
           {autoGenerateOn ? <Square size={14} /> : <Play size={14} />}
         </button>
@@ -48,6 +50,7 @@ export function CockpitUtilityBar({ session, onLogout, onBack, autoGenerateOn, o
             onClick={onBack}
             title="Back"
             aria-label="Back"
+            disabled={navigationLocked}
           >
             <ArrowLeft size={14} />
           </button>
@@ -58,6 +61,7 @@ export function CockpitUtilityBar({ session, onLogout, onBack, autoGenerateOn, o
           onClick={onLogout}
           title="Sign out"
           aria-label="Sign out"
+          disabled={navigationLocked}
         >
           <LogOut size={14} />
         </button>
@@ -76,6 +80,9 @@ export function CockpitUtilityBar({ session, onLogout, onBack, autoGenerateOn, o
           rel="noopener noreferrer"
           title="Help"
           aria-label="Help"
+          aria-disabled={navigationLocked}
+          onClick={(event) => navigationLocked && event.preventDefault()}
+          tabIndex={navigationLocked ? -1 : undefined}
         >
           <HelpCircle size={14} />
         </a>

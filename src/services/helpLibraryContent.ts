@@ -407,7 +407,7 @@ const TOPIC_GROUPS: TopicGroup[] = [
           <p><strong>Can I use the Service Manager Board and Nurse Cockpit at the same time?</strong> Yes, if your account holds both roles - use the topbar button to switch; each keeps its own state.</p>
           <p><strong>Is the clinical content in this demo the fully licensed STCC protocol library?</strong> No. Treat the demo package as synthetic/open-source engineering and UAT content. A provenance value of <code>licensedContentIncluded: false</code> is authoritative; licensed content requires controlled import, release evidence, and named clinical approval before production activation.</p>
           <p><strong>Is the HRMS/employment lookup connected to the real Oracle Fusion HCM system?</strong> No. It's a simulation layer that reads a locally-generated, Oracle-shaped data set (tens of thousands of synthetic employee records) with the same field names Oracle would return, not a live Oracle connection.</p>
-          <p><strong>Why was my "hold" call still tied up when I tried to answer a new one?</strong> Holding is a frontend/UI-tracked state, capped at <code>MAX_HELD_CALLS = 1</code> - with one call already held, answering another or holding a second is blocked until the held call is resumed or completed.</p>
+          <p><strong>Why was my "hold" call still tied up when I tried to answer a new one?</strong> Holding is a frontend/UI-tracked state, capped at <code>MAX_HELD_CALLS = 2</code> - with two calls already held, answering another or holding a third is blocked until a held call is resumed or completed.</p>
         `
       }
     ]

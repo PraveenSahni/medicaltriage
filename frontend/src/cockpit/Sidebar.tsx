@@ -17,6 +17,7 @@ type SidebarProps = {
   session: AuthenticatedSession;
   onLogout: () => void;
   onBack?: () => void;
+  navigationLocked?: boolean;
 };
 
 type CallTag = "waiting" | "open-now" | "on-hold" | "queue-locked" | "closed" | "assigned-to-other";
@@ -129,7 +130,8 @@ export function Sidebar({
   onOpenCall,
   session,
   onLogout,
-  onBack
+  onBack,
+  navigationLocked = false
 }: SidebarProps) {
   const { claimItem, connectCall, refreshQueue } = useQueue();
   const [claimError, setClaimError] = useState("");
@@ -178,7 +180,7 @@ export function Sidebar({
   // never blocked, but picking up a NEW call is blocked once more than
   // maxHeldCalls are already parked on hold (so up to 2 calls can be held
   // simultaneously with MAX_HELD_CALLS=1 before pickup is blocked).
-  const tooManyHeld = heldQueueItemIds.size > maxHeldCalls;
+  const tooManyHeld = heldQueueItemIds.size >= maxHeldCalls;
 
   // Completed calls get their own tab entirely, rather than sinking to the
   // bottom of one shared list - with hundreds of calls processed in a
@@ -279,8 +281,9 @@ export function Sidebar({
         onBack={onBack}
         autoGenerateOn={autoGenerateOn}
         onToggleGenerate={() => setAutoGenerateOn((current) => !current)}
+        navigationLocked={navigationLocked}
       />
-      <div className="cockpit-sidebar-body">
+      <div className="cockpit-sidebar-body" inert={navigationLocked ? true : undefined} aria-disabled={navigationLocked}>
       <div className="cockpit-sidebar-tabs" role="tablist" aria-label="Call list">
         <button
           type="button"

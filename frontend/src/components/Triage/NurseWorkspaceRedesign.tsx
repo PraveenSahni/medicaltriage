@@ -148,7 +148,7 @@ const stages: Array<{ id: StageId; label: string; shortLabel: string; icon: Luci
 
 // More than this many held calls at once blocks answering/opening any further
 // call until one is resumed - keeps a nurse from parking an unbounded backlog.
-const MAX_HELD_CALLS = 1;
+const MAX_HELD_CALLS = 2;
 
 const queueStageToStepIndex: Record<QueueClinicalStage, number> = {
   INTAKE: 0,
@@ -1072,8 +1072,8 @@ export default function NurseWorkspace() {
       return;
     }
 
-    if (holdIds.length > MAX_HELD_CALLS && !holdIds.includes(cardId)) {
-      showToast("Resume a held call before answering another — only one call may be held at a time.", "warning");
+    if (holdIds.length >= MAX_HELD_CALLS && !holdIds.includes(cardId)) {
+      showToast(`Resume a held call before answering another — no more than ${MAX_HELD_CALLS} calls may be held.`, "warning");
       return;
     }
 
@@ -1288,7 +1288,7 @@ export default function NurseWorkspace() {
           queueWaitLabel={queueWaitLabel}
           redQueueCount={redQueueCount}
           onOpen={openCall}
-          tooManyHeld={holdIds.length > MAX_HELD_CALLS}
+          tooManyHeld={holdIds.length >= MAX_HELD_CALLS}
         />
 
         <main className="cockpit-main">
@@ -1318,6 +1318,8 @@ export default function NurseWorkspace() {
                 type="button"
                 className="secondary-button w-fit"
                 onClick={() => setActiveFocusOpen(false)}
+                disabled={activeCard.queueStatus !== "On hold" && activeCard.queueStatus !== "Closed"}
+                title={activeCard.queueStatus !== "On hold" && activeCard.queueStatus !== "Closed" ? "Place the active call on hold before returning to the queue." : undefined}
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to queue
