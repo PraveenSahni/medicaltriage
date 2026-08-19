@@ -55,6 +55,25 @@ describe("Help & Library access", () => {
     expect(response.text).not.toContain("Restricted Operations Vault");
   });
 
+  it("documents remediation evidence separately from required governance approvals", async () => {
+    const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
+    const response = await manager.get("/help").expect(200);
+
+    expect(response.text).toContain("Remediation and approval register");
+    for (const remediationId of ["PR-006", "PR-010", "PR-011", "PR-015"]) {
+      expect(response.text).toContain(remediationId);
+    }
+    expect(response.text).toContain("30/30 governed cases plus three negative cases");
+    expect(response.text).toContain("The retention period is 365 days");
+    expect(response.text).toContain("named clinical approval pending");
+    expect(response.text).toContain("architecture approval pending");
+    expect(response.text).toContain("recurring destructive execution approval pending");
+    expect(response.text).not.toContain("PR-006 approved");
+    expect(response.text).not.toContain("PR-010 approved");
+    expect(response.text).not.toContain("PR-011 approved");
+    expect(response.text).not.toContain("PR-015 approved");
+  });
+
   it("renders the restricted vault section (locked) only for a permitted role", async () => {
     const securityAdmin = await agentFor("rishma@irisstar.tech", "platform_super_administrator");
     const response = await securityAdmin.get("/help").expect(200);

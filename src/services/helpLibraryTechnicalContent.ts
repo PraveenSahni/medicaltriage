@@ -445,6 +445,23 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
         id: "gov-production-readiness",
         title: "Production readiness notes",
         body: `<p>This MVP proves system wiring. Production needs licensed clinical protocols, local medical governance, role-based access control, encryption review, audit retention rules, JCI/ISO/MOPH-aligned controls, EMR-write approvals, and a protocol review cadence owned by lead physician and lead nurse.</p>`
+      },
+      {
+        id: "gov-remediation-approval-register",
+        title: "Remediation and approval register (PR-006, PR-010, PR-011, PR-015)",
+        body: `
+          <p><strong>Control boundary:</strong> technical verification and governance approval are separate gates. A passing test or implemented control does not itself record clinical, security, privacy, or legal approval.</p>
+          <table class="ref-table">
+            <thead><tr><th>Item / owner</th><th>Technical evidence</th><th>Current status and closure gate</th></tr></thead>
+            <tbody>
+              <tr><td><strong>PR-006</strong><br>Clinical QA</td><td>Five-protocol SOC2 regression passed 30/30 governed cases plus three negative cases. Care advice follows the selected protocol and exact TAQ question to its disposition and authored advice; broad disposition-code fallback is not the default.</td><td>Technical verification complete; named clinical approval pending. Clinical QA must approve protocol wording, TAQ-to-disposition mapping, and care-advice content.</td></tr>
+              <tr><td><strong>PR-015</strong><br>Clinical QA</td><td>The five-protocol adversarial matrix verifies PREPARED, AMBIGUOUS, and NO_MATCH outcomes. Ambiguous or unmatched complaints require nurse selection/override before protocol questions and disposition advice continue.</td><td>Technical verification complete; named clinical approval pending. Clinical QA must sign the thresholds, examples, and nurse-override behavior.</td></tr>
+              <tr><td><strong>PR-010</strong><br>Security Architecture</td><td>Audit events use an append-only database path with HMAC chaining, restricted write permissions, mutation-denial checks, and authenticated ledger verification. Historical migration bounds remain disclosed.</td><td>Technical control and authenticated verification complete; architecture approval pending. Security Architecture must accept the ledger, key custody/rotation, database-role boundary, historical-event treatment, and immutable-export roadmap.</td></tr>
+              <tr><td><strong>PR-011</strong><br>Privacy and Legal</td><td>The retention period is 365 days. Execution uses archive-before-delete, legal holds override deletion, concurrent runs use a database advisory lock, and the scheduler remains dry-run.</td><td>365-day control and rehearsal complete; recurring destructive execution approval pending. Privacy and Legal must approve the period, hold process, archive evidence, and execute-mode schedule.</td></tr>
+            </tbody>
+          </table>
+          <p><strong>Controlled record:</strong> formal sign-off is recorded in <code>docs/production-readiness-approval-closure-pack-2026-08-19.md</code>. PR-008 infrastructure decommissioning is outside these four approval blocks and requires separate evidence.</p>
+        `
       }
     ]
   },

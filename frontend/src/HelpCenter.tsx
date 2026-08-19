@@ -113,6 +113,14 @@ type ValidationReviewItem = {
   nextStep: string;
 };
 
+type RemediationApprovalItem = {
+  id: "PR-006" | "PR-010" | "PR-011" | "PR-015";
+  owner: string;
+  technicalStatus: string;
+  evidence: string;
+  approvalRequired: string;
+};
+
 type ApiCatalogRow = {
   area: string;
   api: string;
@@ -793,6 +801,45 @@ const workflowSteps = [
     icon: FileCheck2,
     body:
       "The nurse closes the call with approved instructions, copies the SBAR/SOAP note, opens CCP follow-up when needed, and leaves an audit trace for safety, governance, and future RAG comparison."
+  }
+];
+
+const remediationApprovalItems: RemediationApprovalItem[] = [
+  {
+    id: "PR-006",
+    owner: "Clinical QA",
+    technicalStatus: "Technical verification complete; named clinical approval pending",
+    evidence:
+      "The five-protocol SOC2 regression passed 30/30 governed cases plus three negative cases. Care advice is resolved through the selected protocol and exact TAQ question to its disposition and authored advice; broad disposition-code fallback is not the default.",
+    approvalRequired:
+      "Clinical QA must approve the protocol wording, TAQ-to-disposition mapping, and care-advice content before this item is governance-closed."
+  },
+  {
+    id: "PR-015",
+    owner: "Clinical QA",
+    technicalStatus: "Technical verification complete; named clinical approval pending",
+    evidence:
+      "The five-protocol adversarial auto-match matrix verifies PREPARED, AMBIGUOUS, and NO_MATCH outcomes. Ambiguous or unmatched complaints require nurse selection/override before protocol questions and disposition advice continue.",
+    approvalRequired:
+      "Clinical QA must sign the ambiguity/no-match thresholds, selected examples, and nurse-override behavior before governance closure."
+  },
+  {
+    id: "PR-010",
+    owner: "Security Architecture",
+    technicalStatus: "Technical control and authenticated verification complete; architecture approval pending",
+    evidence:
+      "Audit events use an append-only database path with HMAC chaining, restricted write permissions, mutation-denial checks, and authenticated ledger verification. Historical migration bounds remain disclosed rather than silently represented as newly signed events.",
+    approvalRequired:
+      "Security Architecture must accept the ledger design, key custody/rotation, database-role boundary, historical-event treatment, and external immutable-export roadmap."
+  },
+  {
+    id: "PR-011",
+    owner: "Privacy and Legal",
+    technicalStatus: "365-day control and rehearsal complete; recurring destructive execution approval pending",
+    evidence:
+      "The documented retention period is 365 days. Execution follows archive-before-delete, legal holds override deletion, concurrent runs are serialized with a database advisory lock, and the scheduler remains in dry-run mode.",
+    approvalRequired:
+      "Privacy and Legal must approve the 365-day period, legal-hold process, archive evidence, and recurring execute-mode schedule before destructive automation is enabled."
   }
 ];
 
@@ -3520,6 +3567,45 @@ function HelpManualPanel({
               </em>
             </div>
           ))}
+        </div>
+      </article>
+
+      <article className="help-card help-card-wide" aria-labelledby="remediation-approval-title">
+        <div className="help-card-heading">
+          <span className="help-icon">
+            <ClipboardCheck className="h-5 w-5" />
+          </span>
+          <div>
+            <span className="tag-label">REMEDIATION AND APPROVAL REGISTER</span>
+            <h3 id="remediation-approval-title" className="help-title">
+              PR-006, PR-010, PR-011, and PR-015
+            </h3>
+            <p>
+              Technical evidence and governance approval are separate gates. A completed test or
+              implemented control does not by itself record clinical, security, privacy, or legal
+              approval.
+            </p>
+          </div>
+        </div>
+
+        <div className="help-integration-table">
+          {remediationApprovalItems.map((item) => (
+            <div key={item.id} className="help-integration-row">
+              <strong>{item.id} — {item.owner}</strong>
+              <span>{item.evidence}</span>
+              <small><strong>Status:</strong> {item.technicalStatus}</small>
+              <small><strong>Closure gate:</strong> {item.approvalRequired}</small>
+            </div>
+          ))}
+        </div>
+        <div className="help-route-governance">
+          <h4>Controlled record</h4>
+          <p>
+            Formal sign-off is recorded in
+            <code> docs/production-readiness-approval-closure-pack-2026-08-19.md</code>. PR-008
+            infrastructure decommissioning is outside these four approval blocks and must be
+            evidenced separately.
+          </p>
         </div>
       </article>
 
