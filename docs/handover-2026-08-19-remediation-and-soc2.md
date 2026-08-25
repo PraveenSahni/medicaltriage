@@ -223,9 +223,21 @@ reproduced against the source contract and corrected:
 
 Focused evidence: 88/88 backend role/responsibility tests passed, 6/6 frontend
 contract/route/navigation tests passed, and backend build plus frontend typecheck
-passed. Live SOC2 closure still requires deployment of this candidate and rerunning
-the three corresponding workbook rows; local automated evidence does not by itself
-prove the currently deployed revision.
+passed. The complete local follow-up passed 565/571 backend tests and 70/70
+frontend tests; the six unavailable backend cases all require the isolated local
+PostgreSQL listener at `127.0.0.1:5433` and did not fail an application assertion.
+
+The source-fixed candidate was committed as
+`120809d4f2ccb59443ea480a049459b35b24a4f2`, built by Cloud Build
+`b126ab1c-392d-4d9c-9544-7fcca548be7e`, and published at immutable digest
+`sha256:7d51e81ec171b451dad49781c5bcb922d6fdbcd1899d77fd8d3433709d5d6ac7`.
+Zero-traffic revision `ist-triage-soc2-regfix-120809d` passed the runtime canary
+and was promoted to 100% SOC2 traffic on 2026-08-25. The primary runtime endpoint
+returned the exact Git SHA, build ID and revision, all eight persistence flags were
+true, the SOC2-STAGING synthetic banner remained intact, the application root
+returned 200, and unauthenticated clinical calculation remained denied with 401.
+Final workbook closure still requires the operator to rerun the three corresponding
+manual UI rows on this deployed revision.
 
 ## 7. Role and credential operating model
 
