@@ -715,7 +715,7 @@ const aviationDataTableCards: MatrixCard[] = [
     bullets: [
       "Fit-to-Fly: the exact terminal protocol question's calculated severity is authoritative; a shared routing destination such as PHCC/teleconsult must never be used to infer acuity.",
       "Emergency and Urgent outcomes force RESTRICTED. Routine outcomes for safety-sensitive crew require MEDICAL_REVIEW_REQUIRED.",
-      "Self-care with a fit-to-fly-review, duty-restriction, or sickness-validation tag requires MEDICAL_REVIEW_REQUIRED. A missing calculated severity also fails safely to MEDICAL_REVIEW_REQUIRED and never auto-clears.",
+      "After Emergency, Urgent, and restriction-requiring destinations have resolved to RESTRICTED, a fit-to-fly-review, duty-restriction, or sickness-validation tag requires MEDICAL_REVIEW_REQUIRED for any remaining severity, including Routine and Self-care. A missing calculated severity also fails safely to MEDICAL_REVIEW_REQUIRED and never auto-clears.",
       "Safety-sensitive role coverage includes Pilot, Captain, First Officer, Flight Deck, Cabin Crew, and Cabin Supervisor; structured crew category remains the preferred source when available.",
       "Outstation Validation: station and outstation flags create a teleconsult escalation path and preserve local-care coordination context.",
       "Sickness Validation: the system compiles standardized medical leave telemetry for nurse review instead of automatically approving leave.",
@@ -2019,7 +2019,7 @@ const libraryAreas: LibraryArea[] = [
     details: [
       "Emergency and Urgent clinical severity always produce RESTRICTED; Fit-to-Fly can never weaken the clinical disposition.",
       "Routine severity for Pilot, Captain, First Officer, Flight Deck, Cabin Crew, or Cabin Supervisor produces MEDICAL_REVIEW_REQUIRED.",
-      "Self-care with fit-to-fly-review, duty-restriction, or sickness-validation evidence produces MEDICAL_REVIEW_REQUIRED; missing severity also fails safely to medical review rather than clearance.",
+      "After restricted outcomes are resolved, fit-to-fly-review, duty-restriction, or sickness-validation evidence produces MEDICAL_REVIEW_REQUIRED for any remaining severity, including Routine and Self-care; missing severity also fails safely to medical review rather than clearance.",
       "Outstation cases create teleconsult escalation and station-code telemetry.",
       "Recent vaccination plus rash, fever, or swelling creates a structured follow-up flag."
     ]

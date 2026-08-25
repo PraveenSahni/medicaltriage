@@ -15,8 +15,10 @@ describe("canAccessServiceManagerBoard", () => {
   });
 });
 
-describe("dual access is preserved", () => {
-  it("triage_service_manager still passes the existing Nurse Cockpit gate", () => {
-    expect(canAccessNurseCockpit("triage_service_manager")).toBe(true);
+describe("clinical responsibility separation", () => {
+  it("allows only the remote_triage_nurse role into the Nurse Cockpit", () => {
+    for (const role of ALL_ROLE_CODES) {
+      expect(canAccessNurseCockpit(role)).toBe(role === "remote_triage_nurse");
+    }
   });
 });

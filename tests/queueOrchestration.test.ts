@@ -398,9 +398,9 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("moves a new emergency vital-sign case to the top of the active queue", async () => {
-    const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 
-    const created = await manager
+    const created = await nurse
       .post("/api/v1/queue")
       .send({
         istStaffId: "IST-90001",
@@ -424,7 +424,7 @@ describe("Enterprise queue orchestration", () => {
       }
     });
 
-    await manager
+    await nurse
       .patch(`/api/v1/queue/${id}/context`)
       .send({
         vitals: {
@@ -437,7 +437,7 @@ describe("Enterprise queue orchestration", () => {
       })
       .expect(200);
 
-    const queue = await manager.get("/api/v1/queue").expect(200);
+    const queue = await nurse.get("/api/v1/queue").expect(200);
     expect(queue.body.queue[0]).toMatchObject({
       id,
       safetyFloorActive: true,
@@ -447,9 +447,9 @@ describe("Enterprise queue orchestration", () => {
   });
 
   it("activates the emergency floor from triager judgment without any vitals", async () => {
-    const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
 
-    const created = await manager
+    const created = await nurse
       .post("/api/v1/queue")
       .send({
         istStaffId: "IST-90001",
@@ -465,7 +465,7 @@ describe("Enterprise queue orchestration", () => {
     const id = created.body.item.id as string;
     expect(created.body.item.safetyFloorActive).toBe(false);
 
-    const escalated = await manager
+    const escalated = await nurse
       .patch(`/api/v1/queue/${id}/context`)
       .send({
         calculatedSeverity: "EMERGENCY",

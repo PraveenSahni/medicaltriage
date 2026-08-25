@@ -9,6 +9,7 @@ import { findDependent, resolvePatientAgeFromHrms, validateStaffMember } from ".
 import { verifyInsuranceEligibility } from "../services/insurance.js";
 import { calculateTriageScore } from "../services/news2Scoring.js";
 import { getRequestSession } from "../services/authorization.js";
+import { requirePermission } from "../services/authorization.js";
 import { persistCompletedTriageNote, persistEvaluatedEncounter } from "../services/persistence.js";
 import { compileSbarClipboardPayload } from "../services/sbarCompiler.js";
 import { compileBilingualSoapSbarMarkdown } from "../services/triageNoteCompiler.js";
@@ -76,6 +77,7 @@ const FitToFlyPreviewRequestSchema = z.object({
 
 export function createTriageRouter(): Router {
   const router = Router();
+  router.use(requirePermission("triage.workspace.view"));
 
   // Lightweight, side-effect-free preview so the nurse-facing Disposition &
   // Advice stage can show the fit-to-fly color/icon as soon as a disposition

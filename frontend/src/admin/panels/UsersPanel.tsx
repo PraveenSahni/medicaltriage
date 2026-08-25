@@ -21,6 +21,7 @@ import { ElevationModal } from "../shared/ElevationModal";
 import { useElevatedAction } from "../shared/useElevatedAction";
 import { deleteJson, fetchJson, patchJson, postJson } from "../shared/adminApi";
 import { formatRole } from "../shared/roleLabels";
+import { buildMfaResetRequest } from "./mfaResetRequest";
 
 type SafeAdminUser = {
   id: string;
@@ -201,10 +202,15 @@ export function UsersPanel() {
   }
 
   async function resetMfa(userId: string) {
+    const reason = reasonDrafts[userId]?.trim();
+    if (!reason) {
+      setRowError("A reason is required before resetting MFA.");
+      return;
+    }
     setRowError("");
     await elevation.runElevated(async () => {
       try {
-        await postJson(`/api/v1/admin/users/${userId}/mfa-reset`, {});
+        await postJson(`/api/v1/admin/users/${userId}/mfa-reset`, buildMfaResetRequest(reason));
         await load();
       } catch (error) {
         setRowError(error instanceof Error ? error.message : "Unable to reset MFA for this user.");

@@ -6,6 +6,8 @@ This control applies to the SOC2 remediation environment in GCP project
 
 ## Security boundary
 
+- Two complementary HMAC controls are intentionally present. `src/services/safetyKernel.ts` signs individual clinical/HITL payloads with `auditSignatureFor()` so their authenticity can be checked independently. `src/services/auditLedger.ts` is the persisted database-ledger control: it feeds the predecessor hash into each new event hash under a PostgreSQL advisory lock. A payload signature is not a substitute for the ledger chain, and the two mechanisms must not be described as competing audit writers.
+- The live durable security-audit path is `securityAdmin.recordAuditEvent()` -> `persistence.persistSecurityAuditEvent()` -> `auditLedger.appendAuditEvent()`. Operational audit writers use `appendOperationalAuditEvent()`, which delegates to the same `appendAuditEvent()` implementation.
 - `DATABASE_URL` remains the normal application connection.
 - `AUDIT_DATABASE_URL` uses a distinct Cloud SQL login that is a member of `ist_audit_writer` and has no application-table mutation grants.
 - `AUDIT_HMAC_SECRET` is supplied through Secret Manager and never stored in PostgreSQL.
@@ -24,6 +26,10 @@ This control applies to the SOC2 remediation environment in GCP project
 8. Attempt `UPDATE`, `DELETE`, `TRUNCATE`, an unsigned `INSERT`, and an insert with an incorrect predecessor. All must fail.
 9. Verify the audit login cannot update application records and the main application login cannot mutate audit rows.
 10. Shift traffic only after the chain survives a restart and the previous revision remains a valid rollback target.
+
+## SOC2 execution evidence
+
+The provisioning SQL is an executable control artifact, not by itself proof of execution: its final login-membership grant is intentionally a DBA-supplied template so credentials and environment-specific principal names are not committed. The SOC2 execution record is maintained in `docs/production-readiness-remediation-register-2026-08-17.md`. It records that `ist_audit_writer_soc2` received only membership in the restricted audit role; live verification found 2,376 explicitly bounded legacy unsigned rows, a valid signed/linked chain, and a denied `UPDATE`. Security Architecture approval remains a separate closure gate and must not be inferred from technical execution.
 
 ## Legacy records and key rotation
 

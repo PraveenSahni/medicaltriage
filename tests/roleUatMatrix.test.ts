@@ -275,7 +275,7 @@ const endpointSpecs: EndpointSpec[] = [
       temperature: 36.8,
       conscious_level: "alert"
     },
-    allows: alwaysAllowed
+    allows: ({ permissions }) => permissions.has("triage.workspace.view")
   }
 ];
 

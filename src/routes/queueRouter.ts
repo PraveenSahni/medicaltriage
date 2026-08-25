@@ -2,6 +2,7 @@ import { Router } from "express";
 import { requireAnyPermission } from "../middleware/rbac.js";
 import { rateLimit } from "../middleware/rateLimit.js";
 import type { AuthorizedRequest } from "../services/authorization.js";
+import { requirePermission } from "../services/authorization.js";
 import {
   claimQueueItem,
   createManualQueueItem,
@@ -107,7 +108,7 @@ export function createQueueRouter(): Router {
     }
   });
 
-  router.post("/manual/resolve-patient", async (req: AuthorizedRequest, res, next) => {
+  router.post("/manual/resolve-patient", requirePermission("triage.workspace.view"), async (req: AuthorizedRequest, res, next) => {
     try {
       const parsed = ManualPatientLookupRequestSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: "Employee ID or Dependent ID is required." });
@@ -118,7 +119,7 @@ export function createQueueRouter(): Router {
     }
   });
 
-  router.post("/manual", async (req: AuthorizedRequest, res, next) => {
+  router.post("/manual", requirePermission("triage.workspace.view"), async (req: AuthorizedRequest, res, next) => {
     try {
       const parsed = ManualQueueCreateRequestSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: "A resolved patient and reason for call are required.", details: parsed.error.flatten() });
@@ -147,7 +148,7 @@ export function createQueueRouter(): Router {
     }
   });
 
-  router.post("/next-best-call", async (req: AuthorizedRequest, res, next) => {
+  router.post("/next-best-call", requirePermission("triage.workspace.view"), async (req: AuthorizedRequest, res, next) => {
     try {
       const item = await nextBestCall(sessionFrom(req));
       return res.json({
@@ -190,7 +191,7 @@ export function createQueueRouter(): Router {
     }
   });
 
-  router.post("/:id/claim", async (req: AuthorizedRequest, res, next) => {
+  router.post("/:id/claim", requirePermission("triage.workspace.view"), async (req: AuthorizedRequest, res, next) => {
     try {
       const item = await claimQueueItem(sessionFrom(req), req.params.id);
       return res.json({
@@ -205,7 +206,7 @@ export function createQueueRouter(): Router {
     }
   });
 
-  router.post("/:id/release", async (req: AuthorizedRequest, res, next) => {
+  router.post("/:id/release", requirePermission("triage.workspace.view"), async (req: AuthorizedRequest, res, next) => {
     try {
       const item = await releaseQueueItem(sessionFrom(req), req.params.id);
       return res.json({ item });
@@ -214,7 +215,7 @@ export function createQueueRouter(): Router {
     }
   });
 
-  router.post("/:id/heartbeat", async (req: AuthorizedRequest, res, next) => {
+  router.post("/:id/heartbeat", requirePermission("triage.workspace.view"), async (req: AuthorizedRequest, res, next) => {
     try {
       const item = await heartbeatQueueItem(sessionFrom(req), req.params.id);
       return res.json({
@@ -229,7 +230,7 @@ export function createQueueRouter(): Router {
     }
   });
 
-  router.patch("/:id/context", async (req: AuthorizedRequest, res, next) => {
+  router.patch("/:id/context", requirePermission("triage.workspace.view"), async (req: AuthorizedRequest, res, next) => {
     try {
       const parsed = QueueContextUpdateSchema.safeParse(req.body);
       if (!parsed.success) {
@@ -248,7 +249,7 @@ export function createQueueRouter(): Router {
   // the result as this call's reasonNarrative - same as if the nurse had
   // typed it, but sourced from the recorded audio instead. No real
   // telephony/STT vendor is wired in yet; see reasonForCallVoiceCapture.ts.
-  router.post("/:id/reason-audio", async (req: AuthorizedRequest, res, next) => {
+  router.post("/:id/reason-audio", requirePermission("triage.workspace.view"), async (req: AuthorizedRequest, res, next) => {
     try {
       const capture = await captureReasonForCallAudio({
         audioReference: typeof req.body?.audioReference === "string" ? req.body.audioReference : undefined,
@@ -265,7 +266,7 @@ export function createQueueRouter(): Router {
     }
   });
 
-  router.post("/:id/move", async (req: AuthorizedRequest, res, next) => {
+  router.post("/:id/move", requirePermission("triage.workspace.view"), async (req: AuthorizedRequest, res, next) => {
     try {
       const parsed = QueueMoveRequestSchema.safeParse(req.body);
       if (!parsed.success) {
@@ -278,7 +279,7 @@ export function createQueueRouter(): Router {
     }
   });
 
-  router.post("/:id/escalate", async (req: AuthorizedRequest, res, next) => {
+  router.post("/:id/escalate", requirePermission("triage.workspace.view"), async (req: AuthorizedRequest, res, next) => {
     try {
       const parsed = QueueHandoverRequestSchema.safeParse(req.body);
       if (!parsed.success) {

@@ -137,13 +137,20 @@ browser-back diversion, Help and sign-out are blocked or restored to the cockpit
 The nurse must select Hold Call before leaving the active workflow. A maximum of
 two held calls is enforced.
 
+The 2026-08-25 manual regression follow-up added an explicit, visible hold-first
+message. Back, Sign out and Help remain blocked during the active call, but now tell
+the nurse to select Hold Call rather than appearing to do nothing. Browser-back
+diversion shows the same instruction before restoring the cockpit route.
+
 ### Fit-to-fly governance — `fa98cb3`
 
 - Emergency -> `RESTRICTED`
 - Urgent -> `RESTRICTED`
 - Routine plus safety-sensitive crew -> `MEDICAL_REVIEW_REQUIRED`
-- Self-care plus fit-to-fly-review, duty-restriction or sickness-validation tag ->
-  `MEDICAL_REVIEW_REQUIRED`
+- After Emergency, Urgent and restriction-requiring destinations have resolved to
+  `RESTRICTED`, any remaining severity with a fit-to-fly-review, duty-restriction
+  or sickness-validation tag -> `MEDICAL_REVIEW_REQUIRED` (including Routine and
+  Self-care)
 - Missing severity -> `MEDICAL_REVIEW_REQUIRED`
 
 Safety-sensitive titles include Pilot, Captain, First Officer, Flight Deck, Cabin
@@ -194,12 +201,31 @@ administrator information remains role-gated.
 | PR-007 | Complete | Incremental IAQ/TAQ/approval merging, hold/resume, retry and conflict behavior passed SOC2 nurse UAT. |
 | PR-008 | Temporary risk accepted | Separate DBs/users/secrets share one Cloud SQL instance; final consolidation/decommission remains a controlled decision. |
 | PR-009 | Complete | Demo/SOC2 services and scheduled jobs use the dedicated keyless runtime identity with scoped secret access. |
-| PR-010 | Technical remediation complete; Security Architecture approval pending | Insert/select-only audit identity and chained signed events verified; legacy unsigned boundary documented. |
+| PR-010 | Technical remediation complete; Security Architecture approval pending | Individual clinical/HITL payload signatures and the persisted append-only hash chain are complementary controls. The live durable audit path uses `securityAdmin.recordAuditEvent()` -> `persistence.persistSecurityAuditEvent()` -> `auditLedger.appendAuditEvent()`. The executable `scripts/configureAuditWriterRole.sql` provisions the restricted role; SOC2 execution evidence records `ist_audit_writer_soc2` membership, insert/select-only privileges, a verified signed chain, a denied live `UPDATE`, and the bounded legacy unsigned population. |
 | PR-011 | Technical activation complete; recurring execute approval pending | 365-day retention and legal-hold race controls passed; scheduler stays dry-run. |
 | PR-012 | Complete | Healthy serving chains documented and stale load-balancer resources removed. |
 | PR-013 | Complete | Isolated PostgreSQL CI guard, migrations and database-backed Jest execution are established. |
 | PR-014 | Complete | Admin create-user, duplicate/invalid/conflict cases, role boundaries, reversible permission grant and cleanup passed SOC2 UAT. |
 | PR-015 | Technical matrix complete; Clinical QA signature pending | 25/25 ambiguity/no-match matrix and 100/100 clinical regressions passed with nurse override evidence. |
+
+### 2026-08-25 manual regression failure corrections
+
+The three failures recorded in the returned SOC2 manual regression workbook were
+reproduced against the source contract and corrected:
+
+1. Administrator MFA reset now requires a non-blank governance reason in the UI and
+   submits the backend-required `{ reason }` payload instead of `{}`.
+2. The Service Manager is removed from the Nurse Cockpit route gate. Queue clinical
+   mutations and all triage endpoints now independently require
+   `triage.workspace.view`; the manager retains read-only queue/operational access.
+3. Active-call Back, Sign out, Help and browser-back attempts remain blocked and now
+   display an explicit instruction to select Hold Call first.
+
+Focused evidence: 88/88 backend role/responsibility tests passed, 6/6 frontend
+contract/route/navigation tests passed, and backend build plus frontend typecheck
+passed. Live SOC2 closure still requires deployment of this candidate and rerunning
+the three corresponding workbook rows; local automated evidence does not by itself
+prove the currently deployed revision.
 
 ## 7. Role and credential operating model
 

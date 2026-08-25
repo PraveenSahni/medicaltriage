@@ -47,10 +47,10 @@ const TOPIC_GROUPS: TopicGroup[] = [
           <p>Sign in with your assigned username and password at the application root URL. The workspace you land on depends on your session's active role (<code>session.activeRole</code>), evaluated in <code>frontend/src/App.tsx</code>:</p>
           <ul>
             <li>An active role of <code>triage_service_manager</code> lands directly on the Triage Service Manager Board.</li>
-            <li><code>remote_triage_nurse</code> (or <code>triage_service_manager</code> itself) can also open the Nurse Cockpit.</li>
+            <li>Only <code>remote_triage_nurse</code> can open the Nurse Cockpit and use clinical mutation APIs.</li>
             <li>Other roles land on the existing Triage workspace or Control Center, depending on their permissions.</li>
           </ul>
-          <p>If your account holds both a nurse role and the Triage Service Manager role, a topbar button lets you switch between the Nurse Cockpit and the Service Manager Board without signing out.</p>
+          <p>The Triage Service Manager remains in the read-only operational board. The UI route gate and backend clinical permission gate both prevent a manager session from performing nurse actions.</p>
         `
       },
       {
@@ -85,7 +85,8 @@ const TOPIC_GROUPS: TopicGroup[] = [
         title: "Answering and holding a call",
         body: `
           <p>Click <strong>Answer call</strong> on a waiting call to claim it (<code>POST /api/v1/queue/:id/claim</code>). The cockpit allows only one active call at a time; a call already locked by another nurse shows their name instead of an answer button. Claiming, releasing, and heartbeat lock-refresh are all backend queue actions (<code>src/routes/queueRouter.ts</code>): <code>POST /:id/claim</code>, <code>POST /:id/release</code>, <code>POST /:id/heartbeat</code>.</p>
-          <p><strong>Hold/resume is a frontend-only concept</strong> - there is no dedicated "hold" or "resume" backend endpoint. Placing a call on hold keeps it claimed under your lock while the cockpit's own UI state (and the call-center session) tracks it as held; a configured cap, <code>MAX_HELD_CALLS = 1</code> (defined in both <code>frontend/src/cockpit/CockpitApp.tsx</code> and <code>frontend/src/components/Triage/NurseWorkspaceRedesign.tsx</code>), blocks placing a second call on hold, or answering a new call, once you already have one held.</p>
+          <p><strong>Hold/resume is a frontend-only concept</strong> - there is no dedicated "hold" or "resume" backend endpoint. Placing a call on hold keeps it claimed under your lock while the cockpit's own UI state (and the call-center session) tracks it as held. The current Nurse Cockpit permits a maximum of two held calls.</p>
+          <p>While a call is active, Back, Sign out, Help, browser-back diversion, and the call-list controls are blocked. If the nurse attempts to leave, the cockpit explicitly says <strong>Active call in progress. Select Hold Call before leaving this screen.</strong> Navigation becomes available after Hold Call is selected.</p>
           <p>Your claim lock is kept alive by a periodic heartbeat call while the item's status is <code>IN_PROCESS</code>; if the lock lapses without a heartbeat, the call can become claimable by another nurse again.</p>
         `
       },
@@ -116,7 +117,7 @@ const TOPIC_GROUPS: TopicGroup[] = [
               <tr><td><code>EMERGENCY</code></td><td><code>RESTRICTED</code></td></tr>
               <tr><td><code>URGENT</code></td><td><code>RESTRICTED</code></td></tr>
               <tr><td><code>ROUTINE</code> plus safety-sensitive crew</td><td><code>MEDICAL_REVIEW_REQUIRED</code></td></tr>
-              <tr><td><code>SELF_CARE</code> plus <code>fit-to-fly-review</code>, <code>duty-restriction</code>, or <code>sickness-validation</code></td><td><code>MEDICAL_REVIEW_REQUIRED</code></td></tr>
+              <tr><td>Any remaining non-restricted severity plus <code>fit-to-fly-review</code>, <code>duty-restriction</code>, or <code>sickness-validation</code></td><td><code>MEDICAL_REVIEW_REQUIRED</code>; this includes both Routine and Self-care cases</td></tr>
               <tr><td>Missing calculated severity</td><td><code>MEDICAL_REVIEW_REQUIRED</code>; never automatic clearance</td></tr>
             </tbody>
           </table>
@@ -134,9 +135,9 @@ const TOPIC_GROUPS: TopicGroup[] = [
       },
       {
         id: "cockpit-back",
-        title: "Returning to the Service Manager Board",
+        title: "Leaving an active call safely",
         body: `
-          <p>If your session's active role is <code>triage_service_manager</code>, a back arrow next to Sign Out returns you to the Service Manager Board. For other roles, this control is not shown, since there is nowhere else for it to send them.</p>
+          <p>The Nurse Cockpit cannot be left while a call is active. Select <strong>Hold Call</strong> first; the Back, Sign out, Help and browser-back paths remain blocked until the call is held or completed. A blocked attempt displays an explicit hold-first instruction.</p>
         `
       }
     ]
@@ -149,7 +150,7 @@ const TOPIC_GROUPS: TopicGroup[] = [
         id: "smb-overview",
         title: "What the board is for",
         body: `
-          <p><strong>The Triage Service Manager Board is read-only and does not expose or initiate clinical or queue mutation actions.</strong> It shares the exact same live queue data as the Nurse Cockpit (<code>useQueue()</code> / <code>QueueContext.tsx</code>) but never calls claim, move, context-update, release, or connect-call endpoints against an existing record.</p>
+          <p><strong>The Triage Service Manager Board is read-only and does not expose or initiate clinical or queue mutation actions.</strong> It shares the exact same live queue data as the Nurse Cockpit (<code>useQueue()</code> / <code>QueueContext.tsx</code>) but never calls claim, move, context-update, release, or connect-call endpoints against an existing record. Backend permission checks also return <code>403</code> if a manager attempts a nurse triage or queue-context mutation directly.</p>
           <p>The one deliberate, narrow exception is the <strong>Generate Calls</strong> toggle described below - it creates brand-new synthetic demo calls, but never edits or advances an existing one.</p>
         `
       },

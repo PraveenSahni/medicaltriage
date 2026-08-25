@@ -87,6 +87,19 @@
   padding: 10px 16px !important;
   border-bottom: 1px solid var(--line) !important;
   background: var(--bg2) !important;
+  flex-wrap: wrap !important;
+}
+
+#cockpit-root .cockpit-navigation-notice {
+  flex-basis: 100%;
+  margin: 2px 0 0 !important;
+  padding: 8px 10px !important;
+  border: 1px solid #f0b44d !important;
+  border-radius: 6px !important;
+  background: #fff8e7 !important;
+  color: #784b00 !important;
+  font-size: 0.72rem !important;
+  line-height: 1.35 !important;
 }
 
 #cockpit-root .cockpit-utility-name {

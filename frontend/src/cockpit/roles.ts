@@ -10,7 +10,6 @@ export type RoleCode = "platform_super_administrator" | "triage_service_manager"
  * see the Nurse Cockpit. Every other role code (admin) is explicitly excluded.
  */
 export const NURSE_COCKPIT_ALLOWED_ROLES: ReadonlySet<RoleCode> = new Set([
-  "triage_service_manager",
   "remote_triage_nurse",
 ]);
 

@@ -1,4 +1,5 @@
 import { ArrowLeft, HelpCircle, LogOut, Play, Square } from "lucide-react";
+import { useState } from "react";
 import type { AuthenticatedSession } from "../auth/session";
 import { getAccessToken } from "../authToken";
 
@@ -22,6 +23,16 @@ type CockpitUtilityBarProps = {
  * decides the actual destination; this button is destination-agnostic.
  */
 export function CockpitUtilityBar({ session, onLogout, onBack, autoGenerateOn, onToggleGenerate, navigationLocked = false }: CockpitUtilityBarProps) {
+  const [navigationNotice, setNavigationNotice] = useState("");
+  const attemptNavigation = (action: () => void) => {
+    if (navigationLocked) {
+      setNavigationNotice("Active call in progress. Select Hold Call before leaving this screen or signing out.");
+      return;
+    }
+    setNavigationNotice("");
+    action();
+  };
+
   return (
     <div className="cockpit-utility-bar">
       <div className="cockpit-utility-user">
@@ -47,10 +58,10 @@ export function CockpitUtilityBar({ session, onLogout, onBack, autoGenerateOn, o
           <button
             type="button"
             className="cockpit-utility-btn"
-            onClick={onBack}
+            onClick={() => attemptNavigation(onBack)}
             title="Back"
             aria-label="Back"
-            disabled={navigationLocked}
+            aria-disabled={navigationLocked}
           >
             <ArrowLeft size={14} />
           </button>
@@ -58,10 +69,10 @@ export function CockpitUtilityBar({ session, onLogout, onBack, autoGenerateOn, o
         <button
           type="button"
           className="cockpit-utility-btn"
-          onClick={onLogout}
+          onClick={() => attemptNavigation(onLogout)}
           title="Sign out"
           aria-label="Sign out"
-          disabled={navigationLocked}
+          aria-disabled={navigationLocked}
         >
           <LogOut size={14} />
         </button>
@@ -81,12 +92,20 @@ export function CockpitUtilityBar({ session, onLogout, onBack, autoGenerateOn, o
           title="Help"
           aria-label="Help"
           aria-disabled={navigationLocked}
-          onClick={(event) => navigationLocked && event.preventDefault()}
-          tabIndex={navigationLocked ? -1 : undefined}
+          onClick={(event) => {
+            if (!navigationLocked) return;
+            event.preventDefault();
+            setNavigationNotice("Active call in progress. Select Hold Call before leaving this screen or opening Help.");
+          }}
         >
           <HelpCircle size={14} />
         </a>
       </div>
+      {navigationNotice && (
+        <p className="cockpit-navigation-notice" role="alert">
+          {navigationNotice}
+        </p>
+      )}
     </div>
   );
 }

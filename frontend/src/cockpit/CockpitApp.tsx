@@ -79,7 +79,10 @@ export function CockpitApp({ session, onLogout, onBack }: CockpitAppProps) {
       event.returnValue = "";
     };
     const restoreCockpitRoute = () => {
-      if (window.location.hash !== "#/cockpit") window.location.hash = "#/cockpit";
+      if (window.location.hash !== "#/cockpit") {
+        window.alert("Active call in progress. Select Hold Call before leaving this screen.");
+        window.location.hash = "#/cockpit";
+      }
     };
     window.addEventListener("beforeunload", blockUnload);
     window.addEventListener("hashchange", restoreCockpitRoute);

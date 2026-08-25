@@ -144,7 +144,7 @@ export const TECHNICAL_TOPIC_GROUPS: TopicGroup[] = [
           <p>The platform parses occupational parameters for airport and flight staff, then converts those fields into aviation tags, fit-to-duty controls, and clinician-visible routing evidence.</p>
           ${ul([
             `<strong>Fit-to-Fly:</strong> STCC clinical disposition is evaluated first; Emergency and Urgent outcomes force RESTRICTED until clinician clearance.`,
-            `Routine STCC outcomes for safety-sensitive crew remain RESTRICTED; self-care outcomes can still become MEDICAL_REVIEW_REQUIRED when duty, outstation, sickness, or operational symptom triggers are present.`,
+            `Routine STCC outcomes for safety-sensitive crew require MEDICAL_REVIEW_REQUIRED. After Emergency, Urgent, and restriction-requiring destinations have already resolved to RESTRICTED, a fit-to-fly-review, duty-restriction, or sickness-validation tag requires MEDICAL_REVIEW_REQUIRED for any remaining severity, including Routine and Self-care.`,
             `<strong>Outstation Validation:</strong> station and outstation flags create a teleconsult escalation path and preserve local-care coordination context.`,
             `<strong>Sickness Validation:</strong> the system compiles standardized medical leave telemetry for nurse review instead of automatically approving leave.`,
             `<strong>Vaccine Reactions:</strong> post-vaccination fever, rash, swelling, or related symptoms create structured follow-up and duty-rest review, such as ground-duty only until clinical clearance.`
