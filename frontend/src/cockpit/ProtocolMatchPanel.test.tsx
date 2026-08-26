@@ -154,7 +154,7 @@ describe("ProtocolMatchPanel", () => {
     expect(screen.queryByText("Use this guideline")).not.toBeInTheDocument();
   });
 
-  it("lets the nurse select an alternate candidate, calling updateItemContext with its protocolId", async () => {
+  it("requires and submits a clinical rationale when the nurse overrides the top protocol", async () => {
     const user = userEvent.setup();
     const item = makeItem({ preparedProtocol: makePrepared() });
     render(<ProtocolMatchPanel item={item} isReadOnly={false} />);
@@ -166,7 +166,20 @@ describe("ProtocolMatchPanel", () => {
     expect(selectButtons).toHaveLength(1);
     await user.click(selectButtons[0]);
 
-    expect(updateItemContext).toHaveBeenCalledWith("queue-item-abcdef123456", { matchedProtocolId: "oscg-cold-flu" });
+    expect(updateItemContext).not.toHaveBeenCalled();
+    const confirm = screen.getByRole("button", { name: "Confirm protocol override" });
+    expect(confirm).toBeDisabled();
+    await user.type(
+      screen.getByLabelText("Clinical rationale for overriding the suggested protocol"),
+      "Caller symptoms align more closely with the alternate guideline."
+    );
+    expect(confirm).toBeEnabled();
+    await user.click(confirm);
+
+    expect(updateItemContext).toHaveBeenCalledWith("queue-item-abcdef123456", {
+      matchedProtocolId: "oscg-cold-flu",
+      protocolOverrideReason: "Caller symptoms align more closely with the alternate guideline."
+    });
   });
 
   it("shows the nurse-selected guideline as an override once matchedProtocolId differs from the auto match", () => {

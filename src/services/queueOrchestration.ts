@@ -393,6 +393,7 @@ function queuePayloadFromUnknown(value: unknown): {
   vitalsUnobtainable?: boolean;
   reasonNarrativeConfirmed?: boolean;
   matchedProtocolId?: string;
+  protocolOverrideReason?: string;
   dependentId?: string;
   completedAtIso?: string;
 } {
@@ -436,6 +437,7 @@ function queuePayloadFromUnknown(value: unknown): {
     safetyFloorSource:
       floorSource === "vitals" || floorSource === "symptom" || floorSource === "judgment" ? floorSource : undefined,
     matchedProtocolId: stringFromPayload(value.matchedProtocolId),
+    protocolOverrideReason: stringFromPayload(value.protocolOverrideReason),
     dependentId: stringFromPayload(value.dependentId),
     completedAtIso: stringFromPayload(value.completedAtIso)
   };
@@ -464,6 +466,7 @@ function queuePayloadFor(record: QueueRecord): Record<string, unknown> {
   // external id here so it round-trips correctly regardless of whether a
   // matching Algorithm row exists in the database (see resolveAlgorithmDbId).
   if (record.matchedProtocolId) payload.matchedProtocolId = record.matchedProtocolId;
+  if (record.protocolOverrideReason) payload.protocolOverrideReason = record.protocolOverrideReason;
   // Same reasoning as matchedProtocolId: dependentId is an HRMS-issued id
   // from the JSON-mocked directory (hrmsOracleAdapter.ts), not a row in the
   // Prisma Dependent table (which stays unseeded/legacy here) - the FK
@@ -722,6 +725,7 @@ function dbRowToRecord(row: QueueDbRow): QueueRecord {
     preparedProtocol: queuePayload.preparedProtocol,
     vitals: isVitals(row.vitals) ? row.vitals : undefined,
     matchedProtocolId: queuePayload.matchedProtocolId ?? row.matchedProtocolId ?? undefined,
+    protocolOverrideReason: queuePayload.protocolOverrideReason,
     calculatedSeverity: row.calculatedSeverity ?? undefined,
     dispositionCode: row.dispositionCode ?? undefined,
     destinationName: row.destinationName ?? undefined,
@@ -2170,6 +2174,18 @@ export async function updateQueueContext(
   requireTenantAccess(record, session);
   requireUnlockedOrOwned(record, session);
   const previousMatchedProtocolId = record.matchedProtocolId;
+  const isProtocolOverride = Boolean(
+    update.matchedProtocolId &&
+      record.preparedProtocol?.primaryProtocolId &&
+      update.matchedProtocolId !== record.preparedProtocol.primaryProtocolId
+  );
+  if (isProtocolOverride && !update.protocolOverrideReason) {
+    throw new QueueOrchestrationError(
+      400,
+      "A clinical rationale is required when overriding the suggested protocol.",
+      "PROTOCOL_OVERRIDE_REASON_REQUIRED"
+    );
+  }
   if (record.status === "COMPLETED") {
     throw new QueueOrchestrationError(
       409,
@@ -2230,7 +2246,10 @@ export async function updateQueueContext(
       record.calculatedSeverity = "EMERGENCY";
     }
   }
-  if (update.matchedProtocolId) record.matchedProtocolId = update.matchedProtocolId;
+  if (update.matchedProtocolId) {
+    record.matchedProtocolId = update.matchedProtocolId;
+    record.protocolOverrideReason = isProtocolOverride ? update.protocolOverrideReason : undefined;
+  }
   const floorBlocksDowngrade =
     record.safetyFloorActive &&
     record.calculatedSeverity === "EMERGENCY" &&
@@ -2320,6 +2339,7 @@ export async function updateQueueContext(
         ? {
             previousMatchedProtocolId: previousMatchedProtocolId ?? null,
             selectedMatchedProtocolId: record.matchedProtocolId ?? null,
+            protocolOverrideReason: record.protocolOverrideReason ?? null,
             preparedProtocolStatus: record.preparedProtocol?.status ?? null
           }
         : {})

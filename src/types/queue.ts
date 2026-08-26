@@ -101,6 +101,7 @@ export const QueueContextUpdateSchema = z.object({
   // any single value until all five had been typed.
   vitals: QueueVitalsSchema.partial().optional(),
   matchedProtocolId: z.string().min(1).max(120).optional(),
+  protocolOverrideReason: z.string().trim().min(10).max(500).optional(),
   calculatedSeverity: QueueSeveritySchema.optional(),
   floorSource: SafetyFloorSourceSchema.optional(),
   dispositionCode: z.string().min(2).max(120).optional(),
@@ -316,6 +317,7 @@ export type QueueItemDto = {
   stccProcess: StccProcessSnapshotDto;
   vitals?: QueueVitals;
   matchedProtocolId?: string;
+  protocolOverrideReason?: string;
   calculatedSeverity?: QueueSeverity;
   dispositionCode?: string;
   destinationName?: string;

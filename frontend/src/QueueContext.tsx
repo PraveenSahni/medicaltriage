@@ -192,6 +192,7 @@ export type QueueItem = {
   stccProcess: StccProcessSnapshot;
   vitals?: QueueVitals;
   matchedProtocolId?: string;
+  protocolOverrideReason?: string;
   calculatedSeverity?: QueueSeverity;
   dispositionCode?: string;
   destinationName?: string;

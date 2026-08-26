@@ -89,11 +89,14 @@ export function ProtocolMatchPanel({ item, isReadOnly }: { item: QueueItem; isRe
   const [busy, setBusy] = useState(false);
   const [selectError, setSelectError] = useState("");
   const [alternatesExpanded, setAlternatesExpanded] = useState(false);
+  const [pendingOverrideProtocolId, setPendingOverrideProtocolId] = useState<string>();
+  const [overrideReason, setOverrideReason] = useState("");
 
   if (!prepared) {
     return null;
   }
 
+  const suggestedProtocolId = prepared.primaryProtocolId;
   const suggestions = prepared.suggestions ?? [];
   // The nurse can override the auto-matched guideline (prepared.primaryProtocolId
   // is only a keyword-search suggestion) by picking any candidate below - that
@@ -103,16 +106,31 @@ export function ProtocolMatchPanel({ item, isReadOnly }: { item: QueueItem; isRe
   const questionsStarted = Boolean(item.taqResponses && Object.keys(item.taqResponses).length > 0);
   const canSelect = !isReadOnly && !item.dispositionCode && !questionsStarted && suggestions.length > 0;
 
-  async function selectProtocol(protocolId: string) {
+  async function selectProtocol(protocolId: string, protocolOverrideReason?: string) {
     setBusy(true);
     setSelectError("");
     try {
-      await updateItemContext(item.id, { matchedProtocolId: protocolId });
+      await updateItemContext(item.id, {
+        matchedProtocolId: protocolId,
+        ...(protocolOverrideReason ? { protocolOverrideReason } : {})
+      });
+      setPendingOverrideProtocolId(undefined);
+      setOverrideReason("");
     } catch (caught) {
       setSelectError(caught instanceof Error ? caught.message : "Failed to select guideline.");
     } finally {
       setBusy(false);
     }
+  }
+
+  function requestProtocolSelection(protocolId: string) {
+    if (suggestedProtocolId && protocolId !== suggestedProtocolId) {
+      setSelectError("");
+      setPendingOverrideProtocolId(protocolId);
+      setOverrideReason("");
+      return;
+    }
+    void selectProtocol(protocolId);
   }
 
   const selected = selectedProtocolId
@@ -168,7 +186,7 @@ export function ProtocolMatchPanel({ item, isReadOnly }: { item: QueueItem; isRe
               isSelected={false}
               canSelect
               busy={busy}
-              onSelect={() => selectProtocol(suggestion.protocolId)}
+              onSelect={() => requestProtocolSelection(suggestion.protocolId)}
             />
           ))}
         </>
@@ -185,7 +203,7 @@ export function ProtocolMatchPanel({ item, isReadOnly }: { item: QueueItem; isRe
               isSelected={item.matchedProtocolId === suggestion.protocolId}
               canSelect={canSelect}
               busy={busy}
-              onSelect={() => selectProtocol(suggestion.protocolId)}
+              onSelect={() => requestProtocolSelection(suggestion.protocolId)}
             />
           ))}
         </>
@@ -229,7 +247,7 @@ export function ProtocolMatchPanel({ item, isReadOnly }: { item: QueueItem; isRe
               isSelected
               canSelect={canSelect}
               busy={busy}
-              onSelect={() => selectProtocol(selected.protocolId)}
+              onSelect={() => requestProtocolSelection(selected.protocolId)}
             />
           )}
 
@@ -251,10 +269,44 @@ export function ProtocolMatchPanel({ item, isReadOnly }: { item: QueueItem; isRe
                     isSelected={false}
                     canSelect={canSelect}
                     busy={busy}
-                    onSelect={() => selectProtocol(suggestion.protocolId)}
+                    onSelect={() => requestProtocolSelection(suggestion.protocolId)}
                     key={suggestion.protocolId}
                   />
                 ))}
+            </div>
+          )}
+
+          {pendingOverrideProtocolId && (
+            <div className="protocol-match-override-confirmation" role="group" aria-label="Protocol override rationale">
+              <label htmlFor={`protocol-override-reason-${item.id}`}>
+                Clinical rationale for overriding the suggested protocol
+              </label>
+              <textarea
+                id={`protocol-override-reason-${item.id}`}
+                value={overrideReason}
+                maxLength={500}
+                onChange={(event) => setOverrideReason(event.target.value)}
+                placeholder="Explain why the alternate protocol is clinically more appropriate."
+              />
+              <div className="protocol-match-override-actions">
+                <button
+                  type="button"
+                  disabled={busy || overrideReason.trim().length < 10}
+                  onClick={() => void selectProtocol(pendingOverrideProtocolId, overrideReason.trim())}
+                >
+                  Confirm protocol override
+                </button>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => {
+                    setPendingOverrideProtocolId(undefined);
+                    setOverrideReason("");
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           )}
 

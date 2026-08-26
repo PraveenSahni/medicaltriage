@@ -255,6 +255,38 @@ describe("Enterprise queue orchestration", () => {
     );
   });
 
+  it("requires, persists, and returns a rationale for a nurse protocol override", async () => {
+    const nurse = await agentFor("layla@irisstar.tech", "remote_triage_nurse");
+    await nurse.post("/api/v1/queue/case-10002/claim").expect(200);
+
+    const prepared = await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ reasonNarrative: "Twisted ankle while playing sport", reasonNarrativeConfirmed: true })
+      .expect(200);
+    const primaryProtocolId = prepared.body.item.preparedProtocol.primaryProtocolId as string;
+    expect(primaryProtocolId).toBe("sample-ankle-foot-injury");
+    const alternate = { protocolId: "sample-back-pain-adult" };
+
+    const missingReason = await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ matchedProtocolId: alternate.protocolId })
+      .expect(400);
+    expect(missingReason.body.code).toBe("PROTOCOL_OVERRIDE_REASON_REQUIRED");
+
+    const rationale = "The injury mechanism makes the alternate ankle protocol clinically appropriate.";
+    const selected = await nurse
+      .patch("/api/v1/queue/case-10002/context")
+      .send({ matchedProtocolId: alternate.protocolId, protocolOverrideReason: rationale })
+      .expect(200);
+    expect(selected.body.item).toMatchObject({
+      matchedProtocolId: alternate.protocolId,
+      protocolOverrideReason: rationale
+    });
+
+    const reloaded = await nurse.get("/api/v1/queue/case-10002").expect(200);
+    expect(reloaded.body.item.protocolOverrideReason).toBe(rationale);
+  });
+
   it("searches the clinical content packet for a new ankle injury call without auto-approving a protocol", async () => {
     const manager = await agentFor("khalid@irisstar.tech", "triage_service_manager");
 
