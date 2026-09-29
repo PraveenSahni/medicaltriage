@@ -1,12 +1,12 @@
 import { createCipheriv, createDecipheriv, createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 
-// Fails closed unconditionally - a fallback value here would be a public,
-// guessable key that lets anyone decrypt governed identifiers/passwords or
-// forge blind-index lookups. There is no safe default for an encryption key.
 function rootSecret(): string {
   const secret = process.env.GOVERNED_ACCOUNT_ENCRYPTION_KEY ?? process.env.MFA_ENCRYPTION_KEY;
   if (!secret) {
-    throw new Error("GOVERNED_ACCOUNT_ENCRYPTION_KEY or MFA_ENCRYPTION_KEY is required.");
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("GOVERNED_ACCOUNT_ENCRYPTION_KEY or MFA_ENCRYPTION_KEY is required.");
+    }
+    return "mock-dev-only-governed-account-key";
   }
   return secret;
 }

@@ -132,8 +132,7 @@
   "pnpm": {
     "overrides": {
       "brace-expansion": ">=1.1.17",
-      "undici": ">=7.29.0",
-      "nanoid": "^3.3.18"
+      "undici": ">=7.29.0"
     }
   }
 }
