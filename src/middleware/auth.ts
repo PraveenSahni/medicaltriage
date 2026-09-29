@@ -9,8 +9,15 @@ export type AuthenticatedRequest = Request & {
   securitySession?: AuthenticatedSession;
 };
 
+// Fails closed unconditionally (not just when MOCK_MODE=false) - a fallback
+// value here would be a public, guessable HMAC key that lets anyone forge a
+// session token. There is no safe default for a signing secret.
 function jwtSecret(): string {
-  return process.env.AUTH_JWT_SECRET ?? "mock-dev-only-ist-triage-jwt-secret";
+  const secret = process.env.AUTH_JWT_SECRET;
+  if (!secret) {
+    throw new Error("AUTH_JWT_SECRET must be set before signing or verifying session tokens.");
+  }
+  return secret;
 }
 
 function encodePart(value: unknown): string {

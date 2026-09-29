@@ -71,13 +71,16 @@ export function traceObjects(value: unknown): Array<Record<string, unknown>> {
   return output;
 }
 
+// Fails closed unconditionally - falling back to another secret (or a mock
+// value) would let the audit trail's tamper-evidence be silently forged, or
+// reuse a key from an unrelated purpose (session signing). There is no safe
+// default for a signing secret.
 function auditHmacSecret(): string {
-  return (
-    process.env.AUDIT_HMAC_SECRET ??
-    process.env.AUDIT_SIGNING_SECRET ??
-    process.env.AUTH_JWT_SECRET ??
-    "mock-local-audit-signing-secret"
-  );
+  const secret = process.env.AUDIT_HMAC_SECRET;
+  if (!secret) {
+    throw new Error("AUDIT_HMAC_SECRET must be set before signing or verifying audit trace records.");
+  }
+  return secret;
 }
 
 function canonicalValue(value: unknown): string {
